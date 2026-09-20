@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#ffffff" />
+<title>Create | Nyl Web Dev</title>
+<meta name="description" content="Describe your website or app. Our AI designs the colours, layout, and name instantly." />
+<link rel="canonical" href="https://nylwebdev.vercel.app/create-web" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Ctext x='32' y='46' font-family='monospace' font-size='40' font-weight='700' fill='white' text-anchor='middle'%3E%5E%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css?v=4" />
+<style>
+  .designer { display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start; }
+  .designer__panel { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; position: sticky; top: 90px; }
+  .designer__panel h3 { font-size: .95rem; margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
+  .designer__actions { display: flex; gap: .5rem; margin-top: 1rem; }
+  .designer__actions .btn { flex: 1; justify-content: center; }
+  .chips { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .chips__label { display: block; font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .6rem; font-weight: 600; }
+  .chip { display: inline-block; padding: .35rem .75rem; margin: 0 .35rem .35rem 0; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; font-size: .78rem; color: var(--text-2); cursor: pointer; transition: border-color .2s var(--ease); font-family: inherit; }
+  .chip:hover { border-color: var(--text); background: #fff; }
+  .status { display: flex; align-items: center; gap: .75rem; padding: 2rem 1.5rem; background: var(--surface); border: 1px dashed var(--border-2); border-radius: var(--radius); color: var(--muted); font-size: .9rem; justify-content: center; }
+  .status--error { border-color: #de3831; color: #de3831; }
+  .preview { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--pv-bg,#fff); animation: previewIn .5s var(--ease-out); }
+  @keyframes previewIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+  .preview__bar { display: flex; align-items: center; gap: .4rem; padding: .65rem .85rem; background: var(--pv-surface,#f7f7f7); border-bottom: 1px solid var(--border); }
+  .preview__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-2); }
+  .preview__url { margin-left: .75rem; font-family: var(--mono); font-size: .75rem; color: var(--pv-muted,#999); }
+  .preview__body { padding: 2rem 1.75rem; font-family: var(--pv-body-font,'Inter',sans-serif); color: var(--pv-text,#0a0a0a); }
+  .preview__body h4 { font-family: var(--pv-heading-font,Georgia,serif); font-size: 1.75rem; font-weight: 700; margin: .75rem 0 .35rem; letter-spacing: -.02em; }
+  .preview__body > p { color: var(--pv-muted,#999); font-size: .95rem; margin-bottom: 1.5rem; }
+  .preview__btns { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  .preview__btn { display: inline-flex; align-items: center; padding: .65rem 1.15rem; border-radius: 6px; background: var(--pv-primary,#0a0a0a); color: var(--pv-bg,#fff); font-weight: 600; font-size: .85rem; border: 1px solid var(--pv-primary,#0a0a0a); }
+  .preview__btn--ghost { background: transparent; color: var(--pv-primary,#0a0a0a); }
+  .preview__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .75rem; }
+  .preview__card { padding: .9rem; border-radius: 8px; background: var(--pv-surface,#f7f7f7); border: 1px solid rgba(0,0,0,.06); }
+  .preview__card strong { font-size: .85rem; display: block; margin-bottom: .2rem; font-family: var(--pv-heading-font,Georgia,serif); }
+  .preview__card p { font-size: .8rem; color: var(--pv-muted,#999); }
+  .meta { margin-top: 1.25rem; padding: 1.25rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: .6rem; margin-bottom: 1.25rem; }
+  .swatch { display: flex; align-items: center; gap: .5rem; padding: .5rem .65rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: .78rem; }
+  .swatch__color { width: 20px; height: 20px; border-radius: 5px; border: 1px solid rgba(0,0,0,.1); flex-shrink: 0; }
+  .swatch__label { color: var(--muted); font-weight: 500; }
+  .swatch__hex { margin-left: auto; font-family: var(--mono); font-size: .72rem; color: var(--muted-2); }
+  @media (max-width: 900px) { .designer { grid-template-columns: 1fr; } .designer__panel { position: static; } .preview__grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="brand">
+      <span class="brand__mark"><span class="brand__caret">^</span></span>
+      <span class="brand__name">Nyl<strong>DEV</strong></span>
+    </a>
+    <nav class="nav" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="work.html">Work</a>
+      <a href="create-web.html" class="active">Create</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <i data-lucide="menu"></i>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <div class="container">
+      <h1 class="page-head__title"><span class="accent">//</span>Create</h1>
+      <p class="page-head__lead">Describe what you're building. Our AI designs the colours, fonts, layout, and name — instantly.</p>
+    </div>
+  </div>
+
+  <section class="page">
+    <div class="container">
+      <div class="designer">
+
+        <aside class="designer__panel">
+          <h3><i data-lucide="sparkles"></i> Describe it</h3>
+
+          <div class="field">
+            <label for="kPrompt">What are you building?</label>
+            <textarea id="kPrompt" rows="6" maxlength="1200" placeholder="Example: A cosy coffee shop in Cape Town. Warm, earthy tones. Website with menu, about, and contact."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="kType">Type</label>
+            <select id="kType">
+              <option value="auto">Auto-detect</option>
+              <option value="website">Website</option>
+              <option value="app">App</option>
+            </select>
+          </div>
+
+          <div class="designer__actions">
+            <button class="btn btn--primary btn--sm" id="kGenerate" type="button">
+              <i data-lucide="wand-2"></i> Generate
+            </button>
+            <button class="btn btn--ghost btn--sm" id="kClear" type="button">
+              <i data-lucide="rotate-ccw"></i> Clear
+            </button>
+          </div>
+
+          <div class="chips">
+            <span class="chips__label">Try one</span>
+            <button class="chip" data-example="A luxury law firm in Johannesburg. Trustworthy, minimal, dark navy and gold.">Law firm</button>
+            <button class="chip" data-example="A fitness studio in Pretoria. Bold, energetic. Red and black. Website with class schedule and pricing.">Fitness</button>
+            <button class="chip" data-example="A social media app for artists to share work and message each other. Playful, creative, purple and coral.">Social app</button>
+            <button class="chip" data-example="An online store selling handmade African crafts. Warm, earthy, mustard and rust.">E-commerce</button>
+            <button class="chip" data-example="A dental clinic in Sandton. Clean, trustworthy, calm blues and whites.">Dental clinic</button>
+          </div>
+        </aside>
+
+        <div>
+          <div class="status" id="kStatus">
+            <i data-lucide="sparkles"></i>
+            <span>Your design will appear here.</span>
+          </div>
+
+          <div class="preview" id="kPreview" style="display:none">
+            <div class="preview__bar">
+              <span class="preview__dot"></span>
+              <span class="preview__dot"></span>
+              <span class="preview__dot"></span>
+              <span class="preview__url" id="kPreviewUrl">preview</span>
+            </div>
+            <div class="preview__body" id="kPreviewBody">
+              <span class="badge" id="kTypeBadge" style="display:inline-block;padding:.25rem .65rem;background:var(--pv-surface);border:1px solid rgba(0,0,0,.08);border-radius:999px;font-size:.7rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;">Website</span>
+              <h4 id="kName">Brand</h4>
+              <p id="kTagline">Tagline</p>
+              <div class="preview__btns">
+                <a class="preview__btn" id="kBtnPrimary">Primary</a>
+                <a class="preview__btn preview__btn--ghost" id="kBtnSecondary">Secondary</a>
+              </div>
+              <div class="preview__grid">
+                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
+                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
+                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="meta" id="kMeta" style="display:none">
+            <div class="swatches" id="kSwatches"></div>
+            <div id="kInfo"></div>
+            <div class="designer__actions" style="margin-top:1.25rem">
+              <button class="btn btn--primary btn--sm" id="kSave" type="button">
+                <i data-lucide="save"></i> Save template
+              </button>
+              <a class="btn btn--whatsapp btn--sm" id="kSend" target="_blank" rel="noopener">
+                <i data-lucide="message-circle"></i> Send to Nyl Dev
+              </a>
+            </div>
+          </div>
+
+          <div class="section" style="padding-top:2rem">
+            <div class="notice">
+              <i data-lucide="info"></i>
+              <p>Kepler generates design direction, not final code. When you send a template to us, we build the real thing — matching your palette, fonts, and layout intent.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <a href="index.html" class="brand">
+          <span class="brand__mark"><span class="brand__caret">^</span></span>
+          <span class="brand__name">Nyl<strong>DEV</strong></span>
+        </a>
+        <p style="color:var(--muted);font-size:.9rem;margin-top:.75rem;max-width:340px">Websites and apps built in Boksburg, South Africa.</p>
+      </div>
+      <div>
+        <h4>Pages</h4>
+        <ul>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="pricing.html">Pricing</a></li>
+          <li><a href="work.html">Work</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="contact.html">Get in touch</a></li>
+          <li><a href="mailto:n1nathanie971@gmail.com">Email</a></li>
+          <li><a href="https://wa.me/27609583089" target="_blank" rel="noopener">WhatsApp</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__inner">
+      <p class="footer__copy">
+        <i data-lucide="copyright"></i>
+        <span id="year">2026</span> Nyl Web Dev. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="js/app.js?v=4"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var currentTemplate = null;
+  var currentPrompt = '';
+
+  function setStatus(text, isError) {
+    var el = $('kStatus');
+    el.style.display = 'flex';
+    el.className = 'status' + (isError ? ' status--error' : '');
+    el.innerHTML = '<i data-lucide="' + (isError ? 'alert-triangle' : 'loader-2') + '"></i><span>' + text + '</span>';
+    if (window.lucide) window.lucide.createIcons();
+  }
+  function hideStatus() { $('kStatus').style.display = 'none'; }
+
+  function renderPreview(t) {
+    if (!t || !t.colors) return;
+    var pv = $('kPreview');
+    pv.style.setProperty('--pv-bg', t.colors.background || '#fff');
+    pv.style.setProperty('--pv-surface', t.colors.surface || '#f7f7f7');
+    pv.style.setProperty('--pv-primary', t.colors.primary || '#0a0a0a');
+    pv.style.setProperty('--pv-secondary', t.colors.secondary || '#666');
+    pv.style.setProperty('--pv-accent', t.colors.accent || '#ff0066');
+    pv.style.setProperty('--pv-text', t.colors.text || '#0a0a0a');
+    pv.style.setProperty('--pv-muted', t.colors.muted || '#999');
+
+    var map = { serif: 'Georgia, serif', sans: "'Inter', sans-serif", mono: "'JetBrains Mono', monospace" };
+    pv.style.setProperty('--pv-heading-font', map[t.fonts && t.fonts.heading] || "'Inter', sans-serif");
+    pv.style.setProperty('--pv-body-font', map[t.fonts && t.fonts.body] || "'Inter', sans-serif");
+
+    $('kTypeBadge').textContent = t.type === 'app' ? 'App' : 'Website';
+    $('kPreviewUrl').textContent = (t.name || 'preview').toLowerCase().replace(/[^a-z0-9]/g, '') + (t.type === 'app' ? '.app' : '.co.za');
+    $('kName').textContent = t.name || 'Brand';
+    $('kTagline').textContent = t.tagline || '';
+    $('kBtnPrimary').textContent = t.type === 'app' ? 'Get Started' : 'Book Now';
+    $('kBtnSecondary').textContent = t.type === 'app' ? 'Learn More' : 'Contact Us';
+
+    pv.style.display = 'block';
+    $('kMeta').style.display = 'block';
+
+    var sw = $('kSwatches');
+    sw.innerHTML = '';
+    var labels = { background: 'Bg', surface: 'Surface', primary: 'Primary', secondary: 'Secondary', accent: 'Accent', text: 'Text', muted: 'Muted' };
+    Object.keys(labels).forEach(function (key) {
+      var hex = t.colors[key];
+      if (!hex) return;
+      var chip = document.createElement('div');
+      chip.className = 'swatch';
+      chip.innerHTML = '<span class="swatch__color" style="background:' + hex + '"></span>' +
+                       '<span class="swatch__label">' + labels[key] + '</span>' +
+                       '<span class="swatch__hex">' + hex + '</span>';
+      sw.appendChild(chip);
+    });
+
+    $('kInfo').innerHTML =
+      '<div style="display:flex;justify-content:space-between;padding:.4rem 0;font-size:.85rem;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Industry</span><strong>' + (t.industry || '—') + '</strong></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:.4rem 0;font-size:.85rem;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Layout</span><strong>' + (t.layout || '—') + '</strong></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:.4rem 0;font-size:.85rem;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Fonts</span><strong>' + (t.fonts && t.fonts.heading ? t.fonts.heading + ' / ' + t.fonts.body : '—') + '</strong></div>' +
+      '<div style="display:flex;justify-content:space-between;padding:.4rem 0;font-size:.85rem"><span style="color:var(--muted)">Sections</span><strong>' + ((t.sections || []).join(', ') || '—') + '</strong></div>' +
+      (t.notes ? '<p style="margin-top:1rem;padding:.85rem 1rem;background:var(--surface);border-radius:8px;font-size:.85rem;color:var(--text-2);line-height:1.55;font-style:italic">' + t.notes + '</p>' : '');
+
+    currentTemplate = t;
+  }
+
+  function buildWaMessage() {
+    if (!currentTemplate) return '';
+    var t = currentTemplate;
+    return [
+      'Hi Nyl Dev, I used Create to design this:',
+      '',
+      'Name: ' + (t.name || '—'),
+      'Type: ' + (t.type || '—'),
+      'Industry: ' + (t.industry || '—'),
+      'Layout: ' + (t.layout || '—'),
+      '',
+      'Colours:',
+      '  Background: ' + t.colors.background,
+      '  Surface: ' + t.colors.surface,
+      '  Primary: ' + t.colors.primary,
+      '  Secondary: ' + t.colors.secondary,
+      '  Accent: ' + t.colors.accent,
+      '  Text: ' + t.colors.text,
+      '  Muted: ' + t.colors.muted,
+      '',
+      'Fonts: ' + t.fonts.heading + ' / ' + t.fonts.body,
+      'Sections: ' + (t.sections || []).join(', '),
+      '',
+      'My prompt: "' + currentPrompt + '"'
+    ].join('\n');
+  }
+
+  async function generate() {
+    var prompt = ($('kPrompt').value || '').trim();
+    if (prompt.length < 6) { setStatus('Please describe your idea in a few words.', true); return; }
+    var typeHint = $('kType').value;
+    var fullPrompt = typeHint !== 'auto' ? '[' + typeHint + '] ' + prompt : prompt;
+    currentPrompt = prompt;
+    $('kGenerate').disabled = true;
+    setStatus('Designing...', false);
+
+    try {
+      var res = await fetch('/api/kepler', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: fullPrompt })
+      });
+      var data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Generation failed');
+      hideStatus();
+      renderPreview(data.template);
+      $('kSend').href = 'https://wa.me/27609583089?text=' + encodeURIComponent(buildWaMessage());
+    } catch (err) {
+      setStatus('Something went wrong. Try again in a moment.', true);
+      console.error(err);
+    } finally {
+      $('kGenerate').disabled = false;
+      if (window.lucide) window.lucide.createIcons();
+    }
+  }
+
+  $('kGenerate').addEventListener('click', generate);
+  $('kClear').addEventListener('click', function () {
+    $('kPrompt').value = '';
+    $('kPreview').style.display = 'none';
+    $('kMeta').style.display = 'none';
+    $('kStatus').style.display = 'flex';
+    $('kStatus').className = 'status';
+    $('kStatus').innerHTML = '<i data-lucide="sparkles"></i><span>Your design will appear here.</span>';
+    currentTemplate = null;
+    if (window.lucide) window.lucide.createIcons();
+  });
+  $('kSave').addEventListener('click', function () {
+    if (!currentTemplate) return;
+    var KEY = 'nylwebdev.create.templates';
+    var list; try { list = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { list = []; }
+    list.push({ prompt: currentPrompt, template: currentTemplate, saved: new Date().toISOString() });
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
+    setStatus('Template saved to this browser.', false);
+    setTimeout(hideStatus, 1800);
+  });
+  document.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      $('kPrompt').value = chip.getAttribute('data-example') || '';
+      $('kPrompt').focus();
+    });
+  });
+  $('kPrompt').addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generate();
+  });
+})();
+</script>
+</body>
+</html>

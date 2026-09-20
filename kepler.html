@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#ffffff" />
+<title>Kepler — AI Template Generator | Nyl Web Dev</title>
+<meta name="description" content="Describe your website or app. Kepler generates the colours, layout, and design direction instantly." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%230a0a0a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='22 16 8 32 22 48'/%3E%3Cline x1='32' y1='14' x2='32' y2='50'/%3E%3Cpolyline points='42 16 56 32 42 48'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css?v=3" />
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container navbar__inner">
+    <a href="index.html" class="brand">
+      <span class="brand__mark"><span>&lt;</span><span>/</span><span>&gt;</span></span>
+      <span class="brand__name">Nyl Dev</span>
+    </a>
+    <nav class="nav" id="mainNav">
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="work.html">Work</a>
+      <a href="kepler.html" class="active">Kepler</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <i data-lucide="menu"></i>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="page-head">
+    <div class="container">
+      <h1 class="page-head__title"><span class="accent">//</span>Kepler</h1>
+      <p class="page-head__lead">Describe your website or app. Kepler designs the colours, fonts, layout, and name — instantly. No code. Just your idea.</p>
+    </div>
+  </div>
+
+  <section class="page">
+    <div class="container">
+
+      <div class="kepler">
+        <aside class="kepler__panel">
+          <h3><i data-lucide="sparkles"></i> Describe it</h3>
+
+          <div class="field">
+            <label for="kPrompt">What are you building?</label>
+            <textarea id="kPrompt" rows="6" maxlength="1200" placeholder="Example: A cosy coffee shop in Cape Town. Warm, earthy tones. Website with menu, about, and contact."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="kType">Type</label>
+            <select id="kType">
+              <option value="auto">Auto-detect</option>
+              <option value="website">Website</option>
+              <option value="app">App</option>
+            </select>
+          </div>
+
+          <div class="kepler__actions">
+            <button class="btn btn--primary btn--sm" id="kGenerate" type="button">
+              <i data-lucide="wand-2"></i> Generate
+            </button>
+            <button class="btn btn--ghost btn--sm" id="kClear" type="button">
+              <i data-lucide="rotate-ccw"></i> Clear
+            </button>
+          </div>
+
+          <div class="kepler__examples">
+            <span class="kepler__label">Try one:</span>
+            <button class="chip" data-example="A luxury law firm in Johannesburg. Trustworthy, minimal, dark navy and gold.">Law firm</button>
+            <button class="chip" data-example="A fitness studio in Pretoria. Bold, energetic. Red and black. Website with class schedule and pricing.">Fitness</button>
+            <button class="chip" data-example="A social media app for artists to share work and message each other. Playful, creative, purple and coral.">Social app</button>
+            <button class="chip" data-example="An online store selling handmade African crafts. Warm, earthy, mustard and rust.">E-commerce</button>
+          </div>
+        </aside>
+
+        <div class="kepler__main">
+          <div class="kepler__status" id="kStatus">
+            <i data-lucide="sparkles"></i>
+            <span>Your design will appear here.</span>
+          </div>
+
+          <div class="preview" id="kPreview" style="display:none">
+            <div class="preview__bar">
+              <span class="preview__dot"></span>
+              <span class="preview__dot"></span>
+              <span class="preview__dot"></span>
+              <span class="preview__url" id="kPreviewUrl">preview</span>
+            </div>
+            <div class="preview__body" id="kPreviewBody">
+              <span class="badge badge--muted" id="kTypeBadge">Website</span>
+              <h4 id="kName">Brand</h4>
+              <p id="kTagline">Tagline</p>
+              <div class="preview__btns">
+                <a class="preview__btn" id="kBtnPrimary">Primary</a>
+                <a class="preview__btn preview__btn--ghost" id="kBtnSecondary">Secondary</a>
+              </div>
+              <div class="preview__grid">
+                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
+                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
+                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kepler__meta" id="kMeta" style="display:none">
+            <div class="kepler__swatches" id="kSwatches"></div>
+            <div class="kepler__info" id="kInfo"></div>
+            <div class="kepler__actions kepler__actions--bottom">
+              <button class="btn btn--primary btn--sm" id="kSave" type="button">
+                <i data-lucide="save"></i> Save template
+              </button>
+              <a class="btn btn--whatsapp btn--sm" id="kSend" target="_blank" rel="noopener">
+                <i data-lucide="message-circle"></i> Send to Nyl Dev
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="notice notice--cyan">
+          <i data-lucide="info"></i>
+          <p>Kepler uses AI to generate design direction. The preview is a concept — your final site is built by Nyl Dev based on these choices.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__inner">
+      <p class="footer__copy">
+        <i data-lucide="copyright"></i>
+        <span id="year">2026</span> Nyl Web Dev. All rights reserved.
+      </p>
+      <div class="footer__social">
+        <a href="https://github.com/Nathaniel-971" aria-label="GitHub" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.05-.02-2.06-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23.96-.27 1.98-.4 3-.4s2.04.13 3 .4c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.62-2.8 5.64-5.48 5.94.43.37.81 1.1.81 2.22 0 1.6-.01 2.9-.01 3.29 0 .32.21.7.83.58C20.57 22.29 24 17.8 24 12.5 24 5.87 18.63.5 12 .5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="js/app.js?v=3"></script>
+<script>
+/* Kepler — client logic
+   Copyright (c) 2026 Nathaniel Nyl / Nyl Web Dev. All rights reserved. */
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var currentTemplate = null;
+  var currentPrompt = '';
+
+  function setStatus(text, isError) {
+    var el = $('kStatus');
+    el.style.display = 'flex';
+    el.className = 'kepler__status' + (isError ? ' kepler__status--error' : '');
+    el.innerHTML = '<i data-lucide="' + (isError ? 'alert-triangle' : 'loader-2') + '"></i><span>' + text + '</span>';
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function hideStatus() {
+    $('kStatus').style.display = 'none';
+  }
+
+  function renderPreview(t) {
+    if (!t || !t.colors) return;
+
+    // Apply to the preview frame
+    var pv = $('kPreview');
+    pv.style.setProperty('--pv-bg', t.colors.background || '#ffffff');
+    pv.style.setProperty('--pv-surface', t.colors.surface || '#f7f7f7');
+    pv.style.setProperty('--pv-primary', t.colors.primary || '#0a0a0a');
+    pv.style.setProperty('--pv-secondary', t.colors.secondary || '#666666');
+    pv.style.setProperty('--pv-accent', t.colors.accent || '#ff0066');
+    pv.style.setProperty('--pv-text', t.colors.text || '#0a0a0a');
+    pv.style.setProperty('--pv-muted', t.colors.muted || '#999999');
+
+    // Fonts
+    var headingMap = { serif: 'Georgia, serif', sans: "'Inter', sans-serif", mono: "'JetBrains Mono', monospace" };
+    var bodyMap = { serif: 'Georgia, serif', sans: "'Inter', sans-serif", mono: "'JetBrains Mono', monospace" };
+    pv.style.setProperty('--pv-heading-font', headingMap[t.fonts && t.fonts.heading] || "'Inter', sans-serif");
+    pv.style.setProperty('--pv-body-font', bodyMap[t.fonts && t.fonts.body] || "'Inter', sans-serif");
+
+    $('kTypeBadge').textContent = t.type === 'app' ? 'App' : 'Website';
+    $('kPreviewUrl').textContent = (t.name || 'preview').toLowerCase().replace(/[^a-z0-9]/g, '') + (t.type === 'app' ? '.app' : '.co.za');
+    $('kName').textContent = t.name || 'Brand';
+    $('kTagline').textContent = t.tagline || '';
+    $('kBtnPrimary').textContent = t.type === 'app' ? 'Get Started' : 'Book Now';
+    $('kBtnSecondary').textContent = t.type === 'app' ? 'Learn More' : 'Contact Us';
+
+    pv.style.display = 'block';
+    $('kMeta').style.display = 'block';
+
+    // Swatches
+    var sw = $('kSwatches');
+    sw.innerHTML = '';
+    var labels = { background: 'Bg', surface: 'Surface', primary: 'Primary', secondary: 'Secondary', accent: 'Accent', text: 'Text', muted: 'Muted' };
+    Object.keys(labels).forEach(function (key) {
+      var hex = t.colors[key];
+      if (!hex) return;
+      var chip = document.createElement('div');
+      chip.className = 'swatch';
+      chip.innerHTML = '<span class="swatch__color" style="background:' + hex + '"></span>' +
+                       '<span class="swatch__label">' + labels[key] + '</span>' +
+                       '<span class="swatch__hex">' + hex + '</span>';
+      sw.appendChild(chip);
+    });
+
+    // Info
+    var info = $('kInfo');
+    info.innerHTML =
+      '<div class="kepler__row"><span>Industry</span><strong>' + (t.industry || '—') + '</strong></div>' +
+      '<div class="kepler__row"><span>Layout</span><strong>' + (t.layout || '—') + '</strong></div>' +
+      '<div class="kepler__row"><span>Fonts</span><strong>' + (t.fonts && t.fonts.heading ? t.fonts.heading + ' / ' + t.fonts.body : '—') + '</strong></div>' +
+      '<div class="kepler__row"><span>Sections</span><strong>' + ((t.sections || []).join(', ') || '—') + '</strong></div>' +
+      (t.notes ? '<div class="kepler__notes">' + t.notes + '</div>' : '');
+
+    currentTemplate = t;
+  }
+
+  function buildWhatsAppMessage() {
+    if (!currentTemplate) return '';
+    var t = currentTemplate;
+    var lines = [
+      'Hi Nyl Dev, I used Kepler to design this:',
+      '',
+      'Name: ' + (t.name || '—'),
+      'Type: ' + (t.type || '—'),
+      'Industry: ' + (t.industry || '—'),
+      'Layout: ' + (t.layout || '—'),
+      '',
+      'Colours:',
+      '  Background: ' + t.colors.background,
+      '  Surface: ' + t.colors.surface,
+      '  Primary: ' + t.colors.primary,
+      '  Secondary: ' + t.colors.secondary,
+      '  Accent: ' + t.colors.accent,
+      '  Text: ' + t.colors.text,
+      '  Muted: ' + t.colors.muted,
+      '',
+      'Fonts: ' + t.fonts.heading + ' / ' + t.fonts.body,
+      'Sections: ' + (t.sections || []).join(', '),
+      '',
+      'My prompt: "' + currentPrompt + '"'
+    ];
+    return lines.join('\n');
+  }
+
+  async function generate() {
+    var prompt = ($('kPrompt').value || '').trim();
+    if (prompt.length < 6) {
+      setStatus('Please describe your idea in a few words.', true);
+      return;
+    }
+
+    var typeHint = $('kType').value;
+    var fullPrompt = prompt;
+    if (typeHint !== 'auto') fullPrompt = '[' + typeHint + '] ' + prompt;
+
+    currentPrompt = prompt;
+    $('kGenerate').disabled = true;
+    setStatus('Kepler is designing...', false);
+
+    try {
+      var res = await fetch('/api/kepler', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: fullPrompt }),
+      });
+
+      var data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error || 'Generation failed');
+      }
+
+      hideStatus();
+      renderPreview(data.template);
+
+      // Update send button href
+      var waNumber = '27609583089';
+      var msg = encodeURIComponent(buildWhatsAppMessage());
+      $('kSend').href = 'https://wa.me/' + waNumber + '?text=' + msg;
+
+    } catch (err) {
+      setStatus('Something went wrong. Try again in a moment.', true);
+      console.error(err);
+    } finally {
+      $('kGenerate').disabled = false;
+      if (window.lucide) window.lucide.createIcons();
+    }
+  }
+
+  // Generate
+  $('kGenerate').addEventListener('click', generate);
+
+  // Clear
+  $('kClear').addEventListener('click', function () {
+    $('kPrompt').value = '';
+    $('kPreview').style.display = 'none';
+    $('kMeta').style.display = 'none';
+    $('kStatus').style.display = 'flex';
+    $('kStatus').className = 'kepler__status';
+    $('kStatus').innerHTML = '<i data-lucide="sparkles"></i><span>Your design will appear here.</span>';
+    currentTemplate = null;
+    if (window.lucide) window.lucide.createIcons();
+  });
+
+  // Save to localStorage
+  $('kSave').addEventListener('click', function () {
+    if (!currentTemplate) return;
+    var KEY = 'nylwebdev.kepler.templates';
+    var list;
+    try { list = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { list = []; }
+    list.push({ prompt: currentPrompt, template: currentTemplate, saved: new Date().toISOString() });
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch (e) {}
+    setStatus('Template saved to this browser.', false);
+    setTimeout(hideStatus, 1800);
+  });
+
+  // Example chips
+  document.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      $('kPrompt').value = chip.getAttribute('data-example') || '';
+      $('kPrompt').focus();
+    });
+  });
+
+  // Enter in textarea with Ctrl/Cmd
+  $('kPrompt').addEventListener('keydown', function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generate();
+  });
+})();
+</script>
+</body>
+</html>

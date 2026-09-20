@@ -7,67 +7,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   window.lucide.createIcons();
 }
 
-// ---- 2. Logo injection: mark + text + tagline + SA flag ----
-(function () {
-  var brand = document.querySelector('.navbar .brand');
-  if (!brand) return;
-
-  // Restructure brand: keep mark, wrap name + tag in a column
-  var nameEl = brand.querySelector('.brand__name');
-  var markEl = brand.querySelector('.brand__mark');
-
-  if (markEl && !brand.querySelector('.brand__text')) {
-    // Rename text
-    if (nameEl) nameEl.textContent = 'Nyl Dev';
-
-    // Create column wrapper
-    var textWrap = document.createElement('span');
-    textWrap.className = 'brand__text';
-
-    // Move name into it
-    if (nameEl) textWrap.appendChild(nameEl);
-
-    // Add tagline
-    var tagEl = document.createElement('span');
-    tagEl.className = 'brand__tag';
-    tagEl.textContent = 'I create · Apps & Sites';
-    textWrap.appendChild(tagEl);
-
-    brand.appendChild(textWrap);
-  }
-
-  // SA flag
-  if (!brand.querySelector('.sa-flag')) {
-    var flag = document.createElement('span');
-    flag.className = 'sa-flag';
-    flag.setAttribute('aria-label', 'South Africa');
-    flag.setAttribute('title', 'Proudly South African');
-    flag.innerHTML =
-      '<svg viewBox="0 0 90 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-        '<rect width="90" height="60" fill="#fff"/>' +
-        '<rect width="90" height="20" fill="#de3831"/>' +
-        '<rect y="40" width="90" height="20" fill="#002395"/>' +
-        '<path d="M0 0 L30 30 L0 60 Z" fill="#007a4d"/>' +
-        '<path d="M30 30 L90 20 L90 40 Z" fill="#007a4d"/>' +
-        '<path d="M0 0 L20 30 L0 60 Z" fill="#000"/>' +
-        '<path d="M0 0 L20 30 L0 60 Z" fill="none" stroke="#fcb514" stroke-width="3"/>' +
-        '<path d="M30 30 L90 20" stroke="#fff" stroke-width="3"/>' +
-        '<path d="M30 30 L90 40" stroke="#fff" stroke-width="3"/>' +
-      '</svg>';
-    brand.appendChild(flag);
-  }
-})();
-
-// ---- 3. Apply brand colors to logo-classed SVGs (exceptions) ----
-(function () {
-  // Any <svg class="brand-logo brand-logo--whatsapp"> gets the WhatsApp green
-  // Color is already in CSS. This just ensures fill="currentColor" is set.
-  document.querySelectorAll('.brand-logo').forEach(function (svg) {
-    if (!svg.getAttribute('fill')) svg.setAttribute('fill', 'currentColor');
-  });
-})();
-
-// ---- 4. Mobile nav toggle ----
+// ---- 2. Mobile nav ----
 (function () {
   var toggle = document.getElementById('navToggle');
   var nav = document.getElementById('mainNav');
@@ -92,9 +32,9 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   });
 })();
 
-// ---- 5. Scroll reveal ----
+// ---- 3. Scroll reveal ----
 (function () {
-  var selectors = '.card, .tier, .stat, .notice, .section__title, .page-head__title';
+  var selectors = '.card, .stat, .notice, .section__title, .page-head__title, .form, .tier';
   var els = document.querySelectorAll(selectors);
   if (!els.length) return;
 
@@ -122,7 +62,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   els.forEach(function (el) { observer.observe(el); });
 })();
 
-// ---- 6. Navbar shadow on scroll ----
+// ---- 4. Navbar shadow ----
 (function () {
   var navbar = document.querySelector('.navbar');
   if (!navbar) return;
@@ -133,8 +73,74 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   onScroll();
 })();
 
-// ---- 7. Footer year ----
+// ---- 5. Footer year ----
 (function () {
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
+})();
+
+// ---- 6. Cookie banner (injected into every page) ----
+(function () {
+  var KEY = 'nylwebdev.cookies.v1';
+  var choice;
+  try { choice = localStorage.getItem(KEY); } catch (e) {}
+  if (choice) return; // already answered
+
+  var banner = document.createElement('div');
+  banner.className = 'cookie';
+  banner.setAttribute('role', 'dialog');
+  banner.setAttribute('aria-label', 'Cookie consent');
+  banner.innerHTML =
+    '<p>We use essential cookies to make this site work. ' +
+    'We do not use tracking or advertising cookies. ' +
+    'Read our <a href="privacy.html">privacy policy</a>.</p>' +
+    '<div class="cookie__actions">' +
+      '<button class="btn btn--ghost" data-cookie="decline" type="button">Decline</button>' +
+      '<button class="btn btn--primary" data-cookie="accept" type="button">Accept</button>' +
+    '</div>';
+
+  document.body.appendChild(banner);
+
+  banner.querySelectorAll('[data-cookie]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var val = btn.getAttribute('data-cookie');
+      try { localStorage.setItem(KEY, val); } catch (e) {}
+      banner.classList.add('is-hidden');
+      setTimeout(function () { banner.remove(); }, 300);
+    });
+  });
+})();
+
+// ---- 7. Contact form → WhatsApp ----
+(function () {
+  var form = document.getElementById('contactForm');
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = (form.name.value || '').trim();
+    var email = (form.email.value || '').trim();
+    var type = (form.type.value || '').trim();
+    var message = (form.message.value || '').trim();
+
+    if (!name || !message) {
+      alert('Please fill in your name and message.');
+      return;
+    }
+
+    var lines = [
+      'New enquiry from Nyl Web Dev website',
+      '',
+      'Name: ' + name,
+      'Email: ' + (email || 'not provided'),
+      'Type: ' + type,
+      '',
+      'Message:',
+      message
+    ];
+
+    var text = encodeURIComponent(lines.join('\n'));
+    var number = '27609583089';
+    window.open('https://wa.me/' + number + '?text=' + text, '_blank', 'noopener');
+  });
 })();
