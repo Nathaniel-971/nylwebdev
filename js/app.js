@@ -2,34 +2,46 @@
    Copyright (c) 2026 Nathaniel Nyl / Nyl Web Dev. All rights reserved. */
 'use strict';
 
-// ---- 1. Lucide icons ----
+// ---- 1. Icons ----
 if (window.lucide && typeof window.lucide.createIcons === 'function') {
   window.lucide.createIcons();
 }
 
-// ---- 2. Inject South African flag into navbar ----
+// ---- 2. Inject branding: SA flag + "Apps & Websites" tag ----
 (function () {
   var brand = document.querySelector('.navbar .brand');
-  if (!brand || brand.querySelector('.sa-flag')) return;
+  if (!brand) return;
 
-  var flag = document.createElement('span');
-  flag.className = 'sa-flag';
-  flag.setAttribute('aria-label', 'South Africa');
-  flag.setAttribute('title', 'Proudly South African');
-  flag.innerHTML =
-    '<svg viewBox="0 0 90 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
-      '<rect width="90" height="60" fill="#fff"/>' +
-      '<rect width="90" height="20" fill="#de3831"/>' +
-      '<rect y="40" width="90" height="20" fill="#002395"/>' +
-      '<path d="M0 0 L30 30 L0 60 Z" fill="#007a4d"/>' +
-      '<path d="M30 30 L90 20 L90 40 Z" fill="#007a4d"/>' +
-      '<path d="M0 0 L20 30 L0 60 Z" fill="#000"/>' +
-      '<path d="M0 0 L20 30 L0 60 Z" fill="none" stroke="#fcb514" stroke-width="3"/>' +
-      '<path d="M30 30 L90 20" stroke="#fff" stroke-width="3"/>' +
-      '<path d="M30 30 L90 40" stroke="#fff" stroke-width="3"/>' +
-    '</svg>';
+  // Replace brand name with "Nyl Dev" + tag
+  var nameEl = brand.querySelector('.brand__name');
+  if (nameEl && !brand.querySelector('.brand__tag')) {
+    nameEl.textContent = 'Nyl Dev';
+    var tag = document.createElement('span');
+    tag.className = 'brand__tag';
+    tag.textContent = 'Apps & Websites';
+    brand.appendChild(tag);
+  }
 
-  brand.appendChild(flag);
+  // Add SA flag
+  if (!brand.querySelector('.sa-flag')) {
+    var flag = document.createElement('span');
+    flag.className = 'sa-flag';
+    flag.setAttribute('aria-label', 'South Africa');
+    flag.setAttribute('title', 'Proudly South African');
+    flag.innerHTML =
+      '<svg viewBox="0 0 90 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+        '<rect width="90" height="60" fill="#fff"/>' +
+        '<rect width="90" height="20" fill="#de3831"/>' +
+        '<rect y="40" width="90" height="20" fill="#002395"/>' +
+        '<path d="M0 0 L30 30 L0 60 Z" fill="#007a4d"/>' +
+        '<path d="M30 30 L90 20 L90 40 Z" fill="#007a4d"/>' +
+        '<path d="M0 0 L20 30 L0 60 Z" fill="#000"/>' +
+        '<path d="M0 0 L20 30 L0 60 Z" fill="none" stroke="#fcb514" stroke-width="3"/>' +
+        '<path d="M30 30 L90 20" stroke="#fff" stroke-width="3"/>' +
+        '<path d="M30 30 L90 40" stroke="#fff" stroke-width="3"/>' +
+      '</svg>';
+    brand.appendChild(flag);
+  }
 })();
 
 // ---- 3. Mobile nav toggle ----
@@ -57,16 +69,14 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   });
 })();
 
-// ---- 4. Scroll reveal animations ----
+// ---- 4. Scroll reveal ----
 (function () {
   var selectors = '.card, .tier, .stat, .notice, .section__title, .page-head__title';
   var els = document.querySelectorAll(selectors);
   if (!els.length) return;
 
-  // Add reveal class
-  els.forEach(function (el, i) {
+  els.forEach(function (el) {
     el.classList.add('reveal');
-    // Stagger within the same parent
     var siblings = el.parentElement ? el.parentElement.children : [];
     var idx = Array.prototype.indexOf.call(siblings, el);
     if (idx > 0) el.style.transitionDelay = Math.min(idx * 60, 300) + 'ms';
@@ -89,12 +99,12 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   els.forEach(function (el) { observer.observe(el); });
 })();
 
-// ---- 5. Navbar border brightens on scroll ----
+// ---- 5. Navbar shadow on scroll ----
 (function () {
   var navbar = document.querySelector('.navbar');
   if (!navbar) return;
   var onScroll = function () {
-    navbar.style.borderBottomColor = window.scrollY > 20 ? '#2a2a2a' : '#1f1f1f';
+    navbar.classList.toggle('is-scrolled', window.scrollY > 20);
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
