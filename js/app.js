@@ -79,12 +79,12 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   if (y) y.textContent = new Date().getFullYear();
 })();
 
-// ---- 6. Cookie banner (injected into every page) ----
+// ---- 6. Cookie banner ----
 (function () {
   var KEY = 'nylwebdev.cookies.v1';
   var choice;
   try { choice = localStorage.getItem(KEY); } catch (e) {}
-  if (choice) return; // already answered
+  if (choice) return;
 
   var banner = document.createElement('div');
   banner.className = 'cookie';
@@ -111,17 +111,17 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   });
 })();
 
-// ---- 7. Contact form → WhatsApp ----
+// ---- 7. Simple contact form fallback (if used instead of chat UI) ----
 (function () {
   var form = document.getElementById('contactForm');
   if (!form) return;
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var name = (form.name.value || '').trim();
-    var email = (form.email.value || '').trim();
-    var type = (form.type.value || '').trim();
-    var message = (form.message.value || '').trim();
+    var name = (form.name && form.name.value || '').trim();
+    var email = (form.email && form.email.value || '').trim();
+    var type = (form.type && form.type.value || '').trim();
+    var message = (form.message && form.message.value || '').trim();
 
     if (!name || !message) {
       alert('Please fill in your name and message.');
@@ -140,7 +140,35 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
     ];
 
     var text = encodeURIComponent(lines.join('\n'));
-    var number = '27609583089';
-    window.open('https://wa.me/' + number + '?text=' + text, '_blank', 'noopener');
+    window.open('https://wa.me/27609583089?text=' + text, '_blank', 'noopener');
   });
+})();
+
+// ---- 8. AI status check (used on contact + create pages) ----
+// Exposes window.NYLDEV.checkAI(callback)
+(function () {
+  window.NYLDEV = window.NYLDEV || {};
+
+  var cache = { result: null, at: 0 };
+  var CACHE_MS = 60 * 1000;
+
+  window.NYLDEV.checkAI = function (callback) {
+    var now = Date.now();
+    if (cache.result && now - cache.at < CACHE_MS) {
+      callback(cache.result);
+      return;
+    }
+
+    fetch('/api/status', { method: 'GET' })
+      .then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (data) {
+        var ok = !!(data && data.ok);
+        cache = { result: { ok: ok, providers: data.providers || [] }, at: now };
+        callback(cache.result);
+      })
+      .catch(function () {
+        cache = { result: { ok: false, providers: [] }, at: now };
+        callback(cache.result);
+      });
+  };
 })();
