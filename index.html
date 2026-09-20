@@ -1,1 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nyl Web Dev | Websites & Apps by Nathaniel Nyl</title>
+<meta name="description" content="Nyl Web Dev - modern websites and web apps built by Nathaniel Nyl, Boksburg, South Africa." />
+<meta name="author" content="Nathaniel Nyl" />
+<meta name="theme-color" content="#0a0e1a" />
+<meta property="og:title" content="Nyl Web Dev" />
+<meta property="og:description" content="Modern websites and web apps by Nathaniel Nyl." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://nylwebdev.vercel.app" />
+<link rel="canonical" href="https://nylwebdev.vercel.app" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none' stroke='%2300d9ff' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='22 16 8 32 22 48'/%3E%3Cline x1='32' y1='14' x2='32' y2='50'/%3E%3Cpolyline points='42 16 56 32 42 48'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 
+<style>
+:root {
+  --bg: #0a0e1a;
+  --surface: #0f1524;
+  --border: #1e2740;
+  --primary: #00d9ff;
+  --secondary: #7c5cff;
+  --highlight: #ff3d8b;
+  --whatsapp: #25D366;
+  --text: #ffffff;
+  --muted: #8894b0;
+  --radius: 12px;
+  --maxw: 1120px;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+[data-lucide] {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.75;
+  stroke: currentColor;
+  vertical-align: middle;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  transition: transform .15s ease, background .2s ease, border-color .2s ease;
+  cursor: pointer;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn--primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #04121b;
+}
+.btn--primary:hover { filter: brightness(1.08); }
+.btn--ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn--ghost:hover { border-color: var(--primary); color: var(--primary); }
+.btn--whatsapp {
+  background: var(--whatsapp);
+  color: #04120a;
+}
+.btn--whatsapp:hover { filter: brightness(1.08); }
+
+/* Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10,14,26,.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.navbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+}
+.brand__mark {
+  font-family: var(--mono);
+  color: var(--primary);
+  font-size: 1.15rem;
+}
+.nav {
+  display: flex;
+  gap: 1.75rem;
+  font-size: .95rem;
+}
+.nav a { color: var(--muted); transition: color .2s ease; }
+.nav a:hover { color: var(--primary); }
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: .4rem .5rem;
+  cursor: pointer;
+}
+
+/* Hero */
+.hero { padding: 6rem 0 5rem; }
+.hero__inner { max-width: 780px; }
+.hero__title {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 1.25rem;
+}
+.grad {
+  background: linear-gradient(135deg, var(--primary), var(--secondary) 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero__sub {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin-top: 1.25rem;
+  max-width: 560px;
+}
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: 2rem;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .35rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: .8rem;
+}
+.pill [data-lucide] { width: 14px; height: 14px; color: var(--primary); }
+
+/* Sections */
+.section { padding: 5rem 0; }
+.section--alt { background: var(--surface); }
+.section__title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.section__lead {
+  color: var(--muted);
+  margin-top: .5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Grid */
+.grid { display: grid; gap: 1.25rem; }
+.grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: border-color .2s ease, transform .2s ease;
+}
+.card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.card__icon {
+  width: 26px;
+  height: 26px;
+  color: var(--primary);
+  margin-bottom: .75rem;
+}
+.card h3 { font-size: 1.05rem; margin-bottom: .35rem; }
+.card p { color: var(--muted); font-size: .95rem; }
+
+/* About */
+.about {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+.about__text p { color: var(--muted); margin-top: 1rem; }
+.about__text strong { color: var(--text); }
+.about__list { list-style: none; display: grid; gap: .75rem; }
+.about__list li {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  color: var(--text);
+  font-size: .95rem;
+}
+.about__list [data-lucide] { color: var(--whatsapp); }
+
+/* Contact */
+.contact { text-align: center; }
+.contact__actions {
+  display: flex;
+  justify-content: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
+/* Footer */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0;
+  background: var(--bg);
+}
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.footer__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--muted);
+  font-size: .85rem;
+}
+.footer__copy [data-lucide] { width: 15px; height: 15px; }
+.footer__social { display: flex; gap: 1rem; }
+.footer__social a { color: var(--muted); transition: color .2s ease; }
+.footer__social a:hover { color: var(--primary); }
+
+/* Responsive */
+@media (max-width: 860px) {
+  .grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .about { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .grid--3 { grid-template-columns: 1fr; }
+  .nav { display: none; }
+  .nav.is-open {
+    display: flex;
+    position: absolute;
+    top: 68px;
+    right: 1rem;
+    left: 1rem;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+  .nav-toggle { display: inline-flex; }
+}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container navbar__inner">
+    <a href="/" class="brand" aria-label="Nyl Web Dev home">
+      <span class="brand__mark" aria-hidden="true">&lt;/&gt;</span>
+      <span class="brand__name">Nyl Web Dev</span>
+    </a>
+
+    <nav class="nav" id="mainNav" aria-label="Main navigation">
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <i data-lucide="menu"></i>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero__inner">
+    <span class="pill">
+      <i data-lucide="map-pin"></i>
+      Boksburg, South Africa
+    </span>
+
+    <h1 class="hero__title">
+      Modern websites,
+      <span class="grad">built to perform.</span>
+    </h1>
+
+    <p class="hero__sub">
+      Nyl Web Dev designs and builds fast, clean, professional websites
+      and web apps for real businesses.
+    </p>
+
+    <div class="hero__cta">
+      <a href="#contact" class="btn btn--primary">
+        Start a project
+        <i data-lucide="arrow-right"></i>
+      </a>
+      <a href="#work" class="btn btn--ghost">
+        View work
+        <i data-lucide="external-link"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="section">
+  <div class="container">
+    <h2 class="section__title">Services</h2>
+    <p class="section__lead">Everything you need to get online and look sharp.</p>
+
+    <div class="grid grid--3">
+      <article class="card">
+        <i data-lucide="layout" class="card__icon"></i>
+        <h3>Web Design</h3>
+        <p>Custom, responsive layouts built around your brand and your goals.</p>
+      </article>
+      <article class="card">
+        <i data-lucide="code-2" class="card__icon"></i>
+        <h3>Web Development</h3>
+        <p>Clean, fast, accessible code. HTML, CSS, JavaScript, React, Next.js.</p>
+      </article>
+      <article class="card">
+        <i data-lucide="rocket" class="card__icon"></i>
+        <h3>Deployment</h3>
+        <p>Hosting, domains, and deployment on Vercel. Live in minutes.</p>
+      </article>
+      <article class="card">
+        <i data-lucide="search" class="card__icon"></i>
+        <h3>SEO Setup</h3>
+        <p>Meta tags, sitemaps, robots.txt, and performance tuning baked in.</p>
+      </article>
+      <article class="card">
+        <i data-lucide="smartphone" class="card__icon"></i>
+        <h3>Mobile First</h3>
+        <p>Designed for phones first, then scaled up. Works on every screen.</p>
+      </article>
+      <article class="card">
+        <i data-lucide="wrench" class="card__icon"></i>
+        <h3>Maintenance</h3>
+        <p>Updates, fixes, and improvements after launch. Ongoing support.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="work" class="section section--alt">
+  <div class="container">
+    <h2 class="section__title">Work</h2>
+    <p class="section__lead">Selected client projects.</p>
+
+    <div class="grid grid--3">
+      <article class="card">
+        <i data-lucide="external-link" class="card__icon"></i>
+        <h3>Born To Serve With Grace</h3>
+        <p>Client site for a ministry and community outreach brand.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="section">
+  <div class="container about">
+    <div class="about__text">
+      <h2 class="section__title">About</h2>
+      <p>
+        Nyl Web Dev is the studio of <strong>Nathaniel Nyl</strong>,
+        a web developer based in Boksburg, South Africa.
+      </p>
+      <p>
+        Focused on clean design, real performance, and websites that
+        actually do their job: convert visitors into clients.
+      </p>
+    </div>
+
+    <ul class="about__list">
+      <li><i data-lucide="check"></i> Mobile-first builds</li>
+      <li><i data-lucide="check"></i> SEO-ready out of the box</li>
+      <li><i data-lucide="check"></i> Fast load times</li>
+      <li><i data-lucide="check"></i> Deployed on Vercel</li>
+    </ul>
+  </div>
+</section>
+
+<section id="contact" class="section section--alt">
+  <div class="container contact">
+    <h2 class="section__title">Get in touch</h2>
+    <p class="section__lead">Tell me about your project.</p>
+
+    <div class="contact__actions">
+      <a href="https://wa.me/27XXXXXXXXX" class="btn btn--whatsapp" target="_blank" rel="noopener">
+        <i data-lucide="message-circle"></i>
+        WhatsApp
+      </a>
+      <a href="mailto:hello@nylwebdev.co.za" class="btn btn--ghost">
+        <i data-lucide="mail"></i>
+        Email
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="footer__copy">
+      <i data-lucide="copyright"></i>
+      2026 Nyl Web Dev. All rights reserved.
+      Unauthorized copying prohibited.
+    </p>
+
+    <div class="footer__social">
+      <a href="https://github.com/Nathaniel-971" aria-label="GitHub" target="_blank" rel="noopener">
+        <i data-lucide="github"></i>
+      </a>
+      <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener">
+        <i data-lucide="linkedin"></i>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  // Render Lucide icons
+  lucide.createIcons();
+
+  // Mobile nav toggle
+  (function () {
+    var toggle = document.getElementById('navToggle');
+    var nav = document.getElementById('mainNav');
+    if (!toggle || !nav) return;
+
+    toggle.addEventListener('click', function () {
+      var open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.innerHTML = open
+        ? '<i data-lucide="x"></i>'
+        : '<i data-lucide="menu"></i>';
+      lucide.createIcons();
+    });
+
+    nav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        if (nav.classList.contains('is-open')) {
+          nav.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.innerHTML = '<i data-lucide="menu"></i>';
+          lucide.createIcons();
+        }
+      });
+    });
+  })();
+
+  // Active nav link on scroll
+  (function () {
+    var sections = document.querySelectorAll('section[id]');
+    var links = document.querySelectorAll('.nav a');
+    if (!sections.length || !links.length) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var id = entry.target.id;
+          links.forEach(function (l) {
+            l.style.color = l.getAttribute('href') === '#' + id
+              ? 'var(--primary)'
+              : '';
+          });
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+
+    sections.forEach(function (s) { observer.observe(s); });
+  })();
+</script>
+</body>
+</html>
