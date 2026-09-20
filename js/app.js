@@ -1,4 +1,4 @@
-/* Nyl Web Dev — shared JS
+/* Nyl Dev — shared JS
    Copyright (c) 2026 Nathaniel Nyl / Nyl Web Dev. All rights reserved. */
 'use strict';
 
@@ -7,40 +7,49 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   window.lucide.createIcons();
 }
 
-// ---- 2. Header hide on scroll down, show on scroll up ----
+// ---- 2. Copy protection (deterrent only) ----
+(function () {
+  document.addEventListener('contextmenu', function (e) {
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'img' || tag === 'svg' || tag === 'video') {
+      e.preventDefault();
+      return false;
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'F12') { e.preventDefault(); return false; }
+    if (e.ctrlKey && e.shiftKey && ['I','J','C'].indexOf(e.key) !== -1) { e.preventDefault(); return false; }
+    if (e.ctrlKey && e.key === 'u') { e.preventDefault(); return false; }
+    if (e.metaKey && e.altKey && ['I','J','C','U'].indexOf(e.key) !== -1) { e.preventDefault(); return false; }
+  });
+  document.addEventListener('dragstart', function (e) {
+    if (e.target.tagName === 'IMG') e.preventDefault();
+  });
+})();
+
+// ---- 3. Header hide on scroll down ----
 (function () {
   var navbar = document.querySelector('.navbar');
   if (!navbar) return;
-
   var lastY = 0;
   var ticking = false;
   var HIDE_AFTER = 120;
 
   function onScroll() {
     var y = window.scrollY;
-
-    if (y > HIDE_AFTER && y > lastY) {
-      navbar.classList.add('is-hidden');
-    } else {
-      navbar.classList.remove('is-hidden');
-    }
-
+    if (y > HIDE_AFTER && y > lastY) navbar.classList.add('is-hidden');
+    else navbar.classList.remove('is-hidden');
     navbar.classList.toggle('is-scrolled', y > 10);
     lastY = y;
     ticking = false;
   }
-
   window.addEventListener('scroll', function () {
-    if (!ticking) {
-      window.requestAnimationFrame(onScroll);
-      ticking = true;
-    }
+    if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; }
   }, { passive: true });
-
   onScroll();
 })();
 
-// ---- 3. Mobile nav ----
+// ---- 4. Mobile nav ----
 (function () {
   var toggle = document.getElementById('navToggle');
   var nav = document.getElementById('mainNav');
@@ -66,7 +75,6 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
     });
   });
 
-  // Close on outside tap
   document.addEventListener('click', function (e) {
     if (!nav.classList.contains('is-open')) return;
     if (nav.contains(e.target) || toggle.contains(e.target)) return;
@@ -77,7 +85,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   });
 })();
 
-// ---- 4. Scroll reveal ----
+// ---- 5. Scroll reveal ----
 (function () {
   var selectors = '.card, .stat, .notice, .section__title, .page-head__title, .tier';
   var els = document.querySelectorAll(selectors);
@@ -107,15 +115,15 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   els.forEach(function (el) { observer.observe(el); });
 })();
 
-// ---- 5. Footer year ----
+// ---- 6. Footer year ----
 (function () {
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
 })();
 
-// ---- 6. Cookie banner ----
+// ---- 7. Cookie banner ----
 (function () {
-  var KEY = 'nylwebdev.cookies.v1';
+  var KEY = 'nylwebdev.cookies.v2';
   var choice;
   try { choice = localStorage.getItem(KEY); } catch (e) {}
   if (choice) return;
@@ -131,7 +139,6 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
       '<button class="btn btn--ghost" data-cookie="decline" type="button">Decline</button>' +
       '<button class="btn btn--primary" data-cookie="accept" type="button">Accept</button>' +
     '</div>';
-
   document.body.appendChild(banner);
 
   banner.querySelectorAll('[data-cookie]').forEach(function (btn) {
@@ -144,7 +151,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   });
 })();
 
-// ---- 7. AI status check ----
+// ---- 8. AI status check ----
 (function () {
   window.NYLDEV = window.NYLDEV || {};
   var cache = { result: null, at: 0 };
@@ -152,10 +159,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
 
   window.NYLDEV.checkAI = function (callback) {
     var now = Date.now();
-    if (cache.result && now - cache.at < CACHE_MS) {
-      callback(cache.result);
-      return;
-    }
+    if (cache.result && now - cache.at < CACHE_MS) { callback(cache.result); return; }
     fetch('/api/status', { method: 'GET' })
       .then(function (r) { return r.json().catch(function () { return {}; }); })
       .then(function (data) {
