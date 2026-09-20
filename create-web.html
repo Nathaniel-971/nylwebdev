@@ -3,179 +3,23 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#0a0a0a" />
+<meta name="theme-color" content="#ffffff" />
 <title>Create | Nyl Web Dev</title>
-<meta name="description" content="Describe your website or app. Our AI designs the colours, layout, and name instantly." />
+<meta name="description" content="Tell us what you want to build. One conversation. One deliverable." />
 <link rel="canonical" href="https://nylwebdev.vercel.app/create-web" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='32' y='48' font-family='monospace' font-size='52' font-weight='700' fill='%23ffffff' text-anchor='middle'%3E%5E%3C/text%3E%3C/svg%3E" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23DC143C'/%3E%3Ctext x='32' y='42' font-family='monospace' font-size='30' font-weight='700' fill='white' text-anchor='middle'%3E%3C/%3E%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="css/style.css?v=6" />
-<style>
-  .designer { display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; align-items: start; }
-  .designer__panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    position: sticky;
-    top: 90px;
-  }
-  .designer__panel h3 { font-size: .95rem; margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
-  .field { margin-bottom: 1rem; }
-  .field label {
-    display: block;
-    font-size: .78rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    margin-bottom: .5rem;
-    font-weight: 600;
-  }
-  .field textarea {
-    width: 100%;
-    padding: .8rem .95rem;
-    background: var(--bg);
-    border: 1px solid var(--border-2);
-    border-radius: var(--radius-sm);
-    color: var(--text);
-    font-family: inherit;
-    font-size: 16px;
-    line-height: 1.5;
-    resize: vertical;
-    min-height: 100px;
-    transition: border-color .2s var(--ease);
-  }
-  .field textarea:focus { outline: none; border-color: var(--text); }
-
-  .type-pills { display: flex; gap: .5rem; flex-wrap: wrap; }
-  .type-pill {
-    flex: 1;
-    min-height: 40px;
-    padding: .5rem .75rem;
-    border: 1px solid var(--border-2);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--text);
-    font-size: .85rem;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all .2s var(--ease);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: .4rem;
-  }
-  .type-pill:hover { border-color: var(--text); }
-  .type-pill.is-active { background: #fff; color: #0a0a0a; border-color: #fff; }
-
-  .features-list {
-    display: grid;
-    gap: .4rem;
-    margin-top: .5rem;
-  }
-  .feature-check {
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    padding: .5rem .7rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: .85rem;
-    color: var(--text-2);
-    transition: border-color .2s var(--ease);
-  }
-  .feature-check:hover { border-color: var(--border-2); }
-  .feature-check input { accent-color: #fff; }
-  .feature-check input:checked + span { color: var(--text); font-weight: 500; }
-
-  .designer__actions { display: flex; gap: .5rem; margin-top: 1rem; }
-  .designer__actions .btn { flex: 1; justify-content: center; }
-
-  .chips { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
-  .chips__label {
-    display: block;
-    font-size: .72rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    margin-bottom: .6rem;
-    font-weight: 600;
-  }
-  .chip {
-    display: inline-block;
-    padding: .35rem .75rem;
-    margin: 0 .35rem .35rem 0;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    font-size: .78rem;
-    color: var(--text-2);
-    cursor: pointer;
-    transition: border-color .2s var(--ease), background .2s var(--ease);
-    font-family: inherit;
-  }
-  .chip:hover { border-color: var(--text); background: var(--surface-3); }
-
-  .status {
-    display: flex;
-    align-items: center;
-    gap: .75rem;
-    padding: 2rem 1.5rem;
-    background: var(--surface);
-    border: 1px dashed var(--border-2);
-    border-radius: var(--radius);
-    color: var(--muted);
-    font-size: .9rem;
-    justify-content: center;
-  }
-  .status--error { border-color: #de3831; color: #de3831; }
-
-  .preview {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--pv-bg,#0a0a0a);
-    animation: previewIn .5s var(--ease-out);
-  }
-  @keyframes previewIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  .preview__bar { display: flex; align-items: center; gap: .4rem; padding: .65rem .85rem; background: var(--pv-surface,#161616); border-bottom: 1px solid var(--border); }
-  .preview__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-2); }
-  .preview__url { margin-left: .75rem; font-family: var(--mono); font-size: .75rem; color: var(--pv-muted,#888); }
-  .preview__body { padding: 2rem 1.75rem; font-family: var(--pv-body-font,'Inter',sans-serif); color: var(--pv-text,#fff); }
-  .preview__body h4 { font-family: var(--pv-heading-font,Georgia,serif); font-size: 1.75rem; font-weight: 700; margin: .75rem 0 .35rem; letter-spacing: -.02em; }
-  .preview__body > p { color: var(--pv-muted,#888); font-size: .95rem; margin-bottom: 1.5rem; }
-  .preview__btns { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
-  .preview__btn { display: inline-flex; align-items: center; padding: .65rem 1.15rem; border-radius: 6px; background: var(--pv-primary,#fff); color: var(--pv-bg,#0a0a0a); font-weight: 600; font-size: .85rem; border: 1px solid var(--pv-primary,#fff); }
-  .preview__btn--ghost { background: transparent; color: var(--pv-primary,#fff); }
-  .preview__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: .75rem; }
-  .preview__card { padding: .9rem; border-radius: 8px; background: var(--pv-surface,#161616); border: 1px solid rgba(255,255,255,.06); }
-  .preview__card strong { font-size: .85rem; display: block; margin-bottom: .2rem; font-family: var(--pv-heading-font,Georgia,serif); }
-  .preview__card p { font-size: .8rem; color: var(--pv-muted,#888); }
-
-  .meta { margin-top: 1.25rem; padding: 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
-  .swatches { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: .6rem; margin-bottom: 1.25rem; }
-  .swatch { display: flex; align-items: center; gap: .5rem; padding: .5rem .65rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; font-size: .78rem; }
-  .swatch__color { width: 20px; height: 20px; border-radius: 5px; border: 1px solid rgba(255,255,255,.1); flex-shrink: 0; }
-  .swatch__label { color: var(--muted); font-weight: 500; }
-  .swatch__hex { margin-left: auto; font-family: var(--mono); font-size: .72rem; color: var(--muted-2); }
-
-  @media (max-width: 900px) {
-    .designer { grid-template-columns: 1fr; }
-    .designer__panel { position: static; }
-    .preview__grid { grid-template-columns: 1fr; }
-  }
-</style>
+<link rel="stylesheet" href="css/style.css?v=9" />
 </head>
 <body>
 
 <header class="navbar">
   <div class="container navbar__inner">
-    <a href="index.html" class="brand">
-      <span class="brand__mark" aria-hidden="true"><span>&lt;</span><span>/</span><span>&gt;</span></span><span class="brand__word brand__word--nyl">Nyl</span><span class="brand__word brand__word--dev">Dev<span class="brand__dot">.</span></span>
+    <a href="index.html" class="brand" aria-label="Nyl Dev">
+      <span class="brand__mark" aria-hidden="true"><span>&lt;</span><span>/</span><span>&gt;</span></span>
+      <span class="brand__word brand__word--nyl">Nyl</span><span class="brand__word brand__word--dev">Dev<span class="brand__dot">.</span></span>
     </a>
     <nav class="nav" id="mainNav">
       <a href="index.html">Home</a>
@@ -197,137 +41,41 @@
   <div class="page-head">
     <div class="container">
       <h1 class="page-head__title"><span class="accent">//</span>Create</h1>
-      <p class="page-head__lead">Describe what you're building. Our AI designs the colours, fonts, and layout — then hands it straight to us.</p>
+      <p class="page-head__lead">Tell us what you want. We take it, build it, and hand it over. Brought to you by real designers.</p>
     </div>
   </div>
 
-  <section class="page" style="padding-top:2rem">
+  <section class="page" style="padding-top:1rem">
     <div class="container">
-      <div class="designer" id="keplerRoot">
-
-        <aside class="designer__panel">
-          <h3><i data-lucide="sparkles"></i> Your project</h3>
-
-          <div class="field">
-            <label>Type</label>
-            <div class="type-pills">
-              <button type="button" class="type-pill" data-type="website">
-                <i data-lucide="globe"></i> Website
-              </button>
-              <button type="button" class="type-pill" data-type="app">
-                <i data-lucide="smartphone"></i> App
-              </button>
-            </div>
+      <div class="chat" id="chatContainer">
+        <div class="chat__head">
+          <span class="chat__avatar" aria-hidden="true">&lt;/&gt;</span>
+          <div class="chat__head-text">
+            <strong>Nyl Dev — Create</strong>
+            <span><span class="chat__online"></span> Describe it and we'll take it from here</span>
           </div>
-
-          <div class="field">
-            <label for="kPrompt">Describe it</label>
-            <textarea id="kPrompt" maxlength="1200" placeholder="Example: A cosy coffee shop in Cape Town. Warm, earthy. Website with menu, about, and contact."></textarea>
-          </div>
-
-          <div class="field">
-            <label>Features (optional)</label>
-            <div class="features-list">
-              <label class="feature-check">
-                <input type="checkbox" data-feature="Contact form" />
-                <span>Contact form</span>
-              </label>
-              <label class="feature-check">
-                <input type="checkbox" data-feature="WhatsApp integration" />
-                <span>WhatsApp integration</span>
-              </label>
-              <label class="feature-check">
-                <input type="checkbox" data-feature="E-commerce / store" />
-                <span>E-commerce / store</span>
-              </label>
-              <label class="feature-check">
-                <input type="checkbox" data-feature="Booking system" />
-                <span>Booking system</span>
-              </label>
-              <label class="feature-check">
-                <input type="checkbox" data-feature="User accounts / login" />
-                <span>User accounts / login</span>
-              </label>
-              <label class="feature-check">
-                <input type="checkbox" data-feature="Firebase backend" />
-                <span>Firebase backend</span>
-              </label>
-              <label class="feature-check">
-                <input type="checkbox" data-feature="Agora video / voice" />
-                <span>Agora video / voice</span>
-              </label>
-              <label class="feature-check">
-                <input type="checkbox" data-feature="Push notifications" />
-                <span>Push notifications</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="designer__actions">
-            <button class="btn btn--primary btn--sm" id="kGenerate" type="button">
-              <i data-lucide="wand-2"></i> Generate
-            </button>
-            <button class="btn btn--ghost btn--sm" id="kClear" type="button">
-              <i data-lucide="rotate-ccw"></i> Clear
-            </button>
-          </div>
-
-          <div class="chips">
-            <span class="chips__label">Try one</span>
-            <button class="chip" data-example="A luxury law firm in Johannesburg. Trustworthy, minimal, dark navy and gold.">Law firm</button>
-            <button class="chip" data-example="A fitness studio in Pretoria. Bold, energetic. Red and black. Website with class schedule and pricing.">Fitness</button>
-            <button class="chip" data-example="A social media app for artists to share work and message each other. Playful, creative, purple and coral.">Social app</button>
-            <button class="chip" data-example="An online store selling handmade African crafts. Warm, earthy, mustard and rust.">E-commerce</button>
-            <button class="chip" data-example="A dental clinic in Sandton. Clean, trustworthy, calm blues and whites.">Dental clinic</button>
-          </div>
-        </aside>
-
-        <div id="keplerBody">
-          <div class="status" id="kStatus">
-            <i data-lucide="sparkles"></i>
-            <span>Your design will appear here.</span>
-          </div>
-
-          <div class="preview" id="kPreview" style="display:none">
-            <div class="preview__bar">
-              <span class="preview__dot"></span>
-              <span class="preview__dot"></span>
-              <span class="preview__dot"></span>
-              <span class="preview__url" id="kPreviewUrl">preview</span>
-            </div>
-            <div class="preview__body" id="kPreviewBody">
-              <span class="badge badge--ghost" id="kTypeBadge">Website</span>
-              <h4 id="kName">Brand</h4>
-              <p id="kTagline">Tagline</p>
-              <div class="preview__btns">
-                <a class="preview__btn" id="kBtnPrimary">Primary</a>
-                <a class="preview__btn preview__btn--ghost" id="kBtnSecondary">Secondary</a>
-              </div>
-              <div class="preview__grid">
-                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
-                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
-                <div class="preview__card"><strong>Card</strong><p>Content here</p></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="meta" id="kMeta" style="display:none">
-            <div class="swatches" id="kSwatches"></div>
-            <div id="kInfo"></div>
-            <div class="designer__actions" style="margin-top:1.25rem">
-              <button class="btn btn--primary btn--sm" id="kSave" type="button">
-                <i data-lucide="save"></i> Save locally
-              </button>
-              <a class="btn btn--whatsapp btn--sm" id="kSend" target="_blank" rel="noopener">
-                <i data-lucide="message-circle"></i> Send to Nyl Dev
-              </a>
-            </div>
-            <p style="font-size:.82rem;color:var(--muted);margin-top:1rem;line-height:1.55">
-              When you tap <strong style="color:var(--text)">Send to Nyl Dev</strong>, your design summary opens in WhatsApp. Just send it as-is — we'll take it from there.
-            </p>
-          </div>
+          <button class="chat__reset" id="chatReset" type="button" aria-label="Start over" title="Start over">
+            <i data-lucide="rotate-ccw"></i>
+          </button>
         </div>
 
+        <div class="chat__body" id="chatBody"></div>
+
+        <form class="chat__foot" id="chatForm">
+          <textarea class="chat__input" id="chatInput" rows="1" placeholder="Describe what you want to build…" maxlength="500" autocomplete="off"></textarea>
+          <button class="chat__send" type="submit" aria-label="Send">
+            <i data-lucide="send"></i>
+          </button>
+        </form>
+      </div>
+
+      <div style="max-width:620px;margin:1.25rem auto 0;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center">
+        <a href="https://wa.me/27609583089" target="_blank" rel="noopener" class="btn btn--whatsapp btn--sm">
+          <i data-lucide="message-circle"></i> Message us directly
+        </a>
+        <a href="contact.html" class="btn btn--ghost btn--sm">
+          <i data-lucide="arrow-left"></i> Contact page
+        </a>
       </div>
     </div>
   </section>
@@ -338,9 +86,10 @@
     <div class="footer__grid">
       <div>
         <a href="index.html" class="brand">
-          <span class="brand__mark" aria-hidden="true"><span>&lt;</span><span>/</span><span>&gt;</span></span><span class="brand__word brand__word--nyl">Nyl</span><span class="brand__word brand__word--dev">Dev<span class="brand__dot">.</span></span>
+          <span class="brand__mark" aria-hidden="true"><span>&lt;</span><span>/</span><span>&gt;</span></span>
+          <span class="brand__word brand__word--nyl">Nyl</span><span class="brand__word brand__word--dev">Dev<span class="brand__dot">.</span></span>
         </a>
-        <p style="color:var(--muted);font-size:.9rem;margin-top:.75rem;max-width:340px">
+        <p style="color:var(--muted);font-size:.88rem;margin-top:.75rem;max-width:340px">
           Websites and mobile apps built in Boksburg, South Africa.
         </p>
       </div>
@@ -379,7 +128,220 @@
 </footer>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<script src="js/app.js?v=6"></script>
-<script src="js/kepler.js?v=6"></script>
+<script src="js/app.js?v=9"></script>
+<script>
+/* Create chat — session-persisted, no preview, sends brief to WhatsApp
+   Copyright (c) 2026 Nathaniel Nyl / Nyl Web Dev. All rights reserved. */
+(function () {
+  var body = document.getElementById('chatBody');
+  var form = document.getElementById('chatForm');
+  var input = document.getElementById('chatInput');
+  var resetBtn = document.getElementById('chatReset');
+  if (!body || !form) return;
+
+  var KEY = 'nylwebdev.create.session.v1';
+  var WA = '27609583089';
+
+  var state = loadSession() || {
+    messages: [],
+    stage: 'intro',
+    type: '',
+    features: []
+  };
+
+  function loadSession() {
+    try {
+      var raw = sessionStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
+  function saveSession() {
+    try { sessionStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function clearSession() {
+    try { sessionStorage.removeItem(KEY); } catch (e) {}
+  }
+
+  function scrollDown() { body.scrollTop = body.scrollHeight; }
+
+  function addBot(html, silent) {
+    var msg = document.createElement('div');
+    msg.className = 'msg msg--bot';
+    msg.innerHTML = html;
+    body.appendChild(msg);
+    scrollDown();
+    if (!silent) { state.messages.push({ role: 'bot', html: html }); saveSession(); }
+    if (window.lucide) window.lucide.createIcons();
+    return msg;
+  }
+
+  function addUser(text, silent) {
+    var msg = document.createElement('div');
+    msg.className = 'msg msg--user';
+    msg.textContent = text;
+    body.appendChild(msg);
+    scrollDown();
+    if (!silent) { state.messages.push({ role: 'user', text: text }); saveSession(); }
+  }
+
+  function addActions(parent, actions) {
+    var wrap = document.createElement('div');
+    wrap.className = 'msg__actions';
+    actions.forEach(function (a) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'msg__action';
+      btn.textContent = a.label;
+      btn.addEventListener('click', function () {
+        wrap.remove();
+        addUser(a.label);
+        a.onClick();
+      });
+      wrap.appendChild(btn);
+    });
+    parent.appendChild(wrap);
+  }
+
+  function renderHistory() {
+    body.innerHTML = '';
+    if (!state.messages.length) { startFresh(); return; }
+    state.messages.forEach(function (m) {
+      if (m.role === 'user') addUser(m.text, true);
+      else addBot(m.html, true);
+    });
+    scrollDown();
+  }
+
+  function startFresh() {
+    state = { messages: [], stage: 'intro', type: '', features: [] };
+    saveSession();
+    var m = addBot('<strong>Welcome to Create.</strong> What are you building?');
+    addActions(m, [
+      { label: 'A website', onClick: function () { pickType('website'); } },
+      { label: 'A mobile app', onClick: function () { pickType('app'); } },
+      { label: 'Both', onClick: function () { pickType('both'); } }
+    ]);
+  }
+
+  function pickType(t) {
+    state.type = t;
+    state.stage = 'features';
+    saveSession();
+    var m = addBot('Nice — a <strong>' + t + '</strong>. Pick anything you need (tap to add, then continue):');
+    var chosen = [];
+    var opts = ['Contact form', 'WhatsApp button', 'E-commerce', 'Bookings', 'Login / accounts', 'Payments', 'Push notifications', 'Video / voice calls'];
+    var wrap = document.createElement('div');
+    wrap.className = 'msg__actions';
+    opts.forEach(function (label) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'msg__action';
+      btn.textContent = label;
+      btn.addEventListener('click', function () {
+        if (chosen.indexOf(label) === -1) {
+          chosen.push(label);
+          btn.style.borderColor = 'var(--crimson)';
+          btn.style.color = 'var(--crimson)';
+        } else {
+          chosen.splice(chosen.indexOf(label), 1);
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }
+      });
+      wrap.appendChild(btn);
+    });
+    m.appendChild(wrap);
+
+    var contWrap = document.createElement('div');
+    contWrap.className = 'msg__actions';
+    contWrap.style.marginTop = '1rem';
+    var cont = document.createElement('button');
+    cont.type = 'button';
+    cont.className = 'msg__action';
+    cont.textContent = 'Continue';
+    cont.addEventListener('click', function () {
+      wrap.remove();
+      contWrap.remove();
+      state.features = chosen.slice();
+      saveSession();
+      var label = chosen.length ? chosen.join(', ') : 'none';
+      addUser('Features: ' + label);
+      state.stage = 'describe';
+      saveSession();
+      addBot('Now describe it in your own words — what should it do, who is it for, any colours or styles in mind?');
+    });
+    contWrap.appendChild(cont);
+    m.appendChild(contWrap);
+  }
+
+  function sendBrief(text) {
+    var payload = [
+      'Nyl Dev — Create Brief',
+      '',
+      'Type: ' + (state.type || '—'),
+      'Features: ' + ((state.features && state.features.length) ? state.features.join(', ') : 'none'),
+      '',
+      'Description:',
+      text
+    ].join('\n');
+    var url = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(payload);
+    var m = addBot('Perfect. Send this to us on WhatsApp and we\'ll take it from there.');
+    var wrap = document.createElement('div');
+    wrap.className = 'msg__actions';
+    var a = document.createElement('a');
+    a.className = 'msg__action';
+    a.textContent = 'Send to Nyl Dev';
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    wrap.appendChild(a);
+    m.appendChild(wrap);
+    state.stage = 'done';
+    saveSession();
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = (input.value || '').trim();
+    if (!text) return;
+    input.value = '';
+    input.style.height = 'auto';
+    addUser(text);
+
+    if (state.stage === 'intro') {
+      var lower = text.toLowerCase();
+      if (/app|mobile|ios|android/.test(lower)) return pickType('app');
+      if (/website|site|web|store|shop/.test(lower)) return pickType('website');
+      return pickType('both');
+    }
+    if (state.stage === 'describe' || state.stage === 'features') {
+      sendBrief(text);
+    } else if (state.stage === 'done') {
+      sendBrief(text);
+    }
+  });
+
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      form.dispatchEvent(new Event('submit'));
+    }
+  });
+  input.addEventListener('input', function () {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 110) + 'px';
+  });
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      clearSession();
+      body.innerHTML = '';
+      startFresh();
+    });
+  }
+
+  renderHistory();
+})();
+</script>
 </body>
 </html>
