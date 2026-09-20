@@ -1,4 +1,4 @@
-/* Nyl Web Dev - shared JS
+/* Nyl Web Dev — shared JS
    Copyright (c) 2026 Nathaniel Nyl / Nyl Web Dev. All rights reserved. */
 'use strict';
 
@@ -7,22 +7,36 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   window.lucide.createIcons();
 }
 
-// ---- 2. Inject branding: SA flag + "Apps & Websites" tag ----
+// ---- 2. Logo injection: mark + text + tagline + SA flag ----
 (function () {
   var brand = document.querySelector('.navbar .brand');
   if (!brand) return;
 
-  // Replace brand name with "Nyl Dev" + tag
+  // Restructure brand: keep mark, wrap name + tag in a column
   var nameEl = brand.querySelector('.brand__name');
-  if (nameEl && !brand.querySelector('.brand__tag')) {
-    nameEl.textContent = 'Nyl Dev';
-    var tag = document.createElement('span');
-    tag.className = 'brand__tag';
-    tag.textContent = 'Apps & Websites';
-    brand.appendChild(tag);
+  var markEl = brand.querySelector('.brand__mark');
+
+  if (markEl && !brand.querySelector('.brand__text')) {
+    // Rename text
+    if (nameEl) nameEl.textContent = 'Nyl Dev';
+
+    // Create column wrapper
+    var textWrap = document.createElement('span');
+    textWrap.className = 'brand__text';
+
+    // Move name into it
+    if (nameEl) textWrap.appendChild(nameEl);
+
+    // Add tagline
+    var tagEl = document.createElement('span');
+    tagEl.className = 'brand__tag';
+    tagEl.textContent = 'I create · Apps & Sites';
+    textWrap.appendChild(tagEl);
+
+    brand.appendChild(textWrap);
   }
 
-  // Add SA flag
+  // SA flag
   if (!brand.querySelector('.sa-flag')) {
     var flag = document.createElement('span');
     flag.className = 'sa-flag';
@@ -44,7 +58,16 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   }
 })();
 
-// ---- 3. Mobile nav toggle ----
+// ---- 3. Apply brand colors to logo-classed SVGs (exceptions) ----
+(function () {
+  // Any <svg class="brand-logo brand-logo--whatsapp"> gets the WhatsApp green
+  // Color is already in CSS. This just ensures fill="currentColor" is set.
+  document.querySelectorAll('.brand-logo').forEach(function (svg) {
+    if (!svg.getAttribute('fill')) svg.setAttribute('fill', 'currentColor');
+  });
+})();
+
+// ---- 4. Mobile nav toggle ----
 (function () {
   var toggle = document.getElementById('navToggle');
   var nav = document.getElementById('mainNav');
@@ -69,7 +92,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   });
 })();
 
-// ---- 4. Scroll reveal ----
+// ---- 5. Scroll reveal ----
 (function () {
   var selectors = '.card, .tier, .stat, .notice, .section__title, .page-head__title';
   var els = document.querySelectorAll(selectors);
@@ -79,7 +102,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
     el.classList.add('reveal');
     var siblings = el.parentElement ? el.parentElement.children : [];
     var idx = Array.prototype.indexOf.call(siblings, el);
-    if (idx > 0) el.style.transitionDelay = Math.min(idx * 60, 300) + 'ms';
+    if (idx > 0) el.style.transitionDelay = Math.min(idx * 50, 250) + 'ms';
   });
 
   if (!('IntersectionObserver' in window)) {
@@ -99,7 +122,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   els.forEach(function (el) { observer.observe(el); });
 })();
 
-// ---- 5. Navbar shadow on scroll ----
+// ---- 6. Navbar shadow on scroll ----
 (function () {
   var navbar = document.querySelector('.navbar');
   if (!navbar) return;
@@ -110,7 +133,7 @@ if (window.lucide && typeof window.lucide.createIcons === 'function') {
   onScroll();
 })();
 
-// ---- 6. Footer year ----
+// ---- 7. Footer year ----
 (function () {
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
