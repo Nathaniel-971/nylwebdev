@@ -5,487 +5,259 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Past Papers & Resources — Nyl Dev</title>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--white); color: var(--black); line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:60px; }
-  .page-frame { border-top:2px solid var(--black); }
+  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--light); color: var(--black); line-height:1.6; padding-bottom:60px; }
   @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
-  @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
-  .fade-in { animation: fadeUp .6s ease both; }
-
-  /* NAV */
-  nav { position: sticky; top:0; z-index:100; background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-bottom:1px solid var(--line); padding: 14px 48px; display:flex; justify-content:space-between; align-items:center; }
-  .logo { font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:-2px; line-height:1; display:flex; align-items:center; color: var(--black); text-decoration:none; }
+  nav { background: var(--white); border-bottom:1px solid var(--line); padding: 14px 48px; display:flex; justify-content:space-between; align-items:center; position: sticky; top:0; z-index:100; }
+  .logo { font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:-2px; display:flex; align-items:center; color: var(--black); text-decoration:none; }
   .logo .cursor { width:12px; height:24px; background: var(--black); margin-left:2px; animation: blink 1.1s step-end infinite; }
-  .nav-right { display:flex; align-items:center; gap:10px; }
-  .nav-link { font-size:14px; font-weight:500; color: var(--black); text-decoration:none; padding:9px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:7px; transition: background .2s; }
+  .nav-link { font-size:14px; font-weight:500; color: var(--black); text-decoration:none; padding:9px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:7px; }
   .nav-link:hover { background: var(--light); }
   .nav-link svg { width:16px; height:16px; }
-
-  /* HERO */
-  .hero { padding: 64px 48px 30px; max-width:1200px; margin:0 auto; }
-  .eyebrow { font-size:12px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-  .eyebrow svg { width:14px; height:14px; }
-  h1 { font-size: clamp(32px, 5.5vw, 56px); line-height:1.05; letter-spacing:-2px; font-weight:700; margin-bottom:18px; }
-  h1 span { color: var(--grey); }
-  .lead { font-size:16px; color: var(--grey); max-width:660px; }
-
-  /* ADMISSION BANNER */
-  .admission-banner { max-width:1200px; margin: 30px auto 0; padding: 0 48px; }
-  .admission-inner { background: var(--black); color: var(--white); border-radius:16px; padding:36px 34px; display:grid; grid-template-columns: 1.4fr 1fr; gap:36px; align-items:center; animation: fadeUp .5s ease both; }
-  .admission-inner h2 { color: var(--white); font-size: clamp(22px, 3vw, 32px); letter-spacing:-1px; line-height:1.15; margin-bottom:14px; }
-  .admission-inner p { font-size:15px; color: rgba(255,255,255,.7); max-width:520px; margin-bottom:22px; line-height:1.6; }
-  .admission-meta { display:flex; gap:24px; flex-wrap:wrap; margin-bottom:22px; }
-  .admission-meta .item { display:flex; flex-direction:column; gap:3px; }
-  .admission-meta .k { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: rgba(255,255,255,.5); font-weight:600; }
-  .admission-meta .v { font-size:15px; font-weight:700; color: var(--white); }
-  .admission-inner .btn-primary { background: var(--white); color: var(--black); border:1.5px solid var(--white); }
-  .admission-inner .btn-primary:hover { background: #e5e5e5; border-color: #e5e5e5; }
-  .btn { display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:13px 24px; font-size:14px; font-weight:600; text-decoration:none; border-radius:10px; transition: all .2s ease; cursor:pointer; border:1.5px solid transparent; font-family:inherit; }
-  .btn svg { width:16px; height:16px; }
-  .btn-secondary { background: transparent; color: var(--white); border:1.5px solid rgba(255,255,255,.35); }
-  .btn-secondary:hover { background: var(--white); color: var(--black); border-color: var(--white); }
-
-  /* BODY WRAP */
-  .body-wrap { max-width:1200px; margin: 60px auto 0; padding: 0 48px; }
-
-  /* SECTION HEADERS */
+  .container { max-width: 1200px; margin:0 auto; padding: 40px 20px; }
   .sec-head { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin-bottom:24px; border-bottom:2px solid var(--black); padding-bottom:14px; flex-wrap:wrap; }
   .sec-head .left { display:flex; align-items:center; gap:12px; }
   .sec-head .icon { width:40px; height:40px; border-radius:10px; background: var(--black); color: var(--white); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .sec-head .icon svg { width:20px; height:20px; }
-  .sec-head h2 { font-size: clamp(20px, 3vw, 28px); letter-spacing:-.8px; font-weight:700; margin:0; }
-  .sec-head .year-tag { display:inline-flex; align-items:center; gap:6px; background: var(--light); padding:6px 12px; border-radius:100px; font-size:12.5px; font-weight:700; letter-spacing:1px; }
-  .sec-head .year-tag svg { width:13px; height:13px; }
-
-  /* RESOURCE CARDS */
+  .sec-head h2 { font-size: 28px; letter-spacing:-.8px; font-weight:700; margin:0; }
   .res-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:40px; }
-  .res-card { border:1px solid var(--line); border-radius:12px; padding:22px 22px; background: var(--white); transition: all .25s; display:flex; flex-direction:column; }
+  .res-card { border:1px solid var(--line); border-radius:12px; padding:22px; background: var(--white); transition: all .25s; display:flex; flex-direction:column; }
   .res-card:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.06); }
   .res-card .ref { font-family: 'Courier New', monospace; font-size:11px; color: var(--grey); letter-spacing:1px; margin-bottom:8px; }
-  .res-card h3 { font-size:17px; font-weight:700; letter-spacing:-.3px; margin-bottom:8px; }
+  .res-card h3 { font-size:17px; font-weight:700; margin-bottom:8px; }
   .res-card p { font-size:13.5px; color: var(--grey); line-height:1.55; margin-bottom:16px; flex-grow:1; }
-  .res-card .btn-dl { display:inline-flex; align-items:center; gap:7px; padding:9px 14px; font-size:12.5px; font-weight:600; border-radius:8px; background: var(--black); color: var(--white); text-decoration:none; border:1.5px solid var(--black); align-self:flex-start; }
-  .res-card .btn-dl svg { width:14px; height:14px; }
+  .res-card .btn-dl { display:inline-flex; align-items:center; gap:7px; padding:9px 14px; font-size:12.5px; font-weight:600; border-radius:8px; background: var(--black); color: var(--white); text-decoration:none; border:1.5px solid var(--black); align-self:flex-start; cursor:pointer; }
   .res-card .btn-dl:hover { background: var(--mid); }
-
-  /* EXAM CARD */
+  .res-card .btn-dl.coming-soon { background: var(--line); color: var(--grey); border-color: var(--line); cursor:not-allowed; pointer-events:none; }
   .exam { border:1px solid var(--line); border-radius:14px; margin-bottom:18px; overflow:hidden; }
   .exam-head { background: var(--light); padding:18px 22px; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; border-bottom:1px solid var(--line); }
-  .exam-head .left { display:flex; align-items:center; gap:14px; }
-  .exam-head .num { width:36px; height:36px; border-radius:9px; background: var(--black); color: var(--white); display:flex; align-items:center; justify-content:center; font-family:'Courier New',monospace; font-weight:700; font-size:14px; flex-shrink:0; }
-  .exam-head h3 { font-size:17px; font-weight:700; letter-spacing:-.3px; margin-bottom:2px; }
-  .exam-head .meta { font-size:12.5px; color: var(--grey); display:flex; gap:12px; flex-wrap:wrap; }
-  .exam-head .meta span { display:inline-flex; align-items:center; gap:5px; }
-  .exam-head .meta svg { width:12px; height:12px; }
-
-  /* SUBJECT TABLE */
   .subject-table { width:100%; border-collapse: collapse; font-size:13.5px; }
   .subject-table th, .subject-table td { text-align:left; padding:11px 22px; border-bottom:1px solid var(--line); }
-  .subject-table th { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; background: var(--white); }
-  .subject-table tr:last-child td { border-bottom:none; }
-  .subject-table tr:hover td { background: var(--light); }
-  .subject-table td { vertical-align: middle; }
-  .subject-table .ref { font-family:'Courier New',monospace; font-size:11.5px; color: var(--grey); }
+  .subject-table th { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; }
   .subject-table .dl { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color: var(--black); text-decoration:none; padding:5px 10px; border-radius:6px; border:1px solid var(--line); background: var(--white); }
-  .subject-table .dl:hover { border-color: var(--black); background: var(--light); }
-  .subject-table .dl svg { width:12px; height:12px; }
-  .subject-table .dl.memo { background: var(--light); }
-  .subject-table .status { font-size:11.5px; color: var(--grey); font-style:italic; }
-  .subject-table td.actions { text-align: right; white-space: nowrap; }
-
-  /* COLLAPSIBLE */
-  .collapsed .subject-table tbody { display: none; }
-  .exam-head .toggle { background: transparent; border:1px solid var(--line); border-radius:8px; padding:8px; cursor:pointer; color: var(--black); display:flex; align-items:center; justify-content:center; transition: all .2s; }
-  .exam-head .toggle svg { width:15px; height:15px; }
-  .exam-head .toggle:hover { border-color: var(--black); background: var(--white); }
-  .collapsed .exam-head .toggle svg { transform: rotate(-90deg); }
-
-  /* FOOTER */
-  footer { padding: 60px 48px 40px; border-top:1px solid var(--line); max-width:1200px; margin:60px auto 0; display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; font-size:13.5px; color: var(--grey); }
-  footer a { color: var(--black); text-decoration:none; font-weight:500; display:inline-flex; align-items:center; gap:6px; }
-  footer a svg { width:14px; height:14px; }
-  footer a:hover { color: var(--grey); }
-  .logo-mini { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:-1px; color: var(--black); margin-bottom:10px; }
-
-  @media (max-width: 900px) {
-    .admission-inner { grid-template-columns: 1fr; gap:24px; }
-  }
-  @media (max-width: 768px) {
-    nav { padding: 12px 20px; }
-    .logo { font-size:22px; } .logo .cursor { height:20px; width:10px; }
-    .hero { padding: 44px 20px 20px; }
-    .admission-banner { padding: 0 20px; margin-top: 20px; }
-    .admission-inner { padding: 26px 22px; }
-    .body-wrap { padding: 0 20px; margin-top: 40px; }
-    .subject-table th, .subject-table td { padding: 10px 14px; font-size: 12.5px; }
-    .subject-table .ref { display:none; }
-    .subject-table th:first-child { display:none; }
-    footer { padding: 40px 20px; flex-direction: column; margin-top: 40px; }
-    footer > div:last-child { text-align:left !important; }
-  }
+  .subject-table .dl.coming-soon { color: var(--grey); pointer-events:none; }
+  
+  /* PAGE FLIP OVERLAY */
+  .viewer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); backdrop-filter: blur(10px); z-index: 999; display: none; align-items: center; justify-content: center; perspective: 2000px; }
+  .viewer-overlay.open { display: flex; }
+  .viewer-container { width: 90%; max-width: 800px; height: 90vh; max-height: 900px; position: relative; background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .viewer-close { position: absolute; top: -40px; right: 0; background: transparent; border: none; color: white; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-family: inherit; font-weight: 600; }
+  .viewer-close:hover { text-decoration: underline; }
+  .viewer-close svg { width: 16px; height: 16px; }
+  .viewer-pages { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(.25,.8,.25,1); display: flex; flex-direction: column; align-items: center; gap: 20px; overflow-y: auto; padding: 20px; }
+  .viewer-pages::-webkit-scrollbar { width: 6px; }
+  .viewer-pages::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 10px; }
+  
+  /* A4 TEMPLATE */
+  .page { width: 210mm; height: 297mm; padding: 15mm 18mm 20mm 18mm; margin: 0 auto; position: relative; background: #fff; display: flex; flex-direction: column; border: 3px solid #000; overflow: hidden; page-break-after: always; box-shadow: 0 10px 40px rgba(0,0,0,.3); transform: rotateY(0deg); transition: transform 0.6s; }
+  .page.flipping { transform: rotateY(-180deg); }
+  .watermark-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 80pt; font-weight: 900; color: rgba(0,0,0,0.04); letter-spacing: 25px; pointer-events: none; z-index: 0; white-space: nowrap; font-family: 'Times New Roman', serif; }
+  .watermark-grid { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 15px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 15px); pointer-events: none; z-index: 0; }
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; }
+  .cover-page { background-color: #fff; border: 3px solid #000; padding: 15mm 18mm; }
+  .cover-content { display: flex; flex-direction: column; align-items: center; flex: 1; text-align: center; justify-content: flex-start; }
+  .confidential-text { font-family: 'Times New Roman', Times, serif; font-size: 11pt; font-style: italic; margin-bottom: 20px; font-weight: 400; letter-spacing: 1px; }
+  .ifse-header { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 15px; width: 100%; }
+  .ifse-logo { width: 80px; height: 80px; flex-shrink: 0; }
+  .ifse-header-text { text-align: left; font-family: 'Times New Roman', Times, serif; }
+  .ifse-main-title { font-size: 24pt; font-weight: 700; letter-spacing: 2px; line-height: 1.1; margin-bottom: 3px; }
+  .ifse-subtitle { font-size: 11pt; font-weight: 400; line-height: 1.3; }
+  .ifse-subtitle strong { font-weight: 700; font-size: 12pt; }
+  .nsc-block { background: #000; color: #fff; padding: 12px 40px; border-radius: 8px; font-family: 'Times New Roman', Times, serif; font-weight: 700; font-size: 16pt; letter-spacing: 1px; line-height: 1.3; margin: 30px 0; display: inline-block; }
+  .grade-box { border: 2px solid #000; padding: 8px 40px; border-radius: 5px; background: #e6f5d0; font-family: 'Times New Roman', Times, serif; font-weight: 700; font-size: 14pt; letter-spacing: 1px; margin-bottom: 40px; display: inline-block; }
+  .subject-box { border: 2px dashed #000; padding: 25px 30px; margin-bottom: 25px; width: 90%; background: #fff9c4; border-radius: 10px; }
+  .subject-box .subject { font-family: 'Times New Roman', Times, serif; font-size: 16pt; font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; }
+  .subject-box .date { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; margin-bottom: 12px; }
+  .subject-box .doc-type { font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; }
+  .marks-block { width: 100%; text-align: left; padding-left: 5mm; margin-bottom: 15px; font-family: 'Times New Roman', Times, serif; font-size: 14pt; font-weight: 700; }
+  .c1-section { width: 100%; text-align: left; padding-left: 5mm; margin-bottom: 40px; }
+  .c1-label { font-family: 'Times New Roman', Times, serif; font-size: 13pt; font-weight: 700; margin-bottom: 8px; }
+  .page-count-line { font-family: 'Times New Roman', Times, serif; font-size: 12pt; font-weight: 700; text-align: center; width: 90%; margin-top: auto; margin-bottom: 20px; line-height: 1.5; }
+  .cover-footer { position: absolute; bottom: 5mm; left: 18mm; right: 18mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; font-family: 'Times New Roman', Times, serif; font-size: 10pt; font-style: italic; }
+  .cover-barcode-exam { position: absolute; bottom: 12mm; right: 18mm; z-index: 6; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: 'Times New Roman', Times, serif; font-size: 10pt; font-weight: 700; }
+  .footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; font-family: 'Times New Roman', Times, serif; font-size: 9pt; font-weight: 700; padding-top: 15px; }
+  .instructions { margin-top: 10px; flex: 1; }
+  .instructions h2 { font-size: 14pt; font-weight: 700; margin-bottom: 12px; font-family: 'Times New Roman', Times, serif; text-align: center; }
+  .instructions ol { margin-left: 22px; } .instructions li { margin-bottom: 8px; text-align: justify; font-size: 11pt; line-height: 1.5; }
+  .question-header { margin: 20px 0 12px 0; } .question-header h2 { font-size: 14pt; font-weight: 700; font-family: 'Times New Roman', Times, serif; text-align: left; }
+  .question-text { margin-bottom: 12px; text-align: justify; font-size: 11pt; line-height: 1.5; }
+  .sub-questions { display: flex; flex-direction: column; gap: 15px; margin-top: 12px; }
+  .question-item { display: flex; align-items: flex-start; gap: 12px; page-break-inside: avoid; }
+  .question-number { font-weight: 700; font-size: 11pt; width: 45px; flex-shrink: 0; font-family: 'Times New Roman', Times, serif; }
+  .question-content { flex: 1; min-width: 0; font-size: 11pt; line-height: 1.55; }
+  .marks { font-weight: 700; font-size: 11pt; width: 45px; flex-shrink: 0; text-align: right; font-family: 'Times New Roman', Times, serif; }
+  .total-marks { text-align: right; font-weight: 700; margin-top: 20px; font-size: 13pt; font-family: 'Times New Roman', Times, serif; }
+  .coming-soon-page { display: flex; align-items: center; justify-content: center; height: 100%; font-family: 'Times New Roman', serif; font-size: 24pt; font-weight: 700; color: #666; text-align: center; }
 </style>
 </head>
-<body class="page-frame">
+<body>
 
 <nav>
-  <a href="/" class="logo" aria-label="Home"><span>^</span><span class="cursor"></span></a>
+  <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
   <div class="nav-right">
     <a href="courses.html" class="nav-link"><i data-lucide="layout-grid"></i> Courses</a>
     <a href="student-portal.html" class="nav-link"><i data-lucide="book-open"></i> My Portal</a>
   </div>
 </nav>
 
-<header class="hero">
-  <div class="eyebrow fade-in"><i data-lucide="file-text"></i> Past Papers &amp; Resources</div>
-  <h1 class="fade-in">Everything you need<br><span>to be ready.</span></h1>
-  <p class="lead fade-in">Official examination papers, memos, and study resources. All content is set by our department and is non-accredited.</p>
-</header>
-
-<!-- ADMISSION BANNER -->
-<div class="admission-banner">
-  <div class="admission-inner">
-    <div>
-      <div style="font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; color: rgba(255,255,255,.5); font-weight:600; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
-        <i data-lucide="clipboard-check"></i> Admission Examination
-      </div>
-      <h2>Entrance Exam — 13 January 2027</h2>
-      <p>All applicants take the Admission Examination before courses begin. Use the study resources below to prepare. Resources are issued as numbered documents and are updated regularly.</p>
-
-      <div class="admission-meta">
-        <div class="item"><span class="k">Date</span><span class="v">13 January 2027</span></div>
-        <div class="item"><span class="k">Format</span><span class="v">Written · Online</span></div>
-        <div class="item"><span class="k">Cost</span><span class="v">Free</span></div>
-      </div>
-
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <a href="#study-resources" class="btn btn-primary"><i data-lucide="book-open"></i> Study Resources</a>
-        <a href="#past-papers" class="btn btn-secondary"><i data-lucide="file-text"></i> Past Papers</a>
-      </div>
-    </div>
-    <div style="border-left:1px solid rgba(255,255,255,.15); padding-left:32px;">
-      <div style="font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; color: rgba(255,255,255,.5); font-weight:600; margin-bottom:14px;">What to expect</div>
-      <ul style="list-style:none;">
-        <li style="display:flex; gap:12px; align-items:flex-start; padding:9px 0; font-size:14px; color:rgba(255,255,255,.85); border-bottom:1px solid rgba(255,255,255,.08);">
-          <i data-lucide="circle-dot" style="width:15px;height:15px;color:#fff;flex-shrink:0;margin-top:4px;"></i> Basic mathematics
-        </li>
-        <li style="display:flex; gap:12px; align-items:flex-start; padding:9px 0; font-size:14px; color:rgba(255,255,255,.85); border-bottom:1px solid rgba(255,255,255,.08);">
-          <i data-lucide="circle-dot" style="width:15px;height:15px;color:#fff;flex-shrink:0;margin-top:4px;"></i> Logical reasoning
-        </li>
-        <li style="display:flex; gap:12px; align-items:flex-start; padding:9px 0; font-size:14px; color:rgba(255,255,255,.85); border-bottom:1px solid rgba(255,255,255,.08);">
-          <i data-lucide="circle-dot" style="width:15px;height:15px;color:#fff;flex-shrink:0;margin-top:4px;"></i> Reading comprehension
-        </li>
-        <li style="display:flex; gap:12px; align-items:flex-start; padding:9px 0; font-size:14px; color:rgba(255,255,255,.85);">
-          <i data-lucide="circle-dot" style="width:15px;height:15px;color:#fff;flex-shrink:0;margin-top:4px;"></i> Problem-solving
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- STUDY RESOURCES -->
-<div class="body-wrap" id="study-resources">
-  <div class="sec-head">
-    <div class="left">
-      <div class="icon"><i data-lucide="book-open"></i></div>
-      <h2>Study Resources</h2>
-    </div>
-    <span class="year-tag"><i data-lucide="calendar"></i> 2027 Intake</span>
-  </div>
-
-  <div class="res-grid">
-
-    <div class="res-card">
-      <div class="ref">RES-2027-001</div>
-      <h3>Admission Examination Guide</h3>
-      <p>Full breakdown of the entrance examination — what's tested, format, timing, and scoring.</p>
-      <a href="resources/RES-2027-001.html" class="btn-dl"><i data-lucide="download"></i> Open document</a>
-    </div>
-
-    <div class="res-card">
-      <div class="ref">RES-2027-002</div>
-      <h3>Mathematics Preparation</h3>
-      <p>Worked examples and practice questions covering algebra, functions, and problem solving.</p>
-      <a href="resources/RES-2027-002.html" class="btn-dl"><i data-lucide="download"></i> Open document</a>
-    </div>
-
-    <div class="res-card">
-      <div class="ref">RES-2027-003</div>
-      <h3>Logic &amp; Reasoning Practice</h3>
-      <p>Reasoning exercises to prepare for the analytical section of the entrance exam.</p>
-      <a href="resources/RES-2027-003.html" class="btn-dl"><i data-lucide="download"></i> Open document</a>
-    </div>
-
-    <div class="res-card">
-      <div class="ref">RES-2027-004</div>
-      <h3>Reading &amp; Comprehension</h3>
-      <p>Passages with comprehension questions modeled on the entrance exam style.</p>
-      <a href="resources/RES-2027-004.html" class="btn-dl"><i data-lucide="download"></i> Open document</a>
-    </div>
-
-    <div class="res-card">
-      <div class="ref">RES-2027-005</div>
-      <h3>Sample Admission Paper</h3>
-      <p>A full-length sample of the admission examination with answer key at the end.</p>
-      <a href="resources/RES-2027-005.html" class="btn-dl"><i data-lucide="download"></i> Open document</a>
-    </div>
-
-    <div class="res-card">
-      <div class="ref">RES-2027-006</div>
-      <h3>Exam Day Instructions</h3>
-      <p>What to bring, how the online exam works, system requirements, and rules.</p>
-      <a href="resources/RES-2027-006.html" class="btn-dl"><i data-lucide="download"></i> Open document</a>
-    </div>
-
-  </div>
-</div>
-
-<!-- PAST PAPERS -->
-<div class="body-wrap" id="past-papers">
+<div class="container">
   <div class="sec-head">
     <div class="left">
       <div class="icon"><i data-lucide="file-text"></i></div>
-      <h2>Examination Papers</h2>
+      <h2>Resources & Past Papers</h2>
     </div>
-    <span class="year-tag"><i data-lucide="calendar"></i> 2027</span>
   </div>
-
-  <!-- FCC / IFB -->
-  <div class="exam" data-open="true">
-    <div class="exam-head">
-      <div class="left">
-        <div class="num">01</div>
-        <div>
-          <h3>FCC / IFB</h3>
-          <div class="meta">
-            <span><i data-lucide="calendar"></i> May / June 2027</span>
-            <span><i data-lucide="calculator"></i> 150 marks</span>
-            <span><i data-lucide="layers"></i> 4–8 papers</span>
-          </div>
-        </div>
-      </div>
-      <button class="toggle" aria-label="Toggle"><i data-lucide="chevron-down"></i></button>
-    </div>
-    <table class="subject-table">
-      <thead>
-        <tr>
-          <th>Reference</th>
-          <th>Paper</th>
-          <th>Type</th>
-          <th style="text-align:right;">Download</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="ref">PP-2027-FCC-P1</td>
-          <td>Mathematics — Paper 1</td>
-          <td>Question Paper</td>
-          <td class="actions"><a class="dl" href="papers/2027/fcc-p1.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-FCC-P1M</td>
-          <td>Mathematics — Paper 1</td>
-          <td>Memo</td>
-          <td class="actions"><a class="dl memo" href="papers/2027/fcc-p1-memo.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-FCC-P2</td>
-          <td>Mathematics — Paper 2</td>
-          <td>Question Paper</td>
-          <td class="actions"><a class="dl" href="papers/2027/fcc-p2.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-FCC-P2M</td>
-          <td>Mathematics — Paper 2</td>
-          <td>Memo</td>
-          <td class="actions"><a class="dl memo" href="papers/2027/fcc-p2-memo.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- INTERIM -->
-  <div class="exam" data-open="true">
-    <div class="exam-head">
-      <div class="left">
-        <div class="num">02</div>
-        <div>
-          <h3>Interim Examination</h3>
-          <div class="meta">
-            <span><i data-lucide="calendar"></i> September 2027</span>
-            <span><i data-lucide="calculator"></i> 100 marks</span>
-            <span><i data-lucide="layers"></i> 4–8 papers</span>
-          </div>
-        </div>
-      </div>
-      <button class="toggle" aria-label="Toggle"><i data-lucide="chevron-down"></i></button>
-    </div>
-    <table class="subject-table">
-      <thead>
-        <tr>
-          <th>Reference</th>
-          <th>Paper</th>
-          <th>Type</th>
-          <th style="text-align:right;">Download</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="ref">PP-2027-INT-P1</td>
-          <td>Mathematics — Paper 1</td>
-          <td>Question Paper</td>
-          <td class="actions"><a class="dl" href="papers/2027/int-p1.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-INT-P1M</td>
-          <td>Mathematics — Paper 1</td>
-          <td>Memo</td>
-          <td class="actions"><a class="dl memo" href="papers/2027/int-p1-memo.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-INT-P2</td>
-          <td>All Subjects — Paper 2</td>
-          <td>Targeted Revision</td>
-          <td class="actions"><a class="dl" href="papers/2027/int-p2.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- ACC / IFB FINAL -->
-  <div class="exam" data-open="true">
-    <div class="exam-head">
-      <div class="left">
-        <div class="num">03</div>
-        <div>
-          <h3>ACC / IFB Final</h3>
-          <div class="meta">
-            <span><i data-lucide="calendar"></i> Oct / Nov 2027</span>
-            <span><i data-lucide="calculator"></i> 150 marks per paper</span>
-            <span><i data-lucide="layers"></i> 4–8 papers</span>
-          </div>
-        </div>
-      </div>
-      <button class="toggle" aria-label="Toggle"><i data-lucide="chevron-down"></i></button>
-    </div>
-    <table class="subject-table">
-      <thead>
-        <tr>
-          <th>Reference</th>
-          <th>Paper</th>
-          <th>Type</th>
-          <th style="text-align:right;">Download</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="ref">PP-2027-ACC-P1</td>
-          <td>Mathematics — Paper 1</td>
-          <td>Question Paper</td>
-          <td class="actions"><a class="dl" href="papers/2027/acc-p1.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-ACC-P1M</td>
-          <td>Mathematics — Paper 1</td>
-          <td>Memo</td>
-          <td class="actions"><a class="dl memo" href="papers/2027/acc-p1-memo.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-ACC-P2</td>
-          <td>Stream Paper — Paper 2</td>
-          <td>Question Paper</td>
-          <td class="actions"><a class="dl" href="papers/2027/acc-p2.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-ACC-P2M</td>
-          <td>Stream Paper — Paper 2</td>
-          <td>Memo</td>
-          <td class="actions"><a class="dl memo" href="papers/2027/acc-p2-memo.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- IPI -->
-  <div class="exam" data-open="true">
-    <div class="exam-head">
-      <div class="left">
-        <div class="num">04</div>
-        <div>
-          <h3>IPI — Integrated Programme of Instruction</h3>
-          <div class="meta">
-            <span><i data-lucide="calendar"></i> May / June 2027 · Final Jul 2027</span>
-            <span><i data-lucide="calculator"></i> 100–150 marks</span>
-            <span><i data-lucide="layers"></i> 4–8 papers</span>
-          </div>
-        </div>
-      </div>
-      <button class="toggle" aria-label="Toggle"><i data-lucide="chevron-down"></i></button>
-    </div>
-    <table class="subject-table">
-      <thead>
-        <tr>
-          <th>Reference</th>
-          <th>Paper</th>
-          <th>Type</th>
-          <th style="text-align:right;">Download</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="ref">PP-2027-IPI-P1</td>
-          <td>IPI FCC — Paper 1</td>
-          <td>Question Paper</td>
-          <td class="actions"><a class="dl" href="papers/2027/ipi-p1.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-IPI-P1M</td>
-          <td>IPI FCC — Paper 1</td>
-          <td>Memo</td>
-          <td class="actions"><a class="dl memo" href="papers/2027/ipi-p1-memo.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-IPI-P2</td>
-          <td>IPI Final — Paper 2</td>
-          <td>Question Paper</td>
-          <td class="actions"><a class="dl" href="papers/2027/ipi-p2.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-        <tr>
-          <td class="ref">PP-2027-IPI-P2M</td>
-          <td>IPI Final — Paper 2</td>
-          <td>Memo</td>
-          <td class="actions"><a class="dl memo" href="papers/2027/ipi-p2-memo.html"><i data-lucide="download"></i> Open</a></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+  <div class="res-grid" id="resourceGrid"></div>
 </div>
 
-<footer>
-  <div>
-    <div class="logo-mini">^_</div>
-    Web Development · Design · Maintenance<br>
-    Built by Nathaniel
+<!-- VIEWER OVERLAY -->
+<div class="viewer-overlay" id="viewerOverlay">
+  <div class="viewer-container">
+    <button class="viewer-close" id="closeViewer"><i data-lucide="x"></i> Close Viewer</button>
+    <div class="viewer-pages" id="viewerPages">
+      <!-- A4 pages will be injected here -->
+    </div>
   </div>
-  <div style="text-align:right;">
-    <a href="/"><i data-lucide="home"></i> Home</a> &nbsp;·&nbsp;
-    <a href="courses.html"><i data-lucide="layout-grid"></i> Courses</a> &nbsp;·&nbsp;
-    <a href="messages.html"><i data-lucide="message-square"></i> Message us</a> &nbsp;·&nbsp;
-    <a href="mailto:n1nathaniel971@gmail.com"><i data-lucide="mail"></i> Email</a>
-  </div>
-</footer>
+</div>
 
 <script>
-  // Lucide
-  if (window.lucide) lucide.createIcons();
+  const resources = [
+    { ref: 'RES-2027-001', title: 'Admission Examination Guide', desc: 'Full breakdown of the entrance examination.' },
+    { ref: 'RES-2027-002', title: 'Mathematics Preparation', desc: 'Worked examples and practice questions.' },
+    { ref: 'RES-2027-003', title: 'Logic & Reasoning Practice', desc: 'Reasoning exercises.' },
+    { ref: 'RES-2027-004', title: 'Reading & Comprehension', desc: 'Passages with comprehension questions.' },
+    { ref: 'RES-2027-005', title: 'Sample Admission Paper', desc: 'A full-length sample paper.' },
+    { ref: 'RES-2027-006', title: 'Exam Day Instructions', desc: 'What to bring and how the exam works.' },
+    { ref: 'PP-2027-FCC-P1', title: 'FCC / IFB Mathematics P1', desc: 'Past paper for FCC / IFB May/June 2027.' },
+    { ref: 'PP-2027-ACC-P1', title: 'ACC / IFB Final Mathematics P1', desc: 'Past paper for ACC / IFB Oct/Nov 2027.' },
+  ];
 
-  // Collapsible exams
-  document.querySelectorAll('.exam').forEach(exam => {
-    const btn = exam.querySelector('.toggle');
-    btn?.addEventListener('click', () => exam.classList.toggle('collapsed'));
+  const grid = document.getElementById('resourceGrid');
+  resources.forEach(r => {
+    const card = document.createElement('div');
+    card.className = 'res-card';
+    card.innerHTML = `
+      <div class="ref">${r.ref}</div>
+      <h3>${r.title}</h3>
+      <p>${r.desc}</p>
+      <button class="btn-dl" data-ref="${r.ref}"><i data-lucide="eye"></i> View Document</button>
+    `;
+    grid.appendChild(card);
   });
+
+  document.querySelectorAll('.btn-dl').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ref = btn.dataset.ref;
+      openViewer(ref);
+    });
+  });
+
+  function openViewer(ref) {
+    const overlay = document.getElementById('viewerOverlay');
+    const pagesContainer = document.getElementById('viewerPages');
+    pagesContainer.innerHTML = '';
+
+    // Generate A4 Pages dynamically based on the document template
+    const page1 = document.createElement('div');
+    page1.className = 'page cover-page';
+    page1.innerHTML = `
+      <div class="watermark-grid"></div>
+      <div class="watermark-text">FCC Secure 2027</div>
+      <div class="content-wrapper">
+        <div class="cover-content">
+          <div class="confidential-text">Confidential</div>
+          <div class="ifse-header">
+            <svg class="ifse-logo" viewBox="0 0 100 100"><path d="M18,62 Q12,48 22,36 Q32,26 48,28 Q58,30 65,36 Q73,42 75,52 Q77,62 70,70 Q62,78 48,80 Q34,82 25,74 Q19,68 18,62 Z" fill="#000"/><ellipse cx="32" cy="52" rx="10" ry="7" fill="#fff"/><circle cx="54" cy="44" r="3" fill="#fff"/><path d="M65,36 Q70,30 74,34 Q77,40 74,45 Q70,42 65,36 Z" fill="#000"/><path d="M22,36 Q18,28 22,25 Q28,22 32,28 Q28,32 22,36 Z" fill="#000"/><path d="M70,70 Q72,75 68,77 Q63,78 60,74 Q62,72 70,70 Z" fill="#000"/></svg>
+            <div class="ifse-header-text">
+              <div class="ifse-main-title">FCC</div>
+              <div class="ifse-subtitle">Department:<br>Fellowship Certificate of Competence<br><strong>Republic of South Africa</strong></div>
+            </div>
+          </div>
+          <div class="nsc-block">Interim<br>Examination</div>
+          <div class="grade-box">Grade 12</div>
+          <div class="subject-box">
+            <div class="subject">${ref.includes('ACC') ? 'ACC Final' : ref.includes('FCC') ? 'FCC Mathematics' : 'Resource Document'}</div>
+            <div class="date">2027</div>
+            <div class="doc-type">${ref}</div>
+          </div>
+          <div class="marks-block">Marks: 15</div>
+          <div class="c1-section"><div class="c1-label">C1</div><div class="c1-barcode"><svg class="barcode-c1" data-barcode="${ref.replace(/[^0-9]/g, '') || '101626'}" data-bc-width="2" data-bc-height="30" data-bc-display="false"></svg></div></div>
+          <div class="page-count-line">This document consists of 2 pages.</div>
+        </div>
+      </div>
+      <div class="cover-barcode-exam"><svg class="barcode-cover" data-barcode="${ref.replace(/[^0-9]/g, '') || '101626'}" data-bc-width="1.8" data-bc-height="22" data-bc-display="false"></svg></div>
+      <div class="cover-footer"><div class="cover-footer-left">Copyright reserved</div><div class="cover-footer-right">Please turn over</div></div>
+    `;
+    pagesContainer.appendChild(page1);
+
+    // Page 2: Question Paper / Coming Soon
+    const page2 = document.createElement('div');
+    page2.className = 'page';
+    if (ref.startsWith('RES')) {
+      page2.innerHTML = `
+        <div class="watermark-grid"></div>
+        <div class="watermark-text">FCC Secure 2027</div>
+        <div class="content-wrapper">
+          <div class="header"><div class="header-left">${ref}</div><div class="header-center">Confidential / FCC</div><div class="header-right">Page 2</div></div>
+          <div class="instructions">
+            <h2>Document Content</h2>
+            <p>This is a placeholder for the ${ref} document. The full content is currently being authored and will be available soon.</p>
+            <p>This document is part of the Nyl Dev / IFB free course material. It is non-accredited and aims at international standards.</p>
+          </div>
+          <div class="footer"><div class="footer-left">101626</div><div class="footer-center"><svg class="barcode-header" data-barcode="101626" data-bc-width="1.2" data-bc-height="18" data-bc-display="false"></svg></div><div class="footer-right">Copyrights reserved / P.T.O</div></div>
+        </div>
+      `;
+    } else {
+      page2.innerHTML = `
+        <div class="watermark-grid"></div>
+        <div class="watermark-text">FCC Secure 2027</div>
+        <div class="content-wrapper">
+          <div class="header"><div class="header-left">Mathematics P1</div><div class="header-center">Confidential / FCC</div><div class="header-right">Page 2</div></div>
+          <div class="question-header"><h2>Question 1</h2></div>
+          <div class="question-text">Show all working. Answers must be given in simplest form.</div>
+          <div class="sub-questions">
+            <div class="question-item"><div class="question-number">1.1</div><div class="question-content">Solve for \\( x \\): \\( x^2 - 5x + 6 = 0 \\).</div><div class="marks">(2)</div></div>
+          </div>
+          <div class="total-marks">Total: 15</div>
+          <div class="footer"><div class="footer-left">101626</div><div class="footer-center"><svg class="barcode-header" data-barcode="101626" data-bc-width="1.2" data-bc-height="18" data-bc-display="false"></svg></div><div class="footer-right">Copyrights reserved / End</div></div>
+        </div>
+      `;
+    }
+    pagesContainer.appendChild(page2);
+
+    // Add flip animation effect
+    setTimeout(() => {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('flipping'));
+      setTimeout(() => {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('flipping'));
+      }, 800);
+    }, 100);
+
+    // Render Barcodes and MathJax
+    setTimeout(() => {
+      if (typeof JsBarcode !== "undefined") {
+        document.querySelectorAll(".barcode-cover, .barcode-header, .barcode-c1").forEach(el => {
+          try { JsBarcode(el, el.dataset.barcode || "101626", { format: "CODE128", width: parseFloat(el.dataset.bcWidth || "2"), height: parseInt(el.dataset.bcHeight || "30", 10), displayValue: el.dataset.bcDisplay === "true", font: "Times New Roman", fontSize: 12, textMargin: 2, margin: 0, background: "#ffffff", lineColor: "#000000" }); } catch (e) {}
+        });
+      }
+      if (window.MathJax) MathJax.typesetPromise();
+    }, 500);
+
+    overlay.classList.add('open');
+  }
+
+  document.getElementById('closeViewer').addEventListener('click', () => {
+    document.getElementById('viewerOverlay').classList.remove('open');
+  });
+
+  if (window.lucide) lucide.createIcons();
 </script>
 </body>
 </html>
