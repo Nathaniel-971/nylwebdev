@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACC — Applied Competence Certificate</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --grey: #888;
+    --line: rgba(255,255,255,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ---------- FLOATING CODE BACKGROUND ---------- */
+  .code-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .code-bg pre {
+    position: absolute;
+    font-size: 11px;
+    color: rgba(255,255,255,0.05);
+    white-space: pre;
+    line-height: 1.4;
+    user-select: none;
+  }
+
+  .c1  { top: 8%;  left: 3%;   animation: drift 24s ease-in-out infinite; }
+  .c2  { top: 22%; right: 5%;  animation: drift 30s ease-in-out infinite reverse; }
+  .c3  { top: 45%; left: 8%;   animation: drift 26s ease-in-out infinite; }
+  .c4  { top: 62%; right: 10%; animation: drift 32s ease-in-out infinite reverse; }
+  .c5  { top: 78%; left: 5%;   animation: drift 28s ease-in-out infinite; }
+  .c6  { top: 35%; right: 2%;  animation: drift 22s ease-in-out infinite reverse; }
+  .c7  { top: 90%; right: 20%; animation: drift 34s ease-in-out infinite; }
+  .c8  { top: 15%; left: 40%;  animation: drift 36s ease-in-out infinite reverse; }
+
+  @keyframes drift {
+    0%, 100% { transform: translateY(0px) translateX(0px); }
+    50%      { transform: translateY(-24px) translateX(12px); }
+  }
+
+  /* ---------- CONTENT WRAPPER ---------- */
+  .wrap { position: relative; z-index: 1; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  nav .logo {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 4px;
+  }
+
+  nav .logo span { color: var(--grey); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+  }
+
+  nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  nav a:hover { opacity: 1; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 40px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero .eyebrow {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--grey);
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: clamp(48px, 9vw, 120px);
+    line-height: 0.95;
+    letter-spacing: -2px;
+    font-weight: bold;
+    margin-bottom: 32px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--white);
+  }
+
+  .hero p {
+    font-size: clamp(15px, 1.6vw, 19px);
+    max-width: 620px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 40px;
+  }
+
+  .hero .cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 30px;
+    font-family: inherit;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border: 1px solid var(--white);
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-solid {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  .btn-solid:hover {
+    background: transparent;
+    color: var(--white);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+  }
+
+  .btn-ghost:hover {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section {
+    padding: 100px 40px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-label {
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: var(--grey);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: clamp(32px, 5vw, 56px);
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    font-weight: bold;
+  }
+
+  .lead {
+    font-size: 16px;
+    color: rgba(255,255,255,0.6);
+    max-width: 640px;
+    margin-bottom: 60px;
+  }
+
+  /* ---------- STREAMS GRID ---------- */
+  .streams {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .stream {
+    background: var(--black);
+    padding: 40px 32px;
+    transition: background 0.25s;
+  }
+
+  .stream:hover { background: #111; }
+
+  .stream .num {
+    font-size: 12px;
+    color: var(--grey);
+    letter-spacing: 2px;
+  }
+
+  .stream h3 {
+    font-size: 22px;
+    margin: 16px 0 12px;
+    letter-spacing: -0.5px;
+  }
+
+  .stream .tag {
+    font-size: 13px;
+    color: var(--grey);
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+
+  .stream ul {
+    list-style: none;
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.9;
+  }
+
+  .stream ul li::before {
+    content: "› ";
+    color: var(--grey);
+  }
+
+  /* ---------- MATHEMATICS ---------- */
+  .math-box {
+    border: 1px solid var(--line);
+    padding: 60px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .math-box .big {
+    font-size: clamp(60px, 10vw, 140px);
+    font-weight: bold;
+    letter-spacing: -4px;
+    line-height: 1;
+  }
+
+  .math-box .big span {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--white);
+  }
+
+  .math-box ul {
+    list-style: none;
+    font-size: 14px;
+    line-height: 2;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .math-box ul li::before {
+    content: "→ ";
+    color: var(--grey);
+  }
+
+  /* ---------- STACK ---------- */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  .stack-item {
+    background: var(--black);
+    padding: 28px 24px;
+    text-align: center;
+    transition: background 0.25s;
+  }
+
+  .stack-item:hover { background: #111; }
+
+  .stack-item .name {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .stack-item .desc {
+    font-size: 12px;
+    color: var(--grey);
+  }
+
+  /* ---------- EXAMS TABLE ---------- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 18px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  th {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--grey);
+    font-weight: normal;
+  }
+
+  td { color: rgba(255,255,255,0.85); }
+
+  /* ---------- DISCLAIMER ---------- */
+  .disclaimer {
+    background: var(--white);
+    color: var(--black);
+    padding: 80px 40px;
+    border-bottom: none;
+  }
+
+  .disclaimer h2 { color: var(--black); }
+
+  .disclaimer p {
+    font-size: 15px;
+    max-width: 720px;
+    margin-bottom: 16px;
+    color: #333;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    padding: 60px 40px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--grey);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  footer a {
+    color: var(--white);
+    text-decoration: none;
+    opacity: 0.7;
+  }
+
+  footer a:hover { opacity: 1; }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 700px) {
+    nav { padding: 14px 20px; }
+    nav ul { gap: 16px; }
+    nav a { font-size: 11px; }
+    section, .hero, .disclaimer, footer { padding-left: 20px; padding-right: 20px; }
+    .math-box { grid-template-columns: 1fr; padding: 40px 24px; }
+    .code-bg pre { font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ FLOATING CODE BACKGROUND ============ -->
+<div class="code-bg" aria-hidden="true">
+<pre class="c1">function build() {
+  return deploy();
+}</pre>
+
+<pre class="c2">const app = express();
+app.use(auth);</pre>
+
+<pre class="c3">SELECT * FROM users
+WHERE active = 1;</pre>
+
+<pre class="c4">&lt;div class="hero"&gt;
+  &lt;h1&gt;Hello&lt;/h1&gt;
+&lt;/div&gt;</pre>
+
+<pre class="c5">git commit -m "ship it"
+git push origin main</pre>
+
+<pre class="c6">body {
+  color: #fff;
+  background: #000;
+}</pre>
+
+<pre class="c7">const [state, setState]
+  = useState(null);</pre>
+
+<pre class="c8">import { Firebase }
+  from "firebase/app";</pre>
+</div>
+
+<!-- ============ CONTENT ============ -->
+<div class="wrap">
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">ACC<span>.</span></div>
+    <ul>
+      <li><a href="#streams">Streams</a></li>
+      <li><a href="#maths">Mathematics</a></li>
+      <li><a href="#stack">Stack</a></li>
+      <li><a href="#exams">Exams</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="eyebrow">APPLIED COMPETENCE CERTIFICATE — IFB</div>
+    <h1>
+      LEARN.<br>
+      BUILD.<br>
+      <em>SHIP.</em>
+    </h1>
+    <p>
+      A free, independent, portfolio-backed programme in full stack development,
+      design, and mathematics. Six streams. One required mathematics paper.
+      Physics as an elective. Built for the modern web.
+    </p>
+    <div class="cta">
+      <a href="#streams" class="btn btn-solid">Explore Streams</a>
+      <a href="#exams" class="btn btn-ghost">Exam Structure</a>
+    </div>
+  </header>
+
+  <!-- WHAT -->
+  <section>
+    <div class="section-label">01 — WHAT IS THE ACC</div>
+    <h2>An independent<br>professional credential.</h2>
+    <p class="lead">
+      The ACC is a rigorous, portfolio-backed qualification recognising practical
+      competence in full stack development and applied mathematics. It mirrors the
+      academic seriousness of A-Levels while remaining a free, non-accredited skills
+      credential awarded by IFB.
+    </p>
+  </section>
+
+  <!-- STREAMS -->
+  <section id="streams">
+    <div class="section-label">02 — THE SIX STREAMS</div>
+    <h2>Pick your direction.</h2>
+    <p class="lead">
+      Three build. Two design. One explains why any of it works. Mathematics is
+      required in every stream.
+    </p>
+
+    <div class="streams">
+
+      <div class="stream">
+        <div class="num">STREAM 01</div>
+        <h3>Full Stack Engineering</h3>
+        <div class="tag">"Build the whole thing."</div>
+        <ul>
+          <li>HTML5 &amp; CSS3</li>
+          <li>JavaScript</li>
+          <li>React</li>
+          <li>Node.js</li>
+          <li>Databases</li>
+          <li>REST APIs</li>
+          <li>Deployment</li>
+          <li>Capstone</li>
+        </ul>
+      </div>
+
+      <div class="stream">
+        <div class="num">STREAM 02</div>
+        <h3>Frontend Craft</h3>
+        <div class="tag">"Build what the world sees."</div>
+        <ul>
+          <li>HTML5 &amp; CSS3</li>
+          <li>JavaScript</li>
+          <li>Advanced JavaScript</li>
+          <li>React</li>
+          <li>Responsive Design</li>
+          <li>Git &amp; GitHub</li>
+          <li>UI Fundamentals</li>
+          <li>Capstone</li>
+        </ul>
+      </div>
+
+      <div class="stream">
+        <div class="num">STREAM 03</div>
+        <h3>Backend Engineering</h3>
+        <div class="tag">"Build the engine."</div>
+        <ul>
+          <li>JavaScript</li>
+          <li>Node.js</li>
+          <li>Express</li>
+          <li>SQL</li>
+          <li>NoSQL</li>
+          <li>REST APIs</li>
+          <li>Authentication &amp; Security</li>
+          <li>Capstone</li>
+        </ul>
+      </div>
+
+      <div class="stream">
+        <div class="num">STREAM 04</div>
+        <h3>Web Design</h3>
+        <div class="tag">"Design the experience."</div>
+        <ul>
+          <li>HTML5 &amp; CSS3</li>
+          <li>Responsive Design</li>
+          <li>UI/UX Fundamentals</li>
+          <li>Typography &amp; Colour</li>
+          <li>Figma</li>
+          <li>Git &amp; GitHub</li>
+          <li>Portfolio</li>
+          <li>Capstone</li>
+        </ul>
+      </div>
+
+      <div class="stream">
+        <div class="num">STREAM 05</div>
+        <h3>UI/UX Design</h3>
+        <div class="tag">"Design how it feels."</div>
+        <ul>
+          <li>UI/UX Fundamentals</li>
+          <li>Figma</li>
+          <li>Typography &amp; Colour</li>
+          <li>Responsive Design</li>
+          <li>HTML5 &amp; CSS3</li>
+          <li>Research Basics</li>
+          <li>Portfolio</li>
+          <li>Capstone</li>
+        </ul>
+      </div>
+
+      <div class="stream">
+        <div class="num">STREAM 06</div>
+        <h3>STEM &amp; Physics</h3>
+        <div class="tag">"Understand the rules of reality."</div>
+        <ul>
+          <li>Mathematics (required)</li>
+          <li>Mechanics</li>
+          <li>Thermodynamics</li>
+          <li>Waves &amp; Optics</li>
+          <li>Electromagnetism</li>
+          <li>Modern Physics</li>
+          <li>Core 50 Equations</li>
+          <li>Capstone</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MATHEMATICS -->
+  <section id="maths">
+    <div class="section-label">03 — REQUIRED</div>
+    <h2>One paper. Everyone.</h2>
+    <p class="lead">
+      Every student, in every stream, writes the same mathematics paper.
+      150 marks. 60% to pass. Taught in segments, examined as a whole.
+    </p>
+
+    <div class="math-box">
+      <div class="big">150<span>.</span></div>
+      <ul>
+        <li>Algebra</li>
+        <li>Functions &amp; Graphs</li>
+        <li>Sequences &amp; Series</li>
+        <li>Statistics</li>
+        <li>Logic &amp; Set Theory</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PHYSICS -->
+  <section>
+    <div class="section-label">04 — ELECTIVE</div>
+    <h2>Physics.</h2>
+    <p class="lead">
+      Available on full-year courses only. Open to any stream as an elective.
+      Learn new ways of physics — every branch, and the core 50 equations.
+    </p>
+
+    <div class="stack-grid">
+      <div class="stack-item">
+        <div class="name">MECHANICS</div>
+        <div class="desc">Motion · Forces · Energy</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">THERMO</div>
+        <div class="desc">Heat · Work · Entropy</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">WAVES</div>
+        <div class="desc">Optics · Light · Sound</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">ELECTRO</div>
+        <div class="desc">Fields · Circuits · Magnetism</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">MODERN</div>
+        <div class="desc">Quantum · Atomic</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">50 EQ</div>
+        <div class="desc">Core equations</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="section-label">05 — THE MODERN STACK</div>
+    <h2>We don't stop at code.</h2>
+    <p class="lead">
+      Students deploy live applications using the same tools used in industry today.
+      Integrated directly into every core subject.
+    </p>
+
+    <div class="stack-grid">
+      <div class="stack-item">
+        <div class="name">GITHUB</div>
+        <div class="desc">Version control</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">CODESPACES</div>
+        <div class="desc">Code in the browser</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">VS CODE</div>
+        <div class="desc">Industry editor</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">VERCEL</div>
+        <div class="desc">Frontend deploy</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">RENDER</div>
+        <div class="desc">Backend deploy</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">FIREBASE</div>
+        <div class="desc">Auth · Data · Users</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">CLOUDINARY</div>
+        <div class="desc">Media storage</div>
+      </div>
+      <div class="stack-item">
+        <div class="name">ENV VARS</div>
+        <div class="desc">Secrets · Config</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAMS -->
+  <section id="exams">
+    <div class="section-label">06 — EXAMINATION</div>
+    <h2>Strict. Independent. Yours.</h2>
+    <p class="lead">
+      All examinations are run independently by IFB. We do not offer registered
+      examinations. We assure the quality of our programmes.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>EXAM</th>
+          <th>MARKS</th>
+          <th>DATE</th>
+          <th>WHO WRITES</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>FCC / IFB — Mathematics</td>
+          <td>150</td>
+          <td>May / June 2027</td>
+          <td>6-month final · 12-month 50%</td>
+        </tr>
+        <tr>
+          <td>Interim Examination</td>
+          <td>100</td>
+          <td>September 2027</td>
+          <td>12-month students</td>
+        </tr>
+        <tr>
+          <td>ACC / IFB Final</td>
+          <td>150 per subject</td>
+          <td>Oct / Nov 2027</td>
+          <td>12-month students</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="lead" style="margin-top: 40px; margin-bottom: 0;">
+      Pass mark: <strong style="color: #fff;">60%</strong>. Final exam weighs <strong style="color: #fff;">60%</strong> of the overall result.
+      Candidate Examination Numbers are 13 digits, issued on an official A4 document.
+    </p>
+  </section>
+
+  <!-- DISCLAIMER -->
+  <section class="disclaimer">
+    <div class="section-label" style="color:#666;">DISCLAIMER</div>
+    <h2>Independent. Non-accredited.</h2>
+    <p>
+      The ACC is an independent, non-accredited professional certification awarded
+      by IFB. It does not carry NQF credits and is not equivalent to a university
+      degree or the National Senior Certificate (NSC).
+    </p>
+    <p>
+      The ACC is not accredited by the Department of Basic Education, the Department
+      of Higher Education, or any NQF-recognised body. Candidates are advised to
+      present it alongside their formal academic qualifications.
+    </p>
+    <p>
+      It is a skills certificate of free courses, verified under strict standards
+      and policy.
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div>
+      <strong style="color:#fff; letter-spacing:2px;">ACC</strong> — Applied Competence Certificate<br>
+      Awarded by IFB · First intake 2027
+    </div>
+    <div style="text-align:right;">
+      Your support is appreciated.<br>
+      To help this organisation grow, please share.
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>
