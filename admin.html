@@ -5,194 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Applications</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background:#f5f5f5; color:#0d0d0d; line-height:1.5; padding:32px 20px; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    background: #f5f5f5;
-    color: #0d0d0d;
-    padding: 40px 24px;
-    line-height: 1.5;
-  }
+  .container { max-width:1400px; margin:0 auto; }
+  h1 { font-size:28px; letter-spacing:-1px; margin-bottom:6px; }
+  .sub { color:#6b6b6b; font-size:14px; margin-bottom:24px; }
 
-  .container { max-width: 1200px; margin: 0 auto; }
+  .stats { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:14px; margin-bottom:24px; }
+  .stat { background:#fff; border:1px solid #e5e5e5; border-radius:12px; padding:20px; }
+  .stat .label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; margin-bottom:6px; font-weight:600; }
+  .stat .value { font-size:28px; font-weight:700; letter-spacing:-1px; }
 
-  h1 {
-    font-size: 32px;
-    letter-spacing: -1px;
-    margin-bottom: 8px;
-  }
+  .toolbar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+  .toolbar input { flex:1; min-width:200px; padding:11px 14px; font-size:14px; border:1px solid #e5e5e5; border-radius:8px; background:#fff; font-family:inherit; }
+  .toolbar input:focus { outline:none; border-color:#0d0d0d; }
+  .toolbar button { padding:11px 18px; font-size:13px; font-weight:600; border-radius:8px; border:1px solid #e5e5e5; background:#fff; color:#0d0d0d; cursor:pointer; font-family:inherit; }
+  .toolbar button:hover { background:#f5f5f5; }
+  .toolbar button.primary { background:#0d0d0d; color:#fff; border-color:#0d0d0d; }
+  .toolbar button.primary:hover { background:#333; }
 
-  .sub {
-    color: #6b6b6b;
-    font-size: 15px;
-    margin-bottom: 32px;
-  }
+  .table-wrap { background:#fff; border:1px solid #e5e5e5; border-radius:12px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; min-width:900px; }
+  th, td { text-align:left; padding:12px 14px; border-bottom:1px solid #e5e5e5; white-space:nowrap; }
+  th { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; font-weight:600; background:#fafafa; position:sticky; top:0; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:#fafafa; }
 
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-bottom: 32px;
-  }
+  .badge { display:inline-block; font-size:11px; font-weight:600; padding:3px 10px; border-radius:100px; }
+  .badge.pending { background:#fff4e5; color:#b86e00; }
+  .badge.approved { background:#e6f5ec; color:#16794a; }
+  .badge.revoked { background:#fef2f2; color:#b91c1c; }
+  .badge.deregistered { background:#f5f5f5; color:#6b6b6b; }
 
-  .stat {
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    padding: 24px;
-  }
+  .row-btn { padding:6px 12px; font-size:12px; font-weight:600; border-radius:6px; border:1px solid #0d0d0d; background:#0d0d0d; color:#fff; cursor:pointer; font-family:inherit; }
+  .row-btn:hover { background:#333; }
 
-  .stat .label {
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #6b6b6b;
-    margin-bottom: 8px;
-  }
+  .loading, .access-denied { padding:60px 20px; text-align:center; color:#6b6b6b; }
+  .access-denied h2 { color:#0d0d0d; margin-bottom:12px; }
 
-  .stat .value {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -1px;
-  }
+  .logout { float:right; font-size:14px; color:#6b6b6b; text-decoration:none; padding:8px 12px; border-radius:6px; }
+  .logout:hover { color:#0d0d0d; background:#e5e5e5; }
 
-  .toolbar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .toolbar input {
-    flex: 1;
-    min-width: 200px;
-    padding: 12px 16px;
-    font-size: 14px;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    background: #fff;
-    font-family: inherit;
-  }
-
-  .toolbar input:focus { outline: none; border-color: #0d0d0d; }
-
-  table {
-    width: 100%;
-    background: #fff;
-    border-collapse: collapse;
-    border: 1px solid #e5e5e5;
-    border-radius: 12px;
-    overflow: hidden;
-    font-size: 14px;
-  }
-
-  th, td {
-    text-align: left;
-    padding: 16px 20px;
-    border-bottom: 1px solid #e5e5e5;
-  }
-
-  th {
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #6b6b6b;
-    font-weight: 600;
-    background: #fafafa;
-  }
-
-  tr:last-child td { border-bottom: none; }
-
-  .badge {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 100px;
-    background: #f5f5f5;
-    color: #6b6b6b;
-  }
-
-  .badge.pending { background: #fff4e5; color: #b86e00; }
-  .badge.approved { background: #e6f5ec; color: #16794a; }
-
-  .btn {
-    padding: 8px 16px;
-    font-size: 13px;
-    font-weight: 500;
-    border-radius: 6px;
-    border: 1px solid #0d0d0d;
-    background: #0d0d0d;
-    color: #fff;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.15s;
-  }
-
-  .btn:hover { background: #333; }
-
-  .btn-ghost {
-    background: transparent;
-    color: #0d0d0d;
-    border: 1px solid #e5e5e5;
-  }
-
-  .btn-ghost:hover { background: #f5f5f5; }
-
-  .logout {
-    float: right;
-    font-size: 14px;
-    color: #6b6b6b;
-    text-decoration: none;
-  }
-
-  .logout:hover { color: #0d0d0d; }
-
-  .loading {
-    padding: 60px;
-    text-align: center;
-    color: #6b6b6b;
-  }
-
-  .access-denied {
-    max-width: 500px;
-    margin: 80px auto;
-    text-align: center;
-    padding: 40px;
-    background: #fff;
-    border-radius: 12px;
-    border: 1px solid #e5e5e5;
-  }
-
-  @media (max-width: 768px) {
-    body { padding: 20px 12px; }
-    h1 { font-size: 24px; }
-    table { font-size: 12px; }
-    th, td { padding: 12px 10px; }
-    th:nth-child(4), td:nth-child(4),
-    th:nth-child(5), td:nth-child(5) { display: none; }
+  @media print {
+    body { padding:0; background:#fff; }
+    .toolbar, .logout, .no-print, .row-btn { display:none !important; }
+    .table-wrap { border:none; }
+    table { min-width:0; font-size:10pt; }
+    th, td { padding:6px 8px; }
+    @page { size: A4 landscape; margin: 12mm; }
   }
 </style>
 </head>
 <body>
-
-<div class="container" id="app">
-  <div class="loading">Checking access…</div>
-</div>
+<div class="container" id="app"><div class="loading">Checking access…</div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth, onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-  getFirestore, collection, getDocs, doc, updateDoc,
-  query, orderBy, runTransaction, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, query, orderBy, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ⚠️ Move these to Vercel env vars later. For now, keep as-is if locked down.
 const firebaseConfig = {
   apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
   authDomain: "nyldevcourses.firebaseapp.com",
@@ -201,216 +73,165 @@ const firebaseConfig = {
   messagingSenderId: "16687006873",
   appId: "1:16687006873:web:b7d66ad1024ccd92722408"
 };
-
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
-const INTAKE = "2601";        // 2026 · intake 01
-const INTAKE_COUNTER = "intake_2601";
+const INTAKE = "2601";
+const COUNTER = "intake_" + INTAKE;
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const appEl = document.getElementById('app');
 
-const appEl = document.getElementById("app");
-
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
   if (!user) {
-    appEl.innerHTML = `
-      <div class="access-denied">
-        <h1>Not signed in</h1>
-        <p style="color:#6b6b6b; margin:16px 0 24px;">
-          Please sign in to access the admin panel.
-        </p>
-        <a href="/login.html" class="btn">Sign in</a>
-      </div>`;
+    appEl.innerHTML = `<div class="access-denied"><h2>Not signed in</h2><p>Please sign in to continue.</p><p style="margin-top:20px;"><a href="auth.html" style="color:#0d0d0d; font-weight:600;">Sign in →</a></p></div>`;
     return;
   }
-
   if (user.email !== ADMIN_EMAIL) {
-    appEl.innerHTML = `
-      <div class="access-denied">
-        <h1>Access denied</h1>
-        <p style="color:#6b6b6b; margin:16px 0 24px;">
-          This account (${user.email}) does not have admin access.
-        </p>
-        <button class="btn" onclick="location.href='/'">Back to site</button>
-      </div>`;
+    appEl.innerHTML = `<div class="access-denied"><h2>Access denied</h2><p>This account does not have admin access.</p><p style="margin-top:20px;"><a href="/" style="color:#0d0d0d; font-weight:600;">← Back to site</a></p></div>`;
     return;
   }
-
-  renderAdmin(user);
+  render(user);
 });
 
-async function renderAdmin(user) {
+let rows = [];
+
+function render(user) {
   appEl.innerHTML = `
     <a href="#" class="logout" id="logout">Sign out</a>
     <h1>Applications</h1>
     <p class="sub">Intake ${INTAKE} · Signed in as ${user.email}</p>
 
     <div class="stats">
-      <div class="stat">
-        <div class="label">Total</div>
-        <div class="value" id="totalCount">—</div>
-      </div>
-      <div class="stat">
-        <div class="label">Pending</div>
-        <div class="value" id="pendingCount">—</div>
-      </div>
-      <div class="stat">
-        <div class="label">Approved</div>
-        <div class="value" id="approvedCount">—</div>
-      </div>
+      <div class="stat"><div class="label">Total</div><div class="value" id="cTotal">—</div></div>
+      <div class="stat"><div class="label">Pending</div><div class="value" id="cPending">—</div></div>
+      <div class="stat"><div class="label">Approved</div><div class="value" id="cApproved">—</div></div>
+      <div class="stat"><div class="label">Revoked</div><div class="value" id="cRevoked">—</div></div>
     </div>
 
-    <div class="toolbar">
-      <input type="text" id="search" placeholder="Search by name, email, or student number…">
-      <button class="btn-ghost btn" id="refresh">Refresh</button>
+    <div class="toolbar no-print">
+      <input type="text" id="search" placeholder="Search by email, student number, or course…">
+      <button class="primary" id="refresh">Refresh</button>
+      <button onclick="window.print()">Download PDF (A4)</button>
     </div>
 
-    <div id="tableWrap"><div class="loading">Loading applications…</div></div>
+    <div class="table-wrap" id="tableWrap"><div class="loading">Loading applications…</div></div>
   `;
 
-  document.getElementById("logout").addEventListener("click", async (e) => {
-    e.preventDefault();
-    await signOut(auth);
-    location.href = "/";
+  document.getElementById('logout').addEventListener('click', async (e) => {
+    e.preventDefault(); await signOut(auth); window.location.href = '/';
   });
+  document.getElementById('refresh').addEventListener('click', load);
+  document.getElementById('search').addEventListener('input', (e) => filterTable(e.target.value));
 
-  document.getElementById("refresh").addEventListener("click", loadApplications);
-  document.getElementById("search").addEventListener("input", (e) => {
-    filterTable(e.target.value);
-  });
-
-  await loadApplications();
+  load();
 }
 
-let allRows = [];
-
-async function loadApplications() {
-  const wrap = document.getElementById("tableWrap");
+async function load() {
+  const wrap = document.getElementById('tableWrap');
   wrap.innerHTML = `<div class="loading">Loading applications…</div>`;
-
   try {
-    const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'));
     const snap = await getDocs(q);
-
-    allRows = [];
-    snap.forEach(d => {
-      allRows.push({ id: d.id, ...d.data() });
-    });
-
+    rows = [];
+    snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
     updateStats();
-    renderTable(allRows);
+    renderTable(rows);
   } catch (err) {
     wrap.innerHTML = `<div class="loading">Error: ${err.message}</div>`;
   }
 }
 
 function updateStats() {
-  const total = allRows.length;
-  const pending = allRows.filter(r => r.status !== "approved").length;
-  const approved = allRows.filter(r => r.status === "approved").length;
-
-  document.getElementById("totalCount").textContent = total;
-  document.getElementById("pendingCount").textContent = pending;
-  document.getElementById("approvedCount").textContent = approved;
+  document.getElementById('cTotal').textContent = rows.length;
+  document.getElementById('cPending').textContent = rows.filter(r => (r.status || 'pending') === 'pending').length;
+  document.getElementById('cApproved').textContent = rows.filter(r => r.status === 'approved').length;
+  document.getElementById('cRevoked').textContent = rows.filter(r => r.status === 'revoked' || r.status === 'deregistered').length;
 }
 
-function renderTable(rows) {
-  const wrap = document.getElementById("tableWrap");
-
-  if (rows.length === 0) {
-    wrap.innerHTML = `<div class="loading">No applications yet.</div>`;
-    return;
-  }
+function renderTable(list) {
+  const wrap = document.getElementById('tableWrap');
+  if (!list.length) { wrap.innerHTML = `<div class="loading">No applications yet.</div>`; return; }
 
   wrap.innerHTML = `
     <table>
       <thead>
         <tr>
-          <th>Name</th>
+          <th>#</th>
           <th>Email</th>
           <th>Course</th>
-          <th>Student #</th>
+          <th>Duration</th>
+          <th>Electives</th>
+          <th>Student №</th>
           <th>Status</th>
-          <th></th>
+          <th class="no-print">Action</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
   `;
-
-  const tbody = document.getElementById("tbody");
-
-  rows.forEach(row => {
-    const tr = document.createElement("tr");
-    const status = row.status || "pending";
+  const tbody = document.getElementById('tbody');
+  list.forEach((r, i) => {
+    const status = r.status || 'pending';
+    const electives = (r.electives || []).join(', ') || '—';
+    const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${escapeHtml(row.name || "—")}</td>
-      <td>${escapeHtml(row.email || "—")}</td>
-      <td>${escapeHtml(row.course || "—")}</td>
-      <td>${escapeHtml(row.studentNumber || "—")}</td>
+      <td>${i + 1}</td>
+      <td>${esc(r.email || '—')}</td>
+      <td>${esc(r.course || '—')}</td>
+      <td>${esc(r.duration ? r.duration + ' mo' : '—')}</td>
+      <td>${esc(electives)}</td>
+      <td>${esc(r.studentNumber || '—')}</td>
       <td><span class="badge ${status}">${status}</span></td>
-      <td>
-        ${row.studentNumber
-          ? `<span style="color:#6b6b6b; font-size:12px;">Assigned</span>`
-          : `<button class="btn" data-uid="${row.id}">Assign #</button>`}
+      <td class="no-print">
+        ${!r.studentNumber && status === 'pending'
+          ? `<button class="row-btn" data-uid="${r.id}">Assign №</button>`
+          : `<span style="color:#6b6b6b; font-size:11px;">—</span>`}
       </td>
     `;
     tbody.appendChild(tr);
   });
-
-  tbody.querySelectorAll("button[data-uid]").forEach(btn => {
-    btn.addEventListener("click", () => assignStudentNumber(btn.dataset.uid));
+  tbody.querySelectorAll('button[data-uid]').forEach(b => {
+    b.addEventListener('click', () => assign(b.dataset.uid));
   });
 }
 
 function filterTable(term) {
   const q = term.toLowerCase().trim();
-  if (!q) { renderTable(allRows); return; }
-
-  const filtered = allRows.filter(r =>
-    (r.name || "").toLowerCase().includes(q) ||
-    (r.email || "").toLowerCase().includes(q) ||
-    (r.studentNumber || "").includes(q)
-  );
-  renderTable(filtered);
+  if (!q) { renderTable(rows); return; }
+  renderTable(rows.filter(r =>
+    (r.email || '').toLowerCase().includes(q) ||
+    (r.studentNumber || '').includes(q) ||
+    (r.course || '').toLowerCase().includes(q)
+  ));
 }
 
-async function assignStudentNumber(uid) {
-  if (!confirm("Assign the next student number for intake " + INTAKE + "?")) return;
-
+async function assign(uid) {
+  if (!confirm('Assign the next student number for intake ' + INTAKE + '?')) return;
   try {
-    const counterRef = doc(db, "counters", INTAKE_COUNTER);
-    const userRef = doc(db, "users", uid);
+    const counterRef = doc(db, 'counters', COUNTER);
+    const userRef = doc(db, 'users', uid);
 
-    const nextNumber = await runTransaction(db, async (tx) => {
-      const counterSnap = await tx.get(counterRef);
-      let last = 0;
-      if (counterSnap.exists()) last = counterSnap.data().lastNumber || 0;
-
+    const n = await runTransaction(db, async (tx) => {
+      const s = await tx.get(counterRef);
+      const last = s.exists() ? (s.data().lastNumber || 0) : 0;
       const next = last + 1;
       tx.set(counterRef, { lastNumber: next }, { merge: true });
       tx.update(userRef, {
-        studentNumber: INTAKE + String(next).padStart(4, "0"),
-        status: "approved",
+        studentNumber: INTAKE + String(next).padStart(4, '0'),
+        status: 'approved',
         approvedAt: serverTimestamp()
       });
       return next;
     });
-
-    alert(`Student number assigned: ${INTAKE}${String(nextNumber).padStart(4, "0")}`);
-    await loadApplications();
+    alert('Assigned: ' + INTAKE + String(n).padStart(4, '0'));
+    load();
   } catch (err) {
-    alert("Error: " + err.message);
+    alert('Error: ' + err.message);
   }
 }
 
-function escapeHtml(str) {
-  return String(str).replace(/[&<>"']/g, s => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[s]));
-}
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 </script>
-
 </body>
 </html>
