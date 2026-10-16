@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resources & Past Papers — Nyl Dev</title>
+<title>Resources &amp; Papers</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; }
   body { background: var(--white); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: var(--black); line-height:1.6; padding-bottom:60px; }
+  .mark { font-family:'Courier New',monospace; font-size:34px; font-weight:700; color: var(--black); text-decoration:none; line-height:1; letter-spacing:-2px; }
+  .badge { width: 56px; height: 68px; flex-shrink: 0; }
+
   nav { background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-bottom:1px solid var(--line); padding:12px 48px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
-  .nav-left { display:flex; align-items:center; gap:12px; text-decoration:none; color: var(--black); }
-  .emblem { width:44px; height:44px; }
-  .brand-name { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:-1px; line-height:1; }
-  .brand-sub { font-size:9.5px; letter-spacing:2px; color: var(--grey); text-transform:uppercase; margin-top:3px; }
+  .nav-left { display:flex; align-items:center; gap:14px; text-decoration:none; color: var(--black); }
   .nav-link { font-size:14px; font-weight:500; color: var(--black); text-decoration:none; padding:9px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:7px; }
   .nav-link:hover { background: var(--light); }
+
   .container { max-width: 1100px; margin:0 auto; padding: 40px 20px; }
   .hero { margin-bottom: 36px; }
   .eyebrow { font-size:11.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
@@ -27,13 +28,10 @@
   .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
   .doc-card { border:1px solid var(--line); border-radius:12px; padding: 22px 20px; background: var(--white); transition: all .25s; display: flex; flex-direction: column; gap: 12px; }
   .doc-card:hover { border-color: var(--black); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.06); }
-  .doc-card .doc-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--light); display: flex; align-items: center; justify-content: center; }
-  .doc-card .doc-icon svg { width: 20px; height: 20px; color: var(--black); }
   .doc-card h3 { font-size: 15.5px; font-weight: 700; letter-spacing: -.2px; }
-  .doc-card p { font-size: 13px; color: var(--grey); line-height: 1.55; flex-grow: 1; }
-  .doc-card .open-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--black); text-decoration: none; padding: 9px 14px; border-radius: 8px; border: 1.5px solid var(--black); background: var(--white); align-self: flex-start; transition: all .2s; }
+  .doc-card p { font-size: 13px; color: var(--grey); flex-grow: 1; }
+  .doc-card .open-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--black); text-decoration: none; padding: 9px 14px; border-radius: 8px; border: 1.5px solid var(--black); background: var(--white); align-self: flex-start; }
   .doc-card .open-link:hover { background: var(--black); color: var(--white); }
-  .doc-card .open-link svg { width: 14px; height: 14px; }
   .period { margin-bottom: 22px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
   .period-head { background: var(--light); padding: 16px 22px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
   .period-head h3 { font-size: 16px; font-weight: 700; margin: 0; }
@@ -43,15 +41,15 @@
   .paper-row:last-child { border-bottom: none; }
   .paper-row .paper-name { font-weight: 600; }
   .paper-row .paper-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  .paper-row .paper-actions a { font-size: 12.5px; padding: 8px 13px; border-radius: 7px; border: 1px solid var(--line); color: var(--black); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: var(--white); transition: all .2s; }
+  .paper-row .paper-actions a { font-size: 12.5px; padding: 8px 13px; border-radius: 7px; border: 1px solid var(--line); color: var(--black); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: var(--white); }
   .paper-row .paper-actions a:hover { border-color: var(--black); background: var(--light); }
-  .paper-row .paper-actions a svg { width: 13px; height: 13px; }
   .paper-row .paper-actions a.primary { background: var(--black); color: var(--white); border-color: var(--black); }
   .paper-row .paper-actions a.primary:hover { background: var(--mid); }
+  .empty { text-align:center; padding: 40px 20px; color: var(--grey); font-size: 14px; }
   footer { padding: 40px 20px; border-top:1px solid var(--line); text-align: center; font-size: 12.5px; color: var(--grey); margin-top: 60px; }
   footer a { color: var(--black); text-decoration: none; font-weight: 500; }
   @media (max-width: 600px) {
-    nav { padding: 12px 16px; } .brand-name { font-size:18px; } .emblem { width: 36px; height: 36px; }
+    nav { padding: 12px 16px; } .mark { font-size: 28px; } .badge { width: 44px; height: 54px; }
     .container { padding: 28px 16px; }
     .paper-row { flex-direction: column; align-items: flex-start; }
   }
@@ -61,11 +59,7 @@
 
 <nav>
   <a href="/" class="nav-left">
-    <svg class="emblem" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="none" stroke="#0d0d0d" stroke-width="2.5"/><circle cx="60" cy="60" r="52" fill="none" stroke="#0d0d0d" stroke-width="1"/><circle cx="60" cy="60" r="48" fill="#0d0d0d"/><path d="M40 44 L60 78 L80 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/><rect x="66" y="44" width="8" height="6" fill="#fff"/></svg>
-    <div>
-      <div class="brand-name">Nyl Dev</div>
-      <div class="brand-sub">Resources</div>
-    </div>
+    <span class="mark">∆</span>
   </a>
   <div style="display:flex;gap:8px;">
     <a href="courses.html" class="nav-link"><i data-lucide="layout-grid"></i> Courses</a>
@@ -75,105 +69,94 @@
 
 <div class="container">
   <div class="hero">
-    <div class="eyebrow"><i data-lucide="book-open"></i> Resources &amp; Past Papers</div>
+    <div class="eyebrow"><i data-lucide="book-open"></i> Resources &amp; Papers</div>
     <h1>Everything you need.</h1>
-    <p class="lead">Study resources and past papers for the 2027 intake. Every paper opens as its own document — non-accredited, quality assured through our internal platform.</p>
+    <p class="lead">Study resources and past papers for the 2027 intake. Every document opens in its own viewer.</p>
   </div>
 
   <div class="section-title">
     <div class="icon"><i data-lucide="file-text"></i></div>
     <h2>Study Resources</h2>
   </div>
-  <div class="doc-grid" id="resourceGrid"></div>
+  <div class="doc-grid" id="resourceGrid"><div class="empty">Loading…</div></div>
 
   <div class="section-title">
     <div class="icon"><i data-lucide="layers"></i></div>
     <h2>Past Papers — 2027</h2>
   </div>
-  <div id="paperGrid"></div>
+  <div id="paperGrid"><div class="empty">Loading…</div></div>
 </div>
 
 <footer>
-  Nyl Dev · IFB — Non-accredited skills development · © 2026—2027 · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a>
+  Non-accredited skills development · © 2026—2027 · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a>
 </footer>
 
 <script>
-  // Each resource links to its own unique HTML document
-  const resources = [
-    { title: 'Admission Examination Guide', desc: 'What the entrance exam covers, how it is marked, and what to expect.', url: 'papers/admission-guide.html' },
-    { title: 'Mathematics Preparation', desc: 'Worked examples and practice problems for algebra, functions, and logic.', url: 'papers/mathematics-prep.html' },
-    { title: 'Logic & Reasoning Practice', desc: 'Exercises modelled on the analytical section of the entrance exam.', url: 'papers/logic-reasoning.html' },
-    { title: 'Reading & Comprehension', desc: 'Passages with comprehension questions in the exam style.', url: 'papers/reading-comprehension.html' },
-    { title: 'Sample Admission Paper', desc: 'A full-length sample of the entrance exam with an answer key.', url: 'papers/sample-admission.html' },
-    { title: 'Exam Day Instructions', desc: 'What to bring, system requirements, and exam rules.', url: 'papers/exam-day.html' }
-  ];
-
-  // Every paper is its own HTML file. Links open in the viewer.
-  const examPeriods = [
-    {
-      name: 'First Certification Period',
-      when: 'May / June 2027',
-      papers: [
-        { name: 'Mathematics', qp: 'papers/first-cert/mathematics-qp.html', memo: 'papers/first-cert/mathematics-memo.html' },
-        { name: 'Web Foundations', qp: 'papers/first-cert/web-foundations-qp.html' },
-        { name: 'Programming Fundamentals', qp: 'papers/first-cert/programming-fundamentals-qp.html' }
-      ]
-    },
-    {
-      name: 'Targeted Revision Period',
-      when: 'September 2027',
-      papers: [
-        { name: 'Mathematics — Targeted Revision', qp: 'papers/revision/mathematics-qp.html' }
-      ]
-    },
-    {
-      name: 'Final Certification Period',
-      when: 'Oct / Nov 2027',
-      papers: [
-        { name: 'Mathematics', qp: 'papers/final/mathematics-qp.html' },
-        { name: 'Stream Subject', qp: 'papers/final/stream-subject-qp.html' }
-      ]
-    }
-  ];
-
+(async function () {
   const resGrid = document.getElementById('resourceGrid');
-  resources.forEach(r => {
-    const el = document.createElement('div');
-    el.className = 'doc-card';
-    el.innerHTML = `
-      <div class="doc-icon"><i data-lucide="file-text"></i></div>
-      <h3>${r.title}</h3>
-      <p>${r.desc}</p>
-      <a class="open-link" href="paper-viewer.html?src=${encodeURIComponent(r.url)}"><i data-lucide="arrow-up-right"></i> Open document</a>
-    `;
-    resGrid.appendChild(el);
-  });
-
   const paperGrid = document.getElementById('paperGrid');
-  examPeriods.forEach(p => {
-    const el = document.createElement('div');
-    el.className = 'period';
-    el.innerHTML = `
-      <div class="period-head">
-        <h3>${p.name}</h3>
-        <span class="meta"><i data-lucide="calendar" style="width:13px;height:13px;"></i> ${p.when}</span>
+
+  let manifest;
+  try {
+    const r = await fetch('papers/manifest.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('manifest not found');
+    manifest = await r.json();
+  } catch (e) {
+    resGrid.innerHTML = '<div class="empty">No manifest yet. Add documents under <code>/papers/</code> and generate the manifest.</div>';
+    paperGrid.innerHTML = '';
+    return;
+  }
+
+  // Resources
+  if (!manifest.resources || !manifest.resources.length) {
+    resGrid.innerHTML = '<div class="empty">No study resources yet.</div>';
+  } else {
+    resGrid.innerHTML = manifest.resources.map(r => `
+      <div class="doc-card">
+        <h3>${r.title}</h3>
+        <p>Open this document to view it.</p>
+        <a class="open-link" href="paper-viewer.html?src=${encodeURIComponent('papers/' + r.file)}">
+          <i data-lucide="arrow-up-right"></i> Open document
+        </a>
       </div>
-      <div class="period-body">
-        ${p.papers.map(pp => `
-          <div class="paper-row">
-            <span class="paper-name">${pp.name}</span>
-            <div class="paper-actions">
-              <a href="paper-viewer.html?src=${encodeURIComponent(pp.qp)}" class="primary"><i data-lucide="file-text"></i> Question Paper</a>
-              ${pp.memo ? `<a href="paper-viewer.html?src=${encodeURIComponent(pp.memo)}"><i data-lucide="check-circle"></i> Memo</a>` : ''}
-            </div>
+    `).join('');
+  }
+
+  // Periods
+  if (!manifest.periods || !manifest.periods.length) {
+    paperGrid.innerHTML = '<div class="empty">No papers published yet.</div>';
+  } else {
+    paperGrid.innerHTML = manifest.periods.map(p => {
+      // Group question + memo per subject
+      const grouped = {};
+      (p.papers || []).forEach(pp => {
+        if (!grouped[pp.subject]) grouped[pp.subject] = { qp: null, memo: null };
+        if (pp.type === 'memo') grouped[pp.subject].memo = pp.file;
+        else grouped[pp.subject].qp = pp.file;
+      });
+      const rows = Object.entries(grouped).map(([subject, files]) => `
+        <div class="paper-row">
+          <span class="paper-name">${subject}</span>
+          <div class="paper-actions">
+            ${files.qp ? `<a class="primary" href="paper-viewer.html?src=${encodeURIComponent('papers/' + files.qp)}"><i data-lucide="file-text"></i> Question Paper</a>` : ''}
+            ${files.memo ? `<a href="paper-viewer.html?src=${encodeURIComponent('papers/' + files.memo)}"><i data-lucide="check-circle"></i> Memo</a>` : ''}
           </div>
-        `).join('')}
-      </div>
-    `;
-    paperGrid.appendChild(el);
-  });
+        </div>
+      `).join('');
+      return `
+        <div class="period">
+          <div class="period-head">
+            <h3>${p.name}</h3>
+            <span class="meta"><i data-lucide="calendar" style="width:13px;height:13px;"></i> ${p.when || ''}</span>
+          </div>
+          <div class="period-body">${rows || '<div class="empty">No papers yet.</div>'}</div>
+        </div>
+      `;
+    }).join('');
+  }
 
   if (window.lucide) lucide.createIcons();
+})();
 </script>
 </body>
 </html>
