@@ -12,19 +12,19 @@
   @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
   @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
   .card { width:100%; max-width:440px; background: var(--white); color: var(--black); border-radius:16px; padding:40px 36px; animation: fadeUp .5s ease both; }
-  .logo { font-family:'Courier New',monospace; font-size:28px; font-weight:700; letter-spacing:-2px; display:flex; align-items:center; margin-bottom:26px; text-decoration:none; color: var(--black); }
+  .logo { font-family:'Courier New',monospace; font-size:28px; font-weight:700; letter-spacing:-2px; display:flex; align-items:center; margin-bottom:24px; text-decoration:none; color: var(--black); }
   .logo .cursor { width:13px; height:26px; background: var(--black); margin-left:2px; animation: blink 1.1s step-end infinite; }
-  .tabs { display:flex; border-bottom:1px solid var(--line); margin-bottom:24px; }
+  .tabs { display:flex; border-bottom:1px solid var(--line); margin-bottom:22px; }
   .tab { flex:1; padding:14px 0; text-align:center; font-size:14.5px; font-weight:600; color: var(--grey); background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; font-family:inherit; margin-bottom:-1px; transition: all .2s; display:inline-flex; align-items:center; justify-content:center; gap:7px; }
   .tab svg { width:15px; height:15px; }
   .tab.active { color: var(--black); border-bottom-color: var(--black); }
   .panel { display:none; } .panel.active { display:block; }
   .panel h2 { font-size:22px; letter-spacing:-.5px; margin-bottom:6px; }
   .panel .sub { font-size:13.5px; color: var(--grey); margin-bottom:20px; }
-  .google-btn { width:100%; padding:13px; font-size:14.5px; font-weight:500; font-family:inherit; border:1.5px solid var(--line); background: var(--white); color: var(--black); border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:11px; transition: all .2s; margin-bottom:18px; }
-  .google-btn:hover { border-color: var(--black); background: var(--light); }
-  .google-btn svg { width:18px; height:18px; }
-  .divider { display:flex; align-items:center; gap:12px; margin: 6px 0 18px; color: var(--grey); font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; }
+  .oauth { width:100%; padding:13px; font-size:14.5px; font-weight:500; font-family:inherit; border:1.5px solid var(--line); background: var(--white); color: var(--black); border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:11px; transition: all .2s; margin-bottom:16px; }
+  .oauth:hover { border-color: var(--black); background: var(--light); }
+  .oauth svg { width:18px; height:18px; }
+  .divider { display:flex; align-items:center; gap:12px; margin: 4px 0 16px; color: var(--grey); font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; }
   .divider::before, .divider::after { content:""; flex:1; height:1px; background: var(--line); }
   .form-group { margin-bottom:14px; }
   .form-group label { display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; margin-bottom:7px; }
@@ -42,9 +42,7 @@
   .msg.error { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; display:block; }
   .msg.success { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; display:block; }
   .forgot { display:block; text-align:right; font-size:12.5px; color: var(--grey); text-decoration:none; margin-top:-6px; margin-bottom:16px; }
-  .forgot:hover { color: var(--black); }
   .back { display:block; text-align:center; margin-top:18px; font-size:12.5px; color: var(--grey); text-decoration:none; }
-  .back:hover { color: var(--black); }
   @media (max-width:500px) { .card { padding:28px 22px; } }
 </style>
 </head>
@@ -57,14 +55,13 @@
     <button class="tab" data-tab="signin"><i data-lucide="log-in"></i> Sign in</button>
   </div>
 
-  <!-- SIGN UP -->
   <div class="panel active" id="panel-signup">
     <h2>Create your account</h2>
-    <p class="sub">Free · You'll choose your course after signing up.</p>
+    <p class="sub">Free · You'll choose your curriculum next.</p>
 
     <div class="msg" id="signupMsg"></div>
 
-    <button type="button" class="google-btn" id="googleSignup">
+    <button type="button" class="oauth" id="googleSignup">
       <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
       Continue with Google
     </button>
@@ -94,14 +91,13 @@
     <a href="/" class="back">← Back to home</a>
   </div>
 
-  <!-- SIGN IN -->
   <div class="panel" id="panel-signin">
     <h2>Welcome back</h2>
     <p class="sub">Sign in to view your course.</p>
 
     <div class="msg" id="signinMsg"></div>
 
-    <button type="button" class="google-btn" id="googleSignin">
+    <button type="button" class="oauth" id="googleSignin">
       <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
       Continue with Google
     </button>
@@ -175,13 +171,16 @@ function friendlyError(code) {
   return map[code] || 'Something went wrong. Please try again.';
 }
 
-function redirect(user) {
-  window.location.href = user.email === ADMIN_EMAIL ? 'admin.html' : 'student-portal.html';
+// Redirect: admin → admin · student without curriculum → curriculum · student with → portal
+async function redirect(user) {
+  if (user.email === ADMIN_EMAIL) { window.location.href = 'admin.html'; return; }
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  const data = snap.exists() ? snap.data() : {};
+  window.location.href = data.course ? 'student-portal.html' : 'curriculum.html';
 }
 
-// Create student doc — NEVER for admin
 async function ensureStudentDoc(user, name) {
-  if (user.email === ADMIN_EMAIL) return; // admin is not a student
+  if (user.email === ADMIN_EMAIL) return;
   const ref = doc(db, 'users', user.uid);
   const snap = await getDoc(ref);
   if (snap.exists()) return;
@@ -189,6 +188,7 @@ async function ensureStudentDoc(user, name) {
     name: name || user.displayName || '',
     email: user.email,
     duration: null,
+    curriculum: null,
     course: null,
     electives: [],
     studentNumber: null,
@@ -199,18 +199,16 @@ async function ensureStudentDoc(user, name) {
   });
 }
 
-// Google signup
 document.getElementById('googleSignup').addEventListener('click', async () => {
   clearMsg('signupMsg');
   try {
     const result = await signInWithPopup(auth, googleProvider);
     await ensureStudentDoc(result.user);
     showMsg('signupMsg', 'Signed in. Redirecting…', 'success');
-    setTimeout(() => redirect(result.user), 700);
+    setTimeout(() => redirect(result.user), 600);
   } catch (err) { showMsg('signupMsg', friendlyError(err.code), 'error'); }
 });
 
-// Google signin
 document.getElementById('googleSignin').addEventListener('click', async () => {
   clearMsg('signinMsg');
   try {
@@ -219,7 +217,6 @@ document.getElementById('googleSignin').addEventListener('click', async () => {
   } catch (err) { showMsg('signinMsg', friendlyError(err.code), 'error'); }
 });
 
-// Email signup
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   clearMsg('signupMsg');
@@ -235,7 +232,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     await updateProfile(cred.user, { displayName: name });
     await ensureStudentDoc(cred.user, name);
     showMsg('signupMsg', 'Account created. Redirecting…', 'success');
-    setTimeout(() => redirect(cred.user), 700);
+    setTimeout(() => redirect(cred.user), 600);
   } catch (err) {
     showMsg('signupMsg', friendlyError(err.code), 'error');
     btn.disabled = false;
@@ -244,7 +241,6 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
   }
 });
 
-// Sign in
 document.getElementById('signinForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   clearMsg('signinMsg');
