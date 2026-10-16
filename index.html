@@ -6,850 +6,160 @@
 <title>Nyl Dev — Web Development Studio & Free Courses</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --black: #0d0d0d;
-    --white: #ffffff;
-    --grey: #6b6b6b;
-    --light: #f5f5f5;
-    --line: #e5e5e5;
-  }
-
+  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; }
   html { scroll-behavior: smooth; }
+  body { background: var(--white); color: var(--black); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-  body {
-    background: var(--white);
-    color: var(--black);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
+  /* NAV */
+  nav { position: sticky; top:0; z-index:100; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom:1px solid var(--line); padding: 18px 48px; display:flex; justify-content:space-between; align-items:center; }
+  .logo { font-family: 'Courier New', monospace; font-size: 30px; font-weight:700; letter-spacing:-2px; line-height:1; display:flex; align-items:center; color: var(--black); text-decoration:none; }
+  .logo .cursor { display:inline-block; width:14px; height:28px; background: var(--black); margin-left:2px; animation: blink 1.1s step-end infinite; }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+  .nav-right { display:flex; align-items:center; gap:10px; }
+  .nav-link { font-size:14px; font-weight:500; color: var(--black); text-decoration:none; padding:9px 16px; border-radius:6px; transition: background .2s; white-space:nowrap; }
+  .nav-link:hover { background: var(--light); }
+  .nav-avatar { width:38px; height:38px; border-radius:50%; overflow:hidden; cursor:pointer; border:1px solid var(--line); display:none; }
+  .nav-avatar canvas { display:block; width:100%; height:100%; }
+  .menu-btn { width:40px; height:40px; background: transparent; border:1px solid var(--line); border-radius:8px; cursor:pointer; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:5px; padding:0; flex-shrink:0; }
+  .menu-btn:hover { border-color: var(--black); background: var(--light); }
+  .menu-btn span { display:block; width:18px; height:1.6px; background: var(--black); transition: all .3s ease; border-radius:2px; }
+  .menu-btn.open span:nth-child(1){ transform: translateY(6.6px) rotate(45deg); }
+  .menu-btn.open span:nth-child(2){ opacity:0; }
+  .menu-btn.open span:nth-child(3){ transform: translateY(-6.6px) rotate(-45deg); }
 
-  /* ---------- NAV ---------- */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--line);
-    padding: 18px 48px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .logo {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -2px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    color: var(--black);
-    text-decoration: none;
-  }
-
-  .logo .cursor {
-    display: inline-block;
-    width: 14px;
-    height: 28px;
-    background: var(--black);
-    margin-left: 2px;
-    animation: blink 1.1s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 50%   { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .nav-signin {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--black);
-    text-decoration: none;
-    padding: 9px 16px;
-    border-radius: 6px;
-    transition: background 0.2s;
-    white-space: nowrap;
-  }
-
-  .nav-signin:hover { background: var(--light); }
-
-  .menu-btn {
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.2s;
-    padding: 0;
-    flex-shrink: 0;
-  }
-
-  .menu-btn:hover {
-    border-color: var(--black);
-    background: var(--light);
-  }
-
-  .menu-btn span {
-    display: block;
-    width: 18px;
-    height: 1.6px;
-    background: var(--black);
-    transition: all 0.3s ease;
-    border-radius: 2px;
-  }
-
-  .menu-btn.open span:nth-child(1) { transform: translateY(6.6px) rotate(45deg); }
-  .menu-btn.open span:nth-child(2) { opacity: 0; }
-  .menu-btn.open span:nth-child(3) { transform: translateY(-6.6px) rotate(-45deg); }
-
-  /* Dropdown */
-  .dropdown {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: var(--white);
-    border-bottom: 1px solid var(--line);
-    transform: translateY(-100%);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 99;
-    padding: 110px 48px 60px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-  }
-
+  /* DROPDOWN */
+  .dropdown { position: fixed; top:0; left:0; right:0; background: var(--white); border-bottom:1px solid var(--line); transform: translateY(-100%); transition: transform .4s cubic-bezier(.16,1,.3,1); z-index:99; padding: 110px 48px 60px; box-shadow: 0 20px 40px rgba(0,0,0,.06); }
   .dropdown.open { transform: translateY(0); }
-
-  .dropdown-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-  }
-
-  .dropdown-group h4 {
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--grey);
-    font-weight: 600;
-    margin-bottom: 18px;
-  }
-
-  .dropdown-group a {
-    display: block;
-    color: var(--black);
-    text-decoration: none;
-    font-size: 17px;
-    font-weight: 500;
-    padding: 8px 0;
-    transition: color 0.2s;
-  }
-
+  .dropdown-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:40px; }
+  .dropdown-group h4 { font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; margin-bottom:18px; }
+  .dropdown-group a { display:block; color: var(--black); text-decoration:none; font-size:17px; font-weight:500; padding:8px 0; }
   .dropdown-group a:hover { color: var(--grey); }
-
-  .dropdown-group .featured {
-    color: var(--black);
-    font-weight: 700;
-    font-size: 19px;
-  }
-
+  .dropdown-group .featured { font-weight:700; font-size:19px; }
   .dropdown-group .featured::after { content: " →"; }
 
-  /* ---------- HERO ---------- */
-  .hero {
-    padding: 110px 48px 90px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .hero h1 {
-    font-size: clamp(38px, 6vw, 80px);
-    line-height: 1.05;
-    letter-spacing: -2.5px;
-    font-weight: 700;
-    margin-bottom: 30px;
-    max-width: 900px;
-  }
-
+  /* HERO */
+  .hero { padding: 110px 48px 90px; max-width:1200px; margin:0 auto; }
+  .hero h1 { font-size: clamp(38px, 6vw, 80px); line-height:1.05; letter-spacing:-2.5px; font-weight:700; margin-bottom:30px; max-width:900px; }
   .hero h1 span { color: var(--grey); }
-
-  .hero p {
-    font-size: clamp(16px, 1.4vw, 20px);
-    color: var(--grey);
-    max-width: 620px;
-    margin-bottom: 42px;
-    line-height: 1.55;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 15px 30px;
-    font-size: 15px;
-    font-weight: 500;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    border: 1px solid transparent;
-    text-align: center;
-    font-family: inherit;
-  }
-
-  .btn-primary {
-    background: var(--black);
-    color: var(--white);
-  }
-
-  .btn-primary:hover {
-    background: #333;
-    transform: translateY(-1px);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--black);
-    border: 1px solid var(--line);
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--black);
-    transform: translateY(-1px);
-  }
-
-  /* ---------- CAROUSEL ---------- */
-  .carousel {
-    position: relative;
-    max-width: 1200px;
-    margin: 0 auto 20px;
-    padding: 0 48px;
-  }
-
-  .carousel-frame {
-    position: relative;
-    border-radius: 16px;
-    overflow: hidden;
-    aspect-ratio: 16 / 8;
-    background: var(--light);
-  }
-
-  .slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 1.1s ease;
-  }
-
-  .slide.active { opacity: 1; }
-
-  .slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .slide-caption {
-    position: absolute;
-    left: 32px;
-    bottom: 28px;
-    color: var(--white);
-    font-size: 15px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 600;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.6);
-  }
-
-  .carousel-dots {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 22px;
-  }
-
-  .carousel-dots button {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    border: none;
-    background: var(--line);
-    cursor: pointer;
-    padding: 0;
-    transition: all 0.25s;
-  }
-
-  .carousel-dots button.active {
-    background: var(--black);
-    width: 26px;
-    border-radius: 6px;
-  }
-
-  /* ---------- SECTIONS ---------- */
-  section {
-    padding: 90px 48px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .section-eyebrow {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 20px;
-  }
-
-  h2 {
-    font-size: clamp(30px, 4vw, 48px);
-    letter-spacing: -1.5px;
-    line-height: 1.12;
-    font-weight: 700;
-    margin-bottom: 22px;
-    max-width: 760px;
-  }
-
-  .section-lead {
-    font-size: 17px;
-    color: var(--grey);
-    max-width: 640px;
-    margin-bottom: 56px;
-    line-height: 1.55;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 22px;
-  }
-
-  .card {
-    padding: 38px 30px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    transition: all 0.25s ease;
-    background: var(--white);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .card:hover {
-    border-color: var(--black);
-    transform: translateY(-4px);
-  }
-
-  .card.featured {
-    border-color: var(--black);
-    border-width: 2px;
-  }
-
-  .card h3 {
-    font-size: 21px;
-    margin-bottom: 12px;
-    letter-spacing: -0.5px;
-    font-weight: 700;
-  }
-
-  .card .desc {
-    font-size: 15px;
-    color: var(--grey);
-    line-height: 1.65;
-    margin-bottom: 26px;
-  }
-
-  .card .price {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    margin-bottom: 6px;
-  }
-
-  .card .price small {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--grey);
-    letter-spacing: 0;
-  }
-
-  .card .price-note {
-    font-size: 13px;
-    color: var(--grey);
-    margin-bottom: 26px;
-  }
-
-  .card ul {
-    list-style: none;
-    margin-bottom: 0;
-    flex-grow: 1;
-  }
-
-  .card ul li {
-    font-size: 14px;
-    color: var(--grey);
-    padding: 10px 0;
-    border-bottom: 1px solid var(--line);
-    line-height: 1.5;
-  }
-
-  .card ul li:last-child { border-bottom: none; }
-
-  .card ul li::before {
-    content: "✓  ";
-    color: var(--black);
-    font-weight: 700;
-  }
-
-  /* ---------- CAMPUS / SIGNUP ---------- */
-  .campus {
-    background: var(--black);
-    color: var(--white);
-    padding: 100px 48px;
-  }
-
-  .campus-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: start;
-  }
-
-  .campus h2 {
-    color: var(--white);
-    margin-bottom: 24px;
-  }
-
-  .campus p {
-    font-size: 17px;
-    color: rgba(255,255,255,0.7);
-    max-width: 500px;
-    margin-bottom: 32px;
-    line-height: 1.6;
-  }
-
-  .campus-list {
-    list-style: none;
-    margin-bottom: 40px;
-  }
-
-  .campus-list li {
-    font-size: 15px;
-    color: rgba(255,255,255,0.85);
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .campus-list li:last-child { border-bottom: none; }
-
-  .campus-list li::before {
-    content: "✓";
-    color: var(--white);
-    font-weight: 700;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .dates {
-    margin-top: 8px;
-    padding: 24px 26px;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
-  }
-
-  .dates h4 {
-    font-size: 12px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
-    font-weight: 600;
-    margin-bottom: 16px;
-  }
-
-  .dates .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    font-size: 15px;
-  }
-
-  .dates .row:last-child { border-bottom: none; }
-
-  .dates .row .label { color: rgba(255,255,255,0.7); }
-  .dates .row .value { color: var(--white); font-weight: 600; }
-
-  /* Signup form */
-  .signup-form {
-    background: var(--white);
-    color: var(--black);
-    padding: 44px 40px;
-    border-radius: 16px;
-  }
-
-  .signup-form h3 {
-    font-size: 24px;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
-  }
-
-  .signup-form .form-sub {
-    font-size: 14px;
-    color: var(--grey);
-    margin-bottom: 28px;
-  }
-
-  .form-group {
-    margin-bottom: 18px;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--black);
-  }
-
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 14px 16px;
-    font-size: 15px;
-    font-family: inherit;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--white);
-    color: var(--black);
-    transition: border-color 0.2s;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-
-  .form-group select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d0d0d' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus {
-    outline: none;
-    border-color: var(--black);
-  }
-
-  .form-check {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin: 22px 0;
-    font-size: 13px;
-    color: var(--grey);
-    line-height: 1.5;
-  }
-
-  .form-check input {
-    margin-top: 3px;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    accent-color: var(--black);
-  }
-
-  .form-check a {
-    color: var(--black);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .signup-form .btn {
-    width: 100%;
-    padding: 16px;
-    font-size: 15px;
-  }
-
-  .signup-form .form-foot {
-    text-align: center;
-    font-size: 13px;
-    color: var(--grey);
-    margin-top: 20px;
-  }
-
-  .signup-form .form-foot a {
-    color: var(--black);
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .signup-form .msg {
-    padding: 12px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 16px;
-    line-height: 1.5;
-    display: none;
-  }
-
-  .signup-form .msg.error {
-    background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
-    display: block;
-  }
-
-  .signup-form .msg.success {
-    background: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
-    display: block;
-  }
-
-  /* ---------- CTA ---------- */
-  .cta-strip {
-    background: var(--light);
-    padding: 80px 48px;
-    text-align: center;
-  }
-
-  .cta-strip h2 {
-    margin: 0 auto 22px;
-    text-align: center;
-  }
-
-  .cta-strip p {
-    font-size: 17px;
-    color: var(--grey);
-    max-width: 560px;
-    margin: 0 auto 34px;
-    line-height: 1.6;
-  }
-
-  /* ---------- FOOTER ---------- */
-  footer {
-    padding: 60px 48px;
-    border-top: 1px solid var(--line);
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 32px;
-    font-size: 14px;
-    color: var(--grey);
-  }
-
+  .hero p { font-size: clamp(16px, 1.4vw, 20px); color: var(--grey); max-width:620px; margin-bottom:42px; }
+  .hero-actions { display:flex; gap:14px; flex-wrap:wrap; }
+  .btn { display:inline-block; padding:15px 30px; font-size:15px; font-weight:500; text-decoration:none; border-radius:8px; transition: all .2s ease; cursor:pointer; border:1px solid transparent; text-align:center; font-family: inherit; }
+  .btn-primary { background: var(--black); color: var(--white); }
+  .btn-primary:hover { background:#333; transform: translateY(-1px); }
+  .btn-secondary { background: transparent; color: var(--black); border:1px solid var(--line); }
+  .btn-secondary:hover { border-color: var(--black); transform: translateY(-1px); }
+
+  /* CAROUSEL */
+  .carousel { max-width:1200px; margin:0 auto 20px; padding:0 48px; }
+  .carousel-frame { position:relative; border-radius:16px; overflow:hidden; aspect-ratio:16/8; background: var(--light); }
+  .slide { position:absolute; inset:0; opacity:0; transition: opacity 1.1s ease; }
+  .slide.active { opacity:1; }
+  .slide img { width:100%; height:100%; object-fit:cover; display:block; }
+  .slide-caption { position:absolute; left:32px; bottom:28px; color: var(--white); font-size:15px; letter-spacing:1px; text-transform:uppercase; font-weight:600; text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+  .carousel-dots { display:flex; justify-content:center; gap:10px; margin-top:22px; }
+  .carousel-dots button { width:9px; height:9px; border-radius:50%; border:none; background: var(--line); cursor:pointer; padding:0; transition: all .25s; }
+  .carousel-dots button.active { background: var(--black); width:26px; border-radius:6px; }
+
+  /* SECTIONS */
+  section { padding: 90px 48px; max-width:1200px; margin:0 auto; }
+  .section-eyebrow { font-size:13px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:20px; }
+  h2 { font-size: clamp(30px, 4vw, 48px); letter-spacing:-1.5px; line-height:1.12; font-weight:700; margin-bottom:22px; max-width:760px; }
+  .section-lead { font-size:17px; color: var(--grey); max-width:640px; margin-bottom:56px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:22px; }
+  .card { padding: 38px 30px; border:1px solid var(--line); border-radius:12px; transition: all .25s ease; background: var(--white); display:flex; flex-direction:column; }
+  .card:hover { border-color: var(--black); transform: translateY(-4px); }
+  .card.featured { border-color: var(--black); border-width:2px; }
+  .card h3 { font-size:21px; margin-bottom:12px; font-weight:700; }
+  .card .desc { font-size:15px; color: var(--grey); margin-bottom:26px; }
+  .card .price { font-size:32px; font-weight:700; letter-spacing:-1px; margin-bottom:6px; }
+  .card .price small { font-size:15px; color: var(--grey); font-weight:500; }
+  .card .price-note { font-size:13px; color: var(--grey); margin-bottom:26px; }
+  .card ul { list-style:none; flex-grow:1; }
+  .card ul li { font-size:14px; color: var(--grey); padding:10px 0; border-bottom:1px solid var(--line); }
+  .card ul li:last-child { border-bottom:none; }
+  .card ul li::before { content:"✓  "; color: var(--black); font-weight:700; }
+
+  /* COURSES CTA BANNER */
+  .courses-banner { background: var(--black); color: var(--white); padding: 100px 48px; }
+  .courses-banner-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns: 1.2fr 1fr; gap:80px; align-items:center; }
+  .courses-banner h2 { color: var(--white); }
+  .courses-banner p { font-size:17px; color: rgba(255,255,255,.7); margin-bottom:24px; max-width:500px; }
+  .courses-banner .btn-primary { background: var(--white); color: var(--black); }
+  .courses-banner .btn-primary:hover { background: #e5e5e5; }
+  .courses-banner .btn-secondary { color: var(--white); border-color: rgba(255,255,255,.25); }
+  .courses-banner .btn-secondary:hover { border-color: var(--white); background: transparent; }
+  .course-points { list-style:none; }
+  .course-points li { padding:14px 0; border-bottom:1px solid rgba(255,255,255,.12); font-size:15px; display:flex; gap:14px; align-items:center; color: rgba(255,255,255,.85); }
+  .course-points li:last-child { border-bottom:none; }
+  .course-points li::before { content:"✓"; font-weight:700; color: var(--white); }
+
+  /* CTA */
+  .cta-strip { background: var(--light); padding: 80px 48px; text-align:center; }
+  .cta-strip h2 { margin: 0 auto 22px; text-align:center; }
+  .cta-strip p { font-size:17px; color: var(--grey); max-width:560px; margin: 0 auto 34px; }
+
+  /* FOOTER */
+  footer { padding: 60px 48px; border-top:1px solid var(--line); max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; font-size:14px; color: var(--grey); }
   footer strong { color: var(--black); }
-
-  footer a {
-    color: var(--black);
-    text-decoration: none;
-    font-weight: 500;
-  }
-
+  footer a { color: var(--black); text-decoration:none; font-weight:500; }
   footer a:hover { color: var(--grey); }
+  .logo-mini { font-family: 'Courier New', monospace; font-size:22px; font-weight:700; letter-spacing:-1px; color: var(--black); margin-bottom:10px; }
 
-  footer .logo-mini {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    color: var(--black);
-    margin-bottom: 10px;
-  }
-
-  /* ---------- COOKIE BANNER ---------- */
-  .cookie-banner {
-    position: fixed;
-    left: 20px;
-    right: 20px;
-    bottom: 20px;
-    background: var(--white);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-    padding: 22px 26px;
-    z-index: 200;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
-    max-width: 1000px;
-    margin: 0 auto;
-    transition: transform 0.4s ease, opacity 0.4s ease;
-  }
-
-  .cookie-banner.hidden {
-    transform: translateY(140%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .cookie-banner p {
-    font-size: 14px;
-    color: var(--grey);
-    line-height: 1.55;
-    flex: 1;
-    min-width: 240px;
-  }
-
-  .cookie-banner p a {
-    color: var(--black);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .cookie-actions {
-    display: flex;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-
-  .cookie-actions button {
-    padding: 12px 22px;
-    font-size: 14px;
-    font-weight: 500;
-    font-family: inherit;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid var(--line);
-    background: var(--white);
-    color: var(--black);
-  }
-
+  /* COOKIE */
+  .cookie-banner { position: fixed; left:20px; right:20px; bottom:20px; background: var(--white); border:1px solid var(--line); border-radius:14px; box-shadow: 0 20px 60px rgba(0,0,0,.15); padding:22px 26px; z-index:200; display:flex; align-items:center; gap:24px; flex-wrap:wrap; max-width:1000px; margin:0 auto; transition: transform .4s ease, opacity .4s ease; }
+  .cookie-banner.hidden { transform: translateY(140%); opacity:0; pointer-events:none; }
+  .cookie-banner p { font-size:14px; color: var(--grey); flex:1; min-width:240px; }
+  .cookie-banner a { color: var(--black); text-decoration:underline; }
+  .cookie-actions { display:flex; gap:10px; }
+  .cookie-actions button { padding:12px 22px; font-size:14px; font-weight:500; border-radius:8px; cursor:pointer; border:1px solid var(--line); background: var(--white); color: var(--black); font-family:inherit; }
   .cookie-actions button:hover { border-color: var(--black); }
+  .cookie-actions .accept { background: var(--black); color: var(--white); border-color: var(--black); }
+  .cookie-actions .accept:hover { background:#333; }
 
-  .cookie-actions .accept {
-    background: var(--black);
-    color: var(--white);
-    border-color: var(--black);
-  }
-
-  .cookie-actions .accept:hover { background: #333; }
-
-  /* ---------- RESPONSIVE ---------- */
   @media (max-width: 900px) {
-    .campus-inner {
-      grid-template-columns: 1fr;
-      gap: 50px;
-    }
+    .courses-banner-inner { grid-template-columns: 1fr; gap:40px; }
   }
-
   @media (max-width: 768px) {
     nav { padding: 14px 20px; }
-    .logo { font-size: 26px; }
-    .logo .cursor { height: 24px; width: 12px; }
-
-    .nav-signin { font-size: 13px; padding: 8px 12px; }
-
+    .logo { font-size:26px; }
+    .logo .cursor { height:24px; width:12px; }
+    .nav-link { font-size:13px; padding:8px 12px; }
     .dropdown { padding: 100px 24px 50px; }
-
     .hero { padding: 70px 20px 60px; }
-    .hero h1 { letter-spacing: -1.5px; }
-    .hero-actions { flex-direction: column; align-items: stretch; }
-    .hero-actions .btn { width: 100%; }
-
+    .hero-actions { flex-direction: column; }
+    .hero-actions .btn { width:100%; }
     .carousel { padding: 0 20px; }
-    .carousel-frame { aspect-ratio: 4 / 3; }
-    .slide-caption { left: 20px; bottom: 18px; font-size: 12px; }
-
+    .carousel-frame { aspect-ratio: 4/3; }
     section { padding: 70px 20px; }
-
-    .campus { padding: 70px 20px; }
-    .signup-form { padding: 32px 24px; }
-
-    .card { padding: 30px 24px; }
-
+    .courses-banner { padding: 70px 20px; }
     .cta-strip { padding: 70px 20px; }
-
-    footer {
-      padding: 50px 20px;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    footer > div:last-child { text-align: left !important; }
-
-    .cookie-banner {
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      padding: 18px 20px;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 16px;
-    }
-
-    .cookie-actions { width: 100%; }
-    .cookie-actions button { flex: 1; }
-  }
-
-  @media (max-width: 420px) {
-    .nav-signin { display: none; }
-    .nav-signin.show-mobile { display: inline-block; font-size: 12px; padding: 6px 10px; }
+    footer { padding: 50px 20px; flex-direction: column; }
+    footer > div:last-child { text-align:left !important; }
+    .cookie-banner { left:12px; right:12px; bottom:12px; flex-direction:column; align-items:stretch; }
+    .cookie-actions { width:100%; }
+    .cookie-actions button { flex:1; }
   }
 </style>
 </head>
 <body>
 
-<!-- ============ NAV ============ -->
 <nav>
-  <a href="/" class="logo" aria-label="Home">
-    <span>^</span><span class="cursor"></span>
-  </a>
-
+  <a href="/" class="logo" aria-label="Home"><span>^</span><span class="cursor"></span></a>
   <div class="nav-right">
-    <a href="auth.html" class="nav-signin" id="navSignin">Sign in</a>
-    <a href="student-portal.html" class="nav-signin" id="navPortal" style="display:none;">My Portal</a>
-    <a href="#" class="nav-signin" id="navLogout" style="display:none;">Sign out</a>
-
-    <button class="menu-btn" id="menuBtn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <a href="auth.html" class="nav-link" id="navAuth">Become a Student</a>
+    <a href="student-portal.html" class="nav-link" id="navPortal" style="display:none;">View my Course</a>
+    <a href="#" class="nav-avatar" id="navAvatar" title="My Profile"></a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
-<!-- ============ DROPDOWN MENU ============ -->
 <div class="dropdown" id="dropdown">
   <div class="dropdown-inner">
     <div class="dropdown-group">
-      <h4>Learn</h4>
-      <a href="courses.html" class="featured">Courses</a>
-      <a href="auth.html" id="ddSignup">Sign up</a>
-      <a href="courses.html#streams">Streams</a>
-      <a href="student-portal.html" id="ddPortal" style="display:none;">My Portal</a>
+      <h4>Courses</h4>
+      <a href="courses.html" class="featured">See our Courses</a>
+      <a href="auth.html" id="ddRegister">Become a Student</a>
+      <a href="student-portal.html" id="ddPortal" style="display:none;">View my Course</a>
     </div>
     <div class="dropdown-group">
       <h4>Work with us</h4>
@@ -860,298 +170,83 @@
     <div class="dropdown-group">
       <h4>Get started</h4>
       <a href="mailto:n1nathaniel971@gmail.com">n1nathaniel971@gmail.com</a>
-      <a href="auth.html">Create an account</a>
+      <a href="courses.html">Choose a Course</a>
     </div>
   </div>
 </div>
 
-<!-- ============ HERO ============ -->
 <header class="hero">
-  <h1>
-    We build websites.<br>
-    <span>We maintain them.</span><br>
-    We keep them running.
-  </h1>
-  <p>
-    A web development studio building and maintaining websites for businesses
-    that need a real online presence. We also offer free courses in development,
-    design, and mathematics.
-  </p>
+  <h1>We build websites.<br><span>We maintain them.</span><br>We keep them running.</h1>
+  <p>A web development studio building and maintaining websites for businesses that need a real online presence. We also offer free, non-accredited courses in development, design, and mathematics.</p>
   <div class="hero-actions">
     <a href="#pricing" class="btn btn-primary">See Pricing</a>
-    <a href="#campus" class="btn btn-secondary">Join Our Campus</a>
+    <a href="courses.html" class="btn btn-secondary">See our Courses</a>
   </div>
 </header>
 
-<!-- ============ CAROUSEL ============ -->
 <div class="carousel">
   <div class="carousel-frame">
-    <div class="slide active">
-      <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80" alt="Modern workspace">
-      <div class="slide-caption">Workspaces that build</div>
-    </div>
-    <div class="slide">
-      <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1600&q=80" alt="Code on screen">
-      <div class="slide-caption">Code that ships</div>
-    </div>
-    <div class="slide">
-      <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=80" alt="Team collaboration">
-      <div class="slide-caption">Teams that deliver</div>
-    </div>
-    <div class="slide">
-      <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1600&q=80" alt="Developer workstation">
-      <div class="slide-caption">Craft that lasts</div>
-    </div>
+    <div class="slide active"><img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1600&q=80" alt="Modern workspace"><div class="slide-caption">Workspaces that build</div></div>
+    <div class="slide"><img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1600&q=80" alt="Code on screen"><div class="slide-caption">Code that ships</div></div>
+    <div class="slide"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=80" alt="Team collaboration"><div class="slide-caption">Teams that deliver</div></div>
+    <div class="slide"><img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1600&q=80" alt="Developer workstation"><div class="slide-caption">Craft that lasts</div></div>
   </div>
   <div class="carousel-dots" id="dots"></div>
 </div>
 
-<!-- ============ WEBSITES WE BUILD ============ -->
 <section id="websites">
   <div class="section-eyebrow">What we build</div>
   <h2>Types of websites we build.</h2>
-  <p class="section-lead">
-    Every project is built from scratch — responsive, fast, and made to last.
-  </p>
-
+  <p class="section-lead">Every project is built from scratch — responsive, fast, and made to last.</p>
   <div class="grid">
-    <div class="card">
-      <h3>Landing Page</h3>
-      <div class="desc">A single-page site for a product, service, event, or campaign.</div>
-      <ul>
-        <li>One-page design</li>
-        <li>Mobile responsive</li>
-        <li>Contact form</li>
-        <li>Basic SEO setup</li>
-        <li>Deployment included</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>Business Website</h3>
-      <div class="desc">A multi-page site for a company, portfolio, or brand.</div>
-      <ul>
-        <li>Up to 6 pages</li>
-        <li>Custom design</li>
-        <li>Contact &amp; enquiry forms</li>
-        <li>Google Analytics</li>
-        <li>Deployment included</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>E-Commerce Store</h3>
-      <div class="desc">Sell products online with a full checkout and dashboard.</div>
-      <ul>
-        <li>Product catalogue</li>
-        <li>Cart &amp; checkout</li>
-        <li>Payment integration</li>
-        <li>Order management</li>
-        <li>Deployment included</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>Web Application</h3>
-      <div class="desc">A custom web app with logins, dashboards, and databases.</div>
-      <ul>
-        <li>User accounts</li>
-        <li>Database setup</li>
-        <li>Custom features</li>
-        <li>Admin dashboard</li>
-        <li>Deployment included</li>
-      </ul>
-    </div>
+    <div class="card"><h3>Landing Page</h3><div class="desc">A single-page site for a product, service, event, or campaign.</div><ul><li>One-page design</li><li>Mobile responsive</li><li>Contact form</li><li>Basic SEO setup</li><li>Deployment included</li></ul></div>
+    <div class="card"><h3>Business Website</h3><div class="desc">A multi-page site for a company, portfolio, or brand.</div><ul><li>Up to 6 pages</li><li>Custom design</li><li>Contact &amp; enquiry forms</li><li>Google Analytics</li><li>Deployment included</li></ul></div>
+    <div class="card"><h3>E-Commerce Store</h3><div class="desc">Sell products online with a full checkout and dashboard.</div><ul><li>Product catalogue</li><li>Cart &amp; checkout</li><li>Payment integration</li><li>Order management</li><li>Deployment included</li></ul></div>
+    <div class="card"><h3>Web Application</h3><div class="desc">A custom web app with logins, dashboards, and databases.</div><ul><li>User accounts</li><li>Database setup</li><li>Custom features</li><li>Admin dashboard</li><li>Deployment included</li></ul></div>
   </div>
 </section>
 
-<!-- ============ PRICING ============ -->
 <section id="pricing">
   <div class="section-eyebrow">Pricing</div>
   <h2>Simple pricing.</h2>
-  <p class="section-lead">
-    One-time build fee. Optional monthly maintenance. No hidden costs.
-  </p>
-
+  <p class="section-lead">One-time build fee. Optional monthly maintenance. No hidden costs.</p>
   <div class="grid">
-    <div class="card">
-      <h3>Landing Page</h3>
-      <div class="price">R2,500</div>
-      <div class="price-note">one-time build</div>
-      <ul>
-        <li>Delivered in 3–5 days</li>
-        <li>1 round of revisions</li>
-        <li>Mobile responsive</li>
-        <li>Live deployment</li>
-      </ul>
-    </div>
-
-    <div class="card featured">
-      <h3>Business Website</h3>
-      <div class="price">R5,500</div>
-      <div class="price-note">one-time build</div>
-      <ul>
-        <li>Delivered in 1–2 weeks</li>
-        <li>2 rounds of revisions</li>
-        <li>Custom design</li>
-        <li>SEO basics</li>
-        <li>Live deployment</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>E-Commerce Store</h3>
-      <div class="price">R12,000</div>
-      <div class="price-note">one-time build</div>
-      <ul>
-        <li>Delivered in 2–4 weeks</li>
-        <li>Payment integration</li>
-        <li>Product setup</li>
-        <li>Training session</li>
-        <li>Live deployment</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>Web Application</h3>
-      <div class="price">From R20,000</div>
-      <div class="price-note">quoted per project</div>
-      <ul>
-        <li>Scoped to your needs</li>
-        <li>Custom features</li>
-        <li>User accounts</li>
-        <li>Admin dashboard</li>
-        <li>Live deployment</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>Maintenance</h3>
-      <div class="price">R450<small>/month</small></div>
-      <div class="price-note">optional ongoing support</div>
-      <ul>
-        <li>Hosting management</li>
-        <li>Security updates</li>
-        <li>Content edits</li>
-        <li>Uptime monitoring</li>
-        <li>Email support</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>Custom Quote</h3>
-      <div class="price">Let's talk</div>
-      <div class="price-note">for anything else</div>
-      <ul>
-        <li>Redesigns</li>
-        <li>Migrations</li>
-        <li>Integrations</li>
-        <li>Consulting</li>
-      </ul>
-    </div>
+    <div class="card"><h3>Landing Page</h3><div class="price">R2,500</div><div class="price-note">one-time build</div><ul><li>Delivered in 3–5 days</li><li>1 round of revisions</li><li>Mobile responsive</li><li>Live deployment</li></ul></div>
+    <div class="card featured"><h3>Business Website</h3><div class="price">R5,500</div><div class="price-note">one-time build</div><ul><li>Delivered in 1–2 weeks</li><li>2 rounds of revisions</li><li>Custom design</li><li>SEO basics</li><li>Live deployment</li></ul></div>
+    <div class="card"><h3>E-Commerce Store</h3><div class="price">R12,000</div><div class="price-note">one-time build</div><ul><li>Delivered in 2–4 weeks</li><li>Payment integration</li><li>Product setup</li><li>Training session</li><li>Live deployment</li></ul></div>
+    <div class="card"><h3>Web Application</h3><div class="price">From R20,000</div><div class="price-note">quoted per project</div><ul><li>Scoped to your needs</li><li>Custom features</li><li>User accounts</li><li>Admin dashboard</li><li>Live deployment</li></ul></div>
+    <div class="card"><h3>Maintenance</h3><div class="price">R450<small>/month</small></div><div class="price-note">optional ongoing support</div><ul><li>Hosting management</li><li>Security updates</li><li>Content edits</li><li>Uptime monitoring</li><li>Email support</li></ul></div>
+    <div class="card"><h3>Custom Quote</h3><div class="price">Let's talk</div><div class="price-note">for anything else</div><ul><li>Redesigns</li><li>Migrations</li><li>Integrations</li><li>Consulting</li></ul></div>
   </div>
 </section>
 
-<!-- ============ CAMPUS / SIGNUP ============ -->
-<div class="campus" id="campus">
-  <div class="campus-inner">
+<div class="courses-banner" id="courses-cta">
+  <div class="courses-banner-inner">
     <div>
-      <div class="section-eyebrow" style="color: rgba(255,255,255,0.5);">Online Campus</div>
-      <h2>Sign up. Select your courses. Wait for the start.</h2>
-      <p>
-        Create your free account, choose the courses you want to take, and
-        we'll notify you when classes begin. Administration closes on
-        <strong style="color:#fff;">14 February 2026</strong>.
-      </p>
-
-      <ul class="campus-list">
-        <li>Access every course — 100% free</li>
-        <li>Track your progress and exam results</li>
-        <li>Submit projects and receive feedback</li>
-        <li>Earn your certificate on completion</li>
-      </ul>
-
-      <div class="dates">
-        <h4>Important Dates</h4>
-        <div class="row">
-          <span class="label">Administration closes</span>
-          <span class="value">14 February 2026</span>
-        </div>
-        <div class="row">
-          <span class="label">Courses begin</span>
-          <span class="value">January / February 2026</span>
-        </div>
-        <div class="row">
-          <span class="label">Cost</span>
-          <span class="value">Free</span>
-        </div>
+      <div class="section-eyebrow" style="color: rgba(255,255,255,.5);">Free Courses</div>
+      <h2>Become a Student.</h2>
+      <p>Register free and choose your course. Administration closes <strong style="color:#fff;">14 February 2026</strong>. Courses begin <strong style="color:#fff;">January / February 2026</strong>.</p>
+      <div style="display:flex; gap:14px; flex-wrap:wrap; margin-top:24px;">
+        <a href="courses.html" class="btn btn-primary">See our Courses</a>
+        <a href="auth.html" class="btn btn-secondary">Become a Student</a>
       </div>
     </div>
-
-    <div class="signup-form">
-      <h3>Create your account</h3>
-      <p class="form-sub">Free forever. No card required.</p>
-
-      <div class="msg" id="signupMsg"></div>
-
-      <form id="signupForm">
-        <div class="form-group">
-          <label for="signupName">Full name</label>
-          <input type="text" id="signupName" placeholder="Your name" required>
-        </div>
-
-        <div class="form-group">
-          <label for="signupEmail">Email address</label>
-          <input type="email" id="signupEmail" placeholder="you@example.com" required>
-        </div>
-
-        <div class="form-group">
-          <label for="signupPassword">Password</label>
-          <input type="password" id="signupPassword" placeholder="At least 8 characters" minlength="8" required>
-        </div>
-
-        <div class="form-group">
-          <label for="signupCourse">Select your course</label>
-          <select id="signupCourse" required>
-            <option value="" disabled selected>Choose a course</option>
-            <option value="fullstack">Full Stack Engineering</option>
-            <option value="frontend">Frontend Craft</option>
-            <option value="backend">Backend Engineering</option>
-            <option value="webdesign">Web Design</option>
-            <option value="uiux">UI/UX Design</option>
-            <option value="stem">STEM &amp; Physics</option>
-          </select>
-        </div>
-
-        <div class="form-check">
-          <input type="checkbox" id="signupTerms" required>
-          <label for="signupTerms">
-            I agree to the <a href="terms.html">Terms of Service</a> and
-            <a href="privacy.html">Privacy Policy</a>. I understand my data
-            will be stored and processed in line with POPIA.
-          </label>
-        </div>
-
-        <button type="submit" class="btn btn-primary" id="signupBtn">Create Account →</button>
-
-        <p class="form-foot">
-          Already have an account? <a href="auth.html">Sign in</a>
-        </p>
-      </form>
-    </div>
+    <ul class="course-points">
+      <li>Access every course — 100% free</li>
+      <li>Choose duration: 6 or 12 months</li>
+      <li>Select 6 compulsory + 2 elective subjects</li>
+      <li>Non-accredited — skills-based certificate</li>
+      <li>Track your progress and exam results</li>
+    </ul>
   </div>
 </div>
 
-<!-- ============ CTA ============ -->
 <div class="cta-strip" id="contact">
-  <h2>Ready to build your website?</h2>
-  <p>
-    Tell us what you need. We'll get back to you with a quote within 24 hours.
-  </p>
-  <a href="mailto:n1nathaniel971@gmail.com" class="btn btn-primary">Get in Touch</a>
+  <h2>Need a website?</h2>
+  <p>No account needed. Just email us and we'll get back to you with a quote within 24 hours.</p>
+  <a href="mailto:n1nathaniel971@gmail.com" class="btn btn-primary">Email Us</a>
 </div>
 
-<!-- ============ FOOTER ============ -->
 <footer>
   <div>
     <div class="logo-mini">^_</div>
@@ -1167,13 +262,8 @@
   </div>
 </footer>
 
-<!-- ============ COOKIE BANNER ============ -->
 <div class="cookie-banner hidden" id="cookieBanner">
-  <p>
-    We use cookies to improve your experience and understand how visitors use
-    our site. By continuing, you agree to our
-    <a href="privacy.html">Privacy Policy</a>.
-  </p>
+  <p>We use cookies to improve your experience and understand how visitors use our site. By continuing, you agree to our <a href="privacy.html">Privacy Policy</a>.</p>
   <div class="cookie-actions">
     <button type="button" id="declineCookies">Decline</button>
     <button type="button" class="accept" id="acceptCookies">Accept</button>
@@ -1182,13 +272,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth, onAuthStateChanged, signOut,
-  createUserWithEmailAndPassword, updateProfile
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-  getFirestore, doc, setDoc, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
@@ -1198,166 +282,101 @@ const firebaseConfig = {
   messagingSenderId: "16687006873",
   appId: "1:16687006873:web:b7d66ad1024ccd92722408"
 };
-
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
-// ---------- HAMBURGER ----------
+// Hamburger
 const menuBtn = document.getElementById('menuBtn');
 const dropdown = document.getElementById('dropdown');
+menuBtn.addEventListener('click', () => { menuBtn.classList.toggle('open'); dropdown.classList.toggle('open'); });
+document.querySelectorAll('.dropdown a').forEach(l => l.addEventListener('click', () => { menuBtn.classList.remove('open'); dropdown.classList.remove('open'); }));
 
-menuBtn.addEventListener('click', () => {
-  menuBtn.classList.toggle('open');
-  dropdown.classList.toggle('open');
-});
-
-document.querySelectorAll('.dropdown a').forEach(link => {
-  link.addEventListener('click', () => {
-    menuBtn.classList.remove('open');
-    dropdown.classList.remove('open');
-  });
-});
-
-// ---------- CAROUSEL ----------
+// Carousel
 const slides = document.querySelectorAll('.slide');
 const dotsContainer = document.getElementById('dots');
 let current = 0;
-
 slides.forEach((_, i) => {
-  const dot = document.createElement('button');
-  if (i === 0) dot.classList.add('active');
-  dot.addEventListener('click', () => goTo(i));
-  dotsContainer.appendChild(dot);
+  const d = document.createElement('button');
+  if (i === 0) d.classList.add('active');
+  d.addEventListener('click', () => goTo(i));
+  dotsContainer.appendChild(d);
 });
-
 const dots = dotsContainer.querySelectorAll('button');
-
 function goTo(i) {
-  slides[current].classList.remove('active');
-  dots[current].classList.remove('active');
+  slides[current].classList.remove('active'); dots[current].classList.remove('active');
   current = i;
-  slides[current].classList.add('active');
-  dots[current].classList.add('active');
+  slides[current].classList.add('active'); dots[current].classList.add('active');
 }
+setInterval(() => goTo((current + 1) % slides.length), 4500);
 
-setInterval(() => {
-  goTo((current + 1) % slides.length);
-}, 4500);
-
-// ---------- COOKIE BANNER ----------
+// Cookies
 const cookieBanner = document.getElementById('cookieBanner');
 const COOKIE_KEY = 'nyldev_cookie_consent';
+if (!localStorage.getItem(COOKIE_KEY)) setTimeout(() => cookieBanner.classList.remove('hidden'), 1200);
+document.getElementById('acceptCookies').addEventListener('click', () => { localStorage.setItem(COOKIE_KEY, 'accepted'); cookieBanner.classList.add('hidden'); });
+document.getElementById('declineCookies').addEventListener('click', () => { localStorage.setItem(COOKIE_KEY, 'declined'); cookieBanner.classList.add('hidden'); });
 
-if (!localStorage.getItem(COOKIE_KEY)) {
-  setTimeout(() => cookieBanner.classList.remove('hidden'), 1200);
+// Identicon avatar
+function generateAvatar(uid) {
+  let hash = 0;
+  for (let i = 0; i < uid.length; i++) { hash = ((hash << 5) - hash) + uid.charCodeAt(i); hash |= 0; }
+  const size = 5, cells = [];
+  for (let i = 0; i < size * size; i++) cells.push(((hash >> (i % 28)) & 3) > 0 ? 1 : 0);
+  const grid = [];
+  for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+    const mirror = Math.min(c, size - 1 - c);
+    grid.push(cells[r * size + mirror]);
+  }
+  const hue = Math.abs(hash) % 360;
+  return { grid, hue, size };
+}
+function paintAvatar(canvas, uid) {
+  const { grid, hue, size } = generateAvatar(uid);
+  const ctx = canvas.getContext('2d');
+  const px = 40;
+  canvas.width = size * px; canvas.height = size * px;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  grid.forEach((v, i) => {
+    if (v) {
+      ctx.fillStyle = `hsl(${hue}, 60%, 45%)`;
+      const r = Math.floor(i / size), c = i % size;
+      ctx.fillRect(c * px, r * px, px, px);
+    }
+  });
 }
 
-document.getElementById('acceptCookies').addEventListener('click', () => {
-  localStorage.setItem(COOKIE_KEY, 'accepted');
-  cookieBanner.classList.add('hidden');
-});
-
-document.getElementById('declineCookies').addEventListener('click', () => {
-  localStorage.setItem(COOKIE_KEY, 'declined');
-  cookieBanner.classList.add('hidden');
-});
-
-// ---------- AUTH STATE (NAV) ----------
+// Auth state
 onAuthStateChanged(auth, (user) => {
-  const signin = document.getElementById('navSignin');
-  const portal = document.getElementById('navPortal');
-  const logout = document.getElementById('navLogout');
+  const navAuth = document.getElementById('navAuth');
+  const navPortal = document.getElementById('navPortal');
+  const navAvatar = document.getElementById('navAvatar');
   const ddPortal = document.getElementById('ddPortal');
-  const ddSignup = document.getElementById('ddSignup');
+  const ddRegister = document.getElementById('ddRegister');
 
   if (user) {
-    signin.style.display = 'none';
-    portal.style.display = 'inline-block';
-    logout.style.display = 'inline-block';
+    navAuth.style.display = 'none';
+    navPortal.style.display = 'inline-block';
+    navAvatar.style.display = 'block';
     ddPortal.style.display = 'block';
-    ddSignup.style.display = 'none';
+    ddRegister.style.display = 'none';
+    navPortal.href = user.email === ADMIN_EMAIL ? 'admin.html' : 'student-portal.html';
+    navPortal.textContent = user.email === ADMIN_EMAIL ? 'Admin' : 'View my Course';
 
-    // Admin portal link goes to admin panel
-    if (user.email === ADMIN_EMAIL) {
-      portal.href = 'admin.html';
-      portal.textContent = 'Admin';
-    } else {
-      portal.href = 'student-portal.html';
-      portal.textContent = 'My Portal';
-    }
+    // Render identicon
+    navAvatar.innerHTML = '';
+    const canvas = document.createElement('canvas');
+    navAvatar.appendChild(canvas);
+    paintAvatar(canvas, user.uid);
+    navAvatar.addEventListener('click', () => { window.location.href = 'student-portal.html'; });
   } else {
-    signin.style.display = 'inline-block';
-    portal.style.display = 'none';
-    logout.style.display = 'none';
+    navAuth.style.display = 'inline-block';
+    navPortal.style.display = 'none';
+    navAvatar.style.display = 'none';
     ddPortal.style.display = 'none';
-    ddSignup.style.display = 'block';
-  }
-});
-
-document.getElementById('navLogout').addEventListener('click', async (e) => {
-  e.preventDefault();
-  await signOut(auth);
-  window.location.reload();
-});
-
-// ---------- SIGNUP ----------
-function showMsg(text, type) {
-  const el = document.getElementById('signupMsg');
-  el.textContent = text;
-  el.className = 'msg ' + type;
-}
-
-function friendlyError(code) {
-  const map = {
-    'auth/email-already-in-use': 'That email is already registered. Try signing in.',
-    'auth/invalid-email': 'Please enter a valid email address.',
-    'auth/weak-password': 'Password must be at least 8 characters.',
-    'auth/network-request-failed': 'Network error. Check your connection.'
-  };
-  return map[code] || 'Something went wrong. Please try again.';
-}
-
-document.getElementById('signupForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById('signupName').value.trim();
-  const email = document.getElementById('signupEmail').value.trim();
-  const password = document.getElementById('signupPassword').value;
-  const course = document.getElementById('signupCourse').value;
-  const btn = document.getElementById('signupBtn');
-
-  btn.disabled = true;
-  btn.textContent = 'Creating account…';
-
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(cred.user, { displayName: name });
-
-    await setDoc(doc(db, 'users', cred.user.uid), {
-      name,
-      email,
-      course,
-      status: 'pending',
-      studentNumber: null,
-      createdAt: serverTimestamp(),
-      role: 'student'
-    });
-
-    showMsg('Account created. Taking you to your portal…', 'success');
-    setTimeout(() => {
-      window.location.href = 'student-portal.html';
-    }, 900);
-
-  } catch (err) {
-    showMsg(friendlyError(err.code), 'error');
-    btn.disabled = false;
-    btn.textContent = 'Create Account →';
+    ddRegister.style.display = 'block';
   }
 });
 </script>
-
 </body>
 </html>
