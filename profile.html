@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Your profile · ∆ IFB Institute</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0b0b0b">
+<meta name="robots" content="noindex, nofollow">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<style>
+/* =================== THEME =================== */
+:root{
+  --ink:#0b0b0b;--ink-2:#1c1c1c;--ink-3:#2b2b2b;
+  --paper:#ffffff;--paper-2:#fafafa;--paper-3:#f4f4f4;--paper-4:#ebebeb;
+  --line:#e7e7e7;--line-2:#d6d6d6;
+  --muted:#6f6f6f;--muted-2:#909090;--muted-3:#b4b4b4;
+  --gold:#b58a2b;--gold-soft:#fbf4e0;
+  --blue:#2f4ba8;--blue-soft:#eef2ff;
+  --green:#0a7d4f;--green-soft:#e8f5ec;
+  --red:#b3261e;--red-soft:#fdefec;
+  --orange:#b46300;--orange-soft:#fdf1e0;
+  --purple:#6b21a8;--purple-soft:#f5e8ff;
+  --radius:10px;--radius-lg:16px;--radius-xl:22px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 10px 28px rgba(0,0,0,.06);
+  --shadow-lg:0 26px 70px rgba(0,0,0,.10);
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper-2);color:var(--ink);
+  font-family:var(--font);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+::selection{background:var(--ink);color:var(--paper)}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit}
+table{border-collapse:collapse}
+
+/* =================== LOADER =================== */
+.loader{position:fixed;inset:0;z-index:9999;background:var(--ink);color:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .6s ease,visibility .6s ease;padding:24px}
+.loader.gone{opacity:0;visibility:hidden;pointer-events:none}
+.loader-mark{font-size:88px;font-weight:600;line-height:1;letter-spacing:-3px;animation:breathe 1.7s ease-in-out infinite}
+.loader-label{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:600;text-align:center}
+.loader-bar{width:180px;height:2px;background:rgba(255,255,255,.14);border-radius:2px;overflow:hidden;margin-top:4px}
+.loader-bar span{display:block;height:100%;width:36%;background:var(--paper);border-radius:2px;animation:loaderSlide 1.35s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.7;transform:scale(.94)}50%{opacity:1;transform:scale(1)}}
+@keyframes loaderSlide{0%{transform:translateX(-130%)}100%{transform:translateX(380%)}}
+
+/* =================== NAV =================== */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.nav-inner{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-width:0}
+.brand-mark{font-size:32px;font-weight:600;line-height:.9;letter-spacing:-2px;flex-shrink:0}
+.brand-text{display:flex;flex-direction:column;line-height:1.05;min-width:0}
+.brand-name{font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap}
+.brand-sub{font-size:9.5px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;margin-top:2px;white-space:nowrap}
+@media(max-width:400px){.brand-text{display:none}}
+.nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-btn{font-size:12.5px;font-weight:600;color:var(--ink);background:var(--paper);text-decoration:none;padding:8px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);transition:all .18s ease;white-space:nowrap}
+.nav-btn:hover{border-color:var(--ink);background:var(--paper-3)}
+.nav-btn svg{width:13px;height:13px}
+.nav-btn.icon-only{padding:8px 9px}
+.nav-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* =================== LAYOUT =================== */
+.shell{padding:0 16px;max-width:100%}
+
+/* =================== HERO CARD =================== */
+.hero-card{
+  margin-top:20px;
+  border:1px solid var(--line);border-radius:var(--radius-xl);
+  background:var(--paper);padding:24px 20px;
+  position:relative;overflow:hidden;
+}
+.hero-card::before{
+  content:"";position:absolute;top:-40%;right:-20%;width:280px;height:280px;
+  background:radial-gradient(circle,rgba(181,138,43,.10) 0%,rgba(181,138,43,0) 70%);
+  pointer-events:none;
+}
+.hero-top{display:flex;align-items:flex-start;gap:16px;position:relative;z-index:1}
+.hero-avatar{
+  width:72px;height:72px;border-radius:18px;overflow:hidden;
+  border:1.5px solid var(--line);flex-shrink:0;
+  background:var(--paper-3);display:flex;align-items:center;justify-content:center;
+}
+.hero-avatar svg{display:block;border-radius:16px}
+.hero-id{flex:1;min-width:0}
+.hero-id .hi{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px}
+.hero-id h1{
+  font-size:22px;letter-spacing:-.8px;line-height:1.15;font-weight:700;
+  margin-bottom:6px;word-break:break-word;
+}
+.hero-id .email{font-size:11.5px;color:var(--muted);font-family:var(--mono);word-break:break-all;line-height:1.4}
+.hero-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;position:relative;z-index:1}
+
+/* status badges */
+.status{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:4px 10px;border-radius:100px;white-space:nowrap}
+.status svg{width:11px;height:11px}
+.status.pending{background:var(--orange-soft);color:var(--orange)}
+.status.prelude{background:var(--blue-soft);color:var(--blue)}
+.status.curriculum{background:var(--gold-soft);color:var(--gold)}
+.status.approved{background:var(--green-soft);color:var(--green)}
+.status.revoked{background:var(--red-soft);color:var(--red)}
+.status.ai{background:var(--purple-soft);color:var(--purple)}
+.tag{display:inline-flex;font-size:10.5px;font-weight:700;letter-spacing:.4px;padding:4px 9px;border-radius:7px;background:var(--paper-3);color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.tag.duration{background:var(--blue-soft);color:var(--blue)}
+.tag.stream{background:var(--ink);color:var(--paper)}
+
+/* progress */
+.progress{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);position:relative;z-index:1}
+.progress .steps{display:flex;justify-content:space-between;gap:4px}
+.progress .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.progress .dot{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--paper-3);border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--muted);
+  transition:all .25s ease;
+}
+.progress .step.done .dot{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.progress .step.active .dot{background:var(--paper);border-color:var(--ink);color:var(--ink);border-width:2px}
+.progress .step .lbl{font-size:9px;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:center;line-height:1.25}
+.progress .step.done .lbl,.progress .step.active .lbl{color:var(--ink)}
+.progress .line{position:absolute;top:14px;left:8%;right:8%;height:1px;background:var(--line);z-index:-1}
+.progress .line .fill{height:100%;background:var(--ink);width:0;transition:width .4s ease}
+
+/* =================== SECTION =================== */
+.section{margin-top:22px}
+.section-head{display:flex;align-items:center;gap:9px;padding:0 2px;margin-bottom:10px}
+.section-head .icon{width:28px;height:28px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-head .icon svg{width:13px;height:13px}
+.section-head h2{font-size:14px;font-weight:700;letter-spacing:-.2px;flex:1;min-width:0}
+.section-head .count{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--muted);background:var(--paper-3);padding:3px 8px;border-radius:100px}
+
+/* =================== IDENTITY GRID =================== */
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.id-cell{
+  background:var(--paper);border:1px solid var(--line);border-radius:12px;
+  padding:12px 13px;min-width:0;
+}
+.id-cell .k{font-size:9.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.id-cell .k svg{width:10px;height:10px}
+.id-cell .v{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.5px;word-break:break-all;line-height:1.25}
+.id-cell .v.small{font-size:12px;letter-spacing:.2px}
+.id-cell .v.null{font-family:var(--font);font-size:12.5px;font-weight:500;color:var(--muted-3);font-style:italic;letter-spacing:0}
+.id-cell .hint{font-size:10px;color:var(--muted-2);margin-top:4px;line-height:1.4}
+
+/* =================== BARCODE =================== */
+.barcode-card{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;padding:16px;text-align:center;
+}
+.barcode-card .label{font-size:9.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px}
+.barcode-card svg{width:100%;height:56px;display:block;margin:0 auto}
+.barcode-card .code{font-family:var(--mono);font-size:11.5px;letter-spacing:1.5px;color:var(--ink);font-weight:700;margin-top:10px;word-break:break-all}
+.barcode-card .hint{font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+.barcode-empty{
+  padding:24px 14px;color:var(--muted);font-size:12px;
+  text-align:center;border:1.5px dashed var(--line-2);border-radius:12px;
+  line-height:1.55;
+}
+.barcode-empty strong{display:block;color:var(--ink);font-weight:700;margin-bottom:4px;font-size:12.5px}
+
+/* =================== SUBJECTS LIST =================== */
+.subj-list{display:flex;flex-direction:column;gap:7px}
+.subj-item{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:11px;padding:12px 13px;
+  display:flex;align-items:center;gap:11px;
+}
+.subj-item .icon{
+  width:34px;height:34px;border-radius:9px;
+  background:var(--paper-3);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.subj-item .icon svg{width:15px;height:15px}
+.subj-item.stream .icon{background:var(--ink);border-color:var(--ink)}
+.subj-item.stream .icon svg{color:var(--paper)}
+.subj-item .meta{flex:1;min-width:0}
+.subj-item .name{font-size:13.5px;font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis}
+.subj-item .sub{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.3}
+.subj-item .ptag{
+  font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:3px 8px;border-radius:5px;flex-shrink:0;
+}
+.subj-item .ptag.core{background:var(--paper-3);color:var(--muted)}
+.subj-item .ptag.stream{background:var(--blue-soft);color:var(--blue)}
+.subj-item .ptag.elective{background:var(--green-soft);color:var(--green)}
+
+/* =================== RESULT TABLE =================== */
+.results-block{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.results-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.results-table{width:100%;font-size:12.5px;min-width:420px}
+.results-table th,.results-table td{
+  padding:10px 12px;border-bottom:1px solid var(--line);
+  border-right:1px solid var(--line);text-align:left;vertical-align:middle;
+}
+.results-table th:last-child,.results-table td:last-child{border-right:none}
+.results-table th{
+  font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--muted);font-weight:700;background:var(--paper-3);
+  white-space:nowrap;
+}
+.results-table td.mono{font-family:var(--mono);font-size:12px}
+.results-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.results-table td.score{font-weight:700;font-size:13.5px}
+.results-table tr:last-child td{border-bottom:none}
+.results-table tbody tr:nth-child(even){background:var(--paper-2)}
+.grade{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.3px}
+.grade.a{background:var(--green-soft);color:var(--green)}
+.grade.b{background:var(--blue-soft);color:var(--blue)}
+.grade.c{background:var(--gold-soft);color:var(--gold)}
+.grade.f{background:var(--red-soft);color:var(--red)}
+
+.results-empty{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;padding:28px 20px;text-align:center;
+}
+.results-empty .icon{
+  width:48px;height:48px;border-radius:12px;background:var(--paper-3);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 12px;
+}
+.results-empty .icon svg{width:20px;height:20px;color:var(--muted)}
+.results-empty h3{font-size:14px;font-weight:700;margin-bottom:5px}
+.results-empty p{font-size:12.5px;color:var(--muted);line-height:1.55;max-width:340px;margin:0 auto}
+
+/* =================== AI NOTICE =================== */
+.ai-notice{
+  background:var(--purple-soft);border:1px solid rgba(107,33,168,.18);
+  border-radius:12px;padding:12px 14px;display:flex;gap:10px;
+  align-items:flex-start;font-size:12px;color:var(--purple);line-height:1.55;
+}
+.ai-notice svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+.ai-notice strong{display:block;font-weight:700;margin-bottom:3px;font-size:12.5px;color:#4c1580}
+
+/* =================== INFO NOTICE =================== */
+.info-notice{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:12px;padding:12px 14px;display:flex;gap:10px;
+  align-items:flex-start;font-size:12px;color:var(--muted);line-height:1.55;
+}
+.info-notice svg{width:15px;height:15px;flex-shrink:0;margin-top:2px;color:var(--ink)}
+.info-notice strong{color:var(--ink);font-weight:700}
+
+/* =================== ACTION BUTTONS =================== */
+.actions-list{display:flex;flex-direction:column;gap:7px}
+.action-row{
+  display:flex;align-items:center;gap:11px;
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:12px;padding:13px 14px;
+  text-decoration:none;color:var(--ink);
+  transition:all .18s ease;
+}
+.action-row:active{border-color:var(--ink);background:var(--paper-3)}
+.action-row.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.action-row .icon{
+  width:36px;height:36px;border-radius:10px;
+  background:var(--paper-3);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.action-row.primary .icon{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+.action-row .icon svg{width:15px;height:15px}
+.action-row .icon.danger{background:var(--red-soft);border-color:rgba(179,38,30,.2)}
+.action-row .icon.danger svg{color:var(--red)}
+.action-row .txt{flex:1;min-width:0}
+.action-row .txt h4{font-size:13.5px;font-weight:600;letter-spacing:-.1px;margin-bottom:2px}
+.action-row .txt p{font-size:11.5px;color:var(--muted);line-height:1.35}
+.action-row.primary .txt p{color:rgba(255,255,255,.6)}
+.action-row .arrow{color:var(--muted);flex-shrink:0}
+.action-row.primary .arrow{color:rgba(255,255,255,.5)}
+.action-row .arrow svg{width:14px;height:14px}
+
+/* =================== FOOTER =================== */
+.foot{margin-top:28px;padding:24px 4px 40px;border-top:1px solid var(--line);text-align:center}
+.foot .mark{font-size:28px;font-weight:600;letter-spacing:-2px;margin-bottom:8px;display:block}
+.foot p{font-size:11px;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto}
+.foot .nonacc{font-size:10.5px;color:var(--muted-2);margin-top:10px;line-height:1.6}
+
+/* =================== DENIED / LOADING =================== */
+.denied{text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-xl);padding:40px 24px;box-shadow:var(--shadow-sm);margin:64px 0}
+.denied .icon{width:64px;height:64px;border-radius:50%;background:var(--red-soft);border:1px solid rgba(179,38,30,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.denied .icon svg{width:26px;height:26px;color:var(--red)}
+.denied h1{font-size:20px;letter-spacing:-.6px;margin-bottom:8px;font-weight:700}
+.denied p{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:22px}
+.denied .actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+/* =================== TOAST =================== */
+.toasts{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:12px;right:12px;z-index:500;display:flex;flex-direction:column;gap:8px;pointer-events:none;align-items:center}
+.toast{background:var(--ink);color:var(--paper);padding:12px 16px;border-radius:11px;font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:9px;box-shadow:var(--shadow-lg);width:100%;max-width:420px;animation:toastIn .3s cubic-bezier(.16,1,.3,1) both;pointer-events:auto;line-height:1.4}
+.toast svg{width:15px;height:15px;flex-shrink:0}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* skeleton */
+.sk{border-radius:8px;background:linear-gradient(90deg,var(--paper-3) 25%,var(--paper-4) 50%,var(--paper-3) 75%);background-size:200% 100%;animation:sk 1.4s ease-in-out infinite}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-mark">∆</div>
+  <div class="loader-label">Candidate Profile</div>
+  <div class="loader-bar"><span></span></div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">∆</span>
+      <span class="brand-text">
+        <span class="brand-name">IFB · Profile</span>
+        <span class="brand-sub">2027 Intake</span>
+      </span>
+    </a>
+    <div class="nav-right">
+      <a href="index.html" class="nav-btn icon-only" title="Home"><i data-lucide="home"></i></a>
+      <a href="portal.html" class="nav-btn primary" id="portalLink"><i data-lucide="book-open"></i><span class="lbl">Portal</span></a>
+    </div>
+  </div>
+</nav>
+
+<main class="shell" id="main">
+  <div style="padding:60px 0;">
+    <div class="sk" style="height:180px;margin-bottom:16px"></div>
+    <div class="sk" style="height:120px;margin-bottom:16px"></div>
+    <div class="sk" style="height:200px"></div>
+  </div>
+</main>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ---------- LOADER ---------- */
+(function(){
+  const loader = document.getElementById('loader');
+  const start = Date.now();
+  const minShow = 650;
+  function hide(){
+    const elapsed = Date.now() - start;
+    const wait = Math.max(0, minShow - elapsed);
+    setTimeout(() => {
+      loader.classList.add('gone');
+      setTimeout(() => loader.remove(), 700);
+    }, wait);
+  }
+  if (document.readyState === 'complete') hide();
+  else window.addEventListener('load', hide);
+  setTimeout(() => { if (document.body.contains(loader)) loader.classList.add('gone'); }, 3200);
+})();
+
+/* ---------- GRIDY AVATAR ---------- */
+function hash32(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gridy(seed,px){
+  px = px || 40;
+  const h = hash32(String(seed || 'anon'));
+  const rnd = mulberry32(h);
+  const hue = h % 360;
+  const fg = 'hsl(' + hue + ',58%,38%)';
+  const bg = 'hsl(' + hue + ',28%,95%)';
+  const N = 5, cell = 100 / N;
+  const half = [];
+  for (let r = 0; r < N; r++) {
+    const row = [];
+    for (let c = 0; c < 3; c++) row.push(rnd() > 0.46 ? 1 : 0);
+    half.push(row);
+  }
+  if (!half.some(r => r.some(v => v))) half[2][1] = 1;
+  let rects = '';
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
+    const cc = c < 3 ? c : 4 - c;
+    if (half[r][cc]) rects += '<rect x="' + (c*cell).toFixed(2) + '" y="' + (r*cell).toFixed(2) + '" width="' + cell.toFixed(2) + '" height="' + cell.toFixed(2) + '"/>';
+  }
+  return '<svg viewBox="0 0 100 100" width="' + px + '" height="' + px + '" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect width="100" height="100" fill="' + bg + '"/><g fill="' + fg + '">' + rects + '</g></svg>';
+}
+window.gridy = gridy;
+
+/* ---------- TOAST ---------- */
+window.toast = function(msg, type){
+  type = type || 'info';
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+  el.innerHTML = '<i data-lucide="' + icon + '"></i><span>' + String(msg) + '</span>';
+  document.getElementById('toasts').appendChild(el);
+  if (window.lucide) lucide.createIcons();
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 320); }, 3200);
+};
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
+  authDomain: "nyldevcourses.firebaseapp.com",
+  projectId: "nyldevcourses",
+  storageBucket: "nyldevcourses.firebasestorage.app",
+  messagingSenderId: "16687006873",
+  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
+
+const main = document.getElementById('main');
+
+/* Subjects by stream — read-only, matches admin */
+const SUBJECTS_BY_STREAM = {
+  fullstack: ['Mathematics','Web Foundations','Programming Fundamentals','Full Stack Systems'],
+  frontend:  ['Mathematics','Web Foundations','Programming Fundamentals','Frontend Systems'],
+  backend:   ['Mathematics','Web Foundations','Programming Fundamentals','Backend Systems'],
+  mobile:    ['Mathematics','Web Foundations','Programming Fundamentals','Mobile Systems'],
+  webdesign: ['Mathematics','Web Foundations','Programming Fundamentals','Visual Systems'],
+  uiux:      ['Mathematics','Web Foundations','Programming Fundamentals','Experience Design'],
+  data:      ['Mathematics','Web Foundations','Programming Fundamentals','Data Systems'],
+  stem:      ['Mathematics','Web Foundations','Programming Fundamentals','Physical Sciences'],
+};
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmtDate(ts){
+  if (!ts) return '—';
+  try {
+    const d = ts.toDate ? ts.toDate() : (ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts));
+    return d.toLocaleDateString('en-ZA', { day: '2-digit', month: 'short', year: 'numeric' });
+  } catch { return '—'; }
+}
+function statusOf(u){
+  if (u.status === 'revoked') return { key: 'revoked', label: 'Revoked', icon: 'circle-x' };
+  if (u.status === 'approved' && u.studentNumber) return { key: 'approved', label: 'Approved', icon: 'circle-check' };
+  if (u.course) return { key: 'curriculum', label: 'Curriculum set', icon: 'layout-grid' };
+  if (u.preludePassed) return { key: 'prelude', label: 'Prelude verified', icon: 'shield-check' };
+  return { key: 'pending', label: 'Pending', icon: 'clock' };
+}
+function streamLabel(c){
+  const map = { fullstack:'Full Stack Engineering', frontend:'Frontend Development', backend:'Backend Engineering', mobile:'Mobile Development', webdesign:'Web Design', uiux:'UI/UX Design', data:'Data & Analytics', stem:'STEM & Physics' };
+  return map[c] || c || '—';
+}
+function durationLabel(d){
+  if (d === '3') return 'Foundation · 3 months';
+  if (d === '9') return 'Specialisation · 9 months';
+  if (d === '12') return 'Advanced · 12 months';
+  return d ? d + ' months' : '—';
+}
+function gradeOf(score){
+  if (score == null) return null;
+  if (score >= 80) return { letter: 'A', cls: 'a' };
+  if (score >= 70) return { letter: 'B', cls: 'b' };
+  if (score >= 60) return { letter: 'C', cls: 'c' };
+  if (score >= 50) return { letter: 'D', cls: 'c' };
+  return { letter: 'F', cls: 'f' };
+}
+
+/* =================== RENDER =================== */
+function renderProfile(u){
+  const s = statusOf(u);
+  const core = SUBJECTS_BY_STREAM[u.course] || [];
+  const electives = Array.isArray(u.electives) ? u.electives : [];
+  const allSubjects = [
+    ...core.map((n, i) => ({ name: n, kind: i === 3 ? 'stream' : 'core' })),
+    ...electives.map(n => ({ name: n, kind: 'elective' })),
+  ];
+  const results = Array.isArray(u.results) ? u.results : [];
+  const sharedResults = results.filter(r => r.shared === true || r.shared === undefined);
+  const hasWritten = results.length > 0;
+  const hasShared = sharedResults.length > 0;
+
+  const barcodeValue = u.studentNumber || u.referenceId || '';
+
+  /* Progress calculation */
+  const steps = [
+    { done: true, label: 'Registered' },
+    { done: !!u.preludePassed, label: 'Prelude' },
+    { done: !!u.studentNumber, label: 'Student №' },
+    { done: !!u.course, label: 'Curriculum' },
+    { done: hasShared, label: 'Results' },
+  ];
+  const completedSteps = steps.filter(x => x.done).length;
+  const progressPct = ((completedSteps - 1) / (steps.length - 1)) * 84 + 8; // visual fill
+
+  main.innerHTML = `
+    <!-- ========== HERO ========== -->
+    <section class="hero-card">
+      <div class="hero-top">
+        <div class="hero-avatar">${gridy(u.id, 72)}</div>
+        <div class="hero-id">
+          <div class="hi">IFB Candidate</div>
+          <h1>${esc(u.name || 'Unnamed candidate')}</h1>
+          <div class="email">${esc(u.email || '')}</div>
+        </div>
+      </div>
+
+      <div class="hero-badges">
+        <span class="status ${s.key}"><i data-lucide="${s.icon}"></i> ${s.label}</span>
+        ${u.preludePassed ? '<span class="status ai"><i data-lucide="brain-circuit"></i> Prelude verified</span>' : ''}
+        ${u.duration ? `<span class="tag duration">${esc(durationLabel(u.duration))}</span>` : ''}
+        ${u.course ? `<span class="tag stream">${esc(streamLabel(u.course))}</span>` : ''}
+      </div>
+
+      <div class="progress">
+        <div class="line"><div class="fill" style="width:${progressPct}%"></div></div>
+        <div class="steps">
+          ${steps.map((step, i) => {
+            const isDone = step.done;
+            const isActive = !step.done && steps.slice(0, i).every(x => x.done);
+            const cls = isDone ? 'done' : isActive ? 'active' : '';
+            const icon = isDone ? '<i data-lucide="check"></i>' : String(i + 1).padStart(2, '0');
+            return `
+              <div class="step ${cls}">
+                <div class="dot">${icon}</div>
+                <div class="lbl">${esc(step.label)}</div>
+              </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== IDENTITY ========== -->
+    <section class="section">
+      <div class="section-head">
+        <div class="icon"><i data-lucide="fingerprint"></i></div>
+        <h2>Identity</h2>
+      </div>
+      <div class="id-grid">
+        <div class="id-cell">
+          <div class="k"><i data-lucide="hash"></i> Reference ID</div>
+          <div class="v ${u.referenceId ? '' : 'null'}">${u.referenceId ? esc(u.referenceId) : 'Not issued'}</div>
+          <div class="hint">Temporary · pre-Prelude</div>
+        </div>
+        <div class="id-cell">
+          <div class="k"><i data-lucide="badge"></i> Student №</div>
+          <div class="v ${u.studentNumber ? '' : 'null'}">${u.studentNumber ? esc(u.studentNumber) : 'Not assigned'}</div>
+          <div class="hint">Permanent · post-Prelude</div>
+        </div>
+        <div class="id-cell">
+          <div class="k"><i data-lucide="ticket"></i> Exam №</div>
+          <div class="v small ${u.examinationNumber ? '' : 'null'}">${u.examinationNumber ? esc(u.examinationNumber) : 'Issued at exams'}</div>
+        </div>
+        <div class="id-cell">
+          <div class="k"><i data-lucide="calendar"></i> Registered</div>
+          <div class="v small">${u.createdAt ? fmtDate(u.createdAt) : '—'}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== BARCODE ========== -->
+    <section class="section">
+      <div class="section-head">
+        <div class="icon"><i data-lucide="barcode"></i></div>
+        <h2>Exam barcode</h2>
+      </div>
+      ${barcodeValue
+        ? `<div class="barcode-card">
+            <div class="label">IFB candidate identifier</div>
+            <svg id="profileBarcode"></svg>
+            <div class="code">${esc(barcodeValue)}</div>
+            <div class="hint">Attach this barcode to your online answer sheet on exam day.</div>
+          </div>`
+        : `<div class="barcode-empty">
+            <strong>No barcode yet</strong>
+            Your barcode is generated once a Student Number is assigned.
+          </div>`}
+    </section>
+
+    <!-- ========== SUBJECTS ========== -->
+    <section class="section">
+      <div class="section-head">
+        <div class="icon"><i data-lucide="layout-grid"></i></div>
+        <h2>Subjects</h2>
+        <span class="count">${allSubjects.length} / 6</span>
+      </div>
+      ${allSubjects.length
+        ? `<div class="subj-list">
+            ${allSubjects.map(x => {
+              const isStream = x.kind === 'stream';
+              const isElective = x.kind === 'elective';
+              const icon = isStream ? 'boxes' : isElective ? 'star' : 'circle-dot';
+              const sub = isStream ? 'Stream subject' : isElective ? 'Elective' : 'Core · required';
+              const tag = isStream ? 'Stream' : isElective ? 'Elective' : 'Core';
+              return `
+                <div class="subj-item ${isStream ? 'stream' : ''}">
+                  <div class="icon"><i data-lucide="${icon}"></i></div>
+                  <div class="meta">
+                    <div class="name">${esc(x.name)}</div>
+                    <div class="sub">${sub}</div>
+                  </div>
+                  <span class="ptag ${x.kind}">${tag}</span>
+                </div>`;
+            }).join('')}
+          </div>`
+        : `<div class="results-empty">
+            <div class="icon"><i data-lucide="layout-grid"></i></div>
+            <h3>No curriculum yet</h3>
+            <p>Once you choose a stream and electives, your subjects appear here.</p>
+          </div>`}
+    </section>
+
+    <!-- ========== RESULTS ========== -->
+    <section class="section">
+      <div class="section-head">
+        <div class="icon"><i data-lucide="bar-chart-3"></i></div>
+        <h2>Results</h2>
+        ${hasShared ? `<span class="count">${sharedResults.length}</span>` : ''}
+      </div>
+
+      ${hasWritten
+        ? `<div class="results-block">
+            <div class="results-scroll">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Period</th>
+                    <th style="text-align:right">Score</th>
+                    <th>Grade</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${results.map(r => {
+                    const g = gradeOf(r.score);
+                    return `
+                      <tr>
+                        <td>${esc(r.subject || '—')}</td>
+                        <td class="mono">${esc(r.period || '—')}</td>
+                        <td class="num score">${r.score != null ? r.score + '%' : '—'}</td>
+                        <td>${g ? `<span class="grade ${g.cls}">${g.letter}</span>` : '<span style="color:var(--muted-3)">—</span>'}</td>
+                      </tr>`;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="ai-notice" style="margin-top:12px">
+            <i data-lucide="brain-circuit"></i>
+            <div><strong>Marked by DeepSeek AI.</strong> Every paper is regulated and quality-assured by DeepSeek AI. Scores are final once shared.</div>
+          </div>`
+        : `<div class="results-empty">
+            <div class="icon"><i data-lucide="file-text"></i></div>
+            <h3>No results yet</h3>
+            <p>You haven't written any papers yet. Results appear here once you've sat an examination and DeepSeek AI has marked it.</p>
+          </div>`}
+    </section>
+
+    <!-- ========== ACTION LIST ========== -->
+    <section class="section">
+      <div class="section-head">
+        <div class="icon"><i data-lucide="zap"></i></div>
+        <h2>Actions</h2>
+      </div>
+      <div class="actions-list">
+        ${u.status === 'approved' && u.studentNumber
+          ? `<a class="action-row primary" href="admission-slip.html?uid=${esc(u.id)}">
+              <div class="icon"><i data-lucide="ticket"></i></div>
+              <div class="txt"><h4>Admission slip</h4><p>Your exam number, papers, and barcode</p></div>
+              <span class="arrow"><i data-lucide="chevron-right"></i></span>
+            </a>`
+          : `<a class="action-row" href="curriculum.html">
+              <div class="icon"><i data-lucide="layout-grid"></i></div>
+              <div class="txt"><h4>${u.course ? 'Edit curriculum' : 'Choose curriculum'}</h4><p>${u.course ? 'Change stream or electives' : 'Pick your stream and two electives'}</p></div>
+              <span class="arrow"><i data-lucide="chevron-right"></i></span>
+            </a>`}
+        <a class="action-row" href="resources.html">
+          <div class="icon"><i data-lucide="file-text"></i></div>
+          <div class="txt"><h4>Resources</h4><p>Papers, memos, and study material</p></div>
+          <span class="arrow"><i data-lucide="chevron-right"></i></span>
+        </a>
+        <a class="action-row" href="exams.html">
+          <div class="icon"><i data-lucide="lock"></i></div>
+          <div class="txt"><h4>Exam gateway</h4><p>Enter an exam session</p></div>
+          <span class="arrow"><i data-lucide="chevron-right"></i></span>
+        </a>
+        <a class="action-row" href="messages.html">
+          <div class="icon"><i data-lucide="message-square"></i></div>
+          <div class="txt"><h4>Message the institute</h4><p>Questions, appeals, or help</p></div>
+          <span class="arrow"><i data-lucide="chevron-right"></i></span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ========== NOTICE ========== -->
+    <section class="section">
+      <div class="info-notice">
+        <i data-lucide="info"></i>
+        <div>
+          <strong>Non-accredited.</strong>
+          IFB is not registered with DHET, Umalusi, SAQA or the NQF. Your certificate is an internal
+          record of completion — not an official qualification.
+        </div>
+      </div>
+    </section>
+
+    <div class="foot">
+      <span class="mark">∆</span>
+      <p>IFB · Online Institute · 2027 Intake</p>
+      <p class="nonacc">Non-accredited. Not registered with DHET or Umalusi. Not NQF-registered.</p>
+    </div>
+  `;
+
+  if (window.lucide) lucide.createIcons();
+
+  /* Barcode */
+  if (barcodeValue && typeof JsBarcode === 'function') {
+    try {
+      JsBarcode('#profileBarcode', barcodeValue, {
+        format: 'CODE128',
+        width: 2,
+        height: 56,
+        displayValue: false,
+        margin: 0,
+        background: '#ffffff',
+        lineColor: '#0b0b0b'
+      });
+    } catch (e) {}
+  }
+}
+
+/* =================== DENIED =================== */
+function renderDenied(reason, showSignIn){
+  main.innerHTML = `
+    <div class="denied">
+      <div class="icon"><i data-lucide="lock"></i></div>
+      <h1>Profile unavailable</h1>
+      <p>${esc(reason)}</p>
+      <div class="actions">
+        ${showSignIn ? `<a href="auth.html" class="nav-btn primary" style="padding:11px 16px;font-size:13px;"><i data-lucide="log-in"></i> Sign in</a>` : ''}
+        <a href="index.html" class="nav-btn" style="padding:11px 16px;font-size:13px;"><i data-lucide="arrow-left"></i> Home</a>
+      </div>
+    </div>`;
+  if (window.lucide) lucide.createIcons();
+}
+
+/* =================== MAIN =================== */
+(async function init(){
+  const params = new URLSearchParams(location.search);
+  const uidParam = params.get('uid');
+
+  onAuthStateChanged(auth, async (user) => {
+    /* Priority 1: explicit uid param (barcode scan, admin link) */
+    if (uidParam) {
+      try {
+        const snap = await getDoc(doc(db, 'users', uidParam));
+        if (!snap.exists()) {
+          renderDenied('No candidate found with that ID.', false);
+          return;
+        }
+        const data = { id: uidParam, ...snap.data() };
+        document.getElementById('portalLink').style.display = 'none';
+        renderProfile(data);
+        return;
+      } catch (err) {
+        renderDenied('Could not load candidate: ' + err.message, false);
+        return;
+      }
+    }
+
+    /* Priority 2: signed-in user viewing their own profile */
+    if (user) {
+      if (user.email === ADMIN_EMAIL) {
+        window.location.href = 'admin.html';
+        return;
+      }
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        if (!snap.exists()) {
+          renderDenied('No profile record found for your account. Contact the institute.', false);
+          return;
+        }
+        const data = { id: user.uid, ...snap.data() };
+        renderProfile(data);
+        return;
+      } catch (err) {
+        renderDenied('Could not load your profile: ' + err.message, false);
+        return;
+      }
+    }
+
+    /* Priority 3: no uid and not signed in */
+    renderDenied('Sign in to see your profile, or scan a candidate barcode.', true);
+  });
+})();
+</script>
+
+</body>
+</html>
