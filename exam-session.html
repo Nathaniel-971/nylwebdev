@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Session</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d0d0d">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{--black:#0d0d0d;--white:#fff;--grey:#6b6b6b;--light:#f5f5f5;--line:#e5e5e5;--red:#dc2626;--green:#059669}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--white);color:var(--black);line-height:1.6;min-height:100vh}
+.watermark-bg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:120px;font-weight:900;color:rgba(0,0,0,.03);letter-spacing:20px;pointer-events:none;z-index:0;white-space:nowrap}
+.topbar{position:sticky;top:0;background:var(--black);color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;z-index:10}
+.topbar .left{display:flex;align-items:center;gap:12px}
+.topbar .mark{font-family:'Courier New',monospace;font-size:22px;font-weight:700;letter-spacing:-1px}
+.topbar .info{font-size:12.5px}
+.topbar .info .num{font-family:'Courier New',monospace;letter-spacing:1px}
+.timer{background:var(--white);color:var(--black);padding:8px 16px;border-radius:100px;font-family:'Courier New',monospace;font-weight:700;font-size:15px}
+.timer.warning{background:#fecaca;color:#991b1b}
+.container{max-width:900px;margin:0 auto;padding:32px 20px;position:relative;z-index:1}
+h1{font-size:26px;letter-spacing:-.5px;margin-bottom:6px}
+.sub{color:var(--grey);font-size:14px;margin-bottom:24px}
+.card{background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:24px;margin-bottom:16px}
+.card .label{font-size:11.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.question{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.question:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.question .qnum{font-weight:700;font-size:14px;margin-bottom:8px}
+.question .qtext{font-size:14.5px;line-height:1.65;margin-bottom:12px}
+.answer-input{width:100%;padding:14px 16px;font-size:14.5px;font-family:'Courier New',monospace;border:1.5px solid var(--line);border-radius:10px;background:var(--white);color:var(--black);line-height:1.6}
+.answer-input:focus{outline:none;border-color:var(--black)}
+.btn{padding:14px 24px;font-size:14px;font-weight:600;border-radius:10px;border:1.5px solid var(--black);background:var(--black);color:var(--white);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:#333}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:var(--white);color:var(--black);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--black);background:var(--light)}
+.actions{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-top:16px}
+.warning-banner{position:fixed;top:0;left:0;right:0;background:var(--red);color:#fff;padding:14px 20px;text-align:center;font-weight:600;font-size:14px;z-index:100;display:none}
+.warning-banner.show{display:block}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--white);border-radius:16px;padding:32px 28px;max-width:440px;width:100%;text-align:center}
+.modal h2{font-size:20px;margin-bottom:12px}
+.modal p{font-size:14px;color:var(--grey);margin-bottom:20px}
+.note{font-size:12px;color:var(--grey);text-align:center;margin-top:20px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="watermark-bg">∆</div>
+
+<div class="warning-banner" id="warningBanner"><i data-lucide="alert-triangle" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:6px"></i> Focus lost — please return to the exam window.</div>
+
+<div class="topbar">
+  <div class="left">
+    <span class="mark">∆</span>
+    <div class="info">
+      <div>Exam Session</div>
+      <div class="num" id="candNum">— — —</div>
+    </div>
+  </div>
+  <div class="timer" id="timer">--:--</div>
+</div>
+
+<div class="container" id="app"><div class="sub">Loading exam…</div></div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Confirm submit</h2>
+    <p id="modalMsg">Once submitted, your answers cannot be changed.</p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+      <button class="btn" id="modalConfirm">Submit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Anti-cheat + timer setup
+(function(){
+  const verified = sessionStorage.getItem('verified_candidate');
+  if (!verified) { window.location.href = 'exam-gateway.html'; return; }
+  const candidate = JSON.parse(verified);
+  document.getElementById('candNum').textContent = candidate.examNumber;
+
+  // 90-minute exam
+  const EXAM_DURATION = 90 * 60;
+  const startTime = Date.now();
+  const endTime = startTime + EXAM_DURATION * 1000;
+  const timerEl = document.getElementById('timer');
+  let submitted = false;
+
+  function tick(){
+    if (submitted) return;
+    const left = Math.max(0, endTime - Date.now());
+    const m = Math.floor(left / 60000);
+    const s = Math.floor((left % 60000) / 1000);
+    timerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    if (left < 5 * 60 * 1000) timerEl.classList.add('warning');
+    if (left <= 0) { submitExam(true); return; }
+  }
+  tick(); setInterval(tick, 1000);
+
+  // Anti-cheat: tab/window blur warning
+  let warnings = 0;
+  const banner = document.getElementById('warningBanner');
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !submitted) {
+      warnings++;
+      banner.classList.add('show');
+      setTimeout(() => banner.classList.remove('show'), 4000);
+      if (warnings >= 3) {
+        alert('You have left the exam window 3 times. This session will be flagged for review.');
+      }
+    }
+  });
+  window.addEventListener('blur', () => { if (!submitted) { banner.classList.add('show'); setTimeout(()=>banner.classList.remove('show'), 3000); } });
+
+  // Block copy / paste / right-click
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('copy', e => e.preventDefault());
+  document.addEventListener('paste', e => e.preventDefault());
+  document.addEventListener('cut', e => e.preventDefault());
+
+  // Fullscreen
+  document.addEventListener('click', function goFS(){
+    if (!document.fullscreenElement && !submitted) document.documentElement.requestFullscreen().catch(()=>{});
+    document.removeEventListener('click', goFS);
+  });
+
+  // Save answer
+  window.saveAnswer = function(id, val){
+    let saved = JSON.parse(localStorage.getItem('exam_answers') || '{}');
+    saved[id] = val;
+    localStorage.setItem('exam_answers', JSON.stringify(saved));
+  };
+
+  window.submitExam = async function(auto){
+    if (submitted) return;
+    if (!auto) {
+      document.getElementById('modalOverlay').classList.add('show');
+      return;
+    }
+    submitted = true;
+    localStorage.removeItem('exam_answers');
+    sessionStorage.removeItem('verified_candidate');
+    document.getElementById('modalTitle').textContent = 'Exam submitted';
+    document.getElementById('modalMsg').textContent = 'Your answers have been recorded. You may now close this window.';
+    document.getElementById('modalConfirm').style.display = 'none';
+    document.getElementById('modalCancel').textContent = 'Close';
+    document.getElementById('modalOverlay').classList.add('show');
+    try { if (document.fullscreenElement) document.exitFullscreen(); } catch(e){}
+  };
+
+  document.getElementById('modalCancel').addEventListener('click', () => {
+    document.getElementById('modalOverlay').classList.remove('show');
+  });
+  document.getElementById('modalConfirm').addEventListener('click', () => submitExam(true));
+})();
+</script>
+
+<script>
+// Render exam content
+(function(){
+  const verified = sessionStorage.getItem('verified_candidate');
+  if (!verified) return;
+  const candidate = JSON.parse(verified);
+  const container = document.getElementById('app');
+  container.innerHTML = `
+    <h1>Mathematics — First Certification Period</h1>
+    <p class="sub">Answer all questions. Show working in your uploaded file or in the answer fields below. Your session is being monitored.</p>
+
+    <div class="card">
+      <div class="label"><i data-lucide="file-text"></i> Question 1</div>
+      <div class="question">
+        <div class="qnum">1.1</div>
+        <div class="qtext">Solve for x: x² − 5x + 6 = 0</div>
+        <textarea class="answer-input" rows="3" oninput="saveAnswer('1.1', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+      <div class="question">
+        <div class="qnum">1.2</div>
+        <div class="qtext">Solve for x: 2x² + 3x − 5 = 0. Leave answer in simplest surd form.</div>
+        <textarea class="answer-input" rows="4" oninput="saveAnswer('1.2', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+      <div class="question">
+        <div class="qnum">1.3</div>
+        <div class="qtext">Given x² − 4x + k = 0, determine the value(s) of k for which the equation has non-real roots.</div>
+        <textarea class="answer-input" rows="4" oninput="saveAnswer('1.3', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+      <div class="question">
+        <div class="qnum">1.4</div>
+        <div class="qtext">Solve simultaneously for x and y: x + y = 5 and x² − xy + y² = 13.</div>
+        <textarea class="answer-input" rows="5" oninput="saveAnswer('1.4', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+      <div class="question">
+        <div class="qnum">1.5</div>
+        <div class="qtext">Solve for x: 2^(2x) − 5·2^x + 4 = 0.</div>
+        <textarea class="answer-input" rows="4" oninput="saveAnswer('1.5', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="alert('Answer progress saved locally.')"><i data-lucide="save"></i> Save progress</button>
+      <button class="btn" onclick="submitExam(false)"><i data-lucide="check-circle"></i> Submit exam</button>
+    </div>
+
+    <p class="note">
+      Anti-cheat is active: copying, pasting, right-clicking, and window switching are monitored. Three focus-loss events will flag your session for review.<br>
+      Non-accredited. Quality assured internally.
+    </p>
+  `;
+  if (window.lucide) lucide.createIcons();
+})();
+</script>
+</body>
+</html>
