@@ -10,8 +10,6 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; }
   body { background: var(--light); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: var(--black); padding:24px 16px 60px; }
-  .emblem { width: 64px; height: 64px; }
-
   .slip-actions { max-width: 210mm; margin: 0 auto 16px; display:flex; gap:10px; flex-wrap:wrap; }
   .btn { padding:12px 20px; font-size:13.5px; font-weight:600; border-radius:9px; border:1.5px solid var(--black); background: var(--black); color: var(--white); cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:8px; text-decoration:none; }
   .btn svg { width:15px; height:15px; }
@@ -19,21 +17,12 @@
   .btn-ghost { background: var(--white); color: var(--black); border-color: var(--line); }
   .btn-ghost:hover { border-color: var(--black); background: var(--light); }
 
-  .slip {
-    max-width: 210mm; margin: 0 auto; background: var(--white);
-    border: 2px solid var(--black); padding: 16mm 14mm;
-    position: relative; overflow: hidden; font-family:'Times New Roman', Times, serif;
-  }
-  .slip::after {
-    content: "NYL DEV · IFB"; position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%,-50%) rotate(-28deg);
-    font-size: 60pt; font-weight: 900; color: rgba(0,0,0,.04);
-    letter-spacing: 20px; white-space: nowrap; pointer-events:none;
-    font-family:'Times New Roman', serif;
-  }
+  .slip { max-width: 210mm; margin: 0 auto; background: var(--white); border: 2px solid var(--black); padding: 16mm 14mm; position: relative; overflow: hidden; font-family:'Times New Roman', Times, serif; }
+  .slip::after { content: "NYL DEV · IFB"; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-28deg); font-size: 60pt; font-weight: 900; color: rgba(0,0,0,.04); letter-spacing: 20px; white-space: nowrap; pointer-events:none; }
   .slip > * { position: relative; z-index: 1; }
 
   .slip-header { display:flex; align-items:center; gap: 16px; border-bottom: 2px solid var(--black); padding-bottom: 14px; margin-bottom: 18px; }
+  .emblem { width: 64px; height: 64px; }
   .slip-header .title-block { flex: 1; }
   .slip-header .org { font-size: 18pt; font-weight: 700; letter-spacing: 1px; line-height: 1.1; }
   .slip-header .org-sub { font-size: 9pt; letter-spacing: 2px; color: var(--grey); text-transform: uppercase; margin-top: 3px; font-family:'Courier New',monospace; }
@@ -57,22 +46,17 @@
   .slip-barcode svg { width: 100%; height: 58px; display: block; }
   .slip-barcode-num { font-family:'Courier New', monospace; font-size: 10pt; letter-spacing: 3px; margin-top: 4px; }
 
-  .slip-foot { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 12px; font-size: 8.5pt; color: var(--grey); line-height: 1.6; text-align: center; font-family:'Times New Roman', serif; }
+  .slip-foot { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 12px; font-size: 8.5pt; color: var(--grey); line-height: 1.6; text-align: center; }
   .slip-foot strong { color: var(--black); }
-
-  .loading { text-align:center; padding:80px 20px; color: var(--grey); font-family:inherit; }
+  .loading { text-align:center; padding:80px 20px; color: var(--grey); }
 
   @media print {
     body { background: #fff; padding: 0; }
     .slip-actions, .no-print { display: none !important; }
     .slip { border: 1.5px solid #000; max-width: 100%; padding: 12mm; margin: 0; }
-    .slip::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     @page { size: A4; margin: 12mm; }
   }
-  @media (max-width: 600px) {
-    .slip { padding: 24px 20px; }
-    .slip-grid { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 600px) { .slip { padding: 24px 20px; } .slip-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -84,30 +68,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
-  authDomain: "nyldevcourses.firebaseapp.com",
-  projectId: "nyldevcourses",
-  storageBucket: "nyldevcourses.firebasestorage.app",
-  messagingSenderId: "16687006873",
-  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
-};
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const CORE_SUBJECTS = ['Mathematics', 'Web Foundations', 'Programming Fundamentals'];
-const STREAM_SUBJECTS = {
-  fullstack: 'Full Stack Systems', frontend: 'Frontend Systems', backend: 'Backend Systems',
-  webdesign: 'Visual Systems', uiux: 'Experience Design', stem: 'Physical Sciences'
-};
-const STREAM_NAMES = {
-  fullstack: 'Full Stack Engineering', frontend: 'Frontend Craft', backend: 'Backend Engineering',
-  webdesign: 'Web Design', uiux: 'UI/UX Design', stem: 'STEM & Physics'
-};
-const CURRICULUM_NAMES = { '6': 'IPI', '12': 'ACC' };
-const PROGRAMME_NAMES = { '6': 'Intensive Programme of Instruction', '12': 'Applied Competence Certificate' };
+const CORE_SUBJECTS = ['Mathematics','Web Foundations','Programming Fundamentals'];
+const STREAM_SUBJECTS = { fullstack:'Full Stack Systems', frontend:'Frontend Systems', backend:'Backend Systems', webdesign:'Visual Systems', uiux:'Experience Design', stem:'Physical Sciences' };
+const STREAM_NAMES = { fullstack:'Full Stack Engineering', frontend:'Frontend Craft', backend:'Backend Engineering', webdesign:'Web Design', uiux:'UI/UX Design', stem:'STEM & Physics' };
+const CURRICULUM_NAMES = { '6':'IPI', '12':'ACC' };
+const PROGRAMME_NAMES = { '6':'Intensive Programme of Instruction', '12':'Applied Competence Certificate' };
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) { window.location.href = 'auth.html'; return; }
@@ -131,7 +102,6 @@ function render(user, data) {
   const electives = data.electives || [];
   const curriculum = CURRICULUM_NAMES[data.duration] || '—';
   const programme = PROGRAMME_NAMES[data.duration] || '—';
-
   const allPapers = [...CORE_SUBJECTS, streamSubject, ...electives];
 
   document.getElementById('slipRoot').innerHTML = `
@@ -143,17 +113,7 @@ function render(user, data) {
 
     <div class="slip">
       <div class="slip-header">
-        <svg class="emblem" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="60" cy="60" r="58" fill="none" stroke="#0d0d0d" stroke-width="2.5"/>
-          <circle cx="60" cy="60" r="52" fill="none" stroke="#0d0d0d" stroke-width="1"/>
-          <circle cx="60" cy="60" r="48" fill="#0d0d0d"/>
-          <path d="M40 44 L60 78 L80 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/>
-          <rect x="66" y="44" width="8" height="6" fill="#fff"/>
-          <g font-family="'Courier New',monospace" font-size="8.5" fill="#0d0d0d" font-weight="700" letter-spacing="2">
-            <text x="60" y="14" text-anchor="middle">NYL DEV</text>
-            <text x="60" y="112" text-anchor="middle">· IFB · 2027 ·</text>
-          </g>
-        </svg>
+        <svg class="emblem" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="none" stroke="#0d0d0d" stroke-width="2.5"/><circle cx="60" cy="60" r="52" fill="none" stroke="#0d0d0d" stroke-width="1"/><circle cx="60" cy="60" r="48" fill="#0d0d0d"/><path d="M40 44 L60 78 L80 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/><rect x="66" y="44" width="8" height="6" fill="#fff"/><g font-family="'Courier New',monospace" font-size="8.5" fill="#0d0d0d" font-weight="700" letter-spacing="2"><text x="60" y="14" text-anchor="middle">NYL DEV</text><text x="60" y="112" text-anchor="middle">· IFB · 2027 ·</text></g></svg>
         <div class="title-block">
           <div class="org">Nyl Dev · IFB</div>
           <div class="org-sub">Fellowship Certificate of Competence</div>
@@ -162,37 +122,17 @@ function render(user, data) {
       </div>
 
       <div class="slip-grid">
-        <div class="full">
-          <div class="k">Candidate Name</div>
-          <div class="v">${esc(data.name || user.displayName || '—')}</div>
-        </div>
-        <div>
-          <div class="k">Student Number</div>
-          <div class="v mono">${esc(data.studentNumber)}</div>
-        </div>
-        <div>
-          <div class="k">Examination Number</div>
-          <div class="v mono">${esc(examNum)}</div>
-        </div>
-        <div>
-          <div class="k">Programme</div>
-          <div class="v">${esc(programme)} (${esc(curriculum)})</div>
-        </div>
-        <div>
-          <div class="k">Stream</div>
-          <div class="v">${esc(streamName)}</div>
-        </div>
+        <div class="full"><div class="k">Candidate Name</div><div class="v">${esc(data.name || user.displayName || '—')}</div></div>
+        <div><div class="k">Student Number</div><div class="v mono">${esc(data.studentNumber)}</div></div>
+        <div><div class="k">Examination Number</div><div class="v mono">${esc(examNum)}</div></div>
+        <div><div class="k">Programme</div><div class="v">${esc(programme)} (${esc(curriculum)})</div></div>
+        <div><div class="k">Stream</div><div class="v">${esc(streamName)}</div></div>
       </div>
 
       <div class="papers-section">
         <h3>Subjects &amp; Papers</h3>
         <ul class="papers-list">
-          ${allPapers.map(p => `
-            <li>
-              <span class="paper-name">${esc(p)}</span>
-              <span class="paper-note">1 paper</span>
-            </li>
-          `).join('')}
+          ${allPapers.map(p => `<li><span class="paper-name">${esc(p)}</span><span class="paper-note">1 paper</span></li>`).join('')}
         </ul>
       </div>
 
@@ -203,31 +143,23 @@ function render(user, data) {
 
       <div class="slip-foot">
         <strong>Nyl Dev · IFB · 2027 Intake</strong><br>
-        This is a non-accredited, skills-based admission slip. Not an NQF qualification. Not equivalent to the NSC or a university degree.<br>
+        Non-accredited skills-based admission slip. Not an NQF qualification. Not equivalent to the NSC or a university degree.<br>
         Examinations are quality assured through our internal platform. © 2026—2027 Nyl Dev. All rights reserved.
       </div>
     </div>
   `;
   if (window.lucide) lucide.createIcons();
 
-  // Barcode
   setTimeout(() => {
-    if (typeof JsBarcode !== 'undefined') {
-      try {
-        JsBarcode('#barcodeSvg', examNum, {
-          format: 'CODE128', width: 2, height: 58,
-          displayValue: false, margin: 0,
-          background: '#ffffff', lineColor: '#000000'
-        });
-      } catch(e) { console.warn(e); }
+    if (typeof JsBarcode !== 'undefined' && examNum !== '—') {
+      try { JsBarcode('#barcodeSvg', examNum, { format: 'CODE128', width: 2, height: 58, displayValue: false, margin: 0, background: '#ffffff', lineColor: '#000000' }); } catch(e) {}
     }
   }, 150);
 
-  // Actions
   document.getElementById('printBtn').addEventListener('click', () => window.print());
   document.getElementById('copyBtn').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(examNum); alert('Examination number copied.'); }
-    catch(e) { alert('Could not copy. Please copy manually.'); }
+    catch(e) { alert('Could not copy.'); }
   });
 }
 if (window.lucide) lucide.createIcons();
