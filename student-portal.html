@@ -5,56 +5,136 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Course — Nyl Dev</title>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--light); color: var(--black); line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:60px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--light); color: var(--black); line-height:1.6; padding-bottom:60px; }
   @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
   @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+  @keyframes popIn { from { opacity:0; transform: scale(.95); } to { opacity:1; transform: scale(1); } }
+
   nav { background: var(--white); border-bottom:1px solid var(--line); padding:14px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
-  .logo { font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:-2px; text-decoration:none; color: var(--black); display:flex; align-items:center; }
-  .logo .cursor { width:12px; height:24px; background: var(--black); margin-left:2px; animation: blink 1.1s step-end infinite; }
+  .nav-left { display:flex; align-items:center; gap:12px; text-decoration:none; color: var(--black); }
+  .emblem { width:44px; height:44px; flex-shrink:0; }
+  .brand-name { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:-1px; line-height:1; }
+  .brand-sub { font-size:9.5px; letter-spacing:2px; color: var(--grey); text-transform:uppercase; margin-top:2px; }
   .nav-right { display:flex; align-items:center; gap:8px; }
   .nav-icon { width:38px; height:38px; border-radius:10px; background: var(--white); border:1px solid var(--line); cursor:pointer; display:flex; align-items:center; justify-content:center; text-decoration:none; color: var(--black); transition: all .2s; }
-  .nav-icon:hover { border-color: var(--black); background: var(--light); }
+  .nav-icon:hover { border-color: var(--black); background: var(--light); transform: translateY(-1px); }
   .nav-icon svg { width:16px; height:16px; }
+
   .container { max-width:900px; margin:0 auto; padding:32px 20px; }
   h1 { font-size: clamp(24px, 5vw, 34px); letter-spacing:-1px; margin-bottom:6px; }
-  .sub { color: var(--grey); font-size:14.5px; margin-bottom:28px; }
+  .sub { color: var(--grey); font-size:14.5px; margin-bottom:24px; }
+
+  /* TABS */
+  .view-tabs { display:flex; gap:6px; margin-bottom:20px; background: var(--white); border:1px solid var(--line); border-radius:12px; padding:5px; }
+  .view-tab { flex:1; padding:10px 12px; font-size:13.5px; font-weight:600; font-family:inherit; border:none; background: transparent; color: var(--grey); cursor:pointer; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; gap:7px; transition: all .2s; }
+  .view-tab svg { width:15px; height:15px; }
+  .view-tab.active { background: var(--black); color: var(--white); }
+  .view-tab:hover:not(.active) { background: var(--light); color: var(--black); }
+
+  .view-panel { display:none; animation: fadeUp .35s ease both; }
+  .view-panel.active { display:block; }
+
   .card { background: var(--white); border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:16px; animation: fadeUp .4s ease both; }
   .card .label { font-size:11.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+  .card .label svg { width:14px; height:14px; }
   .curriculum-hero { background: var(--black); color: var(--white); border:none; }
   .curriculum-hero .label { color: rgba(255,255,255,.55); }
-  .curriculum-hero .c-name { font-size: 28px; font-weight: 700; letter-spacing: -1px; margin-bottom:6px; }
+  .curriculum-hero .c-name { font-size: 26px; font-weight: 700; letter-spacing: -1px; margin-bottom:6px; }
+  .curriculum-hero .c-desc { font-size: 13.5px; color: rgba(255,255,255,.7); line-height:1.55; }
+
+  /* GRID VIEW — SUBJECTS */
+  .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .subject-tile {
+    background: var(--white); border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 20px 18px; display: flex; flex-direction: column; gap: 10px;
+    animation: popIn .4s ease both; transition: all .25s;
+    position: relative; overflow: hidden;
+  }
+  .subject-tile:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.07); }
+  .subject-tile .tile-icon {
+    width: 40px; height: 40px; border-radius: 10px; background: var(--light);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .subject-tile .tile-icon svg { width: 20px; height: 20px; color: var(--black); }
+  .subject-tile h4 { font-size: 15px; font-weight: 700; letter-spacing: -.2px; line-height: 1.25; }
+  .subject-tile .modules { font-size: 12px; color: var(--grey); line-height: 1.5; }
+  .subject-tile .tile-tag {
+    position: absolute; top: 12px; right: 12px;
+    font-size: 9.5px; font-weight: 700; letter-spacing: .5px;
+    padding: 3px 8px; border-radius: 100px;
+    background: var(--black); color: var(--white);
+    text-transform: uppercase;
+  }
+  .subject-tile .tile-tag.stream { background: #eef2ff; color: #3730a3; }
+  .subject-tile .tile-tag.elective { background: #f0fdf4; color: #15803d; }
+  .subject-tile .tile-tag.math { background: #fef2f2; color: #b91c1c; }
+
+  .stream-tile { border-width: 2px; border-color: var(--black); background: linear-gradient(180deg, #fff 0%, var(--light) 100%); }
+  .stream-tile .tile-icon { background: var(--black); }
+  .stream-tile .tile-icon svg { color: var(--white); }
+
+  .math-tile { border-color: #0d0d0d; border-width: 2px; }
+
+  /* PROFILE VIEW */
   .id-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .id-cell { padding:16px; border:1px solid var(--line); border-radius:10px; background: var(--light); }
   .id-cell .k { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; margin-bottom:6px; }
-  .id-cell .v { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:1px; }
+  .id-cell .v { font-family:'Courier New',monospace; font-size:18px; font-weight:700; letter-spacing:1px; }
   .id-cell .v.pending { font-family:inherit; font-size:13.5px; letter-spacing:0; color:#b86e00; font-weight:600; }
   .info-row { display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; border-bottom:1px solid var(--line); font-size:14.5px; gap:14px; }
   .info-row:last-child { border-bottom:none; }
   .info-row .k { color: var(--grey); display:flex; align-items:center; gap:7px; }
+  .info-row .k svg { width:14px; height:14px; }
   .info-row .v { font-weight:600; text-align:right; }
   .status-badge { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; padding:4px 11px; border-radius:100px; }
+  .status-badge svg { width:12px; height:12px; }
   .status-badge.pending { background:#fff4e5; color:#b86e00; }
   .status-badge.approved { background:#e6f5ec; color:#16794a; }
-  .btn-download { display:inline-flex; align-items:center; gap:8px; padding:12px 20px; font-size:14px; font-weight:600; border-radius:9px; border:1.5px solid var(--black); background: var(--black); color: var(--white); cursor:pointer; font-family:inherit; text-decoration:none; }
-  .btn-download:hover { background: var(--mid); }
+  .status-badge.revoked { background:#fef2f2; color:#b91c1c; }
+
+  .btn-download { display:inline-flex; align-items:center; gap:8px; padding:13px 22px; font-size:14px; font-weight:600; border-radius:9px; border:1.5px solid var(--black); background: var(--black); color: var(--white); cursor:pointer; font-family:inherit; text-decoration:none; transition: all .2s; }
+  .btn-download:hover { background: var(--mid); transform: translateY(-1px); }
   .btn-download svg { width:16px; height:16px; }
+
   .loading { text-align:center; padding:80px 20px; color: var(--grey); }
-  @media (max-width:500px) { nav { padding:12px 16px; } .container { padding:24px 16px; } .card { padding:20px 16px; } .id-grid { grid-template-columns:1fr; } }
+  @media (max-width:500px) {
+    nav { padding:12px 16px; } .container { padding:24px 16px; }
+    .card { padding:20px 16px; }
+    .id-grid { grid-template-columns:1fr; }
+    .subject-grid { grid-template-columns: 1fr; }
+    .brand-name { font-size:17px; } .emblem { width:38px; height:38px; }
+  }
 </style>
 </head>
 <body>
 <nav>
-  <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
+  <a href="/" class="nav-left">
+    <svg class="emblem" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="58" fill="none" stroke="#0d0d0d" stroke-width="2.5"/>
+      <circle cx="60" cy="60" r="52" fill="none" stroke="#0d0d0d" stroke-width="1"/>
+      <circle cx="60" cy="60" r="48" fill="#0d0d0d"/>
+      <path d="M40 44 L60 78 L80 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/>
+      <rect x="66" y="44" width="8" height="6" fill="#fff"/>
+      <g font-family="'Courier New',monospace" font-size="8.5" fill="#0d0d0d" font-weight="700" letter-spacing="2">
+        <text x="60" y="14" text-anchor="middle">NYL DEV</text>
+        <text x="60" y="112" text-anchor="middle">· IFB · 2027 ·</text>
+      </g>
+    </svg>
+    <div>
+      <div class="brand-name">Nyl Dev</div>
+      <div class="brand-sub">Student Portal</div>
+    </div>
+  </a>
   <div class="nav-right">
-    <a href="past-papers.html" class="nav-icon" title="Past Papers"><i data-lucide="file-text"></i></a>
+    <a href="past-papers.html" class="nav-icon" title="Resources"><i data-lucide="file-text"></i></a>
     <a href="messages.html" class="nav-icon" title="Message us"><i data-lucide="message-square"></i></a>
     <a href="settings.html" class="nav-icon" title="Settings"><i data-lucide="settings"></i></a>
   </div>
 </nav>
+
 <div class="container" id="app"><div class="loading">Loading your course…</div></div>
 
 <script type="module">
@@ -75,13 +155,47 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const CURRICULUM = {
-  fullstack: { name:'Full Stack Engineering', compulsory:['Mathematics','Git & GitHub','HTML5 & CSS3','JavaScript Fundamentals','Node.js Core','Databases Core'] },
-  frontend:  { name:'Frontend Craft', compulsory:['Mathematics','Git & GitHub','HTML5 & CSS3','JavaScript Fundamentals','Advanced JavaScript','Responsive Design'] },
-  backend:   { name:'Backend Engineering', compulsory:['Mathematics','Git & GitHub','JavaScript Fundamentals','Node.js','Express','Databases (SQL)'] },
-  webdesign: { name:'Web Design', compulsory:['Mathematics','HTML5 & CSS3','Responsive Design','UI/UX Fundamentals','Typography & Colour','Figma'] },
-  uiux:      { name:'UI/UX Design', compulsory:['Mathematics','UI/UX Fundamentals','Figma','Typography & Colour','User Research','Responsive Design'] },
-  stem:      { name:'STEM & Physics', compulsory:['Mathematics','Mechanics','Thermodynamics','Waves & Optics','Electromagnetism','Modern Physics'] }
+/* ─── NEW 6-SUBJECT STRUCTURE ─── */
+const SUBJECTS = {
+  math: {
+    name: 'Mathematics',
+    modules: 'Algebra · Functions · Sequences · Statistics · Logic',
+    icon: 'sigma',
+    marks: 100,
+    required: true,
+    tag: 'Required'
+  },
+  webFoundations: {
+    name: 'Web Foundations',
+    modules: 'Git · GitHub · HTML5 · CSS3 · Responsive Design',
+    icon: 'layout-template',
+    tag: 'Core'
+  },
+  progFundamentals: {
+    name: 'Programming Fundamentals',
+    modules: 'JavaScript · Advanced JavaScript · Logic',
+    icon: 'code-2',
+    tag: 'Core'
+  }
+};
+
+const STREAM_SUBJECTS = {
+  fullstack: { name: 'Full Stack Systems', modules: 'Node.js · Express · Databases · React', icon: 'boxes' },
+  frontend:  { name: 'Frontend Systems',   modules: 'React · Vue · TypeScript · Figma',    icon: 'monitor-smartphone' },
+  backend:   { name: 'Backend Systems',    modules: 'Node.js · Express · SQL · NoSQL · REST · Auth', icon: 'server' },
+  webdesign: { name: 'Visual Systems',     modules: 'Figma · Typography · Colour · UI/UX · Portfolio', icon: 'palette' },
+  uiux:      { name: 'Experience Design',  modules: 'User Research · Prototyping · Accessibility', icon: 'users' },
+  stem:      { name: 'Physical Sciences',  modules: 'Mechanics · Thermodynamics · Waves · Electromagnetism', icon: 'atom' }
+};
+
+const STREAM_NAMES = {
+  fullstack: 'Full Stack Engineering', frontend: 'Frontend Craft', backend: 'Backend Engineering',
+  webdesign: 'Web Design', uiux: 'UI/UX Design', stem: 'STEM & Physics'
+};
+
+const CURRICULUM_META = {
+  '6':  { name:'IPI', full:'IPI — Intensive Programme of Instruction', desc:'6-month fast track · 2 exam periods · Papers per subject · Non-accredited' },
+  '12': { name:'ACC', full:'ACC — Applied Competence Certificate',     desc:'12-month programme · 3 exam periods · Papers per subject · Non-accredited' }
 };
 
 onAuthStateChanged(auth, async (user) => {
@@ -91,80 +205,162 @@ onAuthStateChanged(auth, async (user) => {
   const snap = await getDoc(ref);
   const data = snap.exists() ? snap.data() : {};
   if (!data.course) { window.location.href = 'curriculum.html'; return; }
-  renderPortal(user, data, ref);
+  renderPortal(user, data);
 });
 
-function renderPortal(user, data, ref) {
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
+function subjectTile(key, subj, kind) {
+  return `
+    <div class="subject-tile ${kind === 'stream' ? 'stream-tile' : ''} ${subj.required ? 'math-tile' : ''}">
+      <span class="tile-tag ${kind === 'stream' ? 'stream' : kind === 'elective' ? 'elective' : subj.required ? 'math' : ''}">${kind === 'stream' ? 'Stream' : kind === 'elective' ? 'Elective' : (subj.tag || 'Core')}</span>
+      <div class="tile-icon"><i data-lucide="${subj.icon}"></i></div>
+      <h4>${esc(subj.name)}</h4>
+      <div class="modules">${esc(subj.modules || '')}</div>
+    </div>
+  `;
+}
+
+function renderPortal(user, data) {
   const status = data.status || 'pending';
-  const stream = CURRICULUM[data.course];
-  const compulsory = stream?.compulsory || [];
+  const meta = CURRICULUM_META[data.duration] || { full:'—', desc:'—' };
+  const streamKey = data.course;
+  const streamSubject = STREAM_SUBJECTS[streamKey] || { name:'—', modules:'', icon:'layout-grid' };
   const electives = data.electives || [];
-  const meta = data.duration === '12' ? { full:'ACC — Applied Competence Certificate', desc:'12-month full programme · 3 major exams · 4–8 papers per exam' } : { full:'IPI — Intensive Programme of Instruction', desc:'6-month fast track · 2 major exams · 4–8 papers per exam' };
+
+  const examPeriods = data.duration === '12'
+    ? [
+        { name: 'First Certification Period', months: 'May / June 2027', note: 'One paper per subject' },
+        { name: 'Targeted Revision Period',   months: 'September 2027', note: 'Based on your weakest areas' },
+        { name: 'Final Certification Period', months: 'Oct / Nov 2027', note: 'One paper per subject' }
+      ]
+    : [
+        { name: 'First Certification Period', months: 'May / June 2027', note: 'One paper per subject' },
+        { name: 'Final Certification Period', months: 'June / July 2027', note: 'One paper per subject' }
+      ];
 
   document.getElementById('app').innerHTML = `
     <h1>Hello, ${esc((data.name || user.email).split(' ')[0])}</h1>
     <p class="sub">Your course at a glance — 2027 intake</p>
 
-    <div class="card curriculum-hero">
-      <div class="label"><i data-lucide="award"></i> Your Curriculum</div>
-      <div class="c-name">${esc(meta.full)}</div>
-      <div class="c-desc">${esc(meta.desc)}</div>
+    <div class="view-tabs" role="tablist">
+      <button class="view-tab active" data-view="grid"><i data-lucide="layout-grid"></i> Subjects</button>
+      <button class="view-tab" data-view="profile"><i data-lucide="user"></i> Profile</button>
+      <button class="view-tab" data-view="exams"><i data-lucide="calendar"></i> Exams</button>
     </div>
 
-    <div class="card">
-      <div class="label"><i data-lucide="fingerprint"></i> Student Identifiers</div>
-      <div class="id-grid">
-        <div class="id-cell"><div class="k">Student Number</div><div class="v ${data.studentNumber ? '' : 'pending'}">${data.studentNumber ? esc(data.studentNumber) : 'Pending'}</div></div>
-        <div class="id-cell"><div class="k">Examination Number</div><div class="v ${data.examinationNumber ? '' : 'pending'}">${data.examinationNumber ? esc(data.examinationNumber) : 'Issued at exams'}</div></div>
+    <!-- GRID VIEW -->
+    <div class="view-panel active" id="view-grid">
+      <div class="card curriculum-hero">
+        <div class="label"><i data-lucide="award"></i> Your Curriculum</div>
+        <div class="c-name">${esc(meta.full)}</div>
+        <div class="c-desc">${esc(meta.desc)}</div>
+      </div>
+
+      <div class="card">
+        <div class="label"><i data-lucide="layout-grid"></i> Your 6 Subjects</div>
+        <div class="subject-grid">
+          ${subjectTile('math', SUBJECTS.math, 'core')}
+          ${subjectTile('webFoundations', SUBJECTS.webFoundations, 'core')}
+          ${subjectTile('progFundamentals', SUBJECTS.progFundamentals, 'core')}
+          ${subjectTile(streamKey, streamSubject, 'stream')}
+          ${electives.map((e, i) => `
+            <div class="subject-tile">
+              <span class="tile-tag elective">Elective</span>
+              <div class="tile-icon"><i data-lucide="star"></i></div>
+              <h4>${esc(e)}</h4>
+              <div class="modules">Elective subject</div>
+            </div>
+          `).join('')}
+        </div>
+        <p style="font-size:12.5px; color:var(--grey); margin-top:16px;">
+          3 core subjects · 1 stream subject · 2 electives. Mathematics is required and counts as one paper (100 marks).
+        </p>
       </div>
     </div>
 
-    <div class="card">
-      <div class="label"><i data-lucide="activity"></i> Application State</div>
-      <div class="info-row"><span class="k"><i data-lucide="circle-dot"></i> Status</span><span class="v"><span class="status-badge ${status}"><i data-lucide="${status === 'approved' ? 'circle-check' : 'clock'}"></i> ${status}</span></span></div>
-      <div class="info-row"><span class="k"><i data-lucide="layout-grid"></i> Stream</span><span class="v">${esc(stream?.name || '—')}</span></div>
-      <div class="info-row"><span class="k"><i data-lucide="clock"></i> Duration</span><span class="v">${data.duration ? data.duration + ' months' : '—'}</span></div>
+    <!-- PROFILE VIEW -->
+    <div class="view-panel" id="view-profile">
+      <div class="card">
+        <div class="label"><i data-lucide="fingerprint"></i> Student Identifiers</div>
+        <div class="id-grid">
+          <div class="id-cell"><div class="k">Student Number</div><div class="v ${data.studentNumber ? '' : 'pending'}">${data.studentNumber ? esc(data.studentNumber) : 'Pending'}</div></div>
+          <div class="id-cell"><div class="k">Examination Number</div><div class="v ${data.examinationNumber ? '' : 'pending'}">${data.examinationNumber ? esc(data.examinationNumber) : 'Issued at exams'}</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label"><i data-lucide="activity"></i> Application State</div>
+        <div class="info-row"><span class="k"><i data-lucide="circle-dot"></i> Status</span><span class="v"><span class="status-badge ${status}"><i data-lucide="${status === 'approved' ? 'circle-check' : 'clock'}"></i> ${status}</span></span></div>
+        <div class="info-row"><span class="k"><i data-lucide="layout-grid"></i> Stream</span><span class="v">${esc(STREAM_NAMES[streamKey] || '—')}</span></div>
+        <div class="info-row"><span class="k"><i data-lucide="clock"></i> Duration</span><span class="v">${data.duration ? data.duration + ' months' : '—'}</span></div>
+        <div class="info-row"><span class="k"><i data-lucide="calendar-x"></i> Administration closes</span><span class="v">14 February 2027</span></div>
+      </div>
+
+      <div class="card">
+        <div class="label"><i data-lucide="user"></i> Personal Information</div>
+        <div class="info-row"><span class="k"><i data-lucide="user"></i> Full name</span><span class="v">${esc(data.name || '—')}</span></div>
+        <div class="info-row"><span class="k"><i data-lucide="mail"></i> Email</span><span class="v">${esc(data.email || user.email)}</span></div>
+        <p style="font-size:12.5px; color:var(--grey); margin-top:12px;">Personal information is read-only. To change, email the studio.</p>
+      </div>
+
+      <div class="card">
+        <div class="label"><i data-lucide="file-text"></i> Admission Slip</div>
+        <p style="font-size:14px; color:var(--grey); margin-bottom:14px;">Your official admission slip contains your examination number and paper names.</p>
+        <a href="admission-slip.html" class="btn-download"><i data-lucide="download"></i> Open Admission Slip</a>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="label"><i data-lucide="user"></i> Personal Information</div>
-      <div class="info-row"><span class="k"><i data-lucide="user"></i> Full name</span><span class="v">${esc(data.name || '—')}</span></div>
-      <div class="info-row"><span class="k"><i data-lucide="mail"></i> Email</span><span class="v">${esc(data.email || user.email)}</span></div>
-      <p style="font-size:12.5px; color:var(--grey); margin-top:12px;">Personal information cannot be edited.</p>
-    </div>
+    <!-- EXAMS VIEW -->
+    <div class="view-panel" id="view-exams">
+      <div class="card">
+        <div class="label"><i data-lucide="calendar"></i> Exam Periods — ${data.duration === '12' ? '3' : '2'} in 2027</div>
+        <ul style="list-style:none;">
+          ${examPeriods.map(p => `
+            <li style="padding:14px 0; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+              <div>
+                <div style="font-weight:700; font-size:14.5px;">${esc(p.name)}</div>
+                <div style="font-size:12.5px; color:var(--grey); margin-top:3px;">${esc(p.note)}</div>
+              </div>
+              <span style="font-size:12.5px; color:var(--grey); white-space:nowrap;">${esc(p.months)}</span>
+            </li>
+          `).join('')}
+        </ul>
+        <p style="font-size:12.5px; color:var(--grey); margin-top:14px;">
+          Each exam period contains one examination per subject. Paper counts are subject-based.
+        </p>
+      </div>
 
-    <div class="card">
-      <div class="label"><i data-lucide="list-checks"></i> Subjects — 6 Compulsory · 2 Electives</div>
-      <ul style="list-style:none;">
-        ${compulsory.map(s => `<li style="padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; display:flex; justify-content:space-between;"><span>${esc(s)}</span> <span style="font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:100px; background:var(--light); color:var(--grey);">Compulsory</span></li>`).join('')}
-        ${electives.map(e => `<li style="padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; display:flex; justify-content:space-between;"><span>${esc(e)}</span> <span style="font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:100px; background:#eef2ff; color:#3730a3;">Elective</span></li>`).join('')}
-      </ul>
-    </div>
-
-    <div class="card">
-      <div class="label"><i data-lucide="clipboard-list"></i> Examinations</div>
-      ${data.duration === '12' 
-        ? `<div class="info-row"><span class="k">FCC / IFB</span><span class="v">May / June 2027 · 150 marks</span></div>
-           <div class="info-row"><span class="k">Interim Examination</span><span class="v">September 2027 · 100 marks</span></div>
-           <div class="info-row"><span class="k">ACC / IFB Final</span><span class="v">Oct / Nov 2027 · 150 marks per paper</span></div>`
-        : `<div class="info-row"><span class="k">IPI FCC</span><span class="v">May / June 2027 · 100–150 marks</span></div>
-           <div class="info-row"><span class="k">IPI Final</span><span class="v">June / July 2027 · 100–150 marks</span></div>`}
-    </div>
-
-    <div class="card">
-      <div class="label"><i data-lucide="file-text"></i> Admission Slip</div>
-      <p style="font-size:14px; color:var(--grey); margin-bottom:14px;">Download your official admission slip containing your examination number, barcode, and QR code.</p>
-      <button class="btn-download" id="downloadSlipBtn"><i data-lucide="download"></i> Download Admission Slip (PDF)</button>
+      <div class="card">
+        <div class="label"><i data-lucide="file-text"></i> Papers by Subject</div>
+        <ul style="list-style:none;">
+          ${Object.values({...SUBJECTS, [streamKey]: streamSubject}).map(s => `
+            <li style="padding:11px 0; border-bottom:1px solid var(--line); font-size:13.5px; display:flex; justify-content:space-between; gap:12px;">
+              <span>${esc(s.name)}</span>
+              <span style="font-size:12px; color:var(--grey);">1 paper</span>
+            </li>
+          `).join('')}
+          ${electives.map(e => `
+            <li style="padding:11px 0; border-bottom:1px solid var(--line); font-size:13.5px; display:flex; justify-content:space-between; gap:12px;">
+              <span>${esc(e)}</span>
+              <span style="font-size:12px; color:var(--grey);">1 paper</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
     </div>
   `;
   if (window.lucide) lucide.createIcons();
 
-  document.getElementById('downloadSlipBtn').addEventListener('click', () => {
-    window.open(`admission-slip.html?uid=${user.uid}`, '_blank');
+  document.querySelectorAll('.view-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('view-' + tab.dataset.view).classList.add('active');
+    });
   });
 }
-
-function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 if (window.lucide) lucide.createIcons();
 </script>
 </body>
