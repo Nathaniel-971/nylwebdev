@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ACC — Applied Competence Certificate</title>
+<title>Nyl Dev — Build. Design. Learn.</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -56,7 +56,6 @@
     50%      { transform: translateY(-24px) translateX(12px); }
   }
 
-  /* ---------- CONTENT WRAPPER ---------- */
   .wrap { position: relative; z-index: 1; }
 
   /* ---------- NAV ---------- */
@@ -76,7 +75,7 @@
   nav .logo {
     font-size: 20px;
     font-weight: bold;
-    letter-spacing: 4px;
+    letter-spacing: 3px;
   }
 
   nav .logo span { color: var(--grey); }
@@ -202,86 +201,101 @@
     margin-bottom: 60px;
   }
 
-  /* ---------- STREAMS GRID ---------- */
-  .streams {
+  /* ---------- SERVICES GRID ---------- */
+  .services {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1px;
     background: var(--line);
     border: 1px solid var(--line);
   }
 
-  .stream {
+  .service {
     background: var(--black);
     padding: 40px 32px;
+    transition: background 0.25s;
+  }
+
+  .service:hover { background: #111; }
+
+  .service h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  .service p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.8;
+  }
+
+  /* ---------- COURSES ---------- */
+  .course-card {
+    border: 1px solid var(--line);
+    padding: 60px 40px;
+    margin-bottom: 1px;
+  }
+
+  .course-card .badge {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 6px 14px;
+    border: 1px solid var(--white);
+    margin-bottom: 24px;
+  }
+
+  .course-card .badge.free {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  .course-card h3 {
+    font-size: clamp(28px, 4vw, 44px);
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+
+  .course-card .sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    max-width: 620px;
+    margin-bottom: 40px;
+  }
+
+  .streams {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 20px;
+  }
+
+  .stream {
+    background: var(--black);
+    padding: 32px 24px;
     transition: background 0.25s;
   }
 
   .stream:hover { background: #111; }
 
   .stream .num {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--grey);
     letter-spacing: 2px;
   }
 
-  .stream h3 {
-    font-size: 22px;
-    margin: 16px 0 12px;
-    letter-spacing: -0.5px;
+  .stream h4 {
+    font-size: 18px;
+    margin: 12px 0 8px;
   }
 
   .stream .tag {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--grey);
     font-style: italic;
-    margin-bottom: 20px;
-  }
-
-  .stream ul {
-    list-style: none;
-    font-size: 13px;
-    color: rgba(255,255,255,0.55);
-    line-height: 1.9;
-  }
-
-  .stream ul li::before {
-    content: "› ";
-    color: var(--grey);
-  }
-
-  /* ---------- MATHEMATICS ---------- */
-  .math-box {
-    border: 1px solid var(--line);
-    padding: 60px 40px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: center;
-  }
-
-  .math-box .big {
-    font-size: clamp(60px, 10vw, 140px);
-    font-weight: bold;
-    letter-spacing: -4px;
-    line-height: 1;
-  }
-
-  .math-box .big span {
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--white);
-  }
-
-  .math-box ul {
-    list-style: none;
-    font-size: 14px;
-    line-height: 2;
-    color: rgba(255,255,255,0.7);
-  }
-
-  .math-box ul li::before {
-    content: "→ ";
-    color: var(--grey);
   }
 
   /* ---------- STACK ---------- */
@@ -303,7 +317,7 @@
   .stack-item:hover { background: #111; }
 
   .stack-item .name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     letter-spacing: 1px;
     margin-bottom: 6px;
@@ -314,7 +328,7 @@
     color: var(--grey);
   }
 
-  /* ---------- EXAMS TABLE ---------- */
+  /* ---------- TABLE ---------- */
   table {
     width: 100%;
     border-collapse: collapse;
@@ -378,8 +392,7 @@
     nav { padding: 14px 20px; }
     nav ul { gap: 16px; }
     nav a { font-size: 11px; }
-    section, .hero, .disclaimer, footer { padding-left: 20px; padding-right: 20px; }
-    .math-box { grid-template-columns: 1fr; padding: 40px 24px; }
+    section, .hero, .disclaimer, footer, .course-card { padding-left: 20px; padding-right: 20px; }
     .code-bg pre { font-size: 9px; }
   }
 </style>
@@ -422,217 +435,130 @@ git push origin main</pre>
 
   <!-- NAV -->
   <nav>
-    <div class="logo">ACC<span>.</span></div>
+    <div class="logo">NYL DEV<span>.</span></div>
     <ul>
-      <li><a href="#streams">Streams</a></li>
-      <li><a href="#maths">Mathematics</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#courses">Courses</a></li>
       <li><a href="#stack">Stack</a></li>
       <li><a href="#exams">Exams</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
 
   <!-- HERO -->
   <header class="hero">
-    <div class="eyebrow">APPLIED COMPETENCE CERTIFICATE — IFB</div>
+    <div class="eyebrow">WEB DEVELOPMENT · DESIGN · EDUCATION</div>
     <h1>
-      LEARN.<br>
-      BUILD.<br>
-      <em>SHIP.</em>
+      WE BUILD.<br>
+      YOU <em>LEARN.</em>
     </h1>
     <p>
-      A free, independent, portfolio-backed programme in full stack development,
-      design, and mathematics. Six streams. One required mathematics paper.
-      Physics as an elective. Built for the modern web.
+      Nyl Dev builds websites for businesses — and teaches the next generation
+      of developers, designers, and problem solvers through free, structured courses.
     </p>
     <div class="cta">
-      <a href="#streams" class="btn btn-solid">Explore Streams</a>
-      <a href="#exams" class="btn btn-ghost">Exam Structure</a>
+      <a href="#courses" class="btn btn-solid">View Courses</a>
+      <a href="#services" class="btn btn-ghost">Hire Us</a>
     </div>
   </header>
 
-  <!-- WHAT -->
-  <section>
-    <div class="section-label">01 — WHAT IS THE ACC</div>
-    <h2>An independent<br>professional credential.</h2>
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="section-label">01 — WHAT WE DO</div>
+    <h2>We build websites<br>for real businesses.</h2>
     <p class="lead">
-      The ACC is a rigorous, portfolio-backed qualification recognising practical
-      competence in full stack development and applied mathematics. It mirrors the
-      academic seriousness of A-Levels while remaining a free, non-accredited skills
-      credential awarded by IFB.
-    </p>
-  </section>
-
-  <!-- STREAMS -->
-  <section id="streams">
-    <div class="section-label">02 — THE SIX STREAMS</div>
-    <h2>Pick your direction.</h2>
-    <p class="lead">
-      Three build. Two design. One explains why any of it works. Mathematics is
-      required in every stream.
+      From landing pages to full stack applications — designed, built, and deployed
+      with the modern stack.
     </p>
 
-    <div class="streams">
-
-      <div class="stream">
-        <div class="num">STREAM 01</div>
-        <h3>Full Stack Engineering</h3>
-        <div class="tag">"Build the whole thing."</div>
-        <ul>
-          <li>HTML5 &amp; CSS3</li>
-          <li>JavaScript</li>
-          <li>React</li>
-          <li>Node.js</li>
-          <li>Databases</li>
-          <li>REST APIs</li>
-          <li>Deployment</li>
-          <li>Capstone</li>
-        </ul>
+    <div class="services">
+      <div class="service">
+        <h3>Web Development</h3>
+        <p>Custom websites, web apps, and full stack builds using modern tools and frameworks.</p>
       </div>
-
-      <div class="stream">
-        <div class="num">STREAM 02</div>
-        <h3>Frontend Craft</h3>
-        <div class="tag">"Build what the world sees."</div>
-        <ul>
-          <li>HTML5 &amp; CSS3</li>
-          <li>JavaScript</li>
-          <li>Advanced JavaScript</li>
-          <li>React</li>
-          <li>Responsive Design</li>
-          <li>Git &amp; GitHub</li>
-          <li>UI Fundamentals</li>
-          <li>Capstone</li>
-        </ul>
-      </div>
-
-      <div class="stream">
-        <div class="num">STREAM 03</div>
-        <h3>Backend Engineering</h3>
-        <div class="tag">"Build the engine."</div>
-        <ul>
-          <li>JavaScript</li>
-          <li>Node.js</li>
-          <li>Express</li>
-          <li>SQL</li>
-          <li>NoSQL</li>
-          <li>REST APIs</li>
-          <li>Authentication &amp; Security</li>
-          <li>Capstone</li>
-        </ul>
-      </div>
-
-      <div class="stream">
-        <div class="num">STREAM 04</div>
+      <div class="service">
         <h3>Web Design</h3>
-        <div class="tag">"Design the experience."</div>
-        <ul>
-          <li>HTML5 &amp; CSS3</li>
-          <li>Responsive Design</li>
-          <li>UI/UX Fundamentals</li>
-          <li>Typography &amp; Colour</li>
-          <li>Figma</li>
-          <li>Git &amp; GitHub</li>
-          <li>Portfolio</li>
-          <li>Capstone</li>
-        </ul>
+        <p>Clean, responsive design that works on every screen — built for real users.</p>
       </div>
-
-      <div class="stream">
-        <div class="num">STREAM 05</div>
-        <h3>UI/UX Design</h3>
-        <div class="tag">"Design how it feels."</div>
-        <ul>
-          <li>UI/UX Fundamentals</li>
-          <li>Figma</li>
-          <li>Typography &amp; Colour</li>
-          <li>Responsive Design</li>
-          <li>HTML5 &amp; CSS3</li>
-          <li>Research Basics</li>
-          <li>Portfolio</li>
-          <li>Capstone</li>
-        </ul>
+      <div class="service">
+        <h3>Deployment &amp; Maintenance</h3>
+        <p>We don't just build. We ship, host, and maintain — so your site stays live.</p>
       </div>
-
-      <div class="stream">
-        <div class="num">STREAM 06</div>
-        <h3>STEM &amp; Physics</h3>
-        <div class="tag">"Understand the rules of reality."</div>
-        <ul>
-          <li>Mathematics (required)</li>
-          <li>Mechanics</li>
-          <li>Thermodynamics</li>
-          <li>Waves &amp; Optics</li>
-          <li>Electromagnetism</li>
-          <li>Modern Physics</li>
-          <li>Core 50 Equations</li>
-          <li>Capstone</li>
-        </ul>
-      </div>
-
     </div>
   </section>
 
-  <!-- MATHEMATICS -->
-  <section id="maths">
-    <div class="section-label">03 — REQUIRED</div>
-    <h2>One paper. Everyone.</h2>
+  <!-- COURSES -->
+  <section id="courses">
+    <div class="section-label">02 — COURSES</div>
+    <h2>Free. Structured.<br>Built for the modern web.</h2>
     <p class="lead">
-      Every student, in every stream, writes the same mathematics paper.
-      150 marks. 60% to pass. Taught in segments, examined as a whole.
+      We offer free courses in web development, web design, and mathematics —
+      designed to take you from beginner to employable.
     </p>
 
-    <div class="math-box">
-      <div class="big">150<span>.</span></div>
-      <ul>
-        <li>Algebra</li>
-        <li>Functions &amp; Graphs</li>
-        <li>Sequences &amp; Series</li>
-        <li>Statistics</li>
-        <li>Logic &amp; Set Theory</li>
-      </ul>
-    </div>
-  </section>
+    <!-- ACC COURSE -->
+    <div class="course-card">
+      <span class="badge free">100% FREE</span>
+      <h3>ACC — Applied Competence Certificate</h3>
+      <p class="sub">
+        A rigorous, portfolio-backed programme in full stack development, design,
+        and applied mathematics. Awarded by IFB. Six streams. One required
+        mathematics paper. Physics as an elective.
+      </p>
 
-  <!-- PHYSICS -->
-  <section>
-    <div class="section-label">04 — ELECTIVE</div>
-    <h2>Physics.</h2>
-    <p class="lead">
-      Available on full-year courses only. Open to any stream as an elective.
-      Learn new ways of physics — every branch, and the core 50 equations.
-    </p>
+      <div class="section-label" style="margin-top: 20px;">THE SIX STREAMS</div>
 
-    <div class="stack-grid">
-      <div class="stack-item">
-        <div class="name">MECHANICS</div>
-        <div class="desc">Motion · Forces · Energy</div>
+      <div class="streams">
+
+        <div class="stream">
+          <div class="num">STREAM 01</div>
+          <h4>Full Stack Engineering</h4>
+          <div class="tag">"Build the whole thing."</div>
+        </div>
+
+        <div class="stream">
+          <div class="num">STREAM 02</div>
+          <h4>Frontend Craft</h4>
+          <div class="tag">"Build what the world sees."</div>
+        </div>
+
+        <div class="stream">
+          <div class="num">STREAM 03</div>
+          <h4>Backend Engineering</h4>
+          <div class="tag">"Build the engine."</div>
+        </div>
+
+        <div class="stream">
+          <div class="num">STREAM 04</div>
+          <h4>Web Design</h4>
+          <div class="tag">"Design the experience."</div>
+        </div>
+
+        <div class="stream">
+          <div class="num">STREAM 05</div>
+          <h4>UI/UX Design</h4>
+          <div class="tag">"Design how it feels."</div>
+        </div>
+
+        <div class="stream">
+          <div class="num">STREAM 06</div>
+          <h4>STEM &amp; Physics</h4>
+          <div class="tag">"Understand the rules of reality."</div>
+        </div>
+
       </div>
-      <div class="stack-item">
-        <div class="name">THERMO</div>
-        <div class="desc">Heat · Work · Entropy</div>
-      </div>
-      <div class="stack-item">
-        <div class="name">WAVES</div>
-        <div class="desc">Optics · Light · Sound</div>
-      </div>
-      <div class="stack-item">
-        <div class="name">ELECTRO</div>
-        <div class="desc">Fields · Circuits · Magnetism</div>
-      </div>
-      <div class="stack-item">
-        <div class="name">MODERN</div>
-        <div class="desc">Quantum · Atomic</div>
-      </div>
-      <div class="stack-item">
-        <div class="name">50 EQ</div>
-        <div class="desc">Core equations</div>
-      </div>
+
+      <p class="lead" style="margin-top: 40px; margin-bottom: 0;">
+        <strong style="color:#fff;">Mathematics</strong> is required in every stream — 150 marks, 60% to pass.
+        <strong style="color:#fff;">Physics</strong> is available as an elective on full-year courses.
+      </p>
     </div>
+
   </section>
 
   <!-- STACK -->
   <section id="stack">
-    <div class="section-label">05 — THE MODERN STACK</div>
+    <div class="section-label">03 — THE MODERN STACK</div>
     <h2>We don't stop at code.</h2>
     <p class="lead">
       Students deploy live applications using the same tools used in industry today.
@@ -677,10 +603,10 @@ git push origin main</pre>
 
   <!-- EXAMS -->
   <section id="exams">
-    <div class="section-label">06 — EXAMINATION</div>
+    <div class="section-label">04 — EXAMINATION</div>
     <h2>Strict. Independent. Yours.</h2>
     <p class="lead">
-      All examinations are run independently by IFB. We do not offer registered
+      All ACC examinations are run independently by IFB. We do not offer registered
       examinations. We assure the quality of our programmes.
     </p>
 
@@ -722,7 +648,7 @@ git push origin main</pre>
   </section>
 
   <!-- DISCLAIMER -->
-  <section class="disclaimer">
+  <section class="disclaimer" id="contact">
     <div class="section-label" style="color:#666;">DISCLAIMER</div>
     <h2>Independent. Non-accredited.</h2>
     <p>
@@ -744,12 +670,13 @@ git push origin main</pre>
   <!-- FOOTER -->
   <footer>
     <div>
-      <strong style="color:#fff; letter-spacing:2px;">ACC</strong> — Applied Competence Certificate<br>
-      Awarded by IFB · First intake 2027
+      <strong style="color:#fff; letter-spacing:2px;">NYL DEV</strong><br>
+      Web Development · Design · Courses<br>
+      ACC first intake 2027
     </div>
     <div style="text-align:right;">
       Your support is appreciated.<br>
-      To help this organisation grow, please share.
+      To help us grow, please share.
     </div>
   </footer>
 
