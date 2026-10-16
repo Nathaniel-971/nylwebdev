@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Past Papers — Nyl Dev</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--white); color: var(--black); line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:60px; }
+  .page-frame { border-top:2px solid var(--black); }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+  .fade-in { animation: fadeUp .6s ease both; }
+  nav { position: sticky; top:0; z-index:100; background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-bottom:1px solid var(--line); padding: 14px 48px; display:flex; justify-content:space-between; align-items:center; }
+  .logo { font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:-2px; line-height:1; display:flex; align-items:center; color: var(--black); text-decoration:none; }
+  .logo .cursor { width:12px; height:24px; background: var(--black); margin-left:2px; animation: blink 1.1s step-end infinite; }
+  .nav-right { display:flex; align-items:center; gap:10px; }
+  .nav-link { font-size:14px; font-weight:500; color: var(--black); text-decoration:none; padding:9px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:7px; transition: background .2s; }
+  .nav-link:hover { background: var(--light); }
+  .nav-link svg { width:16px; height:16px; }
+
+  .hero { padding: 70px 48px 40px; max-width:1200px; margin:0 auto; }
+  .eyebrow { font-size:12px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .eyebrow svg { width:14px; height:14px; }
+  h1 { font-size: clamp(32px, 5.5vw, 56px); line-height:1.05; letter-spacing:-2px; font-weight:700; margin-bottom:20px; }
+  h1 span { color: var(--grey); }
+  .lead { font-size:16px; color: var(--grey); max-width:620px; }
+
+  .year-block { max-width:1200px; margin:0 auto; padding: 40px 48px 20px; }
+  .year-label { display:inline-flex; align-items:center; gap:8px; background: var(--black); color: var(--white); padding:8px 16px; border-radius:100px; font-size:13px; font-weight:700; letter-spacing:1px; margin-bottom:24px; }
+  .year-label svg { width:14px; height:14px; }
+
+  .exams-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:18px; }
+  .exam-card { border:1px solid var(--line); border-radius:14px; padding:26px 24px; background: var(--white); transition: all .25s ease; }
+  .exam-card:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.06); }
+  .exam-card .icon-box { width:42px; height:42px; border-radius:10px; background: var(--black); color: var(--white); display:flex; align-items:center; justify-content:center; margin-bottom:18px; }
+  .exam-card .icon-box svg { width:20px; height:20px; }
+  .exam-card h3 { font-size:19px; font-weight:700; letter-spacing:-.4px; margin-bottom:6px; }
+  .exam-card .meta { display:flex; flex-wrap:wrap; gap:12px; font-size:12.5px; color: var(--grey); margin-bottom:16px; }
+  .exam-card .meta span { display:inline-flex; align-items:center; gap:5px; }
+  .exam-card .meta svg { width:12px; height:12px; }
+  .exam-card .papers { list-style:none; border-top:1px solid var(--line); padding-top:14px; }
+  .exam-card .papers li { display:flex; justify-content:space-between; align-items:center; padding:9px 0; font-size:13.5px; border-bottom:1px solid var(--line); gap:10px; }
+  .exam-card .papers li:last-child { border-bottom:none; }
+  .exam-card .papers .paper-name { color: var(--black); font-weight:500; }
+  .exam-card .papers .paper-meta { color: var(--grey); font-size:12px; white-space:nowrap; }
+  .exam-card .download-btn { display:inline-flex; align-items:center; gap:7px; margin-top:14px; padding:9px 14px; font-size:12.5px; font-weight:600; color: var(--black); background: var(--light); border:1.5px solid var(--line); border-radius:8px; text-decoration:none; }
+  .exam-card .download-btn svg { width:14px; height:14px; }
+  .exam-card .download-btn:hover { border-color: var(--black); background: var(--white); }
+
+  footer { padding: 48px 48px; border-top:1px solid var(--line); max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; font-size:13px; color: var(--grey); }
+  footer a { color: var(--black); text-decoration:none; font-weight:500; }
+  .logo-mini { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:-1px; color: var(--black); margin-bottom:8px; }
+
+  @media (max-width:768px) {
+    nav { padding: 12px 20px; } .logo { font-size:22px; } .logo .cursor { height:20px; width:10px; }
+    .hero, .year-block { padding-left:20px; padding-right:20px; }
+    footer { padding: 40px 20px; flex-direction:column; } footer > div:last-child { text-align:left !important; }
+  }
+</style>
+</head>
+<body class="page-frame">
+
+<nav>
+  <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
+  <div class="nav-right">
+    <a href="courses.html" class="nav-link"><i data-lucide="layout-grid"></i> Courses</a>
+    <a href="student-portal.html" class="nav-link"><i data-lucide="user"></i> My Portal</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="eyebrow fade-in"><i data-lucide="file-text"></i> Past Papers</div>
+  <h1 class="fade-in">Past Papers.<br><span>2027.</span></h1>
+  <p class="lead fade-in">Official examination names as issued by IFB. Papers are released after each assessment cycle.</p>
+</header>
+
+<div class="year-block">
+  <div class="year-label"><i data-lucide="calendar"></i> Year 2027</div>
+  <div class="exams-grid">
+
+    <div class="exam-card">
+      <div class="icon-box"><i data-lucide="calculator"></i></div>
+      <h3>FCC / IFB</h3>
+      <div class="meta">
+        <span><i data-lucide="calendar"></i> May / June 2027</span>
+        <span><i data-lucide="award"></i> 150 marks</span>
+      </div>
+      <ul class="papers">
+        <li><span class="paper-name">Mathematics</span><span class="paper-meta">150 marks</span></li>
+      </ul>
+      <a href="#" class="download-btn"><i data-lucide="download"></i> Available after exam</a>
+    </div>
+
+    <div class="exam-card">
+      <div class="icon-box"><i data-lucide="clipboard-list"></i></div>
+      <h3>Interim Examination</h3>
+      <div class="meta">
+        <span><i data-lucide="calendar"></i> September 2027</span>
+        <span><i data-lucide="award"></i> 100 marks</span>
+      </div>
+      <ul class="papers">
+        <li><span class="paper-name">All subjects (includes Mathematics)</span><span class="paper-meta">100 marks</span></li>
+      </ul>
+      <a href="#" class="download-btn"><i data-lucide="download"></i> Available after exam</a>
+    </div>
+
+    <div class="exam-card">
+      <div class="icon-box"><i data-lucide="graduation-cap"></i></div>
+      <h3>ACC / IFB Final</h3>
+      <div class="meta">
+        <span><i data-lucide="calendar"></i> October / November 2027</span>
+        <span><i data-lucide="award"></i> 150 marks each</span>
+      </div>
+      <ul class="papers">
+        <li><span class="paper-name">All subjects — one paper each</span><span class="paper-meta">150 marks</span></li>
+      </ul>
+      <a href="#" class="download-btn"><i data-lucide="download"></i> Available after exam</a>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div>
+    <div class="logo-mini">^_</div>
+    Web Development · Design · Maintenance<br>
+    Built by Nathaniel
+  </div>
+  <div style="text-align:right;">
+    <a href="/">Home</a> &nbsp;·&nbsp;
+    <a href="courses.html">Courses</a> &nbsp;·&nbsp;
+    <a href="messages.html">Message us</a> &nbsp;·&nbsp;
+    <a href="mailto:n1nathaniel971@gmail.com">Email</a>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>
