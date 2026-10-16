@@ -3,295 +3,268 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Course — Nyl Dev</title>
+<title>My Portal</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d0d0d">
 <script src="https://unpkg.com/lucide@latest"></script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/service-worker.js').catch(()=>{});}</script>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--light); color: var(--black); line-height:1.6; padding-bottom:60px; }
-  @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
-  @keyframes popIn { from { opacity:0; transform: scale(.95); } to { opacity:1; transform: scale(1); } }
-
-  nav { background: var(--white); border-bottom:1px solid var(--line); padding:12px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
-  .nav-left { display:flex; align-items:center; gap:12px; text-decoration:none; color: var(--black); }
-  .emblem { width:44px; height:44px; }
-  .brand-name { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:-1px; line-height:1; }
-  .brand-sub { font-size:9.5px; letter-spacing:2px; color: var(--grey); text-transform:uppercase; margin-top:3px; }
-  .nav-right { display:flex; align-items:center; gap:8px; }
-  .nav-icon { width:38px; height:38px; border-radius:10px; background: var(--white); border:1px solid var(--line); cursor:pointer; display:flex; align-items:center; justify-content:center; text-decoration:none; color: var(--black); transition: all .2s; }
-  .nav-icon:hover { border-color: var(--black); background: var(--light); }
-  .nav-icon svg { width:16px; height:16px; }
-
-  .container { max-width:900px; margin:0 auto; padding:32px 20px; }
-  h1 { font-size: clamp(24px, 5vw, 34px); letter-spacing:-1px; margin-bottom:6px; }
-  .sub { color: var(--grey); font-size:14.5px; margin-bottom:24px; }
-
-  .view-tabs { display:flex; gap:6px; margin-bottom:20px; background: var(--white); border:1px solid var(--line); border-radius:12px; padding:5px; }
-  .view-tab { flex:1; padding:10px 12px; font-size:13.5px; font-weight:600; font-family:inherit; border:none; background: transparent; color: var(--grey); cursor:pointer; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; gap:7px; transition: all .2s; }
-  .view-tab svg { width:15px; height:15px; }
-  .view-tab.active { background: var(--black); color: var(--white); }
-  .view-tab:hover:not(.active) { background: var(--light); color: var(--black); }
-
-  .view-panel { display:none; animation: fadeUp .35s ease both; }
-  .view-panel.active { display:block; }
-
-  .card { background: var(--white); border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:16px; animation: fadeUp .4s ease both; }
-  .card .label { font-size:11.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
-  .card .label svg { width:14px; height:14px; }
-  .curriculum-hero { background: var(--black); color: var(--white); border:none; }
-  .curriculum-hero .label { color: rgba(255,255,255,.55); }
-  .curriculum-hero .c-name { font-size: 26px; font-weight: 700; letter-spacing: -1px; margin-bottom:6px; }
-  .curriculum-hero .c-desc { font-size: 13.5px; color: rgba(255,255,255,.7); line-height:1.55; }
-
-  .subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
-  .subject-tile { background: var(--white); border: 1.5px solid var(--line); border-radius: 14px; padding: 20px 18px; display: flex; flex-direction: column; gap: 10px; animation: popIn .4s ease both; transition: all .25s; position: relative; overflow: hidden; }
-  .subject-tile:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,.07); }
-  .subject-tile .tile-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .subject-tile .tile-icon svg { width: 20px; height: 20px; color: var(--black); }
-  .subject-tile h4 { font-size: 15px; font-weight: 700; letter-spacing: -.2px; line-height: 1.25; }
-  .subject-tile .modules { font-size: 12px; color: var(--grey); line-height: 1.5; }
-  .subject-tile .tile-tag { position: absolute; top: 12px; right: 12px; font-size: 9.5px; font-weight: 700; letter-spacing: .5px; padding: 3px 8px; border-radius: 100px; background: var(--black); color: var(--white); text-transform: uppercase; }
-  .subject-tile .tile-tag.stream { background: #eef2ff; color: #3730a3; }
-  .subject-tile .tile-tag.elective { background: #f0fdf4; color: #15803d; }
-  .subject-tile .tile-tag.math { background: #fef2f2; color: #b91c1c; }
-  .stream-tile { border-width: 2px; border-color: var(--black); background: linear-gradient(180deg, #fff 0%, var(--light) 100%); }
-  .stream-tile .tile-icon { background: var(--black); }
-  .stream-tile .tile-icon svg { color: var(--white); }
-  .math-tile { border-color: #0d0d0d; border-width: 2px; }
-
-  .id-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .id-cell { padding:16px; border:1px solid var(--line); border-radius:10px; background: var(--light); }
-  .id-cell .k { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; margin-bottom:6px; }
-  .id-cell .v { font-family:'Courier New',monospace; font-size:18px; font-weight:700; letter-spacing:1px; }
-  .id-cell .v.pending { font-family:inherit; font-size:13.5px; letter-spacing:0; color:#b86e00; font-weight:600; }
-  .info-row { display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; border-bottom:1px solid var(--line); font-size:14.5px; gap:14px; }
-  .info-row:last-child { border-bottom:none; }
-  .info-row .k { color: var(--grey); display:flex; align-items:center; gap:7px; }
-  .info-row .k svg { width:14px; height:14px; }
-  .info-row .v { font-weight:600; text-align:right; }
-  .status-badge { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; padding:4px 11px; border-radius:100px; }
-  .status-badge svg { width:12px; height:12px; }
-  .status-badge.pending { background:#fff4e5; color:#b86e00; }
-  .status-badge.approved { background:#e6f5ec; color:#16794a; }
-  .status-badge.revoked { background:#fef2f2; color:#b91c1c; }
-
-  .btn-download { display:inline-flex; align-items:center; gap:8px; padding:13px 22px; font-size:14px; font-weight:600; border-radius:9px; border:1.5px solid var(--black); background: var(--black); color: var(--white); cursor:pointer; font-family:inherit; text-decoration:none; transition: all .2s; }
-  .btn-download:hover { background: var(--mid); transform: translateY(-1px); }
-
-  .loading { text-align:center; padding:80px 20px; color: var(--grey); }
-  @media (max-width:500px) {
-    nav { padding:12px 16px; } .container { padding:24px 16px; }
-    .card { padding:20px 16px; }
-    .id-grid { grid-template-columns:1fr; }
-    .subject-grid { grid-template-columns: 1fr; }
-    .brand-name { font-size:17px; } .emblem { width:38px; height:38px; }
-  }
+:root{--black:#0d0d0d;--white:#fff;--grey:#6b6b6b;--light:#f5f5f5;--line:#e5e5e5;--mid:#333;--green:#059669;--green-soft:#ecfdf5;--green-line:#a7f3d0;--red:#dc2626;--red-soft:#fef2f2;--red-line:#fecaca}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--light);color:var(--black);line-height:1.6;padding-bottom:60px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+nav{background:var(--white);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.nav-left{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--black)}
+.mark{font-family:'Courier New',monospace;font-size:28px;font-weight:700;letter-spacing:-2px}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-icon{width:38px;height:38px;border-radius:10px;background:var(--white);border:1px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--black)}
+.nav-icon:hover{border-color:var(--black);background:var(--light)}
+.nav-icon svg{width:16px;height:16px}
+.container{max-width:960px;margin:0 auto;padding:32px 20px}
+h1{font-size:clamp(24px,5vw,34px);letter-spacing:-1px;margin-bottom:6px}
+.sub{color:var(--grey);font-size:14.5px;margin-bottom:24px}
+.tabs{display:flex;gap:6px;margin-bottom:20px;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:5px}
+.tab{flex:1;padding:10px 12px;font-size:13.5px;font-weight:600;font-family:inherit;border:none;background:transparent;color:var(--grey);cursor:pointer;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.tab svg{width:15px;height:15px}
+.tab.active{background:var(--black);color:var(--white)}
+.tab:hover:not(.active){background:var(--light);color:var(--black)}
+.panel{display:none;animation:fadeUp .35s ease both}
+.panel.active{display:block}
+.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:16px;animation:fadeUp .4s ease both}
+.card .label{font-size:11.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.card .label svg{width:14px;height:14px}
+.hero-card{background:var(--black);color:var(--white);border:none}
+.hero-card .label{color:rgba(255,255,255,.55)}
+.hero-card .c-name{font-size:26px;font-weight:700;margin-bottom:6px}
+.hero-card .c-desc{font-size:13.5px;color:rgba(255,255,255,.7)}
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.tile{background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;animation:popIn .4s ease both;transition:all .25s;position:relative}
+.tile:hover{border-color:var(--black);transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.07)}
+.tile .t-icon{width:40px;height:40px;border-radius:10px;background:var(--light);display:flex;align-items:center;justify-content:center}
+.tile .t-icon svg{width:20px;height:20px}
+.tile h4{font-size:15px;font-weight:700;line-height:1.25}
+.tile .mods{font-size:12px;color:var(--grey);line-height:1.5}
+.tile .tag{position:absolute;top:12px;right:12px;font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:100px;background:var(--black);color:var(--white);text-transform:uppercase}
+.tile .tag.stream{background:#eef2ff;color:#3730a3}
+.tile .tag.elective{background:var(--green-soft);color:var(--green)}
+.tile .tag.math{background:var(--red-soft);color:var(--red)}
+.tile.stream-tile{border-width:2px;border-color:var(--black);background:linear-gradient(180deg,#fff 0%,var(--light) 100%)}
+.tile.stream-tile .t-icon{background:var(--black)}
+.tile.stream-tile .t-icon svg{color:var(--white)}
+.tile.math-tile{border-width:2px;border-color:var(--black)}
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.id-cell{padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--light)}
+.id-cell .k{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);font-weight:600;margin-bottom:6px}
+.id-cell .v{font-family:'Courier New',monospace;font-size:18px;font-weight:700;letter-spacing:1px}
+.id-cell .v.pending{font-family:inherit;font-size:13.5px;letter-spacing:0;color:#b86e00;font-weight:600}
+.info-row{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px;gap:14px}
+.info-row:last-child{border-bottom:none}
+.info-row .k{color:var(--grey);display:flex;align-items:center;gap:7px}
+.info-row .k svg{width:14px;height:14px}
+.info-row .v{font-weight:600;text-align:right}
+.status-badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;padding:4px 11px;border-radius:100px}
+.status-badge svg{width:12px;height:12px}
+.status-badge.pending{background:#fff4e5;color:#b86e00}
+.status-badge.approved{background:var(--green-soft);color:var(--green)}
+.status-badge.revoked{background:var(--red-soft);color:var(--red)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;font-size:13.5px;font-weight:600;border-radius:9px;border:1.5px solid var(--black);background:var(--black);color:var(--white);cursor:pointer;font-family:inherit;text-decoration:none}
+.btn:hover{background:var(--mid)}
+.btn-ghost{background:var(--white);color:var(--black);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--black);background:var(--light)}
+.edit-banner{background:var(--green-soft);border:1px solid var(--green-line);color:#065f46;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.edit-banner svg{width:16px;height:16px;flex-shrink:0}
+.empty{text-align:center;padding:40px 20px;color:var(--grey);font-size:14px}
+@media(max-width:500px){nav{padding:12px 16px}.container{padding:24px 16px}.card{padding:20px 16px}.id-grid,.subject-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <nav>
-  <a href="/" class="nav-left">
-    <svg class="emblem" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="none" stroke="#0d0d0d" stroke-width="2.5"/><circle cx="60" cy="60" r="52" fill="none" stroke="#0d0d0d" stroke-width="1"/><circle cx="60" cy="60" r="48" fill="#0d0d0d"/><path d="M40 44 L60 78 L80 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/><rect x="66" y="44" width="8" height="6" fill="#fff"/></svg>
-    <div>
-      <div class="brand-name">Nyl Dev</div>
-      <div class="brand-sub">Student Portal</div>
-    </div>
-  </a>
+  <a href="/" class="nav-left"><span class="mark">∆</span></a>
   <div class="nav-right">
     <a href="past-papers.html" class="nav-icon" title="Resources"><i data-lucide="file-text"></i></a>
-    <a href="messages.html" class="nav-icon" title="Message us"><i data-lucide="message-square"></i></a>
+    <a href="messages.html" class="nav-icon" title="Messages"><i data-lucide="message-square"></i></a>
     <a href="settings.html" class="nav-icon" title="Settings"><i data-lucide="settings"></i></a>
   </div>
 </nav>
-
-<div class="container" id="app"><div class="loading">Loading your course…</div></div>
+<div class="container" id="app"><div class="empty">Loading…</div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+import { getFirestore, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-const CORE_SUBJECTS = {
-  math: { name: 'Mathematics', modules: 'Algebra · Functions · Sequences · Statistics · Logic', icon: 'sigma', tag: 'Required', required: true },
-  webFoundations: { name: 'Web Foundations', modules: 'Git · GitHub · HTML5 · CSS3 · Responsive Design', icon: 'layout-template', tag: 'Core' },
-  progFundamentals: { name: 'Programming Fundamentals', modules: 'JavaScript · Advanced JavaScript · Logic', icon: 'code-2', tag: 'Core' }
+const META = { '6':{name:'IPI',full:'IPI — Intensive Programme of Instruction',desc:'6-month programme · 2 exam periods'}, '12':{name:'ACC',full:'ACC — Applied Competence Certificate',desc:'12-month programme · 3 exam periods'} };
+const CORE = {
+  math: { name:'Mathematics', modules:'Algebra · Functions · Sequences · Statistics · Logic', icon:'sigma', required:true, tag:'Required' },
+  webFoundations: { name:'Web Foundations', modules:'Git · HTML5 · CSS3 · Responsive Design', icon:'layout-template', tag:'Core' },
+  progFundamentals: { name:'Programming Fundamentals', modules:'JavaScript · Advanced JavaScript', icon:'code-2', tag:'Core' }
 };
-
 const STREAM_SUBJECTS = {
-  fullstack: { name: 'Full Stack Systems', modules: 'Node.js · Express · Databases · React', icon: 'boxes' },
-  frontend:  { name: 'Frontend Systems',   modules: 'React · Vue · TypeScript · Figma',    icon: 'monitor-smartphone' },
-  backend:   { name: 'Backend Systems',    modules: 'Node.js · Express · SQL · NoSQL · REST · Auth', icon: 'server' },
-  webdesign: { name: 'Visual Systems',     modules: 'Figma · Typography · Colour · UI/UX · Portfolio', icon: 'palette' },
-  uiux:      { name: 'Experience Design',  modules: 'User Research · Prototyping · Accessibility', icon: 'users' },
-  stem:      { name: 'Physical Sciences',  modules: 'Mechanics · Thermodynamics · Waves · Electromagnetism', icon: 'atom' }
+  fullstack: { name:'Full Stack Systems', modules:'Node · Express · Databases · React', icon:'boxes' },
+  frontend:  { name:'Frontend Systems',   modules:'React · Vue · TypeScript · Figma', icon:'monitor-smartphone' },
+  backend:   { name:'Backend Systems',    modules:'Node · Express · SQL · NoSQL · REST', icon:'server' },
+  webdesign: { name:'Visual Systems',     modules:'Figma · Typography · Colour · UI/UX', icon:'palette' },
+  uiux:      { name:'Experience Design',  modules:'Research · Prototyping · Accessibility', icon:'users' },
+  stem:      { name:'Physical Sciences',  modules:'Mechanics · Thermo · Waves · Electromagnetism', icon:'atom' }
 };
-
 const STREAM_NAMES = { fullstack:'Full Stack Engineering', frontend:'Frontend Craft', backend:'Backend Engineering', webdesign:'Web Design', uiux:'UI/UX Design', stem:'STEM & Physics' };
-const CURRICULUM_META = {
-  '6':  { name:'IPI', full:'IPI — Intensive Programme of Instruction', desc:'6-month fast track · 2 exam periods · One paper per subject per period · Non-accredited' },
-  '12': { name:'ACC', full:'ACC — Applied Competence Certificate',     desc:'12-month programme · 3 exam periods · One paper per subject per period · Non-accredited' }
+const CURRICULUM = {
+  fullstack: { electives:['React','Vue','Next.js','TypeScript','Cloud & DevOps','Physics'] },
+  frontend:  { electives:['React','Vue','Next.js','TypeScript','Figma','Physics'] },
+  backend:   { electives:['Databases (NoSQL)','REST APIs','Authentication','TypeScript','Cloudinary','Physics'] },
+  webdesign: { electives:['CSS Animation','Accessibility','Design Systems','Portfolio','Git & GitHub','Physics'] },
+  uiux:      { electives:['Design Systems','Accessibility','Prototyping','Figma Advanced','Portfolio','Physics'] },
+  stem:      { electives:['Core 50 Equations','Nuclear Physics','Relativity','Astrophysics','JavaScript Fundamentals','Physics Lab'] }
 };
+const APPLICATION_CLOSE = new Date('2027-02-14T23:59:59+02:00').getTime();
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) { window.location.href = 'auth.html'; return; }
-  if (user.email === ADMIN_EMAIL) { window.location.href = 'admin.html'; return; }
-  const snap = await getDoc(doc(db, 'users', user.uid));
-  const data = snap.exists() ? snap.data() : {};
-  if (!data.course) { window.location.href = 'curriculum.html'; return; }
-  renderPortal(user, data);
+  if (!user) { window.location.href='auth.html'; return; }
+  if (user.email === ADMIN_EMAIL) { window.location.href='admin.html'; return; }
+  const snap = await getDoc(doc(db,'users',user.uid));
+  const data = snap.exists()?snap.data():{};
+  if (!data.course) { window.location.href='curriculum.html'; return; }
+  render(user, data);
 });
 
-function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
-function subjectTile(subj, kind) {
-  const kindClass = kind === 'stream' ? 'stream-tile' : (subj.required ? 'math-tile' : '');
-  const tagClass = kind === 'stream' ? 'stream' : kind === 'elective' ? 'elective' : (subj.required ? 'math' : '');
-  const tagText = kind === 'stream' ? 'Stream' : kind === 'elective' ? 'Elective' : (subj.tag || 'Core');
-  return `
-    <div class="subject-tile ${kindClass}">
-      <span class="tile-tag ${tagClass}">${tagText}</span>
-      <div class="tile-icon"><i data-lucide="${subj.icon}"></i></div>
-      <h4>${esc(subj.name)}</h4>
-      <div class="modules">${esc(subj.modules || '')}</div>
-    </div>
-  `;
+function tile(subj, kind) {
+  const cls = kind==='stream'?'stream-tile':(subj.required?'math-tile':'');
+  const tagCls = kind==='stream'?'stream':kind==='elective'?'elective':(subj.required?'math':'');
+  const tagText = kind==='stream'?'Stream':kind==='elective'?'Elective':(subj.tag||'Core');
+  return `<div class="tile ${cls}"><span class="tag ${tagCls}">${tagText}</span><div class="t-icon"><i data-lucide="${subj.icon}"></i></div><h4>${esc(subj.name)}</h4><div class="mods">${esc(subj.modules||'')}</div></div>`;
 }
 
-function renderPortal(user, data) {
-  const status = data.status || 'pending';
-  const meta = CURRICULUM_META[data.duration] || { full:'—', desc:'—' };
+function render(user, data) {
+  const status = data.status||'pending';
+  const meta = META[data.duration]||{full:'—',desc:'—'};
   const streamKey = data.course;
-  const streamSubject = STREAM_SUBJECTS[streamKey] || { name:'—', modules:'', icon:'layout-grid' };
-  const electives = data.electives || [];
-
-  const examPeriods = data.duration === '12'
-    ? [
-        { name: 'First Certification Period', when: 'May / June 2027', note: 'One paper per subject' },
-        { name: 'Targeted Revision Period',   when: 'September 2027', note: 'Covers your weakest areas' },
-        { name: 'Final Certification Period', when: 'Oct / Nov 2027', note: 'One paper per subject' }
-      ]
-    : [
-        { name: 'First Certification Period', when: 'May / June 2027', note: 'One paper per subject' },
-        { name: 'Final Certification Period', when: 'June / July 2027', note: 'One paper per subject' }
-      ];
-
+  const streamSubj = STREAM_SUBJECTS[streamKey]||{name:'—',modules:'',icon:'layout-grid'};
+  const electives = data.electives||[];
+  const editable = Date.now() < APPLICATION_CLOSE;
+  const periods = data.duration==='12'
+    ? [{n:'First Certification Period',w:'May / June 2027'},{n:'Targeted Revision Period',w:'September 2027'},{n:'Final Certification Period',w:'Oct / Nov 2027'}]
+    : [{n:'First Certification Period',w:'May / June 2027'},{n:'Final Certification Period',w:'June / July 2027'}];
   const allSubjects = [
-    CORE_SUBJECTS.math,
-    CORE_SUBJECTS.webFoundations,
-    CORE_SUBJECTS.progFundamentals,
-    streamSubject,
-    ...electives.map(e => ({ name: e, modules: 'Elective subject', icon: 'star' }))
+    {name:'Mathematics'},{name:'Web Foundations'},{name:'Programming Fundamentals'},{name:streamSubj.name},...electives.map(e=>({name:e}))
   ];
 
   document.getElementById('app').innerHTML = `
-    <h1>Hello, ${esc((data.name || user.email).split(' ')[0])}</h1>
+    <h1>Hello, ${esc((data.name||user.email).split(' ')[0])}</h1>
     <p class="sub">Your course at a glance — 2027 intake</p>
 
-    <div class="view-tabs" role="tablist">
-      <button class="view-tab active" data-view="grid"><i data-lucide="layout-grid"></i> Subjects</button>
-      <button class="view-tab" data-view="profile"><i data-lucide="user"></i> Profile</button>
-      <button class="view-tab" data-view="exams"><i data-lucide="calendar"></i> Exams</button>
+    <div class="tabs">
+      <button class="tab active" data-tab="subjects"><i data-lucide="layout-grid"></i> Subjects</button>
+      <button class="tab" data-tab="profile"><i data-lucide="user"></i> Profile</button>
+      <button class="tab" data-tab="exams"><i data-lucide="calendar"></i> Exams</button>
     </div>
 
-    <div class="view-panel active" id="view-grid">
-      <div class="card curriculum-hero">
+    <div class="panel active" id="panel-subjects">
+      <div class="card hero-card">
         <div class="label"><i data-lucide="award"></i> Your Curriculum</div>
         <div class="c-name">${esc(meta.full)}</div>
         <div class="c-desc">${esc(meta.desc)}</div>
       </div>
-
       <div class="card">
         <div class="label"><i data-lucide="layout-grid"></i> Your 6 Subjects</div>
         <div class="subject-grid">
-          ${subjectTile(CORE_SUBJECTS.math, 'core')}
-          ${subjectTile(CORE_SUBJECTS.webFoundations, 'core')}
-          ${subjectTile(CORE_SUBJECTS.progFundamentals, 'core')}
-          ${subjectTile(streamSubject, 'stream')}
-          ${electives.map(e => subjectTile({ name: e, modules: 'Elective subject', icon: 'star' }, 'elective')).join('')}
+          ${tile(CORE.math,'core')}
+          ${tile(CORE.webFoundations,'core')}
+          ${tile(CORE.progFundamentals,'core')}
+          ${tile(streamSubj,'stream')}
+          ${electives.map(e=>tile({name:e,modules:'Elective subject',icon:'star'},'elective')).join('')}
         </div>
-        <p style="font-size:12.5px; color:var(--grey); margin-top:16px;">
-          3 core subjects · 1 stream subject · 2 electives. Mathematics is required and counts as one paper (100 marks).
-        </p>
+        <p style="font-size:12.5px;color:var(--grey);margin-top:16px">3 core · 1 stream · 2 electives. Mathematics required.</p>
       </div>
     </div>
 
-    <div class="view-panel" id="view-profile">
+    <div class="panel" id="panel-profile">
+      ${editable ? `<div class="edit-banner"><i data-lucide="info"></i><span>You can edit stream &amp; electives until 14 February 2027.</span></div>` : ''}
       <div class="card">
-        <div class="label"><i data-lucide="fingerprint"></i> Student Identifiers</div>
+        <div class="label"><i data-lucide="fingerprint"></i> Identifiers</div>
         <div class="id-grid">
-          <div class="id-cell"><div class="k">Student Number</div><div class="v ${data.studentNumber ? '' : 'pending'}">${data.studentNumber ? esc(data.studentNumber) : 'Pending'}</div></div>
-          <div class="id-cell"><div class="k">Examination Number</div><div class="v ${data.examinationNumber ? '' : 'pending'}">${data.examinationNumber ? esc(data.examinationNumber) : 'Issued at exams'}</div></div>
+          <div class="id-cell"><div class="k">Student №</div><div class="v ${data.studentNumber?'':'pending'}">${data.studentNumber?esc(data.studentNumber):'Pending'}</div></div>
+          <div class="id-cell"><div class="k">Examination №</div><div class="v ${data.examinationNumber?'':'pending'}">${data.examinationNumber?esc(data.examinationNumber):'Issued at exams'}</div></div>
         </div>
       </div>
-
       <div class="card">
-        <div class="label"><i data-lucide="activity"></i> Application State</div>
-        <div class="info-row"><span class="k"><i data-lucide="circle-dot"></i> Status</span><span class="v"><span class="status-badge ${status}"><i data-lucide="${status === 'approved' ? 'circle-check' : 'clock'}"></i> ${status}</span></span></div>
-        <div class="info-row"><span class="k"><i data-lucide="layout-grid"></i> Stream</span><span class="v">${esc(STREAM_NAMES[streamKey] || '—')}</span></div>
-        <div class="info-row"><span class="k"><i data-lucide="clock"></i> Duration</span><span class="v">${data.duration ? data.duration + ' months' : '—'}</span></div>
-        <div class="info-row"><span class="k"><i data-lucide="calendar-x"></i> Administration closes</span><span class="v">14 February 2027</span></div>
+        <div class="label"><i data-lucide="activity"></i> State</div>
+        <div class="info-row"><span class="k">Status</span><span class="v"><span class="status-badge ${status}"><i data-lucide="${status==='approved'?'circle-check':'clock'}"></i> ${status}</span></span></div>
+        <div class="info-row"><span class="k">Stream</span><span class="v">${editable?`<select id="editStream" style="padding:6px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit">${Object.entries(STREAM_NAMES).map(([k,v])=>`<option value="${k}" ${k===streamKey?'selected':''}>${v}</option>`).join('')}</select>`:esc(STREAM_NAMES[streamKey]||'—')}</span></div>
+        <div class="info-row"><span class="k">Duration</span><span class="v">${data.duration?data.duration+' months':'—'}</span></div>
+        <div class="info-row"><span class="k">Application closes</span><span class="v">14 February 2027</span></div>
       </div>
-
+      ${editable ? `
       <div class="card">
-        <div class="label"><i data-lucide="user"></i> Personal Information</div>
-        <div class="info-row"><span class="k"><i data-lucide="user"></i> Full name</span><span class="v">${esc(data.name || '—')}</span></div>
-        <div class="info-row"><span class="k"><i data-lucide="mail"></i> Email</span><span class="v">${esc(data.email || user.email)}</span></div>
-        <p style="font-size:12.5px; color:var(--grey); margin-top:12px;">Personal information is read-only. To change, email the studio.</p>
+        <div class="label"><i data-lucide="edit-3"></i> Electives</div>
+        <div id="editElectives" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">
+          ${(CURRICULUM[streamKey]?.electives||[]).map(e=>`<label style="display:flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;cursor:pointer"><input type="checkbox" value="${e}" ${electives.includes(e)?'checked':''} class="editEl" style="accent-color:var(--black)"> ${e}</label>`).join('')}
+        </div>
+        <button class="btn" id="saveEdit"><i data-lucide="save"></i> Save Changes</button>
       </div>
-
+      ` : ''}
+      <div class="card">
+        <div class="label"><i data-lucide="user"></i> Personal</div>
+        <div class="info-row"><span class="k">Name</span><span class="v">${esc(data.name||'—')}</span></div>
+        <div class="info-row"><span class="k">Email</span><span class="v">${esc(data.email||user.email)}</span></div>
+        <p style="font-size:12px;color:var(--grey);margin-top:12px">Read-only. Email the studio for changes.</p>
+      </div>
       <div class="card">
         <div class="label"><i data-lucide="file-text"></i> Admission Slip</div>
-        <p style="font-size:14px; color:var(--grey); margin-bottom:14px;">Your official admission slip contains your examination number, paper names, barcode and QR code.</p>
-        <a href="admission-slip.html" class="btn-download"><i data-lucide="download"></i> Open Admission Slip</a>
+        <p style="font-size:13.5px;color:var(--grey);margin-bottom:14px">Your slip contains your exam number, papers, barcode, badge watermark.</p>
+        <a href="admission-slip.html" class="btn"><i data-lucide="download"></i> Open Admission Slip</a>
       </div>
     </div>
 
-    <div class="view-panel" id="view-exams">
+    <div class="panel" id="panel-exams">
       <div class="card">
-        <div class="label"><i data-lucide="calendar"></i> Exam Periods — ${data.duration === '12' ? '3' : '2'} in 2027</div>
-        <ul style="list-style:none;">
-          ${examPeriods.map(p => `
-            <li style="padding:14px 0; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
-              <div>
-                <div style="font-weight:700; font-size:14.5px;">${esc(p.name)}</div>
-                <div style="font-size:12.5px; color:var(--grey); margin-top:3px;">${esc(p.note)}</div>
-              </div>
-              <span style="font-size:12.5px; color:var(--grey); white-space:nowrap;">${esc(p.when)}</span>
-            </li>
-          `).join('')}
+        <div class="label"><i data-lucide="calendar"></i> Exam Periods</div>
+        <ul style="list-style:none">
+          ${periods.map(p=>`<li style="padding:14px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px"><div><div style="font-weight:700;font-size:14.5px">${p.n}</div><div style="font-size:12.5px;color:var(--grey);margin-top:3px">One paper per subject</div></div><span style="font-size:12.5px;color:var(--grey);white-space:nowrap">${p.w}</span></li>`).join('')}
         </ul>
-        <p style="font-size:12.5px; color:var(--grey); margin-top:14px;">Each exam period contains one examination per subject.</p>
       </div>
-
       <div class="card">
         <div class="label"><i data-lucide="file-text"></i> Papers by Subject</div>
-        <ul style="list-style:none;">
-          ${allSubjects.map(s => `
-            <li style="padding:11px 0; border-bottom:1px solid var(--line); font-size:13.5px; display:flex; justify-content:space-between; gap:12px;">
-              <span>${esc(s.name)}</span>
-              <span style="font-size:12px; color:var(--grey);">1 paper</span>
-            </li>
-          `).join('')}
+        <ul style="list-style:none">
+          ${allSubjects.map(s=>`<li style="padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;display:flex;justify-content:space-between;gap:12px"><span>${esc(s.name)}</span><span style="font-size:12px;color:var(--grey)">1 paper</span></li>`).join('')}
         </ul>
+      </div>
+      <div class="card">
+        <div class="label"><i data-lucide="shield"></i> Exam Access</div>
+        <p style="font-size:13.5px;color:var(--grey);margin-bottom:14px">On exam day, sign in with your Examination Number and PIN.</p>
+        <a href="exam-gateway.html" class="btn"><i data-lucide="log-in"></i> Exam Gateway</a>
       </div>
     </div>
   `;
   if (window.lucide) lucide.createIcons();
 
-  document.querySelectorAll('.view-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById('view-' + tab.dataset.view).classList.add('active');
-    });
-  });
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+  }));
+
+  if (editable) {
+    const saveBtn = document.getElementById('saveEdit');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', async () => {
+        const newStream = document.getElementById('editStream')?.value || streamKey;
+        const newEls = Array.from(document.querySelectorAll('.editEl:checked')).map(c => c.value);
+        if (newEls.length !== 2) { alert('Choose exactly 2 electives.'); return; }
+        try {
+          await updateDoc(doc(db,'users',user.uid), { course: newStream, electives: newEls, updatedAt: serverTimestamp() });
+          alert('Saved.'); location.reload();
+        } catch (e) { alert('Error: ' + e.message); }
+      });
+    }
+  }
 }
 if (window.lucide) lucide.createIcons();
 </script>
