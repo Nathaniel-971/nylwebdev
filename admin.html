@@ -4,51 +4,59 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin — Applications</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background:#f5f5f5; color:#0d0d0d; line-height:1.5; padding:32px 20px; }
+  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--light); color: var(--black); line-height:1.5; padding:28px 18px; }
 
   .container { max-width:1400px; margin:0 auto; }
-  h1 { font-size:28px; letter-spacing:-1px; margin-bottom:6px; }
-  .sub { color:#6b6b6b; font-size:14px; margin-bottom:24px; }
+  h1 { font-size:26px; letter-spacing:-1px; margin-bottom:4px; }
+  .sub { color: var(--grey); font-size:13.5px; margin-bottom:22px; }
 
-  .stats { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:14px; margin-bottom:24px; }
-  .stat { background:#fff; border:1px solid #e5e5e5; border-radius:12px; padding:20px; }
-  .stat .label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; margin-bottom:6px; font-weight:600; }
-  .stat .value { font-size:28px; font-weight:700; letter-spacing:-1px; }
+  .logout { float:right; font-size:13.5px; color: var(--grey); text-decoration:none; padding:8px 12px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; font-weight:500; }
+  .logout svg { width:15px; height:15px; }
+  .logout:hover { color: var(--black); background: var(--line); }
 
-  .toolbar { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
-  .toolbar input { flex:1; min-width:200px; padding:11px 14px; font-size:14px; border:1px solid #e5e5e5; border-radius:8px; background:#fff; font-family:inherit; }
-  .toolbar input:focus { outline:none; border-color:#0d0d0d; }
-  .toolbar button { padding:11px 18px; font-size:13px; font-weight:600; border-radius:8px; border:1px solid #e5e5e5; background:#fff; color:#0d0d0d; cursor:pointer; font-family:inherit; }
-  .toolbar button:hover { background:#f5f5f5; }
-  .toolbar button.primary { background:#0d0d0d; color:#fff; border-color:#0d0d0d; }
-  .toolbar button.primary:hover { background:#333; }
+  .stats { display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:20px; }
+  .stat { background: var(--white); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .stat .label { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:6px; font-weight:600; display:flex; align-items:center; gap:6px; }
+  .stat .label svg { width:12px; height:12px; }
+  .stat .value { font-size:26px; font-weight:700; letter-spacing:-1px; }
 
-  .table-wrap { background:#fff; border:1px solid #e5e5e5; border-radius:12px; overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:13px; min-width:900px; }
-  th, td { text-align:left; padding:12px 14px; border-bottom:1px solid #e5e5e5; white-space:nowrap; }
-  th { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; font-weight:600; background:#fafafa; position:sticky; top:0; }
+  .toolbar { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; align-items:center; }
+  .toolbar input { flex:1; min-width:200px; padding:11px 14px; font-size:13.5px; border:1.5px solid var(--line); border-radius:10px; background: var(--white); font-family:inherit; color: var(--black); }
+  .toolbar input:focus { outline:none; border-color: var(--black); }
+  .toolbar button { padding:11px 16px; font-size:13px; font-weight:600; border-radius:10px; border:1.5px solid var(--line); background: var(--white); color: var(--black); cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:7px; transition: all .2s; }
+  .toolbar button svg { width:15px; height:15px; }
+  .toolbar button:hover { background: var(--light); border-color: var(--black); }
+  .toolbar button.primary { background: var(--black); color: var(--white); border-color: var(--black); }
+  .toolbar button.primary:hover { background: var(--mid); border-color: var(--mid); }
+
+  .table-wrap { background: var(--white); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; min-width:900px; }
+  th, td { text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; background: var(--light); position:sticky; top:0; }
   tr:last-child td { border-bottom:none; }
-  tr:hover td { background:#fafafa; }
+  tr:hover td { background: var(--light); }
 
-  .badge { display:inline-block; font-size:11px; font-weight:600; padding:3px 10px; border-radius:100px; }
+  .badge { display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:100px; }
+  .badge svg { width:11px; height:11px; }
   .badge.pending { background:#fff4e5; color:#b86e00; }
   .badge.approved { background:#e6f5ec; color:#16794a; }
   .badge.revoked { background:#fef2f2; color:#b91c1c; }
-  .badge.deregistered { background:#f5f5f5; color:#6b6b6b; }
+  .badge.deregistered { background: var(--line); color: var(--grey); }
 
-  .row-btn { padding:6px 12px; font-size:12px; font-weight:600; border-radius:6px; border:1px solid #0d0d0d; background:#0d0d0d; color:#fff; cursor:pointer; font-family:inherit; }
-  .row-btn:hover { background:#333; }
+  .row-btn { padding:6px 11px; font-size:11.5px; font-weight:600; border-radius:7px; border:1.5px solid var(--black); background: var(--black); color: var(--white); cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:5px; }
+  .row-btn svg { width:12px; height:12px; }
+  .row-btn:hover { background: var(--mid); border-color: var(--mid); }
 
-  .loading, .access-denied { padding:60px 20px; text-align:center; color:#6b6b6b; }
-  .access-denied h2 { color:#0d0d0d; margin-bottom:12px; }
-
-  .logout { float:right; font-size:14px; color:#6b6b6b; text-decoration:none; padding:8px 12px; border-radius:6px; }
-  .logout:hover { color:#0d0d0d; background:#e5e5e5; }
+  .loading, .access-denied { padding:60px 20px; text-align:center; color: var(--grey); }
+  .access-denied h2 { color: var(--black); margin-bottom:10px; }
+  .access-denied a { color: var(--black); font-weight:600; }
 
   @media print {
-    body { padding:0; background:#fff; }
+    body { padding:0; background: var(--white); }
     .toolbar, .logout, .no-print, .row-btn { display:none !important; }
     .table-wrap { border:none; }
     table { min-width:0; font-size:10pt; }
@@ -84,11 +92,11 @@ const appEl = document.getElementById('app');
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    appEl.innerHTML = `<div class="access-denied"><h2>Not signed in</h2><p>Please sign in to continue.</p><p style="margin-top:20px;"><a href="auth.html" style="color:#0d0d0d; font-weight:600;">Sign in →</a></p></div>`;
+    appEl.innerHTML = `<div class="access-denied"><h2>Not signed in</h2><p>Please sign in to continue.</p><p style="margin-top:18px;"><a href="auth.html">Sign in →</a></p></div>`;
     return;
   }
   if (user.email !== ADMIN_EMAIL) {
-    appEl.innerHTML = `<div class="access-denied"><h2>Access denied</h2><p>This account does not have admin access.</p><p style="margin-top:20px;"><a href="/" style="color:#0d0d0d; font-weight:600;">← Back to site</a></p></div>`;
+    appEl.innerHTML = `<div class="access-denied"><h2>Access denied</h2><p>This account does not have admin access.</p><p style="margin-top:18px;"><a href="/">← Back to site</a></p></div>`;
     return;
   }
   render(user);
@@ -98,25 +106,27 @@ let rows = [];
 
 function render(user) {
   appEl.innerHTML = `
-    <a href="#" class="logout" id="logout">Sign out</a>
+    <a href="#" class="logout" id="logout"><i data-lucide="log-out"></i> Sign out</a>
     <h1>Applications</h1>
     <p class="sub">Intake ${INTAKE} · Signed in as ${user.email}</p>
 
     <div class="stats">
-      <div class="stat"><div class="label">Total</div><div class="value" id="cTotal">—</div></div>
-      <div class="stat"><div class="label">Pending</div><div class="value" id="cPending">—</div></div>
-      <div class="stat"><div class="label">Approved</div><div class="value" id="cApproved">—</div></div>
-      <div class="stat"><div class="label">Revoked</div><div class="value" id="cRevoked">—</div></div>
+      <div class="stat"><div class="label"><i data-lucide="users"></i> Total</div><div class="value" id="cTotal">—</div></div>
+      <div class="stat"><div class="label"><i data-lucide="clock"></i> Pending</div><div class="value" id="cPending">—</div></div>
+      <div class="stat"><div class="label"><i data-lucide="circle-check"></i> Approved</div><div class="value" id="cApproved">—</div></div>
+      <div class="stat"><div class="label"><i data-lucide="ban"></i> Revoked</div><div class="value" id="cRevoked">—</div></div>
     </div>
 
     <div class="toolbar no-print">
       <input type="text" id="search" placeholder="Search by email, student number, or course…">
-      <button class="primary" id="refresh">Refresh</button>
-      <button onclick="window.print()">Download PDF (A4)</button>
+      <button class="primary" id="refresh"><i data-lucide="refresh-cw"></i> Refresh</button>
+      <button onclick="window.print()"><i data-lucide="download"></i> Download PDF (A4)</button>
     </div>
 
     <div class="table-wrap" id="tableWrap"><div class="loading">Loading applications…</div></div>
   `;
+
+  if (window.lucide) lucide.createIcons();
 
   document.getElementById('logout').addEventListener('click', async (e) => {
     e.preventDefault(); await signOut(auth); window.location.href = '/';
@@ -174,6 +184,7 @@ function renderTable(list) {
   list.forEach((r, i) => {
     const status = r.status || 'pending';
     const electives = (r.electives || []).join(', ') || '—';
+    const iconName = status === 'approved' ? 'circle-check' : status === 'revoked' ? 'circle-x' : status === 'deregistered' ? 'trash-2' : 'clock';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${i + 1}</td>
@@ -182,15 +193,16 @@ function renderTable(list) {
       <td>${esc(r.duration ? r.duration + ' mo' : '—')}</td>
       <td>${esc(electives)}</td>
       <td>${esc(r.studentNumber || '—')}</td>
-      <td><span class="badge ${status}">${status}</span></td>
+      <td><span class="badge ${status}"><i data-lucide="${iconName}"></i> ${status}</span></td>
       <td class="no-print">
         ${!r.studentNumber && status === 'pending'
-          ? `<button class="row-btn" data-uid="${r.id}">Assign №</button>`
-          : `<span style="color:#6b6b6b; font-size:11px;">—</span>`}
+          ? `<button class="row-btn" data-uid="${r.id}"><i data-lucide="hash"></i> Assign №</button>`
+          : `<span style="color:var(--grey); font-size:11px;">—</span>`}
       </td>
     `;
     tbody.appendChild(tr);
   });
+  if (window.lucide) lucide.createIcons();
   tbody.querySelectorAll('button[data-uid]').forEach(b => {
     b.addEventListener('click', () => assign(b.dataset.uid));
   });
@@ -211,7 +223,6 @@ async function assign(uid) {
   try {
     const counterRef = doc(db, 'counters', COUNTER);
     const userRef = doc(db, 'users', uid);
-
     const n = await runTransaction(db, async (tx) => {
       const s = await tx.get(counterRef);
       const last = s.exists() ? (s.data().lastNumber || 0) : 0;
@@ -232,6 +243,8 @@ async function assign(uid) {
 }
 
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
+if (window.lucide) lucide.createIcons();
 </script>
 </body>
 </html>
