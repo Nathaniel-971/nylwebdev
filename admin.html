@@ -10,7 +10,11 @@
   :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--light); color: var(--black); line-height:1.5; padding:28px 18px; }
   .container { max-width:1400px; margin:0 auto; }
-  h1 { font-size:26px; letter-spacing:-1px; margin-bottom:4px; }
+  .emblem { width:44px; height:44px; }
+  .header-row { display:flex; align-items:center; gap:16px; margin-bottom:22px; }
+  .header-row .brand-name { font-family:'Courier New',monospace; font-size:22px; font-weight:700; letter-spacing:-1px; line-height:1; }
+  .header-row .brand-sub { font-size:9.5px; letter-spacing:2px; color:var(--grey); text-transform:uppercase; margin-top:3px; }
+  h1 { font-size:24px; letter-spacing:-1px; margin-bottom:4px; }
   .sub { color: var(--grey); font-size:13.5px; margin-bottom:22px; }
   .logout { float:right; font-size:13.5px; color: var(--grey); text-decoration:none; padding:8px 12px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; font-weight:500; }
   .logout svg { width:15px; height:15px; }
@@ -26,7 +30,7 @@
   .toolbar button.primary { background: var(--black); color: var(--white); border-color: var(--black); }
   .toolbar button.primary:hover { background: var(--mid); }
   .table-wrap { background: var(--white); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:12.5px; min-width:1000px; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; min-width:1100px; }
   th, td { text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); white-space:nowrap; }
   th { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; background: var(--light); position:sticky; top:0; }
   tr:last-child td { border-bottom:none; }
@@ -35,12 +39,12 @@
   .badge.pending { background:#fff4e5; color:#b86e00; }
   .badge.approved { background:#e6f5ec; color:#16794a; }
   .badge.revoked { background:#fef2f2; color:#b91c1c; }
-  .curriculum-chip { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:1px; padding:3px 8px; border-radius:6px; background: var(--black); color: var(--white); }
-  .curriculum-chip.none { background: var(--line); color: var(--grey); }
-  .row-btn { padding:6px 11px; font-size:11.5px; font-weight:600; border-radius:7px; border:1.5px solid var(--black); background: var(--black); color: var(--white); cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:5px; }
-  .row-btn:hover { background: var(--mid); }
+  .badge.deregistered { background: var(--line); color: var(--grey); }
+  .chip { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:1px; padding:3px 8px; border-radius:6px; background: var(--black); color: var(--white); }
+  .chip.none { background: var(--line); color: var(--grey); }
   .loading, .access-denied { padding:60px 20px; text-align:center; color: var(--grey); }
-  @media print { body { padding:0; background: var(--white); } .toolbar, .logout, .no-print, .row-btn { display:none !important; } .table-wrap { border:none; } table { min-width:0; font-size:10pt; } th, td { padding:6px 8px; } @page { size: A4 landscape; margin: 12mm; } }
+  .access-denied h2 { color: var(--black); margin-bottom:10px; }
+  @media print { body { padding:0; background: var(--white); } .toolbar, .logout, .no-print { display:none !important; } .table-wrap { border:none; } table { min-width:0; font-size:10pt; } th, td { padding:6px 8px; } @page { size: A4 landscape; margin: 12mm; } }
 </style>
 </head>
 <body>
@@ -49,18 +53,11 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, query, orderBy, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, query, orderBy, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
-  authDomain: "nyldevcourses.firebaseapp.com",
-  projectId: "nyldevcourses",
-  storageBucket: "nyldevcourses.firebasestorage.app",
-  messagingSenderId: "16687006873",
-  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
-};
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
-const INTAKE = "2601"; // 26 = 2026, 01 = First intake
+const INTAKE = "2601";
 const COUNTER = "intake_" + INTAKE;
 
 const app = initializeApp(firebaseConfig);
@@ -79,6 +76,13 @@ let rows = [];
 function render(user) {
   appEl.innerHTML = `
     <a href="#" class="logout" id="logout"><i data-lucide="log-out"></i> Sign out</a>
+    <div class="header-row">
+      <svg class="emblem" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="none" stroke="#0d0d0d" stroke-width="2.5"/><circle cx="60" cy="60" r="52" fill="none" stroke="#0d0d0d" stroke-width="1"/><circle cx="60" cy="60" r="48" fill="#0d0d0d"/><path d="M40 44 L60 78 L80 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/><rect x="66" y="44" width="8" height="6" fill="#fff"/></svg>
+      <div>
+        <div class="brand-name">Nyl Dev</div>
+        <div class="brand-sub">Admin Panel</div>
+      </div>
+    </div>
     <h1>Applications</h1>
     <p class="sub">Intake ${INTAKE} · 2027 · Signed in as ${user.email}</p>
 
@@ -93,7 +97,7 @@ function render(user) {
       <input type="text" id="search" placeholder="Search by email, student number, stream, or curriculum…">
       <button class="primary" id="refresh"><i data-lucide="refresh-cw"></i> Refresh</button>
       <button class="primary" id="assignNumbersBtn"><i data-lucide="hash"></i> Assign Sequential Numbers</button>
-      <button onclick="window.print()"><i data-lucide="download"></i> Download PDF (A4)</button>
+      <button onclick="window.print()"><i data-lucide="download"></i> Download A4 PDF</button>
     </div>
 
     <div class="table-wrap" id="tableWrap"><div class="loading">Loading applications…</div></div>
@@ -136,14 +140,7 @@ function renderTable(list) {
   wrap.innerHTML = `
     <table>
       <thead><tr>
-        <th>#</th>
-        <th>Email</th>
-        <th>Programme</th>
-        <th>Stream</th>
-        <th>Electives</th>
-        <th>Student №</th>
-        <th>Exam №</th>
-        <th>Status</th>
+        <th>#</th><th>Email</th><th>Programme</th><th>Stream</th><th>Electives</th><th>Student №</th><th>Exam №</th><th>Status</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -154,17 +151,17 @@ function renderTable(list) {
     const hasCourse = !!r.course;
     const curriculumLabel = r.curriculum || (r.duration === '6' ? 'IPI' : r.duration === '12' ? 'ACC' : null);
     const electives = (r.electives || []).join(', ') || '—';
-    const statusIcon = status === 'approved' ? 'circle-check' : status === 'revoked' ? 'circle-x' : 'clock';
+    const statusIcon = status === 'approved' ? 'circle-check' : status === 'revoked' ? 'circle-x' : status === 'deregistered' ? 'trash-2' : 'clock';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${i + 1}</td>
       <td>${esc(r.email || '—')}</td>
-      <td>${curriculumLabel ? `<span class="curriculum-chip">${esc(curriculumLabel)}</span>` : `<span class="curriculum-chip none">—</span>`}</td>
+      <td>${curriculumLabel ? `<span class="chip">${esc(curriculumLabel)}</span>` : `<span class="chip none">—</span>`}</td>
       <td>${esc(r.course || '—')}</td>
       <td>${esc(electives)}</td>
       <td>${esc(r.studentNumber || '—')}</td>
       <td>${esc(r.examinationNumber || '—')}</td>
-      <td><span class="badge ${hasCourse ? status : 'nocourse'}"><i data-lucide="${hasCourse ? statusIcon : 'circle-dashed'}"></i> ${hasCourse ? status : 'no course'}</span></td>
+      <td><span class="badge ${hasCourse ? status : 'pending'}"><i data-lucide="${hasCourse ? statusIcon : 'circle-dashed'}"></i> ${hasCourse ? status : 'no course'}</span></td>
     `;
     tbody.appendChild(tr);
   });
@@ -189,36 +186,24 @@ async function assignNumbers() {
 
   try {
     const counterRef = doc(db, 'counters', COUNTER);
-    const batch = db.batch();
     let nextNumber = 0;
-
     await runTransaction(db, async (tx) => {
       const s = await tx.get(counterRef);
       let last = s.exists() ? (s.data().lastNumber || 0) : 0;
       nextNumber = last + 1;
-
       for (const row of pendingRows) {
         const studentNum = INTAKE + String(nextNumber).padStart(4, '0');
-        // Examination number is 13 digits: YY II RRRR SS (27 01 0001 01)
         const examNum = "27" + INTAKE + String(nextNumber).padStart(4, '0') + "01";
-        
         const userRef = doc(db, 'users', row.id);
-        tx.update(userRef, { 
-          studentNumber: studentNum, 
-          examinationNumber: examNum,
-          status: 'approved', 
-          approvedAt: serverTimestamp() 
-        });
+        tx.update(userRef, { studentNumber: studentNum, examinationNumber: examNum, status: 'approved', approvedAt: serverTimestamp() });
         nextNumber++;
       }
       tx.set(counterRef, { lastNumber: nextNumber - 1 }, { merge: true });
     });
-
-    alert(`Assigned ${pendingRows.length} student numbers successfully.`);
+    alert(`Assigned ${pendingRows.length} student numbers.`);
     load();
   } catch (err) { alert('Error: ' + err.message); }
 }
-
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 if (window.lucide) lucide.createIcons();
 </script>
