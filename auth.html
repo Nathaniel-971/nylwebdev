@@ -4,58 +4,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Become a Student — Nyl Dev</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background:#0d0d0d; color:#fff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; line-height:1.6; -webkit-font-smoothing:antialiased; }
-  .card { width:100%; max-width:460px; background:#fff; color:#0d0d0d; border-radius:16px; padding:44px 40px; }
-  .logo { font-family:'Courier New',monospace; font-size:30px; font-weight:700; letter-spacing:-2px; display:flex; align-items:center; margin-bottom:32px; text-decoration:none; color:#0d0d0d; }
-  .logo .cursor { width:14px; height:28px; background:#0d0d0d; margin-left:2px; animation: blink 1.1s step-end infinite; }
+  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--black); color: var(--white); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; line-height:1.6; -webkit-font-smoothing:antialiased; }
   @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
-  .tabs { display:flex; margin-bottom:28px; border-bottom:1px solid #e5e5e5; }
-  .tab { flex:1; padding:14px 0; text-align:center; font-size:15px; font-weight:600; color:#6b6b6b; background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; font-family:inherit; margin-bottom:-1px; }
-  .tab.active { color:#0d0d0d; border-bottom-color:#0d0d0d; }
-  .panel { display:none; } .panel.active { display:block; }
-  .panel h2 { font-size:24px; letter-spacing:-.5px; margin-bottom:6px; }
-  .panel .sub { font-size:14px; color:#6b6b6b; margin-bottom:22px; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
 
-  /* Google button */
-  .google-btn { width:100%; padding:14px; font-size:15px; font-weight:500; font-family:inherit; border:1px solid #e5e5e5; background:#fff; color:#0d0d0d; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:12px; transition: all .2s; margin-bottom:20px; }
-  .google-btn:hover { border-color:#0d0d0d; background:#fafafa; }
+  .card { width:100%; max-width:480px; background: var(--white); color: var(--black); border-radius:16px; padding:40px 36px; animation: fadeUp .5s ease both; border:1px solid var(--line); }
+  .logo { font-family:'Courier New',monospace; font-size:28px; font-weight:700; letter-spacing:-2px; display:flex; align-items:center; margin-bottom:28px; text-decoration:none; color: var(--black); }
+  .logo .cursor { width:13px; height:26px; background: var(--black); margin-left:2px; animation: blink 1.1s step-end infinite; }
+
+  .tabs { display:flex; border-bottom:1px solid var(--line); margin-bottom:26px; }
+  .tab { flex:1; padding:14px 0; text-align:center; font-size:14.5px; font-weight:600; color: var(--grey); background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; font-family:inherit; margin-bottom:-1px; transition: all .2s; display:inline-flex; align-items:center; justify-content:center; gap:7px; }
+  .tab svg { width:15px; height:15px; }
+  .tab.active { color: var(--black); border-bottom-color: var(--black); }
+  .panel { display:none; } .panel.active { display:block; animation: fadeUp .3s ease both; }
+  .panel h2 { font-size:23px; letter-spacing:-.5px; margin-bottom:6px; }
+  .panel .sub { font-size:13.5px; color: var(--grey); margin-bottom:22px; }
+
+  .google-btn { width:100%; padding:13px; font-size:14.5px; font-weight:500; font-family:inherit; border:1.5px solid var(--line); background: var(--white); color: var(--black); border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:11px; transition: all .2s; margin-bottom:18px; }
+  .google-btn:hover { border-color: var(--black); background: var(--light); }
   .google-btn svg { width:18px; height:18px; }
 
-  .divider { display:flex; align-items:center; gap:14px; margin: 6px 0 20px; color:#6b6b6b; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; }
-  .divider::before, .divider::after { content:""; flex:1; height:1px; background:#e5e5e5; }
+  .divider { display:flex; align-items:center; gap:12px; margin: 6px 0 18px; color: var(--grey); font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; }
+  .divider::before, .divider::after { content:""; flex:1; height:1px; background: var(--line); }
 
-  .form-group { margin-bottom:16px; }
-  .form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:8px; }
-  .form-group input, .form-group select { width:100%; padding:14px 16px; font-size:15px; font-family:inherit; border:1px solid #e5e5e5; border-radius:8px; background:#fff; color:#0d0d0d; appearance:none; }
-  .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d0d0d' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position: right 16px center; padding-right:40px; }
-  .form-group input:focus, .form-group select:focus { outline:none; border-color:#0d0d0d; }
+  .form-group { margin-bottom:14px; }
+  .form-group label { display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; margin-bottom:7px; color: var(--black); }
+  .form-group label svg { width:13px; height:13px; color: var(--grey); }
+  .form-group input, .form-group select { width:100%; padding:13px 15px; font-size:14.5px; font-family:inherit; border:1.5px solid var(--line); border-radius:10px; background: var(--white); color: var(--black); appearance:none; transition: border-color .2s; }
+  .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d0d0d' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position: right 15px center; padding-right:38px; }
+  .form-group input:focus, .form-group select:focus { outline:none; border-color: var(--black); }
 
-  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .subject-block { background: var(--light); border:1px solid var(--line); border-radius:10px; padding:16px 16px 12px; margin-bottom:14px; }
+  .subject-block h5 { font-size:11.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+  .subject-block h5 svg { width:13px; height:13px; }
+  .subject-block .row { display:flex; align-items:center; gap:10px; font-size:13.5px; padding:6px 0; }
+  .subject-block .row input[type="checkbox"] { width:15px; height:15px; accent-color: var(--black); flex-shrink:0; }
+  .subject-block .locked { color: var(--grey); cursor:default; }
+  .subject-block .locked input { opacity:.6; }
+  .subject-block .empty { font-size:13px; color: var(--grey); font-style:italic; padding:4px 0; }
 
-  .subject-block { background:#fafafa; border:1px solid #e5e5e5; border-radius:10px; padding:16px; margin-bottom:14px; }
-  .subject-block h5 { font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; font-weight:600; margin-bottom:12px; }
-  .subject-block label { display:flex; align-items:center; gap:10px; font-size:14px; padding:7px 0; cursor:pointer; }
-  .subject-block input[type="checkbox"] { width:16px; height:16px; accent-color:#0d0d0d; flex-shrink:0; }
-  .subject-block .locked { color:#6b6b6b; font-size:13px; }
+  .form-check { display:flex; align-items:flex-start; gap:10px; margin:16px 0; font-size:12.5px; color: var(--grey); }
+  .form-check input { margin-top:3px; width:15px; height:15px; flex-shrink:0; accent-color: var(--black); }
+  .form-check a { color: var(--black); text-decoration:underline; }
 
-  .form-check { display:flex; align-items:flex-start; gap:10px; margin:18px 0; font-size:13px; color:#6b6b6b; }
-  .form-check input { margin-top:3px; width:16px; height:16px; flex-shrink:0; accent-color:#0d0d0d; }
-  .form-check a { color:#0d0d0d; text-decoration:underline; }
-
-  .btn { width:100%; padding:16px; font-size:15px; font-weight:600; font-family:inherit; border-radius:8px; border:none; background:#0d0d0d; color:#fff; cursor:pointer; transition: all .2s; }
-  .btn:hover { background:#333; }
+  .btn { width:100%; padding:15px; font-size:14.5px; font-weight:600; font-family:inherit; border-radius:10px; border:1.5px solid var(--black); background: var(--black); color: var(--white); cursor:pointer; transition: all .2s; display:inline-flex; align-items:center; justify-content:center; gap:9px; }
+  .btn:hover { background: var(--mid); border-color: var(--mid); }
   .btn:disabled { opacity:.6; cursor:not-allowed; }
+  .btn svg { width:16px; height:16px; }
 
-  .msg { padding:12px 14px; border-radius:8px; font-size:13px; margin-bottom:14px; display:none; }
+  .msg { padding:11px 13px; border-radius:8px; font-size:12.5px; margin-bottom:14px; display:none; line-height:1.5; }
   .msg.error { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; display:block; }
   .msg.success { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; display:block; }
 
-  .forgot { display:block; text-align:right; font-size:13px; color:#6b6b6b; text-decoration:none; margin-top:-8px; margin-bottom:18px; }
-  .back { display:block; text-align:center; margin-top:22px; font-size:13px; color:#6b6b6b; text-decoration:none; }
+  .forgot { display:block; text-align:right; font-size:12.5px; color: var(--grey); text-decoration:none; margin-top:-6px; margin-bottom:16px; }
+  .forgot:hover { color: var(--black); }
+  .back { display:block; text-align:center; margin-top:18px; font-size:12.5px; color: var(--grey); text-decoration:none; }
+  .back:hover { color: var(--black); }
 
-  @media (max-width:500px) { .card { padding:32px 22px; } .form-row { grid-template-columns:1fr; } }
+  @media (max-width:500px) { .card { padding:28px 22px; } }
 </style>
 </head>
 <body>
@@ -63,8 +73,8 @@
   <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
 
   <div class="tabs">
-    <button class="tab active" data-tab="signup">Become a Student</button>
-    <button class="tab" data-tab="signin">Sign in</button>
+    <button class="tab active" data-tab="signup"><i data-lucide="user-plus"></i> Become a Student</button>
+    <button class="tab" data-tab="signin"><i data-lucide="log-in"></i> Sign in</button>
   </div>
 
   <!-- SIGN UP -->
@@ -83,27 +93,29 @@
 
     <form id="signupForm">
       <div class="form-group">
-        <label>Full name</label>
+        <label><i data-lucide="user"></i> Full name</label>
         <input type="text" id="signupName" placeholder="Your name" required>
       </div>
       <div class="form-group">
-        <label>Email</label>
+        <label><i data-lucide="mail"></i> Email</label>
         <input type="email" id="signupEmail" placeholder="you@example.com" required>
       </div>
       <div class="form-group">
-        <label>Password</label>
+        <label><i data-lucide="lock"></i> Password</label>
         <input type="password" id="signupPassword" placeholder="At least 8 characters" minlength="8" required>
       </div>
+
       <div class="form-group">
-        <label>Choose duration</label>
+        <label><i data-lucide="clock"></i> Choose duration first</label>
         <select id="signupDuration" required>
           <option value="" disabled selected>Select duration</option>
           <option value="6">6 months — fast track</option>
           <option value="12">12 months — full programme</option>
         </select>
       </div>
+
       <div class="form-group">
-        <label>Choose a Course (Stream)</label>
+        <label><i data-lucide="layout-grid"></i> Choose a Course (Stream)</label>
         <select id="signupCourse" required>
           <option value="" disabled selected>Select a stream</option>
           <option value="fullstack">Full Stack Engineering</option>
@@ -111,29 +123,22 @@
           <option value="backend">Backend Engineering</option>
           <option value="webdesign">Web Design</option>
           <option value="uiux">UI/UX Design</option>
-          <option value="stem">STEM &amp; Physics</option>
+          <option value="stem">STEM &amp; Physics (12 months only)</option>
         </select>
       </div>
 
       <div class="subject-block">
-        <h5>Compulsory Subjects (6)</h5>
-        <label><input type="checkbox" checked disabled> Mathematics</label>
-        <label><input type="checkbox" checked disabled> Git &amp; GitHub</label>
-        <label><input type="checkbox" checked disabled> HTML5 &amp; CSS3</label>
-        <label><input type="checkbox" checked disabled> JavaScript Fundamentals</label>
-        <label><input type="checkbox" checked disabled> Stream Core I</label>
-        <label><input type="checkbox" checked disabled> Stream Core II</label>
-        <p class="locked" style="margin-top:10px;">Auto-filled based on your stream.</p>
+        <h5><i data-lucide="list-checks"></i> Compulsory Subjects (auto-selected)</h5>
+        <div id="compulsoryList">
+          <div class="empty">Choose your stream to auto-load the curriculum.</div>
+        </div>
       </div>
 
       <div class="subject-block">
-        <h5>Choose Electives (2)</h5>
-        <label><input type="checkbox" value="react" class="elective"> React</label>
-        <label><input type="checkbox" value="nodejs" class="elective"> Node.js</label>
-        <label><input type="checkbox" value="databases" class="elective"> Databases (SQL / NoSQL)</label>
-        <label><input type="checkbox" value="uiux" class="elective"> UI/UX Fundamentals</label>
-        <label><input type="checkbox" value="figma" class="elective"> Figma</label>
-        <label><input type="checkbox" value="physics" class="elective"> Physics (full-year only)</label>
+        <h5><i data-lucide="sliders-horizontal"></i> Choose 2 Electives</h5>
+        <div id="electiveList">
+          <div class="empty">Electives appear after you choose your stream.</div>
+        </div>
       </div>
 
       <div class="form-check">
@@ -141,7 +146,7 @@
         <label for="signupTerms">I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. I understand this is a <strong>non-accredited, skills-based</strong> course.</label>
       </div>
 
-      <button type="submit" class="btn" id="signupBtn">Become a Student →</button>
+      <button type="submit" class="btn" id="signupBtn"><i data-lucide="user-plus"></i> Become a Student</button>
     </form>
 
     <a href="/" class="back">← Back to home</a>
@@ -163,15 +168,15 @@
 
     <form id="signinForm">
       <div class="form-group">
-        <label>Email</label>
+        <label><i data-lucide="mail"></i> Email</label>
         <input type="email" id="signinEmail" placeholder="you@example.com" required>
       </div>
       <div class="form-group">
-        <label>Password</label>
+        <label><i data-lucide="lock"></i> Password</label>
         <input type="password" id="signinPassword" placeholder="Your password" required>
       </div>
       <a href="#" class="forgot" id="forgotLink">Forgot password?</a>
-      <button type="submit" class="btn" id="signinBtn">Sign in →</button>
+      <button type="submit" class="btn" id="signinBtn"><i data-lucide="log-in"></i> Sign in</button>
     </form>
 
     <a href="/" class="back">← Back to home</a>
@@ -202,6 +207,40 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
+// ============ CURRICULUM MAP ============
+const CURRICULUM = {
+  fullstack: {
+    name: 'Full Stack Engineering',
+    compulsory: ['Mathematics', 'Git & GitHub', 'HTML5 & CSS3', 'JavaScript Fundamentals', 'Node.js Core', 'Databases Core'],
+    electives: ['React', 'Vue', 'Next.js', 'TypeScript', 'UI/UX Fundamentals', 'Physics']
+  },
+  frontend: {
+    name: 'Frontend Craft',
+    compulsory: ['Mathematics', 'Git & GitHub', 'HTML5 & CSS3', 'JavaScript Fundamentals', 'Advanced JavaScript', 'Responsive Design'],
+    electives: ['React', 'Vue', 'Next.js', 'TypeScript', 'Figma', 'Physics']
+  },
+  backend: {
+    name: 'Backend Engineering',
+    compulsory: ['Mathematics', 'Git & GitHub', 'JavaScript Fundamentals', 'Node.js', 'Express', 'Databases (SQL)'],
+    electives: ['Databases (NoSQL)', 'REST APIs', 'Authentication & Security', 'TypeScript', 'Cloudinary', 'Physics']
+  },
+  webdesign: {
+    name: 'Web Design',
+    compulsory: ['Mathematics', 'HTML5 & CSS3', 'Responsive Design', 'UI/UX Fundamentals', 'Typography & Colour', 'Figma'],
+    electives: ['CSS Animation', 'Accessibility', 'Design Systems', 'Portfolio', 'Git & GitHub', 'Physics']
+  },
+  uiux: {
+    name: 'UI/UX Design',
+    compulsory: ['Mathematics', 'UI/UX Fundamentals', 'Figma', 'Typography & Colour', 'User Research', 'Responsive Design'],
+    electives: ['Design Systems', 'Accessibility', 'Prototyping', 'HTML5 & CSS3', 'Portfolio', 'Physics']
+  },
+  stem: {
+    name: 'STEM & Physics',
+    compulsory: ['Mathematics', 'Mechanics', 'Thermodynamics', 'Waves & Optics', 'Electromagnetism', 'Modern Physics'],
+    electives: ['Core 50 Equations', 'Nuclear Physics', 'Relativity', 'Astrophysics', 'JavaScript Fundamentals', 'Physics Lab']
+  }
+};
+
 // Tabs
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -209,6 +248,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    if (window.lucide) lucide.createIcons();
   });
 });
 
@@ -238,17 +278,52 @@ function redirectAfterLogin(user) {
   window.location.href = user.email === ADMIN_EMAIL ? 'admin.html' : 'student-portal.html';
 }
 
-async function createUserProfile(user, { name, duration, course, electives }) {
+// ============ AUTO-CURRICULUM ============
+const courseSelect = document.getElementById('signupCourse');
+const compulsoryList = document.getElementById('compulsoryList');
+const electiveList = document.getElementById('electiveList');
+
+courseSelect.addEventListener('change', () => {
+  const c = CURRICULUM[courseSelect.value];
+  if (!c) {
+    compulsoryList.innerHTML = '<div class="empty">Choose your stream to auto-load the curriculum.</div>';
+    electiveList.innerHTML = '<div class="empty">Electives appear after you choose your stream.</div>';
+    return;
+  }
+  compulsoryList.innerHTML = c.compulsory.map(s => `
+    <label class="row locked">
+      <input type="checkbox" checked disabled>
+      ${s}
+    </label>
+  `).join('');
+  electiveList.innerHTML = c.electives.map(e => `
+    <label class="row">
+      <input type="checkbox" value="${e}" class="elective">
+      ${e}
+    </label>
+  `).join('');
+
+  // Enforce max 2 electives
+  const electives = electiveList.querySelectorAll('.elective');
+  electives.forEach(cb => cb.addEventListener('change', () => {
+    const checked = electiveList.querySelectorAll('.elective:checked');
+    if (checked.length > 2) {
+      cb.checked = false;
+      showMsg('signupMsg', 'Only 2 electives allowed.', 'error');
+    }
+  }));
+});
+
+async function createUserProfile(user, payload) {
   const ref = doc(db, 'users', user.uid);
   const snap = await getDoc(ref);
-  if (snap.exists()) return; // already created
-
+  if (snap.exists()) return;
   await setDoc(ref, {
-    name,
+    name: payload.name || user.displayName || '',
     email: user.email,
-    duration,
-    course,
-    electives,
+    duration: payload.duration || null,
+    course: payload.course || null,
+    electives: payload.electives || [],
     studentNumber: null,
     examinationNumber: null,
     status: 'pending',
@@ -257,26 +332,20 @@ async function createUserProfile(user, { name, duration, course, electives }) {
   });
 }
 
-// Google sign up
+// Google signup
 document.getElementById('googleSignup').addEventListener('click', async () => {
   clearMsg('signupMsg');
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-    await createUserProfile(user, {
-      name: user.displayName || 'Student',
-      duration: null,
-      course: null,
-      electives: []
-    });
-    showMsg('signupMsg', 'Signed in. Please complete your registration. Redirecting…', 'success');
-    setTimeout(() => redirectAfterLogin(user), 900);
+    await createUserProfile(result.user, {});
+    showMsg('signupMsg', 'Signed in. Complete your registration in your portal.', 'success');
+    setTimeout(() => redirectAfterLogin(result.user), 900);
   } catch (err) {
     showMsg('signupMsg', friendlyError(err.code), 'error');
   }
 });
 
-// Google sign in
+// Google signin
 document.getElementById('googleSignin').addEventListener('click', async () => {
   clearMsg('signinMsg');
   try {
@@ -287,7 +356,7 @@ document.getElementById('googleSignin').addEventListener('click', async () => {
   }
 });
 
-// Email sign up
+// Email signup
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   clearMsg('signupMsg');
@@ -300,12 +369,22 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
   const electives = Array.from(document.querySelectorAll('.elective:checked')).map(c => c.value);
   const btn = document.getElementById('signupBtn');
 
+  if (!CURRICULUM[course]) {
+    showMsg('signupMsg', 'Please choose a course (stream).', 'error');
+    return;
+  }
+  if (course === 'stem' && duration !== '12') {
+    showMsg('signupMsg', 'STEM & Physics is only available in the 12-month programme.', 'error');
+    return;
+  }
   if (electives.length !== 2) {
     showMsg('signupMsg', 'Please select exactly 2 elective subjects.', 'error');
     return;
   }
 
-  btn.disabled = true; btn.textContent = 'Creating account…';
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader"></i> Creating account…';
+  if (window.lucide) lucide.createIcons();
 
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
@@ -315,7 +394,9 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     setTimeout(() => redirectAfterLogin(cred.user), 900);
   } catch (err) {
     showMsg('signupMsg', friendlyError(err.code), 'error');
-    btn.disabled = false; btn.textContent = 'Become a Student →';
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="user-plus"></i> Become a Student';
+    if (window.lucide) lucide.createIcons();
   }
 });
 
@@ -326,17 +407,21 @@ document.getElementById('signinForm').addEventListener('submit', async (e) => {
   const email = document.getElementById('signinEmail').value.trim();
   const password = document.getElementById('signinPassword').value;
   const btn = document.getElementById('signinBtn');
-  btn.disabled = true; btn.textContent = 'Signing in…';
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader"></i> Signing in…';
+  if (window.lucide) lucide.createIcons();
   try {
     const cred = await signInWithEmailAndPassword(auth, email, password);
     redirectAfterLogin(cred.user);
   } catch (err) {
     showMsg('signinMsg', friendlyError(err.code), 'error');
-    btn.disabled = false; btn.textContent = 'Sign in →';
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="log-in"></i> Sign in';
+    if (window.lucide) lucide.createIcons();
   }
 });
 
-// Forgot password
+// Forgot
 document.getElementById('forgotLink').addEventListener('click', async (e) => {
   e.preventDefault();
   clearMsg('signinMsg');
@@ -349,6 +434,8 @@ document.getElementById('forgotLink').addEventListener('click', async (e) => {
     showMsg('signinMsg', friendlyError(err.code), 'error');
   }
 });
+
+if (window.lucide) lucide.createIcons();
 </script>
 </body>
 </html>
