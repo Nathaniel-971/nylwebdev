@@ -10,21 +10,22 @@
   :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
   body { background: var(--white); color: var(--black); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:60px; }
   .page-frame { border-top:2px solid var(--black); }
-  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
   @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
   .fade-in { animation: fadeUp .6s ease both; }
   .fade-in-d1 { animation: fadeUp .6s ease .1s both; }
   .fade-in-d2 { animation: fadeUp .6s ease .2s both; }
-  nav { position: sticky; top:0; z-index:100; background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-bottom:1px solid var(--line); padding: 14px 48px; display:flex; justify-content:space-between; align-items:center; }
-  .logo { font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:-2px; line-height:1; display:flex; align-items:center; color: var(--black); text-decoration:none; }
-  .logo .cursor { width:12px; height:24px; background: var(--black); margin-left:2px; animation: blink 1.1s step-end infinite; }
+
+  nav { position: sticky; top:0; z-index:100; background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-bottom:1px solid var(--line); padding: 12px 48px; display:flex; justify-content:space-between; align-items:center; }
+  .nav-left { display:flex; align-items:center; gap:12px; text-decoration:none; color: var(--black); }
+  .emblem { width:44px; height:44px; }
+  .brand-name { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:-1px; line-height:1; }
+  .brand-sub { font-size:9.5px; letter-spacing:2px; color: var(--grey); text-transform:uppercase; margin-top:3px; }
   .nav-right { display:flex; align-items:center; gap:10px; }
   .nav-link { font-size:14px; font-weight:500; color: var(--black); text-decoration:none; padding:9px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:7px; transition: background .2s; }
   .nav-link:hover { background: var(--light); }
-  .nav-link svg { width:16px; height:16px; }
+
   .hero { padding: 80px 48px 40px; max-width:1200px; margin:0 auto; }
   .eyebrow { font-size:12px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-  .eyebrow svg { width:14px; height:14px; }
   h1 { font-size: clamp(36px, 6vw, 68px); line-height:1.05; letter-spacing:-2.5px; font-weight:700; margin-bottom:24px; }
   h1 span { color: var(--grey); }
   .lead { font-size:17px; color: var(--grey); max-width:620px; margin-bottom:36px; }
@@ -32,9 +33,11 @@
   .btn svg { width:17px; height:17px; }
   .btn-primary { background: var(--black); color: var(--white); border-color: var(--black); }
   .btn-primary:hover { background: var(--mid); border-color: var(--mid); transform: translateY(-1px); }
+
   section { padding: 60px 48px; max-width:1200px; margin:0 auto; border-top:1px solid var(--line); }
   h2 { font-size: clamp(26px, 4vw, 40px); letter-spacing:-1px; line-height:1.15; font-weight:700; margin-bottom:20px; }
   .section-lead { font-size:15.5px; color: var(--grey); max-width:640px; margin-bottom:40px; }
+
   .tracks-grid { display:grid; grid-template-columns: 1fr 1fr; gap:20px; }
   .track-card { border:1.5px solid var(--line); border-radius:14px; padding:32px 28px; background: var(--white); transition: all .25s; }
   .track-card:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.06); }
@@ -43,10 +46,10 @@
   .track-card .full-name { font-size:14px; color: var(--grey); margin-bottom:20px; }
   .track-card .meta { display:flex; flex-wrap:wrap; gap:14px; margin-bottom:20px; font-size:13px; color: var(--grey); }
   .track-card .meta span { display:inline-flex; align-items:center; gap:6px; }
-  .track-card .meta svg { width:14px; height:14px; }
   .track-card .exam-list { list-style:none; border-top:1px solid var(--line); padding-top:16px; }
   .track-card .exam-list li { padding:8px 0; font-size:13.5px; display:flex; gap:10px; align-items:center; color: var(--grey); }
   .track-card .exam-list li svg { width:14px; height:14px; color: var(--black); flex-shrink:0; }
+
   .streams-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:22px; }
   .stream-card { border:1px solid var(--line); border-radius:14px; padding:32px 28px; background: var(--white); transition: all .25s; display:flex; flex-direction:column; }
   .stream-card:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.06); }
@@ -58,23 +61,26 @@
   .stream-card ul { list-style:none; margin-top:auto; padding-top:16px; border-top:1px solid var(--line); }
   .stream-card ul li { font-size:13.5px; color: var(--grey); padding:5px 0; display:flex; align-items:center; gap:9px; }
   .stream-card ul li svg { width:13px; height:13px; color: var(--black); flex-shrink:0; }
+
   .info-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:20px; margin-top:20px; }
   .info-box { padding:24px 22px; border:1px solid var(--line); border-radius:12px; background: var(--light); }
   .info-box .icon-box { width:36px; height:36px; border-radius:9px; background: var(--white); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
-  .info-box .icon-box svg { width:18px; height:18px; color: var(--black); }
   .info-box h4 { font-size:15px; font-weight:700; margin-bottom:6px; }
   .info-box p { font-size:13.5px; color: var(--grey); }
   .info-box .big { font-size:24px; font-weight:700; letter-spacing:-.5px; margin-top:6px; }
+
   .cta-strip { background: var(--black); color: var(--white); padding: 72px 48px; text-align:center; }
   .cta-strip h2 { color: var(--white); margin-bottom:16px; }
   .cta-strip p { color: rgba(255,255,255,.7); max-width:520px; margin:0 auto 28px; font-size:15.5px; }
   .cta-strip .btn-primary { background: var(--white); color: var(--black); border-color: var(--white); }
   .cta-strip .btn-primary:hover { background: #e5e5e5; }
-  footer { padding: 48px 48px; border-top:1px solid var(--line); max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; font-size:13px; color: var(--grey); }
+
+  footer { padding: 48px; border-top:1px solid var(--line); max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:24px; font-size:13px; color: var(--grey); }
   footer a { color: var(--black); text-decoration:none; font-weight:500; }
   .logo-mini { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:-1px; color: var(--black); margin-bottom:8px; }
+
   @media (max-width:768px) {
-    nav { padding: 12px 20px; } .logo { font-size:22px; } .logo .cursor { height:20px; width:10px; }
+    nav { padding: 12px 20px; } .brand-name { font-size:18px; } .emblem { width: 36px; height: 36px; }
     .hero, section { padding-left:20px; padding-right:20px; }
     .hero { padding-top:56px; }
     .tracks-grid { grid-template-columns: 1fr; }
@@ -86,7 +92,13 @@
 <body class="page-frame">
 
 <nav>
-  <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
+  <a href="/" class="nav-left">
+    <svg class="emblem" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="none" stroke="#0d0d0d" stroke-width="2.5"/><circle cx="60" cy="60" r="52" fill="none" stroke="#0d0d0d" stroke-width="1"/><circle cx="60" cy="60" r="48" fill="#0d0d0d"/><path d="M40 44 L60 78 L80 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/><rect x="66" y="44" width="8" height="6" fill="#fff"/></svg>
+    <div>
+      <div class="brand-name">Nyl Dev</div>
+      <div class="brand-sub">Courses</div>
+    </div>
+  </a>
   <div class="nav-right">
     <a href="auth.html" class="nav-link"><i data-lucide="user-plus"></i> Become a Student</a>
   </div>
@@ -95,13 +107,13 @@
 <header class="hero">
   <div class="eyebrow fade-in"><i data-lucide="graduation-cap"></i> Free Courses</div>
   <h1 class="fade-in-d1">See our Courses.<br><span>Choose a Curriculum.</span></h1>
-  <p class="lead fade-in-d2">Two tracks — IPI (6 months) and ACC (12 months). Six streams. Six compulsory subjects. Two electives. All free, non-accredited, and exam papers set by our department.</p>
+  <p class="lead fade-in-d2">Two tracks — IPI (6 months) and ACC (12 months). Six streams. Six subjects each. All free, non-accredited, and exam papers set by our department.</p>
 </header>
 
 <section>
   <div class="eyebrow"><i data-lucide="route"></i> The Two Curricula</div>
   <h2>Pick your track.</h2>
-  <p class="section-lead">The 6-month and 12-month tracks cover different content and have different exam cycles. Choose the one that fits your schedule.</p>
+  <p class="section-lead">The 6-month and 12-month tracks cover different content and have different exam cycles.</p>
 
   <div class="tracks-grid">
     <div class="track-card">
@@ -110,11 +122,11 @@
       <div class="full-name">Intensive Programme of Instruction</div>
       <div class="meta">
         <span><i data-lucide="clock"></i> Jan – Jun 2027</span>
-        <span><i data-lucide="clipboard-list"></i> 2 exams</span>
+        <span><i data-lucide="clipboard-list"></i> 2 exam periods</span>
       </div>
       <ul class="exam-list">
-        <li><i data-lucide="circle-dot"></i> IPI FCC — May/June 2027</li>
-        <li><i data-lucide="circle-dot"></i> IPI Final — June/July 2027</li>
+        <li><i data-lucide="circle-dot"></i> First Certification Period — May/June 2027</li>
+        <li><i data-lucide="circle-dot"></i> Final Certification Period — June/July 2027</li>
       </ul>
     </div>
 
@@ -124,18 +136,18 @@
       <div class="full-name">Applied Competence Certificate</div>
       <div class="meta">
         <span><i data-lucide="clock"></i> Jan – Nov 2027</span>
-        <span><i data-lucide="clipboard-list"></i> 3 exams</span>
+        <span><i data-lucide="clipboard-list"></i> 3 exam periods</span>
       </div>
       <ul class="exam-list">
-        <li><i data-lucide="circle-dot"></i> FCC / IFB — May/June 2027</li>
-        <li><i data-lucide="circle-dot"></i> Interim Examination — Sept 2027</li>
-        <li><i data-lucide="circle-dot"></i> ACC / IFB Final — Oct/Nov 2027</li>
+        <li><i data-lucide="circle-dot"></i> First Certification Period — May/June 2027</li>
+        <li><i data-lucide="circle-dot"></i> Targeted Revision Period — September 2027</li>
+        <li><i data-lucide="circle-dot"></i> Final Certification Period — Oct/Nov 2027</li>
       </ul>
     </div>
   </div>
 
   <p style="font-size:13.5px; color:var(--grey); margin-top:20px; line-height:1.7;">
-    Each exam contains <strong style="color:var(--black);">4–8 papers</strong>. All papers are set by our department. All courses are <strong style="color:var(--black);">non-accredited</strong>. The 12-month Interim Examination covers only the topics you scored poorly in — targeted revision, not a blank re-test.
+    Each exam period contains <strong style="color:var(--black);">one paper per subject</strong>. All papers are set by our department. All courses are <strong style="color:var(--black);">non-accredited</strong>. The Targeted Revision Period covers only the topics you scored poorly in — it is targeted revision, not a blank re-test.
   </p>
 </section>
 
@@ -150,89 +162,42 @@
       <div class="num">STREAM 01</div>
       <h3>Full Stack Engineering</h3>
       <div class="tag">"Build the whole thing."</div>
-      <ul>
-        <li><i data-lucide="circle-dot"></i> HTML5 &amp; CSS3</li>
-        <li><i data-lucide="circle-dot"></i> JavaScript</li>
-        <li><i data-lucide="circle-dot"></i> React</li>
-        <li><i data-lucide="circle-dot"></i> Node.js</li>
-        <li><i data-lucide="circle-dot"></i> Databases</li>
-        <li><i data-lucide="circle-dot"></i> Deployment</li>
-      </ul>
+      <ul><li><i data-lucide="circle-dot"></i> Mathematics</li><li><i data-lucide="circle-dot"></i> Web Foundations</li><li><i data-lucide="circle-dot"></i> Programming Fundamentals</li><li><i data-lucide="circle-dot"></i> Full Stack Systems</li><li><i data-lucide="circle-dot"></i> 2 electives</li></ul>
     </div>
-
     <div class="stream-card">
       <div class="icon-box"><i data-lucide="monitor-smartphone"></i></div>
       <div class="num">STREAM 02</div>
       <h3>Frontend Craft</h3>
       <div class="tag">"Build what the world sees."</div>
-      <ul>
-        <li><i data-lucide="circle-dot"></i> HTML5 &amp; CSS3</li>
-        <li><i data-lucide="circle-dot"></i> Advanced JavaScript</li>
-        <li><i data-lucide="circle-dot"></i> React</li>
-        <li><i data-lucide="circle-dot"></i> Responsive Design</li>
-        <li><i data-lucide="circle-dot"></i> Git &amp; GitHub</li>
-        <li><i data-lucide="circle-dot"></i> UI Fundamentals</li>
-      </ul>
+      <ul><li><i data-lucide="circle-dot"></i> Mathematics</li><li><i data-lucide="circle-dot"></i> Web Foundations</li><li><i data-lucide="circle-dot"></i> Programming Fundamentals</li><li><i data-lucide="circle-dot"></i> Frontend Systems</li><li><i data-lucide="circle-dot"></i> 2 electives</li></ul>
     </div>
-
     <div class="stream-card">
       <div class="icon-box"><i data-lucide="server"></i></div>
       <div class="num">STREAM 03</div>
       <h3>Backend Engineering</h3>
       <div class="tag">"Build the engine."</div>
-      <ul>
-        <li><i data-lucide="circle-dot"></i> JavaScript</li>
-        <li><i data-lucide="circle-dot"></i> Node.js</li>
-        <li><i data-lucide="circle-dot"></i> Express</li>
-        <li><i data-lucide="circle-dot"></i> SQL / NoSQL</li>
-        <li><i data-lucide="circle-dot"></i> REST APIs</li>
-        <li><i data-lucide="circle-dot"></i> Auth &amp; Security</li>
-      </ul>
+      <ul><li><i data-lucide="circle-dot"></i> Mathematics</li><li><i data-lucide="circle-dot"></i> Web Foundations</li><li><i data-lucide="circle-dot"></i> Programming Fundamentals</li><li><i data-lucide="circle-dot"></i> Backend Systems</li><li><i data-lucide="circle-dot"></i> 2 electives</li></ul>
     </div>
-
     <div class="stream-card">
       <div class="icon-box"><i data-lucide="palette"></i></div>
       <div class="num">STREAM 04</div>
       <h3>Web Design</h3>
       <div class="tag">"Design the experience."</div>
-      <ul>
-        <li><i data-lucide="circle-dot"></i> HTML5 &amp; CSS3</li>
-        <li><i data-lucide="circle-dot"></i> Responsive Design</li>
-        <li><i data-lucide="circle-dot"></i> UI/UX Fundamentals</li>
-        <li><i data-lucide="circle-dot"></i> Typography &amp; Colour</li>
-        <li><i data-lucide="circle-dot"></i> Figma</li>
-        <li><i data-lucide="circle-dot"></i> Portfolio</li>
-      </ul>
+      <ul><li><i data-lucide="circle-dot"></i> Mathematics</li><li><i data-lucide="circle-dot"></i> Web Foundations</li><li><i data-lucide="circle-dot"></i> Programming Fundamentals</li><li><i data-lucide="circle-dot"></i> Visual Systems</li><li><i data-lucide="circle-dot"></i> 2 electives</li></ul>
     </div>
-
     <div class="stream-card">
       <div class="icon-box"><i data-lucide="users"></i></div>
       <div class="num">STREAM 05</div>
       <h3>UI/UX Design</h3>
       <div class="tag">"Design how it feels."</div>
-      <ul>
-        <li><i data-lucide="circle-dot"></i> UI/UX Fundamentals</li>
-        <li><i data-lucide="circle-dot"></i> Figma</li>
-        <li><i data-lucide="circle-dot"></i> User Research</li>
-        <li><i data-lucide="circle-dot"></i> Typography</li>
-        <li><i data-lucide="circle-dot"></i> Prototyping</li>
-        <li><i data-lucide="circle-dot"></i> Portfolio</li>
-      </ul>
+      <ul><li><i data-lucide="circle-dot"></i> Mathematics</li><li><i data-lucide="circle-dot"></i> Web Foundations</li><li><i data-lucide="circle-dot"></i> Programming Fundamentals</li><li><i data-lucide="circle-dot"></i> Experience Design</li><li><i data-lucide="circle-dot"></i> 2 electives</li></ul>
     </div>
-
     <div class="stream-card">
       <div class="icon-box"><i data-lucide="atom"></i></div>
       <div class="num">STREAM 06</div>
       <h3>STEM &amp; Physics</h3>
       <div class="tag">"Understand the rules of reality."</div>
-      <ul>
-        <li><i data-lucide="circle-dot"></i> Mathematics (required)</li>
-        <li><i data-lucide="circle-dot"></i> Mechanics</li>
-        <li><i data-lucide="circle-dot"></i> Thermodynamics</li>
-        <li><i data-lucide="circle-dot"></i> Waves &amp; Optics</li>
-        <li><i data-lucide="circle-dot"></i> Electromagnetism</li>
-        <li><i data-lucide="circle-dot"></i> Modern Physics</li>
-      </ul>
+      <ul><li><i data-lucide="circle-dot"></i> Mathematics</li><li><i data-lucide="circle-dot"></i> Web Foundations</li><li><i data-lucide="circle-dot"></i> Programming Fundamentals</li><li><i data-lucide="circle-dot"></i> Physical Sciences</li><li><i data-lucide="circle-dot"></i> 2 electives</li></ul>
     </div>
   </div>
 </section>
@@ -240,68 +205,11 @@
 <section>
   <div class="eyebrow"><i data-lucide="list-checks"></i> Structure</div>
   <h2>How every course works.</h2>
-
   <div class="info-grid">
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="list-checks"></i></div>
-      <h4>Compulsory Subjects</h4>
-      <p>Every student takes 6 fixed subjects, including Mathematics.</p>
-      <div class="big">6</div>
-    </div>
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="sliders-horizontal"></i></div>
-      <h4>Electives</h4>
-      <p>You choose 2 additional subjects from a menu per stream.</p>
-      <div class="big">2</div>
-    </div>
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="calculator"></i></div>
-      <h4>Mathematics</h4>
-      <p>Required for every stream. One 150-mark paper. 60% pass mark.</p>
-      <div class="big">150</div>
-    </div>
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="file-text"></i></div>
-      <h4>Papers per exam</h4>
-      <p>Each exam cycle contains 4–8 papers. Set by our department.</p>
-      <div class="big">4–8</div>
-    </div>
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="badge-info"></i></div>
-      <h4>Accreditation</h4>
-      <p>Non-accredited, skills-based. Not an NQF qualification.</p>
-    </div>
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="wallet"></i></div>
-      <h4>Cost</h4>
-      <p>Every course on this site is free. No fees, no hidden costs.</p>
-      <div class="big">Free</div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="eyebrow"><i data-lucide="calendar-clock"></i> Dates</div>
-  <h2>Important dates.</h2>
-  <div class="info-grid">
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="calendar-x"></i></div>
-      <h4>Administration closes</h4>
-      <p>Last day to register for the 2027 intake.</p>
-      <div class="big">14 Feb 2027</div>
-    </div>
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="calendar-check"></i></div>
-      <h4>Courses begin</h4>
-      <p>First term starts across all streams.</p>
-      <div class="big">Jan / Feb 2027</div>
-    </div>
-    <div class="info-box">
-      <div class="icon-box"><i data-lucide="award"></i></div>
-      <h4>Curricula</h4>
-      <p>Two tracks — IPI (6 months) and ACC (12 months).</p>
-      <div class="big">IPI · ACC</div>
-    </div>
+    <div class="info-box"><div class="icon-box"><i data-lucide="list-checks"></i></div><h4>Subjects</h4><p>Every student takes exactly 6 subjects.</p><div class="big">6</div></div>
+    <div class="info-box"><div class="icon-box"><i data-lucide="calculator"></i></div><h4>Mathematics</h4><p>Required for every stream. One paper. 100 marks.</p><div class="big">100</div></div>
+    <div class="info-box"><div class="icon-box"><i data-lucide="layers"></i></div><h4>Papers per exam period</h4><p>One paper per subject, per exam period.</p><div class="big">1/subject</div></div>
+    <div class="info-box"><div class="icon-box"><i data-lucide="wallet"></i></div><h4>Cost</h4><p>Every course is free. No fees.</p><div class="big">Free</div></div>
   </div>
 </section>
 
@@ -314,15 +222,13 @@
 <footer>
   <div>
     <div class="logo-mini">^_</div>
-    Web Development · Design · Maintenance<br>
-    Built by Nathaniel
+    Nyl Dev · Free Courses · © 2026—2027
   </div>
   <div style="text-align:right;">
     <a href="/">Home</a> &nbsp;·&nbsp;
-    <a href="auth.html">Become a Student</a> &nbsp;·&nbsp;
-    <a href="past-papers.html">Past Papers</a> &nbsp;·&nbsp;
-    <a href="privacy.html">Privacy</a> &nbsp;·&nbsp;
-    <a href="mailto:n1nathaniel971@gmail.com">Email</a>
+    <a href="past-papers.html">Resources</a> &nbsp;·&nbsp;
+    <a href="messages.html">Message us</a> &nbsp;·&nbsp;
+    <a href="privacy.html">Privacy</a>
   </div>
 </footer>
 
