@@ -3,172 +3,344 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free Courses — 2027 Intake</title>
+<title>∆ — Free Online University · 2027 Intake</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d0d0d">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="Free, non-accredited online university. Six streams, three durations. Skills-based. Inaugural 2027 intake.">
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/service-worker.js').catch(()=>{});}</script>
 <style>
-:root{--black:#0d0d0d;--white:#fff;--grey:#6b6b6b;--light:#f5f5f5;--line:#e5e5e5;--mid:#333;--green:#059669;--red:#dc2626}
+:root{--black:#0d0d0d;--white:#fff;--grey:#6b6b6b;--light:#f5f5f5;--line:#e5e5e5;--mid:#333;--gold:#d4af37;--gold-soft:#f5d76e}
 *{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{background:var(--white);color:var(--black);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-.fade{animation:fadeUp .7s ease both}.fade-1{animation:fadeUp .7s ease .1s both}.fade-2{animation:fadeUp .7s ease .2s both}
-.mark{font-family:'Courier New',monospace;font-size:34px;font-weight:700;color:var(--black);text-decoration:none;line-height:1;letter-spacing:-2px}
-.badge-lg{width:130px;height:195px;flex-shrink:0}
-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 48px;display:flex;justify-content:space-between;align-items:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade{animation:fadeUp .7s ease both}
+.fade-1{animation:fadeUp .7s ease .1s both}
+.fade-2{animation:fadeUp .7s ease .2s both}
+
+/* ---------- Nav ---------- */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:12px 48px;display:flex;justify-content:space-between;align-items:center}
 .nav-left{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--black)}
+.mark{font-family:'Courier New',monospace;font-size:34px;font-weight:700;line-height:1;letter-spacing:-2px}
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-link{font-size:14px;font-weight:500;color:var(--black);text-decoration:none;padding:9px 14px;border-radius:8px;transition:background .2s;display:flex;align-items:center;gap:7px}
 .nav-link:hover{background:var(--light)}
+.nav-link svg{width:16px;height:16px}
+.avatar{width:38px;height:38px;border-radius:11px;overflow:hidden;border:1.5px solid var(--line);display:none;align-items:center;justify-content:center;background:var(--light);flex-shrink:0;text-decoration:none}
+.avatar:hover{border-color:var(--black)}
+.avatar svg{display:block;border-radius:9px}
 .menu-btn{width:40px;height:40px;background:var(--white);border:1px solid var(--line);border-radius:8px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:0}
 .menu-btn:hover{border-color:var(--black);background:var(--light)}
-.menu-btn span{display:block;width:18px;height:1.6px;background:var(--black);border-radius:2px}
-.dropdown{position:fixed;top:0;left:0;right:0;background:var(--white);border-bottom:1px solid var(--line);transform:translateY(-100%);transition:transform .4s cubic-bezier(.16,1,.3,1);z-index:99;padding:90px 48px 50px;box-shadow:0 20px 40px rgba(0,0,0,.06)}
+.menu-btn span{display:block;width:18px;height:1.6px;background:var(--black);border-radius:2px;transition:transform .2s}
+.menu-btn.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.menu-btn.open span:nth-child(2){opacity:0}
+.menu-btn.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* ---------- Dropdown ---------- */
+.dropdown{position:fixed;top:0;left:0;right:0;background:var(--white);border-bottom:1px solid var(--line);transform:translateY(-100%);transition:transform .45s cubic-bezier(.16,1,.3,1);z-index:99;padding:90px 48px 50px;box-shadow:0 20px 40px rgba(0,0,0,.06)}
 .dropdown.open{transform:translateY(0)}
 .dropdown-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:36px}
 .dropdown-group h4{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.dropdown-group a{display:flex;align-items:center;gap:10px;color:var(--black);text-decoration:none;font-size:16px;font-weight:500;padding:9px 0}
+.dropdown-group h4 svg{width:13px;height:13px}
+.dropdown-group a{display:flex;align-items:center;gap:10px;color:var(--black);text-decoration:none;font-size:15.5px;font-weight:500;padding:8px 0}
 .dropdown-group a:hover{color:var(--grey)}
-.hero{padding:90px 48px 60px;max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:40px;flex-wrap:wrap}
-.hero-text{flex:1;min-width:320px}
-.hero h1{font-size:clamp(34px,5.5vw,64px);line-height:1.05;letter-spacing:-2px;font-weight:700;margin-bottom:24px}
-.hero h1 span{color:var(--grey)}
-.hero p{font-size:17px;color:var(--grey);max-width:560px;margin-bottom:36px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 26px;font-size:14.5px;font-weight:500;text-decoration:none;border-radius:10px;transition:all .2s;cursor:pointer;border:1.5px solid transparent;font-family:inherit}
+.dropdown-group a svg{width:15px;height:15px;color:var(--grey)}
+
+/* ---------- Hero ---------- */
+.hero{padding:80px 48px 50px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:center}
+.hero-text h1{font-size:clamp(34px,5.5vw,62px);line-height:1.04;letter-spacing:-2.2px;font-weight:700;margin-bottom:22px}
+.hero-text h1 span{color:var(--grey)}
+.hero-text p.lead{font-size:16.5px;color:var(--grey);max-width:560px;margin-bottom:30px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--grey)}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:100px;background:var(--white)}
+.hero-tag svg{width:12px;height:12px}
+
+/* ---------- Eagle emblem ---------- */
+.eagle-wrap{display:flex;justify-content:center;align-items:center;position:relative}
+.eagle-wrap::before{content:"";position:absolute;inset:12%;border:1px solid var(--line);border-radius:50%;z-index:0}
+.eagle-svg{width:100%;max-width:380px;height:auto;position:relative;z-index:1;filter:drop-shadow(0 12px 30px rgba(0,0,0,.08))}
+.eagle-motto{position:absolute;bottom:-32px;left:50%;transform:translateX(-50%);font-family:'Times New Roman',serif;font-size:11.5px;letter-spacing:3px;color:var(--grey);white-space:nowrap;text-transform:uppercase}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 24px;font-size:14.5px;font-weight:500;text-decoration:none;border-radius:10px;transition:all .2s;cursor:pointer;border:1.5px solid transparent;font-family:inherit;white-space:nowrap}
 .btn svg{width:16px;height:16px}
 .btn-primary{background:var(--black);color:var(--white);border-color:var(--black)}
 .btn-primary:hover{background:var(--mid);transform:translateY(-1px)}
 .btn-secondary{background:var(--white);color:var(--black);border:1.5px solid var(--black)}
 .btn-secondary:hover{background:var(--black);color:var(--white);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.35)}
+.btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.6)}
+
+/* ---------- Strip ---------- */
 .strip{background:var(--light);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 48px}
 .strip-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
 .strip-inner .left{display:flex;align-items:center;gap:14px}
 .strip-inner .icon{width:38px;height:38px;border-radius:10px;background:var(--black);color:var(--white);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.strip-inner .icon svg{width:18px;height:18px}
 .strip-inner .txt{font-size:14.5px}
 .strip-inner .txt span{color:var(--grey)}
-.strip-inner .countdown{font-family:'Courier New',monospace;font-weight:700;font-size:15px;background:var(--black);color:var(--white);padding:6px 14px;border-radius:8px;white-space:nowrap}
-.strip-inner a{font-size:13.5px;font-weight:600;color:var(--black);text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;border:1.5px solid var(--black);background:var(--white)}
-.strip-inner a:hover{background:var(--black);color:var(--white)}
-section{padding:80px 48px;max-width:1200px;margin:0 auto;border-top:1px solid var(--line)}
-.section-eyebrow{font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);margin-bottom:16px;display:flex;align-items:center;gap:8px}
-h2{font-size:clamp(26px,3.5vw,40px);letter-spacing:-1.5px;line-height:1.12;font-weight:700;margin-bottom:20px;max-width:760px}
-.section-lead{font-size:16px;color:var(--grey);max-width:640px;margin-bottom:40px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
-.card{padding:30px 26px;border:1px solid var(--line);border-radius:14px;background:var(--white);display:flex;flex-direction:column;transition:all .25s}
-.card:hover{border-color:var(--black);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.06)}
-.card .icon-box{width:42px;height:42px;border-radius:10px;background:var(--light);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
-.card .icon-box svg{width:20px;height:20px;color:var(--black)}
-.card h3{font-size:18px;margin-bottom:10px;font-weight:700}
-.card p{font-size:14px;color:var(--grey);line-height:1.6}
-.banner{background:var(--black);color:var(--white);padding:88px 48px}
-.banner-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr;gap:60px;align-items:center}
-.banner h2{color:var(--white)}
-.banner p{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:22px;max-width:520px}
-.banner .btn-primary{background:var(--white);color:var(--black);border-color:var(--white)}
-.banner .btn-ghost{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.35)}
-.banner ul{list-style:none}
-.banner ul li{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:14.5px;color:rgba(255,255,255,.85)}
-.banner ul li:last-child{border-bottom:none}
+.strip-inner .countdown{font-family:'Courier New',monospace;font-weight:700;font-size:14.5px;background:var(--black);color:var(--white);padding:7px 14px;border-radius:8px;white-space:nowrap}
+.strip-inner .strip-btn{font-size:13.5px;font-weight:600;color:var(--black);text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;border:1.5px solid var(--black);background:var(--white)}
+.strip-inner .strip-btn:hover{background:var(--black);color:var(--white)}
+
+/* ---------- Sections ---------- */
+section{padding:76px 48px;max-width:1200px;margin:0 auto;border-top:1px solid var(--line)}
+.section-eyebrow{font-size:12px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--grey);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-eyebrow svg{width:14px;height:14px}
+h2{font-size:clamp(26px,3.5vw,40px);letter-spacing:-1.5px;line-height:1.12;font-weight:700;margin-bottom:18px;max-width:800px}
+.section-lead{font-size:16px;color:var(--grey);max-width:680px;margin-bottom:40px}
+
+/* ---------- Carousel ---------- */
+.carousel-section{padding:0 48px 76px;max-width:1200px;margin:0 auto}
+.carousel{position:relative;overflow:hidden;border-radius:18px;border:1px solid var(--line);background:var(--light)}
+.carousel-track{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.carousel-slide{min-width:100%;aspect-ratio:16/8;display:flex;align-items:center;justify-content:center;background:var(--light);position:relative}
+.carousel-slide svg{width:100%;height:100%;display:block}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
+.carousel-btn:hover{background:var(--black);color:var(--white);border-color:var(--black)}
+.carousel-btn.prev{left:16px}
+.carousel-btn.next{right:16px}
+.carousel-btn svg{width:16px;height:16px}
+.carousel-dots{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:2}
+.carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,.25);border:none;cursor:pointer;transition:all .25s;padding:0}
+.carousel-dot.active{background:var(--black);width:24px;border-radius:4px}
+
+/* ---------- Course structure ---------- */
+.durations{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.duration{border:1.5px solid var(--line);border-radius:16px;padding:30px 26px;background:var(--white);display:flex;flex-direction:column;transition:all .25s;position:relative;overflow:hidden}
+.duration:hover{border-color:var(--black);transform:translateY(-3px);box-shadow:0 14px 34px rgba(0,0,0,.07)}
+.duration .ribbon{position:absolute;top:18px;right:-32px;background:var(--black);color:var(--white);font-size:10px;font-weight:700;letter-spacing:1.5px;padding:5px 40px;transform:rotate(38deg);text-transform:uppercase}
+.duration .months{font-family:'Courier New',monospace;font-size:44px;font-weight:700;letter-spacing:-2px;line-height:1;margin-bottom:4px}
+.duration .months small{font-size:14px;font-weight:500;letter-spacing:0;color:var(--grey);margin-left:4px}
+.duration h3{font-size:19px;font-weight:700;margin-bottom:6px}
+.duration .desc{font-size:13.5px;color:var(--grey);margin-bottom:20px}
+.duration .exams{list-style:none;border-top:1px solid var(--line);padding-top:16px;margin-top:auto}
+.duration .exams li{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px;color:var(--grey)}
+.duration .exams li svg{width:14px;height:14px;color:var(--black);flex-shrink:0}
+.duration .exams li strong{color:var(--black);font-weight:600}
+
+/* ---------- Streams ---------- */
+.streams{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.stream{padding:24px 22px;border:1px solid var(--line);border-radius:14px;background:var(--white);transition:all .25s}
+.stream:hover{border-color:var(--black);transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.06)}
+.stream .icon-box{width:42px;height:42px;border-radius:11px;background:var(--black);color:var(--white);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.stream .icon-box svg{width:20px;height:20px}
+.stream .num{font-size:10.5px;letter-spacing:1.5px;color:var(--grey);font-weight:700;margin-bottom:6px}
+.stream h3{font-size:16.5px;font-weight:700;margin-bottom:6px}
+.stream .tag{font-size:12.5px;color:var(--grey);font-style:italic;margin-bottom:14px}
+.stream .subjects{font-size:12.5px;color:var(--grey);border-top:1px solid var(--line);padding-top:12px;line-height:1.7}
+.stream .subjects strong{color:var(--black);font-weight:600;display:block;margin-bottom:4px;font-size:11px;letter-spacing:1.2px;text-transform:uppercase}
+
+/* ---------- Web design division ---------- */
+.studio{background:var(--black);color:var(--white);padding:80px 48px;border-top:1px solid var(--line)}
+.studio-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+.studio h2{color:var(--white);margin-bottom:18px}
+.studio .section-eyebrow{color:rgba(255,255,255,.5)}
+.studio p.lead{font-size:16px;color:rgba(255,255,255,.72);max-width:560px;margin-bottom:28px}
+.studio-actions{display:flex;gap:12px;flex-wrap:wrap}
+.studio .btn-primary{background:var(--white);color:var(--black);border-color:var(--white)}
+.studio .btn-primary:hover{background:#eee}
+.studio-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:28px;backdrop-filter:blur(4px)}
+.studio-card .label{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:700;margin-bottom:16px}
+.studio-card ul{list-style:none}
+.studio-card li{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:14px;color:rgba(255,255,255,.88)}
+.studio-card li:last-child{border-bottom:none}
+.studio-card li svg{width:16px;height:16px;color:var(--gold);flex-shrink:0}
+
+/* ---------- Schedule ---------- */
+.schedule{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.sched-row{display:grid;grid-template-columns:2.2fr 1.3fr 1.4fr 1.5fr;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line);font-size:14px;align-items:center}
+.sched-row:last-child{border-bottom:none}
+.sched-row.head{background:var(--light);font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--grey);font-weight:700}
+.sched-row .name{font-weight:600;display:flex;align-items:center;gap:10px}
+.sched-row .name svg{width:15px;height:15px;color:var(--grey);flex-shrink:0}
+.sched-row .muted{color:var(--grey);font-size:13px}
+.pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 9px;border-radius:100px;background:var(--black);color:var(--white);text-transform:uppercase}
+.pill.acc{background:#eef2ff;color:#3730a3}
+.pill.adm{background:#fff4e5;color:#b86e00}
+.pill.qif{background:#f5e8ff;color:#6b21a8}
+
+/* ---------- Non-accredited notice ---------- */
+.notice{background:var(--light);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:56px 48px}
+.notice-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.notice h3{font-size:22px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.notice h3 svg{width:20px;height:20px}
+.notice p{font-size:14px;color:var(--grey);line-height:1.75}
+.notice ul{list-style:none;margin-top:14px}
+.notice li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:13.5px;color:var(--grey)}
+.notice li svg{width:15px;height:15px;flex-shrink:0;margin-top:3px}
+.notice .does li svg{color:#059669}
+.notice .doesnt li svg{color:#dc2626}
+
+/* ---------- CTA ---------- */
 .cta{background:var(--light);padding:72px 48px;text-align:center;border-top:1px solid var(--line)}
-.cta h2{margin:0 auto 18px;text-align:center}
-.cta p{font-size:16px;color:var(--grey);max-width:520px;margin:0 auto 30px}
-footer{padding:48px;border-top:1px solid var(--line);max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:32px;font-size:13.5px;color:var(--grey)}
-footer a{color:var(--black);text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:6px}
-.nonacc{font-size:11.5px;color:var(--grey);max-width:1200px;margin:0 auto;padding:16px 48px 32px;line-height:1.6;text-align:center}
-.welcome-pop{position:fixed;bottom:24px;right:24px;width:380px;max-width:calc(100vw - 32px);background:var(--white);border:1.5px solid var(--black);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.18);padding:24px;z-index:200;animation:slideDown .5s ease both;display:none}
+.cta h2{margin:0 auto 16px;text-align:center}
+.cta p{font-size:16px;color:var(--grey);max-width:540px;margin:0 auto 28px}
+.cta-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- Footer ---------- */
+footer{padding:56px 48px 32px;border-top:1px solid var(--line);max-width:1200px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:40px;margin-bottom:40px}
+.footer-brand .mark{font-size:36px;margin-bottom:12px;display:block}
+.footer-brand p{font-size:13px;color:var(--grey);line-height:1.65;max-width:320px}
+.footer-col h5{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:16px}
+.footer-col a{display:flex;align-items:center;gap:8px;color:var(--black);text-decoration:none;font-size:13.5px;padding:5px 0;font-weight:500}
+.footer-col a:hover{color:var(--grey)}
+.footer-col a svg{width:13px;height:13px;color:var(--grey)}
+.footer-bottom{border-top:1px solid var(--line);padding-top:24px;display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.footer-bottom .copy{font-size:12.5px;color:var(--grey)}
+.footer-bottom .disclaimer{font-size:11.5px;color:var(--grey);line-height:1.65;max-width:640px;text-align:right}
+
+/* ---------- Welcome pop ---------- */
+.welcome-pop{position:fixed;bottom:24px;right:24px;width:390px;max-width:calc(100vw - 32px);background:var(--white);border:1.5px solid var(--black);border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.2);padding:24px;z-index:200;animation:slideDown .5s ease both;display:none}
 .welcome-pop.show{display:block}
-.welcome-pop .pop-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:var(--light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.welcome-pop .pop-eyebrow{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:10px}
-.welcome-pop h3{font-size:18px;font-weight:700;margin-bottom:8px}
-.welcome-pop p{font-size:13.5px;color:var(--grey);margin-bottom:16px}
+.welcome-pop .pop-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:var(--light);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--black)}
+.welcome-pop .pop-close:hover{background:var(--line)}
+.welcome-pop .pop-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.welcome-pop .pop-head .avatar{display:flex;width:52px;height:52px;border-radius:14px}
+.welcome-pop .pop-eyebrow{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);font-weight:700;margin-bottom:4px}
+.welcome-pop h3{font-size:17px;font-weight:700;line-height:1.25}
+.welcome-pop p{font-size:13.5px;color:var(--grey);margin-bottom:16px;line-height:1.55}
 .welcome-pop .pop-actions{display:flex;gap:8px;flex-wrap:wrap}
 .welcome-pop .pop-actions a{font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .welcome-pop .pop-actions a.primary{background:var(--black);color:var(--white)}
 .welcome-pop .pop-actions a.ghost{background:var(--white);color:var(--black);border:1.5px solid var(--line)}
-@media(max-width:900px){.banner-inner{grid-template-columns:1fr;gap:40px}.hero{flex-direction:column;align-items:flex-start}}
-@media(max-width:768px){nav{padding:12px 20px}.mark{font-size:28px}.badge-lg{width:90px;height:135px}.hero{padding:56px 20px 40px}section{padding:56px 20px}.banner{padding:56px 20px}.cta{padding:56px 20px}.strip{padding:16px 20px}footer{padding:40px 20px;flex-direction:column}.nonacc{padding:16px 20px 24px}.welcome-pop{bottom:12px;right:12px;left:12px;width:auto}}
+.welcome-pop .pop-actions a svg{width:14px;height:14px}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1000px){
+  .hero{grid-template-columns:1fr;gap:60px;padding:60px 32px 40px}
+  .studio-inner{grid-template-columns:1fr;gap:40px}
+  .notice-inner{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media(max-width:768px){
+  nav{padding:12px 20px}
+  .mark{font-size:28px}
+  .nav-link{padding:8px 10px;font-size:13px}
+  section{padding:56px 20px}
+  .carousel-section{padding:0 20px 56px}
+  .studio{padding:56px 20px}
+  .notice{padding:40px 20px}
+  .cta{padding:56px 20px}
+  .strip{padding:14px 20px}
+  .sched-row{grid-template-columns:1fr;gap:6px;padding:14px 16px;border-bottom:2px solid var(--line)}
+  .sched-row.head{display:none}
+  .sched-row .muted{font-size:12.5px}
+  footer{padding:40px 20px 24px}
+  .footer-grid{grid-template-columns:1fr;gap:28px}
+  .footer-bottom{flex-direction:column}
+  .footer-bottom .disclaimer{text-align:left}
+  .welcome-pop{bottom:12px;right:12px;left:12px;width:auto}
+  .hero-actions .btn{flex:1;justify-content:center}
+}
 </style>
 </head>
 <body>
 
+<!-- ============ NAV ============ -->
 <nav>
-  <a href="/" class="nav-left"><span class="mark">∆</span></a>
+  <a href="index.html" class="nav-left"><span class="mark">∆</span></a>
   <div class="nav-right">
     <a href="auth.html" class="nav-link" id="navAuth"><i data-lucide="user-plus"></i> Become a Student</a>
-    <a href="student-portal.html" class="nav-link" id="navPortal" style="display:none;"><i data-lucide="book-open"></i> My Portal</a>
+    <a href="portal.html" class="nav-link" id="navPortal" style="display:none;"><i data-lucide="book-open"></i> My Portal</a>
+    <a href="portal.html" class="avatar" id="navAvatar" title="My profile"></a>
     <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
+<!-- ============ DROPDOWN ============ -->
 <div class="dropdown" id="dropdown">
   <div class="dropdown-inner">
     <div class="dropdown-group">
       <h4><i data-lucide="graduation-cap"></i> Education</h4>
       <a href="courses.html"><i data-lucide="layout-grid"></i> Courses</a>
-      <a href="past-papers.html"><i data-lucide="file-text"></i> Resources &amp; Papers</a>
+      <a href="resources.html"><i data-lucide="file-text"></i> Resources</a>
       <a href="auth.html"><i data-lucide="user-plus"></i> Become a Student</a>
-      <a href="student-portal.html"><i data-lucide="book-open"></i> Student Portal</a>
+      <a href="portal.html"><i data-lucide="book-open"></i> Student Portal</a>
+      <a href="certificate.html"><i data-lucide="file-check"></i> Certificate status</a>
     </div>
     <div class="dropdown-group">
-      <h4><i data-lucide="briefcase"></i> Work with us</h4>
-      <a href="#services"><i data-lucide="globe"></i> Services</a>
+      <h4><i data-lucide="clipboard-check"></i> Examinations</h4>
+      <a href="admission-exam.html"><i data-lucide="shield-check"></i> Admission Exam</a>
+      <a href="exams.html"><i data-lucide="lock"></i> Exam Gateway</a>
+      <a href="admission-slip.html"><i data-lucide="ticket"></i> Admission Slip</a>
+    </div>
+    <div class="dropdown-group">
+      <h4><i data-lucide="briefcase"></i> Studio</h4>
+      <a href="#studio"><i data-lucide="globe"></i> We build websites</a>
       <a href="messages.html"><i data-lucide="message-square"></i> Message us</a>
     </div>
     <div class="dropdown-group">
       <h4><i data-lucide="shield"></i> Legal</h4>
-      <a href="privacy.html"><i data-lucide="lock"></i> Privacy</a>
-      <a href="terms.html"><i data-lucide="file-check"></i> Terms</a>
-      <a href="settings.html"><i data-lucide="settings"></i> Settings</a>
+      <a href="messages.html#privacy"><i data-lucide="lock"></i> Privacy</a>
+      <a href="messages.html#terms"><i data-lucide="file-check"></i> Terms</a>
     </div>
   </div>
 </div>
 
+<!-- ============ HERO ============ -->
 <header class="hero">
   <div class="hero-text">
-    <h1 class="fade">Free courses.<br><span>Built to international standard.</span></h1>
-    <p class="fade-1">Six streams. Six subjects each. Mathematics compulsory. Skills-based, non-accredited, inaugurated 2027.</p>
-    <div class="fade-2" style="display:flex;gap:12px;flex-wrap:wrap;">
+    <h1 class="fade">A free, non-accredited<br><span>online university.</span></h1>
+    <p class="lead fade-1">Six streams. Three durations. One admission examination. Skills‑based, in the spirit of international standard — inaugurated 2027.</p>
+    <div class="hero-actions fade-2">
       <a href="courses.html" class="btn btn-primary"><i data-lucide="layout-grid"></i> See our Courses</a>
       <a href="auth.html" class="btn btn-secondary"><i data-lucide="user-plus"></i> Become a Student</a>
     </div>
+    <div class="hero-tags fade-2">
+      <span class="hero-tag"><i data-lucide="circle-dot"></i> 100% free</span>
+      <span class="hero-tag"><i data-lucide="circle-dot"></i> Non‑accredited</span>
+      <span class="hero-tag"><i data-lucide="circle-dot"></i> Online only</span>
+      <span class="hero-tag"><i data-lucide="circle-dot"></i> 2027 intake</span>
+    </div>
   </div>
-  <svg class="badge-lg" viewBox="0 0 240 360" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="bG1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5d76e"/><stop offset="0.5" stop-color="#d4af37"/><stop offset="1" stop-color="#8f6b1a"/></linearGradient>
-      <linearGradient id="bR1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a4a9e"/><stop offset="1" stop-color="#0f1f5c"/></linearGradient>
-      <linearGradient id="bS1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f9"/><stop offset="1" stop-color="#a8b0bd"/></linearGradient>
-    </defs>
-    <path d="M 120 8 L 228 48 L 228 200 Q 228 310 120 348 Q 12 310 12 200 L 12 48 Z" fill="url(#bG1)"/>
-    <path d="M 120 22 L 214 58 L 214 198 Q 214 300 120 334 Q 26 300 26 198 L 26 58 Z" fill="url(#bR1)"/>
-    <path d="M 120 36 L 200 68 L 200 196 Q 200 290 120 320 Q 40 290 40 196 L 40 68 Z" fill="none" stroke="url(#bS1)" stroke-width="2.5"/>
-    <path d="M 120 46 L 190 76 L 190 194 Q 190 282 120 310 Q 50 282 50 194 L 50 76 Z" fill="url(#bR1)"/>
-    <path d="M 120 54 L 182 82 L 182 192 Q 182 276 120 302 Q 58 276 58 192 L 58 82 Z" fill="none" stroke="url(#bS1)" stroke-width="0.8" opacity="0.55"/>
-    <path d="M 120 70 L 123.5 80 L 134 80 L 125.5 86.5 L 129 96 L 120 89.5 L 111 96 L 114.5 86.5 L 106 80 L 116.5 80 Z" fill="url(#bG1)"/>
-    <path d="M 100 108 L 120 138 L 140 108" fill="none" stroke="url(#bG1)" stroke-width="4.5" stroke-linecap="square"/>
-    <path d="M 66 190 Q 93 179 120 187 L 120 218 Q 93 210 66 221 Z" fill="url(#bS1)" stroke="#0f1f5c" stroke-width="1"/>
-    <path d="M 174 190 Q 147 179 120 187 L 120 218 Q 147 210 174 221 Z" fill="url(#bS1)" stroke="#0f1f5c" stroke-width="1"/>
-    <line x1="120" y1="187" x2="120" y2="218" stroke="#0f1f5c" stroke-width="1.2"/>
-    <line x1="75" y1="197" x2="112" y2="194" stroke="#8b95a4" stroke-width="0.7"/>
-    <line x1="75" y1="203" x2="112" y2="200" stroke="#8b95a4" stroke-width="0.7"/>
-    <line x1="75" y1="209" x2="112" y2="206" stroke="#8b95a4" stroke-width="0.7"/>
-    <line x1="128" y1="194" x2="165" y2="197" stroke="#8b95a4" stroke-width="0.7"/>
-    <line x1="128" y1="200" x2="165" y2="203" stroke="#8b95a4" stroke-width="0.7"/>
-    <line x1="128" y1="206" x2="165" y2="209" stroke="#8b95a4" stroke-width="0.7"/>
-    <g transform="translate(120,262)">
-      <circle cx="0" cy="0" r="16" fill="url(#bS1)" stroke="#0f1f5c" stroke-width="1"/>
-      <ellipse cx="0" cy="0" rx="28" ry="9" fill="none" stroke="url(#bG1)" stroke-width="2" transform="rotate(-20)"/>
-      <circle cx="-6" cy="-4" r="2.5" fill="#0f1f5c"/>
-      <circle cx="7" cy="5" r="3" fill="#0f1f5c"/>
-      <circle cx="-2" cy="8" r="1.5" fill="#0f1f5c"/>
-    </g>
-    <path d="M 28 308 L 212 308 L 212 334 Q 120 350 28 334 Z" fill="url(#bG1)" stroke="#0f1f5c" stroke-width="1.5"/>
-    <text x="120" y="326" text-anchor="middle" font-family="'Times New Roman',serif" font-size="9.5" font-weight="700" fill="#0f1f5c" letter-spacing="1.2">SCIENCE · MATHEMATICS · CRAFT</text>
-  </svg>
+
+  <div class="eagle-wrap fade">
+    <svg class="eagle-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-label="Golden eagle emblem">
+      <defs>
+        <linearGradient id="goldG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#f5d76e"/>
+          <stop offset=".5" stop-color="#d4af37"/>
+          <stop offset="1" stop-color="#8f6b1a"/>
+        </linearGradient>
+      </defs>
+      <!-- Outer ring -->
+      <circle cx="120" cy="120" r="112" fill="none" stroke="#0d0d0d" stroke-width="1.5"/>
+      <circle cx="120" cy="120" r="104" fill="none" stroke="#0d0d0d" stroke-width="0.5" opacity=".4"/>
+      <!-- Wings -->
+      <path d="M120 78 C 88 76 56 92 30 128 C 58 122 84 122 120 142 Z" fill="url(#goldG)" stroke="#0d0d0d" stroke-width="1.4"/>
+      <path d="M120 78 C 152 76 184 92 210 128 C 182 122 156 122 120 142 Z" fill="url(#goldG)" stroke="#0d0d0d" stroke-width="1.4"/>
+      <!-- Feather lines -->
+      <path d="M60 108 C 80 104 100 110 118 124" fill="none" stroke="#0d0d0d" stroke-width="0.8" opacity=".55"/>
+      <path d="M180 108 C 160 104 140 110 122 124" fill="none" stroke="#0d0d0d" stroke-width="0.8" opacity=".55"/>
+      <path d="M48 120 C 74 114 100 118 118 132" fill="none" stroke="#0d0d0d" stroke-width="0.8" opacity=".4"/>
+      <path d="M192 120 C 166 114 140 118 122 132" fill="none" stroke="#0d0d0d" stroke-width="0.8" opacity=".4"/>
+      <!-- Body -->
+      <path d="M120 90 C 108 92 100 104 100 120 L 100 158 C 108 170 132 170 140 158 L 140 120 C 140 104 132 92 120 90 Z" fill="url(#goldG)" stroke="#0d0d0d" stroke-width="1.4"/>
+      <!-- Head -->
+      <circle cx="120" cy="76" r="14" fill="url(#goldG)" stroke="#0d0d0d" stroke-width="1.4"/>
+      <path d="M126 76 L 138 80 L 126 84 Z" fill="#0d0d0d"/>
+      <circle cx="116" cy="74" r="2.2" fill="#0d0d0d"/>
+      <!-- Shield with ∆ -->
+      <rect x="102" y="156" width="36" height="46" rx="6" fill="#0d0d0d"/>
+      <path d="M120 164 L 130 188 H 110 Z" fill="url(#goldG)"/>
+      <!-- Talons -->
+      <path d="M108 200 L 100 214 L 108 212 M 108 200 L 108 216 M 108 200 L 116 214 L 108 212" fill="none" stroke="#0d0d0d" stroke-width="1.4" stroke-linecap="round"/>
+      <path d="M132 200 L 140 214 L 132 212 M 132 200 L 132 216 M 132 200 L 124 214 L 132 212" fill="none" stroke="#0d0d0d" stroke-width="1.4" stroke-linecap="round"/>
+      <!-- Motto -->
+      <text x="120" y="236" text-anchor="middle" font-family="'Times New Roman',serif" font-size="9" fill="#0d0d0d" letter-spacing="2.5" font-weight="700">AQUILA AUREA</text>
+    </svg>
+    <div class="eagle-motto">Scientia Libera · Lux Sine Finibus</div>
+  </div>
 </header>
 
+<!-- ============ STRIP ============ -->
 <div class="strip">
   <div class="strip-inner">
     <div class="left">
@@ -176,71 +348,484 @@ footer a{color:var(--black);text-decoration:none;font-weight:500;display:inline-
       <div class="txt"><strong>Admission Examination</strong> · <span>13 January 2027</span></div>
     </div>
     <div class="countdown" id="countdown">Calculating…</div>
-    <a href="past-papers.html"><i data-lucide="book-open"></i> Prepare now</a>
+    <a href="admission-exam.html" class="strip-btn"><i data-lucide="shield-check"></i> Prepare now</a>
   </div>
 </div>
 
-<section>
-  <div class="section-eyebrow"><i data-lucide="layout-grid"></i> What you get</div>
-  <h2>Six streams. Six subjects. Mathematics required.</h2>
-  <p class="section-lead">3 core subjects · 1 stream subject · 2 electives.</p>
-  <div class="grid">
-    <div class="card"><div class="icon-box"><i data-lucide="sigma"></i></div><h3>Mathematics</h3><p>Required in every stream. One paper. 100 marks.</p></div>
-    <div class="card"><div class="icon-box"><i data-lucide="layout-template"></i></div><h3>Web Foundations</h3><p>Git, HTML, CSS, Responsive Design.</p></div>
-    <div class="card"><div class="icon-box"><i data-lucide="code-2"></i></div><h3>Programming Fundamentals</h3><p>JavaScript and Advanced JavaScript.</p></div>
-    <div class="card"><div class="icon-box"><i data-lucide="boxes"></i></div><h3>Stream Subject</h3><p>Modules combined, tailored to your stream.</p></div>
+<!-- ============ CAROUSEL ============ -->
+<div class="carousel-section">
+  <div class="carousel">
+    <div class="carousel-track" id="carouselTrack">
+
+      <!-- Slide 1: Roadmap -->
+      <div class="carousel-slide" data-slide="1">
+        <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <rect width="1200" height="600" fill="#f5f5f5"/>
+          <text x="600" y="70" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="32" font-weight="700" fill="#0d0d0d" letter-spacing="-1">THE FULL STACK ROADMAP</text>
+          <text x="600" y="102" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="14" fill="#6b6b6b">Ten stages · from HTML to deployment</text>
+          <g transform="translate(60,160)">
+            <g>
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#6b6b6b">STAGE 01</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0d0d0d">HTML</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b6b6b">Structure</text>
+            </g>
+            <path d="M170 60 L 195 60" stroke="#0d0d0d" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <g transform="translate(205,0)">
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#6b6b6b">STAGE 02</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0d0d0d">CSS</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b6b6b">Style</text>
+            </g>
+            <path d="M375 60 L 400 60" stroke="#0d0d0d" stroke-width="1.5"/>
+            <g transform="translate(410,0)">
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#6b6b6b">STAGE 03</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0d0d0d">Git</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b6b6b">Versioning</text>
+            </g>
+            <path d="M580 60 L 605 60" stroke="#0d0d0d" stroke-width="1.5"/>
+            <g transform="translate(615,0)">
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#0d0d0d" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#d4af37">STAGE 04</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#fff">JavaScript</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#a8b0bd">Behaviour</text>
+            </g>
+            <path d="M785 60 L 810 60" stroke="#0d0d0d" stroke-width="1.5"/>
+            <g transform="translate(820,0)">
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#6b6b6b">STAGE 05</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0d0d0d">React</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b6b6b">Frontend</text>
+            </g>
+          </g>
+          <g transform="translate(60,340)">
+            <g>
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#6b6b6b">STAGE 06</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0d0d0d">Node.js</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b6b6b">Server</text>
+            </g>
+            <path d="M170 60 L 195 60" stroke="#0d0d0d" stroke-width="1.5"/>
+            <g transform="translate(205,0)">
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#6b6b6b">STAGE 07</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0d0d0d">MongoDB</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b6b6b">Data</text>
+            </g>
+            <path d="M375 60 L 400 60" stroke="#0d0d0d" stroke-width="1.5"/>
+            <g transform="translate(410,0)">
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#6b6b6b">STAGE 08</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0d0d0d">REST API</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b6b6b">Interface</text>
+            </g>
+            <path d="M580 60 L 605 60" stroke="#0d0d0d" stroke-width="1.5"/>
+            <g transform="translate(615,0)">
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#6b6b6b">STAGE 09</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0d0d0d">Cloud</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6b6b6b">Deploy</text>
+            </g>
+            <path d="M785 60 L 810 60" stroke="#0d0d0d" stroke-width="1.5"/>
+            <g transform="translate(820,0)">
+              <rect x="0" y="0" width="160" height="120" rx="12" fill="#0d0d0d" stroke="#0d0d0d" stroke-width="1.5"/>
+              <text x="80" y="42" text-anchor="middle" font-family="'Courier New',monospace" font-size="13" font-weight="700" fill="#d4af37">STAGE 10</text>
+              <text x="80" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#fff">Capstone</text>
+              <text x="80" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#a8b0bd">Build it all</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Slide 2: Course structure -->
+      <div class="carousel-slide" data-slide="2">
+        <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <rect width="1200" height="600" fill="#0d0d0d"/>
+          <text x="600" y="80" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="34" font-weight="700" fill="#fff" letter-spacing="-1">THREE DURATIONS · SIX STREAMS</text>
+          <text x="600" y="116" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="14" fill="#a8b0bd">Free · Non‑accredited · Online only</text>
+          <g transform="translate(100,190)">
+            <rect x="0" y="0" width="300" height="300" rx="16" fill="#fff"/>
+            <text x="150" y="60" text-anchor="middle" font-family="'Courier New',monospace" font-size="70" font-weight="700" fill="#0d0d0d">3</text>
+            <text x="150" y="86" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="14" fill="#6b6b6b" letter-spacing="3">MONTHS</text>
+            <line x1="40" y1="112" x2="260" y2="112" stroke="#e5e5e5"/>
+            <text x="150" y="150" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="17" font-weight="700" fill="#0d0d0d">ACA Examinations</text>
+            <text x="150" y="176" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#6b6b6b">Foundational certificate track</text>
+            <text x="150" y="222" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">1 exam period</text>
+            <text x="150" y="244" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">4–5 subjects</text>
+            <text x="150" y="266" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">Stream + electives</text>
+          </g>
+          <g transform="translate(450,190)">
+            <rect x="0" y="0" width="300" height="300" rx="16" fill="#fff" stroke="#d4af37" stroke-width="2"/>
+            <text x="150" y="60" text-anchor="middle" font-family="'Courier New',monospace" font-size="70" font-weight="700" fill="#0d0d0d">6</text>
+            <text x="150" y="86" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="14" fill="#6b6b6b" letter-spacing="3">MONTHS</text>
+            <line x1="40" y1="112" x2="260" y2="112" stroke="#e5e5e5"/>
+            <text x="150" y="150" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="17" font-weight="700" fill="#0d0d0d">IPI · OQ Examinations</text>
+            <text x="150" y="176" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#6b6b6b">Intensive programme</text>
+            <text x="150" y="222" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">2 exam periods</text>
+            <text x="150" y="244" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">6 subjects</text>
+            <text x="150" y="266" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">Full stream + electives</text>
+          </g>
+          <g transform="translate(800,190)">
+            <rect x="0" y="0" width="300" height="300" rx="16" fill="#fff"/>
+            <text x="150" y="60" text-anchor="middle" font-family="'Courier New',monospace" font-size="70" font-weight="700" fill="#0d0d0d">12</text>
+            <text x="150" y="86" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="14" fill="#6b6b6b" letter-spacing="3">MONTHS</text>
+            <line x1="40" y1="112" x2="260" y2="112" stroke="#e5e5e5"/>
+            <text x="150" y="150" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="17" font-weight="700" fill="#0d0d0d">QL · Interm · QIF</text>
+            <text x="150" y="176" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#6b6b6b">Applied competence</text>
+            <text x="150" y="222" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">3 exam periods</text>
+            <text x="150" y="244" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">6 subjects</text>
+            <text x="150" y="266" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6b6b6b">+ targeted revision</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Slide 3: Web design studio -->
+      <div class="carousel-slide" data-slide="3">
+        <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <rect width="1200" height="600" fill="#f5f5f5"/>
+          <text x="600" y="72" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="32" font-weight="700" fill="#0d0d0d" letter-spacing="-1">WE ALSO BUILD WEBSITES</text>
+          <text x="600" y="104" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="14" fill="#6b6b6b">Separate studio · portfolio, landing, small business</text>
+          <g transform="translate(200,150)">
+            <rect x="0" y="0" width="800" height="400" rx="14" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+            <rect x="0" y="0" width="800" height="40" rx="14" fill="#0d0d0d"/>
+            <rect x="0" y="20" width="800" height="20" fill="#0d0d0d"/>
+            <circle cx="26" cy="20" r="6" fill="#fff" opacity=".9"/>
+            <circle cx="48" cy="20" r="6" fill="#fff" opacity=".6"/>
+            <circle cx="70" cy="20" r="6" fill="#fff" opacity=".3"/>
+            <rect x="110" y="12" width="300" height="16" rx="8" fill="#333"/>
+            <rect x="40" y="70" width="340" height="30" rx="4" fill="#0d0d0d"/>
+            <rect x="40" y="112" width="520" height="14" rx="3" fill="#e5e5e5"/>
+            <rect x="40" y="134" width="420" height="14" rx="3" fill="#e5e5e5"/>
+            <rect x="40" y="170" width="140" height="38" rx="8" fill="#0d0d0d"/>
+            <rect x="196" y="170" width="140" height="38" rx="8" fill="#fff" stroke="#0d0d0d" stroke-width="1.5"/>
+            <g transform="translate(40,240)">
+              <rect x="0" y="0" width="220" height="130" rx="10" fill="#f5f5f5" stroke="#e5e5e5"/>
+              <rect x="20" y="20" width="40" height="40" rx="8" fill="#0d0d0d"/>
+              <rect x="20" y="74" width="120" height="8" rx="2" fill="#0d0d0d"/>
+              <rect x="20" y="90" width="160" height="6" rx="2" fill="#d4af37"/>
+              <rect x="20" y="102" width="140" height="6" rx="2" fill="#e5e5e5"/>
+            </g>
+            <g transform="translate(280,240)">
+              <rect x="0" y="0" width="220" height="130" rx="10" fill="#f5f5f5" stroke="#e5e5e5"/>
+              <rect x="20" y="20" width="40" height="40" rx="8" fill="#d4af37"/>
+              <rect x="20" y="74" width="120" height="8" rx="2" fill="#0d0d0d"/>
+              <rect x="20" y="90" width="160" height="6" rx="2" fill="#d4af37"/>
+              <rect x="20" y="102" width="140" height="6" rx="2" fill="#e5e5e5"/>
+            </g>
+            <g transform="translate(520,240)">
+              <rect x="0" y="0" width="220" height="130" rx="10" fill="#f5f5f5" stroke="#e5e5e5"/>
+              <rect x="20" y="20" width="40" height="40" rx="8" fill="#0d0d0d"/>
+              <rect x="20" y="74" width="120" height="8" rx="2" fill="#0d0d0d"/>
+              <rect x="20" y="90" width="160" height="6" rx="2" fill="#d4af37"/>
+              <rect x="20" y="102" width="140" height="6" rx="2" fill="#e5e5e5"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Slide 4: Eagle emblem -->
+      <div class="carousel-slide" data-slide="4">
+        <svg viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+          <rect width="1200" height="600" fill="#0d0d0d"/>
+          <g transform="translate(440,80) scale(1.35)">
+            <circle cx="120" cy="120" r="112" fill="none" stroke="#fff" stroke-width="1"/>
+            <circle cx="120" cy="120" r="104" fill="none" stroke="#fff" stroke-width=".5" opacity=".4"/>
+            <path d="M120 78 C 88 76 56 92 30 128 C 58 122 84 122 120 142 Z" fill="#d4af37"/>
+            <path d="M120 78 C 152 76 184 92 210 128 C 182 122 156 122 120 142 Z" fill="#d4af37"/>
+            <path d="M120 90 C 108 92 100 104 100 120 L 100 158 C 108 170 132 170 140 158 L 140 120 C 140 104 132 92 120 90 Z" fill="#d4af37"/>
+            <circle cx="120" cy="76" r="14" fill="#d4af37"/>
+            <path d="M126 76 L 138 80 L 126 84 Z" fill="#0d0d0d"/>
+            <circle cx="116" cy="74" r="2.2" fill="#0d0d0d"/>
+            <rect x="102" y="156" width="36" height="46" rx="6" fill="#0d0d0d"/>
+            <path d="M120 164 L 130 188 H 110 Z" fill="#d4af37"/>
+          </g>
+          <text x="600" y="530" text-anchor="middle" font-family="'Times New Roman',serif" font-size="20" fill="#d4af37" letter-spacing="8">AQUILA · AUREA</text>
+          <text x="600" y="560" text-anchor="middle" font-family="'Times New Roman',serif" font-size="12" fill="#a8b0bd" letter-spacing="6">SCIENTIA LIBERA · LUX SINE FINIBUS</text>
+        </svg>
+      </div>
+
+    </div>
+    <button class="carousel-btn prev" id="carPrev" aria-label="Previous"><i data-lucide="chevron-left"></i></button>
+    <button class="carousel-btn next" id="carNext" aria-label="Next"><i data-lucide="chevron-right"></i></button>
+    <div class="carousel-dots" id="carDots"></div>
+  </div>
+</div>
+
+<!-- ============ COURSE STRUCTURE ============ -->
+<section id="courses">
+  <div class="section-eyebrow"><i data-lucide="clock"></i> Three durations</div>
+  <h2>Pick a pace. Pick a stream.</h2>
+  <p class="section-lead">Every course is free. Every course is non-accredited. Choose based on how much time you can commit, then choose your stream and electives inside the portal.</p>
+
+  <div class="durations">
+    <div class="duration">
+      <div class="ribbon">Fast</div>
+      <div class="months">3<small>months</small></div>
+      <h3>ACA Track</h3>
+      <p class="desc">Foundational track. Ideal if you're testing the water.</p>
+      <ul class="exams">
+        <li><i data-lucide="circle-check"></i> <strong>ACA Examinations</strong></li>
+        <li><i data-lucide="circle-dot"></i> 1 exam period</li>
+        <li><i data-lucide="circle-dot"></i> 4 subjects</li>
+        <li><i data-lucide="circle-dot"></i> Stream + 1 elective</li>
+      </ul>
+    </div>
+    <div class="duration">
+      <div class="ribbon">Popular</div>
+      <div class="months">6<small>months</small></div>
+      <h3>IPI / OQ Track</h3>
+      <p class="desc">The intensive. Two exam periods, one revision cycle.</p>
+      <ul class="exams">
+        <li><i data-lucide="circle-check"></i> <strong>IPI Examination</strong></li>
+        <li><i data-lucide="circle-check"></i> <strong>OQ Examination</strong></li>
+        <li><i data-lucide="circle-dot"></i> 2 exam periods</li>
+        <li><i data-lucide="circle-dot"></i> 6 subjects · 2 electives</li>
+      </ul>
+    </div>
+    <div class="duration">
+      <div class="ribbon">Full</div>
+      <div class="months">12<small>months</small></div>
+      <h3>QL / Interm / QIF Track</h3>
+      <p class="desc">Applied competence. Three exam periods with targeted revision.</p>
+      <ul class="exams">
+        <li><i data-lucide="circle-check"></i> <strong>QL Examinations</strong></li>
+        <li><i data-lucide="circle-check"></i> <strong>Interm Examinations</strong></li>
+        <li><i data-lucide="circle-check"></i> <strong>QIF Examination</strong></li>
+        <li><i data-lucide="circle-dot"></i> 3 exam periods · 6 subjects</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:32px">
+    <a href="courses.html" class="btn btn-secondary"><i data-lucide="arrow-right"></i> Full course catalogue</a>
   </div>
 </section>
 
-<div class="banner">
-  <div class="banner-inner">
+<!-- ============ STREAMS ============ -->
+<section id="streams">
+  <div class="section-eyebrow"><i data-lucide="layout-grid"></i> Six streams</div>
+  <h2>Choose your direction.</h2>
+  <p class="section-lead">Mathematics and two core subjects are required in every stream. Six subjects total per student. Two of them are electives you choose in the portal.</p>
+
+  <div class="streams">
+    <div class="stream">
+      <div class="icon-box"><i data-lucide="boxes"></i></div>
+      <div class="num">STREAM 01</div>
+      <h3>Full Stack Engineering</h3>
+      <div class="tag">"Build the whole thing."</div>
+      <div class="subjects"><strong>Stream subject</strong>Full Stack Systems</div>
+    </div>
+    <div class="stream">
+      <div class="icon-box"><i data-lucide="monitor-smartphone"></i></div>
+      <div class="num">STREAM 02</div>
+      <h3>Frontend Craft</h3>
+      <div class="tag">"Build what the world sees."</div>
+      <div class="subjects"><strong>Stream subject</strong>Frontend Systems</div>
+    </div>
+    <div class="stream">
+      <div class="icon-box"><i data-lucide="server"></i></div>
+      <div class="num">STREAM 03</div>
+      <h3>Backend Engineering</h3>
+      <div class="tag">"Build the engine."</div>
+      <div class="subjects"><strong>Stream subject</strong>Backend Systems</div>
+    </div>
+    <div class="stream">
+      <div class="icon-box"><i data-lucide="palette"></i></div>
+      <div class="num">STREAM 04</div>
+      <h3>Web Design</h3>
+      <div class="tag">"Design the experience."</div>
+      <div class="subjects"><strong>Stream subject</strong>Visual Systems</div>
+    </div>
+    <div class="stream">
+      <div class="icon-box"><i data-lucide="users"></i></div>
+      <div class="num">STREAM 05</div>
+      <h3>UI/UX Design</h3>
+      <div class="tag">"Design how it feels."</div>
+      <div class="subjects"><strong>Stream subject</strong>Experience Design</div>
+    </div>
+    <div class="stream">
+      <div class="icon-box"><i data-lucide="atom"></i></div>
+      <div class="num">STREAM 06</div>
+      <h3>STEM &amp; Physics</h3>
+      <div class="tag">"Understand the rules of reality."</div>
+      <div class="subjects"><strong>Stream subject</strong>Physical Sciences</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STUDIO / WEB DESIGN ============ -->
+<div class="studio" id="studio">
+  <div class="studio-inner">
     <div>
-      <div class="section-eyebrow" style="color:rgba(255,255,255,.5);"><i data-lucide="graduation-cap"></i> Free Courses</div>
-      <h2>Become a Student.</h2>
-      <p>Register free. Choose your curriculum after signing up. Administration closes <strong style="color:#fff;">14 February 2027</strong>.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;">
-        <a href="courses.html" class="btn btn-primary"><i data-lucide="layout-grid"></i> See our Courses</a>
-        <a href="auth.html" class="btn btn-ghost"><i data-lucide="user-plus"></i> Become a Student</a>
+      <div class="section-eyebrow"><i data-lucide="globe"></i> Studio division</div>
+      <h2>We also build websites.</h2>
+      <p class="lead">Separate from the free courses. Portfolio sites, landing pages, small business sites, and student portfolios — designed and shipped. No account needed. Email us and we'll quote within 24 hours.</p>
+      <div class="studio-actions">
+        <a href="mailto:n1nathaniel971@gmail.com" class="btn btn-primary"><i data-lucide="mail"></i> Request a quote</a>
+        <a href="messages.html" class="btn btn-ghost"><i data-lucide="message-square"></i> Message the studio</a>
       </div>
     </div>
-    <ul>
-      <li><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> Access every course — 100% free</li>
-      <li><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> Skills-based, non-accredited</li>
-      <li><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> Aimed at international standard</li>
-      <li><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> First-year institution · 2027 intake</li>
-    </ul>
+    <div class="studio-card">
+      <div class="label">What we build</div>
+      <ul>
+        <li><i data-lucide="circle-dot"></i> Portfolio sites for graduates</li>
+        <li><i data-lucide="circle-dot"></i> Landing pages &amp; one‑pagers</li>
+        <li><i data-lucide="circle-dot"></i> Small business &amp; café sites</li>
+        <li><i data-lucide="circle-dot"></i> Event &amp; campaign microsites</li>
+        <li><i data-lucide="circle-dot"></i> Design system handoff</li>
+      </ul>
+    </div>
   </div>
 </div>
 
-<div class="cta" id="services">
-  <h2>Need a website?</h2>
-  <p>No account needed. Email us and we'll get back to you within 24 hours.</p>
-  <a href="mailto:n1nathaniel971@gmail.com" class="btn btn-primary"><i data-lucide="mail"></i> Email Us</a>
+<!-- ============ SCHEDULE ============ -->
+<section id="schedule">
+  <div class="section-eyebrow"><i data-lucide="calendar"></i> 2027 schedule</div>
+  <h2>Admission exam first. Then three certification periods.</h2>
+  <p class="section-lead">Every sitting is online through the Exam Gateway. One paper per subject, per period. Applicants must clear the Admission Examination first.</p>
+  <div class="schedule" id="scheduleRows"></div>
+</section>
+
+<!-- ============ WHAT OUR CERTIFICATE DOES / DOES NOT DO ============ -->
+<div class="notice" id="certificate">
+  <div class="notice-inner">
+    <div class="does">
+      <h3><i data-lucide="check-circle"></i> What our record does</h3>
+      <p>Our certificate is an internal, non‑accredited record of completion. It confirms that a student took part in our programme and passed our internal assessments.</p>
+      <ul>
+        <li><i data-lucide="check"></i> Records programme, stream, subjects and electives</li>
+        <li><i data-lucide="check"></i> Shows exam periods sat and internal results</li>
+        <li><i data-lucide="check"></i> Gives an internal student and examination number</li>
+        <li><i data-lucide="check"></i> Supports a CV or portfolio alongside real work</li>
+        <li><i data-lucide="check"></i> Verifiable through our internal student portal</li>
+      </ul>
+    </div>
+    <div class="doesnt">
+      <h3><i data-lucide="x-circle"></i> What our record does not do</h3>
+      <p>It is not an official qualification. It is not registered with DHET, Umalusi, SAQA or the NQF. It does not carry credits and cannot be used as a substitute for a registered qualification.</p>
+      <ul>
+        <li><i data-lucide="x"></i> Not accredited · not NQF‑registered</li>
+        <li><i data-lucide="x"></i> Not a matric equivalent · no university admission</li>
+        <li><i data-lucide="x"></i> No credits, no exemptions, no licences</li>
+        <li><i data-lucide="x"></i> Not recognised for regulated professions</li>
+        <li><i data-lucide="x"></i> No guarantee of job, visa or income</li>
+      </ul>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:36px auto 0;text-align:center">
+    <a href="certificate.html" class="btn btn-secondary"><i data-lucide="file-check"></i> Read full certificate status</a>
+  </div>
 </div>
 
+<!-- ============ CTA ============ -->
+<div class="cta">
+  <div class="section-eyebrow" style="justify-content:center"><i data-lucide="graduation-cap"></i> 2027 intake</div>
+  <h2>Ready to start?</h2>
+  <p>Register free. Sit the Admission Examination. Choose your curriculum. Administration closes 14 February 2027.</p>
+  <div class="cta-actions">
+    <a href="auth.html" class="btn btn-primary"><i data-lucide="user-plus"></i> Become a Student</a>
+    <a href="courses.html" class="btn btn-secondary"><i data-lucide="layout-grid"></i> See our Courses</a>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
 <footer>
-  <div>Non-accredited skills development · © 2026—2027</div>
-  <div style="text-align:right;">
-    <a href="courses.html"><i data-lucide="layout-grid"></i> Courses</a> &nbsp;·&nbsp;
-    <a href="past-papers.html"><i data-lucide="file-text"></i> Resources</a> &nbsp;·&nbsp;
-    <a href="messages.html"><i data-lucide="message-square"></i> Message us</a>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="mark">∆</span>
+      <p>Free, non‑accredited online university. Six streams, three durations. Inaugural 2027 intake. Skills‑based, in the spirit of international standard.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Education</h5>
+      <a href="courses.html"><i data-lucide="layout-grid"></i> Courses</a>
+      <a href="resources.html"><i data-lucide="file-text"></i> Resources</a>
+      <a href="auth.html"><i data-lucide="user-plus"></i> Become a Student</a>
+      <a href="portal.html"><i data-lucide="book-open"></i> Student Portal</a>
+      <a href="certificate.html"><i data-lucide="file-check"></i> Certificate status</a>
+    </div>
+    <div class="footer-col">
+      <h5>Examinations</h5>
+      <a href="admission-exam.html"><i data-lucide="shield-check"></i> Admission Exam</a>
+      <a href="exams.html"><i data-lucide="lock"></i> Exam Gateway</a>
+      <a href="admission-slip.html"><i data-lucide="ticket"></i> Admission Slip</a>
+      <a href="#schedule"><i data-lucide="calendar"></i> Schedule</a>
+    </div>
+    <div class="footer-col">
+      <h5>Connect</h5>
+      <a href="#studio"><i data-lucide="globe"></i> We build websites</a>
+      <a href="messages.html"><i data-lucide="message-square"></i> Message us</a>
+      <a href="messages.html#privacy"><i data-lucide="lock"></i> Privacy</a>
+      <a href="messages.html#terms"><i data-lucide="file-check"></i> Terms</a>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="copy">© 2026—2027 · ∆ · All rights reserved</div>
+    <div class="disclaimer">
+      Non‑accredited. Not registered with DHET or Umalusi. Not SAQA/NQF registered. Not an official certificate. Internal record of completion only. We do everything possible to comply with South African law. If any unintended violation occurs, please contact us so we can correct it immediately.
+    </div>
   </div>
 </footer>
 
-<p class="nonacc">Non-accredited. Not registered with DHET or Umalusi. Not NQF-registered. First-year institution (inaugural 2027 intake). We do everything possible to comply with South African law. If any unintended violation occurs, please contact us so we can correct it immediately.</p>
-
+<!-- ============ WELCOME POP ============ -->
 <div class="welcome-pop" id="welcomePop">
   <button class="pop-close" id="popClose" aria-label="Close"><i data-lucide="x"></i></button>
-  <div class="pop-eyebrow">Welcome back</div>
-  <h3>Your portal is ready.</h3>
-  <p>Subjects, exam periods, resources, admission slip — all in your Student Portal.</p>
+  <div class="pop-head">
+    <div class="avatar" id="popAvatar"></div>
+    <div>
+      <div class="pop-eyebrow">Welcome back</div>
+      <h3 id="popName">Your portal is ready.</h3>
+    </div>
+  </div>
+  <p>Subjects, exam schedule, admission slip and the Admission Examination — all in your portal.</p>
   <div class="pop-actions">
-    <a href="student-portal.html" class="primary"><i data-lucide="book-open"></i> Open portal</a>
-    <a href="past-papers.html" class="ghost"><i data-lucide="file-text"></i> Resources</a>
+    <a href="portal.html" class="primary"><i data-lucide="book-open"></i> Open portal</a>
+    <a href="admission-exam.html" class="ghost"><i data-lucide="shield-check"></i> Admission exam</a>
   </div>
 </div>
 
+<!-- ============ INLINE SCRIPTS ============ -->
 <script>
+/* ---------- Gridy avatar (unique per user, deterministic) ---------- */
+function hash32(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gridy(seed,px){
+  px=px||40;
+  const h=hash32(String(seed||'anon'));
+  const rnd=mulberry32(h);
+  const hue=h%360;
+  const fg='hsl('+hue+',62%,42%)';
+  const bg='hsl('+hue+',32%,94%)';
+  const N=5, cell=100/N;
+  const half=[];
+  for(let r=0;r<N;r++){const row=[];for(let c=0;c<3;c++)row.push(rnd()>0.46?1:0);half.push(row);}
+  if(!half.some(r=>r.some(v=>v))) half[2][1]=1;
+  let rects='';
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++){const cc=c<3?c:4-c;if(half[r][cc])rects+='<rect x="'+(c*cell).toFixed(2)+'" y="'+(r*cell).toFixed(2)+'" width="'+cell.toFixed(2)+'" height="'+cell.toFixed(2)+'"/>';}
+  return '<svg viewBox="0 0 100 100" width="'+px+'" height="'+px+'" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect width="100" height="100" fill="'+bg+'"/><g fill="'+fg+'">'+rects+'</g></svg>';
+}
+window.gridy = gridy;
+
+/* ---------- Schedule rows ---------- */
+const SCHEDULE = [
+  {name:'Admission Examination',    icon:'shield-check',  when:'13 January 2027',   window:'09:00 – 11:00',   mode:'Online · Admission Exam', tag:'adm',  tagText:'Entry'},
+  {name:'First Certification Period',icon:'clipboard-list',when:'May / June 2027',   window:'Per‑paper timetable', mode:'Online · Exam Gateway', tag:'',      tagText:'All tracks'},
+  {name:'Targeted Revision Period',  icon:'repeat',        when:'September 2027',    window:'Per‑paper timetable', mode:'Online · Exam Gateway', tag:'acc',   tagText:'12‑month'},
+  {name:'Final Certification Period',icon:'award',         when:'Oct / Nov 2027',    window:'Per‑paper timetable', mode:'Online · Exam Gateway', tag:'qif',   tagText:'All tracks'}
+];
+document.getElementById('scheduleRows').innerHTML =
+  '<div class="sched-row head"><span>Milestone</span><span>Date</span><span>Window</span><span>Mode</span></div>' +
+  SCHEDULE.map(function(s){
+    return '<div class="sched-row">' +
+      '<span class="name"><i data-lucide="'+s.icon+'"></i>'+s.name+' <span class="pill '+s.tag+'">'+s.tagText+'</span></span>' +
+      '<span class="muted">'+s.when+'</span>' +
+      '<span class="muted">'+s.window+'</span>' +
+      '<span class="muted">'+s.mode+'</span>' +
+    '</div>';
+  }).join('');
+
+/* ---------- Countdown ---------- */
 const target = new Date('February 14, 2027 23:59:59').getTime();
 const el = document.getElementById('countdown');
 function tick() {
@@ -249,32 +834,90 @@ function tick() {
   el.textContent = Math.floor(d/86400000)+'d '+String(Math.floor((d%86400000)/3600000)).padStart(2,'0')+'h '+String(Math.floor((d%3600000)/60000)).padStart(2,'0')+'m '+String(Math.floor((d%60000)/1000)).padStart(2,'0')+'s';
 }
 tick(); setInterval(tick, 1000);
+
+/* ---------- Menu ---------- */
 const menuBtn = document.getElementById('menuBtn'), dropdown = document.getElementById('dropdown');
 menuBtn.addEventListener('click', () => { menuBtn.classList.toggle('open'); dropdown.classList.toggle('open'); });
-document.querySelectorAll('.dropdown a').forEach(l => l.addEventListener('click', () => dropdown.classList.remove('open')));
+document.querySelectorAll('.dropdown a').forEach(l => l.addEventListener('click', () => { dropdown.classList.remove('open'); menuBtn.classList.remove('open'); }));
+
+/* ---------- Carousel ---------- */
+(function(){
+  const track = document.getElementById('carouselTrack');
+  const dotsWrap = document.getElementById('carDots');
+  const total = track.children.length;
+  let idx = 0, timer = null;
+  for(let i=0;i<total;i++){
+    const d = document.createElement('button');
+    d.className = 'carousel-dot' + (i===0?' active':'');
+    d.setAttribute('aria-label','Go to slide '+(i+1));
+    d.addEventListener('click', () => go(i));
+    dotsWrap.appendChild(d);
+  }
+  function go(i){
+    idx = (i + total) % total;
+    track.style.transform = 'translateX(-'+(idx*100)+'%)';
+    dotsWrap.querySelectorAll('.carousel-dot').forEach((d,k)=>d.classList.toggle('active',k===idx));
+    restart();
+  }
+  function restart(){ if(timer) clearInterval(timer); timer = setInterval(()=>go(idx+1), 6000); }
+  document.getElementById('carPrev').addEventListener('click', () => go(idx-1));
+  document.getElementById('carNext').addEventListener('click', () => go(idx+1));
+  restart();
+  /* pause on hover */
+  const carousel = track.parentElement;
+  carousel.addEventListener('mouseenter', () => { if(timer) clearInterval(timer); });
+  carousel.addEventListener('mouseleave', restart);
+})();
+
+/* ---------- Welcome pop ---------- */
 const pop = document.getElementById('welcomePop'), popClose = document.getElementById('popClose');
 const POP_KEY = 'welcome_dismissed_until';
 popClose.addEventListener('click', () => {
   pop.classList.remove('show');
   localStorage.setItem(POP_KEY, String(Date.now() + 7*86400000));
 });
+
+/* ---------- Initial lucide ---------- */
 if (window.lucide) lucide.createIcons();
 </script>
+
+<!-- ============ FIREBASE (auth state + avatar) ============ -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+const firebaseConfig = {
+  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
+  authDomain: "nyldevcourses.firebaseapp.com",
+  projectId: "nyldevcourses",
+  storageBucket: "nyldevcourses.firebasestorage.app",
+  messagingSenderId: "16687006873",
+  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
+};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
 onAuthStateChanged(auth, (user) => {
-  const nA = document.getElementById('navAuth'), nP = document.getElementById('navPortal');
+  const nA  = document.getElementById('navAuth');
+  const nP  = document.getElementById('navPortal');
+  const nAv = document.getElementById('navAvatar');
   if (user) {
-    nA.style.display='none'; nP.style.display='inline-flex';
-    const dismissed = parseInt(localStorage.getItem(POP_KEY) || '0', 10);
+    nA.style.display = 'none';
+    nP.style.display = 'inline-flex';
+    nAv.style.display = 'flex';
+    nAv.innerHTML = gridy(user.uid || user.email, 38);
+    document.getElementById('popAvatar').innerHTML = gridy(user.uid || user.email, 52);
+    const first = (user.displayName || user.email || '').split(' ')[0].split('@')[0];
+    document.getElementById('popName').textContent = first ? ('Hello, ' + first) : 'Your portal is ready.';
+    const dismissed = parseInt(localStorage.getItem('welcome_dismissed_until') || '0', 10);
     if (Date.now() > dismissed) pop.classList.add('show');
-  } else { nA.style.display='inline-flex'; nP.style.display='none'; }
+  } else {
+    nA.style.display = 'inline-flex';
+    nP.style.display = 'none';
+    nAv.style.display = 'none';
+  }
   if (window.lucide) lucide.createIcons();
 });
 </script>
+
 </body>
 </html>
