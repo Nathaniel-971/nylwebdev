@@ -2,234 +2,223 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Apply · ∆ IFB Institute</title>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0b0b0b">
-<meta name="description" content="Apply to IFB Online Institute. Free, non-accredited, skills-based. Inaugural 2027 intake.">
+<meta name="description" content="Apply to IFB Online Institute. Non-accredited, skills-based. Inaugural 2027 intake.">
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/service-worker.js').catch(()=>{});}</script>
 <style>
 /* =================== THEME =================== */
 :root{
-  --ink:#0b0b0b;
-  --ink-2:#1c1c1c;
-  --ink-3:#2b2b2b;
-  --paper:#ffffff;
-  --paper-2:#fafafa;
-  --paper-3:#f4f4f4;
-  --paper-4:#ebebeb;
-  --line:#e7e7e7;
-  --line-2:#d6d6d6;
-  --muted:#6f6f6f;
-  --muted-2:#909090;
-  --muted-3:#b4b4b4;
-  --gold:#b58a2b;
-  --gold-soft:#fbf4e0;
-  --blue:#2f4ba8;
-  --blue-soft:#eef2ff;
-  --green:#0a7d4f;
-  --green-soft:#e8f5ec;
-  --red:#b3261e;
-  --red-soft:#fdefec;
-  --radius:14px;
-  --radius-lg:20px;
-  --radius-xl:26px;
+  --ink:#0b0b0b;--ink-2:#1c1c1c;--ink-3:#2b2b2b;
+  --paper:#ffffff;--paper-2:#fafafa;--paper-3:#f4f4f4;--paper-4:#ebebeb;
+  --line:#e7e7e7;--line-2:#d6d6d6;
+  --muted:#6f6f6f;--muted-2:#909090;--muted-3:#b4b4b4;
+  --gold:#b58a2b;--gold-soft:#fbf4e0;
+  --blue:#2f4ba8;--blue-soft:#eef2ff;
+  --green:#0a7d4f;--green-soft:#e8f5ec;
+  --red:#b3261e;--red-soft:#fdefec;
+  --orange:#b46300;--orange-soft:#fdf1e0;
+  --purple:#6b21a8;--purple-soft:#f5e8ff;
+  --radius:10px;--radius-lg:16px;--radius-xl:22px;
   --shadow-sm:0 1px 2px rgba(0,0,0,.04);
   --shadow-md:0 10px 28px rgba(0,0,0,.06);
   --shadow-lg:0 26px 70px rgba(0,0,0,.10);
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
 }
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{
-  background:var(--paper);color:var(--ink);
-  font-family:var(--font);font-size:16px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-  overflow-x:hidden;min-height:100vh;
+  background:var(--paper-2);color:var(--ink);
+  font-family:var(--font);font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
 ::selection{background:var(--ink);color:var(--paper)}
 button{font-family:inherit;cursor:pointer}
 a{color:inherit}
 
 /* =================== LOADER =================== */
-.loader{
-  position:fixed;inset:0;z-index:9999;
-  background:var(--ink);color:var(--paper);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
-  transition:opacity .6s ease,visibility .6s ease;
-}
+.loader{position:fixed;inset:0;z-index:9999;background:var(--ink);color:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .6s ease,visibility .6s ease;padding:24px}
 .loader.gone{opacity:0;visibility:hidden;pointer-events:none}
-.loader-mark{font-size:100px;font-weight:600;line-height:1;letter-spacing:-3px;animation:breathe 1.7s ease-in-out infinite}
-.loader-label{font-size:11.5px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:600}
-.loader-bar{width:220px;height:2px;background:rgba(255,255,255,.14);border-radius:2px;overflow:hidden;margin-top:4px}
+.loader-mark{font-size:88px;font-weight:600;line-height:1;letter-spacing:-3px;animation:breathe 1.7s ease-in-out infinite}
+.loader-label{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:600;text-align:center}
+.loader-bar{width:180px;height:2px;background:rgba(255,255,255,.14);border-radius:2px;overflow:hidden;margin-top:4px}
 .loader-bar span{display:block;height:100%;width:36%;background:var(--paper);border-radius:2px;animation:loaderSlide 1.35s ease-in-out infinite}
 @keyframes breathe{0%,100%{opacity:.7;transform:scale(.94)}50%{opacity:1;transform:scale(1)}}
 @keyframes loaderSlide{0%{transform:translateX(-130%)}100%{transform:translateX(380%)}}
 
 /* =================== NAV =================== */
-nav{
-  position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,.94);
-  backdrop-filter:saturate(180%) blur(16px);
-  -webkit-backdrop-filter:saturate(180%) blur(16px);
-  border-bottom:1px solid var(--line);
-}
-.nav-inner{
-  max-width:1200px;margin:0 auto;padding:14px 32px;
-  display:flex;justify-content:space-between;align-items:center;gap:14px;
-}
-@media(max-width:760px){.nav-inner{padding:12px 20px}}
-.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink)}
-.brand-mark{font-size:44px;font-weight:600;line-height:.9;letter-spacing:-2.5px}
-.brand-text{display:flex;flex-direction:column;line-height:1.05}
-.brand-name{font-size:14px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
-.brand-sub{font-size:10.5px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:3px}
-@media(max-width:620px){.brand-text{display:none}}
-.nav-right{display:flex;align-items:center;gap:6px}
-.nav-link{
-  font-size:13.5px;font-weight:500;color:var(--ink);text-decoration:none;
-  padding:9px 14px;border-radius:9px;display:inline-flex;align-items:center;gap:7px;
-  transition:background .18s ease;
-}
-.nav-link:hover{background:var(--paper-3)}
-.nav-link svg{width:15px;height:15px}
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.97);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.nav-inner{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);min-width:0}
+.brand-mark{font-size:32px;font-weight:600;line-height:.9;letter-spacing:-2px;flex-shrink:0}
+.brand-text{display:flex;flex-direction:column;line-height:1.05;min-width:0}
+.brand-name{font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap}
+.brand-sub{font-size:9.5px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;margin-top:2px;white-space:nowrap}
+@media(max-width:400px){.brand-text{display:none}}
+.nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-btn{font-size:12.5px;font-weight:600;color:var(--ink);background:var(--paper);text-decoration:none;padding:8px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);transition:all .18s ease;white-space:nowrap}
+.nav-btn:hover{border-color:var(--ink);background:var(--paper-3)}
+.nav-btn svg{width:13px;height:13px}
+.nav-btn.icon-only{padding:8px 9px}
 
-/* =================== LAYOUT =================== */
-.shell{max-width:1200px;margin:0 auto;padding:0 32px}
-@media(max-width:760px){.shell{padding:0 20px}}
-.auth-wrap{
-  display:grid;grid-template-columns:1.05fr .95fr;
-  gap:64px;align-items:start;
-  padding:72px 0 96px;
-}
-@media(max-width:960px){.auth-wrap{grid-template-columns:1fr;gap:44px;padding:52px 0 72px}}
+/* =================== SHELL =================== */
+.shell{padding:0 16px;max-width:100%}
 
-/* =================== FORM COLUMN =================== */
-.form-card{
-  border:1px solid var(--line);border-radius:var(--radius-xl);
-  background:var(--paper);padding:40px 38px;
-  box-shadow:var(--shadow-sm);
+/* =================== PROGRESS DOTS =================== */
+.step-track{
+  display:flex;align-items:center;gap:6px;padding:16px 0 6px;
 }
-@media(max-width:520px){.form-card{padding:28px 22px;border-radius:var(--radius-lg)}}
-.form-eyebrow{
-  display:inline-flex;align-items:center;gap:9px;
-  font-size:11px;letter-spacing:2.2px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:16px;
+.step-track .dot{
+  flex:1;height:4px;border-radius:100px;background:var(--line);
+  transition:background .3s ease;
 }
-.form-eyebrow svg{width:12px;height:12px}
-.form-eyebrow::before{content:"";width:20px;height:1px;background:var(--muted);opacity:.5}
-.form-card h1{
-  font-size:clamp(26px,3.4vw,36px);letter-spacing:-1.3px;
-  line-height:1.12;font-weight:700;margin-bottom:10px;
+.step-track .dot.done{background:var(--ink)}
+.step-track .dot.active{background:var(--ink)}
+.step-track .dot.pending{background:var(--line)}
+.step-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;
+  color:var(--muted);font-weight:700;padding:0 2px 14px;
 }
-.form-card .sub{font-size:14.5px;color:var(--muted);line-height:1.55;margin-bottom:28px}
+.step-meta .step-num-of{font-family:var(--mono)}
+.step-meta .step-name{color:var(--ink)}
 
-/* tabs */
-.tabs{
-  display:flex;border:1px solid var(--line);border-radius:12px;
-  padding:5px;margin-bottom:26px;background:var(--paper-2);
-}
-.tab{
-  flex:1;padding:10px 14px;font-size:13.5px;font-weight:600;
-  border:none;background:transparent;color:var(--muted);
-  border-radius:8px;display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  transition:all .18s ease;
-}
-.tab svg{width:15px;height:15px}
-.tab:hover:not(.active){background:var(--paper);color:var(--ink)}
-.tab.active{background:var(--ink);color:var(--paper)}
+/* =================== HEAD =================== */
+.head{padding:8px 0 20px}
+.head .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+.head .eyebrow svg{width:11px;height:11px}
+.head .eyebrow::before{content:"";width:16px;height:1px;background:var(--muted);opacity:.5}
+.head h1{font-size:26px;letter-spacing:-1.1px;line-height:1.12;font-weight:700;margin-bottom:8px}
+.head .sub{font-size:13.5px;color:var(--muted);line-height:1.55}
 
-/* google */
+/* =================== CARDS =================== */
+.card{
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;padding:16px;margin-bottom:14px;
+}
+.card-title{
+  font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.card-title svg{width:12px;height:12px}
+.card-title .opt{margin-left:auto;font-size:9.5px;letter-spacing:1.2px;color:var(--muted-2);font-weight:700;background:var(--paper-3);padding:3px 8px;border-radius:100px}
+
+/* =================== FORM FIELDS =================== */
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;margin-bottom:7px;color:var(--ink);
+}
+.field label svg{width:12px;height:12px;color:var(--muted)}
+.field label .req{
+  font-size:9.5px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--red);font-weight:700;margin-left:auto;
+}
+.field input,.field select,.field textarea{
+  width:100%;padding:13px 14px;font-size:15px;
+  font-family:inherit;border:1.5px solid var(--line);
+  border-radius:11px;background:var(--paper);color:var(--ink);
+  transition:border-color .18s ease,box-shadow .18s ease;
+  -webkit-appearance:none;appearance:none;
+}
+.field textarea{min-height:80px;resize:vertical;line-height:1.5}
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230b0b0b' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:38px;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--ink);box-shadow:0 0 0 4px rgba(11,11,11,.05);
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted-3)}
+.field .help{font-size:11px;color:var(--muted-2);margin-top:6px;line-height:1.45}
+.field.pw{position:relative}
+.field .pw-toggle{
+  position:absolute;right:12px;bottom:12px;
+  background:transparent;border:none;color:var(--muted);padding:5px;
+  border-radius:7px;
+}
+.field .pw-toggle svg{width:15px;height:15px}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* =================== PASSWORD STRENGTH =================== */
+.pw-strength{display:flex;gap:4px;margin-top:8px}
+.pw-strength .seg{flex:1;height:3px;background:var(--paper-4);border-radius:2px;transition:background .25s ease}
+.pw-strength[data-level="1"] .seg:nth-child(-n+1){background:var(--red)}
+.pw-strength[data-level="2"] .seg:nth-child(-n+2){background:#c47b1e}
+.pw-strength[data-level="3"] .seg:nth-child(-n+3){background:var(--gold)}
+.pw-strength[data-level="4"] .seg:nth-child(-n+4){background:var(--green)}
+.pw-label{font-size:11px;color:var(--muted-2);margin-top:6px}
+
+/* =================== TERMS =================== */
+.terms{
+  display:flex;align-items:flex-start;gap:11px;
+  padding:14px;background:var(--paper-2);border-radius:12px;
+  border:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.5;
+  margin-bottom:14px;
+}
+.terms input{margin-top:3px;width:16px;height:16px;accent-color:var(--ink);flex-shrink:0;cursor:pointer}
+.terms a{color:var(--ink);text-decoration:underline;font-weight:600}
+
+/* =================== BUTTONS =================== */
+.btn{
+  width:100%;padding:15px 22px;font-size:14.5px;font-weight:600;
+  border-radius:12px;border:1.5px solid var(--ink);background:var(--ink);
+  color:var(--paper);display:inline-flex;align-items:center;justify-content:center;
+  gap:9px;transition:all .18s ease;
+}
+.btn:hover:not(:disabled){background:var(--ink-2);transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn svg{width:15px;height:15px}
+.btn-ghost{
+  background:var(--paper);color:var(--ink);border-color:var(--line-2);
+}
+.btn-ghost:hover:not(:disabled){border-color:var(--ink);background:var(--paper-3)}
+.btn-row{display:flex;gap:8px;margin-top:16px}
+.btn-row .btn{flex:1}
+
+/* =================== OAUTH =================== */
 .oauth{
   width:100%;padding:13px 16px;font-size:14px;font-weight:500;
   border:1.5px solid var(--line);background:var(--paper);color:var(--ink);
   border-radius:11px;display:flex;align-items:center;justify-content:center;gap:11px;
-  transition:all .18s ease;margin-bottom:18px;
+  transition:all .18s ease;margin-bottom:16px;
 }
 .oauth:hover{border-color:var(--ink);background:var(--paper-3)}
 .oauth svg{width:18px;height:18px;flex-shrink:0}
 .oauth:disabled{opacity:.55;cursor:not-allowed}
 
 .divider{
-  display:flex;align-items:center;gap:14px;margin:0 0 20px;
-  color:var(--muted-2);font-size:10.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  display:flex;align-items:center;gap:14px;margin:0 0 16px;
+  color:var(--muted-2);font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
 }
 .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line)}
 
-/* fields */
-.field{margin-bottom:16px}
-.field label{
-  display:flex;align-items:center;gap:7px;
-  font-size:12.5px;font-weight:600;margin-bottom:8px;color:var(--ink);
+/* =================== TABS =================== */
+.tabs{
+  display:flex;border:1px solid var(--line);border-radius:12px;
+  padding:4px;margin-bottom:22px;background:var(--paper-2);
 }
-.field label svg{width:13px;height:13px;color:var(--muted)}
-.field input{
-  width:100%;padding:14px 16px;font-size:15px;
-  font-family:inherit;border:1.5px solid var(--line);
-  border-radius:11px;background:var(--paper);color:var(--ink);
-  transition:border-color .18s ease,box-shadow .18s ease;
+.tab{
+  flex:1;padding:10px 12px;font-size:13px;font-weight:600;
+  border:none;background:transparent;color:var(--muted);
+  border-radius:8px;display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  transition:all .18s ease;
 }
-.field input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 4px rgba(11,11,11,.05)}
-.field input::placeholder{color:var(--muted-3)}
-.field .help{font-size:11.5px;color:var(--muted-2);margin-top:6px}
-.field .pw-toggle{
-  position:absolute;right:14px;top:50%;transform:translateY(-50%);
-  background:transparent;border:none;color:var(--muted);padding:4px;
-  border-radius:6px;
-}
-.field .pw-toggle:hover{color:var(--ink);background:var(--paper-3)}
-.field .pw-toggle svg{width:15px;height:15px}
-.field.pw{position:relative}
+.tab svg{width:14px;height:14px}
+.tab.active{background:var(--ink);color:var(--paper)}
 
-/* password strength */
-.pw-strength{
-  display:flex;gap:4px;margin-top:8px;
-}
-.pw-strength .seg{
-  flex:1;height:3px;background:var(--paper-4);border-radius:2px;
-  transition:background .25s ease;
-}
-.pw-strength[data-level="1"] .seg:nth-child(-n+1){background:var(--red)}
-.pw-strength[data-level="2"] .seg:nth-child(-n+2){background:#c47b1e}
-.pw-strength[data-level="3"] .seg:nth-child(-n+3){background:var(--gold)}
-.pw-strength[data-level="4"] .seg:nth-child(-n+4){background:var(--green)}
-.pw-label{
-  font-size:11px;color:var(--muted-2);margin-top:6px;
-}
-
-/* terms */
-.terms{
-  display:flex;align-items:flex-start;gap:11px;
-  margin:18px 0 22px;font-size:12.5px;color:var(--muted);line-height:1.55;
-}
-.terms input{
-  margin-top:3px;width:16px;height:16px;accent-color:var(--ink);
-  flex-shrink:0;cursor:pointer;
-}
-.terms a{color:var(--ink);text-decoration:underline;font-weight:600}
-
-/* buttons */
-.btn{
-  width:100%;padding:15px 22px;font-size:14.5px;font-weight:600;
-  border-radius:11px;border:1.5px solid var(--ink);background:var(--ink);
-  color:var(--paper);display:inline-flex;align-items:center;justify-content:center;
-  gap:9px;transition:all .18s ease;
-}
-.btn:hover:not(:disabled){background:var(--ink-2);transform:translateY(-1px);box-shadow:var(--shadow-md)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.btn svg{width:15px;height:15px}
-.btn-ghost{
-  background:var(--paper);color:var(--ink);border-color:var(--line-2);
-  margin-top:10px;
-}
-.btn-ghost:hover:not(:disabled){border-color:var(--ink);background:var(--paper-3)}
-
-/* messages */
+/* =================== MESSAGES =================== */
 .msg{
-  padding:12px 14px;border-radius:10px;font-size:13px;
-  margin-bottom:16px;display:none;line-height:1.5;
+  padding:12px 14px;border-radius:10px;font-size:12.5px;
+  margin-bottom:14px;display:none;line-height:1.5;
   align-items:flex-start;gap:9px;
 }
 .msg svg{width:15px;height:15px;flex-shrink:0;margin-top:1px}
@@ -238,210 +227,208 @@ nav{
 .msg.success{background:var(--green-soft);color:var(--green);border:1px solid rgba(10,125,79,.18)}
 .msg.info{background:var(--blue-soft);color:var(--blue);border:1px solid rgba(47,75,168,.18)}
 
-/* footer links inside form */
-.form-foot{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-top:20px;font-size:12.5px;color:var(--muted);gap:12px;flex-wrap:wrap;
+/* =================== COURSE SELECTION =================== */
+.course-opt{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:14px;border:1.5px solid var(--line);border-radius:12px;
+  cursor:pointer;transition:all .18s ease;margin-bottom:10px;
+  background:var(--paper);
 }
-.form-foot a{color:var(--ink);text-decoration:none;font-weight:600}
-.form-foot a:hover{text-decoration:underline}
+.course-opt:last-child{margin-bottom:0}
+.course-opt:hover{border-color:var(--ink)}
+.course-opt.selected{border-color:var(--ink);background:var(--paper);box-shadow:var(--shadow-sm)}
+.course-opt.selected::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ink);border-radius:12px 0 0 12px}
+.course-opt .cb{
+  width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-2);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:var(--paper);margin-top:2px;
+}
+.course-opt .cb svg{width:12px;height:12px;color:var(--paper);opacity:0;transition:opacity .15s}
+.course-opt.selected .cb{background:var(--ink);border-color:var(--ink)}
+.course-opt.selected .cb svg{opacity:1}
+.course-opt .body{flex:1;min-width:0}
+.course-opt .num{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted-2);font-weight:700;margin-bottom:5px}
+.course-opt h4{font-size:14.5px;font-weight:700;letter-spacing:-.2px;margin-bottom:4px;line-height:1.25}
+.course-opt .desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:8px}
+.course-opt .subject{
+  font-size:11px;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--muted);font-weight:700;
+  padding-top:8px;border-top:1px dashed var(--line);
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+}
+.course-opt .subject strong{color:var(--ink);font-weight:600;font-size:12px;text-transform:none;letter-spacing:0}
 
-/* =================== SIDE / INFO COLUMN =================== */
-.side{position:sticky;top:100px}
-@media(max-width:960px){.side{position:static}}
+.duration-opt{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:14px;border:1.5px solid var(--line);border-radius:12px;
+  cursor:pointer;transition:all .18s ease;margin-bottom:10px;
+}
+.duration-opt:last-child{margin-bottom:0}
+.duration-opt:hover{border-color:var(--ink)}
+.duration-opt.selected{border-color:var(--ink)}
+.duration-opt .cb{
+  width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-2);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:var(--paper);margin-top:2px;
+}
+.duration-opt .cb svg{width:12px;height:12px;color:var(--paper);opacity:0}
+.duration-opt.selected .cb{background:var(--ink);border-color:var(--ink)}
+.duration-opt.selected .cb svg{opacity:1}
+.duration-opt .body{flex:1;min-width:0}
+.duration-opt .months{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:-1px;line-height:1;margin-bottom:4px}
+.duration-opt .months small{font-size:10.5px;font-weight:500;letter-spacing:0;color:var(--muted);margin-left:4px;font-family:var(--font)}
+.duration-opt h4{font-size:14px;font-weight:700;letter-spacing:-.2px;margin-bottom:3px}
+.duration-opt .desc{font-size:12px;color:var(--muted);line-height:1.5}
 
-.step-card{
-  border:1px solid var(--line);border-radius:var(--radius-lg);
-  background:var(--paper-2);padding:30px 28px;margin-bottom:16px;
+/* =================== ELECTIVES =================== */
+.elective-opt{
+  display:flex;gap:12px;align-items:center;
+  padding:12px 13px;border:1.5px solid var(--line);border-radius:11px;
+  cursor:pointer;transition:all .15s ease;margin-bottom:8px;
+  background:var(--paper);
 }
-.step-card .label{
-  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:18px;
-  display:flex;align-items:center;gap:8px;
+.elective-opt:last-child{margin-bottom:0}
+.elective-opt:hover{border-color:var(--ink)}
+.elective-opt.selected{border-color:var(--ink);background:linear-gradient(180deg,var(--paper) 0%,var(--green-soft) 100%)}
+.elective-opt.disabled{opacity:.45;cursor:not-allowed}
+.elective-opt.disabled:hover{border-color:var(--line)}
+.elective-opt .cb{
+  width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line-2);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:var(--paper);transition:all .15s ease;
 }
-.step-card .label svg{width:13px;height:13px}
-.step-card h3{font-size:18px;font-weight:700;margin-bottom:16px;letter-spacing:-.3px}
+.elective-opt .cb svg{width:13px;height:13px;color:var(--paper);opacity:0}
+.elective-opt.selected .cb{background:var(--green);border-color:var(--green)}
+.elective-opt.selected .cb svg{opacity:1}
+.elective-opt .name{flex:1;font-size:13.5px;font-weight:600}
+.elective-opt .hint{font-size:10.5px;color:var(--muted);margin-top:2px;font-weight:400}
 
-.steps-list{list-style:none;counter-reset:s}
-.steps-list li{
-  counter-increment:s;
-  display:flex;gap:16px;align-items:flex-start;
-  padding:14px 0;border-bottom:1px solid var(--line);
+.electives-empty{
+  background:var(--paper);border:1.5px dashed var(--line-2);
+  border-radius:12px;padding:24px 18px;text-align:center;
 }
-.steps-list li:last-child{border-bottom:none;padding-bottom:0}
-.steps-list li::before{
-  content:counter(s,decimal-leading-zero);
+.electives-empty .icon{
+  width:44px;height:44px;border-radius:12px;background:var(--paper-3);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 12px;
+}
+.electives-empty .icon svg{width:18px;height:18px;color:var(--muted)}
+.electives-empty h4{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.electives-empty p{font-size:12px;color:var(--muted);line-height:1.5;max-width:280px;margin:0 auto}
+
+.electives-count{
+  display:flex;justify-content:flex-end;margin-bottom:10px;
+}
+.electives-count .pill{
   font-family:var(--mono);font-size:11px;font-weight:700;
-  color:var(--muted);letter-spacing:1px;width:28px;flex-shrink:0;padding-top:3px;
+  padding:5px 11px;border-radius:100px;
+  background:var(--paper-3);color:var(--muted);
 }
-.steps-list .body h4{font-size:14px;font-weight:700;margin-bottom:3px}
-.steps-list .body p{font-size:12.5px;color:var(--muted);line-height:1.55}
+.electives-count .pill.ok{background:var(--green-soft);color:var(--green)}
+.electives-count .pill.warn{background:var(--orange-soft);color:var(--orange)}
 
-/* id preview card */
-.id-preview{
-  border:1px solid var(--line);border-radius:var(--radius-lg);
-  background:var(--paper);padding:26px 24px;
-  display:flex;align-items:center;gap:18px;
-}
-.id-preview .avatar-box{
-  width:64px;height:64px;border-radius:16px;overflow:hidden;
-  border:1px solid var(--line);flex-shrink:0;
-  background:var(--paper-3);display:flex;align-items:center;justify-content:center;
-}
-.id-preview .avatar-box svg{display:block}
-.id-preview .meta{flex:1;min-width:0}
-.id-preview .meta .k{
-  font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:6px;
-}
-.id-preview .meta .v{
-  font-family:var(--mono);font-size:16px;font-weight:700;letter-spacing:1px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.id-preview .meta .n{
-  font-size:12.5px;color:var(--muted);margin-top:4px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.id-preview .meta .badge{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
-  padding:3px 8px;border-radius:100px;background:var(--gold-soft);
-  color:var(--gold);border:1px solid rgba(181,138,43,.25);margin-top:8px;
-}
-
-/* notice strip */
-.notice-card{
-  border:1px solid var(--line);border-radius:var(--radius-lg);
-  background:var(--paper);padding:22px 24px;
-  display:flex;gap:14px;align-items:flex-start;
-  font-size:12.5px;color:var(--muted);line-height:1.65;
-}
-.notice-card .icon{
-  width:36px;height:36px;border-radius:10px;
-  background:var(--paper-3);display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
-.notice-card .icon svg{width:16px;height:16px;color:var(--ink)}
-.notice-card strong{color:var(--ink);font-weight:600;display:block;margin-bottom:4px;font-size:13px}
-
-/* =================== SIGNED IN CARD =================== */
-.signed-in-card{
-  border:1px solid var(--line);border-radius:var(--radius-xl);
-  background:var(--paper);padding:48px 40px;text-align:center;
-  box-shadow:var(--shadow-sm);
-  max-width:540px;margin:64px auto;
-}
-.signed-in-card .avatar-lg{
-  width:96px;height:96px;border-radius:24px;overflow:hidden;
-  border:1px solid var(--line);margin:0 auto 22px;
-  background:var(--paper-3);display:flex;align-items:center;justify-content:center;
-}
-.signed-in-card h2{
-  font-size:24px;letter-spacing:-.8px;margin-bottom:8px;font-weight:700;
-}
-.signed-in-card .sub{font-size:14.5px;color:var(--muted);margin-bottom:6px}
-.signed-in-card .email{
-  font-family:var(--mono);font-size:13px;color:var(--muted);
-  background:var(--paper-3);padding:6px 12px;border-radius:100px;
-  display:inline-block;margin-bottom:26px;
-}
-.signed-in-card .next-step{
-  background:var(--paper-2);border:1px solid var(--line);
-  border-radius:14px;padding:20px 22px;margin-bottom:24px;
-}
-.signed-in-card .next-step .k{
-  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:8px;
-}
-.signed-in-card .next-step .v{font-size:15px;font-weight:600}
-.signed-in-card .actions{display:flex;flex-direction:column;gap:10px}
-.signed-in-card .actions .btn{margin-top:0}
-.signed-in-card .auto{
-  font-size:12px;color:var(--muted-2);margin-top:16px;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.signed-in-card .auto svg{width:13px;height:13px;animation:spin 1.8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* success panel (post-signup) */
+/* =================== SUCCESS PANEL =================== */
 .success-panel{
-  border:1px solid var(--line);border-radius:var(--radius-xl);
-  background:var(--paper);padding:44px 40px;
+  background:var(--paper);border:1px solid var(--line);
+  border-radius:var(--radius-xl);padding:36px 24px;
   text-align:center;box-shadow:var(--shadow-sm);
+  margin:32px 0;
 }
 .success-panel .check{
   width:72px;height:72px;border-radius:50%;background:var(--green-soft);
   border:1px solid rgba(10,125,79,.2);
-  display:flex;align-items:center;justify-content:center;margin:0 auto 22px;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 20px;
 }
 .success-panel .check svg{width:32px;height:32px;color:var(--green)}
-.success-panel h2{font-size:26px;letter-spacing:-1px;margin-bottom:10px;font-weight:700}
-.success-panel p{font-size:14.5px;color:var(--muted);line-height:1.6;margin-bottom:24px;max-width:420px;margin-left:auto;margin-right:auto}
+.success-panel h2{font-size:22px;letter-spacing:-.8px;margin-bottom:8px;font-weight:700}
+.success-panel p{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:22px;max-width:400px;margin-left:auto;margin-right:auto}
 .ref-block{
   background:var(--paper-2);border:1.5px dashed var(--line-2);
-  border-radius:14px;padding:20px;margin-bottom:24px;
+  border-radius:14px;padding:18px;margin-bottom:18px;
 }
-.ref-block .k{
-  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:8px;
+.ref-block .k{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
+.ref-block .v{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:2px;word-break:break-all}
+.ref-block .hint{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5}
+.summary{
+  background:var(--paper-2);border:1px solid var(--line);
+  border-radius:12px;padding:14px;margin-bottom:18px;text-align:left;
 }
-.ref-block .v{
-  font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:2px;
-  color:var(--ink);
-}
-.ref-block .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.55}
-.success-panel .next{
-  font-size:13.5px;color:var(--muted);margin-top:22px;line-height:1.6;
-}
+.summary .r{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:6px 0;font-size:12.5px}
+.summary .r .k{color:var(--muted)}
+.summary .r .v{font-weight:600;text-align:right;min-width:0;word-break:break-word}
 
-/* =================== RESPONSIVE =================== */
-@media(max-width:520px){
-  .form-card{padding:28px 22px}
-  .side{gap:12px}
-  .step-card{padding:24px 22px}
-  .id-preview{padding:20px}
-  .signed-in-card{padding:36px 24px;margin:32px auto}
-  .success-panel{padding:32px 24px}
+/* =================== DENIED =================== */
+.denied{text-align:center;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-xl);padding:40px 24px;box-shadow:var(--shadow-sm);margin:64px 0}
+.denied .icon{width:64px;height:64px;border-radius:50%;background:var(--red-soft);border:1px solid rgba(179,38,30,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 18px}
+.denied .icon svg{width:26px;height:26px;color:var(--red)}
+.denied h1{font-size:20px;letter-spacing:-.6px;margin-bottom:8px;font-weight:700}
+.denied p{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:22px}
+.denied .actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+/* =================== FOOT =================== */
+.foot{padding:44px 4px 40px;text-align:center;color:var(--muted);font-size:11px;line-height:1.6}
+.foot .mark{font-size:26px;font-weight:600;letter-spacing:-2px;color:var(--ink);display:block;margin-bottom:8px}
+
+/* =================== TOAST =================== */
+.toasts{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:12px;right:12px;z-index:500;display:flex;flex-direction:column;gap:8px;pointer-events:none;align-items:center}
+.toast{background:var(--ink);color:var(--paper);padding:12px 16px;border-radius:11px;font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:9px;box-shadow:var(--shadow-lg);width:100%;max-width:420px;animation:toastIn .3s cubic-bezier(.16,1,.3,1) both;pointer-events:auto;line-height:1.4}
+.toast svg{width:15px;height:15px;flex-shrink:0}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* =================== REVIEW TABLE =================== */
+.review-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper)}
+.review-item{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
+  padding:11px 14px;border-bottom:1px solid var(--line);font-size:12.5px;
 }
+.review-item:last-child{border-bottom:none}
+.review-item .k{color:var(--muted);flex-shrink:0;font-size:11.5px;display:flex;align-items:center;gap:6px}
+.review-item .k svg{width:11px;height:11px}
+.review-item .v{font-weight:600;text-align:right;word-break:break-word;min-width:0}
+.review-item .v.null{color:var(--muted-3);font-style:italic;font-weight:400}
 </style>
 </head>
 <body>
 
-<!-- ===================== LOADER ===================== -->
 <div class="loader" id="loader" aria-hidden="true">
   <div class="loader-mark">∆</div>
-  <div class="loader-label">IFB · Online Institute</div>
+  <div class="loader-label">IFB · Apply</div>
   <div class="loader-bar"><span></span></div>
 </div>
 
-<!-- ===================== NAV ===================== -->
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="brand">
       <span class="brand-mark">∆</span>
       <span class="brand-text">
         <span class="brand-name">IFB Institute</span>
-        <span class="brand-sub">Online · 2027</span>
+        <span class="brand-sub">Apply · 2027</span>
       </span>
     </a>
     <div class="nav-right">
-      <a href="index.html" class="nav-link"><i data-lucide="arrow-left"></i> Home</a>
+      <a href="index.html" class="nav-btn icon-only" title="Home"><i data-lucide="home"></i></a>
     </div>
   </div>
 </nav>
 
-<!-- ===================== MAIN ===================== -->
-<main class="shell">
-  <div id="root"></div>
+<main class="shell" id="main">
+  <div style="padding:32px 0;">
+    <div class="sk" style="height:36px;width:60%;margin-bottom:12px"></div>
+    <div class="sk" style="height:140px;margin-bottom:14px"></div>
+    <div class="sk" style="height:180px"></div>
+  </div>
+  <style>.sk{border-radius:10px;background:linear-gradient(90deg,var(--paper-3) 25%,var(--paper-4) 50%,var(--paper-3) 75%);background-size:200% 100%;animation:sk 1.4s ease-in-out infinite}@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}</style>
 </main>
 
-<!-- ===================== INLINE SCRIPTS ===================== -->
+<div class="toasts" id="toasts"></div>
+
 <script>
 /* ---------- LOADER ---------- */
 (function(){
   const loader = document.getElementById('loader');
   const start = Date.now();
-  const minShow = 750;
+  const minShow = 600;
   function hide(){
     const elapsed = Date.now() - start;
     const wait = Math.max(0, minShow - elapsed);
@@ -452,10 +439,10 @@ nav{
   }
   if (document.readyState === 'complete') hide();
   else window.addEventListener('load', hide);
-  setTimeout(() => { if (document.body.contains(loader)) loader.classList.add('gone'); }, 3400);
+  setTimeout(() => { if (document.body.contains(loader)) loader.classList.add('gone'); }, 3000);
 })();
 
-/* ---------- GRIDY AVATAR ---------- */
+/* ---------- GRIDY (kept for post-signup use) ---------- */
 function hash32(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function gridy(seed,px){
@@ -476,35 +463,25 @@ function gridy(seed,px){
   let rects = '';
   for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
     const cc = c < 3 ? c : 4 - c;
-    if (half[r][cc]) {
-      rects += '<rect x="' + (c*cell).toFixed(2) + '" y="' + (r*cell).toFixed(2) +
-               '" width="' + cell.toFixed(2) + '" height="' + cell.toFixed(2) + '"/>';
-    }
+    if (half[r][cc]) rects += '<rect x="' + (c*cell).toFixed(2) + '" y="' + (r*cell).toFixed(2) + '" width="' + cell.toFixed(2) + '" height="' + cell.toFixed(2) + '"/>';
   }
-  return '<svg viewBox="0 0 100 100" width="' + px + '" height="' + px +
-         '" xmlns="http://www.w3.org/2000/svg" style="display:block">' +
-         '<rect width="100" height="100" fill="' + bg + '"/>' +
-         '<g fill="' + fg + '">' + rects + '</g></svg>';
+  return '<svg viewBox="0 0 100 100" width="' + px + '" height="' + px + '" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect width="100" height="100" fill="' + bg + '"/><g fill="' + fg + '">' + rects + '</g></svg>';
 }
 window.gridy = gridy;
 
-/* ---------- REFERENCE ID GENERATOR ---------- */
-/* Deterministic from UID — stable across sessions. Avoids ambiguous chars. */
-function makeReferenceId(uid){
-  const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I, O, 0, 1
-  const h = hash32(String(uid));
-  let n = h;
-  let code = '';
-  for (let i = 0; i < 6; i++) {
-    code += CHARS[n % CHARS.length];
-    n = Math.floor(n / CHARS.length) || (n ^ (i * 2654435761));
-  }
-  return 'IFB-2027-' + code;
-}
-window.makeReferenceId = makeReferenceId;
+/* ---------- TOASTS ---------- */
+window.toast = function(msg, type){
+  type = type || 'info';
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'alert-triangle' : 'info';
+  el.innerHTML = '<i data-lucide="' + icon + '"></i><span>' + String(msg) + '</span>';
+  document.getElementById('toasts').appendChild(el);
+  if (window.lucide) lucide.createIcons();
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(() => el.remove(), 320); }, 3400);
+};
 </script>
 
-<!-- ===================== FIREBASE (MODULE) ===================== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -525,29 +502,73 @@ const firebaseConfig = {
   messagingSenderId: "16687006873",
   appId: "1:16687006873:web:b7d66ad1024ccd92722408"
 };
-const app  = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db   = getFirestore(app);
-const gp   = new GoogleAuthProvider();
+const db = getFirestore(app);
+const gp = new GoogleAuthProvider();
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
-const root = document.getElementById('root');
+const main = document.getElementById('main');
 
-/* ---------- HELPERS ---------- */
+/* =================== DATA =================== */
+const DURATIONS = [
+  { id: '3', months: 3, name: 'Foundation',
+    desc: 'Compact introduction. One exam period.',
+    meta: '1 exam · 4 subjects · 1 elective' },
+  { id: '9', months: 9, name: 'Specialisation',
+    desc: 'Mainstream track. Two exam periods.',
+    meta: '2 exams · 6 subjects · 2 electives' },
+  { id: '12', months: 12, name: 'Advanced',
+    desc: 'Deepest track. Three exam periods.',
+    meta: '3 exams · 6 subjects · 2 electives' }
+];
+
+const STREAMS = [
+  { id: 'fullstack', num: '01', name: 'Full Stack Engineering',
+    tag: 'The complete web development path.',
+    icon: 'boxes', subject: 'Full Stack Systems',
+    electives: ['React','Vue','Next.js','TypeScript','Cloud & DevOps','Physics'] },
+  { id: 'frontend', num: '02', name: 'Frontend Development',
+    tag: 'Interfaces, interactions, and rendering.',
+    icon: 'monitor-smartphone', subject: 'Frontend Systems',
+    electives: ['React','Vue','Next.js','TypeScript','Figma','Physics'] },
+  { id: 'backend', num: '03', name: 'Backend Engineering',
+    tag: 'APIs, data, and infrastructure.',
+    icon: 'server', subject: 'Backend Systems',
+    electives: ['Databases (NoSQL)','REST APIs','Authentication','TypeScript','Cloudinary','Physics'] },
+  { id: 'mobile', num: '04', name: 'Mobile Development',
+    tag: 'Native and cross-platform apps.',
+    icon: 'smartphone', subject: 'Mobile Systems',
+    electives: ['React Native','Flutter','Expo','TypeScript','Firebase','Physics'] },
+  { id: 'webdesign', num: '05', name: 'Web Design',
+    tag: 'Type, layout, colour, and craft.',
+    icon: 'palette', subject: 'Visual Systems',
+    electives: ['CSS Animation','Accessibility','Design Systems','Portfolio','Git & GitHub','Physics'] },
+  { id: 'uiux', num: '06', name: 'UI/UX Design',
+    tag: 'Research, prototyping, and experience.',
+    icon: 'users', subject: 'Experience Design',
+    electives: ['Design Systems','Accessibility','Prototyping','Figma Advanced','Portfolio','Physics'] },
+  { id: 'data', num: '07', name: 'Data & Analytics',
+    tag: 'Data pipelines, statistics, and insight.',
+    icon: 'bar-chart-3', subject: 'Data Systems',
+    electives: ['SQL','Python','Pandas','Visualisation','Statistics','Physics'] },
+  { id: 'stem', num: '08', name: 'STEM & Physics',
+    tag: 'Physical reasoning and applied mathematics.',
+    icon: 'atom', subject: 'Physical Sciences',
+    electives: ['Core 50 Equations','Nuclear Physics','Relativity','Astrophysics','JavaScript Fundamentals','Physics Lab'] }
+];
+
+/* =================== HELPERS =================== */
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-
-function showMsg(id, text, type){
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.className = 'msg show ' + type;
-  el.innerHTML =
-    '<i data-lucide="' + (type === 'error' ? 'alert-triangle' : type === 'success' ? 'check-circle' : 'info') + '"></i>' +
-    '<span>' + esc(text) + '</span>';
-  if (window.lucide) lucide.createIcons();
-}
-function clearMsg(id){
-  const el = document.getElementById(id);
-  if (el) el.className = 'msg';
+function streamById(id){ return STREAMS.find(s => s.id === id) || null; }
+function durationById(id){ return DURATIONS.find(d => d.id === id) || null; }
+function maxElectives(dur){ return dur === '3' ? 1 : 2; }
+function makeReferenceId(uid){
+  const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const h = hash32(String(uid));
+  let n = h, code = '';
+  for (let i = 0; i < 6; i++) { code += CHARS[n % CHARS.length]; n = Math.floor(n / CHARS.length) || (n ^ (i * 2654435761)); }
+  return 'IFB-2027-' + code;
 }
 function friendly(code){
   const m = {
@@ -559,525 +580,875 @@ function friendly(code){
     'auth/invalid-credential': 'Incorrect email or password.',
     'auth/popup-closed-by-user': 'Sign-in cancelled.',
     'auth/cancelled-popup-request': 'Sign-in cancelled.',
-    'auth/too-many-requests': 'Too many attempts. Please wait a moment.',
+    'auth/too-many-requests': 'Too many attempts. Please wait.',
     'auth/network-request-failed': 'Network error. Check your connection.',
-    'auth/operation-not-allowed': 'This sign-in method is not enabled.',
   };
   return m[code] || 'Something went wrong. Please try again.';
 }
-
-/* ---------- CREATE USER DOC ---------- */
-async function ensureUserDoc(user, name){
-  const ref = doc(db, 'users', user.uid);
-  const snap = await getDoc(ref);
-  if (snap.exists()) return snap.data();
-  const referenceId = makeReferenceId(user.uid);
-  const payload = {
-    name: name || user.displayName || '',
-    email: user.email || '',
-    referenceId: referenceId,
-    studentNumber: null,
-    examinationNumber: null,
-    examPin: null,
-    preludePassed: false,
-    preludeScore: null,
-    preludeTakenAt: null,
-    duration: null,
-    curriculum: null,
-    course: null,
-    electives: [],
-    status: 'pending',
-    role: 'student',
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  };
-  await setDoc(ref, payload);
-  return payload;
+function showMsg(id, text, type){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'msg show ' + type;
+  const icon = type === 'error' ? 'alert-triangle' : type === 'success' ? 'check-circle' : 'info';
+  el.innerHTML = '<i data-lucide="' + icon + '"></i><span>' + esc(text) + '</span>';
+  if (window.lucide) lucide.createIcons();
+}
+function clearMsg(id){
+  const el = document.getElementById(id);
+  if (el) el.className = 'msg';
 }
 
-/* ---------- ROUTE USER ---------- */
-async function routeUser(user, { silent = false } = {}){
-  if (!user) return { destination: 'index.html', reason: 'Not signed in.' };
-  if (user.email === ADMIN_EMAIL) {
-    return { destination: 'admin.html', reason: 'Administrator account.' };
+/* =================== STATE =================== */
+const state = {
+  mode: 'signup',   // 'signup' | 'signin' | 'success' | 'signedin'
+  step: 1,          // 1 = account, 2 = personal, 3 = course, 4 = review
+  data: {
+    // account
+    name: '', email: '', password: '', agreed: false,
+    // personal
+    idNumber: '', dateOfBirth: '', phone: '', altPhone: '',
+    address: '', city: '', province: '', postalCode: '',
+    guardianName: '', guardianPhone: '',
+    priorEducation: '', priorInstitution: '',
+    // course
+    duration: null, course: null, electives: []
   }
-  const ref = doc(db, 'users', user.uid);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) {
-    return { destination: 'admission-exam.html', reason: 'Sit the Prelude to receive your Student Number.' };
-  }
-  const data = snap.data();
-  if (!data.preludePassed) {
-    return { destination: 'admission-exam.html', reason: 'Sit the Prelude to receive your Student Number.' };
-  }
-  if (!data.course) {
-    return { destination: 'curriculum.html', reason: 'Choose your stream and two electives.' };
-  }
-  return { destination: 'portal.html', reason: 'Your portal is ready.' };
+};
+
+/* =================== RENDER: TABS =================== */
+function renderTabs(){
+  return `
+    <div class="tabs">
+      <button class="tab ${state.mode === 'signup' ? 'active' : ''}" data-mode="signup">
+        <i data-lucide="user-plus"></i> Sign up
+      </button>
+      <button class="tab ${state.mode === 'signin' ? 'active' : ''}" data-mode="signin">
+        <i data-lucide="log-in"></i> Sign in
+      </button>
+    </div>`;
 }
 
-/* ---------- RENDER: SIGNED IN ---------- */
-function renderSignedIn(user, route){
-  root.innerHTML = `
-    <div class="signed-in-card">
-      <div class="avatar-lg" id="siaAvatar"></div>
-      <h2>You're signed in.</h2>
-      <p class="sub">Continuing as</p>
-      <div class="email">${esc(user.email || '')}</div>
+/* =================== RENDER: SIGNUP WIZARD =================== */
+function renderSignup(){
+  const totalSteps = 4;
+  const stepNames = ['Account', 'Personal', 'Course', 'Review'];
+  const stepName = stepNames[state.step - 1];
 
-      <div class="next-step">
-        <div class="k">Next step</div>
-        <div class="v">${esc(route.reason)}</div>
+  main.innerHTML = `
+    ${renderTabs()}
+
+    <div class="step-track">
+      ${[1,2,3,4].map(i => {
+        const cls = i < state.step ? 'done' : i === state.step ? 'active' : 'pending';
+        return `<div class="dot ${cls}"></div>`;
+      }).join('')}
+    </div>
+    <div class="step-meta">
+      <span class="step-num-of">Step ${state.step} of ${totalSteps}</span>
+      <span class="step-name">${stepName}</span>
+    </div>
+
+    <div class="head">
+      <div class="eyebrow"><i data-lucide="edit-3"></i> IFB Application</div>
+      <h1>${stepName}</h1>
+      <p class="sub">${stepDesc(state.step)}</p>
+    </div>
+
+    <div class="msg" id="stepMsg"></div>
+
+    <div id="stepBody"></div>
+  `;
+
+  const body = document.getElementById('stepBody');
+  if (state.step === 1) body.innerHTML = renderStepAccount();
+  if (state.step === 2) body.innerHTML = renderStepPersonal();
+  if (state.step === 3) body.innerHTML = renderStepCourse();
+  if (state.step === 4) body.innerHTML = renderStepReview();
+
+  if (window.lucide) lucide.createIcons();
+
+  /* Tab switching */
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    if (state.mode === 'signup') switchMode('signin');
+    else switchMode('signup');
+  }));
+
+  /* Step-specific wiring */
+  if (state.step === 1) wireStepAccount();
+  if (state.step === 2) wireStepPersonal();
+  if (state.step === 3) wireStepCourse();
+  if (state.step === 4) wireStepReview();
+}
+
+function stepDesc(s){
+  return {
+    1: 'Create your account with email and password. You can also continue with Google.',
+    2: 'Tell us who you are. This information appears on your admission slip and exam records.',
+    3: 'Choose your duration, stream, and electives. You can edit these later before 21 March 2027.',
+    4: 'Review your application. Correct anything before submitting.'
+  }[s];
+}
+
+/* =================== STEP 1: ACCOUNT =================== */
+function renderStepAccount(){
+  return `
+    <button class="oauth" id="googleBtn">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
+        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/>
+        <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/>
+      </svg>
+      Continue with Google
+    </button>
+
+    <div class="divider">or with email</div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="user"></i> Account details</div>
+
+      <div class="field">
+        <label><i data-lucide="user"></i> Full name <span class="req">Required</span></label>
+        <input type="text" id="fName" value="${esc(state.data.name)}" autocomplete="name" placeholder="As it appears on your ID">
       </div>
 
-      <div class="actions">
-        <a href="${route.destination}" class="btn" id="continueBtn">
-          <i data-lucide="arrow-right"></i> Continue
-        </a>
-        <button class="btn btn-ghost" id="signOutBtn">
-          <i data-lucide="log-out"></i> Sign out
+      <div class="field">
+        <label><i data-lucide="mail"></i> Email <span class="req">Required</span></label>
+        <input type="email" id="fEmail" value="${esc(state.data.email)}" autocomplete="email" placeholder="you@example.com">
+      </div>
+
+      <div class="field pw">
+        <label><i data-lucide="lock"></i> Password <span class="req">Required</span></label>
+        <input type="password" id="fPassword" value="${esc(state.data.password)}" autocomplete="new-password" placeholder="At least 8 characters">
+        <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">
+          <i data-lucide="eye"></i>
         </button>
-      </div>
-
-      <div class="auto">
-        <i data-lucide="loader"></i>
-        <span>Redirecting to <strong>${esc(route.destination)}</strong> in <span id="autoCount">4</span>s…</span>
+        <div class="pw-strength" id="pwStrength" data-level="0">
+          <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
+        </div>
+        <div class="pw-label" id="pwLabel">Password strength</div>
       </div>
     </div>
+
+    <label class="terms">
+      <input type="checkbox" id="fAgreed" ${state.data.agreed ? 'checked' : ''}>
+      <span>
+        I agree to the <a href="messages.html#terms">Terms</a> and
+        <a href="messages.html#privacy">Privacy Policy</a>. I understand IFB is
+        <strong>non-accredited</strong>, not registered with DHET, Umalusi, SAQA or the NQF,
+        and its certificate is an internal record of completion — not an official qualification.
+      </span>
+    </label>
+
+    <button class="btn" id="nextBtn">
+      <i data-lucide="arrow-right"></i> Continue to personal details
+    </button>
   `;
-  document.getElementById('siaAvatar').innerHTML = gridy(user.uid || user.email, 96);
-  if (window.lucide) lucide.createIcons();
-
-  document.getElementById('signOutBtn').addEventListener('click', async () => {
-    await signOut(auth);
-    window.location.reload();
-  });
-
-  let count = 4;
-  const el = document.getElementById('autoCount');
-  const t = setInterval(() => {
-    count--;
-    if (el) el.textContent = count;
-    if (count <= 0) {
-      clearInterval(t);
-      window.location.href = route.destination;
-    }
-  }, 1000);
 }
 
-/* ---------- RENDER: FORM ---------- */
-function renderForm(){
-  root.innerHTML = `
-    <div class="auth-wrap">
-
-      <!-- ============ LEFT: FORM ============ -->
-      <div>
-        <div class="form-card">
-          <div class="form-eyebrow"><i data-lucide="edit-3"></i> Apply to IFB</div>
-          <h1 id="formTitle">Create your account.</h1>
-          <p class="sub" id="formSub">Register with email and password. IFB issues your Reference ID immediately.</p>
-
-          <div class="msg" id="formMsg"></div>
-
-          <div class="tabs" id="tabs">
-            <button type="button" class="tab active" data-tab="signup">
-              <i data-lucide="user-plus"></i> Sign up
-            </button>
-            <button type="button" class="tab" data-tab="signin">
-              <i data-lucide="log-in"></i> Sign in
-            </button>
-          </div>
-
-          <!-- GOOGLE -->
-          <button type="button" class="oauth" id="googleBtn">
-            <svg viewBox="0 0 48 48" aria-hidden="true">
-              <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
-              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-              <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/>
-              <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/>
-            </svg>
-            Continue with Google
-          </button>
-
-          <div class="divider">or with email</div>
-
-          <!-- SIGNUP FORM -->
-          <form id="signupForm" autocomplete="on">
-            <div class="field">
-              <label for="signupName"><i data-lucide="user"></i> Full name</label>
-              <input type="text" id="signupName" name="name" required autocomplete="name" placeholder="As it appears on your ID">
-            </div>
-            <div class="field">
-              <label for="signupEmail"><i data-lucide="mail"></i> Email</label>
-              <input type="email" id="signupEmail" name="email" required autocomplete="email" placeholder="you@example.com">
-            </div>
-            <div class="field pw">
-              <label for="signupPassword"><i data-lucide="lock"></i> Password</label>
-              <input type="password" id="signupPassword" name="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters">
-              <button type="button" class="pw-toggle" data-target="signupPassword" aria-label="Show password">
-                <i data-lucide="eye"></i>
-              </button>
-              <div class="pw-strength" id="pwStrength" data-level="0">
-                <span class="seg"></span><span class="seg"></span><span class="seg"></span><span class="seg"></span>
-              </div>
-              <div class="pw-label" id="pwLabel">Password strength</div>
-            </div>
-            <label class="terms">
-              <input type="checkbox" id="signupTerms" required>
-              <span>
-                I agree to the <a href="messages.html#terms">Terms</a> and
-                <a href="messages.html#privacy">Privacy Policy</a>.
-                I understand this is a <strong>non-accredited</strong>, skills-based programme
-                and is not an official qualification.
-              </span>
-            </label>
-            <button type="submit" class="btn" id="signupBtn">
-              <i data-lucide="arrow-right"></i> Create account &amp; get Reference ID
-            </button>
-          </form>
-
-          <!-- SIGNIN FORM -->
-          <form id="signinForm" autocomplete="on" style="display:none">
-            <div class="field">
-              <label for="signinEmail"><i data-lucide="mail"></i> Email</label>
-              <input type="email" id="signinEmail" name="email" required autocomplete="email" placeholder="you@example.com">
-            </div>
-            <div class="field pw">
-              <label for="signinPassword"><i data-lucide="lock"></i> Password</label>
-              <input type="password" id="signinPassword" name="password" required autocomplete="current-password" placeholder="Your password">
-              <button type="button" class="pw-toggle" data-target="signinPassword" aria-label="Show password">
-                <i data-lucide="eye"></i>
-              </button>
-            </div>
-            <div class="form-foot" style="margin-top:0;margin-bottom:18px;justify-content:flex-end">
-              <a href="#" id="forgotLink">Forgot password?</a>
-            </div>
-            <button type="submit" class="btn" id="signinBtn">
-              <i data-lucide="log-in"></i> Sign in
-            </button>
-          </form>
-
-          <div class="form-foot">
-            <span id="formFootText">Already registered?</span>
-            <a href="#" id="switchLink">Sign in instead</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- ============ RIGHT: SIDE ============ -->
-      <aside class="side">
-
-        <div class="step-card">
-          <div class="label"><i data-lucide="list-checks"></i> What happens next</div>
-          <h3>Four steps to a Student Number.</h3>
-          <ol class="steps-list">
-            <li>
-              <div class="body">
-                <h4>Register</h4>
-                <p>Email and password. IFB issues your Reference ID immediately.</p>
-              </div>
-            </li>
-            <li>
-              <div class="body">
-                <h4>Sit the Prelude</h4>
-                <p>One online sitting. Eight skill areas. Monitored.</p>
-              </div>
-            </li>
-            <li>
-              <div class="body">
-                <h4>Receive your Student Number</h4>
-                <p>On a pass, IFB assigns your permanent Student Number.</p>
-              </div>
-            </li>
-            <li>
-              <div class="body">
-                <h4>Build your curriculum</h4>
-                <p>Choose a stream and two electives. Editable before 21 March 2027.</p>
-              </div>
-            </li>
-          </ol>
-        </div>
-
-        <div class="step-card">
-          <div class="label"><i data-lucide="fingerprint"></i> Your identifier</div>
-          <div class="id-preview">
-            <div class="avatar-box" id="idPreviewAvatar"></div>
-            <div class="meta">
-              <div class="k">Reference ID</div>
-              <div class="v" id="idPreviewRef">IFB-2027-••••••</div>
-              <div class="n" id="idPreviewName">Your name</div>
-              <span class="badge"><i data-lucide="clock" style="width:10px;height:10px"></i> Issued on signup</span>
-            </div>
-          </div>
-          <p style="font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6">
-            Reference ID is temporary. Your <strong>Student Number</strong> is issued only after the Prelude.
-            A unique grid avatar is generated for your profile.
-          </p>
-        </div>
-
-        <div class="notice-card">
-          <div class="icon"><i data-lucide="info"></i></div>
-          <div>
-            <strong>Non-accredited.</strong>
-            IFB is not registered with DHET, Umalusi, SAQA or the NQF. Our certificate is an internal
-            record of completion — not an official qualification.
-          </div>
-        </div>
-
-      </aside>
-    </div>
-  `;
-  if (window.lucide) lucide.createIcons();
-
-  /* --- TABS --- */
-  const tabs = document.getElementById('tabs');
-  const signupForm = document.getElementById('signupForm');
-  const signinForm = document.getElementById('signinForm');
-  const formTitle  = document.getElementById('formTitle');
-  const formSub    = document.getElementById('formSub');
-  const formFoot   = document.getElementById('formFootText');
-  const switchLink = document.getElementById('switchLink');
-  let currentTab = 'signup';
-
-  function setTab(tab){
-    currentTab = tab;
-    tabs.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
-    signupForm.style.display = tab === 'signup' ? 'block' : 'none';
-    signinForm.style.display = tab === 'signin' ? 'block' : 'none';
-    if (tab === 'signup') {
-      formTitle.textContent = 'Create your account.';
-      formSub.textContent = 'Register with email and password. IFB issues your Reference ID immediately.';
-      formFoot.textContent = 'Already registered?';
-      switchLink.textContent = 'Sign in instead';
-    } else {
-      formTitle.textContent = 'Welcome back.';
-      formSub.textContent = 'Sign in to continue to your portal.';
-      formFoot.textContent = 'New to IFB?';
-      switchLink.textContent = 'Create an account';
-    }
-    clearMsg('formMsg');
-    if (window.lucide) lucide.createIcons();
-  }
-
-  tabs.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
-  switchLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    setTab(currentTab === 'signup' ? 'signin' : 'signup');
-  });
-
-  /* --- PASSWORD TOGGLE --- */
-  document.querySelectorAll('.pw-toggle').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = document.getElementById(btn.dataset.target);
-      if (!target) return;
-      const isPw = target.type === 'password';
-      target.type = isPw ? 'text' : 'password';
-      btn.innerHTML = '<i data-lucide="' + (isPw ? 'eye-off' : 'eye') + '"></i>';
-      if (window.lucide) lucide.createIcons();
-    });
-  });
-
-  /* --- PASSWORD STRENGTH + ID PREVIEW --- */
-  const nameInput = document.getElementById('signupName');
-  const emailInput = document.getElementById('signupEmail');
-  const pwInput = document.getElementById('signupPassword');
+function wireStepAccount(){
+  const name = document.getElementById('fName');
+  const email = document.getElementById('fEmail');
+  const pw = document.getElementById('fPassword');
+  const agreed = document.getElementById('fAgreed');
+  const pwToggle = document.getElementById('pwToggle');
   const pwStrength = document.getElementById('pwStrength');
   const pwLabel = document.getElementById('pwLabel');
-  const previewRef = document.getElementById('idPreviewRef');
-  const previewName = document.getElementById('idPreviewName');
-  const previewAvatar = document.getElementById('idPreviewAvatar');
+  const nextBtn = document.getElementById('nextBtn');
 
-  function scorePassword(pw){
+  /* Live state */
+  [name, email, pw].forEach(el => el.addEventListener('input', () => {
+    state.data.name = name.value;
+    state.data.email = email.value;
+    state.data.password = pw.value;
+  }));
+  agreed.addEventListener('change', () => { state.data.agreed = agreed.checked; });
+
+  /* Password visibility */
+  pwToggle.addEventListener('click', () => {
+    const isPw = pw.type === 'password';
+    pw.type = isPw ? 'text' : 'password';
+    pwToggle.innerHTML = '<i data-lucide="' + (isPw ? 'eye-off' : 'eye') + '"></i>';
+    if (window.lucide) lucide.createIcons();
+  });
+
+  /* Strength meter */
+  function scorePassword(p){
     let s = 0;
-    if (pw.length >= 8) s++;
-    if (pw.length >= 12) s++;
-    if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) s++;
-    if (/[0-9]/.test(pw)) s++;
-    if (/[^A-Za-z0-9]/.test(pw)) s++;
+    if (p.length >= 8) s++;
+    if (p.length >= 12) s++;
+    if (/[A-Z]/.test(p) && /[a-z]/.test(p)) s++;
+    if (/[0-9]/.test(p)) s++;
+    if (/[^A-Za-z0-9]/.test(p)) s++;
     return Math.min(4, s);
   }
-  const pwLabels = ['Password strength', 'Weak', 'Fair', 'Good', 'Strong'];
-
-  pwInput.addEventListener('input', () => {
-    const s = scorePassword(pwInput.value);
+  const labels = ['Password strength', 'Weak', 'Fair', 'Good', 'Strong'];
+  pw.addEventListener('input', () => {
+    const s = scorePassword(pw.value);
     pwStrength.dataset.level = s;
-    pwLabel.textContent = pwLabels[s];
+    pwLabel.textContent = labels[s];
   });
 
-  function updatePreview(){
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
-    const seed = email || name || 'preview';
-    previewName.textContent = name || (email ? email.split('@')[0] : 'Your name');
-    previewRef.textContent = 'IFB-2027-••••••';
-    previewAvatar.innerHTML = gridy(seed, 64);
-  }
-  nameInput.addEventListener('input', updatePreview);
-  emailInput.addEventListener('input', updatePreview);
-  updatePreview();
-
-  /* --- SIGN UP --- */
-  signupForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    clearMsg('formMsg');
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
-    const password = pwInput.value;
-    const btn = document.getElementById('signupBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader"></i> Creating your account…';
-    if (window.lucide) lucide.createIcons();
-
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      try { await updateProfile(cred.user, { displayName: name }); } catch(e){}
-      const docData = await ensureUserDoc(cred.user, name);
-      const refId = docData.referenceId || makeReferenceId(cred.user.uid);
-      renderSuccess(name, refId, cred.user);
-    } catch (err) {
-      const code = err.code || '';
-      showMsg('formMsg', friendly(code), 'error');
-      btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="arrow-right"></i> Create account &amp; get Reference ID';
-      if (window.lucide) lucide.createIcons();
-      /* If email exists, nudge to signin */
-      if (code === 'auth/email-already-in-use') {
-        setTimeout(() => setTab('signin'), 900);
-      }
-    }
+  /* Next */
+  nextBtn.addEventListener('click', () => {
+    clearMsg('stepMsg');
+    if (!name.value.trim()) { showMsg('stepMsg', 'Please enter your full name.', 'error'); name.focus(); return; }
+    if (!email.value.trim() || !/^\S+@\S+\.\S+$/.test(email.value)) { showMsg('stepMsg', 'Please enter a valid email.', 'error'); email.focus(); return; }
+    if (!pw.value || pw.value.length < 8) { showMsg('stepMsg', 'Password must be at least 8 characters.', 'error'); pw.focus(); return; }
+    if (!agreed.checked) { showMsg('stepMsg', 'You must agree to the Terms and Privacy Policy.', 'error'); return; }
+    state.step = 2;
+    renderSignup();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
-  /* --- SIGN IN --- */
-  signinForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    clearMsg('formMsg');
-    const email = document.getElementById('signinEmail').value.trim();
-    const password = document.getElementById('signinPassword').value;
-    const btn = document.getElementById('signinBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader"></i> Signing in…';
-    if (window.lucide) lucide.createIcons();
-    try {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      const route = await routeUser(cred.user);
-      showMsg('formMsg', route.reason, 'success');
-      setTimeout(() => { window.location.href = route.destination; }, 900);
-    } catch (err) {
-      showMsg('formMsg', friendly(err.code), 'error');
-      btn.disabled = false;
-      btn.innerHTML = '<i data-lucide="log-in"></i> Sign in';
-      if (window.lucide) lucide.createIcons();
-    }
-  });
-
-  /* --- GOOGLE --- */
+  /* Google */
   document.getElementById('googleBtn').addEventListener('click', async () => {
-    clearMsg('formMsg');
+    clearMsg('stepMsg');
     const btn = document.getElementById('googleBtn');
     btn.disabled = true;
     try {
       const res = await signInWithPopup(auth, gp);
-      const route = await routeUser(res.user);
-      /* Ensure a doc exists for new Google users */
-      const snap = await getDoc(doc(db, 'users', res.user.uid));
-      if (!snap.exists()) {
-        await ensureUserDoc(res.user);
-        showMsg('formMsg', 'Account created. Redirecting to the Prelude…', 'success');
-        setTimeout(() => { window.location.href = 'admission-exam.html'; }, 900);
-      } else {
-        showMsg('formMsg', route.reason, 'success');
-        setTimeout(() => { window.location.href = route.destination; }, 900);
-      }
+      const user = res.user;
+      /* Pre-fill from Google and jump to step 2 */
+      state.data.name = state.data.name || user.displayName || '';
+      state.data.email = state.data.email || user.email || '';
+      state.step = 2;
+      state.mode = 'signup';
+      /* Save minimal auth info to state — actual save happens on submit */
+      sessionStorage.setItem('ifb_signup_uid', user.uid);
+      renderSignup();
+      window.toast('Google connected. Continue with personal details.', 'success');
     } catch (err) {
-      showMsg('formMsg', friendly(err.code), 'error');
+      showMsg('stepMsg', friendly(err.code), 'error');
       btn.disabled = false;
-    }
-  });
-
-  /* --- FORGOT PASSWORD --- */
-  document.getElementById('forgotLink').addEventListener('click', async (e) => {
-    e.preventDefault();
-    clearMsg('formMsg');
-    const email = document.getElementById('signinEmail').value.trim();
-    if (!email) {
-      showMsg('formMsg', 'Enter your email above first.', 'error');
-      return;
-    }
-    try {
-      await sendPasswordResetEmail(auth, email);
-      showMsg('formMsg', 'Reset link sent. Check your inbox.', 'success');
-    } catch (err) {
-      showMsg('formMsg', friendly(err.code), 'error');
     }
   });
 }
 
-/* ---------- RENDER: SUCCESS ---------- */
-function renderSuccess(name, referenceId, user){
-  root.innerHTML = `
-    <div style="max-width:560px;margin:64px auto">
-      <div class="success-panel">
-        <div class="check"><i data-lucide="check"></i></div>
-        <h2>Account created.</h2>
-        <p>Welcome, <strong>${esc(name)}</strong>. Your Reference ID has been issued. Keep it safe — it identifies you until you pass the Prelude.</p>
+/* =================== STEP 2: PERSONAL =================== */
+function renderStepPersonal(){
+  return `
+    <div class="card">
+      <div class="card-title"><i data-lucide="id-card"></i> Identification</div>
 
-        <div class="ref-block">
-          <div class="k">Your Reference ID</div>
-          <div class="v" id="refCopy">${esc(referenceId)}</div>
-          <div class="hint">Copy this. You'll need it if you contact IFB before your Prelude result.</div>
-        </div>
-
-        <button class="btn" id="copyRefBtn" style="width:auto;padding:11px 18px;margin:0 auto">
-          <i data-lucide="copy"></i> Copy Reference ID
-        </button>
-
-        <p class="next">Next: sit the <strong>Prelude</strong> to receive your Student Number.</p>
+      <div class="field">
+        <label><i data-lucide="credit-card"></i> ID / Passport number <span class="req">Required</span></label>
+        <input type="text" id="fIdNumber" value="${esc(state.data.idNumber)}" placeholder="13 digits (SA ID) or passport number">
+        <div class="help">As it appears on your identity document.</div>
       </div>
+
+      <div class="field">
+        <label><i data-lucide="calendar"></i> Date of birth <span class="req">Required</span></label>
+        <input type="date" id="fDateOfBirth" value="${esc(state.data.dateOfBirth)}">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="phone"></i> Contact</div>
+
+      <div class="field">
+        <label><i data-lucide="smartphone"></i> Mobile number <span class="req">Required</span></label>
+        <input type="tel" id="fPhone" value="${esc(state.data.phone)}" placeholder="+27 ..." autocomplete="tel">
+      </div>
+
+      <div class="field">
+        <label><i data-lucide="phone-call"></i> Alternative number <span class="opt">Optional</span></label>
+        <input type="tel" id="fAltPhone" value="${esc(state.data.altPhone)}" placeholder="+27 ...">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="map-pin"></i> Address</div>
+
+      <div class="field">
+        <label><i data-lucide="home"></i> Street address <span class="req">Required</span></label>
+        <input type="text" id="fAddress" value="${esc(state.data.address)}" placeholder="Street, suburb" autocomplete="street-address">
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label><i data-lucide="building"></i> City <span class="req">Required</span></label>
+          <input type="text" id="fCity" value="${esc(state.data.city)}" autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label><i data-lucide="globe"></i> Province <span class="req">Required</span></label>
+          <select id="fProvince">
+            <option value="">Select</option>
+            ${['Eastern Cape','Free State','Gauteng','KwaZulu-Natal','Limpopo','Mpumalanga','Northern Cape','North West','Western Cape','Outside SA']
+              .map(p => `<option value="${p}" ${state.data.province === p ? 'selected' : ''}>${p}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><i data-lucide="hash"></i> Postal code <span class="req">Required</span></label>
+        <input type="text" id="fPostalCode" value="${esc(state.data.postalCode)}" inputmode="numeric" autocomplete="postal-code">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="users"></i> Guardian / next of kin <span class="opt">Optional if 18+</span></div>
+
+      <div class="field">
+        <label><i data-lucide="user"></i> Full name</label>
+        <input type="text" id="fGuardianName" value="${esc(state.data.guardianName)}">
+      </div>
+
+      <div class="field">
+        <label><i data-lucide="phone"></i> Contact number</label>
+        <input type="tel" id="fGuardianPhone" value="${esc(state.data.guardianPhone)}">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="graduation-cap"></i> Prior education</div>
+
+      <div class="field">
+        <label><i data-lucide="school"></i> Highest qualification <span class="req">Required</span></label>
+        <select id="fPriorEducation">
+          <option value="">Select</option>
+          ${['Grade 11 or below','Grade 12 / Matric','Certificate','Diploma','Degree','Postgraduate','Other']
+            .map(p => `<option value="${p}" ${state.data.priorEducation === p ? 'selected' : ''}>${p}</option>`).join('')}
+        </select>
+      </div>
+
+      <div class="field">
+        <label><i data-lucide="building-2"></i> Institution <span class="opt">Optional</span></label>
+        <input type="text" id="fPriorInstitution" value="${esc(state.data.priorInstitution)}" placeholder="Name of school, college, or university">
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="backBtn"><i data-lucide="arrow-left"></i> Back</button>
+      <button class="btn" id="nextBtn"><i data-lucide="arrow-right"></i> Continue</button>
+    </div>
+  `;
+}
+
+function wireStepPersonal(){
+  const ids = ['fIdNumber','fDateOfBirth','fPhone','fAltPhone','fAddress','fCity','fProvince','fPostalCode','fGuardianName','fGuardianPhone','fPriorEducation','fPriorInstitution'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const key = {
+      fIdNumber: 'idNumber', fDateOfBirth: 'dateOfBirth', fPhone: 'phone', fAltPhone: 'altPhone',
+      fAddress: 'address', fCity: 'city', fProvince: 'province', fPostalCode: 'postalCode',
+      fGuardianName: 'guardianName', fGuardianPhone: 'guardianPhone',
+      fPriorEducation: 'priorEducation', fPriorInstitution: 'priorInstitution'
+    }[id];
+    el.addEventListener('input', () => { state.data[key] = el.value; });
+    el.addEventListener('change', () => { state.data[key] = el.value; });
+  });
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    state.step = 1;
+    renderSignup();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    clearMsg('stepMsg');
+    const required = [
+      ['fIdNumber', 'ID / Passport number'],
+      ['fDateOfBirth', 'Date of birth'],
+      ['fPhone', 'Mobile number'],
+      ['fAddress', 'Street address'],
+      ['fCity', 'City'],
+      ['fProvince', 'Province'],
+      ['fPostalCode', 'Postal code'],
+      ['fPriorEducation', 'Highest qualification']
+    ];
+    for (const [id, label] of required) {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        showMsg('stepMsg', 'Please complete: ' + label, 'error');
+        el.focus();
+        return;
+      }
+    }
+    state.step = 3;
+    renderSignup();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+/* =================== STEP 3: COURSE =================== */
+function renderStepCourse(){
+  const maxEl = state.data.duration ? maxElectives(state.data.duration) : 2;
+  const stream = streamById(state.data.course);
+  const electives = stream ? stream.electives : [];
+  const selected = state.data.electives;
+
+  return `
+    <div class="card">
+      <div class="card-title"><i data-lucide="clock"></i> Duration</div>
+      ${DURATIONS.map(d => `
+        <div class="duration-opt ${state.data.duration === d.id ? 'selected' : ''}" data-duration="${d.id}">
+          <div class="cb"><i data-lucide="check"></i></div>
+          <div class="body">
+            <div class="months">${d.months}<small>months</small></div>
+            <h4>${esc(d.name)}</h4>
+            <div class="desc">${esc(d.desc)} · ${esc(d.meta)}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="layout-grid"></i> Stream</div>
+      ${STREAMS.map(s => `
+        <div class="course-opt ${state.data.course === s.id ? 'selected' : ''}" data-stream="${s.id}">
+          <div class="cb"><i data-lucide="check"></i></div>
+          <div class="body">
+            <div class="num">Stream ${s.num}</div>
+            <h4>${esc(s.name)}</h4>
+            <div class="desc">${esc(s.tag)}</div>
+            <div class="subject">Stream subject <strong>${esc(s.subject)}</strong></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="star"></i> Electives</div>
+      <div class="electives-count">
+        <span class="pill ${selected.length === maxEl ? 'ok' : selected.length > 0 ? 'warn' : ''}">
+          ${selected.length} / ${maxEl} selected
+        </span>
+      </div>
+      ${!stream
+        ? `<div class="electives-empty">
+            <div class="icon"><i data-lucide="star"></i></div>
+            <h4>Choose a stream first</h4>
+            <p>Electives depend on your stream. Choose a stream above to see the options.</p>
+          </div>`
+        : `<div id="electivesList">
+            ${electives.map(e => {
+              const isSel = selected.includes(e);
+              const isDisabled = !isSel && selected.length >= maxEl;
+              return `
+                <div class="elective-opt ${isSel ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}" data-elective="${esc(e)}">
+                  <div class="cb"><i data-lucide="check"></i></div>
+                  <div style="flex:1;min-width:0">
+                    <div class="name">${esc(e)}</div>
+                    <div class="hint">${isSel ? 'Selected' : isDisabled ? 'Maximum reached' : 'Tap to select'}</div>
+                  </div>
+                </div>`;
+            }).join('')}
+          </div>`}
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="backBtn"><i data-lucide="arrow-left"></i> Back</button>
+      <button class="btn" id="nextBtn"><i data-lucide="arrow-right"></i> Review</button>
+    </div>
+  `;
+}
+
+function wireStepCourse(){
+  /* Duration */
+  document.querySelectorAll('[data-duration]').forEach(el => {
+    el.addEventListener('click', () => {
+      state.data.duration = el.dataset.duration;
+      const max = maxElectives(state.data.duration);
+      if (state.data.electives.length > max) state.data.electives = state.data.electives.slice(0, max);
+      renderSignup();
+    });
+  });
+
+  /* Stream */
+  document.querySelectorAll('[data-stream]').forEach(el => {
+    el.addEventListener('click', () => {
+      state.data.course = el.dataset.stream;
+      /* Reset electives that don't belong to this stream */
+      const valid = streamById(state.data.course).electives;
+      state.data.electives = state.data.electives.filter(x => valid.includes(x));
+      renderSignup();
+    });
+  });
+
+  /* Electives */
+  document.querySelectorAll('[data-elective]').forEach(el => {
+    el.addEventListener('click', () => {
+      const max = maxElectives(state.data.duration);
+      const val = el.dataset.elective;
+      const idx = state.data.electives.indexOf(val);
+      if (idx >= 0) {
+        state.data.electives.splice(idx, 1);
+      } else {
+        if (state.data.electives.length >= max) {
+          window.toast('Choose exactly ' + max + ' elective' + (max > 1 ? 's' : ''), 'error');
+          return;
+        }
+        state.data.electives.push(val);
+      }
+      renderSignup();
+    });
+  });
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    state.step = 2;
+    renderSignup();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    clearMsg('stepMsg');
+    const max = maxElectives(state.data.duration);
+    if (!state.data.duration) { showMsg('stepMsg', 'Please choose a duration.', 'error'); return; }
+    if (!state.data.course) { showMsg('stepMsg', 'Please choose a stream.', 'error'); return; }
+    if (state.data.electives.length !== max) {
+      showMsg('stepMsg', 'Please choose exactly ' + max + ' elective' + (max > 1 ? 's' : '') + '.', 'error');
+      return;
+    }
+    state.step = 4;
+    renderSignup();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+/* =================== STEP 4: REVIEW =================== */
+function renderStepReview(){
+  const d = durationById(state.data.duration);
+  const s = streamById(state.data.course);
+  return `
+    <div class="card">
+      <div class="card-title"><i data-lucide="user"></i> Account</div>
+      <div class="review-list">
+        <div class="review-item"><span class="k"><i data-lucide="user"></i> Name</span><span class="v">${esc(state.data.name)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="mail"></i> Email</span><span class="v">${esc(state.data.email)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="lock"></i> Password</span><span class="v">${'•'.repeat(Math.min(state.data.password.length, 12))}</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="id-card"></i> Personal</div>
+      <div class="review-list">
+        <div class="review-item"><span class="k"><i data-lucide="credit-card"></i> ID / Passport</span><span class="v">${esc(state.data.idNumber)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="calendar"></i> Date of birth</span><span class="v">${esc(state.data.dateOfBirth)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="smartphone"></i> Mobile</span><span class="v">${esc(state.data.phone)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="phone-call"></i> Alternative</span><span class="v ${state.data.altPhone ? '' : 'null'}">${esc(state.data.altPhone || 'Not provided')}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="home"></i> Address</span><span class="v">${esc(state.data.address)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="building"></i> City</span><span class="v">${esc(state.data.city)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="globe"></i> Province</span><span class="v">${esc(state.data.province)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="hash"></i> Postal code</span><span class="v">${esc(state.data.postalCode)}</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="users"></i> Guardian</div>
+      <div class="review-list">
+        <div class="review-item"><span class="k"><i data-lucide="user"></i> Name</span><span class="v ${state.data.guardianName ? '' : 'null'}">${esc(state.data.guardianName || 'Not provided')}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="phone"></i> Contact</span><span class="v ${state.data.guardianPhone ? '' : 'null'}">${esc(state.data.guardianPhone || 'Not provided')}</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="graduation-cap"></i> Prior education</div>
+      <div class="review-list">
+        <div class="review-item"><span class="k"><i data-lucide="school"></i> Qualification</span><span class="v">${esc(state.data.priorEducation)}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="building-2"></i> Institution</span><span class="v ${state.data.priorInstitution ? '' : 'null'}">${esc(state.data.priorInstitution || 'Not provided')}</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><i data-lucide="layout-grid"></i> Curriculum</div>
+      <div class="review-list">
+        <div class="review-item"><span class="k"><i data-lucide="clock"></i> Duration</span><span class="v">${d ? esc(d.name + ' · ' + d.months + ' months') : '—'}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="boxes"></i> Stream</span><span class="v">${s ? esc(s.name) : '—'}</span></div>
+        <div class="review-item"><span class="k"><i data-lucide="star"></i> Electives</span><span class="v">${state.data.electives.length ? esc(state.data.electives.join(', ')) : '—'}</span></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="backBtn"><i data-lucide="arrow-left"></i> Back</button>
+      <button class="btn" id="submitBtn"><i data-lucide="check"></i> Submit application</button>
+    </div>
+  `;
+}
+
+function wireStepReview(){
+  document.getElementById('backBtn').addEventListener('click', () => {
+    state.step = 3;
+    renderSignup();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', submitApplication);
+}
+
+/* =================== SUBMIT =================== */
+async function submitApplication(){
+  clearMsg('stepMsg');
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  const original = btn.innerHTML;
+  btn.innerHTML = '<i data-lucide="loader"></i> Creating account…';
+  if (window.lucide) lucide.createIcons();
+
+  try {
+    /* If Google already created the account, use that uid. Otherwise create a new one. */
+    let user = auth.currentUser;
+    if (!user) {
+      const cred = await createUserWithEmailAndPassword(auth, state.data.email, state.data.password);
+      user = cred.user;
+      try { await updateProfile(user, { displayName: state.data.name }); } catch(e){}
+    }
+
+    /* Build the user document */
+    const referenceId = makeReferenceId(user.uid);
+    const payload = {
+      // identity
+      name: state.data.name,
+      email: state.data.email,
+      referenceId: referenceId,
+      // personal
+      idNumber: state.data.idNumber,
+      dateOfBirth: state.data.dateOfBirth,
+      phone: state.data.phone,
+      altPhone: state.data.altPhone || null,
+      address: state.data.address,
+      city: state.data.city,
+      province: state.data.province,
+      postalCode: state.data.postalCode,
+      guardianName: state.data.guardianName || null,
+      guardianPhone: state.data.guardianPhone || null,
+      priorEducation: state.data.priorEducation,
+      priorInstitution: state.data.priorInstitution || null,
+      // curriculum
+      duration: state.data.duration,
+      course: state.data.course,
+      electives: state.data.electives,
+      curriculum: (durationById(state.data.duration) || {}).name || null,
+      // status
+      studentNumber: null,
+      examinationNumber: null,
+      examPin: null,
+      preludePassed: false,
+      preludeScore: null,
+      preludeTakenAt: null,
+      status: 'pending',
+      role: 'student',
+      // timestamps
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    await setDoc(doc(db, 'users', user.uid), payload);
+
+    /* Success screen */
+    state.mode = 'success';
+    renderSuccess(user, payload);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    showMsg('stepMsg', friendly(err.code) || err.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = original;
+    if (window.lucide) lucide.createIcons();
+    if (err.code === 'auth/email-already-in-use') {
+      setTimeout(() => switchMode('signin'), 1200);
+    }
+  }
+}
+
+/* =================== SUCCESS =================== */
+function renderSuccess(user, payload){
+  const d = durationById(payload.duration);
+  const s = streamById(payload.course);
+  main.innerHTML = `
+    <div class="success-panel">
+      <div class="check"><i data-lucide="check"></i></div>
+      <h2>Application submitted.</h2>
+      <p>Welcome, <strong>${esc(payload.name)}</strong>. Your Reference ID has been issued. Keep it safe — it identifies you until you pass the Prelude.</p>
+
+      <div class="ref-block">
+        <div class="k">Your Reference ID</div>
+        <div class="v" id="refValue">${esc(payload.referenceId)}</div>
+        <div class="hint">You'll need it if you contact IFB before your Prelude result.</div>
+      </div>
+
+      <div class="summary">
+        <div class="r"><span class="k">Name</span><span class="v">${esc(payload.name)}</span></div>
+        <div class="r"><span class="k">Email</span><span class="v">${esc(payload.email)}</span></div>
+        <div class="r"><span class="k">Duration</span><span class="v">${d ? esc(d.name + ' · ' + d.months + ' months') : '—'}</span></div>
+        <div class="r"><span class="k">Stream</span><span class="v">${s ? esc(s.name) : '—'}</span></div>
+        <div class="r"><span class="k">Electives</span><span class="v">${esc(payload.electives.join(', '))}</span></div>
+      </div>
+
+      <button class="btn" id="copyRefBtn"><i data-lucide="copy"></i> Copy Reference ID</button>
+      <div style="margin-top:10px">
+        <button class="btn btn-ghost" id="continueBtn"><i data-lucide="arrow-right"></i> Continue to Prelude</button>
+      </div>
+
+      <p style="font-size:11.5px;color:var(--muted);margin-top:22px;line-height:1.55">
+        Next: sit the <strong>Prelude</strong> to receive your Student Number.
+      </p>
+    </div>
+
+    <div class="foot">
+      <span class="mark">∆</span>
+      <p>IFB · Online Institute · 2027 Intake</p>
     </div>
   `;
   if (window.lucide) lucide.createIcons();
 
   document.getElementById('copyRefBtn').addEventListener('click', async () => {
     try {
-      await navigator.clipboard.writeText(referenceId);
+      await navigator.clipboard.writeText(payload.referenceId);
       const btn = document.getElementById('copyRefBtn');
       btn.innerHTML = '<i data-lucide="check"></i> Copied';
       if (window.lucide) lucide.createIcons();
-      setTimeout(() => {
-        btn.innerHTML = '<i data-lucide="copy"></i> Copy Reference ID';
-        if (window.lucide) lucide.createIcons();
-      }, 1600);
-    } catch(e) {}
+      setTimeout(() => { btn.innerHTML = '<i data-lucide="copy"></i> Copy Reference ID'; if (window.lucide) lucide.createIcons(); }, 1500);
+    } catch(e) { window.toast('Could not copy.', 'error'); }
   });
 
-  /* Auto-redirect to Prelude after 4.5s */
-  setTimeout(() => {
+  document.getElementById('continueBtn').addEventListener('click', () => {
     window.location.href = 'admission-exam.html';
-  }, 4500);
+  });
+
+  /* Auto-redirect after a while */
+  setTimeout(() => { window.location.href = 'admission-exam.html'; }, 12000);
 }
 
-/* ---------- AUTH STATE ---------- */
+/* =================== SIGN IN =================== */
+function renderSignin(){
+  main.innerHTML = `
+    ${renderTabs()}
+
+    <div class="head">
+      <div class="eyebrow"><i data-lucide="log-in"></i> Welcome back</div>
+      <h1>Sign in.</h1>
+      <p class="sub">Continue to your portal, exams, or applications.</p>
+    </div>
+
+    <div class="msg" id="signinMsg"></div>
+
+    <button class="oauth" id="googleSigninBtn">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>
+        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
+        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/>
+        <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/>
+      </svg>
+      Continue with Google
+    </button>
+
+    <div class="divider">or with email</div>
+
+    <div class="card">
+      <div class="field">
+        <label><i data-lucide="mail"></i> Email</label>
+        <input type="email" id="sEmail" autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="field pw">
+        <label><i data-lucide="lock"></i> Password</label>
+        <input type="password" id="sPassword" autocomplete="current-password" placeholder="Your password">
+        <button type="button" class="pw-toggle" id="sPwToggle" aria-label="Show password">
+          <i data-lucide="eye"></i>
+        </button>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:4px">
+        <a href="#" id="forgotLink" style="font-size:12.5px;color:var(--muted);font-weight:600;text-decoration:none">Forgot password?</a>
+      </div>
+    </div>
+
+    <button class="btn" id="signinBtn">
+      <i data-lucide="log-in"></i> Sign in
+    </button>
+  `;
+  if (window.lucide) lucide.createIcons();
+
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+    switchMode(t.dataset.mode);
+  }));
+
+  document.getElementById('sPwToggle').addEventListener('click', () => {
+    const pw = document.getElementById('sPassword');
+    const isPw = pw.type === 'password';
+    pw.type = isPw ? 'text' : 'password';
+    document.getElementById('sPwToggle').innerHTML = '<i data-lucide="' + (isPw ? 'eye-off' : 'eye') + '"></i>';
+    if (window.lucide) lucide.createIcons();
+  });
+
+  document.getElementById('signinBtn').addEventListener('click', async () => {
+    clearMsg('signinMsg');
+    const email = document.getElementById('sEmail').value.trim();
+    const password = document.getElementById('sPassword').value;
+    if (!email || !password) { showMsg('signinMsg', 'Please fill in both fields.', 'error'); return; }
+    const btn = document.getElementById('signinBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader"></i> Signing in…';
+    if (window.lucide) lucide.createIcons();
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      await routeSignedInUser(cred.user);
+    } catch (err) {
+      showMsg('signinMsg', friendly(err.code), 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i data-lucide="log-in"></i> Sign in';
+      if (window.lucide) lucide.createIcons();
+    }
+  });
+
+  document.getElementById('googleSigninBtn').addEventListener('click', async () => {
+    clearMsg('signinMsg');
+    try {
+      const res = await signInWithPopup(auth, gp);
+      await routeSignedInUser(res.user);
+    } catch (err) {
+      showMsg('signinMsg', friendly(err.code), 'error');
+    }
+  });
+
+  document.getElementById('forgotLink').addEventListener('click', async (e) => {
+    e.preventDefault();
+    clearMsg('signinMsg');
+    const email = document.getElementById('sEmail').value.trim();
+    if (!email) { showMsg('signinMsg', 'Enter your email above first.', 'error'); return; }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showMsg('signinMsg', 'Reset link sent. Check your inbox.', 'success');
+    } catch (err) {
+      showMsg('signinMsg', friendly(err.code), 'error');
+    }
+  });
+}
+
+/* =================== MODE SWITCH =================== */
+function switchMode(mode){
+  state.mode = mode;
+  if (mode === 'signup') { state.step = 1; renderSignup(); }
+  else renderSignin();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* =================== ROUTING =================== */
+async function routeSignedInUser(user){
+  if (user.email === ADMIN_EMAIL) { window.location.href = 'admin.html'; return; }
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (!snap.exists()) {
+      window.location.href = 'admission-exam.html';
+      return;
+    }
+    const data = snap.data();
+    if (!data.preludePassed) { window.location.href = 'admission-exam.html'; return; }
+    if (!data.course) { window.location.href = 'curriculum.html'; return; }
+    window.location.href = 'portal.html';
+  } catch (err) {
+    window.location.href = 'portal.html';
+  }
+}
+
+/* =================== INIT =================== */
 let initialResolved = false;
 onAuthStateChanged(auth, async (user) => {
   if (!initialResolved) {
     initialResolved = true;
     if (user) {
-      try {
-        const route = await routeUser(user);
-        renderSignedIn(user, route);
-      } catch (err) {
-        renderForm();
-      }
+      await routeSignedInUser(user);
     } else {
-      renderForm();
-    }
-  } else {
-    /* Subsequent state changes — re-render */
-    if (user) {
-      const route = await routeUser(user);
-      renderSignedIn(user, route);
-    } else {
-      renderForm();
+      renderSignup();
     }
   }
   if (window.lucide) lucide.createIcons();
