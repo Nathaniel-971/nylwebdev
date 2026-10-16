@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nyl Dev — Web Development Studio</title>
+<title>Nyl Dev — Web Development Studio & Free Courses</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -66,7 +66,25 @@
     51%, 100% { opacity: 0; }
   }
 
-  /* Hamburger */
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-signin {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--black);
+    text-decoration: none;
+    padding: 9px 16px;
+    border-radius: 6px;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .nav-signin:hover { background: var(--light); }
+
   .menu-btn {
     width: 40px;
     height: 40px;
@@ -81,6 +99,7 @@
     gap: 5px;
     transition: all 0.2s;
     padding: 0;
+    flex-shrink: 0;
   }
 
   .menu-btn:hover {
@@ -323,7 +342,6 @@
     line-height: 1.55;
   }
 
-  /* ---------- GRID / CARDS ---------- */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -419,7 +437,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 80px;
-    align-items: center;
+    align-items: start;
   }
 
   .campus h2 {
@@ -460,6 +478,36 @@
     flex-shrink: 0;
   }
 
+  .dates {
+    margin-top: 8px;
+    padding: 24px 26px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+  }
+
+  .dates h4 {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .dates .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 15px;
+  }
+
+  .dates .row:last-child { border-bottom: none; }
+
+  .dates .row .label { color: rgba(255,255,255,0.7); }
+  .dates .row .value { color: var(--white); font-weight: 600; }
+
   /* Signup form */
   .signup-form {
     background: var(--white);
@@ -492,7 +540,8 @@
     color: var(--black);
   }
 
-  .form-group input {
+  .form-group input,
+  .form-group select {
     width: 100%;
     padding: 14px 16px;
     font-size: 15px;
@@ -502,9 +551,19 @@
     background: var(--white);
     color: var(--black);
     transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
   }
 
-  .form-group input:focus {
+  .form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d0d0d' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
     outline: none;
     border-color: var(--black);
   }
@@ -550,6 +609,29 @@
     color: var(--black);
     font-weight: 600;
     text-decoration: none;
+  }
+
+  .signup-form .msg {
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    display: none;
+  }
+
+  .signup-form .msg.error {
+    background: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+    display: block;
+  }
+
+  .signup-form .msg.success {
+    background: #f0fdf4;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+    display: block;
   }
 
   /* ---------- CTA ---------- */
@@ -623,8 +705,6 @@
     flex-wrap: wrap;
     max-width: 1000px;
     margin: 0 auto;
-    transform: translateY(0);
-    opacity: 1;
     transition: transform 0.4s ease, opacity 0.4s ease;
   }
 
@@ -690,6 +770,8 @@
     .logo { font-size: 26px; }
     .logo .cursor { height: 24px; width: 12px; }
 
+    .nav-signin { font-size: 13px; padding: 8px 12px; }
+
     .dropdown { padding: 100px 24px 50px; }
 
     .hero { padding: 70px 20px 60px; }
@@ -731,6 +813,11 @@
     .cookie-actions { width: 100%; }
     .cookie-actions button { flex: 1; }
   }
+
+  @media (max-width: 420px) {
+    .nav-signin { display: none; }
+    .nav-signin.show-mobile { display: inline-block; font-size: 12px; padding: 6px 10px; }
+  }
 </style>
 </head>
 <body>
@@ -740,11 +827,18 @@
   <a href="/" class="logo" aria-label="Home">
     <span>^</span><span class="cursor"></span>
   </a>
-  <button class="menu-btn" id="menuBtn" aria-label="Menu">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
+
+  <div class="nav-right">
+    <a href="auth.html" class="nav-signin" id="navSignin">Sign in</a>
+    <a href="student-portal.html" class="nav-signin" id="navPortal" style="display:none;">My Portal</a>
+    <a href="#" class="nav-signin" id="navLogout" style="display:none;">Sign out</a>
+
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
 </nav>
 
 <!-- ============ DROPDOWN MENU ============ -->
@@ -753,8 +847,9 @@
     <div class="dropdown-group">
       <h4>Learn</h4>
       <a href="courses.html" class="featured">Courses</a>
+      <a href="auth.html" id="ddSignup">Sign up</a>
       <a href="courses.html#streams">Streams</a>
-      <a href="courses.html#exams">Exams</a>
+      <a href="student-portal.html" id="ddPortal" style="display:none;">My Portal</a>
     </div>
     <div class="dropdown-group">
       <h4>Work with us</h4>
@@ -765,7 +860,7 @@
     <div class="dropdown-group">
       <h4>Get started</h4>
       <a href="mailto:n1nathaniel971@gmail.com">n1nathaniel971@gmail.com</a>
-      <a href="#campus">Create an account</a>
+      <a href="auth.html">Create an account</a>
     </div>
   </div>
 </div>
@@ -779,7 +874,8 @@
   </h1>
   <p>
     A web development studio building and maintaining websites for businesses
-    that need a real online presence.
+    that need a real online presence. We also offer free courses in development,
+    design, and mathematics.
   </p>
   <div class="hero-actions">
     <a href="#pricing" class="btn btn-primary">See Pricing</a>
@@ -961,10 +1057,11 @@
   <div class="campus-inner">
     <div>
       <div class="section-eyebrow" style="color: rgba(255,255,255,0.5);">Online Campus</div>
-      <h2>Join our online campus.</h2>
+      <h2>Sign up. Select your courses. Wait for the start.</h2>
       <p>
-        Create your free account and step into a modern learning environment
-        built for the next generation of developers and designers.
+        Create your free account, choose the courses you want to take, and
+        we'll notify you when classes begin. Administration closes on
+        <strong style="color:#fff;">14 February 2026</strong>.
       </p>
 
       <ul class="campus-list">
@@ -973,41 +1070,72 @@
         <li>Submit projects and receive feedback</li>
         <li>Earn your certificate on completion</li>
       </ul>
+
+      <div class="dates">
+        <h4>Important Dates</h4>
+        <div class="row">
+          <span class="label">Administration closes</span>
+          <span class="value">14 February 2026</span>
+        </div>
+        <div class="row">
+          <span class="label">Courses begin</span>
+          <span class="value">January / February 2026</span>
+        </div>
+        <div class="row">
+          <span class="label">Cost</span>
+          <span class="value">Free</span>
+        </div>
+      </div>
     </div>
 
     <div class="signup-form">
       <h3>Create your account</h3>
       <p class="form-sub">Free forever. No card required.</p>
 
-      <form id="signupForm" onsubmit="return handleSignup(event)">
+      <div class="msg" id="signupMsg"></div>
+
+      <form id="signupForm">
         <div class="form-group">
-          <label for="name">Full name</label>
-          <input type="text" id="name" placeholder="Your name" required>
+          <label for="signupName">Full name</label>
+          <input type="text" id="signupName" placeholder="Your name" required>
         </div>
 
         <div class="form-group">
-          <label for="email">Email address</label>
-          <input type="email" id="email" placeholder="you@example.com" required>
+          <label for="signupEmail">Email address</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com" required>
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="At least 8 characters" minlength="8" required>
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" placeholder="At least 8 characters" minlength="8" required>
+        </div>
+
+        <div class="form-group">
+          <label for="signupCourse">Select your course</label>
+          <select id="signupCourse" required>
+            <option value="" disabled selected>Choose a course</option>
+            <option value="fullstack">Full Stack Engineering</option>
+            <option value="frontend">Frontend Craft</option>
+            <option value="backend">Backend Engineering</option>
+            <option value="webdesign">Web Design</option>
+            <option value="uiux">UI/UX Design</option>
+            <option value="stem">STEM &amp; Physics</option>
+          </select>
         </div>
 
         <div class="form-check">
-          <input type="checkbox" id="terms" required>
-          <label for="terms">
+          <input type="checkbox" id="signupTerms" required>
+          <label for="signupTerms">
             I agree to the <a href="terms.html">Terms of Service</a> and
             <a href="privacy.html">Privacy Policy</a>. I understand my data
             will be stored and processed in line with POPIA.
           </label>
         </div>
 
-        <button type="submit" class="btn btn-primary">Join the Campus →</button>
+        <button type="submit" class="btn btn-primary" id="signupBtn">Create Account →</button>
 
         <p class="form-foot">
-          Already have an account? <a href="#login">Log in</a>
+          Already have an account? <a href="auth.html">Sign in</a>
         </p>
       </form>
     </div>
@@ -1052,79 +1180,183 @@
   </div>
 </div>
 
-<script>
-  // ---------- HAMBURGER ----------
-  const menuBtn = document.getElementById('menuBtn');
-  const dropdown = document.getElementById('dropdown');
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signOut,
+  createUserWithEmailAndPassword, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  menuBtn.addEventListener('click', () => {
-    menuBtn.classList.toggle('open');
-    dropdown.classList.toggle('open');
+const firebaseConfig = {
+  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
+  authDomain: "nyldevcourses.firebaseapp.com",
+  projectId: "nyldevcourses",
+  storageBucket: "nyldevcourses.firebasestorage.app",
+  messagingSenderId: "16687006873",
+  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
+};
+
+const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ---------- HAMBURGER ----------
+const menuBtn = document.getElementById('menuBtn');
+const dropdown = document.getElementById('dropdown');
+
+menuBtn.addEventListener('click', () => {
+  menuBtn.classList.toggle('open');
+  dropdown.classList.toggle('open');
+});
+
+document.querySelectorAll('.dropdown a').forEach(link => {
+  link.addEventListener('click', () => {
+    menuBtn.classList.remove('open');
+    dropdown.classList.remove('open');
   });
+});
 
-  document.querySelectorAll('.dropdown a').forEach(link => {
-    link.addEventListener('click', () => {
-      menuBtn.classList.remove('open');
-      dropdown.classList.remove('open');
-    });
-  });
+// ---------- CAROUSEL ----------
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('dots');
+let current = 0;
 
-  // ---------- CAROUSEL ----------
-  const slides = document.querySelectorAll('.slide');
-  const dotsContainer = document.getElementById('dots');
-  let current = 0;
+slides.forEach((_, i) => {
+  const dot = document.createElement('button');
+  if (i === 0) dot.classList.add('active');
+  dot.addEventListener('click', () => goTo(i));
+  dotsContainer.appendChild(dot);
+});
 
-  slides.forEach((_, i) => {
-    const dot = document.createElement('button');
-    if (i === 0) dot.classList.add('active');
-    dot.addEventListener('click', () => goTo(i));
-    dotsContainer.appendChild(dot);
-  });
+const dots = dotsContainer.querySelectorAll('button');
 
-  const dots = dotsContainer.querySelectorAll('button');
+function goTo(i) {
+  slides[current].classList.remove('active');
+  dots[current].classList.remove('active');
+  current = i;
+  slides[current].classList.add('active');
+  dots[current].classList.add('active');
+}
 
-  function goTo(i) {
-    slides[current].classList.remove('active');
-    dots[current].classList.remove('active');
-    current = i;
-    slides[current].classList.add('active');
-    dots[current].classList.add('active');
-  }
+setInterval(() => {
+  goTo((current + 1) % slides.length);
+}, 4500);
 
-  setInterval(() => {
-    goTo((current + 1) % slides.length);
-  }, 4500);
+// ---------- COOKIE BANNER ----------
+const cookieBanner = document.getElementById('cookieBanner');
+const COOKIE_KEY = 'nyldev_cookie_consent';
 
-  // ---------- COOKIE BANNER ----------
-  const cookieBanner = document.getElementById('cookieBanner');
-  const COOKIE_KEY = 'nyldev_cookie_consent';
+if (!localStorage.getItem(COOKIE_KEY)) {
+  setTimeout(() => cookieBanner.classList.remove('hidden'), 1200);
+}
 
-  function showCookieBanner() {
-    if (!localStorage.getItem(COOKIE_KEY)) {
-      setTimeout(() => cookieBanner.classList.remove('hidden'), 1200);
+document.getElementById('acceptCookies').addEventListener('click', () => {
+  localStorage.setItem(COOKIE_KEY, 'accepted');
+  cookieBanner.classList.add('hidden');
+});
+
+document.getElementById('declineCookies').addEventListener('click', () => {
+  localStorage.setItem(COOKIE_KEY, 'declined');
+  cookieBanner.classList.add('hidden');
+});
+
+// ---------- AUTH STATE (NAV) ----------
+onAuthStateChanged(auth, (user) => {
+  const signin = document.getElementById('navSignin');
+  const portal = document.getElementById('navPortal');
+  const logout = document.getElementById('navLogout');
+  const ddPortal = document.getElementById('ddPortal');
+  const ddSignup = document.getElementById('ddSignup');
+
+  if (user) {
+    signin.style.display = 'none';
+    portal.style.display = 'inline-block';
+    logout.style.display = 'inline-block';
+    ddPortal.style.display = 'block';
+    ddSignup.style.display = 'none';
+
+    // Admin portal link goes to admin panel
+    if (user.email === ADMIN_EMAIL) {
+      portal.href = 'admin.html';
+      portal.textContent = 'Admin';
+    } else {
+      portal.href = 'student-portal.html';
+      portal.textContent = 'My Portal';
     }
+  } else {
+    signin.style.display = 'inline-block';
+    portal.style.display = 'none';
+    logout.style.display = 'none';
+    ddPortal.style.display = 'none';
+    ddSignup.style.display = 'block';
   }
+});
 
-  document.getElementById('acceptCookies').addEventListener('click', () => {
-    localStorage.setItem(COOKIE_KEY, 'accepted');
-    cookieBanner.classList.add('hidden');
-  });
+document.getElementById('navLogout').addEventListener('click', async (e) => {
+  e.preventDefault();
+  await signOut(auth);
+  window.location.reload();
+});
 
-  document.getElementById('declineCookies').addEventListener('click', () => {
-    localStorage.setItem(COOKIE_KEY, 'declined');
-    cookieBanner.classList.add('hidden');
-  });
+// ---------- SIGNUP ----------
+function showMsg(text, type) {
+  const el = document.getElementById('signupMsg');
+  el.textContent = text;
+  el.className = 'msg ' + type;
+}
 
-  showCookieBanner();
+function friendlyError(code) {
+  const map = {
+    'auth/email-already-in-use': 'That email is already registered. Try signing in.',
+    'auth/invalid-email': 'Please enter a valid email address.',
+    'auth/weak-password': 'Password must be at least 8 characters.',
+    'auth/network-request-failed': 'Network error. Check your connection.'
+  };
+  return map[code] || 'Something went wrong. Please try again.';
+}
 
-  // ---------- SIGNUP ----------
-  function handleSignup(e) {
-    e.preventDefault();
-    const name = document.getElementById('name').value;
-    // Front-end placeholder — replace with real backend later
-    alert('Welcome to the campus, ' + name + '! Your account is ready.');
-    return false;
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const course = document.getElementById('signupCourse').value;
+  const btn = document.getElementById('signupBtn');
+
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
+
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      name,
+      email,
+      course,
+      status: 'pending',
+      studentNumber: null,
+      createdAt: serverTimestamp(),
+      role: 'student'
+    });
+
+    showMsg('Account created. Taking you to your portal…', 'success');
+    setTimeout(() => {
+      window.location.href = 'student-portal.html';
+    }, 900);
+
+  } catch (err) {
+    showMsg(friendlyError(err.code), 'error');
+    btn.disabled = false;
+    btn.textContent = 'Create Account →';
   }
+});
 </script>
 
 </body>
