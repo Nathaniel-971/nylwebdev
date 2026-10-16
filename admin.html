@@ -27,9 +27,9 @@
   .toolbar button svg { width:15px; height:15px; }
   .toolbar button:hover { background: var(--light); border-color: var(--black); }
   .toolbar button.primary { background: var(--black); color: var(--white); border-color: var(--black); }
-  .toolbar button.primary:hover { background: var(--mid); border-color: var(--mid); }
+  .toolbar button.primary:hover { background: var(--mid); }
   .table-wrap { background: var(--white); border:1px solid var(--line); border-radius:12px; overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:12.5px; min-width:900px; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; min-width:1000px; }
   th, td { text-align:left; padding:12px 14px; border-bottom:1px solid var(--line); white-space:nowrap; }
   th { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; background: var(--light); position:sticky; top:0; }
   tr:last-child td { border-bottom:none; }
@@ -41,6 +41,8 @@
   .badge.revoked { background:#fef2f2; color:#b91c1c; }
   .badge.deregistered { background: var(--line); color: var(--grey); }
   .badge.nocourse { background: var(--line); color: var(--grey); }
+  .curriculum-chip { display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:1px; padding:3px 8px; border-radius:6px; background: var(--black); color: var(--white); }
+  .curriculum-chip.none { background: var(--line); color: var(--grey); font-weight:600; }
   .row-btn { padding:6px 11px; font-size:11.5px; font-weight:600; border-radius:7px; border:1.5px solid var(--black); background: var(--black); color: var(--white); cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:5px; }
   .row-btn svg { width:12px; height:12px; }
   .row-btn:hover { background: var(--mid); border-color: var(--mid); }
@@ -97,7 +99,7 @@ function render(user) {
     </div>
 
     <div class="toolbar no-print">
-      <input type="text" id="search" placeholder="Search by email, student number, or course…">
+      <input type="text" id="search" placeholder="Search by email, student number, stream, or curriculum…">
       <button class="primary" id="refresh"><i data-lucide="refresh-cw"></i> Refresh</button>
       <button onclick="window.print()"><i data-lucide="download"></i> Download PDF (A4)</button>
     </div>
@@ -120,7 +122,6 @@ async function load() {
     rows = [];
     snap.forEach(d => {
       const data = d.data();
-      // Exclude admin from the student list
       if (data.email === ADMIN_EMAIL) return;
       rows.push({ id: d.id, ...data });
     });
@@ -141,26 +142,37 @@ function renderTable(list) {
   if (!list.length) { wrap.innerHTML = `<div class="loading">No applications yet.</div>`; return; }
   wrap.innerHTML = `
     <table>
-      <thead><tr><th>#</th><th>Email</th><th>Course</th><th>Duration</th><th>Electives</th><th>Student №</th><th>Status</th><th class="no-print">Action</th></tr></thead>
+      <thead><tr>
+        <th>#</th>
+        <th>Email</th>
+        <th>Curriculum</th>
+        <th>Stream</th>
+        <th>Duration</th>
+        <th>Electives</th>
+        <th>Student №</th>
+        <th>Status</th>
+        <th class="no-print">Action</th>
+      </tr></thead>
       <tbody id="tbody"></tbody>
-    </table>`;
+    </table>
+  `;
   const tbody = document.getElementById('tbody');
   list.forEach((r, i) => {
     const status = r.status || 'pending';
     const hasCourse = !!r.course;
-    const courseLabel = hasCourse ? r.course : 'Not chosen';
-    const badgeClass = hasCourse ? status : 'nocourse';
+    const curriculumLabel = r.curriculum || (r.duration === '6' ? 'IPI' : r.duration === '12' ? 'ACC' : null);
     const electives = (r.electives || []).join(', ') || '—';
-    const iconName = status === 'approved' ? 'circle-check' : status === 'revoked' ? 'circle-x' : status === 'deregistered' ? 'trash-2' : 'clock';
+    const statusIcon = status === 'approved' ? 'circle-check' : status === 'revoked' ? 'circle-x' : status === 'deregistered' ? 'trash-2' : 'clock';
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${i + 1}</td>
       <td>${esc(r.email || '—')}</td>
-      <td>${esc(courseLabel)}</td>
+      <td>${curriculumLabel ? `<span class="curriculum-chip">${esc(curriculumLabel)}</span>` : `<span class="curriculum-chip none">—</span>`}</td>
+      <td>${esc(r.course || '—')}</td>
       <td>${esc(r.duration ? r.duration + ' mo' : '—')}</td>
       <td>${esc(electives)}</td>
       <td>${esc(r.studentNumber || '—')}</td>
-      <td><span class="badge ${badgeClass}"><i data-lucide="${hasCourse ? iconName : 'circle-dashed'}"></i> ${hasCourse ? status : 'no course'}</span></td>
+      <td><span class="badge ${hasCourse ? status : 'nocourse'}"><i data-lucide="${hasCourse ? statusIcon : 'circle-dashed'}"></i> ${hasCourse ? status : 'no course'}</span></td>
       <td class="no-print">${!r.studentNumber && status === 'pending' && hasCourse ? `<button class="row-btn" data-uid="${r.id}"><i data-lucide="hash"></i> Assign №</button>` : `<span style="color:var(--grey); font-size:11px;">—</span>`}</td>
     `;
     tbody.appendChild(tr);
@@ -172,7 +184,12 @@ function renderTable(list) {
 function filterTable(term) {
   const q = term.toLowerCase().trim();
   if (!q) { renderTable(rows); return; }
-  renderTable(rows.filter(r => (r.email || '').toLowerCase().includes(q) || (r.studentNumber || '').includes(q) || (r.course || '').toLowerCase().includes(q)));
+  renderTable(rows.filter(r =>
+    (r.email || '').toLowerCase().includes(q) ||
+    (r.studentNumber || '').includes(q) ||
+    (r.course || '').toLowerCase().includes(q) ||
+    (r.curriculum || '').toLowerCase().includes(q)
+  ));
 }
 
 async function assign(uid) {
