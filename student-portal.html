@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Portal — Nyl Dev</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #f5f5f5;
+    color: #0d0d0d;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+  }
+
+  nav {
+    background: #fff;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -2px;
+    text-decoration: none;
+    color: #0d0d0d;
+    display: flex;
+    align-items: center;
+  }
+
+  .logo .cursor {
+    display: inline-block;
+    width: 12px;
+    height: 24px;
+    background: #0d0d0d;
+    margin-left: 2px;
+    animation: blink 1.1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 50%   { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .logout {
+    font-size: 14px;
+    color: #6b6b6b;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .logout:hover { color: #0d0d0d; }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+
+  h1 {
+    font-size: clamp(26px, 5vw, 38px);
+    letter-spacing: -1px;
+    margin-bottom: 6px;
+  }
+
+  .sub {
+    color: #6b6b6b;
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 14px;
+    padding: 28px 26px;
+    margin-bottom: 20px;
+  }
+
+  .card .label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #6b6b6b;
+    margin-bottom: 14px;
+  }
+
+  .student-number {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(28px, 7vw, 44px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #0d0d0d;
+  }
+
+  .student-number.pending {
+    font-size: 18px;
+    letter-spacing: 0;
+    color: #b86e00;
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 15px;
+    gap: 16px;
+  }
+
+  .info-row:last-child { border-bottom: none; }
+
+  .info-row .k { color: #6b6b6b; }
+  .info-row .v { font-weight: 600; text-align: right; }
+
+  .status-badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+  }
+
+  .status-badge.pending { background: #fff4e5; color: #b86e00; }
+  .status-badge.approved { background: #e6f5ec; color: #16794a; }
+
+  .dates-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+  }
+
+  .dates-row:last-child { border-bottom: none; }
+  .dates-row .k { color: #6b6b6b; }
+  .dates-row .v { font-weight: 600; }
+
+  .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b6b6b;
+  }
+
+  @media (max-width: 500px) {
+    nav { padding: 14px 16px; }
+    .container { padding: 24px 16px; }
+    .card { padding: 22px 20px; }
+    .info-row { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
+  <a href="#" class="logout" id="logout">Sign out</a>
+</nav>
+
+<div class="container">
+  <div class="loading" id="loading">Loading your portal…</div>
+  <div id="content" style="display:none;">
+
+    <h1 id="greeting">Welcome</h1>
+    <p class="sub">Your campus dashboard</p>
+
+    <!-- Student number -->
+    <div class="card">
+      <div class="label">Student Number</div>
+      <div id="studentNumber" class="student-number pending">Pending assignment</div>
+    </div>
+
+    <!-- Account info -->
+    <div class="card">
+      <div class="label">Account</div>
+      <div class="info-row">
+        <span class="k">Name</span>
+        <span class="v" id="infoName">—</span>
+      </div>
+      <div class="info-row">
+        <span class="k">Email</span>
+        <span class="v" id="infoEmail">—</span>
+      </div>
+      <div class="info-row">
+        <span class="k">Course</span>
+        <span class="v" id="infoCourse">—</span>
+      </div>
+      <div class="info-row">
+        <span class="k">Status</span>
+        <span class="v"><span class="status-badge pending" id="infoStatus">pending</span></span>
+      </div>
+    </div>
+
+    <!-- Important dates -->
+    <div class="card">
+      <div class="label">Important Dates</div>
+      <div class="dates-row">
+        <span class="k">Administration closes</span>
+        <span class="v">14 February 2026</span>
+      </div>
+      <div class="dates-row">
+        <span class="k">Courses begin</span>
+        <span class="v">January / February 2026</span>
+      </div>
+      <div class="dates-row">
+        <span class="k">Cost</span>
+        <span class="v">Free</span>
+      </div>
+    </div>
+
+    <!-- Next step -->
+    <div class="card" id="nextStepCard">
+      <div class="label">What's Next</div>
+      <p id="nextStepText" style="color:#6b6b6b; font-size:15px; line-height:1.65;">
+        Your application is being reviewed. You'll receive your student number
+        before courses begin. Check back soon.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
+  authDomain: "nyldevcourses.firebaseapp.com",
+  projectId: "nyldevcourses",
+  storageBucket: "nyldevcourses.firebasestorage.app",
+  messagingSenderId: "16687006873",
+  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const COURSE_NAMES = {
+  fullstack: 'Full Stack Engineering',
+  frontend: 'Frontend Craft',
+  backend: 'Backend Engineering',
+  webdesign: 'Web Design',
+  uiux: 'UI/UX Design',
+  stem: 'STEM & Physics'
+};
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = 'auth.html';
+    return;
+  }
+
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    const data = snap.exists() ? snap.data() : {};
+
+    document.getElementById('greeting').textContent =
+      'Welcome, ' + (data.name || user.email).split(' ')[0];
+
+    document.getElementById('infoName').textContent = data.name || '—';
+    document.getElementById('infoEmail').textContent = data.email || user.email;
+    document.getElementById('infoCourse').textContent =
+      COURSE_NAMES[data.course] || data.course || '—';
+
+    const status = data.status || 'pending';
+    const statusEl = document.getElementById('infoStatus');
+    statusEl.textContent = status;
+    statusEl.className = 'status-badge ' + status;
+
+    const numEl = document.getElementById('studentNumber');
+    if (data.studentNumber) {
+      numEl.textContent = data.studentNumber;
+      numEl.className = 'student-number';
+      document.getElementById('nextStepText').textContent =
+        'Your student number is active. Courses begin January / February 2026 — we\'ll be in touch.';
+    } else {
+      numEl.textContent = 'Pending assignment';
+      numEl.className = 'student-number pending';
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+
+  } catch (err) {
+    document.getElementById('loading').textContent = 'Error loading your data.';
+    console.error(err);
+  }
+});
+
+document.getElementById('logout').addEventListener('click', async (e) => {
+  e.preventDefault();
+  await signOut(auth);
+  window.location.href = '/';
+});
+</script>
+
+</body>
+</html>
