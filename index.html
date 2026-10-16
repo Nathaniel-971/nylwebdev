@@ -3,36 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nyl Dev — Web Development Studio & Free Courses</title>
+<title>Free Courses · 2027</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
   html { scroll-behavior:smooth; }
   body { background: var(--white); color: var(--black); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
-  .page-frame { border-top:2px solid var(--black); }
   @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
-  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+  @keyframes slideDown { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: translateY(0); } }
   .fade-in { animation: fadeUp .7s ease both; }
   .fade-in-d1 { animation: fadeUp .7s ease .1s both; }
   .fade-in-d2 { animation: fadeUp .7s ease .2s both; }
 
-  .emblem { width: 44px; height: 44px; flex-shrink: 0; }
+  .mark { font-family:'Courier New',monospace; font-size:34px; font-weight:700; color: var(--black); text-decoration:none; line-height:1; letter-spacing:-2px; }
+  .badge { width: 60px; height: 72px; flex-shrink: 0; }
 
   nav { position: sticky; top:0; z-index:100; background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-bottom:1px solid var(--line); padding: 12px 48px; display:flex; justify-content:space-between; align-items:center; }
-  .nav-left { display:flex; align-items:center; gap:12px; text-decoration:none; color: var(--black); }
-  .brand-name { font-family:'Courier New',monospace; font-size:22px; font-weight:700; letter-spacing:-1px; line-height:1; }
-  .brand-sub { font-size:9.5px; letter-spacing:2px; color: var(--grey); text-transform:uppercase; margin-top:3px; }
+  .nav-left { display:flex; align-items:center; gap:14px; text-decoration:none; color: var(--black); }
   .nav-right { display:flex; align-items:center; gap:8px; }
   .nav-link { font-size:14px; font-weight:500; color: var(--black); text-decoration:none; padding:9px 14px; border-radius:8px; transition: background .2s; display:flex; align-items:center; gap:7px; }
   .nav-link:hover { background: var(--light); }
-  .nav-link svg { width:16px; height:16px; }
-  .menu-btn { width:40px; height:40px; background: var(--white); border:1px solid var(--line); border-radius:8px; cursor:pointer; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:5px; padding:0; transition: all .2s; }
+  .menu-btn { width:40px; height:40px; background: var(--white); border:1px solid var(--line); border-radius:8px; cursor:pointer; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:5px; padding:0; }
   .menu-btn:hover { border-color: var(--black); background: var(--light); }
-  .menu-btn span { display:block; width:18px; height:1.6px; background: var(--black); transition: all .3s ease; border-radius:2px; }
-  .menu-btn.open span:nth-child(1){ transform: translateY(6.6px) rotate(45deg); }
-  .menu-btn.open span:nth-child(2){ opacity:0; }
-  .menu-btn.open span:nth-child(3){ transform: translateY(-6.6px) rotate(-45deg); }
+  .menu-btn span { display:block; width:18px; height:1.6px; background: var(--black); border-radius:2px; }
 
   .dropdown { position: fixed; top:0; left:0; right:0; background: var(--white); border-bottom:1px solid var(--line); transform: translateY(-100%); transition: transform .4s cubic-bezier(.16,1,.3,1); z-index:99; padding: 90px 48px 50px; box-shadow: 0 20px 40px rgba(0,0,0,.06); }
   .dropdown.open { transform: translateY(0); }
@@ -41,87 +35,88 @@
   .dropdown-group a { display:flex; align-items:center; gap:10px; color: var(--black); text-decoration:none; font-size:16px; font-weight:500; padding:9px 0; }
   .dropdown-group a:hover { color: var(--grey); }
 
-  .hero { padding: 80px 48px 60px; max-width:1200px; margin:0 auto; }
-  .hero h1 { font-size: clamp(38px, 6vw, 76px); line-height:1.05; letter-spacing:-2.5px; font-weight:700; margin-bottom:28px; max-width:900px; }
+  .hero { padding: 90px 48px 60px; max-width:1200px; margin:0 auto; display:flex; align-items:center; gap:40px; flex-wrap:wrap; }
+  .hero-text { flex: 1; min-width: 320px; }
+  .hero .badge-lg { width: 130px; height: 156px; flex-shrink:0; }
+  .hero h1 { font-size: clamp(34px, 5.5vw, 64px); line-height:1.05; letter-spacing:-2px; font-weight:700; margin-bottom:24px; }
   .hero h1 span { color: var(--grey); }
-  .hero p { font-size: clamp(16px, 1.4vw, 19px); color: var(--grey); max-width:620px; margin-bottom:40px; }
-  .hero-actions { display:flex; gap:12px; flex-wrap:wrap; }
-  .btn { display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:15px 28px; font-size:15px; font-weight:500; text-decoration:none; border-radius:10px; transition: all .2s ease; cursor:pointer; border:1.5px solid transparent; font-family:inherit; }
-  .btn svg { width:17px; height:17px; }
+  .hero p { font-size: 17px; color: var(--grey); max-width:560px; margin-bottom:36px; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:9px; padding:14px 26px; font-size:14.5px; font-weight:500; text-decoration:none; border-radius:10px; transition: all .2s ease; cursor:pointer; border:1.5px solid transparent; font-family:inherit; }
+  .btn svg { width:16px; height:16px; }
   .btn-primary { background: var(--black); color: var(--white); border-color: var(--black); }
-  .btn-primary:hover { background: var(--mid); border-color: var(--mid); transform: translateY(-1px); }
+  .btn-primary:hover { background: var(--mid); transform: translateY(-1px); }
   .btn-secondary { background: var(--white); color: var(--black); border:1.5px solid var(--black); }
   .btn-secondary:hover { background: var(--black); color: var(--white); transform: translateY(-1px); }
 
-  .admission-strip { background: var(--light); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding: 18px 48px; }
-  .admission-strip-inner { max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; }
-  .admission-strip .left { display:flex; align-items:center; gap:14px; }
-  .admission-strip .icon { width:38px; height:38px; border-radius:10px; background: var(--black); color: var(--white); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .admission-strip .txt { font-size:14.5px; }
-  .admission-strip .txt strong { font-weight:700; }
-  .admission-strip .txt span { color: var(--grey); }
-  .admission-strip .countdown { font-family:'Courier New', monospace; font-weight:700; font-size:15px; background: var(--black); color: var(--white); padding: 6px 14px; border-radius: 8px; white-space:nowrap; }
-  .admission-strip a { font-size:13.5px; font-weight:600; color: var(--black); text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:8px; border:1.5px solid var(--black); background: var(--white); }
-  .admission-strip a:hover { background: var(--black); color: var(--white); }
+  .strip { background: var(--light); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding: 18px 48px; }
+  .strip-inner { max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; }
+  .strip-inner .left { display:flex; align-items:center; gap:14px; }
+  .strip-inner .icon { width:38px; height:38px; border-radius:10px; background: var(--black); color: var(--white); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .strip-inner .txt { font-size:14.5px; }
+  .strip-inner .txt strong { font-weight:700; }
+  .strip-inner .txt span { color: var(--grey); }
+  .strip-inner .countdown { font-family:'Courier New', monospace; font-weight:700; font-size:15px; background: var(--black); color: var(--white); padding: 6px 14px; border-radius: 8px; white-space:nowrap; }
+  .strip-inner a { font-size:13.5px; font-weight:600; color: var(--black); text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:9px 16px; border-radius:8px; border:1.5px solid var(--black); background: var(--white); }
+  .strip-inner a:hover { background: var(--black); color: var(--white); }
 
-  section { padding: 88px 48px; max-width:1200px; margin:0 auto; border-top:1px solid var(--line); }
+  section { padding: 80px 48px; max-width:1200px; margin:0 auto; border-top:1px solid var(--line); }
   .section-eyebrow { font-size:12px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
-  h2 { font-size: clamp(28px, 4vw, 46px); letter-spacing:-1.5px; line-height:1.12; font-weight:700; margin-bottom:20px; max-width:760px; }
-  .section-lead { font-size:16px; color: var(--grey); max-width:640px; margin-bottom:48px; }
-
-  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap:20px; }
-  .card { padding: 32px 28px; border:1px solid var(--line); border-radius:14px; background: var(--white); display:flex; flex-direction:column; transition: all .25s ease; }
+  h2 { font-size: clamp(26px, 3.5vw, 40px); letter-spacing:-1.5px; line-height:1.12; font-weight:700; margin-bottom:20px; max-width:760px; }
+  .section-lead { font-size:16px; color: var(--grey); max-width:640px; margin-bottom:40px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; }
+  .card { padding: 30px 26px; border:1px solid var(--line); border-radius:14px; background: var(--white); display:flex; flex-direction:column; transition: all .25s ease; }
   .card:hover { border-color: var(--black); transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.06); }
-  .card .icon-box { width:42px; height:42px; border-radius:10px; background: var(--light); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+  .card .icon-box { width:42px; height:42px; border-radius:10px; background: var(--light); display:flex; align-items:center; justify-content:center; margin-bottom:18px; }
   .card .icon-box svg { width:20px; height:20px; color: var(--black); }
-  .card h3 { font-size:19px; margin-bottom:10px; font-weight:700; letter-spacing:-.3px; }
-  .card .desc { font-size:14px; color: var(--grey); margin-bottom:22px; line-height:1.6; }
-  .card ul { list-style:none; flex-grow:1; }
-  .card ul li { font-size:13.5px; color: var(--grey); padding:9px 0; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:10px; }
-  .card ul li:last-child { border-bottom:none; }
-  .card ul li svg { width:14px; height:14px; color: var(--black); flex-shrink:0; }
+  .card h3 { font-size:18px; margin-bottom:10px; font-weight:700; }
+  .card p { font-size:14px; color: var(--grey); line-height:1.6; flex-grow:1; }
 
-  .courses-banner { background: var(--black); color: var(--white); padding: 96px 48px; }
-  .courses-banner-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns: 1.2fr 1fr; gap:70px; align-items:center; }
+  .courses-banner { background: var(--black); color: var(--white); padding: 88px 48px; }
+  .courses-banner-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns: 1.2fr 1fr; gap:60px; align-items:center; }
   .courses-banner h2 { color: var(--white); }
   .courses-banner p { font-size:16px; color: rgba(255,255,255,.7); margin-bottom:22px; max-width:520px; }
   .courses-banner .btn-primary { background: var(--white); color: var(--black); border-color: var(--white); }
-  .courses-banner .btn-primary:hover { background: #e5e5e5; }
   .courses-banner .btn-ghost-light { background: transparent; color: var(--white); border:1.5px solid rgba(255,255,255,.35); }
-  .courses-banner .btn-ghost-light:hover { background: var(--white); color: var(--black); border-color: var(--white); }
 
-  .cta-strip { background: var(--light); padding: 76px 48px; text-align:center; border-top:1px solid var(--line); }
+  .cta-strip { background: var(--light); padding: 72px 48px; text-align:center; border-top:1px solid var(--line); }
   .cta-strip h2 { margin: 0 auto 18px; text-align:center; }
   .cta-strip p { font-size:16px; color: var(--grey); max-width:520px; margin: 0 auto 30px; }
 
-  footer { padding: 56px 48px; border-top:1px solid var(--line); max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; font-size:13.5px; color: var(--grey); }
+  footer { padding: 48px; border-top:1px solid var(--line); max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; font-size:13.5px; color: var(--grey); }
   footer a { color: var(--black); text-decoration:none; font-weight:500; display:inline-flex; align-items:center; gap:6px; }
-  footer a:hover { color: var(--grey); }
-  .logo-mini { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:-1px; color: var(--black); margin-bottom:10px; }
 
-  @media (max-width: 900px) { .courses-banner-inner { grid-template-columns: 1fr; gap:40px; } }
+  /* Welcome popup */
+  .welcome-pop { position: fixed; bottom: 24px; right: 24px; width: 380px; max-width: calc(100vw - 32px); background: var(--white); border: 1.5px solid var(--black); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.18); padding: 24px 24px 20px; z-index: 200; animation: slideDown .5s ease both; display:none; }
+  .welcome-pop.show { display:block; }
+  .welcome-pop .pop-close { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; background: var(--light); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .welcome-pop .pop-close:hover { background: var(--line); }
+  .welcome-pop .pop-close svg { width: 14px; height: 14px; }
+  .welcome-pop .pop-eyebrow { font-size:10.5px; letter-spacing:2px; text-transform:uppercase; color: var(--grey); font-weight:700; margin-bottom:10px; }
+  .welcome-pop h3 { font-size: 18px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 8px; }
+  .welcome-pop p { font-size: 13.5px; color: var(--grey); line-height: 1.55; margin-bottom: 16px; }
+  .welcome-pop .pop-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .welcome-pop .pop-actions a { font-size: 13px; font-weight: 600; padding: 9px 14px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .welcome-pop .pop-actions a.primary { background: var(--black); color: var(--white); }
+  .welcome-pop .pop-actions a.ghost { background: var(--white); color: var(--black); border: 1.5px solid var(--line); }
+
+  @media (max-width: 900px) { .courses-banner-inner { grid-template-columns: 1fr; gap:40px; } .hero { flex-direction: column; align-items: flex-start; } }
   @media (max-width: 768px) {
-    nav { padding: 12px 20px; } .brand-name { font-size:18px; } .emblem { width: 36px; height: 36px; }
-    .dropdown { padding: 80px 20px 40px; } .hero { padding: 64px 20px 40px; }
-    .hero-actions { flex-direction: column; } .hero-actions .btn { width:100%; }
-    .admission-strip { padding: 16px 20px; } .admission-strip-inner { flex-direction: column; align-items: flex-start; }
-    section { padding: 64px 20px; } .courses-banner { padding: 64px 20px; } .cta-strip { padding: 64px 20px; }
-    footer { padding: 44px 20px; flex-direction: column; } footer > div:last-child { text-align:left !important; }
+    nav { padding: 12px 20px; } .mark { font-size: 28px; } .badge { width: 44px; height: 54px; }
+    .hero { padding: 56px 20px 40px; } .hero .badge-lg { width: 90px; height: 108px; }
+    section { padding: 56px 20px; } .courses-banner { padding: 56px 20px; } .cta-strip { padding: 56px 20px; } .strip { padding: 16px 20px; }
+    footer { padding: 40px 20px; flex-direction: column; }
+    .welcome-pop { bottom: 12px; right: 12px; left: 12px; width: auto; }
   }
 </style>
 </head>
-<body class="page-frame">
+<body>
 
 <nav>
   <a href="/" class="nav-left">
-    <svg class="emblem" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="none" stroke="#0d0d0d" stroke-width="2.5"/><circle cx="60" cy="60" r="52" fill="none" stroke="#0d0d0d" stroke-width="1"/><circle cx="60" cy="60" r="48" fill="#0d0d0d"/><path d="M40 44 L60 78 L80 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/><rect x="66" y="44" width="8" height="6" fill="#fff"/><g font-family="'Courier New',monospace" font-size="8.5" fill="#0d0d0d" font-weight="700" letter-spacing="2"><text x="60" y="14" text-anchor="middle">NYL DEV</text><text x="60" y="112" text-anchor="middle">· IFB · 2027 ·</text></g></svg>
-    <div>
-      <div class="brand-name">Nyl Dev</div>
-      <div class="brand-sub">Web Studio</div>
-    </div>
+    <span class="mark">∆</span>
   </a>
   <div class="nav-right">
-    <a href="auth.html" class="nav-link" id="navAuth"><i data-lucide="user-plus"></i> Become a Student</a>
+    <a href="auth.html" class="nav-link"><i data-lucide="user-plus"></i> Become a Student</a>
     <a href="student-portal.html" class="nav-link" id="navPortal" style="display:none;"><i data-lucide="book-open"></i> My Portal</a>
     <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
@@ -131,8 +126,8 @@
   <div class="dropdown-inner">
     <div class="dropdown-group">
       <h4><i data-lucide="graduation-cap"></i> Education</h4>
-      <a href="courses.html"><i data-lucide="layout-grid"></i> See our Courses</a>
-      <a href="past-papers.html"><i data-lucide="file-text"></i> Resources &amp; Past Papers</a>
+      <a href="courses.html"><i data-lucide="layout-grid"></i> Courses</a>
+      <a href="past-papers.html"><i data-lucide="file-text"></i> Resources &amp; Papers</a>
       <a href="auth.html"><i data-lucide="user-plus"></i> Become a Student</a>
       <a href="student-portal.html"><i data-lucide="book-open"></i> Student Portal</a>
     </div>
@@ -152,88 +147,53 @@
 </div>
 
 <header class="hero">
-  <h1 class="fade-in">We build websites.<br><span>We maintain them.</span><br>We keep them running.</h1>
-  <p class="fade-in-d1">A web development studio building and maintaining websites for businesses that need a real online presence. We also offer free, non-accredited courses in development, design, and mathematics.</p>
-  <div class="hero-actions fade-in-d2">
-    <a href="#pricing" class="btn btn-primary"><i data-lucide="tag"></i> See Pricing</a>
-    <a href="courses.html" class="btn btn-secondary"><i data-lucide="layout-grid"></i> See our Courses</a>
+  <div class="hero-text">
+    <h1 class="fade-in">Free courses.<br><span>Built to international standard.</span></h1>
+    <p class="fade-in-d1">Six streams. Six subjects each. Mathematics compulsory. Non-accredited skills development for the 2027 intake.</p>
+    <div class="fade-in-d2" style="display:flex; gap:12px; flex-wrap:wrap;">
+      <a href="courses.html" class="btn btn-primary"><i data-lucide="layout-grid"></i> See our Courses</a>
+      <a href="auth.html" class="btn btn-secondary"><i data-lucide="user-plus"></i> Become a Student</a>
+    </div>
   </div>
+  <svg class="badge badge-lg" viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4af37"/><stop offset="1" stop-color="#8b6914"/></linearGradient>
+    </defs>
+    <path d="M100 6 L186 30 Q190 100 186 180 Q100 234 100 234 Q14 234 14 180 Q10 100 14 30 Z" fill="#0d0d0d" stroke="url(#bG)" stroke-width="4"/>
+    <path d="M100 20 L176 41 Q180 102 176 175 Q100 224 100 224 Q24 224 20 175 Q16 102 20 41 Z" fill="none" stroke="url(#bG)" stroke-width="1.5"/>
+    <path d="M84 44 L100 74 L116 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="square"/>
+    <rect x="110" y="44" width="8" height="7" fill="#fff"/>
+    <path d="M100 90 L103 100 L114 100 L105 107 L108 118 L100 111 L92 118 L95 107 L86 100 L97 100 Z" fill="url(#bG)"/>
+    <path d="M52 118 Q76 108 100 116 Q124 108 148 118 L148 132 Q124 122 100 130 Q76 122 52 132 Z" fill="#fff"/>
+    <path d="M100 116 L100 130" stroke="#0d0d0d" stroke-width="1"/>
+    <g transform="translate(72,150)"><path d="M0 0 L-6 22 M0 0 L6 22" stroke="url(#bG)" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="0" cy="0" r="2" fill="url(#bG)"/></g>
+    <g transform="translate(128,150)"><ellipse cx="0" cy="0" rx="14" ry="6" fill="none" stroke="url(#bG)" stroke-width="1.8"/><ellipse cx="0" cy="0" rx="14" ry="6" fill="none" stroke="url(#bG)" stroke-width="1.8" transform="rotate(60)"/><ellipse cx="0" cy="0" rx="14" ry="6" fill="none" stroke="url(#bG)" stroke-width="1.8" transform="rotate(-60)"/><circle cx="0" cy="0" r="2" fill="#fff"/></g>
+    <path d="M40 196 L100 208 L160 196 L160 214 Q100 226 40 214 Z" fill="url(#bG)" stroke="#0d0d0d" stroke-width="1.5"/>
+    <text x="100" y="210" text-anchor="middle" font-family="'Times New Roman',serif" font-size="11" font-weight="700" fill="#0d0d0d" letter-spacing="1">EST. 2027</text>
+    <text x="100" y="252" text-anchor="middle" font-family="'Courier New',monospace" font-size="8.5" fill="#0d0d0d" font-weight="700" letter-spacing="2.5">SCIENCE · MATHEMATICS · CRAFT · 2027</text>
+  </svg>
 </header>
 
-<div class="admission-strip">
-  <div class="admission-strip-inner">
+<div class="strip">
+  <div class="strip-inner">
     <div class="left">
       <div class="icon"><i data-lucide="clipboard-check"></i></div>
-      <div class="txt">
-        <strong>Admission Examination</strong> · <span>13 January 2027 · Study resources available</span>
-      </div>
+      <div class="txt"><strong>Admission Examination</strong> · <span>13 January 2027 · Study resources available</span></div>
     </div>
     <div class="countdown" id="countdown">Calculating…</div>
     <a href="past-papers.html"><i data-lucide="book-open"></i> Prepare now</a>
   </div>
 </div>
 
-<section id="websites">
-  <div class="section-eyebrow"><i data-lucide="layout-grid"></i> What we build</div>
-  <h2>Types of websites we build.</h2>
-  <p class="section-lead">Every project is built from scratch — responsive, fast, and made to last.</p>
+<section>
+  <div class="section-eyebrow"><i data-lucide="layout-grid"></i> What you get</div>
+  <h2>Six streams. Six subjects. One required core.</h2>
+  <p class="section-lead">Every stream requires Mathematics. Every student chooses 3 core subjects, 1 stream subject, and 2 electives.</p>
   <div class="grid">
-    <div class="card">
-      <div class="icon-box"><i data-lucide="layout-template"></i></div>
-      <h3>Landing Page</h3>
-      <div class="desc">A single-page site for a product, service, event, or campaign.</div>
-      <ul><li><i data-lucide="circle-dot"></i> One-page design</li><li><i data-lucide="circle-dot"></i> Mobile responsive</li><li><i data-lucide="circle-dot"></i> Contact form</li><li><i data-lucide="circle-dot"></i> Basic SEO setup</li></ul>
-    </div>
-    <div class="card">
-      <div class="icon-box"><i data-lucide="building-2"></i></div>
-      <h3>Business Website</h3>
-      <div class="desc">A multi-page site for a company, portfolio, or brand.</div>
-      <ul><li><i data-lucide="circle-dot"></i> Up to 6 pages</li><li><i data-lucide="circle-dot"></i> Custom design</li><li><i data-lucide="circle-dot"></i> Enquiry forms</li><li><i data-lucide="circle-dot"></i> Google Analytics</li></ul>
-    </div>
-    <div class="card">
-      <div class="icon-box"><i data-lucide="shopping-cart"></i></div>
-      <h3>E-Commerce Store</h3>
-      <div class="desc">Sell products online with a full checkout and dashboard.</div>
-      <ul><li><i data-lucide="circle-dot"></i> Product catalogue</li><li><i data-lucide="circle-dot"></i> Cart &amp; checkout</li><li><i data-lucide="circle-dot"></i> Payment integration</li><li><i data-lucide="circle-dot"></i> Order management</li></ul>
-    </div>
-    <div class="card">
-      <div class="icon-box"><i data-lucide="app-window"></i></div>
-      <h3>Web Application</h3>
-      <div class="desc">A custom web app with logins, dashboards, and databases.</div>
-      <ul><li><i data-lucide="circle-dot"></i> User accounts</li><li><i data-lucide="circle-dot"></i> Database setup</li><li><i data-lucide="circle-dot"></i> Custom features</li><li><i data-lucide="circle-dot"></i> Admin dashboard</li></ul>
-    </div>
-  </div>
-</section>
-
-<section id="pricing">
-  <div class="section-eyebrow"><i data-lucide="tag"></i> Pricing</div>
-  <h2>Simple pricing.</h2>
-  <p class="section-lead">One-time build fee. Optional monthly maintenance. No hidden costs.</p>
-  <div class="grid">
-    <div class="card">
-      <div class="icon-box"><i data-lucide="layout-template"></i></div>
-      <h3>Landing Page</h3>
-      <div class="desc" style="font-size:22px; font-weight:700; color:var(--black);">R2,500</div>
-      <ul><li><i data-lucide="circle-dot"></i> Delivered in 3–5 days</li><li><i data-lucide="circle-dot"></i> 1 round of revisions</li><li><i data-lucide="circle-dot"></i> Mobile responsive</li><li><i data-lucide="circle-dot"></i> Live deployment</li></ul>
-    </div>
-    <div class="card" style="border-width:2px; border-color:var(--black);">
-      <div class="icon-box"><i data-lucide="building-2"></i></div>
-      <h3>Business Website</h3>
-      <div class="desc" style="font-size:22px; font-weight:700; color:var(--black);">R5,500</div>
-      <ul><li><i data-lucide="circle-dot"></i> Delivered in 1–2 weeks</li><li><i data-lucide="circle-dot"></i> 2 rounds of revisions</li><li><i data-lucide="circle-dot"></i> Custom design</li><li><i data-lucide="circle-dot"></i> SEO basics</li></ul>
-    </div>
-    <div class="card">
-      <div class="icon-box"><i data-lucide="shopping-cart"></i></div>
-      <h3>E-Commerce Store</h3>
-      <div class="desc" style="font-size:22px; font-weight:700; color:var(--black);">R12,000</div>
-      <ul><li><i data-lucide="circle-dot"></i> Delivered in 2–4 weeks</li><li><i data-lucide="circle-dot"></i> Payment integration</li><li><i data-lucide="circle-dot"></i> Product setup</li><li><i data-lucide="circle-dot"></i> Training session</li></ul>
-    </div>
-    <div class="card">
-      <div class="icon-box"><i data-lucide="wrench"></i></div>
-      <h3>Maintenance</h3>
-      <div class="desc" style="font-size:22px; font-weight:700; color:var(--black);">R450<small style="font-size:14px; font-weight:500; color:var(--grey);">/mo</small></div>
-      <ul><li><i data-lucide="circle-dot"></i> Hosting management</li><li><i data-lucide="circle-dot"></i> Security updates</li><li><i data-lucide="circle-dot"></i> Content edits</li><li><i data-lucide="circle-dot"></i> Uptime monitoring</li></ul>
-    </div>
+    <div class="card"><div class="icon-box"><i data-lucide="sigma"></i></div><h3>Mathematics</h3><p>Required in every stream. One paper. 100 marks.</p></div>
+    <div class="card"><div class="icon-box"><i data-lucide="layout-template"></i></div><h3>Web Foundations</h3><p>Git, HTML, CSS, Responsive Design.</p></div>
+    <div class="card"><div class="icon-box"><i data-lucide="code-2"></i></div><h3>Programming Fundamentals</h3><p>JavaScript and Advanced JavaScript.</p></div>
+    <div class="card"><div class="icon-box"><i data-lucide="boxes"></i></div><h3>Stream Subject</h3><p>Built from modules tailored to your stream.</p></div>
   </div>
 </section>
 
@@ -242,7 +202,7 @@
     <div>
       <div class="section-eyebrow" style="color: rgba(255,255,255,.5);"><i data-lucide="graduation-cap"></i> Free Courses</div>
       <h2>Become a Student.</h2>
-      <p>Register free and choose your course after signing up. Admission Exam on <strong style="color:#fff;">13 January 2027</strong>. Administration closes <strong style="color:#fff;">14 February 2027</strong>.</p>
+      <p>Register free and choose your curriculum after signing up. Admission Exam on <strong style="color:#fff;">13 January 2027</strong>. Administration closes <strong style="color:#fff;">14 February 2027</strong>.</p>
       <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:20px;">
         <a href="courses.html" class="btn btn-primary"><i data-lucide="layout-grid"></i> See our Courses</a>
         <a href="auth.html" class="btn btn-ghost-light"><i data-lucide="user-plus"></i> Become a Student</a>
@@ -250,9 +210,9 @@
     </div>
     <ul style="list-style:none;">
       <li style="display:flex; gap:12px; align-items:center; padding:13px 0; border-bottom:1px solid rgba(255,255,255,.12); font-size:14.5px; color:rgba(255,255,255,.85);"><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> Access every course — 100% free</li>
-      <li style="display:flex; gap:12px; align-items:center; padding:13px 0; border-bottom:1px solid rgba(255,255,255,.12); font-size:14.5px; color:rgba(255,255,255,.85);"><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> 6-month IPI or 12-month ACC programme</li>
-      <li style="display:flex; gap:12px; align-items:center; padding:13px 0; border-bottom:1px solid rgba(255,255,255,.12); font-size:14.5px; color:rgba(255,255,255,.85);"><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> Admission Examination — 13 January 2027</li>
-      <li style="display:flex; gap:12px; align-items:center; padding:13px 0; font-size:14.5px; color:rgba(255,255,255,.85);"><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> Non-accredited — skills-based certificate</li>
+      <li style="display:flex; gap:12px; align-items:center; padding:13px 0; border-bottom:1px solid rgba(255,255,255,.12); font-size:14.5px; color:rgba(255,255,255,.85);"><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> 6-month IPI or 12-month ACC</li>
+      <li style="display:flex; gap:12px; align-items:center; padding:13px 0; border-bottom:1px solid rgba(255,255,255,.12); font-size:14.5px; color:rgba(255,255,255,.85);"><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> Non-accredited — skills-based certificate</li>
+      <li style="display:flex; gap:12px; align-items:center; padding:13px 0; font-size:14.5px; color:rgba(255,255,255,.85);"><i data-lucide="circle-dot" style="width:16px;height:16px;color:#fff;"></i> Aimed at international standard</li>
     </ul>
   </div>
 </div>
@@ -265,20 +225,29 @@
 
 <footer>
   <div>
-    <div class="logo-mini">^_</div>
-    Nyl Dev · Web Development · Design · Maintenance<br>
-    Built by Nathaniel · © 2026—2027
+    Non-accredited skills development · © 2026—2027
   </div>
   <div style="text-align:right;">
     <a href="courses.html"><i data-lucide="layout-grid"></i> Courses</a> &nbsp;·&nbsp;
     <a href="past-papers.html"><i data-lucide="file-text"></i> Resources</a> &nbsp;·&nbsp;
-    <a href="messages.html"><i data-lucide="message-square"></i> Message us</a> &nbsp;·&nbsp;
-    <a href="privacy.html"><i data-lucide="shield"></i> Privacy</a>
+    <a href="messages.html"><i data-lucide="message-square"></i> Message us</a>
   </div>
 </footer>
 
+<!-- Welcome popup (students only, dismissible) -->
+<div class="welcome-pop" id="welcomePop">
+  <button class="pop-close" id="popClose" aria-label="Close"><i data-lucide="x"></i></button>
+  <div class="pop-eyebrow">Welcome back</div>
+  <h3>Your course is ready.</h3>
+  <p>Everything you need is in your Student Portal — subjects, exam periods, your admission slip, and study resources.</p>
+  <div class="pop-actions">
+    <a href="student-portal.html" class="primary"><i data-lucide="book-open"></i> Open my portal</a>
+    <a href="past-papers.html" class="ghost"><i data-lucide="file-text"></i> Resources</a>
+  </div>
+</div>
+
 <script>
-  // Countdown to close of administration
+  // Countdown
   const target = new Date('February 14, 2027 23:59:59').getTime();
   const el = document.getElementById('countdown');
   function tick() {
@@ -303,6 +272,21 @@
     menuBtn.classList.remove('open'); dropdown.classList.remove('open');
   }));
 
+  // Welcome popup logic
+  const welcomePop = document.getElementById('welcomePop');
+  const popClose = document.getElementById('popClose');
+  const POP_KEY = 'welcome_dismissed_until';
+
+  if (localStorage.getItem(POP_KEY)) {
+    const until = parseInt(localStorage.getItem(POP_KEY), 10);
+    if (Date.now() < until) welcomePop.classList.remove('show');
+  }
+  popClose.addEventListener('click', () => {
+    welcomePop.classList.remove('show');
+    // Dismiss for 7 days
+    localStorage.setItem(POP_KEY, String(Date.now() + 7 * 24 * 60 * 60 * 1000));
+  });
+
   if (window.lucide) lucide.createIcons();
 </script>
 <script type="module">
@@ -311,11 +295,22 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
 onAuthStateChanged(auth, (user) => {
-  const nA = document.getElementById('navAuth');
+  const nA = document.querySelector('.nav-link[href="auth.html"]');
   const nP = document.getElementById('navPortal');
-  if (user) { nA.style.display = 'none'; nP.style.display = 'inline-flex'; }
-  else { nA.style.display = 'inline-flex'; nP.style.display = 'none'; }
+  if (user) {
+    if (nA) nA.style.display = 'none';
+    if (nP) nP.style.display = 'inline-flex';
+    // Show welcome popup for students
+    if (welcomePop) {
+      const dismissed = parseInt(localStorage.getItem(POP_KEY) || '0', 10);
+      if (Date.now() > dismissed) welcomePop.classList.add('show');
+    }
+  } else {
+    if (nA) nA.style.display = 'inline-flex';
+    if (nP) nP.style.display = 'none';
+  }
   if (window.lucide) lucide.createIcons();
 });
 </script>
