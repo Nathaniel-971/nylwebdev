@@ -3,303 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign in — Nyl Dev</title>
+<title>Become a Student — Nyl Dev</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background:#0d0d0d; color:#fff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .card { width:100%; max-width:460px; background:#fff; color:#0d0d0d; border-radius:16px; padding:44px 40px; }
+  .logo { font-family:'Courier New',monospace; font-size:30px; font-weight:700; letter-spacing:-2px; display:flex; align-items:center; margin-bottom:32px; text-decoration:none; color:#0d0d0d; }
+  .logo .cursor { width:14px; height:28px; background:#0d0d0d; margin-left:2px; animation: blink 1.1s step-end infinite; }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+  .tabs { display:flex; margin-bottom:28px; border-bottom:1px solid #e5e5e5; }
+  .tab { flex:1; padding:14px 0; text-align:center; font-size:15px; font-weight:600; color:#6b6b6b; background:none; border:none; border-bottom:2px solid transparent; cursor:pointer; font-family:inherit; margin-bottom:-1px; }
+  .tab.active { color:#0d0d0d; border-bottom-color:#0d0d0d; }
+  .panel { display:none; } .panel.active { display:block; }
+  .panel h2 { font-size:24px; letter-spacing:-.5px; margin-bottom:6px; }
+  .panel .sub { font-size:14px; color:#6b6b6b; margin-bottom:22px; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    background: #0d0d0d;
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
+  /* Google button */
+  .google-btn { width:100%; padding:14px; font-size:15px; font-weight:500; font-family:inherit; border:1px solid #e5e5e5; background:#fff; color:#0d0d0d; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:12px; transition: all .2s; margin-bottom:20px; }
+  .google-btn:hover { border-color:#0d0d0d; background:#fafafa; }
+  .google-btn svg { width:18px; height:18px; }
 
-  .card {
-    width: 100%;
-    max-width: 440px;
-    background: #fff;
-    color: #0d0d0d;
-    border-radius: 16px;
-    padding: 44px 40px;
-  }
+  .divider { display:flex; align-items:center; gap:14px; margin: 6px 0 20px; color:#6b6b6b; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; }
+  .divider::before, .divider::after { content:""; flex:1; height:1px; background:#e5e5e5; }
 
-  .logo {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -2px;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    margin-bottom: 32px;
-    text-decoration: none;
-    color: #0d0d0d;
-  }
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:8px; }
+  .form-group input, .form-group select { width:100%; padding:14px 16px; font-size:15px; font-family:inherit; border:1px solid #e5e5e5; border-radius:8px; background:#fff; color:#0d0d0d; appearance:none; }
+  .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d0d0d' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position: right 16px center; padding-right:40px; }
+  .form-group input:focus, .form-group select:focus { outline:none; border-color:#0d0d0d; }
 
-  .logo .cursor {
-    display: inline-block;
-    width: 14px;
-    height: 28px;
-    background: #0d0d0d;
-    margin-left: 2px;
-    animation: blink 1.1s step-end infinite;
-  }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 
-  @keyframes blink {
-    0%, 50%   { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
+  .subject-block { background:#fafafa; border:1px solid #e5e5e5; border-radius:10px; padding:16px; margin-bottom:14px; }
+  .subject-block h5 { font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; font-weight:600; margin-bottom:12px; }
+  .subject-block label { display:flex; align-items:center; gap:10px; font-size:14px; padding:7px 0; cursor:pointer; }
+  .subject-block input[type="checkbox"] { width:16px; height:16px; accent-color:#0d0d0d; flex-shrink:0; }
+  .subject-block .locked { color:#6b6b6b; font-size:13px; }
 
-  .tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 32px;
-    border-bottom: 1px solid #e5e5e5;
-  }
+  .form-check { display:flex; align-items:flex-start; gap:10px; margin:18px 0; font-size:13px; color:#6b6b6b; }
+  .form-check input { margin-top:3px; width:16px; height:16px; flex-shrink:0; accent-color:#0d0d0d; }
+  .form-check a { color:#0d0d0d; text-decoration:underline; }
 
-  .tab {
-    flex: 1;
-    padding: 14px 0;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 600;
-    color: #6b6b6b;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
-    margin-bottom: -1px;
-  }
+  .btn { width:100%; padding:16px; font-size:15px; font-weight:600; font-family:inherit; border-radius:8px; border:none; background:#0d0d0d; color:#fff; cursor:pointer; transition: all .2s; }
+  .btn:hover { background:#333; }
+  .btn:disabled { opacity:.6; cursor:not-allowed; }
 
-  .tab.active {
-    color: #0d0d0d;
-    border-bottom-color: #0d0d0d;
-  }
+  .msg { padding:12px 14px; border-radius:8px; font-size:13px; margin-bottom:14px; display:none; }
+  .msg.error { background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; display:block; }
+  .msg.success { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; display:block; }
 
-  .panel { display: none; }
-  .panel.active { display: block; }
+  .forgot { display:block; text-align:right; font-size:13px; color:#6b6b6b; text-decoration:none; margin-top:-8px; margin-bottom:18px; }
+  .back { display:block; text-align:center; margin-top:22px; font-size:13px; color:#6b6b6b; text-decoration:none; }
 
-  .panel h2 {
-    font-size: 24px;
-    letter-spacing: -0.5px;
-    margin-bottom: 6px;
-  }
-
-  .panel .sub {
-    font-size: 14px;
-    color: #6b6b6b;
-    margin-bottom: 26px;
-  }
-
-  .form-group { margin-bottom: 18px; }
-
-  .form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-  }
-
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 14px 16px;
-    font-size: 15px;
-    font-family: inherit;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    background: #fff;
-    color: #0d0d0d;
-    transition: border-color 0.2s;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-
-  .form-group select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d0d0d' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
-  }
-
-  .form-group input:focus,
-  .form-group select:focus {
-    outline: none;
-    border-color: #0d0d0d;
-  }
-
-  .form-check {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin: 20px 0;
-    font-size: 13px;
-    color: #6b6b6b;
-    line-height: 1.5;
-  }
-
-  .form-check input {
-    margin-top: 3px;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    accent-color: #0d0d0d;
-  }
-
-  .form-check a {
-    color: #0d0d0d;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .btn {
-    width: 100%;
-    padding: 16px;
-    font-size: 15px;
-    font-weight: 600;
-    font-family: inherit;
-    border-radius: 8px;
-    border: none;
-    background: #0d0d0d;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn:hover { background: #333; }
-
-  .btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .msg {
-    padding: 12px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 16px;
-    line-height: 1.5;
-    display: none;
-  }
-
-  .msg.error {
-    background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
-    display: block;
-  }
-
-  .msg.success {
-    background: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #bbf7d0;
-    display: block;
-  }
-
-  .forgot {
-    display: block;
-    text-align: right;
-    font-size: 13px;
-    color: #6b6b6b;
-    text-decoration: none;
-    margin-top: -8px;
-    margin-bottom: 20px;
-  }
-
-  .forgot:hover { color: #0d0d0d; }
-
-  .back {
-    display: block;
-    text-align: center;
-    margin-top: 22px;
-    font-size: 13px;
-    color: #6b6b6b;
-    text-decoration: none;
-  }
-
-  .back:hover { color: #0d0d0d; }
-
-  @media (max-width: 500px) {
-    .card { padding: 32px 24px; }
-    .logo { font-size: 26px; }
-    .logo .cursor { height: 24px; width: 12px; }
-    .panel h2 { font-size: 20px; }
-  }
+  @media (max-width:500px) { .card { padding:32px 22px; } .form-row { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
-
 <div class="card">
-  <a href="/" class="logo">
-    <span>^</span><span class="cursor"></span>
-  </a>
+  <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
 
   <div class="tabs">
-    <button class="tab active" data-tab="signin">Sign in</button>
-    <button class="tab" data-tab="signup">Sign up</button>
-  </div>
-
-  <!-- SIGN IN -->
-  <div class="panel active" id="panel-signin">
-    <h2>Welcome back</h2>
-    <p class="sub">Sign in to your campus account.</p>
-
-    <div class="msg" id="signinMsg"></div>
-
-    <form id="signinForm">
-      <div class="form-group">
-        <label for="signinEmail">Email</label>
-        <input type="email" id="signinEmail" placeholder="you@example.com" required>
-      </div>
-
-      <div class="form-group">
-        <label for="signinPassword">Password</label>
-        <input type="password" id="signinPassword" placeholder="Your password" required>
-      </div>
-
-      <a href="#" class="forgot" id="forgotLink">Forgot password?</a>
-
-      <button type="submit" class="btn" id="signinBtn">Sign in →</button>
-    </form>
-
-    <a href="/" class="back">← Back to home</a>
+    <button class="tab active" data-tab="signup">Become a Student</button>
+    <button class="tab" data-tab="signin">Sign in</button>
   </div>
 
   <!-- SIGN UP -->
-  <div class="panel" id="panel-signup">
-    <h2>Create your account</h2>
-    <p class="sub">Free forever. No card required.</p>
+  <div class="panel active" id="panel-signup">
+    <h2>Register for a course</h2>
+    <p class="sub">Free · Non-accredited · Administration closes 14 Feb 2026</p>
 
     <div class="msg" id="signupMsg"></div>
 
+    <button type="button" class="google-btn" id="googleSignup">
+      <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="divider">or with email</div>
+
     <form id="signupForm">
       <div class="form-group">
-        <label for="signupName">Full name</label>
+        <label>Full name</label>
         <input type="text" id="signupName" placeholder="Your name" required>
       </div>
-
       <div class="form-group">
-        <label for="signupEmail">Email</label>
+        <label>Email</label>
         <input type="email" id="signupEmail" placeholder="you@example.com" required>
       </div>
-
       <div class="form-group">
-        <label for="signupPassword">Password</label>
+        <label>Password</label>
         <input type="password" id="signupPassword" placeholder="At least 8 characters" minlength="8" required>
       </div>
-
       <div class="form-group">
-        <label for="signupCourse">Select your course</label>
+        <label>Choose duration</label>
+        <select id="signupDuration" required>
+          <option value="" disabled selected>Select duration</option>
+          <option value="6">6 months — fast track</option>
+          <option value="12">12 months — full programme</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Choose a Course (Stream)</label>
         <select id="signupCourse" required>
-          <option value="" disabled selected>Choose a course</option>
+          <option value="" disabled selected>Select a stream</option>
           <option value="fullstack">Full Stack Engineering</option>
           <option value="frontend">Frontend Craft</option>
           <option value="backend">Backend Engineering</option>
@@ -309,16 +115,63 @@
         </select>
       </div>
 
-      <div class="form-check">
-        <input type="checkbox" id="signupTerms" required>
-        <label for="signupTerms">
-          I agree to the <a href="terms.html">Terms of Service</a> and
-          <a href="privacy.html">Privacy Policy</a>. My data will be processed
-          in line with POPIA.
-        </label>
+      <div class="subject-block">
+        <h5>Compulsory Subjects (6)</h5>
+        <label><input type="checkbox" checked disabled> Mathematics</label>
+        <label><input type="checkbox" checked disabled> Git &amp; GitHub</label>
+        <label><input type="checkbox" checked disabled> HTML5 &amp; CSS3</label>
+        <label><input type="checkbox" checked disabled> JavaScript Fundamentals</label>
+        <label><input type="checkbox" checked disabled> Stream Core I</label>
+        <label><input type="checkbox" checked disabled> Stream Core II</label>
+        <p class="locked" style="margin-top:10px;">Auto-filled based on your stream.</p>
       </div>
 
-      <button type="submit" class="btn" id="signupBtn">Create account →</button>
+      <div class="subject-block">
+        <h5>Choose Electives (2)</h5>
+        <label><input type="checkbox" value="react" class="elective"> React</label>
+        <label><input type="checkbox" value="nodejs" class="elective"> Node.js</label>
+        <label><input type="checkbox" value="databases" class="elective"> Databases (SQL / NoSQL)</label>
+        <label><input type="checkbox" value="uiux" class="elective"> UI/UX Fundamentals</label>
+        <label><input type="checkbox" value="figma" class="elective"> Figma</label>
+        <label><input type="checkbox" value="physics" class="elective"> Physics (full-year only)</label>
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" id="signupTerms" required>
+        <label for="signupTerms">I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>. I understand this is a <strong>non-accredited, skills-based</strong> course.</label>
+      </div>
+
+      <button type="submit" class="btn" id="signupBtn">Become a Student →</button>
+    </form>
+
+    <a href="/" class="back">← Back to home</a>
+  </div>
+
+  <!-- SIGN IN -->
+  <div class="panel" id="panel-signin">
+    <h2>Welcome back</h2>
+    <p class="sub">Sign in to view your course.</p>
+
+    <div class="msg" id="signinMsg"></div>
+
+    <button type="button" class="google-btn" id="googleSignin">
+      <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="divider">or with email</div>
+
+    <form id="signinForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="signinEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signinPassword" placeholder="Your password" required>
+      </div>
+      <a href="#" class="forgot" id="forgotLink">Forgot password?</a>
+      <button type="submit" class="btn" id="signinBtn">Sign in →</button>
     </form>
 
     <a href="/" class="back">← Back to home</a>
@@ -329,7 +182,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  sendPasswordResetEmail, updateProfile
+  GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, serverTimestamp
@@ -343,14 +196,13 @@ const firebaseConfig = {
   messagingSenderId: "16687006873",
   appId: "1:16687006873:web:b7d66ad1024ccd92722408"
 };
-
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
-// ---------- TABS ----------
+// Tabs
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -360,42 +212,82 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-// ---------- HELPERS ----------
 function showMsg(id, text, type) {
   const el = document.getElementById(id);
   el.textContent = text;
   el.className = 'msg ' + type;
 }
-
-function clearMsg(id) {
-  const el = document.getElementById(id);
-  el.textContent = '';
-  el.className = 'msg';
-}
+function clearMsg(id) { document.getElementById(id).className = 'msg'; }
 
 function friendlyError(code) {
   const map = {
     'auth/email-already-in-use': 'That email is already registered. Try signing in.',
-    'auth/invalid-email': 'Please enter a valid email address.',
+    'auth/invalid-email': 'Please enter a valid email.',
     'auth/weak-password': 'Password must be at least 8 characters.',
     'auth/user-not-found': 'No account found with that email.',
-    'auth/wrong-password': 'Incorrect password. Try again.',
+    'auth/wrong-password': 'Incorrect password.',
     'auth/invalid-credential': 'Incorrect email or password.',
-    'auth/too-many-requests': 'Too many attempts. Try again in a few minutes.',
-    'auth/network-request-failed': 'Network error. Check your connection.'
+    'auth/popup-closed-by-user': 'Sign-in cancelled.',
+    'auth/account-exists-with-different-credential': 'That email is registered with a different sign-in method.',
+    'auth/too-many-requests': 'Too many attempts. Try later.'
   };
   return map[code] || 'Something went wrong. Please try again.';
 }
 
 function redirectAfterLogin(user) {
-  if (user.email === ADMIN_EMAIL) {
-    window.location.href = 'admin.html';
-  } else {
-    window.location.href = 'student-portal.html';
-  }
+  window.location.href = user.email === ADMIN_EMAIL ? 'admin.html' : 'student-portal.html';
 }
 
-// ---------- SIGN UP ----------
+async function createUserProfile(user, { name, duration, course, electives }) {
+  const ref = doc(db, 'users', user.uid);
+  const snap = await getDoc(ref);
+  if (snap.exists()) return; // already created
+
+  await setDoc(ref, {
+    name,
+    email: user.email,
+    duration,
+    course,
+    electives,
+    studentNumber: null,
+    examinationNumber: null,
+    status: 'pending',
+    role: 'student',
+    createdAt: serverTimestamp()
+  });
+}
+
+// Google sign up
+document.getElementById('googleSignup').addEventListener('click', async () => {
+  clearMsg('signupMsg');
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+    await createUserProfile(user, {
+      name: user.displayName || 'Student',
+      duration: null,
+      course: null,
+      electives: []
+    });
+    showMsg('signupMsg', 'Signed in. Please complete your registration. Redirecting…', 'success');
+    setTimeout(() => redirectAfterLogin(user), 900);
+  } catch (err) {
+    showMsg('signupMsg', friendlyError(err.code), 'error');
+  }
+});
+
+// Google sign in
+document.getElementById('googleSignin').addEventListener('click', async () => {
+  clearMsg('signinMsg');
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    redirectAfterLogin(result.user);
+  } catch (err) {
+    showMsg('signinMsg', friendlyError(err.code), 'error');
+  }
+});
+
+// Email sign up
 document.getElementById('signupForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   clearMsg('signupMsg');
@@ -403,77 +295,60 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
   const name = document.getElementById('signupName').value.trim();
   const email = document.getElementById('signupEmail').value.trim();
   const password = document.getElementById('signupPassword').value;
+  const duration = document.getElementById('signupDuration').value;
   const course = document.getElementById('signupCourse').value;
+  const electives = Array.from(document.querySelectorAll('.elective:checked')).map(c => c.value);
   const btn = document.getElementById('signupBtn');
 
-  btn.disabled = true;
-  btn.textContent = 'Creating account…';
+  if (electives.length !== 2) {
+    showMsg('signupMsg', 'Please select exactly 2 elective subjects.', 'error');
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Creating account…';
 
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
-
-    await setDoc(doc(db, 'users', cred.user.uid), {
-      name,
-      email,
-      course,
-      status: 'pending',
-      studentNumber: null,
-      createdAt: serverTimestamp(),
-      role: 'student'
-    });
-
+    await createUserProfile(cred.user, { name, duration, course, electives });
     showMsg('signupMsg', 'Account created. Redirecting…', 'success');
-    setTimeout(() => redirectAfterLogin(cred.user), 800);
-
+    setTimeout(() => redirectAfterLogin(cred.user), 900);
   } catch (err) {
     showMsg('signupMsg', friendlyError(err.code), 'error');
-    btn.disabled = false;
-    btn.textContent = 'Create account →';
+    btn.disabled = false; btn.textContent = 'Become a Student →';
   }
 });
 
-// ---------- SIGN IN ----------
+// Sign in
 document.getElementById('signinForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   clearMsg('signinMsg');
-
   const email = document.getElementById('signinEmail').value.trim();
   const password = document.getElementById('signinPassword').value;
   const btn = document.getElementById('signinBtn');
-
-  btn.disabled = true;
-  btn.textContent = 'Signing in…';
-
+  btn.disabled = true; btn.textContent = 'Signing in…';
   try {
     const cred = await signInWithEmailAndPassword(auth, email, password);
     redirectAfterLogin(cred.user);
   } catch (err) {
     showMsg('signinMsg', friendlyError(err.code), 'error');
-    btn.disabled = false;
-    btn.textContent = 'Sign in →';
+    btn.disabled = false; btn.textContent = 'Sign in →';
   }
 });
 
-// ---------- FORGOT PASSWORD ----------
+// Forgot password
 document.getElementById('forgotLink').addEventListener('click', async (e) => {
   e.preventDefault();
   clearMsg('signinMsg');
-
   const email = document.getElementById('signinEmail').value.trim();
-  if (!email) {
-    showMsg('signinMsg', 'Enter your email first, then tap "Forgot password".', 'error');
-    return;
-  }
-
+  if (!email) { showMsg('signinMsg', 'Enter your email first.', 'error'); return; }
   try {
     await sendPasswordResetEmail(auth, email);
-    showMsg('signinMsg', 'Password reset email sent. Check your inbox.', 'success');
+    showMsg('signinMsg', 'Reset email sent. Check your inbox.', 'success');
   } catch (err) {
     showMsg('signinMsg', friendlyError(err.code), 'error');
   }
 });
 </script>
-
 </body>
 </html>
