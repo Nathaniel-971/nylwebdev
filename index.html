@@ -11,13 +11,10 @@
   html { scroll-behavior:smooth; }
   body { background: var(--white); color: var(--black); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
 
-  /* Page frame */
   .page-frame { border-top:2px solid var(--black); }
 
-  /* Animations */
   @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
   @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
-  @keyframes pulse { 0%,100%{ opacity:1 } 50%{ opacity:.4 } }
   .fade-in { animation: fadeUp .7s ease both; }
   .fade-in-d1 { animation: fadeUp .7s ease .1s both; }
   .fade-in-d2 { animation: fadeUp .7s ease .2s both; }
@@ -171,6 +168,7 @@
     <div class="dropdown-group">
       <h4><i data-lucide="graduation-cap"></i> Courses</h4>
       <a href="courses.html"><i data-lucide="layout-grid"></i> See our Courses</a>
+      <a href="past-papers.html"><i data-lucide="file-text"></i> Past Papers 2027</a>
       <a href="auth.html" id="ddRegister"><i data-lucide="user-plus"></i> Become a Student</a>
       <a href="student-portal.html" id="ddPortal" style="display:none;"><i data-lucide="book-open"></i> View my Course</a>
     </div>
@@ -178,12 +176,12 @@
       <h4><i data-lucide="briefcase"></i> Work with us</h4>
       <a href="#websites"><i data-lucide="globe"></i> Websites</a>
       <a href="#pricing"><i data-lucide="tag"></i> Pricing</a>
-      <a href="#contact"><i data-lucide="mail"></i> Contact</a>
+      <a href="messages.html"><i data-lucide="message-square"></i> Message us</a>
     </div>
     <div class="dropdown-group">
       <h4><i data-lucide="arrow-right-circle"></i> Get started</h4>
       <a href="mailto:n1nathaniel971@gmail.com"><i data-lucide="mail"></i> n1nathaniel971@gmail.com</a>
-      <a href="courses.html"><i data-lucide="mouse-pointer-click"></i> Choose a Course</a>
+      <a href="settings.html"><i data-lucide="settings"></i> Settings</a>
     </div>
   </div>
 </div>
@@ -340,7 +338,7 @@
     <div>
       <div class="section-eyebrow eyebrow-light"><i data-lucide="graduation-cap"></i> Free Courses</div>
       <h2>Become a Student.</h2>
-      <p>Register free and choose your course. Administration closes <strong style="color:#fff;">14 February 2026</strong>. Courses begin <strong style="color:#fff;">January / February 2026</strong>.</p>
+      <p>Register free and choose your course after signing up. Administration closes <strong style="color:#fff;">14 February 2027</strong>. Courses begin <strong style="color:#fff;">January / February 2027</strong>.</p>
       <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:20px;">
         <a href="courses.html" class="btn btn-primary"><i data-lucide="layout-grid"></i> See our Courses</a>
         <a href="auth.html" class="btn btn-outline-light"><i data-lucide="user-plus"></i> Become a Student</a>
@@ -372,6 +370,8 @@
     <a href="#websites"><i data-lucide="globe"></i> Websites</a> &nbsp;·&nbsp;
     <a href="#pricing"><i data-lucide="tag"></i> Pricing</a> &nbsp;·&nbsp;
     <a href="courses.html"><i data-lucide="layout-grid"></i> Courses</a> &nbsp;·&nbsp;
+    <a href="past-papers.html"><i data-lucide="file-text"></i> Past Papers</a> &nbsp;·&nbsp;
+    <a href="messages.html"><i data-lucide="message-square"></i> Message us</a> &nbsp;·&nbsp;
     <a href="privacy.html"><i data-lucide="shield"></i> Privacy</a> &nbsp;·&nbsp;
     <a href="mailto:n1nathaniel971@gmail.com"><i data-lucide="mail"></i> Email</a>
   </div>
@@ -481,7 +481,6 @@ onAuthStateChanged(auth, (user) => {
     ddRegister.style.display = 'none';
     const isAdmin = user.email === ADMIN_EMAIL;
     navPortal.href = isAdmin ? 'admin.html' : 'student-portal.html';
-    navPortal.querySelector('span')?.remove();
     navPortal.innerHTML = isAdmin
       ? '<i data-lucide="shield"></i> Admin'
       : '<i data-lucide="book-open"></i> View my Course';
@@ -503,7 +502,6 @@ onAuthStateChanged(auth, (user) => {
   if (window.lucide) lucide.createIcons();
 });
 
-// Initial icon render
 if (window.lucide) lucide.createIcons();
 </script>
 </body>
