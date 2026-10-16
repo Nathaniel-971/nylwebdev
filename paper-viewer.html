@@ -3,61 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Paper Viewer — Nyl Dev</title>
+<title>Paper Viewer</title>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script>
-  window.MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; }
-  html, body { height:100%; background: #2a2a2a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: var(--black); overflow:hidden; }
-  .viewer-topbar { position: fixed; top:0; left:0; right:0; height:56px; background: var(--black); color: var(--white); display:flex; align-items:center; justify-content:space-between; padding: 0 20px; z-index: 100; border-bottom: 1px solid #333; }
-  .viewer-topbar .brand { display:flex; align-items:center; gap:10px; text-decoration:none; color: var(--white); }
-  .viewer-topbar .emblem { width:32px; height:32px; filter: invert(1); }
-  .viewer-topbar .brand-text { font-family:'Courier New',monospace; font-size:15px; font-weight:700; letter-spacing:-.5px; }
-  .viewer-topbar .actions { display:flex; gap:8px; align-items:center; }
-  .viewer-topbar button, .viewer-topbar a { padding:9px 14px; font-size:12.5px; font-weight:600; border-radius:8px; border:1px solid #333; background: transparent; color: var(--white); cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:7px; text-decoration:none; transition: all .2s; }
-  .viewer-topbar button:hover, .viewer-topbar a:hover { background: #222; border-color: #555; }
-  .viewer-topbar button svg, .viewer-topbar a svg { width:14px; height:14px; }
-
-  .viewer-scroll { position: absolute; top: 56px; bottom:0; left:0; right:0; overflow-y: auto; overflow-x: hidden; padding: 40px 20px 80px; perspective: 2400px; }
-  .viewer-scroll::-webkit-scrollbar { width: 10px; }
-  .viewer-scroll::-webkit-scrollbar-track { background: #1a1a1a; }
-  .viewer-scroll::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; }
-
-  .paper-iframe-wrap { max-width: 220mm; margin: 0 auto 32px; position: relative; transform-style: preserve-3d; }
-  .paper-iframe-wrap iframe { width: 100%; min-height: 297mm; border: none; background: var(--white); display: block; box-shadow: 0 20px 60px rgba(0,0,0,.5); border-radius: 2px; }
-
-  /* Flip animation */
-  .flip-in { animation: flipIn 1s cubic-bezier(.22,.9,.3,1) both; transform-origin: left center; }
-  @keyframes flipIn { 0% { opacity:0; transform: rotateY(-30deg) translateZ(-100px); } 100% { opacity:1; transform: rotateY(0deg) translateZ(0); } }
-
-  .flip-controls { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display:flex; gap:8px; background: var(--black); padding: 8px; border-radius: 100px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
-  .flip-controls button { width:40px; height:40px; border-radius: 50%; border: none; background: transparent; color: var(--white); cursor:pointer; display:flex; align-items:center; justify-content:center; transition: all .2s; }
-  .flip-controls button:hover { background: #333; }
-  .flip-controls button svg { width:16px; height:16px; }
-
-  .loading { text-align:center; color: #aaa; padding: 80px 20px; font-size: 14px; }
-  .error { text-align:center; color: #ff6b6b; padding: 80px 20px; font-size: 14px; }
-
-  @media print {
-    .viewer-topbar, .flip-controls { display: none !important; }
-    .viewer-scroll { position: static; padding: 0; overflow: visible; }
-    .paper-iframe-wrap { max-width: 100%; margin: 0; box-shadow: none; }
-    .paper-iframe-wrap iframe { min-height: 0; box-shadow: none; }
-    body { background: #fff; }
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#2a2a2a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#0d0d0d;overflow:hidden}
+.topbar{position:fixed;top:0;left:0;right:0;height:56px;background:#0d0d0d;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100;border-bottom:1px solid #333}
+.topbar .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff}
+.topbar .mark{font-family:'Courier New',monospace;font-size:20px;font-weight:700;letter-spacing:-1px}
+.topbar .label{font-size:13px;font-weight:600}
+.topbar .actions{display:flex;gap:8px;align-items:center}
+.topbar button,.topbar a{padding:9px 14px;font-size:12.5px;font-weight:600;border-radius:8px;border:1px solid #333;background:transparent;color:#fff;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.topbar button:hover,.topbar a:hover{background:#222;border-color:#555}
+.topbar button svg,.topbar a svg{width:14px;height:14px}
+.scroll{position:absolute;top:56px;bottom:0;left:0;right:0;overflow-y:auto;overflow-x:hidden;padding:40px 20px 80px;perspective:2400px}
+.scroll::-webkit-scrollbar{width:10px}
+.scroll::-webkit-scrollbar-track{background:#1a1a1a}
+.scroll::-webkit-scrollbar-thumb{background:#444;border-radius:5px}
+.wrap{max-width:220mm;margin:0 auto 32px;position:relative;transform-style:preserve-3d}
+.wrap iframe{width:100%;min-height:297mm;border:none;background:#fff;display:block;box-shadow:0 20px 60px rgba(0,0,0,.5);border-radius:2px}
+@keyframes flipIn{0%{opacity:0;transform:rotateY(-30deg) translateZ(-100px)}100%{opacity:1;transform:rotateY(0) translateZ(0)}}
+.flip-in{animation:flipIn 1s cubic-bezier(.22,.9,.3,1) both;transform-origin:left center}
+.controls{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:8px;background:#0d0d0d;padding:8px;border-radius:100px;z-index:100;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.controls button{width:40px;height:40px;border-radius:50%;border:none;background:transparent;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.controls button:hover{background:#333}
+.controls button svg{width:16px;height:16px}
+.loading{text-align:center;color:#aaa;padding:80px 20px;font-size:14px}
+.error{text-align:center;color:#ff6b6b;padding:80px 20px;font-size:14px}
+@media print{.topbar,.controls{display:none!important}.scroll{position:static;padding:0;overflow:visible}.wrap{max-width:100%;margin:0;box-shadow:none}.wrap iframe{min-height:0;box-shadow:none}body{background:#fff}}
 </style>
 </head>
 <body>
 
-<div class="viewer-topbar">
+<div class="topbar">
   <a href="past-papers.html" class="brand">
-    <svg class="emblem" viewBox="0 0 120 120"><circle cx="60" cy="60" r="58" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="60" cy="60" r="48" fill="#fff"/><path d="M40 44 L60 78 L80 44" fill="none" stroke="#0d0d0d" stroke-width="5" stroke-linecap="square"/><rect x="66" y="44" width="8" height="6" fill="#0d0d0d"/></svg>
-    <span class="brand-text">Nyl Dev · Paper Viewer</span>
+    <span class="mark">∆</span>
+    <span class="label">Paper Viewer</span>
   </a>
   <div class="actions">
     <button id="printBtn"><i data-lucide="printer"></i> Print</button>
@@ -65,74 +46,51 @@
   </div>
 </div>
 
-<div class="viewer-scroll" id="viewerScroll">
-  <div class="loading" id="loadingState">Loading document…</div>
-</div>
+<div class="scroll" id="scroll"><div class="loading">Loading document…</div></div>
 
-<div class="flip-controls">
+<div class="controls">
   <button id="flipLeft" title="Flip left"><i data-lucide="chevron-left"></i></button>
   <button id="flipRight" title="Flip right"><i data-lucide="chevron-right"></i></button>
 </div>
 
 <script>
-  (function(){
-    const params = new URLSearchParams(location.search);
-    const src = params.get('src');
-    const scroll = document.getElementById('viewerScroll');
-
-    if (!src) {
-      scroll.innerHTML = '<div class="error">No document specified.</div>';
-      return;
-    }
-
-    // Fetch the unique paper HTML and inject it
-    fetch(src)
-      .then(res => { if (!res.ok) throw new Error('Could not load document'); return res.text(); })
-      .then(html => {
-        scroll.innerHTML = '';
-        const wrap = document.createElement('div');
-        wrap.className = 'paper-iframe-wrap flip-in';
-        const iframe = document.createElement('iframe');
-        iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts');
-        wrap.appendChild(iframe);
-        scroll.appendChild(wrap);
-        // Write HTML into iframe
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(html);
-        doc.close();
-        // Ensure JsBarcode runs inside iframe
-        setTimeout(() => { try { iframe.contentWindow.dispatchEvent(new Event('load')); } catch(e) {} }, 300);
-      })
-      .catch(err => {
-        scroll.innerHTML = '<div class="error">' + err.message + '</div>';
-      });
-
-    // Print current document
-    document.getElementById('printBtn').addEventListener('click', () => {
-      const iframe = document.querySelector('iframe');
-      if (iframe && iframe.contentWindow) iframe.contentWindow.print();
-    });
-
-    // Flip left/right — just an animation trigger for user delight
-    document.getElementById('flipLeft').addEventListener('click', () => {
-      const w = document.querySelector('.paper-iframe-wrap');
-      if (!w) return;
-      w.classList.remove('flip-in');
-      void w.offsetWidth;
-      w.style.animation = 'flipIn .8s cubic-bezier(.22,.9,.3,1) reverse both';
-      setTimeout(() => { w.style.animation = ''; }, 800);
-    });
-    document.getElementById('flipRight').addEventListener('click', () => {
-      const w = document.querySelector('.paper-iframe-wrap');
-      if (!w) return;
-      w.classList.remove('flip-in');
-      void w.offsetWidth;
-      w.classList.add('flip-in');
-    });
-
-    if (window.lucide) lucide.createIcons();
-  })();
+(function(){
+  const params = new URLSearchParams(location.search);
+  const src = params.get('src');
+  const scroll = document.getElementById('scroll');
+  if (!src) { scroll.innerHTML = '<div class="error">No document specified.</div>'; return; }
+  fetch(src)
+    .then(res => { if (!res.ok) throw new Error('Could not load document'); return res.text(); })
+    .then(html => {
+      scroll.innerHTML = '';
+      const wrap = document.createElement('div');
+      wrap.className = 'wrap flip-in';
+      const iframe = document.createElement('iframe');
+      iframe.setAttribute('sandbox', 'allow-same-origin allow-scripts');
+      wrap.appendChild(iframe);
+      scroll.appendChild(wrap);
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open(); doc.write(html); doc.close();
+      setTimeout(() => { try { iframe.contentWindow.dispatchEvent(new Event('load')); } catch(e){} }, 300);
+    })
+    .catch(err => { scroll.innerHTML = '<div class="error">' + err.message + '</div>'; });
+  document.getElementById('printBtn').addEventListener('click', () => {
+    const iframe = document.querySelector('iframe');
+    if (iframe && iframe.contentWindow) iframe.contentWindow.print();
+  });
+  document.getElementById('flipLeft').addEventListener('click', () => {
+    const w = document.querySelector('.wrap'); if (!w) return;
+    w.classList.remove('flip-in'); void w.offsetWidth;
+    w.style.animation = 'flipIn .8s cubic-bezier(.22,.9,.3,1) reverse both';
+    setTimeout(() => { w.style.animation = ''; }, 800);
+  });
+  document.getElementById('flipRight').addEventListener('click', () => {
+    const w = document.querySelector('.wrap'); if (!w) return;
+    w.classList.remove('flip-in'); void w.offsetWidth;
+    w.classList.add('flip-in');
+  });
+  if (window.lucide) lucide.createIcons();
+})();
 </script>
 </body>
 </html>
