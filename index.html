@@ -10,29 +10,39 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/service-worker.js').catch(()=>{});}</script>
 <style>
-/* =================== THEME =================== */
+/* ===================== THEME ===================== */
 :root{
-  --ink:#0d0d0d;
-  --ink-2:#1a1a1a;
+  --ink:#0b0b0b;
+  --ink-2:#1c1c1c;
+  --ink-3:#2b2b2b;
   --paper:#ffffff;
   --paper-2:#fafafa;
-  --paper-3:#f3f3f3;
-  --line:#e6e6e6;
-  --line-2:#d4d4d4;
-  --muted:#707070;
-  --muted-2:#8f8f8f;
-  --accent:#0d0d0d;
-  --accent-soft:#f7f7f7;
-  --gold:#b8942a;
-  --gold-soft:#f6efd6;
-  --ok:#0a7d4f;
-  --warn:#a25a00;
-  --stop:#b3261e;
+  --paper-3:#f4f4f4;
+  --paper-4:#ebebeb;
+  --line:#e7e7e7;
+  --line-2:#d6d6d6;
+  --muted:#6f6f6f;
+  --muted-2:#909090;
+  --muted-3:#b4b4b4;
+
+  /* sparing accents for liveliness */
+  --gold:#b58a2b;
+  --gold-soft:#fbf4e0;
+  --blue:#2f4ba8;
+  --blue-soft:#eef2ff;
+  --green:#0a7d4f;
+  --green-soft:#e8f5ec;
+  --red:#b3261e;
+  --red-soft:#fdefec;
+
   --radius:14px;
   --radius-lg:20px;
+  --radius-xl:26px;
   --shadow-sm:0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:0 8px 24px rgba(0,0,0,.06);
-  --shadow-lg:0 24px 60px rgba(0,0,0,.10);
+  --shadow-md:0 10px 28px rgba(0,0,0,.06);
+  --shadow-lg:0 26px 70px rgba(0,0,0,.10);
+  --shadow-xl:0 40px 90px rgba(0,0,0,.14);
+
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
@@ -40,127 +50,121 @@
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
   background:var(--paper);color:var(--ink);
-  font-family:var(--font);
-  font-size:16px;line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
+  font-family:var(--font);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   overflow-x:hidden;
 }
 ::selection{background:var(--ink);color:var(--paper)}
-a{color:inherit}
 button{font-family:inherit}
+a{color:inherit}
 
-/* =================== LOADER =================== */
+/* ===================== LOADER ===================== */
 .loader{
   position:fixed;inset:0;z-index:9999;
   background:var(--ink);color:var(--paper);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:22px;
-  transition:opacity .55s ease, visibility .55s ease;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+  transition:opacity .6s ease, visibility .6s ease;
 }
-.loader.gone{opacity:0;visibility:hidden}
+.loader.gone{opacity:0;visibility:hidden;pointer-events:none}
 .loader-mark{
-  font-size:74px;font-weight:600;line-height:1;
-  letter-spacing:-2px;
-  animation:breathe 1.6s ease-in-out infinite;
+  font-size:100px;font-weight:600;line-height:1;letter-spacing:-3px;
+  animation:breathe 1.7s ease-in-out infinite;
 }
 .loader-label{
-  font-size:11.5px;letter-spacing:3.5px;text-transform:uppercase;
-  color:rgba(255,255,255,.55);font-weight:600;
+  font-size:11.5px;letter-spacing:4px;text-transform:uppercase;
+  color:rgba(255,255,255,.5);font-weight:600;
 }
 .loader-bar{
-  width:190px;height:2px;background:rgba(255,255,255,.14);
-  border-radius:2px;overflow:hidden;margin-top:6px;
+  width:220px;height:2px;background:rgba(255,255,255,.14);
+  border-radius:2px;overflow:hidden;margin-top:4px;
 }
 .loader-bar span{
-  display:block;height:100%;width:38%;
+  display:block;height:100%;width:36%;
   background:var(--paper);border-radius:2px;
-  animation:slide 1.3s ease-in-out infinite;
+  animation:loaderSlide 1.35s ease-in-out infinite;
 }
-@keyframes breathe{0%,100%{opacity:.75;transform:scale(.94)}50%{opacity:1;transform:scale(1)}}
-@keyframes slide{0%{transform:translateX(-120%)}100%{transform:translateX(360%)}}
+@keyframes breathe{0%,100%{opacity:.7;transform:scale(.94)}50%{opacity:1;transform:scale(1)}}
+@keyframes loaderSlide{0%{transform:translateX(-130%)}100%{transform:translateX(380%)}}
 
-/* =================== BASE LAYOUT =================== */
-.shell{max-width:1180px;margin:0 auto;padding:0 32px}
+/* ===================== BASE ===================== */
+.shell{max-width:1200px;margin:0 auto;padding:0 32px}
 @media(max-width:760px){.shell{padding:0 20px}}
 
-/* =================== NAV =================== */
+/* ===================== NAV ===================== */
 nav{
   position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(180%) blur(14px);
-  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  background:rgba(255,255,255,.94);
+  backdrop-filter:saturate(180%) blur(16px);
+  -webkit-backdrop-filter:saturate(180%) blur(16px);
   border-bottom:1px solid var(--line);
 }
 .nav-inner{
-  max-width:1180px;margin:0 auto;padding:12px 32px;
+  max-width:1200px;margin:0 auto;padding:14px 32px;
   display:flex;justify-content:space-between;align-items:center;gap:14px;
 }
 @media(max-width:760px){.nav-inner{padding:12px 20px}}
 .brand{
-  display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);
+  display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);
 }
 .brand-mark{
-  font-size:26px;font-weight:600;line-height:1;letter-spacing:-1px;
+  font-size:44px;font-weight:600;line-height:.9;letter-spacing:-2.5px;
 }
 .brand-text{display:flex;flex-direction:column;line-height:1.05}
-.brand-name{font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase}
-.brand-sub{font-size:10px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase;margin-top:2px}
-@media(max-width:520px){.brand-text{display:none}}
+.brand-name{font-size:14px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
+.brand-sub{font-size:10.5px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:3px}
+@media(max-width:620px){.brand-text{display:none}}
 .nav-right{display:flex;align-items:center;gap:6px}
 .nav-link{
   font-size:13.5px;font-weight:500;color:var(--ink);
   text-decoration:none;padding:9px 14px;border-radius:9px;
-  display:inline-flex;align-items:center;gap:7px;
-  transition:background .18s ease;
+  display:inline-flex;align-items:center;gap:7px;transition:background .18s ease;
 }
 .nav-link:hover{background:var(--paper-3)}
 .nav-link svg{width:15px;height:15px}
 .nav-btn{
   font-size:13.5px;font-weight:600;color:var(--paper);background:var(--ink);
-  text-decoration:none;padding:10px 16px;border-radius:9px;
-  display:inline-flex;align-items:center;gap:7px;
-  transition:transform .18s ease, background .18s ease;
+  text-decoration:none;padding:10px 18px;border-radius:9px;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:transform .18s ease,background .18s ease;
 }
 .nav-btn:hover{background:var(--ink-2);transform:translateY(-1px)}
 .nav-btn svg{width:15px;height:15px}
 .avatar{
-  width:38px;height:38px;border-radius:11px;overflow:hidden;
+  width:40px;height:40px;border-radius:12px;overflow:hidden;
   border:1.5px solid var(--line);display:none;align-items:center;justify-content:center;
   background:var(--paper-3);flex-shrink:0;text-decoration:none;
-  transition:border-color .18s ease;
+  transition:border-color .18s ease,transform .18s ease;
 }
-.avatar:hover{border-color:var(--ink)}
-.avatar svg{display:block;border-radius:9px}
+.avatar:hover{border-color:var(--ink);transform:translateY(-1px)}
+.avatar svg{display:block;border-radius:10px}
 .menu-btn{
-  width:40px;height:40px;background:var(--paper);
-  border:1px solid var(--line);border-radius:10px;cursor:pointer;
-  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:0;
-  transition:border-color .18s ease, background .18s ease;
+  width:42px;height:42px;background:var(--paper);border:1px solid var(--line);
+  border-radius:10px;cursor:pointer;display:flex;flex-direction:column;
+  justify-content:center;align-items:center;gap:5px;padding:0;
+  transition:border-color .18s ease,background .18s ease;
 }
 .menu-btn:hover{border-color:var(--ink);background:var(--paper-3)}
-.menu-btn span{display:block;width:16px;height:1.6px;background:var(--ink);border-radius:2px;transition:transform .25s ease,opacity .2s ease}
+.menu-btn span{display:block;width:17px;height:1.6px;background:var(--ink);border-radius:2px;transition:transform .25s ease,opacity .2s ease}
 .menu-btn.open span:nth-child(1){transform:translateY(6.6px) rotate(45deg)}
 .menu-btn.open span:nth-child(2){opacity:0}
 .menu-btn.open span:nth-child(3){transform:translateY(-6.6px) rotate(-45deg)}
 
-/* =================== DROPDOWN =================== */
+/* ===================== DROPDOWN ===================== */
 .dropdown{
   position:fixed;top:0;left:0;right:0;background:var(--paper);
-  border-bottom:1px solid var(--line);
-  transform:translateY(-102%);
+  border-bottom:1px solid var(--line);transform:translateY(-102%);
   transition:transform .5s cubic-bezier(.16,1,.3,1);
-  z-index:99;padding:96px 32px 52px;
-  box-shadow:0 24px 60px rgba(0,0,0,.07);
+  z-index:99;padding:110px 32px 56px;
+  box-shadow:0 26px 70px rgba(0,0,0,.08);
   max-height:100vh;overflow-y:auto;
 }
 .dropdown.open{transform:translateY(0)}
 .dropdown-inner{
-  max-width:1180px;margin:0 auto;
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:36px;
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;
 }
 .dd-group h4{
-  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
+  font-size:10.5px;letter-spacing:2.2px;text-transform:uppercase;
   color:var(--muted);font-weight:700;margin-bottom:16px;
   display:flex;align-items:center;gap:8px;
 }
@@ -172,35 +176,55 @@ nav{
 }
 .dd-group a:hover{color:var(--muted)}
 .dd-group a svg{width:14px;height:14px;color:var(--muted)}
-@media(max-width:760px){.dropdown{padding:88px 20px 40px}}
+.dd-group .auth-only{display:none}
+body.signed-in .dd-group .auth-only{display:flex}
+body.signed-in .dd-group .guest-only{display:none}
 
-/* =================== HERO =================== */
-.hero{padding:88px 0 60px}
-.hero-grid{
-  display:grid;grid-template-columns:1.2fr .8fr;gap:60px;align-items:center;
+/* ===================== HERO ===================== */
+.hero{padding:80px 0 60px;position:relative;overflow:hidden}
+.hero::before{
+  content:"";position:absolute;top:-120px;right:-180px;width:520px;height:520px;
+  background:radial-gradient(circle,rgba(181,138,43,.10) 0%,rgba(181,138,43,0) 70%);
+  pointer-events:none;
 }
-@media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:44px}}
+.hero::after{
+  content:"";position:absolute;bottom:-200px;left:-200px;width:560px;height:560px;
+  background:radial-gradient(circle,rgba(47,75,168,.07) 0%,rgba(47,75,168,0) 70%);
+  pointer-events:none;
+}
+.hero-grid{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center;
+  position:relative;z-index:1;
+}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:48px}}
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:9px;
-  font-size:11.5px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:22px;
-  padding:7px 13px;border:1px solid var(--line);border-radius:100px;
+  font-size:11.5px;letter-spacing:2.2px;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin-bottom:24px;
+  padding:7px 14px;border:1px solid var(--line);border-radius:100px;
   background:var(--paper-2);
 }
 .hero-eyebrow svg{width:12px;height:12px}
 .hero h1{
-  font-size:clamp(38px,5.4vw,62px);
-  line-height:1.04;letter-spacing:-2.2px;font-weight:700;
-  margin-bottom:24px;
+  font-size:clamp(40px,5.8vw,68px);
+  line-height:1.02;letter-spacing:-2.6px;font-weight:700;
+  margin-bottom:26px;
+}
+.hero h1 .accent{
+  position:relative;display:inline-block;
+}
+.hero h1 .accent::after{
+  content:"";position:absolute;left:0;right:0;bottom:-2px;height:6px;
+  background:var(--gold);opacity:.18;border-radius:4px;
 }
 .hero h1 em{font-style:normal;color:var(--muted)}
 .hero-lead{
-  font-size:17.5px;color:var(--muted);max-width:560px;
+  font-size:17.5px;color:var(--muted);max-width:580px;
   line-height:1.55;margin-bottom:34px;
 }
-.hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-bottom:32px}
+.hero-actions{display:flex;gap:11px;flex-wrap:wrap;margin-bottom:34px}
 .hero-meta{
-  display:flex;flex-wrap:wrap;gap:26px;
+  display:flex;flex-wrap:wrap;gap:30px;
   padding-top:26px;border-top:1px solid var(--line);
 }
 .hero-meta .item{display:flex;flex-direction:column;gap:3px}
@@ -210,131 +234,240 @@ nav{
 }
 .hero-meta .v{font-size:15px;font-weight:600}
 
-/* Side card */
-.side-card{
-  border:1px solid var(--line);border-radius:var(--radius-lg);
-  background:var(--paper-2);padding:28px 26px;
+/* hero side visual */
+.hero-visual{
+  position:relative;border-radius:var(--radius-xl);overflow:hidden;
+  border:1px solid var(--line);background:var(--paper-2);
+  aspect-ratio:1/1.05;
+  box-shadow:var(--shadow-md);
 }
-.side-card .label{
-  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:18px;
-  display:flex;align-items:center;gap:8px;
+.hero-visual .grid-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,0,0,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,.045) 1px, transparent 1px);
+  background-size:28px 28px;
 }
-.side-card .label svg{width:13px;height:13px}
-.side-card h3{font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-.4px}
-.side-card .sub{font-size:13.5px;color:var(--muted);margin-bottom:22px;line-height:1.55}
-.side-list{list-style:none;border-top:1px solid var(--line);padding-top:18px}
-.side-list li{
-  display:flex;justify-content:space-between;align-items:center;gap:14px;
-  padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;
+.hero-visual .stage{
+  position:absolute;inset:0;padding:28px;
+  display:flex;flex-direction:column;justify-content:space-between;
 }
-.side-list li:last-child{border-bottom:none;padding-bottom:0}
-.side-list .k{color:var(--muted);display:flex;align-items:center;gap:8px}
-.side-list .k svg{width:14px;height:14px}
-.side-list .v{font-weight:600;text-align:right}
+.hero-visual .stage .k{
+  font-size:10.5px;letter-spacing:2.2px;text-transform:uppercase;
+  color:var(--muted);font-weight:700;
+}
+.hero-visual .stage .title{
+  font-size:22px;font-weight:700;letter-spacing:-.5px;line-height:1.2;max-width:240px;
+}
+.hero-visual .chips{
+  display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;
+}
+.hero-visual .chip{
+  font-size:11px;font-weight:600;padding:5px 11px;
+  border-radius:100px;background:var(--paper);border:1px solid var(--line);
+}
+.hero-visual .chip.gold{background:var(--gold-soft);border-color:rgba(181,138,43,.25);color:var(--gold)}
+.hero-visual .chip.blue{background:var(--blue-soft);border-color:rgba(47,75,168,.2);color:var(--blue)}
+.hero-visual .chip.green{background:var(--green-soft);border-color:rgba(10,125,79,.2);color:var(--green)}
+.hero-visual .bottom{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:16px;
+}
+.hero-visual .stat{display:flex;flex-direction:column;gap:2px}
+.hero-visual .stat .n{font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1}
+.hero-visual .stat .l{font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted)}
 
-/* =================== BUTTONS =================== */
+/* ===================== BUTTONS ===================== */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:9px;
   padding:13px 22px;font-size:14px;font-weight:600;
   text-decoration:none;border-radius:10px;
-  transition:transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease;
   cursor:pointer;border:1.5px solid transparent;white-space:nowrap;
 }
 .btn svg{width:15px;height:15px}
-.btn-primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.btn-primary:hover{background:var(--ink-2);transform:translateY(-1px)}
+.btn-primary{background:var(--ink);color:var(--paper);border-color:var(--ink);box-shadow:var(--shadow-sm)}
+.btn-primary:hover{background:var(--ink-2);transform:translateY(-1px);box-shadow:var(--shadow-md)}
 .btn-secondary{background:var(--paper);color:var(--ink);border-color:var(--line-2)}
 .btn-secondary:hover{border-color:var(--ink);background:var(--paper-3);transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--paper);border-color:rgba(255,255,255,.28)}
-.btn-ghost:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.06)}
+.btn-ghost{background:transparent;color:var(--paper);border-color:rgba(255,255,255,.3)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.65);background:rgba(255,255,255,.06)}
+.btn-gold{background:var(--gold);color:var(--paper);border-color:var(--gold)}
+.btn-gold:hover{filter:brightness(.92);transform:translateY(-1px)}
 
-/* =================== STRIP / COUNTDOWN =================== */
-.strip{
-  background:var(--ink);color:var(--paper);
-  padding:22px 0;
+/* ===================== STRIP / COUNTDOWN ===================== */
+.strip{background:var(--ink);color:var(--paper);padding:22px 0;position:relative;overflow:hidden}
+.strip::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:60px 100%;pointer-events:none;
 }
 .strip-inner{
   display:flex;justify-content:space-between;align-items:center;
-  gap:24px;flex-wrap:wrap;
+  gap:24px;flex-wrap:wrap;position:relative;z-index:1;
 }
 .strip-left{display:flex;align-items:center;gap:14px}
 .strip-icon{
-  width:40px;height:40px;border-radius:11px;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  width:42px;height:42px;border-radius:12px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
-.strip-icon svg{width:17px;height:17px;color:var(--paper)}
+.strip-icon svg{width:18px;height:18px;color:var(--paper)}
 .strip-txt strong{display:block;font-size:14.5px;font-weight:600;margin-bottom:2px}
 .strip-txt span{font-size:12.5px;color:rgba(255,255,255,.6)}
 .strip-right{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .countdown{
-  font-family:var(--mono);font-weight:600;font-size:13.5px;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
-  padding:9px 14px;border-radius:9px;letter-spacing:.5px;
-  white-space:nowrap;
+  display:flex;align-items:center;gap:2px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  padding:8px 12px;border-radius:10px;
+  font-family:var(--mono);font-weight:600;
 }
-.countdown .sep{color:rgba(255,255,255,.35);margin:0 3px}
+.countdown .cd-item{display:flex;flex-direction:column;align-items:center;padding:0 8px;min-width:44px}
+.countdown .cd-num{font-size:16px;line-height:1.1;letter-spacing:.5px}
+.countdown .cd-lab{font-size:8.5px;letter-spacing:1.5px;color:rgba(255,255,255,.45);text-transform:uppercase;margin-top:2px;font-family:var(--font)}
+.countdown .sep{color:rgba(255,255,255,.25);font-size:14px}
 .strip-btn{
-  font-size:13px;font-weight:600;color:var(--ink);
-  background:var(--paper);text-decoration:none;
-  padding:10px 16px;border-radius:9px;
-  display:inline-flex;align-items:center;gap:7px;
-  transition:transform .18s ease;
+  font-size:13px;font-weight:600;color:var(--ink);background:var(--paper);
+  text-decoration:none;padding:10px 16px;border-radius:9px;
+  display:inline-flex;align-items:center;gap:7px;transition:transform .18s ease;
 }
 .strip-btn:hover{transform:translateY(-1px)}
 .strip-btn svg{width:14px;height:14px}
 
-/* =================== SECTION PRIMITIVES =================== */
-section{padding:92px 0}
+/* ===================== SECTION PRIMITIVES ===================== */
+section{padding:96px 0;position:relative}
 @media(max-width:760px){section{padding:64px 0}}
-.section-head{margin-bottom:44px;max-width:780px}
+.section-head{margin-bottom:48px;max-width:800px}
 .eyebrow{
   display:inline-flex;align-items:center;gap:9px;
-  font-size:11px;letter-spacing:2.2px;text-transform:uppercase;
+  font-size:11px;letter-spacing:2.4px;text-transform:uppercase;
   color:var(--muted);font-weight:700;margin-bottom:16px;
 }
 .eyebrow svg{width:12px;height:12px}
-.eyebrow::before{
-  content:"";width:20px;height:1px;background:var(--muted);opacity:.5;
-}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--muted);opacity:.5}
 h2{
-  font-size:clamp(28px,3.6vw,40px);letter-spacing:-1.4px;
-  line-height:1.15;font-weight:700;margin-bottom:16px;
+  font-size:clamp(28px,3.7vw,42px);letter-spacing:-1.5px;
+  line-height:1.12;font-weight:700;margin-bottom:16px;
 }
-.lead{font-size:16px;color:var(--muted);line-height:1.65;max-width:640px}
-.divider{height:1px;background:var(--line)}
+.lead{font-size:16px;color:var(--muted);line-height:1.65;max-width:660px}
+.divider{height:1px;background:var(--line);margin:0}
+.center{text-align:center;margin-left:auto;margin-right:auto}
 
-/* =================== DURATIONS =================== */
-.durations{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+/* ===================== VIDEO FEATURE ===================== */
+.video-section{
+  padding:80px 0 40px;
 }
-@media(max-width:820px){.durations{grid-template-columns:1fr}}
+.video-wrap{
+  position:relative;border-radius:var(--radius-xl);overflow:hidden;
+  border:1px solid var(--line);background:var(--ink);
+  aspect-ratio:16/8.4;box-shadow:var(--shadow-lg);
+}
+.video-wrap video{
+  width:100%;height:100%;display:block;object-fit:cover;
+  background:linear-gradient(135deg,#111 0%,#2a2a2a 100%);
+}
+.video-overlay{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.55) 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:36px;
+  color:#fff;
+}
+.video-overlay .tag{
+  display:inline-flex;align-items:center;gap:8px;font-size:11px;
+  letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  color:rgba(255,255,255,.85);margin-bottom:14px;
+}
+.video-overlay .tag::before{content:"";width:22px;height:1.5px;background:var(--gold)}
+.video-overlay h3{font-size:clamp(22px,3vw,34px);letter-spacing:-1px;font-weight:700;line-height:1.15;max-width:560px}
+.video-play{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.95);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  z-index:3;border:none;box-shadow:0 20px 50px rgba(0,0,0,.4);
+  transition:transform .2s ease;
+}
+.video-play:hover{transform:translate(-50%,-50%) scale(1.06)}
+.video-play svg{width:26px;height:26px;color:var(--ink);margin-left:4px}
+@keyframes pulseRing{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:.6}
+  100%{transform:translate(-50%,-50%) scale(1.55);opacity:0}
+}
+.video-play::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  border:2px solid rgba(255,255,255,.8);
+  animation:pulseRing 2.2s ease-out infinite;
+}
+
+/* ===================== CAROUSEL ===================== */
+.carousel-section{padding:40px 0 96px}
+.carousel{
+  position:relative;overflow:hidden;border-radius:var(--radius-xl);
+  border:1px solid var(--line);background:var(--paper-2);
+  box-shadow:var(--shadow-md);
+}
+.carousel-track{display:flex;transition:transform .65s cubic-bezier(.4,0,.2,1)}
+.carousel-slide{
+  min-width:100%;aspect-ratio:16/7.6;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.carousel-slide > *{position:relative;z-index:1}
+.carousel-slide svg{width:100%;height:100%;display:block}
+.carousel-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:46px;height:46px;border-radius:50%;
+  border:1px solid var(--line);background:rgba(255,255,255,.92);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s ease;z-index:4;backdrop-filter:blur(6px);
+}
+.carousel-btn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.carousel-btn.prev{left:18px}
+.carousel-btn.next{right:18px}
+.carousel-btn svg{width:16px;height:16px}
+.carousel-dots{
+  position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:4;
+}
+.carousel-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(0,0,0,.22);border:none;cursor:pointer;
+  transition:all .25s ease;padding:0;
+}
+.carousel-dot.active{background:var(--ink);width:26px;border-radius:4px}
+
+/* ===================== DURATIONS ===================== */
+.durations{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+@media(max-width:880px){.durations{grid-template-columns:1fr}}
 .duration{
   border:1px solid var(--line);border-radius:var(--radius-lg);
-  padding:30px 26px;background:var(--paper);
-  transition:all .25s ease;position:relative;
-  display:flex;flex-direction:column;
+  padding:34px 28px;background:var(--paper);
+  transition:all .28s ease;position:relative;
+  display:flex;flex-direction:column;overflow:hidden;
 }
-.duration:hover{border-color:var(--ink);transform:translateY(-3px);box-shadow:var(--shadow-md)}
-.duration.tag{border-color:var(--ink);border-width:1.5px}
+.duration::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--ink);transform:scaleX(0);transform-origin:left;
+  transition:transform .4s ease;
+}
+.duration:hover{border-color:var(--ink);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.duration:hover::before{transform:scaleX(1)}
+.duration.featured{border-color:var(--ink);border-width:1.5px}
+.duration.featured::before{transform:scaleX(1)}
 .duration .badge{
-  position:absolute;top:-11px;left:26px;
+  position:absolute;top:22px;right:22px;
   background:var(--ink);color:var(--paper);
   font-size:10px;letter-spacing:1.6px;text-transform:uppercase;
   font-weight:700;padding:5px 11px;border-radius:100px;
 }
 .duration .num{
-  font-size:52px;font-weight:700;letter-spacing:-2.5px;line-height:1;
-  margin-bottom:6px;
+  font-size:58px;font-weight:700;letter-spacing:-3px;line-height:1;
+  margin-bottom:8px;
 }
 .duration .num small{
   font-size:14px;font-weight:500;letter-spacing:0;
   color:var(--muted);margin-left:4px;
 }
-.duration h3{font-size:19px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
-.duration .desc{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:22px;flex-grow:1}
-.duration .list{list-style:none;border-top:1px solid var(--line);padding-top:16px}
+.duration h3{font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-.3px}
+.duration .desc{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:24px;flex-grow:1}
+.duration .list{list-style:none;border-top:1px solid var(--line);padding-top:18px}
 .duration .list li{
   display:flex;align-items:flex-start;gap:10px;
   padding:7px 0;font-size:13px;color:var(--muted);
@@ -342,31 +475,38 @@ h2{
 .duration .list li svg{width:14px;height:14px;color:var(--ink);flex-shrink:0;margin-top:3px}
 .duration .list li strong{color:var(--ink);font-weight:600}
 
-/* =================== STREAMS =================== */
-.streams{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
-}
-@media(max-width:1000px){.streams{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.streams{grid-template-columns:1fr}}
+/* ===================== STREAMS ===================== */
+.streams{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:1040px){.streams{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){.streams{grid-template-columns:1fr}}
 .stream{
   border:1px solid var(--line);border-radius:var(--radius);
-  padding:24px 22px;background:var(--paper);
-  transition:all .22s ease;display:flex;flex-direction:column;
-  position:relative;
+  padding:26px 24px;background:var(--paper);
+  transition:all .25s ease;display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
 }
-.stream:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.stream::after{
+  content:"";position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .35s ease;
+}
+.stream:hover{border-color:var(--ink);transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.stream:hover::after{transform:scaleX(1)}
 .stream .icon{
-  width:42px;height:42px;border-radius:11px;
+  width:46px;height:46px;border-radius:12px;
   background:var(--paper-3);border:1px solid var(--line);
-  display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px;
+  transition:background .25s ease,color .25s ease;
 }
-.stream .icon svg{width:19px;height:19px}
+.stream .icon svg{width:20px;height:20px}
+.stream:hover .icon{background:var(--ink);border-color:var(--ink)}
+.stream:hover .icon svg{color:var(--paper)}
 .stream .num{
   font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
   color:var(--muted-2);font-weight:700;margin-bottom:8px;
 }
-.stream h3{font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-.2px;line-height:1.25}
-.stream .tag{font-size:12.5px;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:14px}
+.stream h3{font-size:16.5px;font-weight:700;margin-bottom:6px;letter-spacing:-.2px;line-height:1.25}
+.stream .tag{font-size:12.5px;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:16px}
 .stream .subjects{
   font-size:12px;color:var(--muted);line-height:1.6;
   border-top:1px solid var(--line);padding-top:12px;margin-top:auto;
@@ -379,102 +519,174 @@ h2{
 .stream.primary .icon{background:var(--ink);border-color:var(--ink)}
 .stream.primary .icon svg{color:var(--paper)}
 .stream .flag{
-  position:absolute;top:14px;right:14px;
+  position:absolute;top:16px;right:16px;
   font-size:9.5px;font-weight:700;letter-spacing:1.2px;
-  text-transform:uppercase;padding:3px 8px;border-radius:100px;
-  background:var(--gold-soft);color:var(--gold);border:1px solid rgba(184,148,42,.25);
+  text-transform:uppercase;padding:4px 9px;border-radius:100px;
+  background:var(--gold-soft);color:var(--gold);border:1px solid rgba(181,138,43,.25);
 }
 
-/* =================== STUDIO =================== */
-.studio{
-  background:var(--ink);color:var(--paper);
-  padding:92px 0;
-}
-.studio-grid{
-  display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;
-}
-@media(max-width:920px){.studio-grid{grid-template-columns:1fr;gap:44px}}
-.studio .eyebrow{color:rgba(255,255,255,.55)}
-.studio .eyebrow::before{background:rgba(255,255,255,.35)}
-.studio h2{color:var(--paper)}
-.studio .lead{color:rgba(255,255,255,.7)}
-.studio-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
-.studio-card{
-  border:1px solid rgba(255,255,255,.14);
-  border-radius:var(--radius-lg);padding:30px 28px;
-  background:rgba(255,255,255,.03);
-}
-.studio-card .label{
-  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
-  color:rgba(255,255,255,.5);font-weight:700;margin-bottom:18px;
-}
-.studio-card ul{list-style:none}
-.studio-card li{
-  display:flex;gap:12px;align-items:center;
-  padding:11px 0;border-bottom:1px solid rgba(255,255,255,.1);
-  font-size:13.5px;color:rgba(255,255,255,.85);
-}
-.studio-card li:last-child{border-bottom:none;padding-bottom:0}
-.studio-card li svg{width:15px;height:15px;color:var(--paper);flex-shrink:0;opacity:.7}
-
-/* =================== PRELUDE / ADMISSION =================== */
-.prelude{
-  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;
-}
-@media(max-width:920px){.prelude{grid-template-columns:1fr;gap:44px}}
-.prelude .lead{margin-bottom:26px}
-.prelude-steps{list-style:none;counter-reset:step}
+/* ===================== PRELUDE ===================== */
+.prelude{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+@media(max-width:960px){.prelude{grid-template-columns:1fr;gap:44px}}
+.prelude-steps{list-style:none;counter-reset:step;margin-top:12px}
 .prelude-steps li{
   counter-increment:step;
-  display:flex;gap:18px;align-items:flex-start;
-  padding:18px 0;border-bottom:1px solid var(--line);
+  display:flex;gap:20px;align-items:flex-start;
+  padding:20px 0;border-bottom:1px solid var(--line);
+  transition:padding-left .25s ease;
 }
+.prelude-steps li:hover{padding-left:8px}
 .prelude-steps li:last-child{border-bottom:none}
 .prelude-steps li::before{
   content:counter(step,decimal-leading-zero);
   font-family:var(--mono);font-size:11.5px;font-weight:700;
   color:var(--muted);letter-spacing:1px;
-  width:34px;flex-shrink:0;padding-top:3px;
+  width:36px;flex-shrink:0;padding-top:4px;
 }
-.prelude-steps .body h4{font-size:14.5px;font-weight:700;margin-bottom:4px}
-.prelude-steps .body p{font-size:13px;color:var(--muted);line-height:1.55}
+.prelude-steps .body h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.prelude-steps .body p{font-size:13.5px;color:var(--muted);line-height:1.55}
 .prelude-card{
+  border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:32px 30px;background:var(--paper-2);
+  position:sticky;top:100px;
+}
+.prelude-card .label{
+  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin-bottom:18px;
+  display:flex;align-items:center;gap:8px;
+}
+.prelude-card .label svg{width:13px;height:13px}
+.prelude-card h3{font-size:19px;font-weight:700;margin-bottom:16px;letter-spacing:-.3px}
+.prelude-card ul{list-style:none}
+.prelude-card li{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:10px 0;font-size:13.5px;color:var(--muted);
+  border-bottom:1px dashed var(--line);
+}
+.prelude-card li:last-child{border-bottom:none}
+.prelude-card li svg{width:15px;height:15px;color:var(--ink);flex-shrink:0;margin-top:3px}
+.prelude-card li strong{color:var(--ink);font-weight:600}
+
+/* ===================== STUDIO ===================== */
+.studio{background:var(--ink);color:var(--paper);padding:96px 0;position:relative;overflow:hidden}
+.studio::before{
+  content:"";position:absolute;top:-30%;right:-10%;width:600px;height:600px;
+  background:radial-gradient(circle,rgba(181,138,43,.14) 0%,rgba(181,138,43,0) 65%);
+  pointer-events:none;
+}
+.studio-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center;position:relative;z-index:1}
+@media(max-width:960px){.studio-grid{grid-template-columns:1fr;gap:44px}}
+.studio .eyebrow{color:rgba(255,255,255,.55)}
+.studio .eyebrow::before{background:rgba(255,255,255,.35)}
+.studio h2{color:var(--paper)}
+.studio .lead{color:rgba(255,255,255,.72)}
+.studio-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:30px}
+.studio-card{
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--radius-lg);padding:32px 30px;
+  background:rgba(255,255,255,.035);
+  backdrop-filter:blur(6px);
+}
+.studio-card .label{
+  font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.55);font-weight:700;margin-bottom:18px;
+}
+.studio-card ul{list-style:none}
+.studio-card li{
+  display:flex;gap:12px;align-items:center;
+  padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1);
+  font-size:13.5px;color:rgba(255,255,255,.85);
+}
+.studio-card li:last-child{border-bottom:none;padding-bottom:0}
+.studio-card li svg{width:15px;height:15px;color:var(--gold);flex-shrink:0}
+
+/* ===================== EXAMINATIONS ===================== */
+.exams-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:start}
+@media(max-width:960px){.exams-grid{grid-template-columns:1fr;gap:24px}}
+.exams-table{
+  border:1px solid var(--line);border-radius:var(--radius-lg);
+  overflow:hidden;background:var(--paper);
+}
+.exam-row{
+  display:grid;grid-template-columns:1.6fr 1fr .9fr auto;
+  gap:16px;padding:18px 24px;align-items:center;
+  border-bottom:1px solid var(--line);
+  transition:background .18s ease;
+}
+.exam-row:last-child{border-bottom:none}
+.exam-row.head{
+  background:var(--paper-3);font-size:10.5px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);font-weight:700;
+  padding:14px 24px;
+}
+.exam-row:not(.head):hover{background:var(--paper-2)}
+.exam-row .title{font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:11px}
+.exam-row .title svg{width:16px;height:16px;color:var(--muted);flex-shrink:0}
+.exam-row .meta{font-size:12.5px;color:var(--muted)}
+.exam-row .period{
+  display:inline-flex;font-size:10.5px;font-weight:700;
+  letter-spacing:.8px;padding:4px 10px;border-radius:100px;
+  background:var(--paper-3);color:var(--muted);text-transform:uppercase;
+}
+.exam-row .period.adm{background:var(--gold-soft);color:var(--gold)}
+.exam-row .period.small{background:var(--blue-soft);color:var(--blue)}
+.exam-row .period.qif{background:#f5e8ff;color:#6b21a8}
+.exam-row .act{
+  font-size:12.5px;font-weight:600;color:var(--ink);
+  text-decoration:none;padding:8px 14px;border-radius:8px;
+  border:1px solid var(--line);background:var(--paper);
+  display:inline-flex;align-items:center;gap:6px;
+  transition:all .15s ease;white-space:nowrap;
+}
+.exam-row .act:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.exam-row .act svg{width:13px;height:13px}
+@media(max-width:760px){
+  .exam-row{grid-template-columns:1fr;gap:8px;padding:16px 18px}
+  .exam-row.head{display:none}
+  .exam-row .act{align-self:flex-start}
+}
+
+.exams-side{
   border:1px solid var(--line);border-radius:var(--radius-lg);
   padding:30px 28px;background:var(--paper-2);
 }
-.prelude-card .label{
+.exams-side .label{
   font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
   color:var(--muted);font-weight:700;margin-bottom:16px;
   display:flex;align-items:center;gap:8px;
 }
-.prelude-card .label svg{width:13px;height:13px}
-.prelude-card h3{font-size:18px;font-weight:700;margin-bottom:14px;letter-spacing:-.3px}
-.prelude-card ul{list-style:none}
-.prelude-card li{
-  display:flex;gap:11px;align-items:flex-start;
-  padding:9px 0;font-size:13.5px;color:var(--muted);
-  border-bottom:1px dashed var(--line);
+.exams-side .label svg{width:13px;height:13px}
+.exams-side h3{font-size:18px;font-weight:700;margin-bottom:12px;letter-spacing:-.3px}
+.exams-side p{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:20px}
+.exams-side .doc-list{list-style:none;border-top:1px solid var(--line);padding-top:16px;margin-bottom:20px}
+.exams-side .doc-list li{padding:9px 0;border-bottom:1px dashed var(--line)}
+.exams-side .doc-list li:last-child{border-bottom:none}
+.exams-side .doc-list a{
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+  color:var(--ink);font-size:13.5px;font-weight:600;
+  transition:color .15s ease;
 }
-.prelude-card li:last-child{border-bottom:none}
-.prelude-card li svg{width:14px;height:14px;color:var(--ink);flex-shrink:0;margin-top:3px}
-.prelude-card li strong{color:var(--ink);font-weight:600}
+.exams-side .doc-list a:hover{color:var(--gold)}
+.exams-side .doc-list a svg{width:15px;height:15px;color:var(--muted);flex-shrink:0}
+.exams-side .doc-list a .sub{display:block;font-size:11.5px;color:var(--muted);font-weight:400;margin-top:2px}
+.exams-side .doc-list a .sub svg{width:11px;height:11px}
 
-/* =================== RESOURCES PREVIEW =================== */
-.resources{
+/* ===================== RESOURCES ===================== */
+.res-table{
   border:1px solid var(--line);border-radius:var(--radius-lg);
   overflow:hidden;background:var(--paper);
 }
 .res-row{
-  display:grid;grid-template-columns:1.4fr 1fr 1.1fr auto;
+  display:grid;grid-template-columns:1.6fr 1fr .9fr auto;
   gap:16px;padding:16px 22px;align-items:center;
   border-bottom:1px solid var(--line);
   transition:background .15s ease;
 }
 .res-row:last-child{border-bottom:none}
 .res-row.head{
-  background:var(--paper-3);
-  font-size:10.5px;letter-spacing:1.8px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;padding:13px 22px;
+  background:var(--paper-3);font-size:10.5px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);font-weight:700;
+  padding:14px 22px;
 }
 .res-row:not(.head):hover{background:var(--paper-2)}
 .res-row .title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px}
@@ -485,113 +697,114 @@ h2{
   letter-spacing:.8px;padding:4px 9px;border-radius:6px;
   background:var(--paper-3);color:var(--muted);text-transform:uppercase;
 }
-.res-row .tag.qp{background:#eef3ff;color:#3349a0}
-.res-row .tag.memo{background:#e8f5ec;color:#16693f}
+.res-row .tag.qp{background:var(--blue-soft);color:var(--blue)}
+.res-row .tag.memo{background:var(--green-soft);color:var(--green)}
 .res-row .tag.slides{background:#fdf0e6;color:#8c5000}
 .res-row .act{
   font-size:12.5px;font-weight:600;color:var(--ink);
   text-decoration:none;padding:7px 12px;border-radius:8px;
   border:1px solid var(--line);background:var(--paper);
   display:inline-flex;align-items:center;gap:6px;
-  transition:all .15s ease;
+  transition:all .15s ease;white-space:nowrap;
 }
 .res-row .act:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .res-row .act svg{width:13px;height:13px}
 @media(max-width:760px){
-  .res-row{grid-template-columns:1fr;gap:8px}
+  .res-row{grid-template-columns:1fr;gap:8px;padding:14px 18px}
   .res-row.head{display:none}
   .res-row .act{align-self:flex-start}
 }
 
-/* =================== CERT NOTICE =================== */
-.notice{
-  background:var(--paper-2);border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);padding:88px 0;
-}
-.notice-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px}
+/* ===================== CERTIFICATE NOTICE ===================== */
+.notice{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:96px 0}
+.notice-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;margin-top:52px}
 @media(max-width:820px){.notice-grid{grid-template-columns:1fr;gap:36px}}
 .notice-block h3{
-  font-size:19px;font-weight:700;margin-bottom:12px;
+  font-size:20px;font-weight:700;margin-bottom:14px;
   display:flex;align-items:center;gap:11px;letter-spacing:-.3px;
 }
-.notice-block h3 svg{width:19px;height:19px}
-.notice-block h3.ok{color:var(--ok)}
-.notice-block h3.stop{color:var(--stop)}
-.notice-block > p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:18px}
+.notice-block h3 svg{width:20px;height:20px}
+.notice-block h3.ok{color:var(--green)}
+.notice-block h3.stop{color:var(--red)}
+.notice-block > p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px}
 .notice-list{list-style:none}
 .notice-list li{
   display:flex;gap:11px;align-items:flex-start;
-  padding:8px 0;font-size:13.5px;color:var(--muted);line-height:1.55;
+  padding:9px 0;font-size:13.5px;color:var(--muted);line-height:1.55;
 }
-.notice-list li svg{width:14px;height:14px;flex-shrink:0;margin-top:3px}
-.notice-list.ok li svg{color:var(--ok)}
-.notice-list.stop li svg{color:var(--stop)}
+.notice-list li svg{width:15px;height:15px;flex-shrink:0;margin-top:3px}
+.notice-list.ok li svg{color:var(--green)}
+.notice-list.stop li svg{color:var(--red)}
 
-/* =================== CTA =================== */
-.cta{
-  padding:104px 0;text-align:center;
+/* ===================== CTA ===================== */
+.cta{padding:112px 0;text-align:center;position:relative;overflow:hidden}
+.cta::before{
+  content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:800px;height:800px;border-radius:50%;
+  background:radial-gradient(circle,rgba(181,138,43,.10) 0%,rgba(181,138,43,0) 60%);
+  pointer-events:none;
 }
+.cta-inner{position:relative;z-index:1}
 .cta-eyebrow{
   display:inline-flex;align-items:center;gap:9px;
-  font-size:11px;letter-spacing:2.2px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:20px;
-  padding:7px 14px;border:1px solid var(--line);border-radius:100px;
+  font-size:11px;letter-spacing:2.4px;text-transform:uppercase;
+  color:var(--muted);font-weight:700;margin-bottom:22px;
+  padding:8px 15px;border:1px solid var(--line);border-radius:100px;
   background:var(--paper-2);
 }
 .cta-eyebrow svg{width:12px;height:12px}
-.cta h2{margin:0 auto 18px;max-width:640px}
-.cta p{font-size:16px;color:var(--muted);max-width:520px;margin:0 auto 32px}
+.cta h2{margin:0 auto 18px;max-width:680px}
+.cta p{font-size:16px;color:var(--muted);max-width:540px;margin:0 auto 34px}
 .cta-actions{display:flex;gap:11px;justify-content:center;flex-wrap:wrap}
 
-/* =================== FOOTER =================== */
-footer{border-top:1px solid var(--line);padding:72px 0 32px}
+/* ===================== FOOTER ===================== */
+footer{border-top:1px solid var(--line);padding:80px 0 36px}
 .footer-grid{
-  display:grid;grid-template-columns:1.5fr repeat(3,1fr);
-  gap:44px;margin-bottom:52px;
+  display:grid;grid-template-columns:1.6fr repeat(3,1fr);
+  gap:48px;margin-bottom:56px;
 }
-@media(max-width:820px){.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
-@media(max-width:520px){.footer-grid{grid-template-columns:1fr}}
-.footer-brand .brand-mark{font-size:34px;margin-bottom:12px;display:block}
-.footer-brand p{font-size:13px;color:var(--muted);line-height:1.7;max-width:320px}
+@media(max-width:860px){.footer-grid{grid-template-columns:1fr 1fr;gap:36px}}
+@media(max-width:540px){.footer-grid{grid-template-columns:1fr}}
+.footer-brand .brand-mark{font-size:52px;margin-bottom:14px;display:block;line-height:.9}
+.footer-brand p{font-size:13.5px;color:var(--muted);line-height:1.7;max-width:340px}
 .footer-brand .ifb{
   display:inline-flex;align-items:center;gap:8px;
-  margin-top:16px;padding:7px 12px;border:1px solid var(--line);
-  border-radius:8px;font-size:11px;font-weight:700;
+  margin-top:18px;padding:8px 13px;border:1px solid var(--line);
+  border-radius:9px;font-size:11px;font-weight:700;
   letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);
 }
 .footer-col h5{
   font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);font-weight:700;margin-bottom:16px;
+  color:var(--muted);font-weight:700;margin-bottom:18px;
 }
 .footer-col a{
-  display:flex;align-items:center;gap:8px;
-  color:var(--ink);text-decoration:none;font-size:13.5px;
-  padding:5px 0;font-weight:500;transition:color .15s ease;
+  display:flex;align-items:center;gap:8px;color:var(--ink);
+  text-decoration:none;font-size:13.5px;padding:6px 0;
+  font-weight:500;transition:color .15s ease;
 }
 .footer-col a:hover{color:var(--muted)}
 .footer-col a svg{width:13px;height:13px;color:var(--muted-2)}
 .footer-bottom{
-  border-top:1px solid var(--line);padding-top:26px;
+  border-top:1px solid var(--line);padding-top:28px;
   display:flex;justify-content:space-between;align-items:flex-start;
   gap:24px;flex-wrap:wrap;
 }
 .footer-bottom .copy{font-size:12.5px;color:var(--muted)}
 .footer-bottom .disclaimer{
   font-size:11.5px;color:var(--muted);line-height:1.7;
-  max-width:660px;text-align:right;
+  max-width:680px;text-align:right;
 }
 @media(max-width:760px){
   .footer-bottom{flex-direction:column}
   .footer-bottom .disclaimer{text-align:left}
 }
 
-/* =================== WELCOME POP =================== */
+/* ===================== WELCOME POP ===================== */
 .pop{
-  position:fixed;bottom:22px;right:22px;
-  width:390px;max-width:calc(100vw - 32px);
-  background:var(--paper);border:1px solid var(--ink);
-  border-radius:18px;box-shadow:var(--shadow-lg);
-  padding:24px;z-index:200;
+  position:fixed;bottom:22px;right:22px;width:400px;
+  max-width:calc(100vw - 32px);background:var(--paper);
+  border:1px solid var(--ink);border-radius:18px;
+  box-shadow:var(--shadow-xl);padding:26px;z-index:200;
   display:none;animation:popIn .45s cubic-bezier(.16,1,.3,1) both;
 }
 .pop.show{display:block}
@@ -605,13 +818,13 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
 .pop-close:hover{background:var(--line)}
 .pop-close svg{width:14px;height:14px}
 .pop-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.pop-head .avatar{display:flex;width:50px;height:50px;border-radius:13px}
+.pop-head .avatar{display:flex;width:52px;height:52px;border-radius:14px}
 .pop-eyebrow{
   font-size:10.5px;letter-spacing:2px;text-transform:uppercase;
   color:var(--muted);font-weight:700;margin-bottom:3px;
 }
-.pop h3{font-size:16.5px;font-weight:700;line-height:1.25}
-.pop p{font-size:13.5px;color:var(--muted);margin-bottom:16px;line-height:1.55}
+.pop h3{font-size:17px;font-weight:700;line-height:1.25}
+.pop p{font-size:13.5px;color:var(--muted);margin-bottom:18px;line-height:1.55}
 .pop-actions{display:flex;gap:8px;flex-wrap:wrap}
 .pop-actions a{
   font-size:13px;font-weight:600;padding:9px 14px;border-radius:8px;
@@ -625,27 +838,52 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
 .pop-actions a svg{width:13px;height:13px}
 @media(max-width:520px){.pop{bottom:12px;right:12px;left:12px;width:auto}}
 
-/* =================== UTIL =================== */
-.fade-in{animation:fadeUp .65s ease both}
-.fade-in-1{animation:fadeUp .65s ease .08s both}
-.fade-in-2{animation:fadeUp .65s ease .16s both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+/* ===================== AUTH GATING ===================== */
+.auth-only{display:none !important}
+body.signed-in .auth-only{display:inline-flex !important}
+body.signed-in .guest-only{display:none !important}
 
-/* Reveal-on-scroll */
-.rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+/* ===================== REVEAL ===================== */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
 .rv.on{opacity:1;transform:translateY(0)}
+
+/* ===================== MARQUEE ===================== */
+.marquee{
+  overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  background:var(--paper-2);padding:22px 0;position:relative;
+}
+.marquee::before,.marquee::after{
+  content:"";position:absolute;top:0;bottom:0;width:100px;z-index:2;pointer-events:none;
+}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--paper-2),rgba(250,250,250,0))}
+.marquee::after{right:0;background:linear-gradient(270deg,var(--paper-2),rgba(250,250,250,0))}
+.marquee-track{
+  display:flex;gap:60px;white-space:nowrap;
+  animation:marquee 40s linear infinite;
+  width:max-content;
+}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-item{
+  display:inline-flex;align-items:center;gap:14px;
+  font-size:14px;font-weight:600;color:var(--muted);
+  letter-spacing:.3px;
+}
+.marquee-item::before{
+  content:"∆";font-size:11px;color:var(--muted-3);
+}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 </style>
 </head>
 <body>
 
-<!-- =================== LOADER =================== -->
+<!-- ===================== LOADER ===================== -->
 <div class="loader" id="loader" aria-hidden="true">
   <div class="loader-mark">∆</div>
   <div class="loader-label">IFB · Online Institute</div>
   <div class="loader-bar"><span></span></div>
 </div>
 
-<!-- =================== NAV =================== -->
+<!-- ===================== NAV ===================== -->
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="brand">
@@ -656,15 +894,16 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
       </span>
     </a>
     <div class="nav-right">
-      <a href="auth.html" class="nav-btn" id="navAuth"><i data-lucide="user-plus"></i> Apply</a>
-      <a href="portal.html" class="nav-link" id="navPortal" style="display:none;"><i data-lucide="book-open"></i> Portal</a>
+      <a href="auth.html" class="nav-btn guest-only"><i data-lucide="user-plus"></i> Apply</a>
+      <a href="portal.html" class="nav-link auth-only"><i data-lucide="book-open"></i> Portal</a>
+      <a href="exams.html" class="nav-link auth-only"><i data-lucide="lock"></i> Exams</a>
       <a href="portal.html" class="avatar" id="navAvatar" title="My profile"></a>
       <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
 </nav>
 
-<!-- =================== DROPDOWN =================== -->
+<!-- ===================== DROPDOWN ===================== -->
 <div class="dropdown" id="dropdown">
   <div class="dropdown-inner">
     <div class="dd-group">
@@ -675,15 +914,16 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
     </div>
     <div class="dd-group">
       <h4><i data-lucide="user-plus"></i> Enrolment</h4>
-      <a href="auth.html"><i data-lucide="edit-3"></i> Apply to IFB</a>
-      <a href="portal.html"><i data-lucide="book-open"></i> Student Portal</a>
-      <a href="admission-exam.html"><i data-lucide="shield-check"></i> Prelude (Admission)</a>
+      <a href="auth.html" class="guest-only"><i data-lucide="edit-3"></i> Apply to IFB</a>
+      <a href="portal.html" class="auth-only"><i data-lucide="book-open"></i> Student Portal</a>
+      <a href="admission-exam.html"><i data-lucide="shield-check"></i> The Prelude</a>
     </div>
     <div class="dd-group">
       <h4><i data-lucide="clipboard-check"></i> Examinations</h4>
-      <a href="exams.html"><i data-lucide="lock"></i> Exam Gateway</a>
-      <a href="admission-slip.html"><i data-lucide="ticket"></i> Admission Slip</a>
-      <a href="#schedule"><i data-lucide="calendar"></i> 2027 Schedule</a>
+      <a href="exams.html" class="auth-only"><i data-lucide="lock"></i> Exam Gateway</a>
+      <a href="admission-slip.html" class="auth-only"><i data-lucide="ticket"></i> Admission Slip</a>
+      <a href="#exams"><i data-lucide="calendar"></i> 2027 Timetable</a>
+      <a href="prelude-qp-2027.html"><i data-lucide="file-text"></i> Prelude QP 2027</a>
     </div>
     <div class="dd-group">
       <h4><i data-lucide="briefcase"></i> Studio &amp; Legal</h4>
@@ -694,21 +934,22 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   </div>
 </div>
 
-<!-- =================== HERO =================== -->
+<!-- ===================== HERO ===================== -->
 <header class="hero">
   <div class="shell">
     <div class="hero-grid">
-      <div class="hero-text">
+      <div>
         <div class="hero-eyebrow fade-in">
           <i data-lucide="sparkles"></i> Inaugural intake · 2027
         </div>
-        <h1 class="fade-in">An online institute,<br><em>built for depth.</em></h1>
+        <h1 class="fade-in">An online institute,<br><em>built for </em><span class="accent">depth</span>.</h1>
         <p class="hero-lead fade-in-1">
           Eight streams. Three durations. One Prelude to test what you already bring.
           Skills-based, non-accredited, in the spirit of international standard.
         </p>
         <div class="hero-actions fade-in-2">
-          <a href="auth.html" class="btn btn-primary"><i data-lucide="arrow-right"></i> Apply to IFB</a>
+          <a href="auth.html" class="btn btn-primary guest-only"><i data-lucide="arrow-right"></i> Apply to IFB</a>
+          <a href="portal.html" class="btn btn-primary auth-only"><i data-lucide="book-open"></i> Open my portal</a>
           <a href="courses.html" class="btn btn-secondary"><i data-lucide="layout-grid"></i> Explore streams</a>
         </div>
         <div class="hero-meta fade-in-2">
@@ -719,25 +960,40 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
         </div>
       </div>
 
-      <aside class="side-card fade-in-1">
-        <div class="label"><i data-lucide="info"></i> Admissions at a glance</div>
-        <h3>Apply once. Be tested once.</h3>
-        <p class="sub">
-          Sign up to receive a <strong>Reference ID</strong>. Sit the <strong>Prelude</strong> to prove foundational skill.
-          Pass, and IFB issues your <strong>Student Number</strong> — your permanent identity within the institute.
-        </p>
-        <ul class="side-list">
-          <li><span class="k"><i data-lucide="hash"></i> Reference ID</span><span class="v">On sign-up</span></li>
-          <li><span class="k"><i data-lucide="shield-check"></i> Prelude</span><span class="v">Admission test</span></li>
-          <li><span class="k"><i data-lucide="badge"></i> Student №</span><span class="v">After Prelude</span></li>
-          <li><span class="k"><i data-lucide="ticket"></i> Admission Slip</span><span class="v">Post-approval</span></li>
-        </ul>
-      </aside>
+      <div class="hero-visual fade-in-1">
+        <div class="grid-bg"></div>
+        <div class="stage">
+          <div>
+            <div class="k">Admissions · 2027</div>
+            <div class="title" style="margin-top:14px">Apply once. Be tested once. Get your Student Number.</div>
+            <div class="chips">
+              <span class="chip gold">Reference ID</span>
+              <span class="chip blue">Prelude</span>
+              <span class="chip green">Student №</span>
+              <span class="chip">Editable stream</span>
+            </div>
+          </div>
+          <div class="bottom">
+            <div class="stat">
+              <div class="n">08</div>
+              <div class="l">Streams</div>
+            </div>
+            <div class="stat">
+              <div class="n">03</div>
+              <div class="l">Durations</div>
+            </div>
+            <div class="stat">
+              <div class="n">21<small style="font-size:14px;color:var(--muted)"> Mar</small></div>
+              <div class="l">Deadline</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </header>
 
-<!-- =================== STRIP / COUNTDOWN =================== -->
+<!-- ===================== STRIP / COUNTDOWN ===================== -->
 <div class="strip">
   <div class="shell">
     <div class="strip-inner">
@@ -745,15 +1001,18 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
         <div class="strip-icon"><i data-lucide="calendar-clock"></i></div>
         <div class="strip-txt">
           <strong>Applications close 21 March 2027</strong>
-          <span>Prelude sittings open 13 January 2027</span>
+          <span>Examinations begin one week later · 28 March 2027</span>
         </div>
       </div>
       <div class="strip-right">
         <div class="countdown" id="countdown" aria-live="polite">
-          <span id="cd-d">—</span>d<span class="sep">·</span>
-          <span id="cd-h">—</span>h<span class="sep">·</span>
-          <span id="cd-m">—</span>m<span class="sep">·</span>
-          <span id="cd-s">—</span>s
+          <div class="cd-item"><span class="cd-num" id="cd-d">—</span><span class="cd-lab">Days</span></div>
+          <span class="sep">·</span>
+          <div class="cd-item"><span class="cd-num" id="cd-h">—</span><span class="cd-lab">Hrs</span></div>
+          <span class="sep">·</span>
+          <div class="cd-item"><span class="cd-num" id="cd-m">—</span><span class="cd-lab">Min</span></div>
+          <span class="sep">·</span>
+          <div class="cd-item"><span class="cd-num" id="cd-s">—</span><span class="cd-lab">Sec</span></div>
         </div>
         <a href="admission-exam.html" class="strip-btn"><i data-lucide="arrow-right"></i> About the Prelude</a>
       </div>
@@ -761,7 +1020,233 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   </div>
 </div>
 
-<!-- =================== DURATIONS =================== -->
+<!-- ===================== MARQUEE ===================== -->
+<div class="marquee">
+  <div class="marquee-track" id="marqueeTrack">
+    <!-- duplicated in JS -->
+  </div>
+</div>
+
+<!-- ===================== VIDEO FEATURE ===================== -->
+<section class="video-section">
+  <div class="shell">
+    <div class="section-head rv">
+      <div class="eyebrow"><i data-lucide="play-circle"></i> Inside IFB</div>
+      <h2>What an IFB programme looks like.</h2>
+      <p class="lead">
+        A short walk-through of the platform, the Prelude, the exam gateway, and the way
+        a curriculum is built inside your portal.
+      </p>
+    </div>
+
+    <div class="video-wrap rv" id="videoWrap">
+      <video id="heroVideo" poster="" preload="metadata" muted playsinline>
+        <source src="media/institute.mp4" type="video/mp4">
+      </video>
+      <button class="video-play" id="videoPlay" aria-label="Play video">
+        <i data-lucide="play"></i>
+      </button>
+      <div class="video-overlay">
+        <div class="tag">2027 · Institute showreel</div>
+        <h3>Three durations. Eight streams. One platform.</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CAROUSEL ===================== -->
+<div class="carousel-section">
+  <div class="shell">
+    <div class="carousel">
+      <div class="carousel-track" id="carouselTrack">
+
+        <!-- Slide 1: Roadmap -->
+        <div class="carousel-slide">
+          <svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="1200" height="560" fill="#fafafa"/>
+            <text x="600" y="70" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="30" font-weight="700" fill="#0b0b0b" letter-spacing="-1">THE FULL STACK ROADMAP</text>
+            <text x="600" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13.5" fill="#6f6f6f">Ten stages · from HTML to deployment</text>
+            <g transform="translate(50,150)">
+              <g>
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#6f6f6f">STAGE 01</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0b0b0b">HTML</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6f6f6f">Structure</text>
+              </g>
+              <path d="M180 65 L 208 65" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(218,0)">
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#6f6f6f">STAGE 02</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0b0b0b">CSS</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6f6f6f">Style</text>
+              </g>
+              <path d="M398 65 L 426 65" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(436,0)">
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#6f6f6f">STAGE 03</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0b0b0b">Git</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6f6f6f">Versioning</text>
+              </g>
+              <path d="M616 65 L 644 65" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(654,0)">
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#0b0b0b" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#b58a2b">STAGE 04</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#fff">JavaScript</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#b4b4b4">Behaviour</text>
+              </g>
+              <path d="M834 65 L 862 65" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(872,0)">
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#6f6f6f">STAGE 05</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0b0b0b">React</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6f6f6f">Frontend</text>
+              </g>
+            </g>
+            <g transform="translate(50,330)">
+              <g>
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#6f6f6f">STAGE 06</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0b0b0b">Node.js</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6f6f6f">Server</text>
+              </g>
+              <path d="M180 65 L 208 65" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(218,0)">
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#6f6f6f">STAGE 07</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0b0b0b">MongoDB</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6f6f6f">Data</text>
+              </g>
+              <path d="M398 65 L 426 65" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(436,0)">
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#6f6f6f">STAGE 08</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0b0b0b">REST API</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6f6f6f">Interface</text>
+              </g>
+              <path d="M616 65 L 644 65" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(654,0)">
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#6f6f6f">STAGE 09</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0b0b0b">Cloud</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#6f6f6f">Deploy</text>
+              </g>
+              <path d="M834 65 L 862 65" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(872,0)">
+                <rect x="0" y="0" width="170" height="130" rx="14" fill="#0b0b0b" stroke="#0b0b0b" stroke-width="1.5"/>
+                <text x="85" y="46" text-anchor="middle" font-family="ui-monospace,monospace" font-size="12" font-weight="700" fill="#b58a2b">STAGE 10</text>
+                <text x="85" y="84" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="22" font-weight="700" fill="#fff">Capstone</text>
+                <text x="85" y="108" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" fill="#b4b4b4">Build it all</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Slide 2: Three durations -->
+        <div class="carousel-slide">
+          <svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="1200" height="560" fill="#0b0b0b"/>
+            <text x="600" y="76" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="30" font-weight="700" fill="#fff" letter-spacing="-1">THREE DURATIONS · EIGHT STREAMS</text>
+            <text x="600" y="106" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13.5" fill="#b4b4b4">Skills-based · Non-accredited · Online</text>
+            <g transform="translate(110,180)">
+              <rect x="0" y="0" width="290" height="290" rx="18" fill="#fff"/>
+              <text x="145" y="70" text-anchor="middle" font-family="ui-monospace,monospace" font-size="68" font-weight="700" fill="#0b0b0b">3</text>
+              <text x="145" y="96" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f" letter-spacing="3">MONTHS</text>
+              <line x1="40" y1="124" x2="250" y2="124" stroke="#e7e7e7"/>
+              <text x="145" y="162" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="17" font-weight="700" fill="#0b0b0b">Foundation</text>
+              <text x="145" y="186" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#6f6f6f">1 exam period · 4 subjects</text>
+              <text x="145" y="228" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f">Stream + 1 elective</text>
+              <text x="145" y="252" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f">Entry-level portfolio</text>
+            </g>
+            <g transform="translate(455,180)">
+              <rect x="0" y="0" width="290" height="290" rx="18" fill="#fff" stroke="#b58a2b" stroke-width="2"/>
+              <text x="145" y="70" text-anchor="middle" font-family="ui-monospace,monospace" font-size="68" font-weight="700" fill="#0b0b0b">9</text>
+              <text x="145" y="96" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f" letter-spacing="3">MONTHS</text>
+              <line x1="40" y1="124" x2="250" y2="124" stroke="#e7e7e7"/>
+              <text x="145" y="162" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="17" font-weight="700" fill="#0b0b0b">Specialisation</text>
+              <text x="145" y="186" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#6f6f6f">2 exam periods · 6 subjects</text>
+              <text x="145" y="228" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f">Stream + 2 electives</text>
+              <text x="145" y="252" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f">Capstone project</text>
+            </g>
+            <g transform="translate(800,180)">
+              <rect x="0" y="0" width="290" height="290" rx="18" fill="#fff"/>
+              <text x="145" y="70" text-anchor="middle" font-family="ui-monospace,monospace" font-size="68" font-weight="700" fill="#0b0b0b">12</text>
+              <text x="145" y="96" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f" letter-spacing="3">MONTHS</text>
+              <line x1="40" y1="124" x2="250" y2="124" stroke="#e7e7e7"/>
+              <text x="145" y="162" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="17" font-weight="700" fill="#0b0b0b">Advanced</text>
+              <text x="145" y="186" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#6f6f6f">3 exam periods · 6 subjects</text>
+              <text x="145" y="228" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f">Stream + 2 electives</text>
+              <text x="145" y="252" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" fill="#6f6f6f">Extended capstone</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Slide 3: Studio -->
+        <div class="carousel-slide">
+          <svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <rect width="1200" height="560" fill="#fafafa"/>
+            <text x="600" y="70" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="30" font-weight="700" fill="#0b0b0b" letter-spacing="-1">WE ALSO BUILD WEBSITES</text>
+            <text x="600" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13.5" fill="#6f6f6f">Separate studio division · portfolios, landing pages, small business</text>
+            <g transform="translate(220,160)">
+              <rect x="0" y="0" width="760" height="360" rx="16" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+              <rect x="0" y="0" width="760" height="42" rx="16" fill="#0b0b0b"/>
+              <rect x="0" y="22" width="760" height="20" fill="#0b0b0b"/>
+              <circle cx="28" cy="21" r="6" fill="#fff" opacity=".9"/>
+              <circle cx="50" cy="21" r="6" fill="#fff" opacity=".55"/>
+              <circle cx="72" cy="21" r="6" fill="#fff" opacity=".25"/>
+              <rect x="120" y="13" width="280" height="16" rx="8" fill="#2b2b2b"/>
+              <rect x="40" y="76" width="320" height="26" rx="4" fill="#0b0b0b"/>
+              <rect x="40" y="116" width="480" height="12" rx="3" fill="#ebebeb"/>
+              <rect x="40" y="136" width="400" height="12" rx="3" fill="#ebebeb"/>
+              <rect x="40" y="172" width="150" height="38" rx="9" fill="#0b0b0b"/>
+              <rect x="204" y="172" width="150" height="38" rx="9" fill="#fff" stroke="#0b0b0b" stroke-width="1.5"/>
+              <g transform="translate(40,240)">
+                <rect x="0" y="0" width="210" height="100" rx="10" fill="#fafafa" stroke="#ebebeb"/>
+                <rect x="18" y="18" width="38" height="38" rx="9" fill="#0b0b0b"/>
+                <rect x="18" y="68" width="110" height="8" rx="2" fill="#0b0b0b"/>
+                <rect x="18" y="84" width="150" height="6" rx="2" fill="#b58a2b"/>
+              </g>
+              <g transform="translate(266,240)">
+                <rect x="0" y="0" width="210" height="100" rx="10" fill="#fafafa" stroke="#ebebeb"/>
+                <rect x="18" y="18" width="38" height="38" rx="9" fill="#2f4ba8"/>
+                <rect x="18" y="68" width="110" height="8" rx="2" fill="#0b0b0b"/>
+                <rect x="18" y="84" width="150" height="6" rx="2" fill="#2f4ba8"/>
+              </g>
+              <g transform="translate(492,240)">
+                <rect x="0" y="0" width="210" height="100" rx="10" fill="#fafafa" stroke="#ebebeb"/>
+                <rect x="18" y="18" width="38" height="38" rx="9" fill="#0a7d4f"/>
+                <rect x="18" y="68" width="110" height="8" rx="2" fill="#0b0b0b"/>
+                <rect x="18" y="84" width="150" height="6" rx="2" fill="#0a7d4f"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Slide 4: Quote -->
+        <div class="carousel-slide">
+          <svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0b0b0b"/>
+                <stop offset="1" stop-color="#1c1c1c"/>
+              </linearGradient>
+            </defs>
+            <rect width="1200" height="560" fill="url(#cg)"/>
+            <text x="600" y="240" text-anchor="middle" font-family="'Times New Roman',serif" font-size="38" font-style="italic" fill="#fff">"Depth over credentials."</text>
+            <text x="600" y="296" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="14" fill="#b58a2b" letter-spacing="5">AQUILA · AUREA</text>
+            <text x="600" y="340" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="12" fill="#b4b4b4" letter-spacing="3">SCIENTIA LIBERA · LUX SINE FINIBUS</text>
+            <line x1="540" y1="390" x2="660" y2="390" stroke="#b58a2b" stroke-width="1"/>
+          </svg>
+        </div>
+
+      </div>
+      <button class="carousel-btn prev" id="carPrev" aria-label="Previous"><i data-lucide="chevron-left"></i></button>
+      <button class="carousel-btn next" id="carNext" aria-label="Next"><i data-lucide="chevron-right"></i></button>
+      <div class="carousel-dots" id="carDots"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DURATIONS ===================== -->
 <section id="durations">
   <div class="shell">
     <div class="section-head rv">
@@ -770,7 +1255,7 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
       <p class="lead">
         Every programme follows the same subject logic — Mathematics, two core subjects,
         one stream subject, and two electives you choose. Duration decides how much time
-        you get between exam periods, not what you learn.
+        you get between examination periods, not what you learn.
       </p>
     </div>
 
@@ -792,14 +1277,14 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
         <h3>Specialisation</h3>
         <p class="desc">The mainstream track. Two examination periods, a targeted revision window, and a full subject load.</p>
         <ul class="list">
-          <li><i data-lucide="circle-dot"></i> <strong>2 exam periods</strong> — Intermediate Exam I &amp; II</li>
+          <li><i data-lucide="circle-dot"></i> <strong>2 exam periods</strong> — Intermediate I &amp; II</li>
           <li><i data-lucide="circle-dot"></i> 6 subjects</li>
           <li><i data-lucide="circle-dot"></i> Stream + 2 electives</li>
           <li><i data-lucide="circle-dot"></i> Capstone project</li>
         </ul>
       </article>
 
-      <article class="duration rv tag">
+      <article class="duration featured rv">
         <div class="badge">Full track</div>
         <div class="num">12<small>months</small></div>
         <h3>Advanced</h3>
@@ -815,7 +1300,7 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   </div>
 </section>
 
-<!-- =================== STREAMS =================== -->
+<!-- ===================== STREAMS ===================== -->
 <section id="streams">
   <div class="shell">
     <div class="section-head rv">
@@ -921,7 +1406,7 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   </div>
 </section>
 
-<!-- =================== PRELUDE =================== -->
+<!-- ===================== PRELUDE ===================== -->
 <section id="prelude">
   <div class="shell">
     <div class="prelude">
@@ -979,7 +1464,7 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   </div>
 </section>
 
-<!-- =================== STUDIO =================== -->
+<!-- ===================== STUDIO ===================== -->
 <div class="studio" id="studio">
   <div class="shell">
     <div class="studio-grid">
@@ -991,7 +1476,7 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
           sites, and student portfolios — designed and shipped. No account needed.
         </p>
         <div class="studio-actions">
-          <a href="mailto:n1nathaniel971@gmail.com" class="btn btn-primary"><i data-lucide="mail"></i> Request a quote</a>
+          <a href="mailto:n1nathaniel971@gmail.com" class="btn btn-gold"><i data-lucide="mail"></i> Request a quote</a>
           <a href="messages.html" class="btn btn-ghost"><i data-lucide="message-square"></i> Message the studio</a>
         </div>
       </div>
@@ -1009,23 +1494,47 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   </div>
 </div>
 
-<!-- =================== SCHEDULE =================== -->
-<section id="schedule">
+<!-- ===================== EXAMINATIONS ===================== -->
+<section id="exams">
   <div class="shell">
     <div class="section-head rv">
-      <div class="eyebrow"><i data-lucide="calendar"></i> 2027 schedule</div>
+      <div class="eyebrow"><i data-lucide="clipboard-check"></i> Examinations</div>
       <h2>Prelude first. Then examination periods.</h2>
       <p class="lead">
         Every sitting is online through the Exam Gateway. One paper per subject, per period.
         All papers set and marked internally by the <strong>IFB Examination Board</strong>.
+        Examinations begin <strong>one week after</strong> applications close.
       </p>
     </div>
 
-    <div class="resources rv" id="scheduleRows"></div>
+    <div class="exams-grid">
+      <div class="exams-table rv" id="examRows"></div>
+
+      <aside class="exams-side rv">
+        <div class="label"><i data-lucide="file-text"></i> Examination documents</div>
+        <h3>Papers &amp; timetable</h3>
+        <p>Download or open the current examination documents. All documents are A4 and open in the viewer.</p>
+        <ul class="doc-list">
+          <li>
+            <a href="prelude-qp-2027.html">
+              <i data-lucide="file-text"></i>
+              <span>Prelude Question Paper 2027<span class="sub">Admission examination · A4</span></span>
+            </a>
+          </li>
+          <li>
+            <a href="IFB-2026-timetable.html">
+              <i data-lucide="calendar"></i>
+              <span>IFB 2026 Examinations Timetable<span class="sub">All periods · A4</span></span>
+            </a>
+          </li>
+        </ul>
+        <a href="resources.html" class="btn btn-secondary" style="width:100%"><i data-lucide="arrow-right"></i> All resources</a>
+      </aside>
+    </div>
   </div>
 </section>
 
-<!-- =================== RESOURCES PREVIEW =================== -->
+<!-- ===================== RESOURCES PREVIEW ===================== -->
 <section id="resources-preview">
   <div class="shell">
     <div class="section-head rv">
@@ -1037,11 +1546,11 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
       </p>
     </div>
 
-    <div class="resources rv">
+    <div class="res-table rv">
       <div class="res-row head">
         <span>Document</span>
         <span>Subject</span>
-        <span>Period</span>
+        <span>Type</span>
         <span></span>
       </div>
       <div class="res-row">
@@ -1072,10 +1581,10 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   </div>
 </section>
 
-<!-- =================== CERTIFICATE NOTICE =================== -->
+<!-- ===================== CERTIFICATE NOTICE ===================== -->
 <div class="notice" id="certificate">
   <div class="shell">
-    <div class="section-head rv" style="text-align:center;margin:0 auto 52px;max-width:720px">
+    <div class="section-head center rv" style="text-align:center;max-width:740px">
       <div class="eyebrow" style="justify-content:center"><i data-lucide="file-check"></i> Certificate status</div>
       <h2 style="text-align:center">What our record does and does not do.</h2>
       <p class="lead" style="margin:0 auto;text-align:center">
@@ -1110,26 +1619,27 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
       </div>
     </div>
 
-    <div style="text-align:center;margin-top:48px">
+    <div style="text-align:center;margin-top:52px">
       <a href="certificate.html" class="btn btn-secondary rv"><i data-lucide="file-check"></i> Read full certificate status</a>
     </div>
   </div>
 </div>
 
-<!-- =================== CTA =================== -->
+<!-- ===================== CTA ===================== -->
 <div class="cta">
-  <div class="shell">
+  <div class="shell cta-inner">
     <div class="cta-eyebrow rv"><i data-lucide="sparkles"></i> 2027 intake</div>
     <h2 class="rv">Apply. Sit the Prelude. Get your Student Number.</h2>
-    <p class="rv">Applications close 21 March 2027. Prelude sittings open 13 January 2027.</p>
+    <p class="rv">Applications close 21 March 2027. Examinations begin 28 March 2027.</p>
     <div class="cta-actions rv">
-      <a href="auth.html" class="btn btn-primary"><i data-lucide="arrow-right"></i> Apply to IFB</a>
+      <a href="auth.html" class="btn btn-primary guest-only"><i data-lucide="arrow-right"></i> Apply to IFB</a>
+      <a href="portal.html" class="btn btn-primary auth-only"><i data-lucide="book-open"></i> Open my portal</a>
       <a href="courses.html" class="btn btn-secondary"><i data-lucide="layout-grid"></i> See the streams</a>
     </div>
   </div>
 </div>
 
-<!-- =================== FOOTER =================== -->
+<!-- ===================== FOOTER ===================== -->
 <footer>
   <div class="shell">
     <div class="footer-grid">
@@ -1151,10 +1661,10 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
 
       <div class="footer-col">
         <h5>Enrolment</h5>
-        <a href="auth.html"><i data-lucide="edit-3"></i> Apply to IFB</a>
-        <a href="portal.html"><i data-lucide="book-open"></i> Student Portal</a>
+        <a href="auth.html" class="guest-only"><i data-lucide="edit-3"></i> Apply to IFB</a>
+        <a href="portal.html" class="auth-only"><i data-lucide="book-open"></i> Student Portal</a>
         <a href="admission-exam.html"><i data-lucide="shield-check"></i> Prelude</a>
-        <a href="admission-slip.html"><i data-lucide="ticket"></i> Admission Slip</a>
+        <a href="admission-slip.html" class="auth-only"><i data-lucide="ticket"></i> Admission Slip</a>
       </div>
 
       <div class="footer-col">
@@ -1178,7 +1688,7 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   </div>
 </footer>
 
-<!-- =================== WELCOME POP =================== -->
+<!-- ===================== WELCOME POP ===================== -->
 <div class="pop" id="welcomePop">
   <button class="pop-close" id="popClose" aria-label="Close"><i data-lucide="x"></i></button>
   <div class="pop-head">
@@ -1191,16 +1701,16 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   <p>Subjects, exam schedule, admission slip, and the Prelude — all in your portal.</p>
   <div class="pop-actions">
     <a href="portal.html" class="primary"><i data-lucide="book-open"></i> Open portal</a>
-    <a href="admission-exam.html" class="ghost"><i data-lucide="shield-check"></i> Prelude</a>
+    <a href="exams.html" class="ghost"><i data-lucide="lock"></i> Exam Gateway</a>
   </div>
 </div>
 
-<!-- =================== INLINE SCRIPTS =================== -->
+<!-- ===================== INLINE SCRIPTS ===================== -->
 <script>
-/* ============ LOADER ============ */
+/* ---------- LOADER ---------- */
 (function(){
   const loader = document.getElementById('loader');
-  const minShow = 750;
+  const minShow = 850;
   const start = Date.now();
   function hide(){
     const elapsed = Date.now() - start;
@@ -1212,11 +1722,10 @@ footer{border-top:1px solid var(--line);padding:72px 0 32px}
   }
   if (document.readyState === 'complete') hide();
   else window.addEventListener('load', hide);
-  /* Fallback safety */
-  setTimeout(() => { if (document.body.contains(loader)) loader.classList.add('gone'); }, 3200);
+  setTimeout(() => { if (document.body.contains(loader)) loader.classList.add('gone'); }, 3400);
 })();
 
-/* ============ GRIDY AVATAR ============ */
+/* ---------- GRIDY AVATAR ---------- */
 function hash32(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function gridy(seed,px){
@@ -1249,29 +1758,74 @@ function gridy(seed,px){
 }
 window.gridy = gridy;
 
-/* ============ SCHEDULE ============ */
-const SCHEDULE = [
-  { name: 'Prelude (Admission)',         icon: 'shield-check',  when: '13 Jan 2027',     window: '09:00 – 11:00',      mode: 'Online · Admission',     tag: 'adm', tagText: 'Entry' },
-  { name: 'Foundation Exam',             icon: 'clipboard-list', when: 'May 2027',        window: 'Per-paper timetable', mode: 'Online · Exam Gateway',  tag: '',    tagText: '3 months' },
-  { name: 'Intermediate Exam I',         icon: 'clipboard-list', when: 'Jun – Jul 2027',  window: 'Per-paper timetable', mode: 'Online · Exam Gateway',  tag: '',    tagText: '9 & 12 months' },
-  { name: 'Targeted Revision Period',    icon: 'repeat',         when: 'Sep 2027',        window: 'Per-paper timetable', mode: 'Online · Exam Gateway',  tag: 'acc', tagText: '12 months' },
-  { name: 'Intermediate Exam II · QIF',  icon: 'award',          when: 'Oct – Nov 2027',  window: 'Per-paper timetable', mode: 'Online · Exam Gateway',  tag: 'qif', tagText: 'All tracks' }
+/* ---------- MARQUEE ---------- */
+(function(){
+  const items = [
+    'Full Stack Engineering',
+    'Frontend Development',
+    'Backend Engineering',
+    'Mobile Development',
+    'Web Design',
+    'UI/UX Design',
+    'Data & Analytics',
+    'STEM & Physics',
+    'Prelude · Admission Examination',
+    'IFB Examination Board',
+    'Three Durations — 3 · 9 · 12 months',
+    'Applications close 21 March 2027'
+  ];
+  const track = document.getElementById('marqueeTrack');
+  const html = items.map(t => '<span class="marquee-item">' + t + '</span>').join('');
+  track.innerHTML = html + html;
+})();
+
+/* ---------- EXAMINATION ROWS ---------- */
+const EXAM_ROWS = [
+  {
+    title: 'Prelude (Admission)', icon: 'shield-check',
+    when: '28 Mar 2027', window: '09:00 – 11:00',
+    period: 'adm', periodText: 'Entry',
+    doc: 'prelude-qp-2027.html', docText: 'QP'
+  },
+  {
+    title: 'Foundation Exam', icon: 'clipboard-list',
+    when: 'May 2027', window: 'Per-paper timetable',
+    period: 'small', periodText: '3 months',
+    doc: 'IFB-2026-timetable.html', docText: 'Timetable'
+  },
+  {
+    title: 'Intermediate Exam I', icon: 'clipboard-list',
+    when: 'Jun – Jul 2027', window: 'Per-paper timetable',
+    period: '', periodText: '9 & 12 mo',
+    doc: 'IFB-2026-timetable.html', docText: 'Timetable'
+  },
+  {
+    title: 'Targeted Revision Period', icon: 'repeat',
+    when: 'Sep 2027', window: 'Per-paper timetable',
+    period: 'small', periodText: '12 months',
+    doc: 'IFB-2026-timetable.html', docText: 'Timetable'
+  },
+  {
+    title: 'Intermediate Exam II · QIF', icon: 'award',
+    when: 'Oct – Nov 2027', window: 'Per-paper timetable',
+    period: 'qif', periodText: 'All tracks',
+    doc: 'IFB-2026-timetable.html', docText: 'Timetable'
+  }
 ];
-document.getElementById('scheduleRows').innerHTML =
-  '<div class="res-row head">' +
-    '<span>Milestone</span><span>Date</span><span>Window</span><span></span>' +
+document.getElementById('examRows').innerHTML =
+  '<div class="exam-row head">' +
+    '<span>Milestone</span><span>Date</span><span>Period</span><span></span>' +
   '</div>' +
-  SCHEDULE.map(function(s){
-    return '<div class="res-row">' +
-      '<span class="title"><i data-lucide="' + s.icon + '"></i> ' + s.name +
-        ' <span class="tag" style="margin-left:6px">' + s.tagText + '</span></span>' +
-      '<span class="meta">' + s.when + '</span>' +
-      '<span class="meta">' + s.window + '</span>' +
-      '<span class="meta">' + s.mode + '</span>' +
+  EXAM_ROWS.map(function(r){
+    return '<div class="exam-row">' +
+      '<span class="title"><i data-lucide="' + r.icon + '"></i> ' + r.title + '</span>' +
+      '<span class="meta">' + r.when + '</span>' +
+      '<span><span class="period ' + r.period + '">' + r.periodText + '</span></span>' +
+      '<a href="' + r.doc + '" class="act"><i data-lucide="file-text"></i> ' + r.docText + '</a>' +
     '</div>';
   }).join('');
 
-/* ============ COUNTDOWN · 21 MARCH 2027 ============ */
+/* ---------- COUNTDOWN · 21 MARCH 2027 ---------- */
 (function(){
   const target = new Date('2027-03-21T23:59:59+02:00').getTime();
   const dEl = document.getElementById('cd-d');
@@ -1299,7 +1853,7 @@ document.getElementById('scheduleRows').innerHTML =
   setInterval(tick, 1000);
 })();
 
-/* ============ MENU ============ */
+/* ---------- MENU ---------- */
 const menuBtn = document.getElementById('menuBtn');
 const dropdown = document.getElementById('dropdown');
 menuBtn.addEventListener('click', () => {
@@ -1311,7 +1865,7 @@ document.querySelectorAll('.dropdown a').forEach(a => a.addEventListener('click'
   menuBtn.classList.remove('open');
 }));
 
-/* ============ REVEAL ON SCROLL ============ */
+/* ---------- REVEAL ---------- */
 (function(){
   const els = document.querySelectorAll('.rv');
   if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('on')); return; }
@@ -1323,7 +1877,58 @@ document.querySelectorAll('.dropdown a').forEach(a => a.addEventListener('click'
   els.forEach(e => io.observe(e));
 })();
 
-/* ============ WELCOME POP ============ */
+/* ---------- CAROUSEL ---------- */
+(function(){
+  const track = document.getElementById('carouselTrack');
+  const dotsWrap = document.getElementById('carDots');
+  const total = track.children.length;
+  let idx = 0, timer = null;
+  for(let i=0;i<total;i++){
+    const d = document.createElement('button');
+    d.className = 'carousel-dot' + (i===0?' active':'');
+    d.setAttribute('aria-label','Go to slide '+(i+1));
+    d.addEventListener('click', () => go(i));
+    dotsWrap.appendChild(d);
+  }
+  function go(i){
+    idx = (i + total) % total;
+    track.style.transform = 'translateX(-'+(idx*100)+'%)';
+    dotsWrap.querySelectorAll('.carousel-dot').forEach((d,k)=>d.classList.toggle('active',k===idx));
+    restart();
+  }
+  function restart(){ if(timer) clearInterval(timer); timer = setInterval(()=>go(idx+1), 6500); }
+  document.getElementById('carPrev').addEventListener('click', () => go(idx-1));
+  document.getElementById('carNext').addEventListener('click', () => go(idx+1));
+  restart();
+  const carousel = track.parentElement;
+  carousel.addEventListener('mouseenter', () => { if(timer) clearInterval(timer); });
+  carousel.addEventListener('mouseleave', restart);
+})();
+
+/* ---------- VIDEO ---------- */
+(function(){
+  const play = document.getElementById('videoPlay');
+  const video = document.getElementById('heroVideo');
+  if (!play || !video) return;
+  play.addEventListener('click', () => {
+    if (video.paused) {
+      video.play().then(() => {
+        play.style.opacity = '0';
+        play.style.pointerEvents = 'none';
+      }).catch(() => {});
+    }
+  });
+  video.addEventListener('pause', () => {
+    play.style.opacity = '1';
+    play.style.pointerEvents = 'auto';
+  });
+  video.addEventListener('ended', () => {
+    play.style.opacity = '1';
+    play.style.pointerEvents = 'auto';
+  });
+})();
+
+/* ---------- WELCOME POP ---------- */
 const pop = document.getElementById('welcomePop');
 const popClose = document.getElementById('popClose');
 const POP_KEY = 'welcome_dismissed_until';
@@ -1332,11 +1937,11 @@ popClose.addEventListener('click', () => {
   localStorage.setItem(POP_KEY, String(Date.now() + 7 * 86400000));
 });
 
-/* ============ LUCIDE ============ */
+/* ---------- LUCIDE ---------- */
 if (window.lucide) lucide.createIcons();
 </script>
 
-<!-- =================== FIREBASE AUTH STATE =================== -->
+<!-- ===================== FIREBASE AUTH STATE ===================== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -1356,52 +1961,37 @@ const db = getFirestore(app);
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
 onAuthStateChanged(auth, async (user) => {
-  const navAuth   = document.getElementById('navAuth');
-  const navPortal = document.getElementById('navPortal');
   const navAvatar = document.getElementById('navAvatar');
   const popAvatar = document.getElementById('popAvatar');
   const popName   = document.getElementById('popName');
 
   if (!user) {
-    navAuth.style.display = 'inline-flex';
-    navPortal.style.display = 'none';
+    document.body.classList.remove('signed-in');
     navAvatar.style.display = 'none';
+    if (window.lucide) lucide.createIcons();
     return;
   }
 
-  /* Admin redirect */
   if (user.email === ADMIN_EMAIL) {
     window.location.href = 'admin.html';
     return;
   }
 
-  navAuth.style.display = 'none';
-  navPortal.style.display = 'inline-flex';
+  document.body.classList.add('signed-in');
   navAvatar.style.display = 'flex';
-
-  navAvatar.innerHTML = gridy(user.uid || user.email, 38);
-  if (popAvatar) popAvatar.innerHTML = gridy(user.uid || user.email, 50);
+  navAvatar.innerHTML = gridy(user.uid || user.email, 40);
+  if (popAvatar) popAvatar.innerHTML = gridy(user.uid || user.email, 52);
 
   let data = {};
   try {
     const snap = await getDoc(doc(db, 'users', user.uid));
     data = snap.exists() ? snap.data() : {};
-  } catch (e) { /* offline — fall back to auth info */ }
+  } catch (e) {}
 
   const first = (data.name || user.displayName || user.email || '').split(' ')[0].split('@')[0];
   if (popName) popName.textContent = first ? ('Hello, ' + first) : 'Your portal is ready.';
 
-  /* Redirect incomplete profiles */
-  const needsCurriculum = !data.course;
-  const needsPrelude    = !data.preludePassed && !data.studentNumber;
-  const target = needsCurriculum ? 'curriculum.html' : (needsPrelude ? 'admission-exam.html' : null);
-  if (target && !sessionStorage.getItem('nudged_' + user.uid)) {
-    sessionStorage.setItem('nudged_' + user.uid, '1');
-    /* Soft-nudge: show pop, do not hard-redirect from index */
-    pop.classList.add('show');
-  }
-
-  const dismissed = parseInt(localStorage.getItem('welcome_dismissed_until') || '0', 10);
+  const dismissed = parseInt(localStorage.getItem(POP_KEY) || '0', 10);
   if (Date.now() > dismissed) pop.classList.add('show');
 
   if (window.lucide) lucide.createIcons();
