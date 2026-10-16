@@ -3,166 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Portal — Nyl Dev</title>
+<title>My Course — Nyl Dev</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background:#f5f5f5; color:#0d0d0d; line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:60px; }
 
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    background: #f5f5f5;
-    color: #0d0d0d;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    padding-bottom: 60px;
+  nav { background:#fff; border-bottom:1px solid #e5e5e5; padding:14px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .logo { font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:-2px; text-decoration:none; color:#0d0d0d; display:flex; align-items:center; }
+  .logo .cursor { width:12px; height:24px; background:#0d0d0d; margin-left:2px; animation: blink 1.1s step-end infinite; }
+  @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+  .nav-right { display:flex; align-items:center; gap:12px; }
+  .nav-avatar { width:40px; height:40px; border-radius:50%; overflow:hidden; border:1px solid #e5e5e5; cursor:pointer; }
+  .nav-avatar canvas { width:100%; height:100%; display:block; }
+  .signout { font-size:14px; color:#6b6b6b; text-decoration:none; font-weight:500; padding:8px 12px; border-radius:6px; }
+  .signout:hover { color:#0d0d0d; background:#f5f5f5; }
+
+  .container { max-width:900px; margin:0 auto; padding:32px 20px; }
+  h1 { font-size: clamp(26px, 5vw, 38px); letter-spacing:-1px; margin-bottom:6px; }
+  .sub { color:#6b6b6b; font-size:15px; margin-bottom:32px; }
+
+  .card { background:#fff; border:1px solid #e5e5e5; border-radius:14px; padding:26px; margin-bottom:18px; }
+  .card .label { font-size:12px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; margin-bottom:14px; }
+
+  .id-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .id-cell { padding:18px; border:1px solid #f0f0f0; border-radius:10px; }
+  .id-cell .k { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; font-weight:600; margin-bottom:8px; }
+  .id-cell .v { font-family:'Courier New',monospace; font-size:22px; font-weight:700; letter-spacing:1px; }
+  .id-cell .v.pending { font-family:inherit; font-size:14px; letter-spacing:0; color:#b86e00; font-weight:600; }
+
+  .info-row { display:flex; justify-content:space-between; align-items:baseline; padding:12px 0; border-bottom:1px solid #f0f0f0; font-size:15px; gap:16px; }
+  .info-row:last-child { border-bottom:none; }
+  .info-row .k { color:#6b6b6b; }
+  .info-row .v { font-weight:600; text-align:right; }
+
+  .status-badge { display:inline-block; font-size:12px; font-weight:600; padding:4px 12px; border-radius:100px; }
+  .status-badge.pending { background:#fff4e5; color:#b86e00; }
+  .status-badge.approved { background:#e6f5ec; color:#16794a; }
+  .status-badge.revoked { background:#fef2f2; color:#b91c1c; }
+
+  .subject-list { list-style:none; }
+  .subject-list li { padding:10px 0; border-bottom:1px solid #f0f0f0; font-size:14px; display:flex; justify-content:space-between; gap:14px; }
+  .subject-list li:last-child { border-bottom:none; }
+  .subject-list .pill { font-size:11px; font-weight:600; padding:3px 10px; border-radius:100px; background:#f5f5f5; color:#6b6b6b; }
+  .subject-list .pill.elective { background:#eef2ff; color:#3730a3; }
+
+  .danger-card { border-color:#fecaca; }
+  .danger-card .label { color:#b91c1c; }
+  .danger-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+  .btn-danger { padding:12px 20px; font-size:14px; font-weight:600; border-radius:8px; border:1px solid #fecaca; background:#fff; color:#b91c1c; cursor:pointer; font-family:inherit; }
+  .btn-danger:hover { background:#fef2f2; }
+  .btn-danger:disabled { opacity:.5; cursor:not-allowed; }
+  .btn { padding:12px 20px; font-size:14px; font-weight:600; border-radius:8px; border:none; background:#0d0d0d; color:#fff; cursor:pointer; font-family:inherit; }
+  .btn:hover { background:#333; }
+  .btn-ghost { background:#fff; color:#0d0d0d; border:1px solid #e5e5e5; }
+  .btn-ghost:hover { background:#f5f5f5; }
+
+  .loading { text-align:center; padding:80px 20px; color:#6b6b6b; }
+
+  .print-btn { position:fixed; bottom:24px; right:24px; z-index:50; padding:14px 22px; background:#0d0d0d; color:#fff; border:none; border-radius:100px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; box-shadow:0 10px 30px rgba(0,0,0,.2); display:none; }
+  .print-btn:hover { background:#333; }
+
+  @media (max-width:500px) {
+    nav { padding:12px 16px; }
+    .container { padding:24px 16px; }
+    .card { padding:22px 18px; }
+    .id-grid { grid-template-columns:1fr; }
+    .id-cell .v { font-size:20px; }
   }
 
-  nav {
-    background: #fff;
-    border-bottom: 1px solid #e5e5e5;
-    padding: 16px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .logo {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -2px;
-    text-decoration: none;
-    color: #0d0d0d;
-    display: flex;
-    align-items: center;
-  }
-
-  .logo .cursor {
-    display: inline-block;
-    width: 12px;
-    height: 24px;
-    background: #0d0d0d;
-    margin-left: 2px;
-    animation: blink 1.1s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 50%   { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-
-  .logout {
-    font-size: 14px;
-    color: #6b6b6b;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .logout:hover { color: #0d0d0d; }
-
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 32px 20px;
-  }
-
-  h1 {
-    font-size: clamp(26px, 5vw, 38px);
-    letter-spacing: -1px;
-    margin-bottom: 6px;
-  }
-
-  .sub {
-    color: #6b6b6b;
-    font-size: 15px;
-    margin-bottom: 32px;
-  }
-
-  .card {
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 14px;
-    padding: 28px 26px;
-    margin-bottom: 20px;
-  }
-
-  .card .label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: #6b6b6b;
-    margin-bottom: 14px;
-  }
-
-  .student-number {
-    font-family: 'Courier New', Courier, monospace;
-    font-size: clamp(28px, 7vw, 44px);
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #0d0d0d;
-  }
-
-  .student-number.pending {
-    font-size: 18px;
-    letter-spacing: 0;
-    color: #b86e00;
-    font-family: inherit;
-    font-weight: 600;
-    letter-spacing: 0;
-  }
-
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 15px;
-    gap: 16px;
-  }
-
-  .info-row:last-child { border-bottom: none; }
-
-  .info-row .k { color: #6b6b6b; }
-  .info-row .v { font-weight: 600; text-align: right; }
-
-  .status-badge {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 100px;
-  }
-
-  .status-badge.pending { background: #fff4e5; color: #b86e00; }
-  .status-badge.approved { background: #e6f5ec; color: #16794a; }
-
-  .dates-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
-    font-size: 14px;
-  }
-
-  .dates-row:last-child { border-bottom: none; }
-  .dates-row .k { color: #6b6b6b; }
-  .dates-row .v { font-weight: 600; }
-
-  .loading {
-    text-align: center;
-    padding: 60px 20px;
-    color: #6b6b6b;
-  }
-
-  @media (max-width: 500px) {
-    nav { padding: 14px 16px; }
-    .container { padding: 24px 16px; }
-    .card { padding: 22px 20px; }
-    .info-row { font-size: 14px; }
+  /* A4 print */
+  @media print {
+    body { background:#fff; padding:0; }
+    nav, .signout, .nav-avatar, .print-btn, .danger-card, .no-print { display:none !important; }
+    .container { max-width:100%; padding:0; }
+    .card { border:1px solid #ccc; page-break-inside: avoid; }
+    h1 { font-size:22pt; }
+    @page { size: A4; margin: 20mm; }
   }
 </style>
 </head>
@@ -170,76 +86,22 @@
 
 <nav>
   <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
-  <a href="#" class="logout" id="logout">Sign out</a>
+  <div class="nav-right">
+    <span class="nav-avatar" id="navAvatar"></span>
+    <a href="#" class="signout" id="signout">Sign out</a>
+  </div>
 </nav>
 
-<div class="container">
-  <div class="loading" id="loading">Loading your portal…</div>
-  <div id="content" style="display:none;">
-
-    <h1 id="greeting">Welcome</h1>
-    <p class="sub">Your campus dashboard</p>
-
-    <!-- Student number -->
-    <div class="card">
-      <div class="label">Student Number</div>
-      <div id="studentNumber" class="student-number pending">Pending assignment</div>
-    </div>
-
-    <!-- Account info -->
-    <div class="card">
-      <div class="label">Account</div>
-      <div class="info-row">
-        <span class="k">Name</span>
-        <span class="v" id="infoName">—</span>
-      </div>
-      <div class="info-row">
-        <span class="k">Email</span>
-        <span class="v" id="infoEmail">—</span>
-      </div>
-      <div class="info-row">
-        <span class="k">Course</span>
-        <span class="v" id="infoCourse">—</span>
-      </div>
-      <div class="info-row">
-        <span class="k">Status</span>
-        <span class="v"><span class="status-badge pending" id="infoStatus">pending</span></span>
-      </div>
-    </div>
-
-    <!-- Important dates -->
-    <div class="card">
-      <div class="label">Important Dates</div>
-      <div class="dates-row">
-        <span class="k">Administration closes</span>
-        <span class="v">14 February 2026</span>
-      </div>
-      <div class="dates-row">
-        <span class="k">Courses begin</span>
-        <span class="v">January / February 2026</span>
-      </div>
-      <div class="dates-row">
-        <span class="k">Cost</span>
-        <span class="v">Free</span>
-      </div>
-    </div>
-
-    <!-- Next step -->
-    <div class="card" id="nextStepCard">
-      <div class="label">What's Next</div>
-      <p id="nextStepText" style="color:#6b6b6b; font-size:15px; line-height:1.65;">
-        Your application is being reviewed. You'll receive your student number
-        before courses begin. Check back soon.
-      </p>
-    </div>
-
-  </div>
+<div class="container" id="app">
+  <div class="loading">Loading your course…</div>
 </div>
+
+<button class="print-btn" id="printBtn" onclick="window.print()">Download A4 PDF</button>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
@@ -249,69 +111,160 @@ const firebaseConfig = {
   messagingSenderId: "16687006873",
   appId: "1:16687006873:web:b7d66ad1024ccd92722408"
 };
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 const COURSE_NAMES = {
-  fullstack: 'Full Stack Engineering',
-  frontend: 'Frontend Craft',
-  backend: 'Backend Engineering',
-  webdesign: 'Web Design',
-  uiux: 'UI/UX Design',
-  stem: 'STEM & Physics'
+  fullstack: 'Full Stack Engineering', frontend: 'Frontend Craft', backend: 'Backend Engineering',
+  webdesign: 'Web Design', uiux: 'UI/UX Design', stem: 'STEM & Physics'
 };
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = 'auth.html';
-    return;
+const COMPULSORY = ['Mathematics', 'Git & GitHub', 'HTML5 & CSS3', 'JavaScript Fundamentals', 'Stream Core I', 'Stream Core II'];
+const ELECTIVE_NAMES = {
+  react: 'React', nodejs: 'Node.js', databases: 'Databases (SQL / NoSQL)',
+  uiux: 'UI/UX Fundamentals', figma: 'Figma', physics: 'Physics'
+};
+
+function generateAvatar(uid) {
+  let hash = 0;
+  for (let i = 0; i < uid.length; i++) { hash = ((hash << 5) - hash) + uid.charCodeAt(i); hash |= 0; }
+  const size = 5, cells = [];
+  for (let i = 0; i < size * size; i++) cells.push(((hash >> (i % 28)) & 3) > 0 ? 1 : 0);
+  const grid = [];
+  for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+    const mirror = Math.min(c, size - 1 - c);
+    grid.push(cells[r * size + mirror]);
   }
-
-  try {
-    const snap = await getDoc(doc(db, 'users', user.uid));
-    const data = snap.exists() ? snap.data() : {};
-
-    document.getElementById('greeting').textContent =
-      'Welcome, ' + (data.name || user.email).split(' ')[0];
-
-    document.getElementById('infoName').textContent = data.name || '—';
-    document.getElementById('infoEmail').textContent = data.email || user.email;
-    document.getElementById('infoCourse').textContent =
-      COURSE_NAMES[data.course] || data.course || '—';
-
-    const status = data.status || 'pending';
-    const statusEl = document.getElementById('infoStatus');
-    statusEl.textContent = status;
-    statusEl.className = 'status-badge ' + status;
-
-    const numEl = document.getElementById('studentNumber');
-    if (data.studentNumber) {
-      numEl.textContent = data.studentNumber;
-      numEl.className = 'student-number';
-      document.getElementById('nextStepText').textContent =
-        'Your student number is active. Courses begin January / February 2026 — we\'ll be in touch.';
-    } else {
-      numEl.textContent = 'Pending assignment';
-      numEl.className = 'student-number pending';
+  return { grid, hue: Math.abs(hash) % 360, size };
+}
+function paintAvatar(canvas, uid) {
+  const { grid, hue, size } = generateAvatar(uid);
+  const ctx = canvas.getContext('2d'); const px = 40;
+  canvas.width = size * px; canvas.height = size * px;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  grid.forEach((v, i) => {
+    if (v) {
+      ctx.fillStyle = `hsl(${hue}, 60%, 45%)`;
+      const r = Math.floor(i / size), c = i % size;
+      ctx.fillRect(c * px, r * px, px, px);
     }
+  });
+}
 
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 
-  } catch (err) {
-    document.getElementById('loading').textContent = 'Error loading your data.';
-    console.error(err);
-  }
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'auth.html'; return; }
+
+  const navAvatar = document.getElementById('navAvatar');
+  const canvas = document.createElement('canvas');
+  navAvatar.innerHTML = ''; navAvatar.appendChild(canvas);
+  paintAvatar(canvas, user.uid);
+
+  const ref = doc(db, 'users', user.uid);
+  const snap = await getDoc(ref);
+  const data = snap.exists() ? snap.data() : {};
+
+  render(user, data, ref);
 });
 
-document.getElementById('logout').addEventListener('click', async (e) => {
+function render(user, data, ref) {
+  const status = data.status || 'pending';
+  const studentNumber = data.studentNumber;
+  const examNumber = data.examinationNumber;
+  const duration = data.duration ? `${data.duration} months` : '—';
+  const course = COURSE_NAMES[data.course] || data.course || '—';
+  const electives = (data.electives || []).map(e => ELECTIVE_NAMES[e] || e);
+
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <h1>Hello, ${esc((data.name || user.email).split(' ')[0])}</h1>
+    <p class="sub">Your course at a glance</p>
+
+    <div class="card">
+      <div class="label">Student Identifiers</div>
+      <div class="id-grid">
+        <div class="id-cell">
+          <div class="k">Student Number</div>
+          <div class="v ${studentNumber ? '' : 'pending'}">${studentNumber ? esc(studentNumber) : 'Pending'}</div>
+        </div>
+        <div class="id-cell">
+          <div class="k">Examination Number</div>
+          <div class="v ${examNumber ? '' : 'pending'}">${examNumber ? esc(examNumber) : 'Issued at exams'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="label">Application State</div>
+      <div class="info-row">
+        <span class="k">Status</span>
+        <span class="v"><span class="status-badge ${status}">${status}</span></span>
+      </div>
+      <div class="info-row"><span class="k">Course</span><span class="v">${esc(course)}</span></div>
+      <div class="info-row"><span class="k">Duration</span><span class="v">${esc(duration)}</span></div>
+      <div class="info-row"><span class="k">Administration closes</span><span class="v">14 February 2026</span></div>
+      <div class="info-row"><span class="k">Courses begin</span><span class="v">January / February 2026</span></div>
+    </div>
+
+    <div class="card">
+      <div class="label">Personal Information</div>
+      <div class="info-row"><span class="k">Full name</span><span class="v">${esc(data.name || '—')}</span></div>
+      <div class="info-row"><span class="k">Email</span><span class="v">${esc(data.email || user.email)}</span></div>
+      <p style="font-size:13px; color:#6b6b6b; margin-top:12px;">Personal information cannot be edited. Email us to request changes.</p>
+    </div>
+
+    <div class="card">
+      <div class="label">Subjects (6 Compulsory · 2 Electives)</div>
+      <ul class="subject-list">
+        ${COMPULSORY.map(s => `<li>${esc(s)} <span class="pill">Compulsory</span></li>`).join('')}
+        ${electives.map(e => `<li>${esc(e)} <span class="pill elective">Elective</span></li>`).join('')}
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="label">Important Dates</div>
+      <div class="info-row"><span class="k">Administration closes</span><span class="v">14 February 2026</span></div>
+      <div class="info-row"><span class="k">Courses begin</span><span class="v">January / February 2026</span></div>
+      <div class="info-row"><span class="k">Cost</span><span class="v">Free</span></div>
+    </div>
+
+    <div class="card danger-card no-print">
+      <div class="label">Application Controls</div>
+      <p style="font-size:14px; color:#6b6b6b; margin-bottom:8px;">These actions are permanent. Choose carefully.</p>
+      <div class="danger-actions">
+        <button class="btn-danger" id="revokeBtn">Revoke my application</button>
+        <button class="btn-danger" id="deregisterBtn" ${status === 'approved' ? 'disabled title="Not available during courses"' : ''}>Deregister</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('printBtn').style.display = 'block';
+
+  document.getElementById('revokeBtn').addEventListener('click', async () => {
+    if (!confirm('Revoke your application? This cannot be undone.')) return;
+    await updateDoc(ref, { status: 'revoked', revokedAt: serverTimestamp() });
+    alert('Application revoked. You may register again next intake.');
+    location.reload();
+  });
+
+  const deregBtn = document.getElementById('deregisterBtn');
+  if (deregBtn && !deregBtn.disabled) {
+    deregBtn.addEventListener('click', async () => {
+      if (!confirm('Deregister? This removes your account and cannot be undone.')) return;
+      await updateDoc(ref, { status: 'deregistered', deregisteredAt: serverTimestamp() });
+      await signOut(auth);
+      window.location.href = '/';
+    });
+  }
+}
+
+document.getElementById('signout').addEventListener('click', async (e) => {
   e.preventDefault();
   await signOut(auth);
   window.location.href = '/';
 });
 </script>
-
 </body>
 </html>
