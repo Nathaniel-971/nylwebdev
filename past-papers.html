@@ -4,63 +4,57 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Resources &amp; Papers</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d0d0d">
 <script src="https://unpkg.com/lucide@latest"></script>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/service-worker.js').catch(()=>{});}</script>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; }
-  body { background: var(--white); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: var(--black); line-height:1.6; padding-bottom:60px; }
-  .mark { font-family:'Courier New',monospace; font-size:34px; font-weight:700; color: var(--black); text-decoration:none; line-height:1; letter-spacing:-2px; }
-  .badge { width: 56px; height: 68px; flex-shrink: 0; }
-
-  nav { background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border-bottom:1px solid var(--line); padding:12px 48px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
-  .nav-left { display:flex; align-items:center; gap:14px; text-decoration:none; color: var(--black); }
-  .nav-link { font-size:14px; font-weight:500; color: var(--black); text-decoration:none; padding:9px 14px; border-radius:8px; display:inline-flex; align-items:center; gap:7px; }
-  .nav-link:hover { background: var(--light); }
-
-  .container { max-width: 1100px; margin:0 auto; padding: 40px 20px; }
-  .hero { margin-bottom: 36px; }
-  .eyebrow { font-size:11.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
-  h1 { font-size: clamp(28px, 5vw, 44px); letter-spacing:-1.5px; line-height:1.1; margin-bottom:14px; }
-  .lead { font-size:15.5px; color: var(--grey); max-width:620px; }
-  .section-title { display:flex; align-items:center; gap:12px; margin: 36px 0 20px; padding-bottom: 12px; border-bottom: 2px solid var(--black); }
-  .section-title .icon { width:38px; height:38px; border-radius:9px; background: var(--black); color: var(--white); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .section-title h2 { font-size: 22px; letter-spacing:-.5px; margin: 0; }
-  .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-  .doc-card { border:1px solid var(--line); border-radius:12px; padding: 22px 20px; background: var(--white); transition: all .25s; display: flex; flex-direction: column; gap: 12px; }
-  .doc-card:hover { border-color: var(--black); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,.06); }
-  .doc-card h3 { font-size: 15.5px; font-weight: 700; letter-spacing: -.2px; }
-  .doc-card p { font-size: 13px; color: var(--grey); flex-grow: 1; }
-  .doc-card .open-link { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--black); text-decoration: none; padding: 9px 14px; border-radius: 8px; border: 1.5px solid var(--black); background: var(--white); align-self: flex-start; }
-  .doc-card .open-link:hover { background: var(--black); color: var(--white); }
-  .period { margin-bottom: 22px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-  .period-head { background: var(--light); padding: 16px 22px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
-  .period-head h3 { font-size: 16px; font-weight: 700; margin: 0; }
-  .period-head .meta { font-size: 12.5px; color: var(--grey); display: inline-flex; gap: 14px; align-items:center; }
-  .period-body { padding: 6px 22px 14px; }
-  .paper-row { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 14px; flex-wrap: wrap; }
-  .paper-row:last-child { border-bottom: none; }
-  .paper-row .paper-name { font-weight: 600; }
-  .paper-row .paper-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  .paper-row .paper-actions a { font-size: 12.5px; padding: 8px 13px; border-radius: 7px; border: 1px solid var(--line); color: var(--black); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: var(--white); }
-  .paper-row .paper-actions a:hover { border-color: var(--black); background: var(--light); }
-  .paper-row .paper-actions a.primary { background: var(--black); color: var(--white); border-color: var(--black); }
-  .paper-row .paper-actions a.primary:hover { background: var(--mid); }
-  .empty { text-align:center; padding: 40px 20px; color: var(--grey); font-size: 14px; }
-  footer { padding: 40px 20px; border-top:1px solid var(--line); text-align: center; font-size: 12.5px; color: var(--grey); margin-top: 60px; }
-  footer a { color: var(--black); text-decoration: none; font-weight: 500; }
-  @media (max-width: 600px) {
-    nav { padding: 12px 16px; } .mark { font-size: 28px; } .badge { width: 44px; height: 54px; }
-    .container { padding: 28px 16px; }
-    .paper-row { flex-direction: column; align-items: flex-start; }
-  }
+:root{--black:#0d0d0d;--white:#fff;--grey:#6b6b6b;--light:#f5f5f5;--line:#e5e5e5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--white);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--black);line-height:1.6;padding-bottom:60px}
+.mark{font-family:'Courier New',monospace;font-size:32px;font-weight:700;text-decoration:none;color:var(--black);letter-spacing:-2px}
+nav{background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 48px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.nav-link{font-size:14px;font-weight:500;color:var(--black);text-decoration:none;padding:9px 14px;border-radius:8px;display:inline-flex;align-items:center;gap:7px}
+.nav-link:hover{background:var(--light)}
+.container{max-width:1100px;margin:0 auto;padding:40px 20px}
+.hero{margin-bottom:30px}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+h1{font-size:clamp(28px,5vw,44px);letter-spacing:-1.5px;line-height:1.1;margin-bottom:14px}
+.lead{font-size:15.5px;color:var(--grey);max-width:620px}
+.section-head{display:flex;align-items:center;gap:12px;margin:36px 0 20px;padding-bottom:12px;border-bottom:2px solid var(--black)}
+.section-head .icon{width:38px;height:38px;border-radius:9px;background:var(--black);color:var(--white);display:flex;align-items:center;justify-content:center}
+.section-head .icon svg{width:18px;height:18px}
+.section-head h2{font-size:22px;letter-spacing:-.5px;margin:0}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.doc-card{border:1px solid var(--line);border-radius:12px;padding:22px 20px;background:var(--white);transition:all .25s;display:flex;flex-direction:column;gap:12px}
+.doc-card:hover{border-color:var(--black);transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.06)}
+.doc-card h3{font-size:15.5px;font-weight:700}
+.doc-card p{font-size:13px;color:var(--grey);flex-grow:1}
+.doc-card a{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--black);text-decoration:none;padding:9px 14px;border-radius:8px;border:1.5px solid var(--black);background:var(--white);align-self:flex-start}
+.doc-card a:hover{background:var(--black);color:var(--white)}
+.period{margin-bottom:22px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.period-head{background:var(--light);padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.period-head h3{font-size:16px;font-weight:700;margin:0}
+.period-head .meta{font-size:12.5px;color:var(--grey);display:inline-flex;gap:14px;align-items:center}
+.period-body{padding:6px 22px 14px}
+.paper-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px;flex-wrap:wrap}
+.paper-row:last-child{border-bottom:none}
+.paper-row .paper-name{font-weight:600}
+.paper-row .actions{display:flex;gap:8px;flex-wrap:wrap}
+.paper-row .actions a{font-size:12.5px;padding:8px 13px;border-radius:7px;border:1px solid var(--line);color:var(--black);text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:var(--white)}
+.paper-row .actions a:hover{border-color:var(--black);background:var(--light)}
+.paper-row .actions a.primary{background:var(--black);color:var(--white);border-color:var(--black)}
+.paper-row .actions a.primary:hover{background:#333}
+.empty{text-align:center;padding:40px 20px;color:var(--grey);font-size:14px}
+footer{padding:40px 20px;border-top:1px solid var(--line);text-align:center;font-size:12.5px;color:var(--grey);margin-top:60px}
+footer a{color:var(--black);text-decoration:none;font-weight:500}
+@media(max-width:600px){nav{padding:12px 16px}.mark{font-size:26px}.container{padding:28px 16px}.paper-row{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
 
 <nav>
-  <a href="/" class="nav-left">
-    <span class="mark">∆</span>
-  </a>
+  <a href="/" class="mark">∆</a>
   <div style="display:flex;gap:8px;">
     <a href="courses.html" class="nav-link"><i data-lucide="layout-grid"></i> Courses</a>
     <a href="student-portal.html" class="nav-link"><i data-lucide="book-open"></i> My Portal</a>
@@ -71,16 +65,16 @@
   <div class="hero">
     <div class="eyebrow"><i data-lucide="book-open"></i> Resources &amp; Papers</div>
     <h1>Everything you need.</h1>
-    <p class="lead">Study resources and past papers for the 2027 intake. Every document opens in its own viewer.</p>
+    <p class="lead">Study resources and past papers. Each document opens in its own viewer. Non-accredited; quality assured through our internal platform.</p>
   </div>
 
-  <div class="section-title">
+  <div class="section-head">
     <div class="icon"><i data-lucide="file-text"></i></div>
     <h2>Study Resources</h2>
   </div>
   <div class="doc-grid" id="resourceGrid"><div class="empty">Loading…</div></div>
 
-  <div class="section-title">
+  <div class="section-head">
     <div class="icon"><i data-lucide="layers"></i></div>
     <h2>Past Papers — 2027</h2>
   </div>
@@ -95,19 +89,16 @@
 (async function () {
   const resGrid = document.getElementById('resourceGrid');
   const paperGrid = document.getElementById('paperGrid');
-
   let manifest;
   try {
     const r = await fetch('papers/manifest.json', { cache: 'no-store' });
-    if (!r.ok) throw new Error('manifest not found');
+    if (!r.ok) throw new Error('not found');
     manifest = await r.json();
   } catch (e) {
-    resGrid.innerHTML = '<div class="empty">No manifest yet. Add documents under <code>/papers/</code> and generate the manifest.</div>';
+    resGrid.innerHTML = '<div class="empty">No manifest yet.</div>';
     paperGrid.innerHTML = '';
     return;
   }
-
-  // Resources
   if (!manifest.resources || !manifest.resources.length) {
     resGrid.innerHTML = '<div class="empty">No study resources yet.</div>';
   } else {
@@ -115,19 +106,13 @@
       <div class="doc-card">
         <h3>${r.title}</h3>
         <p>Open this document to view it.</p>
-        <a class="open-link" href="paper-viewer.html?src=${encodeURIComponent('papers/' + r.file)}">
-          <i data-lucide="arrow-up-right"></i> Open document
-        </a>
-      </div>
-    `).join('');
+        <a href="paper-viewer.html?src=${encodeURIComponent('papers/' + r.file)}"><i data-lucide="arrow-up-right"></i> Open</a>
+      </div>`).join('');
   }
-
-  // Periods
   if (!manifest.periods || !manifest.periods.length) {
     paperGrid.innerHTML = '<div class="empty">No papers published yet.</div>';
   } else {
     paperGrid.innerHTML = manifest.periods.map(p => {
-      // Group question + memo per subject
       const grouped = {};
       (p.papers || []).forEach(pp => {
         if (!grouped[pp.subject]) grouped[pp.subject] = { qp: null, memo: null };
@@ -137,24 +122,18 @@
       const rows = Object.entries(grouped).map(([subject, files]) => `
         <div class="paper-row">
           <span class="paper-name">${subject}</span>
-          <div class="paper-actions">
+          <div class="actions">
             ${files.qp ? `<a class="primary" href="paper-viewer.html?src=${encodeURIComponent('papers/' + files.qp)}"><i data-lucide="file-text"></i> Question Paper</a>` : ''}
             ${files.memo ? `<a href="paper-viewer.html?src=${encodeURIComponent('papers/' + files.memo)}"><i data-lucide="check-circle"></i> Memo</a>` : ''}
           </div>
-        </div>
-      `).join('');
+        </div>`).join('');
       return `
         <div class="period">
-          <div class="period-head">
-            <h3>${p.name}</h3>
-            <span class="meta"><i data-lucide="calendar" style="width:13px;height:13px;"></i> ${p.when || ''}</span>
-          </div>
+          <div class="period-head"><h3>${p.name}</h3><span class="meta"><i data-lucide="calendar" style="width:13px;height:13px"></i> ${p.when||''}</span></div>
           <div class="period-body">${rows || '<div class="empty">No papers yet.</div>'}</div>
-        </div>
-      `;
+        </div>`;
     }).join('');
   }
-
   if (window.lucide) lucide.createIcons();
 })();
 </script>
