@@ -4,81 +4,85 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Course — Nyl Dev</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background:#f5f5f5; color:#0d0d0d; line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:60px; }
+  :root { --black:#0d0d0d; --white:#fff; --grey:#6b6b6b; --light:#f5f5f5; --line:#e5e5e5; --mid:#333; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--light); color: var(--black); line-height:1.6; -webkit-font-smoothing:antialiased; padding-bottom:60px; }
 
-  nav { background:#fff; border-bottom:1px solid #e5e5e5; padding:14px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
-  .logo { font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:-2px; text-decoration:none; color:#0d0d0d; display:flex; align-items:center; }
-  .logo .cursor { width:12px; height:24px; background:#0d0d0d; margin-left:2px; animation: blink 1.1s step-end infinite; }
   @keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
-  .nav-right { display:flex; align-items:center; gap:12px; }
-  .nav-avatar { width:40px; height:40px; border-radius:50%; overflow:hidden; border:1px solid #e5e5e5; cursor:pointer; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+  nav { background: var(--white); border-bottom:1px solid var(--line); padding:14px 24px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; }
+  .logo { font-family:'Courier New',monospace; font-size:26px; font-weight:700; letter-spacing:-2px; text-decoration:none; color: var(--black); display:flex; align-items:center; }
+  .logo .cursor { width:12px; height:24px; background: var(--black); margin-left:2px; animation: blink 1.1s step-end infinite; }
+  .nav-right { display:flex; align-items:center; gap:10px; }
+  .nav-avatar { width:40px; height:40px; border-radius:50%; overflow:hidden; border:1px solid var(--line); cursor:pointer; background: var(--white); padding:0; }
   .nav-avatar canvas { width:100%; height:100%; display:block; }
-  .signout { font-size:14px; color:#6b6b6b; text-decoration:none; font-weight:500; padding:8px 12px; border-radius:6px; }
-  .signout:hover { color:#0d0d0d; background:#f5f5f5; }
+  .signout { font-size:13.5px; color: var(--grey); text-decoration:none; font-weight:500; padding:8px 12px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; }
+  .signout svg { width:15px; height:15px; }
+  .signout:hover { color: var(--black); background: var(--light); }
 
   .container { max-width:900px; margin:0 auto; padding:32px 20px; }
-  h1 { font-size: clamp(26px, 5vw, 38px); letter-spacing:-1px; margin-bottom:6px; }
-  .sub { color:#6b6b6b; font-size:15px; margin-bottom:32px; }
+  h1 { font-size: clamp(24px, 5vw, 36px); letter-spacing:-1px; margin-bottom:6px; }
+  .sub { color: var(--grey); font-size:14.5px; margin-bottom:28px; }
 
-  .card { background:#fff; border:1px solid #e5e5e5; border-radius:14px; padding:26px; margin-bottom:18px; }
-  .card .label { font-size:12px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; margin-bottom:14px; }
+  .card { background: var(--white); border:1px solid var(--line); border-radius:14px; padding:24px; margin-bottom:16px; animation: fadeUp .4s ease both; }
+  .card .label { font-size:11.5px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); margin-bottom:14px; display:flex; align-items:center; gap:7px; }
+  .card .label svg { width:14px; height:14px; }
 
-  .id-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-  .id-cell { padding:18px; border:1px solid #f0f0f0; border-radius:10px; }
-  .id-cell .k { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#6b6b6b; font-weight:600; margin-bottom:8px; }
-  .id-cell .v { font-family:'Courier New',monospace; font-size:22px; font-weight:700; letter-spacing:1px; }
-  .id-cell .v.pending { font-family:inherit; font-size:14px; letter-spacing:0; color:#b86e00; font-weight:600; }
+  .id-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .id-cell { padding:16px; border:1px solid var(--line); border-radius:10px; background: var(--light); }
+  .id-cell .k { font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase; color: var(--grey); font-weight:600; margin-bottom:6px; }
+  .id-cell .v { font-family:'Courier New',monospace; font-size:20px; font-weight:700; letter-spacing:1px; }
+  .id-cell .v.pending { font-family:inherit; font-size:13.5px; letter-spacing:0; color:#b86e00; font-weight:600; }
 
-  .info-row { display:flex; justify-content:space-between; align-items:baseline; padding:12px 0; border-bottom:1px solid #f0f0f0; font-size:15px; gap:16px; }
+  .info-row { display:flex; justify-content:space-between; align-items:baseline; padding:11px 0; border-bottom:1px solid var(--line); font-size:14.5px; gap:14px; }
   .info-row:last-child { border-bottom:none; }
-  .info-row .k { color:#6b6b6b; }
+  .info-row .k { color: var(--grey); display:flex; align-items:center; gap:7px; }
+  .info-row .k svg { width:14px; height:14px; }
   .info-row .v { font-weight:600; text-align:right; }
 
-  .status-badge { display:inline-block; font-size:12px; font-weight:600; padding:4px 12px; border-radius:100px; }
+  .status-badge { display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600; padding:4px 11px; border-radius:100px; }
+  .status-badge svg { width:12px; height:12px; }
   .status-badge.pending { background:#fff4e5; color:#b86e00; }
   .status-badge.approved { background:#e6f5ec; color:#16794a; }
   .status-badge.revoked { background:#fef2f2; color:#b91c1c; }
 
   .subject-list { list-style:none; }
-  .subject-list li { padding:10px 0; border-bottom:1px solid #f0f0f0; font-size:14px; display:flex; justify-content:space-between; gap:14px; }
+  .subject-list li { padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px; display:flex; justify-content:space-between; gap:12px; align-items:center; }
   .subject-list li:last-child { border-bottom:none; }
-  .subject-list .pill { font-size:11px; font-weight:600; padding:3px 10px; border-radius:100px; background:#f5f5f5; color:#6b6b6b; }
+  .subject-list .pill { font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:100px; background: var(--light); color: var(--grey); white-space:nowrap; }
   .subject-list .pill.elective { background:#eef2ff; color:#3730a3; }
 
   .danger-card { border-color:#fecaca; }
   .danger-card .label { color:#b91c1c; }
   .danger-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
-  .btn-danger { padding:12px 20px; font-size:14px; font-weight:600; border-radius:8px; border:1px solid #fecaca; background:#fff; color:#b91c1c; cursor:pointer; font-family:inherit; }
-  .btn-danger:hover { background:#fef2f2; }
-  .btn-danger:disabled { opacity:.5; cursor:not-allowed; }
-  .btn { padding:12px 20px; font-size:14px; font-weight:600; border-radius:8px; border:none; background:#0d0d0d; color:#fff; cursor:pointer; font-family:inherit; }
-  .btn:hover { background:#333; }
-  .btn-ghost { background:#fff; color:#0d0d0d; border:1px solid #e5e5e5; }
-  .btn-ghost:hover { background:#f5f5f5; }
+  .btn-danger { padding:11px 18px; font-size:13.5px; font-weight:600; border-radius:9px; border:1.5px solid #fecaca; background: var(--white); color:#b91c1c; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; gap:8px; transition: all .2s; }
+  .btn-danger svg { width:15px; height:15px; }
+  .btn-danger:hover { background:#fef2f2; border-color:#b91c1c; }
+  .btn-danger:disabled { opacity:.45; cursor:not-allowed; }
 
-  .loading { text-align:center; padding:80px 20px; color:#6b6b6b; }
+  .loading { text-align:center; padding:80px 20px; color: var(--grey); }
 
-  .print-btn { position:fixed; bottom:24px; right:24px; z-index:50; padding:14px 22px; background:#0d0d0d; color:#fff; border:none; border-radius:100px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit; box-shadow:0 10px 30px rgba(0,0,0,.2); display:none; }
-  .print-btn:hover { background:#333; }
+  .print-btn { position:fixed; bottom:24px; right:24px; z-index:50; padding:13px 20px; background: var(--black); color: var(--white); border:none; border-radius:100px; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit; box-shadow: 0 10px 30px rgba(0,0,0,.2); display:none; align-items:center; gap:8px; }
+  .print-btn svg { width:16px; height:16px; }
+  .print-btn:hover { background: var(--mid); }
 
   @media (max-width:500px) {
     nav { padding:12px 16px; }
     .container { padding:24px 16px; }
-    .card { padding:22px 18px; }
+    .card { padding:20px 16px; }
     .id-grid { grid-template-columns:1fr; }
-    .id-cell .v { font-size:20px; }
   }
 
-  /* A4 print */
   @media print {
-    body { background:#fff; padding:0; }
+    body { background: var(--white); padding:0; }
     nav, .signout, .nav-avatar, .print-btn, .danger-card, .no-print { display:none !important; }
     .container { max-width:100%; padding:0; }
-    .card { border:1px solid #ccc; page-break-inside: avoid; }
-    h1 { font-size:22pt; }
-    @page { size: A4; margin: 20mm; }
+    .card { border:1px solid #ccc; page-break-inside: avoid; box-shadow:none; }
+    h1 { font-size:20pt; }
+    @page { size: A4; margin: 18mm; }
   }
 </style>
 </head>
@@ -87,8 +91,8 @@
 <nav>
   <a href="/" class="logo"><span>^</span><span class="cursor"></span></a>
   <div class="nav-right">
-    <span class="nav-avatar" id="navAvatar"></span>
-    <a href="#" class="signout" id="signout">Sign out</a>
+    <button class="nav-avatar" id="navAvatar" title="Profile"></button>
+    <a href="#" class="signout" id="signout"><i data-lucide="log-out"></i> Sign out</a>
   </div>
 </nav>
 
@@ -96,7 +100,7 @@
   <div class="loading">Loading your course…</div>
 </div>
 
-<button class="print-btn" id="printBtn" onclick="window.print()">Download A4 PDF</button>
+<button class="print-btn" id="printBtn" onclick="window.print()"><i data-lucide="download"></i> Download A4 PDF</button>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -115,15 +119,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const COURSE_NAMES = {
-  fullstack: 'Full Stack Engineering', frontend: 'Frontend Craft', backend: 'Backend Engineering',
-  webdesign: 'Web Design', uiux: 'UI/UX Design', stem: 'STEM & Physics'
-};
-
-const COMPULSORY = ['Mathematics', 'Git & GitHub', 'HTML5 & CSS3', 'JavaScript Fundamentals', 'Stream Core I', 'Stream Core II'];
-const ELECTIVE_NAMES = {
-  react: 'React', nodejs: 'Node.js', databases: 'Databases (SQL / NoSQL)',
-  uiux: 'UI/UX Fundamentals', figma: 'Figma', physics: 'Physics'
+const CURRICULUM = {
+  fullstack: { name: 'Full Stack Engineering', compulsory: ['Mathematics','Git & GitHub','HTML5 & CSS3','JavaScript Fundamentals','Node.js Core','Databases Core'] },
+  frontend: { name: 'Frontend Craft', compulsory: ['Mathematics','Git & GitHub','HTML5 & CSS3','JavaScript Fundamentals','Advanced JavaScript','Responsive Design'] },
+  backend: { name: 'Backend Engineering', compulsory: ['Mathematics','Git & GitHub','JavaScript Fundamentals','Node.js','Express','Databases (SQL)'] },
+  webdesign: { name: 'Web Design', compulsory: ['Mathematics','HTML5 & CSS3','Responsive Design','UI/UX Fundamentals','Typography & Colour','Figma'] },
+  uiux: { name: 'UI/UX Design', compulsory: ['Mathematics','UI/UX Fundamentals','Figma','Typography & Colour','User Research','Responsive Design'] },
+  stem: { name: 'STEM & Physics', compulsory: ['Mathematics','Mechanics','Thermodynamics','Waves & Optics','Electromagnetism','Modern Physics'] }
 };
 
 function generateAvatar(uid) {
@@ -133,8 +135,7 @@ function generateAvatar(uid) {
   for (let i = 0; i < size * size; i++) cells.push(((hash >> (i % 28)) & 3) > 0 ? 1 : 0);
   const grid = [];
   for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
-    const mirror = Math.min(c, size - 1 - c);
-    grid.push(cells[r * size + mirror]);
+    grid.push(cells[r * size + Math.min(c, size - 1 - c)]);
   }
   return { grid, hue: Math.abs(hash) % 360, size };
 }
@@ -145,13 +146,13 @@ function paintAvatar(canvas, uid) {
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
   grid.forEach((v, i) => {
     if (v) {
-      ctx.fillStyle = `hsl(${hue}, 60%, 45%)`;
+      const shade = Math.round(60 + (i % 3) * 15);
+      ctx.fillStyle = `hsl(${hue}, 8%, ${shade}%)`;
       const r = Math.floor(i / size), c = i % size;
       ctx.fillRect(c * px, r * px, px, px);
     }
   });
 }
-
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 
 onAuthStateChanged(auth, async (user) => {
@@ -174,16 +175,17 @@ function render(user, data, ref) {
   const studentNumber = data.studentNumber;
   const examNumber = data.examinationNumber;
   const duration = data.duration ? `${data.duration} months` : '—';
-  const course = COURSE_NAMES[data.course] || data.course || '—';
-  const electives = (data.electives || []).map(e => ELECTIVE_NAMES[e] || e);
+  const stream = CURRICULUM[data.course];
+  const courseName = stream?.name || '—';
+  const compulsory = stream?.compulsory || [];
+  const electives = data.electives || [];
 
-  const app = document.getElementById('app');
-  app.innerHTML = `
+  document.getElementById('app').innerHTML = `
     <h1>Hello, ${esc((data.name || user.email).split(' ')[0])}</h1>
     <p class="sub">Your course at a glance</p>
 
     <div class="card">
-      <div class="label">Student Identifiers</div>
+      <div class="label"><i data-lucide="fingerprint"></i> Student Identifiers</div>
       <div class="id-grid">
         <div class="id-cell">
           <div class="k">Student Number</div>
@@ -197,50 +199,48 @@ function render(user, data, ref) {
     </div>
 
     <div class="card">
-      <div class="label">Application State</div>
-      <div class="info-row">
-        <span class="k">Status</span>
-        <span class="v"><span class="status-badge ${status}">${status}</span></span>
-      </div>
-      <div class="info-row"><span class="k">Course</span><span class="v">${esc(course)}</span></div>
-      <div class="info-row"><span class="k">Duration</span><span class="v">${esc(duration)}</span></div>
-      <div class="info-row"><span class="k">Administration closes</span><span class="v">14 February 2026</span></div>
-      <div class="info-row"><span class="k">Courses begin</span><span class="v">January / February 2026</span></div>
+      <div class="label"><i data-lucide="activity"></i> Application State</div>
+      <div class="info-row"><span class="k"><i data-lucide="circle-dot"></i> Status</span><span class="v"><span class="status-badge ${status}"><i data-lucide="${status === 'approved' ? 'circle-check' : status === 'revoked' ? 'circle-x' : 'clock'}"></i> ${status}</span></span></div>
+      <div class="info-row"><span class="k"><i data-lucide="layout-grid"></i> Course</span><span class="v">${esc(courseName)}</span></div>
+      <div class="info-row"><span class="k"><i data-lucide="clock"></i> Duration</span><span class="v">${esc(duration)}</span></div>
+      <div class="info-row"><span class="k"><i data-lucide="calendar-x"></i> Administration closes</span><span class="v">14 February 2026</span></div>
+      <div class="info-row"><span class="k"><i data-lucide="calendar-check"></i> Courses begin</span><span class="v">January / February 2026</span></div>
     </div>
 
     <div class="card">
-      <div class="label">Personal Information</div>
-      <div class="info-row"><span class="k">Full name</span><span class="v">${esc(data.name || '—')}</span></div>
-      <div class="info-row"><span class="k">Email</span><span class="v">${esc(data.email || user.email)}</span></div>
-      <p style="font-size:13px; color:#6b6b6b; margin-top:12px;">Personal information cannot be edited. Email us to request changes.</p>
+      <div class="label"><i data-lucide="user"></i> Personal Information</div>
+      <div class="info-row"><span class="k"><i data-lucide="user"></i> Full name</span><span class="v">${esc(data.name || '—')}</span></div>
+      <div class="info-row"><span class="k"><i data-lucide="mail"></i> Email</span><span class="v">${esc(data.email || user.email)}</span></div>
+      <p style="font-size:12.5px; color:var(--grey); margin-top:12px;">Personal information cannot be edited. Email us to request changes.</p>
     </div>
 
     <div class="card">
-      <div class="label">Subjects (6 Compulsory · 2 Electives)</div>
+      <div class="label"><i data-lucide="list-checks"></i> Subjects — 6 Compulsory · 2 Electives</div>
       <ul class="subject-list">
-        ${COMPULSORY.map(s => `<li>${esc(s)} <span class="pill">Compulsory</span></li>`).join('')}
+        ${compulsory.map(s => `<li>${esc(s)} <span class="pill">Compulsory</span></li>`).join('')}
         ${electives.map(e => `<li>${esc(e)} <span class="pill elective">Elective</span></li>`).join('')}
       </ul>
     </div>
 
     <div class="card">
-      <div class="label">Important Dates</div>
-      <div class="info-row"><span class="k">Administration closes</span><span class="v">14 February 2026</span></div>
-      <div class="info-row"><span class="k">Courses begin</span><span class="v">January / February 2026</span></div>
-      <div class="info-row"><span class="k">Cost</span><span class="v">Free</span></div>
+      <div class="label"><i data-lucide="calendar"></i> Important Dates</div>
+      <div class="info-row"><span class="k"><i data-lucide="calendar-x"></i> Administration closes</span><span class="v">14 February 2026</span></div>
+      <div class="info-row"><span class="k"><i data-lucide="calendar-check"></i> Courses begin</span><span class="v">January / February 2026</span></div>
+      <div class="info-row"><span class="k"><i data-lucide="wallet"></i> Cost</span><span class="v">Free</span></div>
     </div>
 
     <div class="card danger-card no-print">
-      <div class="label">Application Controls</div>
-      <p style="font-size:14px; color:#6b6b6b; margin-bottom:8px;">These actions are permanent. Choose carefully.</p>
+      <div class="label"><i data-lucide="alert-triangle"></i> Application Controls</div>
+      <p style="font-size:13.5px; color:var(--grey); margin-bottom:8px;">These actions are permanent. Choose carefully.</p>
       <div class="danger-actions">
-        <button class="btn-danger" id="revokeBtn">Revoke my application</button>
-        <button class="btn-danger" id="deregisterBtn" ${status === 'approved' ? 'disabled title="Not available during courses"' : ''}>Deregister</button>
+        <button class="btn-danger" id="revokeBtn"><i data-lucide="ban"></i> Revoke my application</button>
+        <button class="btn-danger" id="deregisterBtn" ${status === 'approved' ? 'disabled' : ''}><i data-lucide="trash-2"></i> ${status === 'approved' ? 'Deregister (locked during courses)' : 'Deregister'}</button>
       </div>
     </div>
   `;
 
-  document.getElementById('printBtn').style.display = 'block';
+  if (window.lucide) lucide.createIcons();
+  document.getElementById('printBtn').style.display = 'inline-flex';
 
   document.getElementById('revokeBtn').addEventListener('click', async () => {
     if (!confirm('Revoke your application? This cannot be undone.')) return;
@@ -265,6 +265,8 @@ document.getElementById('signout').addEventListener('click', async (e) => {
   await signOut(auth);
   window.location.href = '/';
 });
+
+if (window.lucide) lucide.createIcons();
 </script>
 </body>
 </html>
