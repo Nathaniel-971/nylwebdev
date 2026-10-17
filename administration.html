@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Administration · IFB Institute</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<style>
+:root{--ink:#0b0b0b;--paper:#fff;--bg:#f7f7f7;--line:#e5e5e5;--muted:#6b6b6b;--red:#b3261e;--green:#0a6b44;--radius:12px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--mono:ui-monospace,monospace;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;user-select:none;}
+header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);}
+.header-inner{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;max-width:680px;margin:0 auto;}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;}
+.brand-mark{font-size:44px;font-weight:700;line-height:.85;letter-spacing:-3px;}
+.brand-text{display:flex;flex-direction:column;line-height:1.05;}
+.brand-name{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;}
+.brand-sub{font-size:9.5px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:3px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;}
+.icon-btn svg{width:18px;height:18px;}
+.shell{max-width:680px;margin:0 auto;padding:24px 20px 60px;}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;}
+.stat .k{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px;}
+.stat .v{font-size:24px;font-weight:700;}
+.stat.accent{background:var(--ink);color:var(--paper);border:none;}
+.stat.accent .k{color:rgba(255,255,255,.6);}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.section-head h2{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.section-head .line{flex:1;height:1px;background:var(--line);}
+.cand-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:12px;display:flex;flex-direction:column;gap:12px;}
+.cand-top{display:flex;gap:12px;align-items:center;}
+.cand-avatar{width:44px;height:44px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--bg);}
+.cand-avatar svg{display:block;border-radius:9px;}
+.cand-info h3{font-size:15px;font-weight:700;}
+.cand-info .email{font-size:11.5px;font-family:var(--mono);color:var(--muted);}
+.cand-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;text-transform:uppercase;}
+.badge.pending{background:#fcf8eb;color:#9e7820;}
+.badge.verified{background:#ebf7f1;color:var(--green);}
+.cand-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px;}
+.btn{flex:1;padding:10px;border-radius:8px;font-size:12.5px;font-weight:600;background:var(--paper);border:1px solid var(--line);color:var(--ink);display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn:hover{border-color:var(--ink);background:var(--bg);}
+.btn.primary{background:var(--ink);color:var(--paper);border:none;}
+.btn.primary:hover{background:#333;}
+/* Drawer */
+.drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;backdrop-filter:blur(4px);}
+.drawer-bg.open{display:block;}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:100%;max-width:480px;background:var(--paper);z-index:501;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;}
+.drawer.open{transform:translateX(0);}
+.drawer-head{padding:20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;}
+.drawer-head h2{font-size:18px;font-weight:700;}
+.drawer-body{padding:20px;overflow-y:auto;flex:1;}
+.d-row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px dashed var(--line);font-size:13.5px;}
+.d-row .k{color:var(--muted);}
+.d-row .v{font-weight:600;font-family:var(--mono);}
+.restricted-box{background:#fdf0e6;border:1px solid #f5d0b0;border-radius:10px;padding:16px;margin-top:20px;text-align:center;}
+.restricted-box h4{color:#8c5000;font-size:14px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.restricted-box p{color:#8c5000;font-size:12px;line-height:1.5;}
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<header>
+  <div class="header-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">∆</span>
+      <span class="brand-text">
+        <span class="brand-name">Administration</span>
+        <span class="brand-sub">Faculty Office</span>
+      </span>
+    </a>
+    <div class="header-right">
+      <button class="icon-btn" id="logoutBtn"><i data-lucide="log-out"></i></button>
+    </div>
+  </div>
+</header>
+
+<main class="shell" id="app">
+  <div style="text-align:center;padding:40px;color:var(--muted);">Verifying administrative access…</div>
+</main>
+
+<!-- DRAWER -->
+<div class="drawer-bg" id="drawerBg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h2>Candidate Details</h2>
+    <button class="icon-btn" onclick="closeDrawer()"><i data-lucide="x"></i></button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, getDocs, updateDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
+const appEl = document.getElementById('app');
+
+let state = { users: [], currentUser: null };
+
+function hash32(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gridy(seed,px){px=px||40;const h=hash32(String(seed||'anon'));const rnd=mulberry32(h);const hue=h%360;const fg='hsl('+hue+',48%,32%)';const bg='hsl('+hue+',20%,90%)';const N=5,cell=100/N;const half=[];for(let r=0;r<N;r++){const row=[];for(let c=0;c<3;c++)row.push(rnd()>0.46?1:0);half.push(row);}if(!half.some(r=>r.some(v=>v)))half[2][1]=1;let rects='';for(let r=0;r<N;r++)for(let c=0;c<N;c++){const cc=c<3?c:4-c;if(half[r][cc])rects+='<rect x="'+(c*cell).toFixed(2)+'" y="'+(r*cell).toFixed(2)+'" width="'+cell.toFixed(2)+'" height="'+cell.toFixed(2)+'"/>';}return '<svg viewBox="0 0 100 100" width="'+px+'" height="'+px+'" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect width="100" height="100" fill="'+bg+'"/><g fill="'+fg+'">'+rects+'</g></svg>';}
+
+async function loadData() {
+  const snap = await getDocs(collection(db, 'users'));
+  state.users = [];
+  snap.forEach(d => {
+    const data = d.data();
+    if (data.email !== ADMIN_EMAIL) state.users.push({ id: d.id, ...data });
+  });
+  render();
+}
+
+function render() {
+  const total = state.users.length;
+  const awaiting = state.users.filter(u => !u.preludePassed).length;
+  const enrolled = state.users.filter(u => u.studentNumber).length;
+
+  appEl.innerHTML = `
+    <div class="stats">
+      <div class="stat"><div class="k">Total Candidates</div><div class="v">${total}</div></div>
+      <div class="stat accent"><div class="k">Enrolled</div><div class="v">${enrolled}</div></div>
+      <div class="stat"><div class="k">Awaiting AE</div><div class="v">${awaiting}</div></div>
+      <div class="stat"><div class="k">Revoked</div><div class="v">0</div></div>
+    </div>
+
+    <div class="section-head"><h2>Candidate Registry</h2><div class="line"></div></div>
+    <div id="candList"></div>
+  `;
+
+  const list = document.getElementById('candList');
+  state.users.forEach(u => {
+    const isVerified = u.preludePassed;
+    list.innerHTML += `
+      <div class="cand-card">
+        <div class="cand-top">
+          <div class="cand-avatar">${gridy(u.referenceId, 44)}</div>
+          <div class="cand-info">
+            <h3>${u.name || 'Unknown'}</h3>
+            <div class="email">${u.email}</div>
+            <div class="cand-badges">
+              <span class="badge ${isVerified ? 'verified' : 'pending'}">${isVerified ? 'Prelude Verified' : 'Awaiting AE'}</span>
+              <span class="badge" style="background:var(--bg);border:1px solid var(--line);color:var(--muted);">${u.course || 'No Stream'}</span>
+            </div>
+          </div>
+        </div>
+        <div class="cand-actions">
+          <button class="btn" onclick="openDrawer('${u.id}')"><i data-lucide="eye"></i> View Record</button>
+          ${!isVerified ? `<button class="btn primary" onclick="assignStudentNo('${u.id}')"><i data-lucide="hash"></i> Assign Student №</button>` : ''}
+        </div>
+      </div>
+    `;
+  });
+
+  if (window.lucide) lucide.createIcons();
+}
+
+window.openDrawer = (id) => {
+  const u = state.users.find(x => x.id === id);
+  if (!u) return;
+  state.currentUser = u;
+
+  const drawerBody = document.getElementById('drawerBody');
+  drawerBody.innerHTML = `
+    <div class="d-row"><span class="k">Reference ID</span><span class="v">${u.referenceId}</span></div>
+    <div class="d-row"><span class="k">Student №</span><span class="v">${u.studentNumber || 'Pending'}</span></div>
+    <div class="d-row"><span class="k">Exam №</span><span class="v">${u.examinationNumber || 'Pending'}</span></div>
+    <div class="d-row"><span class="k">PIN</span><span class="v">${u.examPin || 'Pending'}</span></div>
+    <div class="d-row"><span class="k">Stream</span><span class="v">${u.course || '—'}</span></div>
+    
+    <div class="restricted-box">
+      <h4><i data-lucide="lock" style="width:16px;height:16px;"></i> AI Regulated</h4>
+      <p>Marks and pass/fail statuses are exclusively generated by DeepSeek AI. Administrators cannot manually alter results or mark a candidate as passed.</p>
+    </div>
+    
+    ${u.results && u.results.length > 0 ? `
+      <div style="margin-top:20px;">
+        <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;">Shared Results</h4>
+        ${u.results.map(r => `<div class="d-row"><span class="k">${r.subject}</span><span class="v">${r.score}%</span></div>`).join('')}
+      </div>
+    ` : ''}
+  `;
+
+  document.getElementById('drawerBg').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  if (window.lucide) lucide.createIcons();
+};
+
+window.closeDrawer = () => {
+  document.getElementById('drawerBg').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+};
+
+window.assignStudentNo = async (id) => {
+  if (!confirm("Confirm Student Number generation? This will generate an Exam Number and PIN.")) return;
+  
+  const u = state.users.find(x => x.id === id);
+  if (!u.preludePassed) {
+    alert("Cannot assign number. Candidate has not passed the IFB/AE.");
+    return;
+  }
+
+  try {
+    const counterRef = doc(db, 'counters', 'students');
+    await runTransaction(db, async (tx) => {
+      const snap = await tx.get(counterRef);
+      let next = (snap.exists() && snap.data().lastNumber) ? snap.data().lastNumber : 0;
+      next++;
+      
+      const studentNum = 'IFB-2027-' + String(next).padStart(5, '0');
+      const examNum = '27' + String(next).padStart(5, '0') + '01';
+      const pin = String(Math.floor(1000 + Math.random() * 9000));
+      
+      tx.update(doc(db, 'users', id), {
+        studentNumber: studentNum,
+        examinationNumber: examNum,
+        examPin: pin,
+        updatedAt: serverTimestamp()
+      });
+      tx.set(counterRef, { lastNumber: next }, { merge: true });
+    });
+    
+    alert("Student Number assigned successfully.");
+    await loadData();
+  } catch (e) {
+    alert("Error assigning number: " + e.message);
+  }
+};
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await signOut(auth);
+  window.location.href = 'index.html';
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (!user || user.email !== ADMIN_EMAIL) {
+    appEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--red);font-weight:600;">Access Denied.</div>';
+    return;
+  }
+  loadData();
+});
+</script>
+</body>
+</html>
