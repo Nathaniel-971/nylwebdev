@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Viewer · IFB</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<style>
+:root { --ink:#0b0b0b; --paper:#fff; --bg:#e5e5e5; --line:#ccc; --muted:#666; }
+* { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+body { background: var(--bg); font-family: -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.topbar { background: var(--ink); color: var(--paper); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+.topbar h1 { font-size: 16px; font-weight: 600; }
+.tabs { display: flex; gap: 10px; }
+.tab { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; background: rgba(255,255,255,.1); color: #fff; border: 1px solid transparent; }
+.tab.active { background: #fff; color: var(--ink); }
+.viewer { flex: 1; overflow-y: auto; padding: 20px; display: flex; justify-content: center; }
+.page { width: 210mm; min-height: 297mm; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.2); padding: 20mm; display: none; flex-direction: column; }
+.page.active { display: flex; }
+
+/* QUESTION PAPER STYLES */
+.qp-header { text-align: center; border-bottom: 2px solid var(--ink); padding-bottom: 20px; margin-bottom: 20px; }
+.qp-header h2 { font-family: 'Times New Roman', serif; font-size: 24px; text-transform: uppercase; }
+.qp-body { font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.6; }
+.qp-body h3 { margin: 20px 0 10px; text-decoration: underline; }
+.qp-body p { margin-bottom: 10px; }
+
+/* ANSWER BOOK STYLES (Matches Image) */
+.ab-page { font-family: 'Courier New', monospace; font-size: 11pt; }
+.ab-header { display: flex; justify-content: space-between; border: 2px solid #000; padding: 10px; margin-bottom: 20px; }
+.ab-header .title { font-weight: bold; font-size: 14pt; }
+.ab-barcode-box { width: 60mm; height: 20mm; border: 1px dashed #000; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 9pt; }
+.ab-barcode-box svg { width: 100%; height: 100%; }
+.ab-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.ab-field { border: 1px solid #000; padding: 4px; display: flex; align-items: center; }
+.ab-field label { font-size: 9pt; text-transform: uppercase; margin-right: 10px; font-weight: bold; }
+.ab-field .val { flex: 1; border-bottom: 1px solid #000; height: 15px; }
+.ab-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+.ab-table th, .ab-table td { border: 1px solid #000; padding: 6px; text-align: center; font-size: 10pt; }
+.ab-table th { background: #eee; font-weight: bold; }
+.ab-table td { height: 25px; }
+.ab-footer { margin-top: auto; border-top: 1px solid #000; padding-top: 10px; font-size: 9pt; text-align: center; }
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<div class="topbar">
+  <h1>Sample Paper Viewer</h1>
+  <div class="tabs">
+    <button class="tab active" id="tabQP" onclick="switchView('qp')">Question Paper</button>
+    <button class="tab" id="tabAB" onclick="switchView('ab')">Answer Book</button>
+  </div>
+</div>
+
+<div class="viewer">
+  <!-- QUESTION PAPER -->
+  <div class="page active" id="view-qp">
+    <div class="qp-header">
+      <h2>IFB Institute</h2>
+      <p>Sample Question Paper — 2027</p>
+    </div>
+    <div class="qp-body">
+      <h3>Instructions</h3>
+      <p>1. Answer all questions.</p>
+      <p>2. Show all working.</p>
+      <p>3. This paper consists of 3 questions.</p>
+      
+      <h3>Question 1</h3>
+      <p>Define the term "algorithm" and provide an example.</p>
+      
+      <h3>Question 2</h3>
+      <p>Solve for x: 2x + 5 = 15.</p>
+      
+      <h3>Question 3</h3>
+      <p>Write a short paragraph explaining the difference between HTML and CSS.</p>
+    </div>
+  </div>
+
+  <!-- ANSWER BOOK -->
+  <div class="page ab-page" id="view-ab">
+    <div class="ab-header">
+      <div>
+        <div class="title">IFB Examination Answer Book</div>
+        <div style="font-size:10pt;">Official Cover Sheet</div>
+      </div>
+      <div class="ab-barcode-box" id="abBarcodeContainer">
+        <!-- Barcode is injected here -->
+        <svg id="abBarcode"></svg>
+      </div>
+    </div>
+
+    <div class="ab-form">
+      <div class="ab-field"><label>Centre Number</label><div class="val"></div></div>
+      <div class="ab-field"><label>Examination Number</label><div class="val"></div></div>
+      <div class="ab-field"><label>Date</label><div class="val"></div></div>
+      <div class="ab-field"><label>Subject Code</label><div class="val"></div></div>
+      <div class="ab-field"><label>Subject Name</label><div class="val">SAMPLE PAPER</div></div>
+      <div class="ab-field"><label>Paper Number</label><div class="val">1</div></div>
+    </div>
+
+    <table class="ab-table">
+      <thead>
+        <tr>
+          <th>Question</th><th>Marks</th><th>Marker Code</th><th>Moderator</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td></td><td></td><td></td></tr>
+        <tr><td>2</td><td></td><td></td><td></td></tr>
+        <tr><td>3</td><td></td><td></td><td></td></tr>
+        <tr><td>4</td><td></td><td></td><td></td></tr>
+        <tr><td>5</td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+
+    <div class="ab-footer">
+      This answer book consists of 1 page.<br>
+      Controlled and certified correct.
+    </div>
+  </div>
+</div>
+
+<script>
+// Disable Right Click & Text Selection (Anti-Cheat)
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('paste', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+
+function switchView(view) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  
+  if (view === 'qp') {
+    document.getElementById('view-qp').classList.add('active');
+    document.getElementById('tabQP').classList.add('active');
+  } else {
+    document.getElementById('view-ab').classList.add('active');
+    document.getElementById('tabAB').classList.add('active');
+    
+    // Generate the practice barcode inside the Answer Book header
+    if (!document.getElementById('abBarcode').hasChildNodes()) {
+      JsBarcode("#abBarcode", "IFB-PRACTICE-2027", {
+        format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0
+      });
+    }
+  }
+}
+
+// Initialize
+if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
