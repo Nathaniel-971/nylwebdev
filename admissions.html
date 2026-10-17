@@ -7,76 +7,18 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#ffffff">
 <script src="https://unpkg.com/lucide@latest"></script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
-  updateProfile, onAuthStateChanged, signOut 
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
-  authDomain: "nyldevcourses.firebaseapp.com",
-  projectId: "nyldevcourses",
-  storageBucket: "nyldevcourses.firebasestorage.app",
-  messagingSenderId: "16687006873",
-  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
-};
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Gridy Avatar Utility
-function hash32(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-function gridy(seed,px){
-  px = px || 40;
-  const h = hash32(String(seed || 'anon'));
-  const rnd = mulberry32(h);
-  const hue = h % 360;
-  const fg = 'hsl(' + hue + ',48%,32%)';
-  const bg = 'hsl(' + hue + ',20%,90%)';
-  const N = 5, cell = 100 / N;
-  const half = [];
-  for (let r = 0; r < N; r++) {
-    const row = [];
-    for (let c = 0; c < 3; c++) row.push(rnd() > 0.46 ? 1 : 0);
-    half.push(row);
-  }
-  if (!half.some(r => r.some(v => v))) half[2][1] = 1;
-  let rects = '';
-  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
-    const cc = c < 3 ? c : 4 - c;
-    if (half[r][cc]) rects += '<rect x="' + (c*cell).toFixed(2) + '" y="' + (r*cell).toFixed(2) + '" width="' + cell.toFixed(2) + '" height="' + cell.toFixed(2) + '"/>';
-  }
-  return '<svg viewBox="0 0 100 100" width="' + px + '" height="' + px + '" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect width="100" height="100" fill="' + bg + '"/><g fill="' + fg + '">' + rects + '</g></svg>';
-}
-
-function makeReferenceId(uid) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let h = 0;
-  for (let i = 0; i < uid.length; i++) h = Math.imul(31, h) + uid.charCodeAt(i) | 0;
-  h = Math.abs(h);
-  let code = '';
-  for (let i = 0; i < 6; i++) { code += chars[h % chars.length]; h = Math.floor(h / chars.length) || 1; }
-  return 'IFB-2027-' + code;
-}
-</script>
 <style>
 /* =================== THEME =================== */
 :root{
-  --ink:#0b0b0b;
-  --ink-2:#1c1c1c;
-  --paper:#ffffff;
-  --bg:#f7f7f7;
-  --line:#e5e5e5;
-  --line-2:#d4d4d4;
-  --muted:#6b6b6b;
-  --muted-2:#8e8e8e;
-  --radius:12px;
-  --radius-lg:16px;
-  --radius-xl:24px;
+  --ink:#0b0b0b;--ink-2:#1c1c1c;
+  --paper:#ffffff;--bg:#f7f7f7;
+  --line:#e5e5e5;--line-2:#d4d4d4;
+  --muted:#6b6b6b;--muted-2:#8e8e8e;--muted-3:#b3b3b3;
+  --blue:#1d3d8f;--blue-bg:#f0f4ff;
+  --green:#0a6b44;--green-bg:#ebf7f1;
+  --gold:#9e7820;--gold-bg:#fcf8eb;
+  --red:#b3261e;--red-bg:#fdefec;
+  --radius:12px;--radius-lg:16px;
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
 }
@@ -112,84 +54,105 @@ header{
 .brand-sub{font-size:9.5px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:3px;}
 @media(max-width:400px){.brand-text{display:none}}
 .header-right{display:flex;align-items:center;gap:10px;}
-.nav-avatar{
-  width:40px;height:40px;border-radius:12px;overflow:hidden;
-  border:1.5px solid var(--line);display:none;align-items:center;justify-content:center;
-  background:var(--bg);flex-shrink:0;
+.icon-btn{
+  width:40px;height:40px;border-radius:12px;background:var(--paper);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;color:var(--ink);flex-shrink:0;
+  transition:all .2s ease;
 }
-.nav-avatar svg{display:block;border-radius:11px;}
-.menu-btn{
-  width:44px;height:44px;border-radius:12px;background:var(--ink);color:var(--paper);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.menu-btn svg{width:22px;height:22px;}
+.icon-btn:hover{background:var(--bg);border-color:var(--ink);}
+.icon-btn svg{width:18px;height:18px;}
 
 /* =================== SHELL =================== */
-.shell{max-width:680px;margin:0 auto;padding:0 20px;width:100%;padding-top:24px;padding-bottom:40px;}
+.shell{max-width:680px;margin:0 auto;padding:24px 20px 60px;width:100%;}
 
-/* =================== TABS =================== */
-.tabs{display:flex;gap:8px;margin-bottom:24px;background:var(--bg);padding:6px;border-radius:14px;}
-.tab{flex:1;padding:12px;border-radius:10px;font-size:13.5px;font-weight:600;color:var(--muted);transition:all .2s ease;text-align:center;}
-.tab.active{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1);}
+/* =================== NAVIGATION TABS =================== */
+.tabs{
+  display:flex;gap:6px;margin-bottom:28px;background:var(--bg);padding:6px;border-radius:14px;
+}
+.tab{
+  flex:1;padding:12px;border-radius:10px;font-size:13.5px;font-weight:600;
+  color:var(--muted);transition:all .2s ease;text-align:center;
+}
+.tab.active{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08);}
 
-/* =================== FORM =================== */
-h1{font-size:26px;font-weight:700;letter-spacing:-.8px;margin-bottom:8px;}
-.sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+/* =================== HEADINGS =================== */
+.head{margin-bottom:24px;}
+.head h1{font-size:28px;font-weight:700;letter-spacing:-1px;margin-bottom:6px;}
+.head p{font-size:14px;color:var(--muted);}
 
+/* =================== STEP TRACK =================== */
 .step-track{display:flex;gap:6px;margin-bottom:24px;}
 .step-dot{flex:1;height:4px;border-radius:100px;background:var(--line);transition:background .3s ease;}
 .step-dot.active, .step-dot.done{background:var(--ink);}
 
-.card{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:16px;}
+/* =================== FORM =================== */
+.card{
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:20px;margin-bottom:18px;animation:fadeUp .3s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
 .field{margin-bottom:16px;}
 .field:last-child{margin-bottom:0;}
 .field label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--ink);}
+.field label .req{color:var(--red);margin-left:2px;}
 .field input, .field select{
   width:100%;padding:14px 16px;font-size:14.5px;font-family:inherit;
   border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);
   transition:border-color .2s ease;appearance:none;
 }
 .field input:focus, .field select:focus{outline:none;border-color:var(--ink);}
+.field .hint{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4;}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:440px){.grid-2{grid-template-columns:1fr;}}
 
-.msg{padding:12px 14px;border-radius:10px;font-size:13px;font-weight:500;margin-bottom:16px;display:none;background:var(--bg);border:1px solid var(--line);color:var(--ink);}
-.msg.error{background:#fff0f0;color:#b91c1c;border-color:#fecaca;}
-.msg.success{background:#f0fdf4;color:#15803d;border-color:#bbf7d0;}
-.msg.show{display:block;}
+/* =================== ALERT MESSAGES =================== */
+.alert{
+  padding:14px 16px;border-radius:10px;font-size:13px;font-weight:500;margin-bottom:20px;
+  display:none;border:1px solid transparent;
+}
+.alert.show{display:flex;align-items:flex-start;gap:10px;animation:fadeUp .3s ease;}
+.alert svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;}
+.alert.error{background:var(--red-bg);color:var(--red);border-color:rgba(179,38,30,.2);}
+.alert.success{background:var(--green-bg);color:var(--green);border-color:rgba(10,107,68,.2);}
+.alert.info{background:var(--blue-bg);color:var(--blue);border-color:rgba(29,61,143,.2);}
 
+/* =================== BUTTONS =================== */
 .btn{
   width:100%;padding:16px;border-radius:12px;font-size:15px;font-weight:600;
   background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;gap:8px;
   transition:all .2s ease;
 }
-.btn:hover{background:var(--ink-2);transform:translateY(-1px);}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn:hover:not(:disabled){background:var(--ink-2);transform:translateY(-1px);}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none;}
 .btn svg{width:18px;height:18px;}
-.btn-ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--line);}
-.btn-ghost:hover{border-color:var(--ink);background:var(--bg);}
+.btn.ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--line);}
+.btn.ghost:hover:not(:disabled){border-color:var(--ink);background:var(--bg);}
 
-/* =================== REVIEW =================== */
-.review-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
-.review-item:last-child{border-bottom:none;}
-.review-item .k{color:var(--muted);}
-.review-item .v{font-weight:600;text-align:right;max-width:60%;}
-
-/* =================== SUCCESS =================== */
-.success-wrap{text-align:center;padding:32px 0;}
-.success-icon{width:72px;height:72px;border-radius:50%;background:#f0fdf4;color:#15803d;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
-.success-icon svg{width:32px;height:32px;}
-.ref-box{background:var(--bg);border:1.5px dashed var(--line-2);border-radius:14px;padding:20px;margin:24px 0;}
+/* =================== SUCCESS SCREEN =================== */
+.success-wrap{text-align:center;padding:40px 0;animation:fadeUp .5s ease;}
+.success-icon{
+  width:80px;height:80px;border-radius:50%;background:var(--green-bg);color:var(--green);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 24px;
+}
+.success-icon svg{width:36px;height:36px;}
+.success-wrap h1{font-size:26px;font-weight:700;margin-bottom:8px;}
+.success-wrap p{font-size:14px;color:var(--muted);margin-bottom:28px;}
+.ref-box{
+  background:var(--bg);border:1.5px dashed var(--line-2);
+  border-radius:14px;padding:24px;margin-bottom:28px;
+}
 .ref-box .k{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px;}
-.ref-box .v{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:2px;}
+.ref-box .v{font-family:var(--mono);font-size:24px;font-weight:700;letter-spacing:2px;color:var(--ink);}
+
+/* =================== LOADING STATE =================== */
+.spinner{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite;}
+.spinner.dark{border-color:rgba(0,0,0,.1);border-top-color:var(--ink);}
+@keyframes spin{to{transform:rotate(360deg);}}
 
 /* =================== FOOTER =================== */
-footer{padding:32px 0 calc(32px + env(safe-area-inset-bottom));text-align:center;font-size:11.5px;color:var(--muted);border-top:1px solid var(--line);}
-footer .mark{font-size:32px;font-weight:700;letter-spacing:-2px;color:var(--ink);display:block;margin-bottom:12px;}
-footer .nonacc{max-width:400px;margin:0 auto;line-height:1.6;font-size:11px;color:var(--muted-2);}
-
-/* =================== ANIMATIONS =================== */
-.fade{animation:fadeUp .4s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+footer{padding:32px 0;text-align:center;font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:20px;}
+footer .nonacc{max-width:400px;margin:0 auto;line-height:1.6;font-size:10.5px;color:var(--muted-2);}
 </style>
 </head>
 <body>
@@ -200,38 +163,55 @@ footer .nonacc{max-width:400px;margin:0 auto;line-height:1.6;font-size:11px;colo
       <span class="brand-mark">∆</span>
       <span class="brand-text">
         <span class="brand-name">IFB Institute</span>
-        <span class="brand-sub">2027 Intake</span>
+        <span class="brand-sub">Admissions</span>
       </span>
     </a>
     <div class="header-right">
-      <a href="student-dashboard.html" class="nav-avatar" id="navAvatar"></a>
-      <a href="index.html" class="menu-btn" style="background:var(--bg);color:var(--ink);"><i data-lucide="x"></i></a>
+      <a href="index.html" class="icon-btn" title="Home"><i data-lucide="home"></i></a>
     </div>
   </div>
 </header>
 
 <main class="shell" id="app">
-  <!-- Dynamically rendered -->
-  <div style="text-align:center;padding:40px 0;"><i data-lucide="loader" class="spin"></i></div>
+  <div style="display:flex;justify-content:center;padding:40px;">
+    <div class="spinner dark"></div>
+  </div>
 </main>
 
-<script>
-// UI State
-const state = {
-  mode: 'register', // 'register' or 'signin'
-  step: 1,
-  data: {
-    name: '', email: '', password: '',
-    idNumber: '', dateOfBirth: '', phone: '', address: '', city: '', province: '',
-    duration: '3', course: 'fullstack', elective1: '', elective2: ''
-  }
-};
+<!-- =================== SCRIPT =================== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
+  updateProfile, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const DURATIONS = [
-  { id: '3', label: '3 Months (Foundation)' },
-  { id: '6', label: '6 Months (Specialisation)' },
-  { id: '12', label: '12 Months (Advanced)' }
-];
+const firebaseConfig = {
+  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
+  authDomain: "nyldevcourses.firebaseapp.com",
+  projectId: "nyldevcourses",
+  storageBucket: "nyldevcourses.firebasestorage.app",
+  messagingSenderId: "16687006873",
+  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
+
+const appEl = document.getElementById('app');
+
+/* =================== UTILS =================== */
+function makeReferenceId(uid) {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let h = 0;
+  for (let i = 0; i < uid.length; i++) h = Math.imul(31, h) + uid.charCodeAt(i) | 0;
+  h = Math.abs(h);
+  let code = '';
+  for (let i = 0; i < 6; i++) { code += chars[h % chars.length]; h = Math.floor(h / chars.length) || 1; }
+  return 'IFB-2027-' + code;
+}
 
 const STREAMS = [
   { id: 'fullstack', label: 'Full Stack Engineering' },
@@ -253,28 +233,51 @@ const ELECTIVES = [
   { id: 'sql', label: 'SQL' }
 ];
 
+const state = {
+  mode: 'register', // register | signin | success
+  step: 1,
+  data: {
+    name: '', email: '', password: '',
+    idNumber: '', dob: '', phone: '', city: '', province: '',
+    duration: '6', course: 'fullstack', elective1: '', elective2: ''
+  }
+};
+
+function showAlert(text, type = 'error') {
+  const el = document.getElementById('alertBox');
+  if (!el) return;
+  const icon = type === 'error' ? 'alert-circle' : type === 'success' ? 'check-circle' : 'info';
+  el.className = `alert show ${type}`;
+  el.innerHTML = `<i data-lucide="${icon}"></i><div>${text}</div>`;
+  if (window.lucide) lucide.createIcons();
+}
+
+function clearAlert() {
+  const el = document.getElementById('alertBox');
+  if (el) el.className = 'alert';
+}
+
+/* =================== RENDERING =================== */
 function render() {
-  const app = document.getElementById('app');
-  
   if (state.mode === 'success') {
     renderSuccess();
     return;
   }
 
-  app.innerHTML = `
-    <div class="fade">
-      <h1>${state.mode === 'register' ? 'Apply to IFB' : 'Sign In'}</h1>
-      <p class="sub">${state.mode === 'register' ? 'Create your candidate profile for the 2027 intake.' : 'Access your student dashboard.'}</p>
-      
-      <div class="tabs">
-        <button class="tab ${state.mode === 'register' ? 'active' : ''}" data-mode="register">Register</button>
-        <button class="tab ${state.mode === 'signin' ? 'active' : ''}" data-mode="signin">Sign In</button>
-      </div>
-
-      <div class="msg" id="formMsg"></div>
-
-      ${state.mode === 'signin' ? renderSignIn() : renderRegister()}
+  appEl.innerHTML = `
+    <div class="head">
+      <h1>${state.mode === 'register' ? 'Apply to IFB' : 'Welcome Back'}</h1>
+      <p>${state.mode === 'register' ? 'Create your candidate profile for the 2027 intake.' : 'Sign in to access your student dashboard.'}</p>
     </div>
+
+    <div class="tabs">
+      <button class="tab ${state.mode === 'register' ? 'active' : ''}" data-mode="register">Register</button>
+      <button class="tab ${state.mode === 'signin' ? 'active' : ''}" data-mode="signin">Sign In</button>
+    </div>
+
+    <div class="alert" id="alertBox"></div>
+
+    ${state.mode === 'signin' ? renderSignIn() : renderWizard()}
   `;
 
   bindEvents();
@@ -285,23 +288,20 @@ function renderSignIn() {
   return `
     <div class="card">
       <div class="field">
-        <label>Email Address</label>
-        <input type="email" id="sEmail" placeholder="you@example.com">
+        <label>Email Address <span class="req">*</span></label>
+        <input type="email" id="sEmail" placeholder="you@example.com" autocomplete="email">
       </div>
       <div class="field">
-        <label>Password</label>
-        <input type="password" id="sPassword" placeholder="••••••••">
+        <label>Password <span class="req">*</span></label>
+        <input type="password" id="sPassword" placeholder="••••••••" autocomplete="current-password">
       </div>
     </div>
-    <button class="btn" id="signInBtn"><i data-lucide="log-in"></i> Sign In</button>
+    <button class="btn" id="signinBtn">Sign In</button>
   `;
 }
 
-function renderRegister() {
-  let content = '';
-  
-  // Step Track
-  content += `
+function renderWizard() {
+  let content = `
     <div class="step-track">
       <div class="step-dot ${state.step >= 1 ? 'done' : ''}"></div>
       <div class="step-dot ${state.step >= 2 ? 'done' : ''}"></div>
@@ -313,155 +313,186 @@ function renderRegister() {
     content += `
       <div class="card">
         <div class="field">
-          <label>Full Name</label>
-          <input type="text" id="rName" value="${state.data.name}" placeholder="As it appears on your ID">
+          <label>Full Name <span class="req">*</span></label>
+          <input type="text" id="rName" value="${state.data.name}" placeholder="As it appears on your ID" autocomplete="name">
         </div>
         <div class="field">
-          <label>Email Address</label>
-          <input type="email" id="rEmail" value="${state.data.email}" placeholder="you@example.com">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="rEmail" value="${state.data.email}" placeholder="you@example.com" autocomplete="email">
         </div>
         <div class="field">
-          <label>Password</label>
-          <input type="password" id="rPassword" value="${state.data.password}" placeholder="Min 8 characters">
+          <label>Password <span class="req">*</span></label>
+          <input type="password" id="rPassword" value="${state.data.password}" placeholder="Minimum 8 characters" autocomplete="new-password">
         </div>
       </div>
-      <button class="btn" id="nextBtn">Continue <i data-lucide="arrow-right"></i></button>
+      <button class="btn" id="nextBtn">Continue</button>
     `;
-  } 
-  else if (state.step === 2) {
+  } else if (state.step === 2) {
     content += `
       <div class="card">
         <div class="field">
-          <label>ID / Passport Number</label>
+          <label>ID / Passport Number <span class="req">*</span></label>
           <input type="text" id="rIdNumber" value="${state.data.idNumber}">
         </div>
         <div class="field">
-          <label>Date of Birth</label>
-          <input type="date" id="rDob" value="${state.data.dateOfBirth}">
+          <label>Date of Birth <span class="req">*</span></label>
+          <input type="date" id="rDob" value="${state.data.dob}">
         </div>
         <div class="field">
-          <label>Mobile Number</label>
-          <input type="tel" id="rPhone" value="${state.data.phone}">
+          <label>Mobile Number <span class="req">*</span></label>
+          <input type="tel" id="rPhone" value="${state.data.phone}" placeholder="+27 ...">
         </div>
-        <div class="field">
-          <label>City / Province</label>
-          <div class="grid-2">
-            <input type="text" id="rCity" value="${state.data.city}" placeholder="City">
-            <input type="text" id="rProvince" value="${state.data.province}" placeholder="Province">
+        <div class="grid-2">
+          <div class="field">
+            <label>City <span class="req">*</span></label>
+            <input type="text" id="rCity" value="${state.data.city}">
+          </div>
+          <div class="field">
+            <label>Province <span class="req">*</span></label>
+            <input type="text" id="rProvince" value="${state.data.province}">
           </div>
         </div>
       </div>
       <div style="display:flex;gap:12px;">
-        <button class="btn btn-ghost" id="backBtn">Back</button>
-        <button class="btn" id="nextBtn">Continue <i data-lucide="arrow-right"></i></button>
+        <button class="btn ghost" id="backBtn" style="flex:1;">Back</button>
+        <button class="btn" id="nextBtn" style="flex:2;">Continue</button>
       </div>
     `;
-  }
-  else if (state.step === 3) {
-    const showElective2 = state.data.duration !== '3';
+  } else if (state.step === 3) {
+    const showEl2 = state.data.duration !== '3';
     content += `
       <div class="card">
         <div class="field">
-          <label>Duration</label>
+          <label>Programme Duration <span class="req">*</span></label>
           <select id="rDuration">
-            ${DURATIONS.map(d => `<option value="${d.id}" ${state.data.duration === d.id ? 'selected' : ''}>${d.label}</option>`).join('')}
+            <option value="3" ${state.data.duration === '3' ? 'selected' : ''}>3 Months (Foundation)</option>
+            <option value="6" ${state.data.duration === '6' ? 'selected' : ''}>6 Months (Specialisation)</option>
+            <option value="12" ${state.data.duration === '12' ? 'selected' : ''}>12 Months (Advanced)</option>
           </select>
         </div>
         <div class="field">
-          <label>Stream</label>
+          <label>Stream <span class="req">*</span></label>
           <select id="rCourse">
             ${STREAMS.map(s => `<option value="${s.id}" ${state.data.course === s.id ? 'selected' : ''}>${s.label}</option>`).join('')}
           </select>
         </div>
         <div class="field">
-          <label>Elective 1</label>
+          <label>Elective 1 <span class="req">*</span></label>
           <select id="rElective1">
             <option value="">Select an elective</option>
             ${ELECTIVES.map(e => `<option value="${e.id}" ${state.data.elective1 === e.id ? 'selected' : ''}>${e.label}</option>`).join('')}
           </select>
         </div>
-        ${showElective2 ? `
+        ${showEl2 ? `
         <div class="field">
-          <label>Elective 2</label>
+          <label>Elective 2 <span class="req">*</span></label>
           <select id="rElective2">
             <option value="">Select an elective</option>
             ${ELECTIVES.map(e => `<option value="${e.id}" ${state.data.elective2 === e.id ? 'selected' : ''}>${e.label}</option>`).join('')}
           </select>
         </div>` : ''}
+        <div class="field" style="margin-top:16px;">
+          <p class="hint">Note: Mathematics is recommended for all streams. Physics requires Mathematics as an elective.</p>
+        </div>
       </div>
       <div style="display:flex;gap:12px;">
-        <button class="btn btn-ghost" id="backBtn">Back</button>
-        <button class="btn" id="submitBtn"><i data-lucide="check"></i> Submit Application</button>
+        <button class="btn ghost" id="backBtn" style="flex:1;">Back</button>
+        <button class="btn" id="submitBtn" style="flex:2;">Submit Application</button>
       </div>
     `;
   }
-
   return content;
 }
 
+function renderSuccess() {
+  appEl.innerHTML = `
+    <div class="success-wrap">
+      <div class="success-icon"><i data-lucide="check"></i></div>
+      <h1>Application Submitted</h1>
+      <p>Welcome, ${state.data.name}. Your candidate profile has been created.</p>
+      
+      <div class="ref-box">
+        <div class="k">Your Reference ID</div>
+        <div class="v" id="refCode">${state.data.refId}</div>
+      </div>
+
+      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6;">
+        Next step: You must sit the IFB/AE Admission Examination in January / February 2027 to receive your Student Number.
+      </p>
+
+      <a href="student-dashboard.html" class="btn">Go to Dashboard</a>
+    </div>
+  `;
+  if (window.lucide) lucide.createIcons();
+}
+
+/* =================== LOGIC =================== */
 function bindEvents() {
-  // Mode Switching
+  // Mode tabs
   document.querySelectorAll('.tab').forEach(t => {
     t.addEventListener('click', () => {
       state.mode = t.dataset.mode;
-      document.getElementById('formMsg').className = 'msg';
+      clearAlert();
       render();
     });
   });
 
-  const showMsg = (text, type) => {
-    const el = document.getElementById('formMsg');
-    el.textContent = text;
-    el.className = 'msg show ' + type;
-  };
-
-  // Sign In Logic
-  const signInBtn = document.getElementById('signInBtn');
-  if (signInBtn) {
-    signInBtn.addEventListener('click', async () => {
+  // Sign In
+  const signinBtn = document.getElementById('signinBtn');
+  if (signinBtn) {
+    signinBtn.addEventListener('click', async () => {
+      clearAlert();
       const email = document.getElementById('sEmail').value.trim();
       const password = document.getElementById('sPassword').value;
-      if (!email || !password) { showMsg('Please fill all fields', 'error'); return; }
       
-      signInBtn.disabled = true;
-      signInBtn.innerHTML = 'Signing in...';
+      if (!email || !password) { showAlert('Please enter your email and password.'); return; }
+      
+      signinBtn.disabled = true;
+      signinBtn.innerHTML = '<div class="spinner"></div> Signing in...';
+      
       try {
         const cred = await signInWithEmailAndPassword(auth, email, password);
         await routeUser(cred.user);
       } catch (err) {
-        showMsg(err.message, 'error');
-        signInBtn.disabled = false;
-        signInBtn.innerHTML = '<i data-lucide="log-in"></i> Sign In';
-        if (window.lucide) lucide.createIcons();
+        showAlert(err.message || 'Invalid credentials.');
+        signinBtn.disabled = false;
+        signinBtn.innerHTML = 'Sign In';
       }
     });
   }
 
-  // Register Logic
-  const nextBtn = document.getElementById('nextBtn');
+  // Wizard Navigation
   const backBtn = document.getElementById('backBtn');
+  const nextBtn = document.getElementById('nextBtn');
   const submitBtn = document.getElementById('submitBtn');
 
   if (backBtn) {
-    backBtn.addEventListener('click', () => { state.step--; render(); });
+    backBtn.addEventListener('click', () => { state.step--; clearAlert(); render(); });
   }
 
   if (nextBtn) {
     nextBtn.addEventListener('click', () => {
+      clearAlert();
       if (state.step === 1) {
         state.data.name = document.getElementById('rName').value.trim();
         state.data.email = document.getElementById('rEmail').value.trim();
         state.data.password = document.getElementById('rPassword').value;
-        if (!state.data.name || !state.data.email || !state.data.password) { showMsg('Please fill all fields', 'error'); return; }
-        if (state.data.password.length < 8) { showMsg('Password must be at least 8 characters', 'error'); return; }
-      }
-      if (state.step === 2) {
+        
+        if (!state.data.name) return showAlert('Full name is required.');
+        if (!/^\S+@\S+\.\S+$/.test(state.data.email)) return showAlert('Enter a valid email address.');
+        if (state.data.password.length < 8) return showAlert('Password must be at least 8 characters.');
+      } 
+      else if (state.step === 2) {
         state.data.idNumber = document.getElementById('rIdNumber').value.trim();
-        state.data.dateOfBirth = document.getElementById('rDob').value;
+        state.data.dob = document.getElementById('rDob').value;
         state.data.phone = document.getElementById('rPhone').value.trim();
         state.data.city = document.getElementById('rCity').value.trim();
         state.data.province = document.getElementById('rProvince').value.trim();
-        if (!state.data.idNumber || !state.data.dateOfBirth || !state.data.phone || !state.data.city) { showMsg('Please fill all required fields', 'error'); return; }
+        
+        if (!state.data.idNumber) return showAlert('ID / Passport Number is required.');
+        if (!state.data.dob) return showAlert('Date of Birth is required.');
+        if (!state.data.phone) return showAlert('Mobile Number is required.');
+        if (!state.data.city || !state.data.province) return showAlert('City and Province are required.');
       }
       state.step++;
       render();
@@ -470,32 +501,32 @@ function bindEvents() {
 
   if (submitBtn) {
     submitBtn.addEventListener('click', async () => {
+      clearAlert();
       state.data.duration = document.getElementById('rDuration').value;
       state.data.course = document.getElementById('rCourse').value;
       state.data.elective1 = document.getElementById('rElective1').value;
       const el2 = document.getElementById('rElective2');
       if (el2) state.data.elective2 = el2.value;
 
-      if (!state.data.elective1) { showMsg('Please select at least one elective', 'error'); return; }
-      if (state.data.duration !== '3' && !state.data.elective2) { showMsg('Please select a second elective', 'error'); return; }
+      if (!state.data.elective1) return showAlert('Please select an elective.');
+      if (state.data.duration !== '3' && !state.data.elective2) return showAlert('Please select a second elective.');
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = 'Submitting...';
+      submitBtn.innerHTML = '<div class="spinner"></div> Submitting...';
       
       try {
-        // 1. Create Auth Account
         const cred = await createUserWithEmailAndPassword(auth, state.data.email, state.data.password);
         const user = cred.user;
         await updateProfile(user, { displayName: state.data.name });
 
-        // 2. Build Document
         const refId = makeReferenceId(user.uid);
-        const payload = {
+        
+        await setDoc(doc(db, 'users', user.uid), {
           name: state.data.name,
           email: state.data.email,
           referenceId: refId,
           idNumber: state.data.idNumber,
-          dateOfBirth: state.data.dateOfBirth,
+          dob: state.data.dob,
           phone: state.data.phone,
           city: state.data.city,
           province: state.data.province,
@@ -504,62 +535,50 @@ function bindEvents() {
           electives: [state.data.elective1, state.data.elective2].filter(Boolean),
           status: 'awaiting_ae',
           preludePassed: false,
-          createdAt: serverTimestamp()
-        };
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
 
-        await setDoc(doc(db, 'users', user.uid), payload);
-
-        // 3. Save local state & show success
         localStorage.setItem('ifb_user', JSON.stringify({ uid: user.uid, email: user.email }));
-        state.mode = 'success';
+        
         state.data.refId = refId;
+        state.mode = 'success';
         render();
 
       } catch (err) {
-        showMsg(err.message, 'error');
+        showAlert(err.message || 'Failed to submit application.');
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i data-lucide="check"></i> Submit Application';
-        if (window.lucide) lucide.createIcons();
+        submitBtn.innerHTML = 'Submit Application';
       }
+    });
+  }
+
+  // Dynamic Elective 2 toggle
+  const durSel = document.getElementById('rDuration');
+  if (durSel) {
+    durSel.addEventListener('change', () => {
+      state.data.duration = durSel.value;
+      render(); // Re-render to show/hide elective 2
     });
   }
 }
 
-function renderSuccess() {
-  const app = document.getElementById('app');
-  app.innerHTML = `
-    <div class="success-wrap fade">
-      <div class="success-icon"><i data-lucide="check"></i></div>
-      <h1>Application Submitted</h1>
-      <p class="sub">Welcome, ${state.data.name}. Your candidate profile has been created.</p>
-      
-      <div class="ref-box">
-        <div class="k">Reference ID</div>
-        <div class="v">${state.data.refId}</div>
-      </div>
-
-      <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">
-        Next step: You must sit the IFB/AE Admission Examination in January / February 2027 to receive your Student Number.
-      </p>
-
-      <a href="index.html" class="btn"><i data-lucide="home"></i> Return to Home</a>
-    </div>
-  `;
-  if (window.lucide) lucide.createIcons();
-}
-
 async function routeUser(user) {
+  if (user.email === ADMIN_EMAIL) {
+    window.location.href = 'administration.html';
+    return;
+  }
   const snap = await getDoc(doc(db, 'users', user.uid));
   if (!snap.exists()) {
     window.location.href = 'index.html';
     return;
   }
+  
   const data = snap.data();
   if (data.status === 'revoked') {
-    alert('Your account has been revoked.');
-    await signOut(auth);
+    showAlert('Your account has been revoked.');
+    await auth.signOut();
     localStorage.removeItem('ifb_user');
-    window.location.reload();
     return;
   }
   
@@ -567,19 +586,17 @@ async function routeUser(user) {
   window.location.href = 'student-dashboard.html';
 }
 
-// Init
+/* =================== INIT =================== */
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // If already signed in, push to dashboard
-    window.location.href = 'student-dashboard.html';
+    routeUser(user);
   } else {
     render();
   }
 });
 
-// Initial render
-render();
 if (window.lucide) lucide.createIcons();
 </script>
+
 </body>
 </html>
