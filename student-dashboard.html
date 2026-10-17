@@ -9,196 +9,64 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <style>
-/* =================== THEME =================== */
-:root{
-  --ink:#0b0b0b;
-  --ink-2:#1c1c1c;
-  --paper:#ffffff;
-  --bg:#f7f7f7;
-  --line:#e5e5e5;
-  --line-2:#d4d4d4;
-  --muted:#6b6b6b;
-  --muted-2:#8e8e8e;
-  --muted-3:#b3b3b3;
-  --blue:#1d3d8f;--blue-bg:#f0f4ff;
-  --green:#0a6b44;--green-bg:#ebf7f1;
-  --gold:#9e7820;--gold-bg:#fcf8eb;
-  --red:#b3261e;--red-bg:#fdefec;
-  --radius:12px;
-  --radius-lg:16px;
-  --radius-xl:24px;
-  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,Roboto,Helvetica,Arial,sans-serif;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
-}
+:root{--ink:#0b0b0b;--paper:#fff;--bg:#f7f7f7;--line:#e5e5e5;--muted:#6b6b6b;--blue:#1d3d8f;--green:#0a6b44;--red:#b3261e;--radius:12px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--mono:ui-monospace,monospace;}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{-webkit-text-size-adjust:100%;overflow-x:hidden}
-body{
-  background:var(--bg);color:var(--ink);
-  font-family:var(--font);font-size:15px;line-height:1.55;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
-  width:100%;position:relative;
-}
-::selection{background:var(--ink);color:var(--paper)}
-button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-a{color:inherit;text-decoration:none}
-
-/* =================== HEADER =================== */
-header{
-  position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,.95);
-  backdrop-filter:saturate(180%) blur(16px);
-  -webkit-backdrop-filter:saturate(180%) blur(16px);
-  border-bottom:1px solid var(--line);
-  padding-top:env(safe-area-inset-top);
-}
-.header-inner{
-  padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;
-  max-width:680px;margin:0 auto;
-}
-.brand{display:flex;align-items:center;gap:12px;color:var(--ink)}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;user-select:none;}
+header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top);}
+.header-inner{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;max-width:680px;margin:0 auto;}
+.brand{display:flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;}
 .brand-mark{font-size:44px;font-weight:700;line-height:.85;letter-spacing:-3px;}
 .brand-text{display:flex;flex-direction:column;line-height:1.05;}
 .brand-name{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;}
 .brand-sub{font-size:9.5px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:3px;}
-@media(max-width:400px){.brand-text{display:none}}
 .header-right{display:flex;align-items:center;gap:10px;}
-.nav-avatar{
-  width:40px;height:40px;border-radius:12px;overflow:hidden;
-  border:1.5px solid var(--line);display:none;align-items:center;justify-content:center;
-  background:var(--bg);flex-shrink:0;transition:border-color .18s ease;
-}
-.nav-avatar:hover{border-color:var(--ink)}
+.nav-avatar{width:40px;height:40px;border-radius:12px;overflow:hidden;border:1.5px solid var(--line);display:none;align-items:center;justify-content:center;background:var(--bg);}
 .nav-avatar svg{display:block;border-radius:11px;}
-.icon-btn{
-  width:40px;height:40px;border-radius:12px;background:var(--paper);border:1px solid var(--line);
-  display:flex;align-items:center;justify-content:center;color:var(--ink);flex-shrink:0;
-}
-.icon-btn:hover{background:var(--bg);border-color:var(--ink);}
+.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;}
 .icon-btn svg{width:18px;height:18px;}
-
-/* =================== SHELL =================== */
-.shell{max-width:680px;margin:0 auto;padding:24px 20px 40px;width:100%;}
-
-/* =================== HERO CARD =================== */
-.hero-card{
-  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);
-  padding:24px;margin-bottom:20px;position:relative;overflow:hidden;
-}
+.shell{max-width:680px;margin:0 auto;padding:24px 20px 60px;}
+.hero-card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px;}
 .hero-top{display:flex;gap:16px;align-items:flex-start;margin-bottom:18px;}
-.hero-avatar{
-  width:64px;height:64px;border-radius:16px;overflow:hidden;border:1.5px solid var(--line);flex-shrink:0;background:var(--bg);
-}
+.hero-avatar{width:64px;height:64px;border-radius:16px;overflow:hidden;border:1.5px solid var(--line);flex-shrink:0;background:var(--bg);}
 .hero-avatar svg{display:block;border-radius:15px;}
-.hero-id{flex:1;min-width:0;}
-.hero-id .k{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px;}
-.hero-id h1{font-size:20px;font-weight:700;letter-spacing:-.5px;line-height:1.2;margin-bottom:4px;}
+.hero-id h1{font-size:20px;font-weight:700;margin-bottom:4px;}
 .hero-id .email{font-size:12px;font-family:var(--mono);color:var(--muted);}
-
-.status-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
-.badge{
-  display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;
-  padding:5px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:.5px;
-}
-.badge svg{width:12px;height:12px;}
-.badge.pending{background:var(--gold-bg);color:var(--gold);}
-.badge.verified{background:var(--green-bg);color:var(--green);}
-.badge.revoked{background:var(--red-bg);color:var(--red);}
+.status-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:100px;text-transform:uppercase;}
+.badge.pending{background:#fcf8eb;color:#9e7820;}
 .badge.duration{background:var(--bg);color:var(--muted);border:1px solid var(--line);}
 .badge.stream{background:var(--ink);color:var(--paper);}
-
-/* Progress */
-.progress-track{display:flex;align-items:center;gap:0;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);}
-.p-step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;}
-.p-step::before{content:"";position:absolute;top:11px;left:50%;right:-50%;height:2px;background:var(--line);z-index:0;}
-.p-step:last-child::before{display:none;}
-.p-step.done::before{background:var(--ink);}
-.p-dot{
-  width:24px;height:24px;border-radius:50%;background:var(--paper);border:2px solid var(--line);
-  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;
-  color:var(--muted);position:relative;z-index:1;font-family:var(--mono);
-}
-.p-step.done .p-dot{background:var(--ink);border-color:var(--ink);color:var(--paper);}
-.p-step.active .p-dot{border-color:var(--ink);color:var(--ink);}
-.p-lbl{font-size:9px;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:center;line-height:1.2;}
-.p-step.done .p-lbl,.p-step.active .p-lbl{color:var(--ink);}
-
-/* =================== SECTIONS =================== */
 .section{margin-bottom:24px;}
 .section-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:0 4px;}
 .section-head h2{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;}
 .section-head .line{flex:1;height:1px;background:var(--line);}
-
-.card{
-  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-lg);
-  padding:20px;margin-bottom:12px;
-}
-.card .label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
-.card .label svg{width:12px;height:12px;}
-
-/* ID Grid */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:12px;}
 .id-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .id-cell{background:var(--bg);padding:14px;border-radius:10px;border:1px solid var(--line);}
 .id-cell .k{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:4px;}
 .id-cell .v{font-family:var(--mono);font-size:14px;font-weight:700;letter-spacing:.5px;word-break:break-all;}
-.id-cell .v.null{font-family:var(--font);font-size:12px;color:var(--muted-3);font-style:italic;font-weight:500;}
-
-/* Barcode */
-.barcode-box{
-  background:var(--paper);border:1.5px dashed var(--line-2);border-radius:12px;
-  padding:20px;text-align:center;
-}
+.id-cell .v.null{font-family:var(--font);font-size:12px;color:var(--muted);font-style:italic;font-weight:500;}
+.barcode-box{background:var(--paper);border:1.5px dashed var(--line);border-radius:12px;padding:20px;text-align:center;}
 .barcode-box .lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px;}
-.barcode-box svg{width:100%;max-width:300px;height:60px;display:block;margin:0 auto;}
+.barcode-box svg{width:100%;max-width:300px;height:50px;display:block;margin:0 auto;}
 .barcode-box .num{font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:2px;margin-top:10px;}
-
-/* Answer Book Cover */
-.abc-card{background:var(--paper);border:1.5px solid var(--ink);border-radius:var(--radius-lg);padding:20px;margin-bottom:12px;}
-.abc-header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:16px;}
-.abc-header h3{font-size:15px;font-weight:700;letter-spacing:-.2px;line-height:1.3;}
-.abc-header .sub{font-size:11px;color:var(--muted);margin-top:2px;font-weight:600;}
-.abc-barcode-mini{width:120px;height:40px;background:var(--bg);border:1px dashed var(--line-2);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted);letter-spacing:1px;text-align:center;padding:4px;}
-.abc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
-.abc-field{border:1px solid var(--line);padding:8px;border-radius:6px;background:var(--bg);}
-.abc-field .k{font-size:8.5px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:2px;}
-.abc-field .v{font-family:var(--mono);font-size:12px;font-weight:700;}
-.abc-box{border:2px solid var(--ink);border-radius:8px;padding:16px;text-align:center;margin-top:12px;}
-.abc-box h4{font-size:13px;font-weight:700;margin-bottom:4px;}
-.abc-box p{font-size:11px;color:var(--muted);line-height:1.5;}
-
-/* Results Table */
-.res-table{width:100%;border-collapse:collapse;font-size:13px;}
-.res-table th,.res-table td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line);}
-.res-table th{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;background:var(--bg);}
-.res-table td:last-child{text-align:right;font-family:var(--mono);font-weight:700;}
-.res-table tr:last-child td{border-bottom:none;}
-.res-empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;background:var(--bg);border-radius:10px;border:1px dashed var(--line);}
-
-/* Action List */
-.action-list{display:flex;flex-direction:column;gap:8px;}
-.action-item{
-  display:flex;align-items:center;gap:14px;padding:16px;background:var(--paper);
-  border:1px solid var(--line);border-radius:12px;transition:all .15s ease;
-}
+.action-item{display:flex;align-items:center;gap:14px;padding:16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink);margin-bottom:8px;transition:all .2s;}
 .action-item:hover{border-color:var(--ink);}
-.action-item .ic{width:36px;height:36px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.action-item .ic svg{width:16px;height:16px;}
-.action-item .txt{flex:1;}
-.action-item .txt h4{font-size:13.5px;font-weight:600;margin-bottom:2px;}
+.action-item .ic{width:36px;height:36px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.action-item .txt h4{font-size:13.5px;font-weight:600;}
 .action-item .txt p{font-size:11px;color:var(--muted);}
-.action-item .arrow{color:var(--muted);}
-.action-item .arrow svg{width:16px;height:16px;}
-
-/* Logout */
-.logout-btn{
-  width:100%;padding:14px;border-radius:12px;background:var(--paper);border:1px solid var(--line);
-  color:var(--red);font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;
-  margin-top:12px;
-}
-.logout-btn:hover{background:var(--red-bg);border-color:var(--red);}
-
-/* =================== FOOTER =================== */
-footer{padding:32px 0;text-align:center;font-size:11px;color:var(--muted);border-top:1px solid var(--line);margin-top:20px;}
-footer .nonacc{max-width:400px;margin:0 auto;line-height:1.6;font-size:10.5px;color:var(--muted-2);}
+.btn{width:100%;padding:14px;border-radius:12px;background:var(--ink);color:var(--paper);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;border:none;cursor:pointer;}
+.btn.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line);}
+.btn.danger{background:#fdefec;color:var(--red);border:1px solid rgba(179,38,30,.2);}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--paper);width:100%;max-width:480px;border-radius:20px;padding:24px;box-shadow:0 20px 40px rgba(0,0,0,.2);}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;}
+.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:14px;background:var(--bg);}
 </style>
 </head>
 <body>
@@ -214,292 +82,184 @@ footer .nonacc{max-width:400px;margin:0 auto;line-height:1.6;font-size:10.5px;co
     </a>
     <div class="header-right">
       <div class="nav-avatar" id="navAvatar"></div>
-      <a href="index.html" class="icon-btn" title="Home"><i data-lucide="home"></i></a>
+      <button class="icon-btn" id="logoutBtn" title="Sign Out"><i data-lucide="log-out"></i></button>
     </div>
   </div>
 </header>
 
 <main class="shell" id="app">
-  <div style="text-align:center;padding:40px 0;color:var(--muted);font-size:13px;">Loading profile…</div>
+  <div style="text-align:center;padding:40px 0;color:var(--muted);font-size:13px;">Loading official records…</div>
 </main>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>Edit Curriculum</h3>
+    <p>You may change your stream and electives until 21 March 2027.</p>
+    <div class="field">
+      <label>Stream</label>
+      <select id="editStream">
+        <option value="fullstack">Full Stack Engineering</option>
+        <option value="frontend">Frontend Development</option>
+        <option value="backend">Backend Engineering</option>
+        <option value="mobile">Mobile Development</option>
+        <option value="webdesign">Web Design</option>
+        <option value="uiux">UI/UX Design</option>
+        <option value="data">Data & Analytics</option>
+        <option value="stem">STEM & Physics</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn ghost" onclick="document.getElementById('editModal').classList.remove('open')">Cancel</button>
+      <button class="btn" id="saveEditBtn">Save Changes</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
-  authDomain: "nyldevcourses.firebaseapp.com",
-  projectId: "nyldevcourses",
-  storageBucket: "nyldevcourses.firebasestorage.app",
-  messagingSenderId: "16687006873",
-  appId: "1:16687006873:web:b7d66ad1024ccd92722408"
-};
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
-
 const appEl = document.getElementById('app');
 
-/* =================== GRIDY AVATAR =================== */
+// SECURITY: Disable right-click
+document.addEventListener('contextmenu', e => e.preventDefault());
+
 function hash32(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
-function gridy(seed,px){
-  px = px || 40;
-  const h = hash32(String(seed || 'anon'));
-  const rnd = mulberry32(h);
-  const hue = h % 360;
-  const fg = 'hsl(' + hue + ',48%,32%)';
-  const bg = 'hsl(' + hue + ',20%,90%)';
-  const N = 5, cell = 100 / N;
-  const half = [];
-  for (let r = 0; r < N; r++) {
-    const row = [];
-    for (let c = 0; c < 3; c++) row.push(rnd() > 0.46 ? 1 : 0);
-    half.push(row);
-  }
-  if (!half.some(r => r.some(v => v))) half[2][1] = 1;
-  let rects = '';
-  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) {
-    const cc = c < 3 ? c : 4 - c;
-    if (half[r][cc]) rects += '<rect x="' + (c*cell).toFixed(2) + '" y="' + (r*cell).toFixed(2) + '" width="' + cell.toFixed(2) + '" height="' + cell.toFixed(2) + '"/>';
-  }
-  return '<svg viewBox="0 0 100 100" width="' + px + '" height="' + px + '" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect width="100" height="100" fill="' + bg + '"/><g fill="' + fg + '">' + rects + '</g></svg>';
-}
+function gridy(seed,px){px=px||40;const h=hash32(String(seed||'anon'));const rnd=mulberry32(h);const hue=h%360;const fg='hsl('+hue+',48%,32%)';const bg='hsl('+hue+',20%,90%)';const N=5,cell=100/N;const half=[];for(let r=0;r<N;r++){const row=[];for(let c=0;c<3;c++)row.push(rnd()>0.46?1:0);half.push(row);}if(!half.some(r=>r.some(v=>v)))half[2][1]=1;let rects='';for(let r=0;r<N;r++)for(let c=0;c<N;c++){const cc=c<3?c:4-c;if(half[r][cc])rects+='<rect x="'+(c*cell).toFixed(2)+'" y="'+(r*cell).toFixed(2)+'" width="'+cell.toFixed(2)+'" height="'+cell.toFixed(2)+'"/>';}return '<svg viewBox="0 0 100 100" width="'+px+'" height="'+px+'" xmlns="http://www.w3.org/2000/svg" style="display:block"><rect width="100" height="100" fill="'+bg+'"/><g fill="'+fg+'">'+rects+'</g></svg>';}
 
-/* =================== DATA MAPPING =================== */
-const STREAM_LABELS = {
-  fullstack: 'Full Stack Engineering',
-  frontend: 'Frontend Development',
-  backend: 'Backend Engineering',
-  mobile: 'Mobile Development',
-  webdesign: 'Web Design',
-  uiux: 'UI/UX Design',
-  data: 'Data & Analytics',
-  stem: 'STEM & Physics'
-};
+let currentUserData = null;
+let currentUid = null;
 
 function render(data) {
-  const status = data.preludePassed ? 'verified' : (data.status === 'revoked' ? 'revoked' : 'pending');
-  const statusText = { pending: 'Awaiting IFB/AE', verified: 'Approved', revoked: 'Revoked' }[status];
-  const statusIcon = { pending: 'clock', verified: 'check-circle', revoked: 'ban' }[status];
-
-  // Progress calculation
-  const p1 = true; // Registered
-  const p2 = data.preludePassed; // AE Passed
-  const p3 = !!data.studentNumber; // Student Number Assigned
-  const p4 = data.results && data.results.length > 0; // Results Released
-
-  // Answer Book Cover Mock Data
-  const examNo = data.examinationNumber || 'PENDING';
-  const studentNo = data.studentNumber || data.referenceId || 'PENDING';
+  currentUserData = data;
+  const isAdmissionPeriod = new Date() < new Date('2027-03-21T23:59:59+02:00');
+  const hasStudentNo = !!data.studentNumber;
   const barcodeValue = data.studentNumber || data.referenceId;
-
+  
   appEl.innerHTML = `
-    <!-- HERO -->
     <div class="hero-card">
       <div class="hero-top">
         <div class="hero-avatar" id="heroAvatar"></div>
         <div class="hero-id">
-          <div class="k">Candidate Profile</div>
-          <h1>${data.name || 'Student'}</h1>
+          <h1>${data.name || 'Candidate'}</h1>
           <div class="email">${data.email}</div>
         </div>
       </div>
       
       <div class="status-row">
-        <span class="badge ${status}"><i data-lucide="${statusIcon}"></i> ${statusText}</span>
-        <span class="badge duration"><i data-lucide="clock"></i> ${data.duration || '—'} Months</span>
-        <span class="badge stream"><i data-lucide="layout-grid"></i> ${STREAM_LABELS[data.course] || '—'}</span>
+        <span class="badge pending"><i data-lucide="clock"></i> ${hasStudentNo ? 'Enrolled' : 'Awaiting IFB/AE'}</span>
+        <span class="badge duration"><i data-lucide="calendar"></i> ${data.duration || '—'} Months</span>
+        <span class="badge stream"><i data-lucide="layout-grid"></i> ${data.course || '—'}</span>
       </div>
 
-      <div class="progress-track">
-        <div class="p-step ${p1 ? 'done' : ''}">
-          <div class="p-dot">${p1 ? '<i data-lucide="check" style="width:12px;height:12px;"></i>' : '1'}</div>
-          <div class="p-lbl">Registered</div>
-        </div>
-        <div class="p-step ${p2 ? 'done' : (p1 ? 'active' : '')}">
-          <div class="p-dot">${p2 ? '<i data-lucide="check" style="width:12px;height:12px;"></i>' : '2'}</div>
-          <div class="p-lbl">IFB/AE</div>
-        </div>
-        <div class="p-step ${p3 ? 'done' : (p2 ? 'active' : '')}">
-          <div class="p-dot">${p3 ? '<i data-lucide="check" style="width:12px;height:12px;"></i>' : '3'}</div>
-          <div class="p-lbl">Student №</div>
-        </div>
-        <div class="p-step ${p4 ? 'done' : (p3 ? 'active' : '')}">
-          <div class="p-dot">${p4 ? '<i data-lucide="check" style="width:12px;height:12px;"></i>' : '4'}</div>
-          <div class="p-lbl">Results</div>
-        </div>
+      ${isAdmissionPeriod ? `
+      <div style="border-top:1px solid var(--line);padding-top:16px;display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:12px;color:var(--muted);">Need to adjust your stream?</div>
+        <button class="btn ghost" style="width:auto;padding:8px 14px;font-size:12px;" onclick="document.getElementById('editModal').classList.add('open')">
+          <i data-lucide="edit-3"></i> Edit Curriculum
+        </button>
       </div>
+      ` : ''}
     </div>
 
-    <!-- IDENTIFIERS -->
     <div class="section">
-      <div class="section-head"><h2>Identifiers</h2><div class="line"></div></div>
+      <div class="section-head"><h2>Examination Records</h2><div class="line"></div></div>
       <div class="card">
         <div class="id-grid">
           <div class="id-cell">
             <div class="k">Reference ID</div>
-            <div class="v">${data.referenceId || '—'}</div>
+            <div class="v">${data.referenceId}</div>
           </div>
           <div class="id-cell">
             <div class="k">Student Number</div>
-            <div class="v ${data.studentNumber ? '' : 'null'}">${data.studentNumber || 'Not Assigned'}</div>
+            <div class="v ${data.studentNumber ? '' : 'null'}">${data.studentNumber || 'Pending'}</div>
           </div>
           <div class="id-cell">
-            <div class="k">Exam Number</div>
-            <div class="v ${data.examinationNumber ? '' : 'null'}">${data.examinationNumber || 'Not Assigned'}</div>
+            <div class="k">Examination Number</div>
+            <div class="v ${data.examinationNumber ? '' : 'null'}">${data.examinationNumber || 'Pending'}</div>
           </div>
           <div class="id-cell">
-            <div class="k">Exam PIN</div>
-            <div class="v ${data.examPin ? '' : 'null'}">${data.examPin || 'Not Assigned'}</div>
+            <div class="k">Examination PIN</div>
+            <div class="v ${data.examPin ? '' : 'null'}">${data.examPin || 'Pending'}</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- BARCODE -->
     <div class="section">
-      <div class="section-head"><h2>Candidate Barcode</h2><div class="line"></div></div>
+      <div class="section-head"><h2>Official Barcode</h2><div class="line"></div></div>
       <div class="barcode-box">
-        <div class="lbl">Scan for exam entry</div>
-        ${barcodeValue ? `<svg id="barcode"></svg>` : `<div style="font-size:12px;color:var(--muted);padding:10px;">Barcode will be generated once a Student Number is assigned.</div>`}
+        <div class="lbl">Candidate Identification</div>
+        ${barcodeValue ? `<svg id="barcode"></svg>` : '<div style="padding:10px;font-size:12px;color:var(--muted);">Will generate upon Student Number assignment.</div>'}
         <div class="num">${barcodeValue || '—'}</div>
       </div>
     </div>
 
-    <!-- ANSWER BOOK COVER -->
     <div class="section">
-      <div class="section-head"><h2>Digital Answer Book</h2><div class="line"></div></div>
-      <div class="abc-card">
-        <div class="abc-header">
-          <div>
-            <h3>IFB Examination Answer Book</h3>
-            <div class="sub">Official Cover Sheet</div>
-          </div>
-          <div class="abc-barcode-mini">Affix Barcode Here</div>
-        </div>
-        
-        <div class="abc-grid">
-          <div class="abc-field"><div class="k">Student Number</div><div class="v">${studentNo}</div></div>
-          <div class="abc-field"><div class="k">Examination Number</div><div class="v">${examNo}</div></div>
-          <div class="abc-field"><div class="k">Subject</div><div class="v">PENDING</div></div>
-          <div class="abc-field"><div class="k">Paper Number</div><div class="v">PENDING</div></div>
-        </div>
-
-        <div class="abc-box">
-          <h4>Attach your barcode</h4>
-          <p>When prompted during an examination, attach your candidate barcode to this digital answer book cover to associate your submission with your identity.</p>
-        </div>
-      </div>
+      <div class="section-head"><h2>Quick Actions</h2><div class="line"></div></div>
+      <a href="admission-slip.html" class="action-item">
+        <div class="ic"><i data-lucide="file-text"></i></div>
+        <div class="txt"><h4>Download Admission Slip</h4><p>A4 PDF format</p></div>
+        <i data-lucide="chevron-right" style="margin-left:auto;color:var(--muted);"></i>
+      </a>
+      <a href="resources.html" class="action-item">
+        <div class="ic"><i data-lucide="book-open"></i></div>
+        <div class="txt"><h4>Practice Exam & Answer Book</h4><p>Sample paper viewer</p></div>
+        <i data-lucide="chevron-right" style="margin-left:auto;color:var(--muted);"></i>
+      </a>
     </div>
-
-    <!-- RESULTS -->
-    <div class="section">
-      <div class="section-head"><h2>Academic Results</h2><div class="line"></div></div>
-      <div class="card" style="padding:0; overflow:hidden;">
-        ${data.results && data.results.length > 0 ? `
-          <table class="res-table">
-            <thead><tr><th>Subject</th><th>Period</th><th>Score</th></tr></thead>
-            <tbody>
-              ${data.results.map(r => `
-                <tr>
-                  <td>${r.subject}</td>
-                  <td>${r.period}</td>
-                  <td>${r.score}%</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        ` : `
-          <div class="res-empty">No results released yet.</div>
-        `}
-      </div>
-    </div>
-
-    <!-- ACTIONS -->
-    <div class="section">
-      <div class="section-head"><h2>Downloads</h2><div class="line"></div></div>
-      <div class="action-list">
-        <a href="slip-${data.referenceId}.html" class="action-item">
-          <div class="ic"><i data-lucide="file-text"></i></div>
-          <div class="txt"><h4>Admission Slip</h4><p>Download A4 PDF</p></div>
-          <div class="arrow"><i data-lucide="download"></i></div>
-        </a>
-        <a href="resources.html" class="action-item">
-          <div class="ic"><i data-lucide="library"></i></div>
-          <div class="txt"><h4>Academic Resources</h4><p>Timetables, guides, and papers</p></div>
-          <div class="arrow"><i data-lucide="chevron-right"></i></div>
-        </a>
-      </div>
-      
-      <button class="logout-btn" id="logoutBtn">
-        <i data-lucide="log-out"></i> Sign Out
-      </button>
-    </div>
-
-    <footer>
-      <p class="nonacc">Non-accredited. Not registered with DHET or Umalusi. Not NQF-registered. Internal record of completion only.</p>
-    </footer>
   `;
 
-  // Inject Avatar
-  document.getElementById('heroAvatar').innerHTML = gridy(data.id || data.referenceId, 64);
-  document.getElementById('navAvatar').innerHTML = gridy(data.id || data.referenceId, 40);
+  document.getElementById('heroAvatar').innerHTML = gridy(data.referenceId, 64);
+  document.getElementById('navAvatar').innerHTML = gridy(data.referenceId, 40);
   document.getElementById('navAvatar').style.display = 'flex';
 
-  // Generate Barcode
   if (barcodeValue && typeof JsBarcode === 'function') {
-    try {
-      JsBarcode('#barcode', barcodeValue, {
-        format: 'CODE128', width: 2, height: 50, displayValue: false, margin: 0
-      });
-    } catch(e) {}
+    try { JsBarcode('#barcode', barcodeValue, { format: 'CODE128', width: 2, height: 50, displayValue: false, margin: 0 }); } catch(e) {}
   }
 
-  // Logout
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await signOut(auth);
-    localStorage.removeItem('ifb_user');
-    window.location.href = 'index.html';
-  });
-
+  // Set modal default
+  document.getElementById('editStream').value = data.course || 'fullstack';
   if (window.lucide) lucide.createIcons();
 }
 
-/* =================== AUTH & LOAD =================== */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = 'admissions.html';
-    return;
-  }
-  
-  if (user.email === ADMIN_EMAIL) {
-    window.location.href = 'administration.html';
-    return;
-  }
-
+document.getElementById('saveEditBtn').addEventListener('click', async () => {
+  const newStream = document.getElementById('editStream').value;
   try {
-    const snap = await getDoc(doc(db, 'users', user.uid));
-    if (!snap.exists()) {
-      appEl.innerHTML = `
-        <div style="text-align:center;padding:40px;">
-          <h2 style="font-size:18px;margin-bottom:8px;">Profile Not Found</h2>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">Your user record is missing.</p>
-          <a href="admissions.html" style="color:var(--ink);font-weight:600;">Return to Admissions</a>
-        </div>
-      `;
-      return;
-    }
-    const data = snap.data();
-    render({ id: user.uid, ...data });
-  } catch (err) {
-    appEl.innerHTML = `<div style="text-align:center;padding:40px;color:var(--red);">Error loading profile: ${err.message}</div>`;
+    await updateDoc(doc(db, 'users', currentUid), {
+      course: newStream,
+      updatedAt: serverTimestamp()
+    });
+    document.getElementById('editModal').classList.remove('open');
+    currentUserData.course = newStream;
+    render(currentUserData);
+  } catch (e) {
+    alert('Failed to update: ' + e.message);
   }
 });
-</script>
 
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await signOut(auth);
+  localStorage.removeItem('ifb_user');
+  window.location.href = 'index.html';
+});
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = 'admissions.html'; return; }
+  if (user.email === "n1nathaniel971@gmail.com") { window.location.href = 'administration.html'; return; }
+  
+  currentUid = user.uid;
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  if (!snap.exists()) { appEl.innerHTML = 'Profile not found.'; return; }
+  render(snap.data());
+});
+</script>
 </body>
 </html>
