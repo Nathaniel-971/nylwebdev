@@ -4,31 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#6e1423">
-<title>IFB Institute</title>
+<title>IFB Institute · Independent Examination Board</title>
 <meta name="description" content="IFB Institute. Independent, non-accredited. Written assessment, AI marking.">
 <style>
-/* ================= THEME: GCSE BOARD ================= */
+/* ================= MODERN INSTITUTIONAL THEME ================= */
 :root{
   --white:#ffffff;
-  --ink:#111111;
-  --ink-2:#333333;
-  --grey:#555555;
-  --grey-l:#888888;
-  --silver:#f4f4f4;
-  --silver-d:#dcdcdc;
-  --silver-line:#c9c9c9;
+  --ink:#0a0a0a;
+  --ink-soft:#333333;
+  --grey:#666666;
+  --grey-light:#999999;
+  --silver-bg:#f7f7f7;
+  --silver-line:#e5e5e5;
+  --silver-dark:#c9c9c9;
   --maroon:#6e1423;
   --maroon-dark:#520e19;
-  --maroon-bg:#fbf5f6;
+  --maroon-light:#fcf6f7;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  --serif:"Georgia","Times New Roman",serif;
+  --serif:"Georgia", "Times New Roman", serif;
   --mono:ui-monospace,"SF Mono",Consolas,monospace;
-  --max:1140px;
+  --max:1200px;
   --pad:24px;
-  --ease:cubic-bezier(.22,.61,.36,1);
+  --ease:cubic-bezier(0.16, 1, 0.3, 1);
 }
-@media(min-width:640px){:root{--pad:32px}}
-@media(min-width:960px){:root{--pad:40px}}
+@media(min-width:768px){:root{--pad:48px}}
 
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -43,154 +42,146 @@ h1,h2,h3,h4,p,ul,ol{margin:0}
 ul,ol{list-style:none;padding:0}
 ::selection{background:var(--maroon);color:var(--white)}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
-.muted{color:var(--grey)}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .hide{display:none!important}
 
-@keyframes spin{to{transform:rotate(360deg)}}
-.spinner{width:28px;height:28px;border:2px solid var(--silver-d);border-top-color:var(--maroon);border-radius:50%;animation:spin .75s linear infinite}
-
 /* BOOT */
-.boot{position:fixed;inset:0;z-index:9999;background:var(--white);display:grid;place-items:center;transition:opacity .4s}
+.boot{position:fixed;inset:0;z-index:9999;background:var(--white);display:grid;place-items:center;transition:opacity .5s var(--ease),visibility .5s}
 .boot.done{opacity:0;visibility:hidden;pointer-events:none}
-.boot-inner{display:flex;flex-direction:column;align-items:center;gap:20px}
-.boot-mark{font-family:var(--serif);font-size:48px;line-height:1;color:var(--maroon)}
-.boot-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-l);font-weight:700}
+.boot-inner{display:flex;flex-direction:column;align-items:center;gap:24px}
+.boot-mark{font-family:var(--serif);font-size:56px;line-height:1;color:var(--maroon)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:24px;height:24px;border:2px solid var(--silver-line);border-top-color:var(--maroon);border-radius:50%;animation:spin .8s linear infinite}
 
 /* HEADER */
-.site-header{position:sticky;top:0;z-index:200;background:var(--white);border-bottom:3px solid var(--maroon)}
-.header-top{background:var(--maroon);color:var(--white);padding:8px 0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;text-align:center}
-.header-in{max-width:var(--max);margin:0 auto;padding:0 var(--pad);height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.site-header{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--silver-line)}
+.header-in{max-width:var(--max);margin:0 auto;padding:0 var(--pad);height:80px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:14px}
 .brand .delta{font-family:var(--serif);font-size:32px;line-height:1;color:var(--maroon);font-weight:bold}
-.brand .wm b{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
-.nav{display:flex;gap:24px;flex:1 1 auto;justify-content:flex-end}
-.nav a{font-size:13px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;padding:8px 0;position:relative;transition:color .2s}
-.nav a:hover{color:var(--maroon)}
+.brand .wm{display:flex;flex-direction:column}
+.brand .wm b{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.brand .wm span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);font-weight:600;margin-top:2px}
+.nav{display:flex;gap:32px}
+.nav a{font-size:13px;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.05em;position:relative;padding:8px 0;transition:color .2s}
+.nav a:hover{color:var(--ink)}
 .nav a[aria-current="page"]{color:var(--maroon)}
-.nav a[aria-current="page"]::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--maroon)}
-.header-auth{display:flex;align-items:center;gap:12px;flex:0 0 auto;position:relative}
-@media(max-width:768px){
-  .header-in{height:auto;padding:16px var(--pad);flex-wrap:wrap}
-  .nav{width:100%;justify-content:flex-start;gap:16px;margin-top:16px;border-top:1px solid var(--silver-d);padding-top:16px}
-  .header-auth{position:absolute;top:16px;right:var(--pad)}
+.nav a[aria-current="page"]::after{content:"";position:absolute;bottom:-4px;left:0;right:0;height:2px;background:var(--maroon)}
+.header-auth{position:relative;display:flex;align-items:center;gap:16px}
+@media(max-width:860px){
+  .header-in{height:auto;padding:20px var(--pad);flex-wrap:wrap;gap:20px}
+  .nav{width:100%;order:3;gap:20px;overflow-x:auto;white-space:nowrap}
+  .header-auth{margin-left:auto}
 }
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:1px solid var(--silver-d);border-radius:2px;background:var(--white);color:var(--ink);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s}
-.btn:hover{border-color:var(--ink);background:var(--silver)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border:1px solid var(--silver-line);border-radius:4px;background:var(--white);color:var(--ink);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s var(--ease)}
+.btn:hover{border-color:var(--ink);background:var(--silver-bg)}
 .btn svg{width:16px;height:16px}
 .btn--primary{background:var(--maroon);border-color:var(--maroon);color:var(--white)}
-.btn--primary:hover{background:var(--maroon-dark);border-color:var(--maroon-dark)}
+.btn--primary:hover{background:var(--maroon-dark);border-color:var(--maroon-dark);transform:translateY(-1px)}
 .btn--ghost{background:transparent;border-color:transparent;color:var(--maroon)}
-.btn--ghost:hover{background:var(--maroon-bg)}
-.btn--sm{min-height:36px;padding:0 14px;font-size:11.5px}
+.btn--ghost:hover{background:var(--maroon-light)}
 .btn--block{width:100%}
-.btn:disabled{opacity:.6;cursor:not-allowed}
-
-/* NOTICE */
-.notice{background:var(--silver);border-bottom:1px solid var(--silver-d);padding:12px 0}
-.notice .wrap{display:flex;gap:12px;align-items:flex-start}
-.notice svg{width:16px;height:16px;flex:0 0 auto;margin-top:2px;color:var(--maroon)}
-.notice p{font-size:12px;color:var(--grey);line-height:1.5}
-.notice b{color:var(--ink);font-weight:700}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
 /* TYPOGRAPHY */
-.eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--maroon);font-weight:700;margin-bottom:12px;display:block}
-.display{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;letter-spacing:-.02em;font-weight:700;color:var(--ink)}
-.h2{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.2;font-weight:700;color:var(--ink)}
-.lede{font-size:17px;color:var(--grey);line-height:1.6;max-width:70ch}
-.prose p{color:var(--grey);font-size:15px;line-height:1.7;margin-bottom:12px}
-.prose b{color:var(--ink);font-weight:600}
+.eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--maroon);font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--maroon)}
+.display{font-family:var(--serif);font-size:clamp(2.5rem,5vw,4rem);line-height:1.05;letter-spacing:-.03em;font-weight:700;color:var(--ink);margin-bottom:24px}
+.h2{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.4rem);line-height:1.15;font-weight:700;color:var(--ink);margin-bottom:16px}
+.lede{font-size:18px;color:var(--grey);line-height:1.6;max-width:60ch;margin-bottom:32px}
 
 /* SECTIONS */
-.section{padding:64px 0;border-bottom:1px solid var(--silver-d)}
-.section:last-of-type{border-bottom:none}
-.section--bg{background:var(--silver)}
-.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;border-bottom:2px solid var(--maroon);padding-bottom:12px}
-.sec-head h2{font-family:var(--serif);font-size:24px;font-weight:700;margin:0}
-.sec-head .idx{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--grey-l);font-weight:700}
+.section{padding:80px 0;border-bottom:1px solid var(--silver-line)}
+.section:last-child{border-bottom:none}
+.section--bg{background:var(--silver-bg)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;border-bottom:1px solid var(--silver-line);padding-bottom:16px}
+.sec-head h2{font-family:var(--serif);font-size:32px;font-weight:700;margin:0;line-height:1}
 
 /* GRIDS */
-.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--silver-d);border:1px solid var(--silver-d)}
-.grid-item{background:var(--white);padding:24px}
-.grid-item .icon{width:24px;height:24px;color:var(--maroon);margin-bottom:16px}
-.grid-item h3{font-family:var(--serif);font-size:18px;font-weight:700;margin-bottom:6px}
-.grid-item p{font-size:13px;color:var(--grey);line-height:1.5;margin-bottom:12px}
-.grid-item .tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:var(--silver);padding:4px 8px;border-radius:2px;border:1px solid var(--silver-d)}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:32px}
+.grid-2{display:grid;grid-template-columns:1fr;gap:48px}
+@media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}}
 
 /* CARDS */
-.card{background:var(--white);border:1px solid var(--silver-d);padding:32px;box-shadow:0 2px 8px rgba(0,0,0,.02)}
+.stream-card{border-top:2px solid var(--ink);padding-top:24px;transition:transform .3s var(--ease)}
+.stream-card:hover{transform:translateY(-4px)}
+.stream-card .icon{width:32px;height:32px;color:var(--maroon);margin-bottom:16px}
+.stream-card h3{font-family:var(--serif);font-size:22px;font-weight:700;margin-bottom:8px;line-height:1.2}
+.stream-card p{font-size:14px;color:var(--grey);margin-bottom:16px}
+.stream-card .meta{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);background:var(--silver-bg);display:inline-block;padding:4px 10px;border-radius:2px}
 
-/* FORMS */
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
-.field label{font-size:12px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em}
-.input,.select{height:48px;padding:0 16px;border:1px solid var(--silver-d);border-radius:2px;background:var(--white);font-size:15px;width:100%;transition:border-color .2s}
+/* FORMS & INPUTS */
+.form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.form-group label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink)}
+.input,.select{height:52px;padding:0 16px;border:1px solid var(--silver-line);border-radius:4px;background:var(--white);font-size:16px;width:100%;transition:border-color .2s}
 .input:focus,.select:focus{outline:none;border-color:var(--maroon)}
-.select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;appearance:none;padding-right:40px}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230a0a0a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:48px}
 
-/* OPTS */
+/* OPTIONS */
 .opts{display:grid;grid-template-columns:1fr;gap:12px}
 @media(min-width:560px){.opts--2{grid-template-columns:1fr 1fr}}
-.opt{display:flex;gap:12px;align-items:flex-start;padding:16px;border:1px solid var(--silver-d);cursor:pointer;background:var(--white);transition:all .2s}
-.opt:hover{border-color:var(--maroon)}
+.opt{display:flex;gap:16px;align-items:flex-start;padding:16px;border:1px solid var(--silver-line);border-radius:4px;cursor:pointer;background:var(--white);transition:all .2s}
+.opt:hover{border-color:var(--grey)}
 .opt input{display:none}
-.opt .dot{width:18px;height:18px;border:1px solid var(--silver-line);border-radius:50%;flex:0 0 auto;margin-top:2px;display:grid;place-items:center}
+.opt .dot{width:20px;height:20px;border:1px solid var(--silver-dark);border-radius:50%;flex:0 0 auto;margin-top:2px;display:grid;place-items:center;transition:all .2s}
 .opt .dot::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--maroon);transform:scale(0);transition:transform .2s}
-.opt .txt{display:flex;flex-direction:column;gap:4px}
-.opt .txt b{font-size:14px;font-weight:700;color:var(--ink)}
-.opt .txt span{font-size:12px;color:var(--grey);line-height:1.4}
-.opt:has(input:checked){border-color:var(--maroon);background:var(--maroon-bg)}
+.opt .txt{display:flex;flex-direction:column}
+.opt .txt b{font-size:15px;font-weight:700;color:var(--ink)}
+.opt .txt span{font-size:12px;color:var(--grey);margin-top:2px}
+.opt:has(input:checked){border-color:var(--maroon);background:var(--maroon-light)}
 .opt:has(input:checked) .dot{border-color:var(--maroon)}
 .opt:has(input:checked) .dot::after{transform:scale(1)}
 
-/* STEPPER */
-.stepper{display:flex;align-items:center;gap:12px;margin-bottom:32px;background:var(--silver);padding:16px;border-radius:2px;border:1px solid var(--silver-d)}
-.stepper .s{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey-l);display:flex;align-items:center;gap:8px}
-.stepper .s i{width:24px;height:24px;border-radius:50%;border:1px solid var(--silver-line);display:grid;place-items:center;font-style:normal;background:var(--white)}
-.stepper .s.on{color:var(--maroon)}
-.stepper .s.on i{background:var(--maroon);color:var(--white);border-color:var(--maroon)}
-.stepper .s.done i{background:var(--maroon-dark);color:var(--white);border-color:var(--maroon-dark)}
-.stepper .bar{flex:1;height:1px;background:var(--silver-line)}
+/* PORTAL SPECIFIC */
+.portal-header{background:var(--maroon);color:var(--white);padding:48px 0;position:relative;overflow:hidden}
+.portal-header::after{content:"∆";position:absolute;right:-20px;top:-40px;font-family:var(--serif);font-size:300px;line-height:1;opacity:.05;pointer-events:none}
+.portal-profile{display:flex;align-items:center;gap:24px;position:relative;z-index:1}
+.portal-avatar{width:88px;height:88px;border-radius:8px;background:var(--white);padding:4px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.portal-info h1{font-family:var(--serif);font-size:32px;font-weight:700;margin-bottom:4px;line-height:1.1}
+.portal-info p{font-size:14px;opacity:.85;margin-bottom:8px}
+.portal-ref{font-family:var(--mono);font-size:14px;font-weight:700;background:rgba(0,0,0,.2);padding:4px 12px;border-radius:2px;display:inline-block}
+.portal-layout{display:grid;grid-template-columns:1fr;gap:32px;margin-top:-32px;position:relative;z-index:2}
+@media(min-width:900px){.portal-layout{grid-template-columns:2fr 1fr}}
+.status-card{background:var(--white);border:1px solid var(--silver-line);border-top:4px solid var(--maroon);border-radius:4px;padding:32px;box-shadow:0 8px 24px rgba(0,0,0,.04);margin-bottom:24px}
+.status-card h3{font-family:var(--serif);font-size:24px;font-weight:700;margin-bottom:8px}
+.status-card p{font-size:15px;color:var(--grey)}
+.id-box{background:var(--silver-bg);border:1px solid var(--silver-line);border-radius:4px;padding:24px;margin-bottom:24px}
+.id-box .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey);margin-bottom:8px}
+.id-box .val{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--ink)}
+.data-row{display:flex;justify-content:space-between;border-bottom:1px solid var(--silver-line);padding:16px 0;font-size:15px}
+.data-row:last-child{border-bottom:none}
+.data-row .k{color:var(--grey)}
+.data-row .v{font-weight:600;text-align:right;max-width:60%}
 
-/* PORTAL */
-.portal-head{background:var(--maroon);color:var(--white);padding:32px;border-radius:2px;margin-bottom:32px;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
-.portal-avatar{width:80px;height:80px;border-radius:4px;overflow:hidden;background:var(--white);flex:0 0 auto}
-.portal-info h1{font-family:var(--serif);font-size:28px;font-weight:700;margin-bottom:4px}
-.portal-info p{font-size:14px;opacity:.9}
-.portal-info .ref{font-family:var(--mono);font-size:14px;font-weight:700;background:rgba(0,0,0,.2);padding:4px 10px;border-radius:2px;display:inline-block;margin-top:8px}
-.status-box{border-left:4px solid var(--maroon);background:var(--silver);padding:24px;margin-bottom:24px}
-.status-box h3{font-family:var(--serif);font-size:22px;color:var(--maroon);margin-bottom:4px}
-
-/* AVATAR */
-.avatar{width:40px;height:40px;border-radius:4px;overflow:hidden;border:2px solid var(--silver-d);cursor:pointer;transition:border-color .2s}
+/* AVATAR & DROPDOWN */
+.avatar{width:44px;height:44px;border-radius:4px;overflow:hidden;border:2px solid var(--silver-line);cursor:pointer;transition:border-color .2s;background:var(--white);padding:0}
 .avatar:hover{border-color:var(--maroon)}
-
-/* DROPDOWN */
-.dropdown{position:absolute;top:100%;right:0;margin-top:12px;width:300px;background:var(--white);border:1px solid var(--silver-d);border-top:3px solid var(--maroon);box-shadow:0 12px 40px rgba(0,0,0,.1);opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .2s;z-index:100}
+.avatar svg{width:100%;height:100%;display:block}
+.dropdown{position:absolute;top:calc(100% + 16px);right:0;width:320px;background:var(--white);border:1px solid var(--silver-line);border-top:4px solid var(--maroon);border-radius:4px;box-shadow:0 16px 40px rgba(0,0,0,.08);opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .2s var(--ease);z-index:100}
 .dropdown.on{opacity:1;visibility:visible;transform:translateY(0)}
-.dd-head{padding:20px;border-bottom:1px solid var(--silver-d);display:flex;gap:12px;align-items:center;background:var(--silver)}
-.dd-body{padding:12px}
-.dd-row{display:flex;justify-content:space-between;padding:8px 12px;font-size:13px}
+.dd-head{padding:20px;border-bottom:1px solid var(--silver-line);display:flex;gap:16px;align-items:center;background:var(--silver-bg)}
+.dd-body{padding:8px}
+.dd-row{display:flex;justify-content:space-between;padding:12px 16px;font-size:13px}
 .dd-row .k{color:var(--grey)}
 .dd-row .v{font-family:var(--mono);font-weight:700;color:var(--ink)}
-.dd-foot{border-top:1px solid var(--silver-d);padding:12px}
-.dd-foot a,.dd-foot button{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border:0;background:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em}
-.dd-foot a:hover,.dd-foot button:hover{background:var(--silver);color:var(--maroon)}
+.dd-foot{padding:8px;border-top:1px solid var(--silver-line)}
+.dd-foot a,.dd-foot button{display:flex;align-items:center;width:100%;padding:14px 16px;border:0;border-radius:4px;background:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;transition:background .2s}
+.dd-foot a:hover,.dd-foot button:hover{background:var(--silver-bg);color:var(--maroon)}
 .dd-foot button.danger{color:var(--maroon)}
 
 /* FOOTER */
-.site-footer{background:var(--maroon);color:var(--white);padding:48px 0 24px}
-.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-bottom:32px}
-.footer-brand .delta{font-family:var(--serif);font-size:32px;font-weight:700;margin-bottom:12px;display:block}
-.footer-brand p{font-size:13px;color:rgba(255,255,255,.8);line-height:1.6}
-.footer-col h4{font-size:12px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;color:rgba(255,255,255,.6)}
-.footer-col a{display:block;font-size:13px;color:var(--white);margin-bottom:8px;opacity:.9}
-.footer-col a:hover{opacity:1;text-decoration:underline}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.2);padding-top:24px;text-align:center;font-size:11px;color:rgba(255,255,255,.6);line-height:1.6}
+.site-footer{background:var(--ink);color:var(--white);padding:64px 0 32px;border-top:4px solid var(--maroon)}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:48px;margin-bottom:48px}
+.footer-brand .delta{font-family:var(--serif);font-size:36px;font-weight:700;margin-bottom:16px;display:block;color:var(--white)}
+.footer-brand p{font-size:13px;color:var(--grey-light);line-height:1.7;max-width:280px}
+.footer-col h4{font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px;color:var(--grey-light)}
+.footer-col a{display:block;font-size:14px;color:var(--white);margin-bottom:12px;opacity:.8;transition:opacity .2s}
+.footer-col a:hover{opacity:1;color:var(--maroon-light)}
+.footer-legal{border-top:1px solid rgba(255,255,255,.1);padding-top:32px;font-size:11px;color:var(--grey-light);line-height:1.6;text-align:center;max-width:800px;margin:0 auto}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--white);padding:12px 24px;border-radius:2px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:1000;pointer-events:none}
+.toast{position:fixed;bottom:32px;left:50%;transform:translate(-50%,20px);background:var(--maroon);color:var(--white);padding:14px 28px;border-radius:4px;font-size:14px;font-weight:600;opacity:0;transition:all .3s var(--ease);z-index:1000;pointer-events:none;box-shadow:0 8px 24px rgba(110,20,35,.3)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
@@ -204,29 +195,28 @@ ul,ol{list-style:none;padding:0}
 </div>
 
 <svg style="display:none" aria-hidden="true"><defs>
-<symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></symbol>
-<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
-<symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></symbol>
-<symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></symbol>
-<symbol id="i-pen-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></symbol>
-<symbol id="i-frame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="6" x2="2" y2="6"/><line x1="22" y1="18" x2="2" y2="18"/><line x1="6" y1="2" x2="6" y2="22"/><line x1="18" y1="2" x2="18" y2="22"/></symbol>
-<symbol id="i-bar-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
-<symbol id="i-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></symbol>
-<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
-<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
-<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></symbol>
-<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
-<symbol id="i-log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
-<symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></symbol>
-<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+<symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></symbol>
+<symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></symbol>
+<symbol id="i-pen-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></symbol>
+<symbol id="i-frame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="22" y1="6" x2="2" y2="6"/><line x1="22" y1="18" x2="2" y2="18"/><line x1="6" y1="2" x2="6" y2="22"/><line x1="18" y1="2" x2="18" y2="22"/></symbol>
+<symbol id="i-bar-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+<symbol id="i-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
 </defs></svg>
 
 <header class="site-header">
-  <div class="header-top">IFB Independent Examination Board · 2027 Intake</div>
   <div class="header-in">
     <a href="#home" class="brand">
       <span class="delta">∆</span>
-      <span class="wm"><b>IFB Institute</b></span>
+      <span class="wm">
+        <b>IFB Institute</b>
+        <span>Examination Board</span>
+      </span>
     </a>
     <nav class="nav">
       <a href="#home" data-nav="home">Institution</a>
@@ -237,66 +227,69 @@ ul,ol{list-style:none;padding:0}
   </div>
 </header>
 
-<div class="notice">
-  <div class="wrap">
-    <svg><use href="#i-alert"/></svg>
-    <p><b>Independent Institution.</b> Non-accredited, non-registered, not NQF-aligned. Issues an Internal Record of Completion only. No official equivalence is claimed.</p>
-  </div>
+<div style="background:var(--maroon);color:var(--white);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;text-align:center;padding:10px 20px">
+  Independent Institution · Non-accredited · Not NQF-aligned
 </div>
 
 <main>
   <!-- PAGE 1: HOME -->
   <section class="view" data-view="home">
-    <div class="section" style="padding-top:80px">
+    <div class="section" style="padding-top:100px;padding-bottom:100px">
       <div class="wrap">
-        <span class="eyebrow">Independent Examination Board</span>
-        <h1 class="display" style="max-width:900px;margin-bottom:24px">Technical education, held to a written standard.</h1>
-        <p class="lede" style="margin-bottom:32px">Every programme is assessed through written theory and practical submission. All papers are set and regulated by the IFB Examination Board and marked using DeepSeek AI.</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap" id="homeCTA">
+        <div class="eyebrow">2027 Intake Open</div>
+        <h1 class="display" style="max-width:900px">Technical education, held to a written standard.</h1>
+        <p class="lede">Every programme is assessed through rigorous written theory and practical submission. All papers are set, regulated, and marked by the IFB Examination Board using DeepSeek AI.</p>
+        <div style="display:flex;gap:16px;flex-wrap:wrap" id="homeCTA">
           <a href="#admissions" class="btn btn--primary"><svg><use href="#i-arrow-right"/></svg>Apply to IFB</a>
-          <a href="#home" onclick="document.getElementById('resources').scrollIntoView({behavior:'smooth'})" class="btn"><svg><use href="#i-file"/></svg>Academic Resources</a>
+          <a href="#home" onclick="document.getElementById('resources').scrollIntoView({behavior:'smooth'})" class="btn btn--ghost"><svg><use href="#i-file"/></svg>Academic Resources</a>
         </div>
       </div>
     </div>
 
     <div class="section section--bg">
       <div class="wrap">
-        <div class="sec-head"><h2 class="h2">The Eight Streams</h2><span class="idx">01 — Programmes</span></div>
-        <p class="lede" style="margin-bottom:32px">Each stream has its own durations. Mathematics is a recommended elective; Physics requires it as a co-requisite.</p>
+        <div class="sec-head"><h2>The Eight Streams</h2><span class="mono" style="color:var(--grey)">01 / Programmes</span></div>
         <div class="grid-4">
-          <div class="grid-item"><svg class="icon"><use href="#i-layers"/></svg><h3>Full Stack Engineering</h3><p>End-to-end systems</p><span class="tag">3 · 6 · 12 Months</span></div>
-          <div class="grid-item"><svg class="icon"><use href="#i-monitor"/></svg><h3>Frontend Development</h3><p>Interface engineering</p><span class="tag">3 · 6 Months</span></div>
-          <div class="grid-item"><svg class="icon"><use href="#i-server"/></svg><h3>Backend Engineering</h3><p>Services & data flow</p><span class="tag">6 · 12 Months</span></div>
-          <div class="grid-item"><svg class="icon"><use href="#i-smartphone"/></svg><h3>Mobile Development</h3><p>Native & cross-platform</p><span class="tag">6 · 12 Months</span></div>
-          <div class="grid-item"><svg class="icon"><use href="#i-pen-tool"/></svg><h3>Web Design</h3><p>Layout & typography</p><span class="tag">3 · 6 Months</span></div>
-          <div class="grid-item"><svg class="icon"><use href="#i-frame"/></svg><h3>UI/UX Design</h3><p>Flow & usability</p><span class="tag">3 · 6 Months</span></div>
-          <div class="grid-item"><svg class="icon"><use href="#i-bar-chart"/></svg><h3>Data & Analytics</h3><p>Interpretation & modelling</p><span class="tag">6 · 12 Months</span></div>
-          <div class="grid-item"><svg class="icon"><use href="#i-atom"/></svg><h3>STEM & Physics</h3><p>Mathematics co-requisite</p><span class="tag">6 · 12 Months</span></div>
+          <div class="stream-card"><svg class="icon"><use href="#i-layers"/></svg><h3>Full Stack Engineering</h3><p>End-to-end systems, architecture, and deployment.</p><span class="meta">3 · 6 · 12 Months</span></div>
+          <div class="stream-card"><svg class="icon"><use href="#i-monitor"/></svg><h3>Frontend Development</h3><p>Interface engineering, accessibility, and performance.</p><span class="meta">3 · 6 Months</span></div>
+          <div class="stream-card"><svg class="icon"><use href="#i-server"/></svg><h3>Backend Engineering</h3><p>Services, data flow, and concurrency models.</p><span class="meta">6 · 12 Months</span></div>
+          <div class="stream-card"><svg class="icon"><use href="#i-smartphone"/></svg><h3>Mobile Development</h3><p>Native and cross-platform application engineering.</p><span class="meta">6 · 12 Months</span></div>
+          <div class="stream-card"><svg class="icon"><use href="#i-pen-tool"/></svg><h3>Web Design</h3><p>Layout, typography, grid systems, and visual craft.</p><span class="meta">3 · 6 Months</span></div>
+          <div class="stream-card"><svg class="icon"><use href="#i-frame"/></svg><h3>UI/UX Design</h3><p>User flows, usability heuristics, and research.</p><span class="meta">3 · 6 Months</span></div>
+          <div class="stream-card"><svg class="icon"><use href="#i-bar-chart"/></svg><h3>Data & Analytics</h3><p>Interpretation, data modelling, and statistics.</p><span class="meta">6 · 12 Months</span></div>
+          <div class="stream-card"><svg class="icon"><use href="#i-atom"/></svg><h3>STEM & Physics</h3><p>Applied physics and mathematical methods.</p><span class="meta">6 · 12 Months</span></div>
         </div>
       </div>
     </div>
 
     <div class="section">
       <div class="wrap">
-        <div class="sec-head"><h2 class="h2">Admission Process</h2><span class="idx">02 — Process</span></div>
-        <div class="grid-4">
-          <div class="grid-item"><div style="font-size:24px;font-family:var(--serif);color:var(--maroon);margin-bottom:12px">01</div><h3>Enrol</h3><p>Create your account. A temporary Reference ID is issued immediately.</p></div>
-          <div class="grid-item"><div style="font-size:24px;font-family:var(--serif);color:var(--maroon);margin-bottom:12px">02</div><h3>Choose Curriculum</h3><p>Select a stream, duration, and electives. On submit, a permanent Admission ID is issued.</p></div>
-          <div class="grid-item"><div style="font-size:24px;font-family:var(--serif);color:var(--maroon);margin-bottom:12px">03</div><h3>Sit the IFB/AE</h3><p>The paper is issued in January–February 2027. A pass issues your permanent Student Number.</p></div>
-          <div class="grid-item"><div style="font-size:24px;font-family:var(--serif);color:var(--maroon);margin-bottom:12px">04</div><h3>Examinations</h3><p>Three distinct periods: May/June, Sept/Oct, Nov/Dec. AI-marked, human-administered.</p></div>
+        <div class="sec-head"><h2>Admission Process</h2><span class="mono" style="color:var(--grey)">02 / Process</span></div>
+        <div class="grid-2">
+          <div>
+            <h3 class="h2" style="font-size:24px">A rigid, transparent pathway.</h3>
+            <p style="color:var(--grey);font-size:16px;line-height:1.7">We do not accept prior grades as a proxy for readiness. Every applicant must sit the IFB/AE, a written assessment designed to test foundational logic, comprehension, and numerical reasoning.</p>
+          </div>
+          <div>
+            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">01 / Enrol</span><span class="v">Create account, receive Reference ID</span></div>
+            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">02 / Choose</span><span class="v">Select stream, duration, and electives</span></div>
+            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">03 / Accept</span><span class="v">Submit curriculum, receive Admission ID</span></div>
+            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">04 / Assess</span><span class="v">Sit IFB/AE in Jan–Feb 2027</span></div>
+            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">05 / Qualify</span><span class="v">Pass IFB/AE, receive Student Number</span></div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="section section--bg" id="resources">
       <div class="wrap">
-        <div class="sec-head"><h2 class="h2">Academic Resources</h2><span class="idx">03 — Library</span></div>
-        <p class="lede" style="margin-bottom:32px">Official documents will be published here as standalone HTML files. They are formatted for A4 printing and viewable in any browser.</p>
+        <div class="sec-head"><h2>Academic Resources</h2><span class="mono" style="color:var(--grey)">03 / Library</span></div>
+        <p class="lede">Official documents will be published here as standalone HTML files. Formatted for A4 printing, viewable in any browser.</p>
         <div class="grid-4">
-          <div class="grid-item" style="opacity:.7"><svg class="icon"><use href="#i-file"/></svg><h3>IFB/AE Guidelines</h3><p>Format rules, timing, and marking protocol.</p><span class="tag">Coming Soon</span></div>
-          <div class="grid-item" style="opacity:.7"><svg class="icon"><use href="#i-file"/></svg><h3>IFB/AE Prep Guide</h3><p>Per-stream focus and pre-sitting checklist.</p><span class="tag">Coming Soon</span></div>
-          <div class="grid-item" style="opacity:.7"><svg class="icon"><use href="#i-file"/></svg><h3>Admission Slip</h3><p>Official slip with Admission ID and barcode.</p><span class="tag">Coming Soon</span></div>
-          <div class="grid-item" style="opacity:.7"><svg class="icon"><use href="#i-file"/></svg><h3>Past Papers</h3><p>Archived papers for practice.</p><span class="tag">Coming Later</span></div>
+          <div class="stream-card" style="border-color:var(--silver-dark);opacity:.6"><svg class="icon" style="color:var(--grey)"><use href="#i-file"/></svg><h3>IFB/AE Guidelines</h3><p>Format rules, timing, and marking protocol.</p><span class="meta">Coming Soon</span></div>
+          <div class="stream-card" style="border-color:var(--silver-dark);opacity:.6"><svg class="icon" style="color:var(--grey)"><use href="#i-file"/></svg><h3>IFB/AE Prep Guide</h3><p>Per-stream focus and pre-sitting checklist.</p><span class="meta">Coming Soon</span></div>
+          <div class="stream-card" style="border-color:var(--silver-dark);opacity:.6"><svg class="icon" style="color:var(--grey)"><use href="#i-file"/></svg><h3>Admission Slip</h3><p>Official slip with Admission ID and barcode.</p><span class="meta">Coming Soon</span></div>
+          <div class="stream-card" style="border-color:var(--silver-dark);opacity:.6"><svg class="icon" style="color:var(--grey)"><use href="#i-file"/></svg><h3>Past Papers</h3><p>Archived papers for practice.</p><span class="meta">Coming Later</span></div>
         </div>
       </div>
     </div>
@@ -306,69 +299,65 @@ ul,ol{list-style:none;padding:0}
   <section class="view" data-view="admissions">
     <div class="section">
       <div class="wrap">
-        <span class="eyebrow">Admissions · 2027</span>
-        <h1 class="h2" style="margin-bottom:32px">Apply to the IFB</h1>
+        <div style="max-width:600px;margin-bottom:48px">
+          <div class="eyebrow">Admissions · 2027</div>
+          <h1 class="h2">Apply to the IFB</h1>
+          <p style="color:var(--grey);font-size:16px">Name, email, password. On curriculum submission you will be provisionally accepted and an Admission ID will be issued.</p>
+        </div>
         
-        <div style="display:grid;grid-template-columns:1fr;gap:40px" id="admLayout">
-          
+        <div class="grid-2">
           <div>
-            <div class="stepper" id="stepper">
-              <span class="s on" data-s="1"><i>1</i><span>Account</span></span><span class="bar"></span>
-              <span class="s" data-s="2"><i>2</i><span>Curriculum</span></span><span class="bar"></span>
-              <span class="s" data-s="3"><i>3</i><span>Electives</span></span>
-            </div>
-
-            <div id="step1" class="card">
-              <div style="display:flex;gap:24px;border-bottom:1px solid var(--silver-d);margin-bottom:24px">
-                <button style="background:none;border:none;padding:12px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--maroon);border-bottom:3px solid var(--maroon);cursor:pointer" data-tab="signup">Create Account</button>
-                <button style="background:none;border:none;padding:12px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--grey);border-bottom:3px solid transparent;cursor:pointer" data-tab="signin">Sign In</button>
+            <div id="step1">
+              <div style="display:flex;gap:32px;border-bottom:1px solid var(--silver-line);margin-bottom:32px">
+                <button style="background:none;border:none;padding:16px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--maroon);border-bottom:2px solid var(--maroon);cursor:pointer" data-tab="signup">Create Account</button>
+                <button style="background:none;border:none;padding:16px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--grey);border-bottom:2px solid transparent;cursor:pointer" data-tab="signin">Sign In</button>
               </div>
 
               <form id="formSignup">
-                <div class="field"><label>Full Name</label><input class="input" id="suName" placeholder="As it appears on your record"></div>
-                <div class="field"><label>Email Address</label><input class="input" id="suEmail" type="email" placeholder="you@example.com"></div>
-                <div class="field"><label>Password</label><input class="input" id="suPass" type="password" placeholder="Minimum 8 characters"><span class="hint">No ID numbers or physical addresses are collected.</span></div>
-                <div class="err" id="suErr" style="color:var(--maroon);font-size:12px;font-weight:700;margin-bottom:16px"></div>
+                <div class="form-group"><label>Full Name</label><input class="input" id="suName" placeholder="As it appears on your record"></div>
+                <div class="form-group"><label>Email Address</label><input class="input" id="suEmail" type="email" placeholder="you@example.com"></div>
+                <div class="form-group"><label>Password</label><input class="input" id="suPass" type="password" placeholder="Minimum 8 characters"><span style="font-size:12px;color:var(--grey)">No ID numbers or physical addresses are collected.</span></div>
+                <div class="err" id="suErr" style="color:var(--maroon);font-size:13px;font-weight:700;margin-bottom:16px"></div>
                 <button class="btn btn--primary btn--block" type="submit" id="suBtn">Create Account</button>
               </form>
 
               <form id="formSignin" class="hide">
-                <div class="field"><label>Email Address</label><input class="input" id="siEmail" type="email"></div>
-                <div class="field"><label>Password</label><input class="input" id="siPass" type="password"></div>
-                <div class="err" id="siErr" style="color:var(--maroon);font-size:12px;font-weight:700;margin-bottom:16px"></div>
+                <div class="form-group"><label>Email Address</label><input class="input" id="siEmail" type="email"></div>
+                <div class="form-group"><label>Password</label><input class="input" id="siPass" type="password"></div>
+                <div class="err" id="siErr" style="color:var(--maroon);font-size:13px;font-weight:700;margin-bottom:16px"></div>
                 <button class="btn btn--primary btn--block" type="submit" id="siBtn">Sign In</button>
               </form>
             </div>
 
-            <div id="step2" class="card hide">
+            <div id="step2" class="hide">
               <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Select a Stream</div>
               <div class="opts opts--2" id="progOpts"></div>
               <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:32px 0 16px">Duration</div>
               <div class="opts opts--2" id="durOpts"></div>
-              <div class="err" id="s2Err" style="color:var(--maroon);font-size:12px;font-weight:700;margin-top:16px"></div>
-              <div style="display:flex;gap:12px;margin-top:32px">
+              <div class="err" id="s2Err" style="color:var(--maroon);font-size:13px;font-weight:700;margin-top:16px"></div>
+              <div style="display:flex;gap:16px;margin-top:40px">
                 <button class="btn" id="back1">Back</button>
                 <button class="btn btn--primary" id="next2" style="flex:1">Continue</button>
               </div>
             </div>
 
-            <div id="step3" class="card hide">
-              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Electives <span id="elecCount" class="muted" style="text-transform:none;font-weight:400"></span></div>
+            <div id="step3" class="hide">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Electives <span id="elecCount" style="color:var(--grey);text-transform:none;font-weight:400"></span></div>
               <div class="opts opts--2" id="elecOpts"></div>
-              <p class="hint" style="margin-top:16px;font-size:12px;color:var(--grey)">Mathematics is recommended but not compulsory. Physics requires Mathematics.</p>
-              <div class="err" id="s3Err" style="color:var(--maroon);font-size:12px;font-weight:700;margin-top:16px"></div>
-              <div style="display:flex;gap:12px;margin-top:32px">
+              <p style="font-size:12px;color:var(--grey);margin-top:16px">Mathematics is recommended but not compulsory. Physics requires Mathematics.</p>
+              <div class="err" id="s3Err" style="color:var(--maroon);font-size:13px;font-weight:700;margin-top:16px"></div>
+              <div style="display:flex;gap:16px;margin-top:40px">
                 <button class="btn" id="back2">Back</button>
                 <button class="btn btn--primary" id="submitApp" style="flex:1">Submit Application</button>
               </div>
             </div>
 
-            <div id="signedInPanel" class="card hide">
-              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Already Signed In</div>
-              <div style="display:flex;gap:16px;align-items:center;margin-bottom:24px">
+            <div id="signedInPanel" class="hide" style="background:var(--silver-bg);padding:32px;border-radius:4px;border:1px solid var(--silver-line)">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:24px">Already Signed In</div>
+              <div style="display:flex;gap:16px;align-items:center;margin-bottom:32px">
                 <div class="avatar" id="siAvatar" style="width:64px;height:64px"></div>
                 <div>
-                  <div style="font-size:18px;font-weight:700" id="siName"></div>
+                  <div style="font-size:20px;font-family:var(--serif);font-weight:700" id="siName"></div>
                   <div style="font-size:13px;color:var(--grey)" id="siEmail"></div>
                   <div class="mono" style="font-size:12px;color:var(--maroon);font-weight:700;margin-top:4px" id="siRef"></div>
                 </div>
@@ -380,17 +369,17 @@ ul,ol{list-style:none;padding:0}
             </div>
           </div>
 
-          <aside style="background:var(--silver);padding:32px;border:1px solid var(--silver-d)">
-            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:20px;border-bottom:1px solid var(--silver-d);padding-bottom:12px">Application Summary</div>
-            <div style="display:flex;flex-direction:column;gap:12px;font-size:14px">
-              <div style="display:flex;justify-content:space-between"><span class="muted">Status</span><span id="sumStatus" style="font-weight:700">Draft</span></div>
-              <div style="display:flex;justify-content:space-between"><span class="muted">Reference</span><span id="sumRef" class="mono">—</span></div>
-              <div style="display:flex;justify-content:space-between"><span class="muted">Stream</span><span id="sumProg">—</span></div>
-              <div style="display:flex;justify-content:space-between"><span class="muted">Duration</span><span id="sumDur">—</span></div>
-              <div style="display:flex;justify-content:space-between"><span class="muted">Periods</span><span id="sumPeriods">—</span></div>
-              <div style="display:flex;justify-content:space-between"><span class="muted">Electives</span><span id="sumElec">—</span></div>
+          <aside style="background:var(--white);border:1px solid var(--silver-line);border-top:4px solid var(--maroon);padding:32px;height:fit-content;position:sticky;top:100px">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:24px">Application Summary</div>
+            <div style="display:flex;flex-direction:column;gap:16px;font-size:14px">
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Status</span><span id="sumStatus" style="font-weight:700;color:var(--maroon)">Draft</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Reference</span><span id="sumRef" class="mono">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Stream</span><span id="sumProg" style="font-weight:600">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Duration</span><span id="sumDur">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Periods</span><span id="sumPeriods">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Electives</span><span id="sumElec">—</span></div>
             </div>
-            <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--silver-d);font-size:12px;color:var(--grey);line-height:1.6">
+            <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--silver-line);font-size:12px;color:var(--grey);line-height:1.6">
               Curriculum remains editable until <b>21 March 2027</b>. Admission ID issued on submit.
             </div>
           </aside>
@@ -401,95 +390,89 @@ ul,ol{list-style:none;padding:0}
 
   <!-- PAGE 3: PORTAL -->
   <section class="view" data-view="portal">
-    <div class="section">
-      <div class="wrap">
-        
-        <div id="portalGuest" class="card hide" style="text-align:center;max-width:500px;margin:0 auto">
-          <div style="font-family:var(--serif);font-size:48px;color:var(--maroon);margin-bottom:16px">∆</div>
-          <h2 class="h2" style="margin-bottom:8px">Sign in to continue</h2>
-          <p class="muted" style="margin-bottom:24px">The portal is for enrolled candidates only.</p>
-          <a href="#admissions" class="btn btn--primary">Go to Admissions</a>
-        </div>
+    <div id="portalGuest" class="section hide">
+      <div class="wrap" style="text-align:center;max-width:500px">
+        <div style="font-family:var(--serif);font-size:56px;color:var(--maroon);margin-bottom:24px">∆</div>
+        <h2 class="h2">Sign in to continue</h2>
+        <p style="color:var(--grey);margin-bottom:32px">The portal is for enrolled candidates only.</p>
+        <a href="#admissions" class="btn btn--primary">Go to Admissions</a>
+      </div>
+    </div>
 
-        <div id="portalMain" class="hide">
-          <div class="portal-head">
+    <div id="portalMain" class="hide">
+      <div class="portal-header">
+        <div class="wrap">
+          <div class="portal-profile">
             <div class="portal-avatar" id="pAvatar"></div>
             <div class="portal-info">
               <h1 id="pName">—</h1>
               <p id="pEmail">—</p>
-              <div class="ref" id="pRef">—</div>
+              <div class="portal-ref" id="pRef">—</div>
             </div>
-            <div style="margin-left:auto;display:flex;gap:8px">
-              <button class="btn" id="pSignout" style="background:rgba(0,0,0,.2);border-color:transparent;color:#fff">Sign Out</button>
+            <div style="margin-left:auto">
+              <button class="btn" id="pSignout" style="border-color:rgba(255,255,255,.3);color:var(--white);background:rgba(0,0,0,.2)">Sign Out</button>
             </div>
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr;gap:32px" class="portal-layout">
-            
-            <div>
-              <div id="statusCard" class="status-box"></div>
-
-              <div id="admidBox" style="background:var(--white);border:1px solid var(--silver-d);padding:24px;margin-bottom:24px;border-top:4px solid var(--maroon)">
-                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey);margin-bottom:8px">Admission ID</div>
-                <div class="mono" style="font-size:24px;font-weight:700;color:var(--ink)" id="pAdmid">—</div>
-                <div style="font-size:11px;color:var(--grey);margin-top:8px" id="pAdmidNote">Format: Year · Stream · Application #</div>
-              </div>
-
-              <div class="card" style="padding:24px;margin-bottom:24px">
-                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--silver-d);padding-bottom:12px;margin-bottom:12px;font-size:14px">
-                  <span class="muted">Reference ID</span><span class="mono" id="pReference">—</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--silver-d);padding-bottom:12px;margin-bottom:12px;font-size:14px">
-                  <span class="muted">Student Number</span><span id="pStudentNo">Not issued — pending IFB/AE</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;font-size:14px">
-                  <span class="muted">Curriculum Lock</span><span>21 March 2027</span>
-                </div>
-              </div>
-
-              <div id="pAqae"></div>
-
-              <div class="card" style="padding:24px">
-                <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--silver-d);padding-bottom:12px;margin-bottom:16px">
-                  <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Your Curriculum</div>
-                  <button class="btn btn--sm" id="pEditCurr">Edit</button>
-                </div>
-                
-                <div id="pCurrView">
-                  <div style="display:grid;grid-template-columns:120px 1fr;gap:12px;font-size:14px">
-                    <span class="muted">Stream</span><b id="pProg">—</b>
-                    <span class="muted">Duration</span><span id="pDur">—</span>
-                    <span class="muted">Exam Periods</span><span id="pPeriods">—</span>
-                    <span class="muted">Electives</span><span id="pElec">—</span>
-                  </div>
-                </div>
-
-                <div id="pCurrEdit" class="hide">
-                  <div class="opts opts--2" id="editProgOpts" style="margin-bottom:16px"></div>
-                  <div class="opts opts--2" id="editDurOpts" style="margin-bottom:16px"></div>
-                  <div class="opts opts--2" id="editElecOpts"></div>
-                  <div style="display:flex;gap:12px;margin-top:24px">
-                    <button class="btn" id="editCancel">Cancel</button>
-                    <button class="btn btn--primary" id="editSave">Save</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <aside>
-              <div class="card" style="padding:24px">
-                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Next Steps</div>
-                <ol style="font-size:14px;color:var(--grey);padding-left:20px;list-style:decimal;line-height:1.7">
-                  <li style="margin-bottom:8px">Confirm curriculum before <b>21 March 2027</b>.</li>
-                  <li style="margin-bottom:8px">Review IFB/AE guidelines in Resources.</li>
-                  <li>Await Examination Room access via email.</li>
-                </ol>
-              </div>
-            </aside>
-
           </div>
         </div>
+      </div>
 
+      <div class="wrap">
+        <div class="portal-layout">
+          
+          <div style="padding-top:48px;padding-bottom:64px">
+            <div id="statusCard" class="status-card"></div>
+
+            <div id="admidBox" class="id-box" style="display:none">
+              <div class="lbl">Admission ID</div>
+              <div class="val" id="pAdmid">—</div>
+              <div style="font-size:12px;color:var(--grey);margin-top:8px" id="pAdmidNote">Format: Year · Stream · Application #</div>
+            </div>
+
+            <div style="background:var(--white);border:1px solid var(--silver-line);border-radius:4px;padding:24px;margin-bottom:24px">
+              <div class="data-row"><span class="k">Reference ID</span><span class="v mono" id="pReference">—</span></div>
+              <div class="data-row"><span class="k">Student Number</span><span class="v" id="pStudentNo">Not issued — pending IFB/AE</span></div>
+              <div class="data-row"><span class="k">Curriculum Lock</span><span class="v">21 March 2027</span></div>
+            </div>
+
+            <div id="pAqae"></div>
+
+            <div style="background:var(--white);border:1px solid var(--silver-line);border-radius:4px;padding:24px">
+              <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--silver-line);padding-bottom:16px;margin-bottom:16px">
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Your Curriculum</div>
+                <button class="btn" id="pEditCurr" style="min-height:36px;padding:0 16px;font-size:11.5px">Edit</button>
+              </div>
+              
+              <div id="pCurrView">
+                <div class="data-row"><span class="k">Stream</span><span class="v" id="pProg">—</span></div>
+                <div class="data-row"><span class="k">Duration</span><span class="v" id="pDur">—</span></div>
+                <div class="data-row"><span class="k">Exam Periods</span><span class="v" id="pPeriods">—</span></div>
+                <div class="data-row"><span class="k">Electives</span><span class="v" id="pElec">—</span></div>
+              </div>
+
+              <div id="pCurrEdit" class="hide">
+                <div class="opts opts--2" id="editProgOpts" style="margin-bottom:24px"></div>
+                <div class="opts opts--2" id="editDurOpts" style="margin-bottom:24px"></div>
+                <div class="opts opts--2" id="editElecOpts"></div>
+                <div style="display:flex;gap:12px;margin-top:32px">
+                  <button class="btn" id="editCancel">Cancel</button>
+                  <button class="btn btn--primary" id="editSave">Save Changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside style="padding-top:48px;padding-bottom:64px">
+            <div style="background:var(--silver-bg);border:1px solid var(--silver-line);border-radius:4px;padding:32px;position:sticky;top:100px">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:20px">Next Steps</div>
+              <ol style="font-size:14px;color:var(--grey);padding-left:20px;list-style:decimal;line-height:1.8">
+                <li style="margin-bottom:12px">Confirm curriculum before <b style="color:var(--ink)">21 March 2027</b>.</li>
+                <li style="margin-bottom:12px">Review IFB/AE guidelines in Resources.</li>
+                <li>Await Examination Room access via email.</li>
+              </ol>
+            </div>
+          </aside>
+
+        </div>
       </div>
     </div>
   </section>
@@ -500,7 +483,7 @@ ul,ol{list-style:none;padding:0}
     <div class="footer-grid">
       <div class="footer-brand">
         <span class="delta">∆</span>
-        <p>Independent Examination Board.<br>Non-accredited. Non-registered.</p>
+        <p>Independent Examination Board.<br>Non-accredited. Non-registered. Not NQF-aligned.</p>
       </div>
       <div class="footer-col">
         <h4>Institution</h4>
@@ -518,8 +501,8 @@ ul,ol{list-style:none;padding:0}
         <a href="#home">IFB/AE Guidelines</a>
       </div>
     </div>
-    <div class="footer-bottom">
-      &copy; 2027 IFB Institute. Not registered with DHET, Umalusi, or SAQA. Not NQF-aligned. Issues Internal Record of Completion only.
+    <div class="footer-legal">
+      The IFB Institute is an independent board. It is not accredited, not registered, and not aligned to the National Qualifications Framework. The IFB Institute does not issue official certificates or qualifications, and makes no claim of equivalence to the Department of Higher Education and Training, Umalusi, or the South African Qualifications Authority. Candidates receive an Internal Record of Completion detailing their programme, subjects and examination results.
     </div>
   </div>
 </footer>
@@ -535,29 +518,29 @@ var YEAR=2027;
 
 var PROGRAMMES={
   'fullstack':{ num:1, code:'FSE', name:'Full Stack Engineering', durations:[3,6,12],
-    aqae:{ theory:['Algorithmic reasoning','HTTP & the request/response cycle','Data structures & persistence','Architecture trade-offs'],
-           practical:'Build a small two-screen application and submit a written walk-through of the data flow.' } },
+    aqae:{ theory:['Algorithmic reasoning','HTTP & request/response','Data structures','Architecture trade-offs'],
+           practical:'Build a two-screen application and submit a written walk-through of the data flow.' } },
   'frontend':{ num:2, code:'FED', name:'Frontend Development', durations:[3,6],
-    aqae:{ theory:['HTML semantics & accessibility','CSS layout & typography','Browser rendering model','Responsive reasoning'],
-           practical:'Build a responsive page from a written spec, and annotate each breakpoint.' } },
+    aqae:{ theory:['HTML semantics','CSS layout','Browser rendering','Responsive reasoning'],
+           practical:'Build a responsive page from a written spec, annotating breakpoints.' } },
   'backend':{ num:3, code:'BED', name:'Backend Engineering', durations:[6,12],
-    aqae:{ theory:['HTTP & REST semantics','Database modelling','Concurrency basics','Error handling'],
-           practical:'Implement one API endpoint with persistence, and note the trade-offs you made.' } },
+    aqae:{ theory:['HTTP semantics','Database modelling','Concurrency','Error handling'],
+           practical:'Implement one API endpoint with persistence, noting trade-offs.' } },
   'mobile':{ num:4, code:'MOB', name:'Mobile Development', durations:[6,12],
-    aqae:{ theory:['Platform patterns','State & lifecycle','Offline-first reasoning','Device constraints'],
-           practical:'Build a single-screen mobile app with one interactive control and a documented edge case.' } },
+    aqae:{ theory:['Platform patterns','State lifecycle','Offline-first','Device constraints'],
+           practical:'Build a single-screen app with one interactive control and a documented edge case.' } },
   'webdesign':{ num:5, code:'WDS', name:'Web Design', durations:[3,6],
-    aqae:{ theory:['Typographic hierarchy','Grid systems','Colour & contrast','Layout composition'],
-           practical:'Design and code a landing page from a written brief. Document three typographic choices.' } },
+    aqae:{ theory:['Typographic hierarchy','Grid systems','Colour theory','Layout composition'],
+           practical:'Design and code a landing page from a brief, documenting typographic choices.' } },
   'uiux':{ num:6, code:'UXD', name:'UI/UX Design', durations:[3,6],
-    aqae:{ theory:['Usability heuristics','Flow design','Accessibility basics','Problem framing'],
-           practical:'Sketch a user flow for a stated task, then write a short rationale for two decisions.' } },
+    aqae:{ theory:['Usability heuristics','Flow design','Accessibility','Problem framing'],
+           practical:'Sketch a user flow for a stated task, with a rationale for two decisions.' } },
   'data':{ num:7, code:'DAN', name:'Data & Analytics', durations:[6,12],
-    aqae:{ theory:['Ratios, proportions & averages','Probability basics','Data interpretation','Reasoning under uncertainty'],
-           practical:'Given a small dataset, produce one written analysis and one chart. Show your working.' } },
+    aqae:{ theory:['Ratios & averages','Probability basics','Data interpretation','Uncertainty'],
+           practical:'Given a dataset, produce one written analysis and one chart. Show working.' } },
   'stem':{ num:8, code:'STP', name:'STEM & Physics', durations:[6,12],
-    aqae:{ theory:['Algebraic manipulation','Applied mechanics','Unit reasoning','Measurement & error'],
-           practical:'Solve one stated physical problem end-to-end. Every line of working must be shown.' } }
+    aqae:{ theory:['Algebraic manipulation','Applied mechanics','Unit reasoning','Measurement error'],
+           practical:'Solve one physical problem end-to-end. Every line of working must be shown.' } }
 };
 
 var ELECTIVES=[
@@ -620,9 +603,9 @@ function avatarSVG(seed,size){
   seed=String(seed||'ifb'); size=size||40;
   var h=2166136261; for(var i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}
   var rnd=mulberry32(h>>>0), n=5, cell=50/n, rects='';
-  var pal=['#6e1423','#520e19','#111111','#333333','#555555','#dcdcdc','#f4f4f4'];
+  var pal=['#6e1423','#520e19','#0a0a0a','#333333','#666666','#e5e5e5','#f7f7f7'];
   for(var y=0;y<n;y++){for(var x=0;x<n;x++){ if(rnd()<0.54){ var c=pal[Math.floor(rnd()*pal.length)]; rects+='<rect x="'+(x*cell+0.6).toFixed(1)+'" y="'+(y*cell+0.6).toFixed(1)+'" width="'+(cell-1.2).toFixed(1)+'" height="'+(cell-1.2).toFixed(1)+'" fill="'+c+'"/>'; } }}
-  return '<svg viewBox="0 0 50 50" width="'+size+'" height="'+size+'" shape-rendering="crispEdges"><rect width="50" height="50" fill="#f2f2f2"/>'+rects+'</svg>';
+  return '<svg viewBox="0 0 50 50" width="'+size+'" height="'+size+'" shape-rendering="crispEdges"><rect width="50" height="50" fill="#ffffff"/>'+rects+'</svg>';
 }
 
 function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('on')},3000); }
@@ -632,13 +615,13 @@ function mountAuth(){
   if(!el) return;
   var u=currentUser();
   if(!u){
-    el.innerHTML='<a href="#admissions" class="btn btn--sm">Sign In</a>';
+    el.innerHTML='<a href="#admissions" class="btn btn--primary" style="min-height:40px;padding:0 20px;font-size:12px">Sign In</a>';
     return;
   }
   el.innerHTML=
-    '<button class="avatar" id="avatarBtn">'+avatarSVG(u.id,40)+'</button>'+
+    '<button class="avatar" id="avatarBtn">'+avatarSVG(u.id,44)+'</button>'+
     '<div class="dropdown" id="profileDropdown">'+
-      '<div class="dd-head"><div style="width:40px;height:40px">'+avatarSVG(u.id,40)+'</div><div><div style="font-weight:700">'+u.name+'</div><div style="font-size:12px;color:var(--grey)">'+u.email+'</div></div></div>'+
+      '<div class="dd-head"><div style="width:44px;height:44px;border-radius:4px;overflow:hidden">'+avatarSVG(u.id,44)+'</div><div><div style="font-family:var(--serif);font-size:16px;font-weight:700">'+u.name+'</div><div style="font-size:12px;color:var(--grey)">'+u.email+'</div></div></div>'+
       '<div class="dd-body">'+
         '<div class="dd-row"><span class="k">Status</span><span class="v">'+(u.status==='provisional'?'Provisionally Accepted':'Pending')+'</span></div>'+
         '<div class="dd-row"><span class="k">Reference</span><span class="v">'+u.refId+'</span></div>'+
@@ -726,7 +709,6 @@ function initAdmissions(){
 function goStep(n){
   admState.step=n;
   ['step1','step2','step3'].forEach(function(id,i){ document.getElementById(id).classList.toggle('hide',(i+1)!==n); });
-  document.querySelectorAll('.stepper .s').forEach(function(s){ var k=+s.getAttribute('data-s'); s.classList.toggle('on',k===n); s.classList.toggle('done',k<n); });
   if(n===2) renderStep2();
   if(n===3) renderStep3();
 }
@@ -743,7 +725,7 @@ function renderStep2(){
 
 function renderDurations(){
   var doEl=document.getElementById('durOpts');
-  if(!admState.prog){ doEl.innerHTML='<p class="hint">Select a stream first.</p>'; return }
+  if(!admState.prog){ doEl.innerHTML='<p style="font-size:13px;color:var(--grey)">Select a stream first.</p>'; return }
   doEl.innerHTML=PROGRAMMES[admState.prog].durations.map(function(d){
     return '<label class="opt"><input type="radio" name="dur" value="'+d+'"'+(admState.duration===d?' checked':'')+'><span class="dot"></span><span class="txt"><b>'+d+' months</b><span>'+periodsFor(d)+' period(s)</span></span></label>';
   }).join('');
@@ -793,7 +775,7 @@ function initPortal(){
   if(!u){ guest.classList.remove('hide'); main.classList.add('hide'); return }
   guest.classList.add('hide'); main.classList.remove('hide');
 
-  document.getElementById('pAvatar').innerHTML=avatarSVG(u.id,80);
+  document.getElementById('pAvatar').innerHTML=avatarSVG(u.id,88);
   document.getElementById('pName').textContent=u.name;
   document.getElementById('pEmail').textContent=u.email;
   document.getElementById('pRef').textContent=u.refId;
@@ -821,24 +803,20 @@ function initPortal(){
     document.getElementById('pElec').textContent=electiveLabels(u.curriculum).join(', ')||'—';
 
     aqaePanel.innerHTML=
-      '<div class="card" style="border-top:4px solid var(--maroon);padding:24px;margin-bottom:24px">'+
-        '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey);margin-bottom:12px">Your IFB/AE Paper</div>'+
-        '<h3 style="font-family:var(--serif);font-size:20px;margin-bottom:12px">'+p.name+' ('+p.code+')</h3>'+
-        '<p style="font-size:13px;color:var(--grey);margin-bottom:16px">Theory is written; practical is submitted. Both are marked by DeepSeek AI.</p>'+
-        '<div style="font-size:12px;font-weight:700;text-transform:uppercase;margin-bottom:8px">Theory Focus</div>'+
-        '<ul style="list-style:disc;padding-left:20px;font-size:13px;color:var(--grey);margin-bottom:16px">'+p.aqae.theory.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+
-        '<div style="font-size:12px;font-weight:700;text-transform:uppercase;margin-bottom:8px">Practical Brief</div>'+
-        '<p style="font-size:13px;color:var(--grey)">'+p.aqae.practical+'</p>'+
+      '<div style="background:var(--ink);color:var(--white);border-radius:4px;padding:32px;margin-bottom:24px;position:relative;overflow:hidden">'+
+        '<div style="position:absolute;right:-20px;top:-40px;font-family:var(--serif);font-size:200px;opacity:.05;line-height:1">∆</div>'+
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey-light);margin-bottom:12px">Your IFB/AE Paper</div>'+
+        '<h3 style="font-family:var(--serif);font-size:24px;margin-bottom:12px">'+p.name+' ('+p.code+')</h3>'+
+        '<p style="font-size:14px;opacity:.8;margin-bottom:24px">Theory is written; practical is submitted. Both are marked by DeepSeek AI.</p>'+
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;color:var(--grey-light)">Theory Focus</div>'+
+        '<ul style="list-style:disc;padding-left:20px;font-size:14px;opacity:.9;margin-bottom:24px">'+p.aqae.theory.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:8px;color:var(--grey-light)">Practical Brief</div>'+
+        '<p style="font-size:14px;opacity:.9">'+p.aqae.practical+'</p>'+
       '</div>';
   }
 
   document.getElementById('pSignout').onclick=function(){ signOut(); location.hash='#home'; location.reload(); };
 }
-
-document.getElementById('scrim').addEventListener('click',function(){
-  document.getElementById('drawer').classList.remove('on');
-  document.getElementById('scrim').classList.remove('on');
-});
 
 document.addEventListener('DOMContentLoaded',function(){
   setTimeout(function(){ document.getElementById('boot').classList.add('done'); }, 600);
