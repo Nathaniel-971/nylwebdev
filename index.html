@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFB Institute — International Fellowship Board</title>
+<meta name="description" content="IFB Institute. Aquila Aurea · Scientia Libera · Lux Sine Finibus. An independent, non-accredited institute of technology education.">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --white:#ffffff;
+    --ink:#111111;
+    --grey:#555555;
+    --line:#e0e0e0;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --serif:"Times New Roman",Times,serif;
+    --max:1080px;
+    --pad:20px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html{-webkit-text-size-adjust:100%;}
+
+  body{
+    background:var(--white);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:0 var(--pad);
+  }
+
+  a{color:var(--ink);text-decoration:none;}
+  a:hover{text-decoration:underline;text-underline-offset:3px;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    border-bottom:1px solid var(--line);
+    background:var(--white);
+    position:sticky;
+    top:0;
+    z-index:50;
+  }
+
+  .masthead{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:18px 0;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .brand .delta{
+    font-family:var(--serif);
+    font-size:30px;
+    line-height:1;
+    color:var(--ink);
+    letter-spacing:0;
+  }
+
+  .brand .name{
+    display:flex;
+    flex-direction:column;
+  }
+
+  .brand .name strong{
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+  }
+
+  .brand .name span{
+    font-size:10.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--grey);
+    margin-top:2px;
+  }
+
+  .masthead .motto-top{
+    font-family:var(--serif);
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    color:var(--grey);
+    text-align:right;
+    display:none;
+  }
+
+  nav{
+    border-top:1px solid var(--line);
+  }
+
+  nav ul{
+    list-style:none;
+    display:flex;
+    flex-wrap:wrap;
+    gap:2px;
+  }
+
+  nav a{
+    display:block;
+    padding:13px 14px;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    font-weight:500;
+    border-bottom:2px solid transparent;
+  }
+
+  nav a:hover{
+    text-decoration:none;
+    border-bottom-color:var(--ink);
+  }
+
+  nav a[aria-current="page"]{
+    border-bottom-color:var(--ink);
+    font-weight:600;
+  }
+
+  /* ---------- STATUS BAR ---------- */
+  .status{
+    background:var(--white);
+    border-bottom:1px solid var(--line);
+  }
+
+  .status .wrap{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding-top:11px;
+    padding-bottom:11px;
+  }
+
+  .status i{flex:0 0 auto;margin-top:2px;}
+  .status i svg{width:14px;height:14px;stroke:var(--ink);stroke-width:1.75;}
+
+  .status p{
+    font-size:11.5px;
+    line-height:1.5;
+    color:var(--grey);
+    letter-spacing:0.02em;
+  }
+
+  .status p strong{color:var(--ink);font-weight:600;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:56px 0 48px;
+    border-bottom:1px solid var(--line);
+  }
+
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--grey);
+    margin-bottom:20px;
+  }
+
+  .hero h1{
+    font-family:var(--serif);
+    font-size:clamp(30px,7vw,54px);
+    line-height:1.12;
+    font-weight:400;
+    letter-spacing:-0.01em;
+    max-width:20ch;
+  }
+
+  .hero h1 em{
+    font-style:italic;
+  }
+
+  .hero .motto{
+    margin-top:26px;
+    padding-top:20px;
+    border-top:1px solid var(--line);
+    font-family:var(--serif);
+    font-size:14px;
+    letter-spacing:0.05em;
+    color:var(--grey);
+    font-style:italic;
+  }
+
+  .hero .lede{
+    margin-top:26px;
+    max-width:62ch;
+    font-size:16.5px;
+    color:var(--grey);
+  }
+
+  .hero .lede strong{color:var(--ink);font-weight:600;}
+
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:34px;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:13px 22px;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    font-weight:600;
+    border:1px solid var(--ink);
+    background:var(--white);
+    color:var(--ink);
+    cursor:pointer;
+    transition:background .15s,color .15s;
+  }
+
+  .btn:hover{text-decoration:none;background:var(--ink);color:var(--white);}
+  .btn:hover i svg{stroke:var(--white);}
+
+  .btn i svg{width:14px;height:14px;stroke:var(--ink);stroke-width:1.75;}
+
+  .btn.solid{background:var(--ink);color:var(--white);}
+  .btn.solid i svg{stroke:var(--white);}
+  .btn.solid:hover{background:var(--white);color:var(--ink);}
+  .btn.solid:hover i svg{stroke:var(--ink);}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:52px 0;border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:0;}
+
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:8px;
+  }
+
+  .sec-head h2{
+    font-family:var(--serif);
+    font-size:clamp(20px,4vw,27px);
+    font-weight:400;
+    letter-spacing:-0.005em;
+  }
+
+  .sec-head .num{
+    font-family:var(--serif);
+    font-size:12px;
+    letter-spacing:0.18em;
+    color:var(--grey);
+  }
+
+  .sec-note{
+    font-size:14.5px;
+    color:var(--grey);
+    max-width:66ch;
+    margin-bottom:32px;
+  }
+
+  /* ---------- STREAMS GRID ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr;
+    border-top:1px solid var(--line);
+    border-left:1px solid var(--line);
+  }
+
+  .cell{
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:20px 18px;
+    display:flex;
+    align-items:flex-start;
+    gap:13px;
+  }
+
+  .cell i{flex:0 0 auto;margin-top:3px;}
+  .cell i svg{width:17px;height:17px;stroke:var(--ink);stroke-width:1.6;}
+
+  .cell .label{
+    font-size:13.5px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    line-height:1.4;
+  }
+
+  .cell .sub{
+    display:block;
+    font-size:11.5px;
+    font-weight:400;
+    color:var(--grey);
+    letter-spacing:0.02em;
+    margin-top:3px;
+    line-height:1.45;
+  }
+
+  /* ---------- DURATIONS ---------- */
+  .tracks{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+
+  .track{
+    background:var(--white);
+    padding:24px 20px;
+  }
+
+  .track .months{
+    font-family:var(--serif);
+    font-size:34px;
+    line-height:1;
+    font-weight:400;
+  }
+
+  .track .months span{
+    font-family:var(--sans);
+    font-size:10.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--grey);
+    display:block;
+    margin-top:8px;
+  }
+
+  .track h3{
+    font-size:13px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-weight:600;
+    margin:16px 0 10px;
+  }
+
+  .track ul{
+    list-style:none;
+    font-size:13.5px;
+    color:var(--grey);
+  }
+
+  .track ul li{
+    padding:6px 0;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .track ul li:first-child{border-top:0;}
+  .track ul li b{color:var(--ink);font-weight:600;}
+
+  /* ---------- TIMELINE TABLE ---------- */
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+    min-width:460px;
+  }
+
+  th,td{
+    text-align:left;
+    padding:12px 14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+
+  thead th{
+    font-size:10.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--grey);
+    font-weight:600;
+    border-bottom:1px solid var(--ink);
+    white-space:nowrap;
+  }
+
+  tbody td:first-child{font-weight:600;white-space:nowrap;}
+  tbody td:last-child{color:var(--grey);}
+
+  .tag{
+    display:inline-block;
+    font-size:9.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:600;
+    border:1px solid var(--line);
+    padding:2px 7px;
+    color:var(--grey);
+    margin-left:8px;
+    vertical-align:1px;
+  }
+
+  /* ---------- PRINCIPLES ---------- */
+  .principles{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:26px;
+  }
+
+  .principle{
+    padding-left:16px;
+    border-left:1px solid var(--line);
+  }
+
+  .principle h3{
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+
+  .principle p{
+    font-size:14px;
+    color:var(--grey);
+  }
+
+  /* ---------- LEGAL ---------- */
+  .legal{
+    background:var(--white);
+    border-top:1px solid var(--ink);
+    border-bottom:0;
+    padding:34px 0 44px;
+  }
+
+  .legal .wrap{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+  }
+
+  .legal i svg{width:18px;height:18px;stroke:var(--ink);stroke-width:1.6;}
+
+  .legal h2{
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    font-weight:600;
+    margin-bottom:10px;
+  }
+
+  .legal p{
+    font-size:13px;
+    color:var(--grey);
+    line-height:1.65;
+    max-width:78ch;
+  }
+
+  .legal p + p{margin-top:10px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:26px 0 40px;
+  }
+
+  .foot{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px 26px;
+    align-items:flex-start;
+    justify-content:space-between;
+  }
+
+  .foot .sig{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .foot .sig .delta{font-family:var(--serif);font-size:20px;}
+
+  .foot .sig span{
+    font-size:10.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--grey);
+  }
+
+  .foot .motto{
+    font-family:var(--serif);
+    font-size:12px;
+    font-style:italic;
+    color:var(--grey);
+    letter-spacing:0.04em;
+  }
+
+  .foot .meta{
+    font-size:11px;
+    color:var(--grey);
+    letter-spacing:0.04em;
+    width:100%;
+    border-top:1px solid var(--line);
+    padding-top:16px;
+    margin-top:6px;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (min-width:640px){
+    .grid{grid-template-columns:1fr 1fr;}
+    .tracks{grid-template-columns:repeat(3,1fr);}
+    .principles{grid-template-columns:1fr 1fr;}
+  }
+
+  @media (min-width:900px){
+    :root{--pad:32px;}
+    .masthead .motto-top{display:block;}
+    .hero{padding:76px 0 64px;}
+    .grid{grid-template-columns:repeat(4,1fr);}
+    .principles{grid-template-columns:repeat(4,1fr);}
+    nav a{padding:15px 18px;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;}
+  }
+
+  /* Print */
+  @media print{
+    header,nav,.status,.actions,footer{display:none;}
+    section{border-bottom:1px solid #ccc;padding:18px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="masthead">
+      <a class="brand" href="index.html" aria-label="IFB Institute — Home">
+        <span class="delta" aria-hidden="true">∆</span>
+        <span class="name">
+          <strong>IFB Institute</strong>
+          <span>International Fellowship Board</span>
+        </span>
+      </a>
+      <div class="motto-top">Aquila Aurea · Scientia Libera · Lux Sine Finibus</div>
+    </div>
+  </div>
+  <nav aria-label="Primary">
+    <div class="wrap">
+      <ul>
+        <li><a href="index.html" aria-current="page">Institution</a></li>
+        <li><a href="admissions.html">Admissions</a></li>
+        <li><a href="portal.html">Portal</a></li>
+        <li><a href="faculty.html">Faculty</a></li>
+        <li><a href="resources.html">Resources</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<div class="status">
+  <div class="wrap">
+    <i data-lucide="shield-alert" aria-hidden="true"></i>
+    <p>
+      <strong>Independent institution.</strong> The IFB Institute is non-accredited, non-registered and not NQF-aligned.
+      It issues an Internal Record of Completion only — not an official certificate or qualification.
+    </p>
+  </div>
+</div>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Est. as an independent board · Operations 2027</p>
+      <h1>The study of <em>applied</em> intelligence, held to a written standard.</h1>
+      <p class="motto">Aquila Aurea · Scientia Libera · Lux Sine Finibus</p>
+      <p class="lede">
+        The IFB Institute is an independent fellowship board for technical education. Every subject is assessed
+        through <strong>written, step-by-step reasoning</strong> and <strong>practical submission</strong> — never
+        multiple choice. Programme completion is recorded internally and evidenced by examination results.
+      </p>
+      <div class="actions">
+        <a class="btn solid" href="admissions.html">
+          <i data-lucide="file-input" aria-hidden="true"></i> Begin Application
+        </a>
+        <a class="btn" href="resources.html">
+          <i data-lucide="library" aria-hidden="true"></i> Curriculum &amp; Papers
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STREAMS -->
+  <section aria-labelledby="streams-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="streams-h">The Eight Streams</h2>
+        <span class="num">01 / Academic Structure</span>
+      </div>
+      <p class="sec-note">
+        Each candidate selects one stream. Electives are chosen alongside it; Mathematics is recommended but not
+        compulsory, while Physics carries Mathematics as a co-requisite. Practical streams require hands-on
+        application submissions in addition to written papers.
+      </p>
+
+      <div class="grid">
+        <div class="cell">
+          <i data-lucide="layers" aria-hidden="true"></i>
+          <span class="label">Full Stack Engineering<span class="sub">End-to-end systems</span></span>
+        </div>
+        <div class="cell">
+          <i data-lucide="monitor" aria-hidden="true"></i>
+          <span class="label">Frontend Development<span class="sub">Interface engineering</span></span>
+        </div>
+        <div class="cell">
+          <i data-lucide="server" aria-hidden="true"></i>
+          <span class="label">Backend Engineering<span class="sub">Services &amp; data flow</span></span>
+        </div>
+        <div class="cell">
+          <i data-lucide="smartphone" aria-hidden="true"></i>
+          <span class="label">Mobile Development<span class="sub">Native &amp; cross-platform</span></span>
+        </div>
+        <div class="cell">
+          <i data-lucide="pen-tool" aria-hidden="true"></i>
+          <span class="label">Web Design<span class="sub">Layout &amp; typography</span></span>
+        </div>
+        <div class="cell">
+          <i data-lucide="frame" aria-hidden="true"></i>
+          <span class="label">UI/UX Design<span class="sub">Flow &amp; usability</span></span>
+        </div>
+        <div class="cell">
+          <i data-lucide="bar-chart-3" aria-hidden="true"></i>
+          <span class="label">Data &amp; Analytics<span class="sub">Interpretation &amp; modelling</span></span>
+        </div>
+        <div class="cell">
+          <i data-lucide="atom" aria-hidden="true"></i>
+          <span class="label">STEM &amp; Physics<span class="sub">Mathematics co-requisite</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DURATIONS -->
+  <section aria-labelledby="duration-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="duration-h">Programme Duration</h2>
+        <span class="num">02 / Tracks</span>
+      </div>
+      <p class="sec-note">
+        Duration determines subject load and the number of examination periods written. Curriculum selections may
+        be amended by the candidate until <strong>21 March 2027</strong>, after which the curriculum is locked.
+      </p>
+
+      <div class="tracks">
+        <div class="track">
+          <div class="months">3<span>Months · Foundation</span></div>
+          <h3>Foundation</h3>
+          <ul>
+            <li>Subject set <b>Narrowed</b></li>
+            <li>Exam periods <b>1</b></li>
+            <li>Papers per subject <b>1</b></li>
+          </ul>
+        </div>
+        <div class="track">
+          <div class="months">6<span>Months · Specialisation</span></div>
+          <h3>Specialisation</h3>
+          <ul>
+            <li>Subject set <b>Full load</b></li>
+            <li>Exam periods <b>2</b></li>
+            <li>Papers per subject <b>2</b></li>
+          </ul>
+        </div>
+        <div class="track">
+          <div class="months">12<span>Months · Advanced</span></div>
+          <h3>Advanced</h3>
+          <ul>
+            <li>Subject set <b>Deepest track</b></li>
+            <li>Exam periods <b>3</b></li>
+            <li>Papers per subject <b>3</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section aria-labelledby="calendar-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="calendar-h">Examination Calendar 2027</h2>
+        <span class="num">03 / Assessment</span>
+      </div>
+      <p class="sec-note">
+        All papers require written answers showing method and logic. No paper contains multiple choice.
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Period</th>
+              <th scope="col">Window</th>
+              <th scope="col">Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>IFB/AE</td>
+              <td>January – February 2027</td>
+              <td>Admission Examination. Passing this is the only route to a permanent Student Number.</td>
+            </tr>
+            <tr>
+              <td>First Period</td>
+              <td>May – June 2027</td>
+              <td>Primary assessment period.</td>
+            </tr>
+            <tr>
+              <td>AQ-L<span class="tag">Remedial</span></td>
+              <td>August – September 2027</td>
+              <td>Tests and strengthens weak topics identified in prior papers.</td>
+            </tr>
+            <tr>
+              <td>Second Period</td>
+              <td>September – October 2027</td>
+              <td>Primary assessment period.</td>
+            </tr>
+            <tr>
+              <td>Third Period</td>
+              <td>November – December 2027</td>
+              <td>Final assessment period for Advanced track candidates.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRINCIPLES -->
+  <section aria-labelledby="principles-h">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2 id="principles-h">Assessment Principles</h2>
+        <span class="num">04 / Standard</span>
+      </div>
+      <p class="sec-note">
+        Marking is conducted by artificial intelligence. Human administrators hold no marking authority.
+      </p>
+
+      <div class="principles">
+        <div class="principle">
+          <h3>Written Only</h3>
+          <p>Every answer is written, reasoned and shown step by step. Practical papers are submitted as working code.</p>
+        </div>
+        <div class="principle">
+          <h3>AI Marking</h3>
+          <p>DeepSeek AI serves as the primary regulatory and marking engine across all examinations.</p>
+        </div>
+        <div class="principle">
+          <h3>Moderation</h3>
+          <p>Claude, ChatGPT and Meta AI provide second-pass quality assurance and anomaly detection.</p>
+        </div>
+        <div class="principle">
+          <h3>No Overrides</h3>
+          <p>Faculty cannot award marks, alter grades or mark a candidate as passed. Their role is logistical.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGAL -->
+  <section class="legal" aria-labelledby="legal-h">
+    <div class="wrap">
+      <i data-lucide="info" aria-hidden="true"></i>
+      <div>
+        <h2 id="legal-h">Legal Status &amp; Certification</h2>
+        <p>
+          The IFB Institute is an independent board. It is not accredited, not registered, and not aligned to the
+          National Qualifications Framework. The IFB does not issue official certificates or qualifications, and
+          makes no claim of equivalence to the Department of Higher Education and Training, Umalusi, or the South
+          African Qualifications Authority.
+        </p>
+        <p>
+          While the Institute's frameworks draw on South African educational conventions, candidates receive an
+          <strong>Internal Record of Completion</strong> detailing their programme, streams, subjects and
+          examination results. This record is internal to the IFB and carries no external recognition.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div class="sig">
+        <span class="delta" aria-hidden="true">∆</span>
+        <span>IFB Institute · International Fellowship Board</span>
+      </div>
+      <div class="motto">Aquila Aurea · Scientia Libera · Lux Sine Finibus</div>
+      <div class="meta">
+        Non-accredited · Non-registered · Not NQF-aligned · Issues Internal Record of Completion only.
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
