@@ -3,343 +3,232 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0b0b">
+<meta name="theme-color" content="#6e1423">
 <title>IFB Institute</title>
 <meta name="description" content="IFB Institute. Independent, non-accredited. Written assessment, AI marking.">
 <style>
+/* ================= THEME: GCSE BOARD ================= */
 :root{
-  --white:#fff;--ink:#0b0b0b;--grey:#6b6b6b;--grey-l:#909090;--grey-xl:#d4d4d4;
-  --bg:#f7f7f7;--line:#e5e5e5;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
-  --serif:"Times New Roman",Times,serif;
-  --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
-  --max:1140px;--pad:18px;--r:10px;
+  --white:#ffffff;
+  --ink:#111111;
+  --ink-2:#333333;
+  --grey:#555555;
+  --grey-l:#888888;
+  --silver:#f4f4f4;
+  --silver-d:#dcdcdc;
+  --silver-line:#c9c9c9;
+  --maroon:#6e1423;
+  --maroon-dark:#520e19;
+  --maroon-bg:#fbf5f6;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --serif:"Georgia","Times New Roman",serif;
+  --mono:ui-monospace,"SF Mono",Consolas,monospace;
+  --max:1140px;
+  --pad:24px;
   --ease:cubic-bezier(.22,.61,.36,1);
-  --header-h:58px;
 }
-@media(min-width:640px){:root{--pad:24px;--header-h:60px}}
-@media(min-width:960px){:root{--pad:32px;--header-h:64px}}
+@media(min-width:640px){:root{--pad:32px}}
+@media(min-width:960px){:root{--pad:40px}}
 
 *,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 body{
-  margin:0;color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
-  background-color:var(--white);
+  margin:0;color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;background-color:var(--white);
 }
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 button,input,select,textarea{font:inherit;color:inherit}
 h1,h2,h3,h4,p,ul,ol{margin:0}
 ul,ol{list-style:none;padding:0}
-::selection{background:var(--ink);color:#fff}
+::selection{background:var(--maroon);color:var(--white)}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
 .muted{color:var(--grey)}
-.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
 .hide{display:none!important}
 
-/* spinner */
 @keyframes spin{to{transform:rotate(360deg)}}
-.spinner{width:28px;height:28px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:spin .75s linear infinite}
-.btn-spinner{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:spin .75s linear infinite}
+.spinner{width:28px;height:28px;border:2px solid var(--silver-d);border-top-color:var(--maroon);border-radius:50%;animation:spin .75s linear infinite}
 
-/* boot */
-.boot{position:fixed;inset:0;z-index:9999;background:var(--white);display:grid;place-items:center;transition:opacity .45s var(--ease),visibility .45s var(--ease)}
+/* BOOT */
+.boot{position:fixed;inset:0;z-index:9999;background:var(--white);display:grid;place-items:center;transition:opacity .4s}
 .boot.done{opacity:0;visibility:hidden;pointer-events:none}
 .boot-inner{display:flex;flex-direction:column;align-items:center;gap:20px}
-.boot-mark{font-family:var(--serif);font-size:46px;line-height:1;animation:bp 2s var(--ease) infinite}
-.boot-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--grey-l);font-weight:600}
-@keyframes bp{0%,100%{opacity:1}50%{opacity:.4}}
+.boot-mark{font-family:var(--serif);font-size:48px;line-height:1;color:var(--maroon)}
+.boot-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-l);font-weight:700}
 
-/* header */
-.site-header{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.header-in{max-width:var(--max);margin:0 auto;padding:0 var(--pad);height:var(--header-h);display:flex;align-items:center;gap:12px}
-.brand{display:flex;align-items:center;gap:9px;flex:0 0 auto;min-width:0}
-.brand .delta{font-family:var(--serif);font-size:24px;line-height:1;flex:0 0 auto;font-weight:700}
-.brand .wm b{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
-.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto}
-.nav::-webkit-scrollbar{display:none}
-.nav a{position:relative;padding:8px 12px;font-size:12px;font-weight:500;color:var(--grey);white-space:nowrap;border-radius:6px;transition:color .2s,background .2s}
-.nav a:hover{color:var(--ink);background:var(--bg)}
-.nav a[aria-current="page"]{color:var(--ink);font-weight:600;background:var(--bg)}
-.header-auth{flex:0 0 auto;display:flex;align-items:center;gap:8px;position:relative}
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:200;background:var(--white);border-bottom:3px solid var(--maroon)}
+.header-top{background:var(--maroon);color:var(--white);padding:8px 0;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;text-align:center}
+.header-in{max-width:var(--max);margin:0 auto;padding:0 var(--pad);height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.brand .delta{font-family:var(--serif);font-size:32px;line-height:1;color:var(--maroon);font-weight:bold}
+.brand .wm b{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.nav{display:flex;gap:24px;flex:1 1 auto;justify-content:flex-end}
+.nav a{font-size:13px;font-weight:600;color:var(--ink-2);text-transform:uppercase;letter-spacing:.05em;padding:8px 0;position:relative;transition:color .2s}
+.nav a:hover{color:var(--maroon)}
+.nav a[aria-current="page"]{color:var(--maroon)}
+.nav a[aria-current="page"]::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--maroon)}
+.header-auth{display:flex;align-items:center;gap:12px;flex:0 0 auto;position:relative}
+@media(max-width:768px){
+  .header-in{height:auto;padding:16px var(--pad);flex-wrap:wrap}
+  .nav{width:100%;justify-content:flex-start;gap:16px;margin-top:16px;border-top:1px solid var(--silver-d);padding-top:16px}
+  .header-auth{position:absolute;top:16px;right:var(--pad)}
+}
 
-/* avatar */
-.avatar{width:36px;height:36px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--bg);flex:0 0 auto;cursor:pointer;display:block;transition:border-color .2s;padding:0}
-.avatar:hover{border-color:var(--ink)}
-.avatar svg{width:100%;height:100%;display:block}
-.avatar-lg{width:72px;height:72px;border-radius:12px;cursor:default}
-.avatar-lg:hover{border-color:var(--line)}
-
-/* dropdown */
-.dropdown{position:absolute;top:calc(100% + 10px);right:0;width:300px;background:var(--white);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.08);opacity:0;transform:translateY(-8px);transform-origin:top right;pointer-events:none;transition:opacity .22s var(--ease),transform .22s var(--ease);z-index:100;overflow:hidden}
-.dropdown.on{opacity:1;transform:none;pointer-events:auto}
-.dd-head{padding:16px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;background:var(--bg)}
-.dd-head .avatar-sm{width:40px;height:40px;border-radius:8px;overflow:hidden;flex:0 0 auto}
-.dd-head .who{display:flex;flex-direction:column;min-width:0;flex:1}
-.dd-head .who b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dd-head .who span{font-size:11px;color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.dd-body{padding:8px}
-.dd-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px;border-radius:6px;font-size:12px}
-.dd-row .k{color:var(--grey);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
-.dd-row .v{font-family:var(--mono);font-weight:600;text-align:right;word-break:break-all;font-size:11.5px}
-.dd-pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:999px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
-.dd-pill--pending{background:var(--bg);color:var(--grey);border:1px solid var(--line)}
-.dd-pill--prov{background:var(--ink);color:var(--white);border:1px solid var(--ink)}
-.dd-foot{padding:8px;border-top:1px solid var(--line)}
-.dd-foot a,.dd-foot button{display:flex;align-items:center;gap:10px;width:100%;padding:10px;border:0;border-radius:6px;background:none;cursor:pointer;font-size:13px;font-weight:500;text-align:left;color:var(--ink);transition:background .15s}
-.dd-foot a:hover,.dd-foot button:hover{background:var(--bg)}
-.dd-foot a svg,.dd-foot button svg{width:15px;height:15px;flex:0 0 auto;color:var(--grey)}
-.dd-foot button.danger{color:var(--ink);font-weight:600}
-.dd-foot button.danger svg{color:var(--ink)}
-
-/* buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:1px solid var(--line);border-radius:var(--r);background:var(--white);color:var(--ink);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;text-decoration:none;transition:all .2s}
-.btn:hover{border-color:var(--ink)}
-.btn:active{transform:translateY(1px)}
-.btn svg{width:15px;height:15px;flex:0 0 auto}
-.btn--primary{background:var(--ink);border-color:var(--ink);color:var(--white)}
-.btn--primary:hover{background:#222;border-color:#222}
-.btn--ghost{background:transparent;border-color:var(--line);color:var(--ink)}
-.btn--ghost:hover{background:var(--bg)}
-.btn--quiet{border-color:transparent;background:transparent;color:var(--grey)}
-.btn--quiet:hover{color:var(--ink);background:var(--bg)}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 20px;border:1px solid var(--silver-d);border-radius:2px;background:var(--white);color:var(--ink);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer;transition:all .2s}
+.btn:hover{border-color:var(--ink);background:var(--silver)}
+.btn svg{width:16px;height:16px}
+.btn--primary{background:var(--maroon);border-color:var(--maroon);color:var(--white)}
+.btn--primary:hover{background:var(--maroon-dark);border-color:var(--maroon-dark)}
+.btn--ghost{background:transparent;border-color:transparent;color:var(--maroon)}
+.btn--ghost:hover{background:var(--maroon-bg)}
+.btn--sm{min-height:36px;padding:0 14px;font-size:11.5px}
 .btn--block{width:100%}
-.btn--sm{min-height:36px;padding:0 14px;font-size:11.5px;border-radius:8px}
-.btn--sm svg{width:13px;height:13px}
-.btn:disabled,.btn[aria-busy="true"]{opacity:.6;cursor:wait;transform:none;pointer-events:none}
+.btn:disabled{opacity:.6;cursor:not-allowed}
 
-/* notice */
-.notice{border-bottom:1px solid var(--line);background:var(--bg)}
-.notice .wrap{display:flex;gap:10px;align-items:flex-start;padding:10px var(--pad)}
-.notice svg{width:14px;height:14px;flex:0 0 auto;margin-top:3px;color:var(--ink)}
-.notice p{font-size:11px;line-height:1.5;color:var(--grey)}
-.notice b{color:var(--ink);font-weight:600}
+/* NOTICE */
+.notice{background:var(--silver);border-bottom:1px solid var(--silver-d);padding:12px 0}
+.notice .wrap{display:flex;gap:12px;align-items:flex-start}
+.notice svg{width:16px;height:16px;flex:0 0 auto;margin-top:2px;color:var(--maroon)}
+.notice p{font-size:12px;color:var(--grey);line-height:1.5}
+.notice b{color:var(--ink);font-weight:700}
 
-/* type */
-.eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-l);font-weight:600}
-.display{font-size:clamp(1.8rem,5vw,3.4rem);line-height:1.06;letter-spacing:-.03em;font-weight:700}
-.h2{font-size:clamp(1.3rem,3vw,1.9rem);line-height:1.16;letter-spacing:-.02em;font-weight:600}
-.h3{font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
-.lede{font-size:clamp(.95rem,1.5vw,1.08rem);color:var(--grey);line-height:1.6;max-width:64ch}
-.prose p{color:var(--grey);font-size:14px;line-height:1.7}
-.prose p+p{margin-top:11px}
+/* TYPOGRAPHY */
+.eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--maroon);font-weight:700;margin-bottom:12px;display:block}
+.display{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;letter-spacing:-.02em;font-weight:700;color:var(--ink)}
+.h2{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.2rem);line-height:1.2;font-weight:700;color:var(--ink)}
+.lede{font-size:17px;color:var(--grey);line-height:1.6;max-width:70ch}
+.prose p{color:var(--grey);font-size:15px;line-height:1.7;margin-bottom:12px}
 .prose b{color:var(--ink);font-weight:600}
 
-/* sections */
-.section{padding:clamp(40px,6vw,80px) 0;border-bottom:1px solid var(--line)}
-.section:last-of-type{border-bottom:0}
-.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px}
-.sec-head .idx{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--grey-l);font-weight:600}
-.sec-note{color:var(--grey);font-size:14px;max-width:66ch;margin-bottom:28px}
-.split{display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,48px)}
-@media(min-width:920px){.split{grid-template-columns:1.05fr .95fr;align-items:start}}
-.stack{display:flex;flex-direction:column;gap:12px}
+/* SECTIONS */
+.section{padding:64px 0;border-bottom:1px solid var(--silver-d)}
+.section:last-of-type{border-bottom:none}
+.section--bg{background:var(--silver)}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px;border-bottom:2px solid var(--maroon);padding-bottom:12px}
+.sec-head h2{font-family:var(--serif);font-size:24px;font-weight:700;margin:0}
+.sec-head .idx{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--grey-l);font-weight:700}
 
-/* cards */
-.card{border:1px solid var(--line);border-radius:12px;padding:24px;background:var(--white);box-shadow:0 1px 2px rgba(0,0,0,.02)}
-.card--pad-lg{padding:clamp(20px,3vw,32px)}
-@media(max-width:540px){.card{padding:18px;border-radius:10px}}
+/* GRIDS */
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--silver-d);border:1px solid var(--silver-d)}
+.grid-item{background:var(--white);padding:24px}
+.grid-item .icon{width:24px;height:24px;color:var(--maroon);margin-bottom:16px}
+.grid-item h3{font-family:var(--serif);font-size:18px;font-weight:700;margin-bottom:6px}
+.grid-item p{font-size:13px;color:var(--grey);line-height:1.5;margin-bottom:12px}
+.grid-item .tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;background:var(--silver);padding:4px 8px;border-radius:2px;border:1px solid var(--silver-d)}
 
-/* chips */
-.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border:1px solid var(--line);border-radius:999px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--grey);white-space:nowrap;background:var(--white)}
-.chip--live{border-color:var(--ink);color:var(--ink)}
-.chip--live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--silver-d);padding:32px;box-shadow:0 2px 8px rgba(0,0,0,.02)}
 
-/* cells */
-.cells{display:grid;grid-template-columns:1fr;border-top:1px solid var(--line);border-left:1px solid var(--line)}
-@media(min-width:560px){.cells{grid-template-columns:1fr 1fr}}
-@media(min-width:980px){.cells{grid-template-columns:repeat(4,1fr)}}
-.cell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 14px;display:flex;gap:12px;align-items:flex-start;transition:background .2s;background:var(--white)}
-.cell:hover{background:var(--bg)}
-.cell svg{width:18px;height:18px;flex:0 0 auto;margin-top:2px;color:var(--ink)}
-.cell .label{font-size:13.5px;font-weight:600;line-height:1.3}
-.cell .sub{display:block;font-size:11.5px;font-weight:400;color:var(--grey);margin-top:3px}
-.cell .dur{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;color:var(--ink);background:var(--bg);border:1px solid var(--line);padding:2px 6px;border-radius:4px;margin-top:8px;text-transform:uppercase}
+/* FORMS */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.field label{font-size:12px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em}
+.input,.select{height:48px;padding:0 16px;border:1px solid var(--silver-d);border-radius:2px;background:var(--white);font-size:15px;width:100%;transition:border-color .2s}
+.input:focus,.select:focus{outline:none;border-color:var(--maroon)}
+.select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;appearance:none;padding-right:40px}
 
-/* steps */
-.steps{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-@media(min-width:720px){.steps{grid-template-columns:repeat(3,1fr)}}
-.step{background:var(--white);padding:24px 20px}
-.step .k{font-size:10px;letter-spacing:.2em;color:var(--grey);font-weight:700}
-.step h3{font-size:15px;font-weight:600;margin:12px 0 8px}
-.step p{font-size:13px;color:var(--grey);line-height:1.6}
-
-/* forms */
-.field{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.field>label,.lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--grey)}
-.input,.select{height:48px;padding:0 14px;border:1px solid var(--line);border-radius:8px;background:var(--white);font-size:15px;width:100%;transition:border-color .2s;appearance:none;-webkit-appearance:none;font-family:inherit}
-.select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230b0b0b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
-.input:focus,.select:focus{outline:none;border-color:var(--ink)}
-.hint{font-size:11.5px;color:var(--grey-l);line-height:1.5}
-.err{font-size:12px;color:var(--ink);font-weight:600}
-.err:empty{display:none}
-
-/* opts */
-.opts{display:grid;grid-template-columns:1fr;gap:10px}
+/* OPTS */
+.opts{display:grid;grid-template-columns:1fr;gap:12px}
 @media(min-width:560px){.opts--2{grid-template-columns:1fr 1fr}}
-.opt{position:relative;display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--white);transition:all .2s;min-width:0}
-.opt:hover{border-color:var(--grey-l)}
-.opt input{position:absolute;opacity:0;pointer-events:none}
-.opt .dot{width:16px;height:16px;border:1px solid var(--grey-xl);border-radius:50%;flex:0 0 auto;margin-top:2px;display:grid;place-items:center;transition:border-color .2s}
-.opt .dot::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink);transform:scale(0);transition:transform .2s var(--ease)}
-.opt .txt{display:flex;flex-direction:column;gap:3px;min-width:0}
-.opt .txt b{font-size:13.5px;font-weight:600;line-height:1.3}
-.opt .txt span{font-size:11.5px;color:var(--grey);line-height:1.4}
-.opt:has(input:checked){border-color:var(--ink);background:var(--bg)}
-.opt:has(input:checked) .dot{border-color:var(--ink)}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:16px;border:1px solid var(--silver-d);cursor:pointer;background:var(--white);transition:all .2s}
+.opt:hover{border-color:var(--maroon)}
+.opt input{display:none}
+.opt .dot{width:18px;height:18px;border:1px solid var(--silver-line);border-radius:50%;flex:0 0 auto;margin-top:2px;display:grid;place-items:center}
+.opt .dot::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--maroon);transform:scale(0);transition:transform .2s}
+.opt .txt{display:flex;flex-direction:column;gap:4px}
+.opt .txt b{font-size:14px;font-weight:700;color:var(--ink)}
+.opt .txt span{font-size:12px;color:var(--grey);line-height:1.4}
+.opt:has(input:checked){border-color:var(--maroon);background:var(--maroon-bg)}
+.opt:has(input:checked) .dot{border-color:var(--maroon)}
 .opt:has(input:checked) .dot::after{transform:scale(1)}
-.opt:has(input:disabled){opacity:.4;cursor:not-allowed}
-.opt--box .dot{border-radius:4px}
-.opt--box .dot::after{border-radius:2px}
 
-/* tabs */
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:24px}
-.tabs button{background:none;border:0;padding:12px 4px;margin-right:24px;font-size:13px;font-weight:600;color:var(--grey-l);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;font-family:inherit}
-.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+/* STEPPER */
+.stepper{display:flex;align-items:center;gap:12px;margin-bottom:32px;background:var(--silver);padding:16px;border-radius:2px;border:1px solid var(--silver-d)}
+.stepper .s{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey-l);display:flex;align-items:center;gap:8px}
+.stepper .s i{width:24px;height:24px;border-radius:50%;border:1px solid var(--silver-line);display:grid;place-items:center;font-style:normal;background:var(--white)}
+.stepper .s.on{color:var(--maroon)}
+.stepper .s.on i{background:var(--maroon);color:var(--white);border-color:var(--maroon)}
+.stepper .s.done i{background:var(--maroon-dark);color:var(--white);border-color:var(--maroon-dark)}
+.stepper .bar{flex:1;height:1px;background:var(--silver-line)}
 
-/* stepper */
-.stepper{display:flex;align-items:center;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.stepper .s{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--grey-l)}
-.stepper .s i{width:18px;height:18px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:10px;color:var(--grey-l)}
-.stepper .s.on{color:var(--ink)}
-.stepper .s.on i{border-color:var(--ink);color:var(--ink)}
-.stepper .s.done i{background:var(--ink);border-color:var(--ink);color:var(--white)}
-.stepper .bar{flex:1;height:1px;background:var(--line);min-width:12px}
+/* PORTAL */
+.portal-head{background:var(--maroon);color:var(--white);padding:32px;border-radius:2px;margin-bottom:32px;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.portal-avatar{width:80px;height:80px;border-radius:4px;overflow:hidden;background:var(--white);flex:0 0 auto}
+.portal-info h1{font-family:var(--serif);font-size:28px;font-weight:700;margin-bottom:4px}
+.portal-info p{font-size:14px;opacity:.9}
+.portal-info .ref{font-family:var(--mono);font-size:14px;font-weight:700;background:rgba(0,0,0,.2);padding:4px 10px;border-radius:2px;display:inline-block;margin-top:8px}
+.status-box{border-left:4px solid var(--maroon);background:var(--silver);padding:24px;margin-bottom:24px}
+.status-box h3{font-family:var(--serif);font-size:22px;color:var(--maroon);margin-bottom:4px}
 
-/* summary */
-.summary dl{display:grid;gap:0;margin:0}
-.summary .row{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--line);font-size:13px}
-.summary .row:first-child{border-top:0}
-.summary dt{color:var(--grey)}
-.summary dd{margin:0;font-weight:600;text-align:right;min-width:0;word-break:break-word}
+/* AVATAR */
+.avatar{width:40px;height:40px;border-radius:4px;overflow:hidden;border:2px solid var(--silver-d);cursor:pointer;transition:border-color .2s}
+.avatar:hover{border-color:var(--maroon)}
 
-/* toast */
-.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);z-index:900;background:var(--ink);color:var(--white);border-radius:8px;padding:12px 20px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s var(--ease);max-width:calc(100% - 32px);box-shadow:0 8px 30px rgba(0,0,0,.2);text-align:center}
+/* DROPDOWN */
+.dropdown{position:absolute;top:100%;right:0;margin-top:12px;width:300px;background:var(--white);border:1px solid var(--silver-d);border-top:3px solid var(--maroon);box-shadow:0 12px 40px rgba(0,0,0,.1);opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .2s;z-index:100}
+.dropdown.on{opacity:1;visibility:visible;transform:translateY(0)}
+.dd-head{padding:20px;border-bottom:1px solid var(--silver-d);display:flex;gap:12px;align-items:center;background:var(--silver)}
+.dd-body{padding:12px}
+.dd-row{display:flex;justify-content:space-between;padding:8px 12px;font-size:13px}
+.dd-row .k{color:var(--grey)}
+.dd-row .v{font-family:var(--mono);font-weight:700;color:var(--ink)}
+.dd-foot{border-top:1px solid var(--silver-d);padding:12px}
+.dd-foot a,.dd-foot button{display:flex;align-items:center;gap:10px;width:100%;padding:12px;border:0;background:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em}
+.dd-foot a:hover,.dd-foot button:hover{background:var(--silver);color:var(--maroon)}
+.dd-foot button.danger{color:var(--maroon)}
+
+/* FOOTER */
+.site-footer{background:var(--maroon);color:var(--white);padding:48px 0 24px}
+.footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px;margin-bottom:32px}
+.footer-brand .delta{font-family:var(--serif);font-size:32px;font-weight:700;margin-bottom:12px;display:block}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,.8);line-height:1.6}
+.footer-col h4{font-size:12px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;color:rgba(255,255,255,.6)}
+.footer-col a{display:block;font-size:13px;color:var(--white);margin-bottom:8px;opacity:.9}
+.footer-col a:hover{opacity:1;text-decoration:underline}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.2);padding-top:24px;text-align:center;font-size:11px;color:rgba(255,255,255,.6);line-height:1.6}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--white);padding:12px 24px;border-radius:2px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:1000;pointer-events:none}
 .toast.on{opacity:1;transform:translate(-50%,0)}
-
-/* drawer */
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:400;opacity:0;pointer-events:none;transition:opacity .3s}
-.scrim.on{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,100%);background:var(--white);z-index:401;border-left:1px solid var(--line);transform:translateX(102%);transition:transform .35s var(--ease);display:flex;flex-direction:column;overflow-y:auto}
-.drawer.on{transform:translateX(0)}
-.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:20px;border-bottom:1px solid var(--line)}
-.drawer-body{padding:20px;display:flex;flex-direction:column;gap:10px}
-.acct{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--white);text-align:left;width:100%;transition:all .2s;font-family:inherit;color:inherit}
-.acct:hover{border-color:var(--ink);background:var(--bg)}
-.acct .meta{display:flex;flex-direction:column;min-width:0;flex:1}
-.acct .meta b{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.acct .meta span{font-size:11.5px;color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.acct .tick{font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--ink)}
-
-/* footer */
-.foot{border-top:1px solid var(--line);padding:32px 0;background:var(--bg)}
-.foot-in{display:flex;flex-wrap:wrap;gap:20px 32px;align-items:flex-start;justify-content:space-between}
-.foot .sig{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);font-weight:600}
-.foot .sig .delta{font-family:var(--serif);font-size:20px;color:var(--ink);font-weight:700}
-.foot .legal-line{width:100%;border-top:1px solid var(--line);padding-top:16px;margin-top:8px;font-size:11px;color:var(--grey-l)}
-
-/* router */
-.view{display:none}
-.view.on{display:block}
-
-/* portal */
-.profile-head{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding-bottom:24px;border-bottom:1px solid var(--line);margin-bottom:24px}
-.profile-head .who{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 200px}
-.profile-head .who h1{font-size:22px;font-weight:600;overflow-wrap:anywhere}
-.profile-head .who p{font-size:13px;color:var(--grey);overflow-wrap:anywhere}
-.profile-head .who .ref{font-family:var(--mono);font-size:12px;color:var(--ink);font-weight:600;margin-top:2px}
-.profile-head .actions{display:flex;gap:8px;flex-wrap:wrap;width:100%}
-@media(min-width:720px){
-  .profile-head .who h1{font-size:26px}
-  .profile-head .actions{margin-left:auto;width:auto}
-}
-
-.status-card{border:2px solid var(--ink);background:var(--white);border-radius:12px;padding:24px;position:relative;overflow:hidden;margin-bottom:16px}
-.status-card .lbl{margin-bottom:8px}
-.status-title{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:6px}
-.status-sub{font-size:13.5px;color:var(--grey)}
-.status-card--pending{border-color:var(--line)}
-.status-card--pending .status-title{color:var(--grey)}
-
-.admid{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--bg);margin-bottom:16px}
-.admid .lbl{margin-bottom:10px}
-.admid-num{font-family:var(--mono);font-size:24px;font-weight:700;letter-spacing:.05em;overflow-wrap:anywhere}
-.admid-note{font-size:11.5px;color:var(--grey);margin-top:6px;font-family:var(--mono)}
-
-.kv{display:grid;grid-template-columns:1fr;gap:4px;font-size:14px}
-.kv dt{color:var(--grey);font-size:11px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-top:12px}
-.kv dd{margin:0;font-weight:500;overflow-wrap:anywhere}
-@media(min-width:560px){
-  .kv{grid-template-columns:160px 1fr;gap:10px 20px}
-  .kv dt{margin-top:0;font-size:12.5px;letter-spacing:0;text-transform:none;font-weight:400;padding-top:2px}
-}
-
-.aqae{background:var(--ink);color:var(--white);border-radius:12px;padding:24px;position:relative;overflow:hidden;margin-bottom:16px}
-.aqae::before{content:"∆";position:absolute;top:-40px;right:-20px;font-family:var(--serif);font-size:200px;line-height:1;opacity:.05;pointer-events:none}
-.aqae .lbl{color:rgba(255,255,255,.6);margin-bottom:12px}
-.aqae h3{font-size:20px;font-weight:600;margin-bottom:8px;position:relative}
-.aqae p{font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.6;position:relative;margin-bottom:16px}
-.aqae .divider{border-top:1px solid rgba(255,255,255,.15);margin:16px 0}
-.aqae .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;position:relative}
-.aqae .badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:4px 10px;border-radius:999px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
-.aqae dl{margin:0;position:relative}
-.aqae dt{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.5);font-weight:700;margin-top:12px}
-.aqae dd{margin:6px 0 0;font-size:13px;color:#fff;line-height:1.6}
-.aqae ul{list-style:disc;padding-left:20px;margin:8px 0 0;font-size:13px;color:rgba(255,255,255,.9)}
-
-/* doc card */
-.doc-card{display:flex;gap:16px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--white);transition:border-color .2s;opacity:.8}
-.doc-card .doc-ico{width:40px;height:40px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;flex:0 0 auto;background:var(--bg);color:var(--grey)}
-.doc-card .doc-ico svg{width:20px;height:20px}
-.doc-card .doc-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
-.doc-card .doc-body h3{font-size:15px;font-weight:600}
-.doc-card .doc-body p{font-size:13px;color:var(--grey);line-height:1.5}
-.doc-card .doc-actions{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
 </style>
 </head>
 <body>
 
-<!-- BOOT -->
-<div class="boot" id="boot" aria-hidden="true">
+<div class="boot" id="boot">
   <div class="boot-inner">
     <div class="boot-mark">∆</div>
     <div class="spinner"></div>
-    <div class="boot-label">IFB Institute</div>
   </div>
 </div>
 
-<!-- ICONS -->
-<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
-<symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></symbol>
-<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></symbol>
-<symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></symbol>
-<symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></symbol>
-<symbol id="i-pen-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"/><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"/><path d="m2.3 2.3 7.286 7.286"/><circle cx="11" cy="11" r="2"/></symbol>
-<symbol id="i-frame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="22" x2="2" y1="6" y2="6"/><line x1="22" x2="2" y1="18" y2="18"/><line x1="6" x2="6" y1="2" y2="22"/><line x1="18" x2="18" y1="2" y2="22"/></symbol>
-<symbol id="i-bar-chart-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
-<symbol id="i-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></symbol>
-<symbol id="i-shield-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
-<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
-<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
-<symbol id="i-log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></symbol>
-<symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
-<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
-<symbol id="i-edit-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></symbol>
-<symbol id="i-chrome" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" x2="12" y1="8" y2="8"/><line x1="3.95" x2="8.54" y1="6.06" y2="14"/><line x1="10.88" x2="15.46" y1="21.94" y2="14"/></symbol>
-<symbol id="i-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
-<symbol id="i-switch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></symbol>
+<svg style="display:none" aria-hidden="true"><defs>
+<symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+<symbol id="i-server" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></symbol>
+<symbol id="i-smartphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></symbol>
+<symbol id="i-pen-tool" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></symbol>
+<symbol id="i-frame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="6" x2="2" y2="6"/><line x1="22" y1="18" x2="2" y2="18"/><line x1="6" y1="2" x2="6" y2="22"/><line x1="18" y1="2" x2="18" y2="22"/></symbol>
+<symbol id="i-bar-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></symbol>
+<symbol id="i-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+<symbol id="i-log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
 </defs></svg>
 
-<!-- HEADER -->
 <header class="site-header">
+  <div class="header-top">IFB Independent Examination Board · 2027 Intake</div>
   <div class="header-in">
-    <a href="#home" class="brand" aria-label="IFB Institute — home">
-      <span class="delta" aria-hidden="true">∆</span>
+    <a href="#home" class="brand">
+      <span class="delta">∆</span>
       <span class="wm"><b>IFB Institute</b></span>
     </a>
-    <nav class="nav" aria-label="Primary">
+    <nav class="nav">
       <a href="#home" data-nav="home">Institution</a>
       <a href="#admissions" data-nav="admissions">Admissions</a>
       <a href="#portal" data-nav="portal">Portal</a>
@@ -350,370 +239,319 @@ ul,ol{list-style:none;padding:0}
 
 <div class="notice">
   <div class="wrap">
-    <svg><use href="#i-shield-alert"/></svg>
-    <p><b>Independent institution.</b> Non-accredited, non-registered, not NQF-aligned. Issues an Internal Record of Completion only.</p>
+    <svg><use href="#i-alert"/></svg>
+    <p><b>Independent Institution.</b> Non-accredited, non-registered, not NQF-aligned. Issues an Internal Record of Completion only. No official equivalence is claimed.</p>
   </div>
 </div>
 
 <main>
-
-<!-- PAGE 1: HOME -->
-<section class="view" data-view="home">
-  <div class="section">
-    <div class="wrap">
-      <div class="stack" style="max-width:820px">
-        <span class="chip chip--live">Applications Open · 2027 Intake</span>
-        <h1 class="display">An Institute.<br>Built for depth.</h1>
-        <p class="lede">We offer non-accredited skills programmes across eight streams. Three durations. All examinations are set, regulated, and marked by the IFB Examination Board using DeepSeek AI.</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px" id="homeCTA">
-          <a class="btn btn--primary" href="#admissions"><svg><use href="#i-arrow-right"/></svg>Apply to IFB</a>
-          <a class="btn btn--ghost" href="#resources"><svg><use href="#i-file-text"/></svg>Academic Resources</a>
-        </div>
-        <div style="display:flex;gap:24px;flex-wrap:wrap;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)">
-          <div><div class="eyebrow">Streams</div><div style="font-size:24px;font-weight:600;letter-spacing:-.02em">08</div></div>
-          <div><div class="eyebrow">Durations</div><div style="font-size:24px;font-weight:600;letter-spacing:-.02em">3 · 6 · 12</div></div>
-          <div><div class="eyebrow">Assessment</div><div style="font-size:24px;font-weight:600;letter-spacing:-.02em">Theory + Practical</div></div>
-          <div><div class="eyebrow">Marking</div><div style="font-size:24px;font-weight:600;letter-spacing:-.02em">AI</div></div>
+  <!-- PAGE 1: HOME -->
+  <section class="view" data-view="home">
+    <div class="section" style="padding-top:80px">
+      <div class="wrap">
+        <span class="eyebrow">Independent Examination Board</span>
+        <h1 class="display" style="max-width:900px;margin-bottom:24px">Technical education, held to a written standard.</h1>
+        <p class="lede" style="margin-bottom:32px">Every programme is assessed through written theory and practical submission. All papers are set and regulated by the IFB Examination Board and marked using DeepSeek AI.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap" id="homeCTA">
+          <a href="#admissions" class="btn btn--primary"><svg><use href="#i-arrow-right"/></svg>Apply to IFB</a>
+          <a href="#home" onclick="document.getElementById('resources').scrollIntoView({behavior:'smooth'})" class="btn"><svg><use href="#i-file"/></svg>Academic Resources</a>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="section">
-    <div class="wrap">
-      <div class="sec-head"><h2 class="h2">The Eight Streams</h2><span class="idx">01 — Programmes</span></div>
-      <p class="sec-note">Each stream has its own durations. Mathematics is a recommended elective; Physics requires it as a co-requisite.</p>
-      <div class="cells">
-        <div class="cell"><svg><use href="#i-layers"/></svg><span class="label">Full Stack Engineering<span class="sub">End-to-end systems</span><span class="dur">3 · 6 · 12</span></span></div>
-        <div class="cell"><svg><use href="#i-monitor"/></svg><span class="label">Frontend Development<span class="sub">Interface engineering</span><span class="dur">3 · 6</span></span></div>
-        <div class="cell"><svg><use href="#i-server"/></svg><span class="label">Backend Engineering<span class="sub">Services &amp; data flow</span><span class="dur">6 · 12</span></span></div>
-        <div class="cell"><svg><use href="#i-smartphone"/></svg><span class="label">Mobile Development<span class="sub">Native &amp; cross-platform</span><span class="dur">6 · 12</span></span></div>
-        <div class="cell"><svg><use href="#i-pen-tool"/></svg><span class="label">Web Design<span class="sub">Layout &amp; typography</span><span class="dur">3 · 6</span></span></div>
-        <div class="cell"><svg><use href="#i-frame"/></svg><span class="label">UI/UX Design<span class="sub">Flow &amp; usability</span><span class="dur">3 · 6</span></span></div>
-        <div class="cell"><svg><use href="#i-bar-chart-3"/></svg><span class="label">Data &amp; Analytics<span class="sub">Interpretation &amp; modelling</span><span class="dur">6 · 12</span></span></div>
-        <div class="cell"><svg><use href="#i-atom"/></svg><span class="label">STEM &amp; Physics<span class="sub">Mathematics co-requisite</span><span class="dur">6 · 12</span></span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="wrap">
-      <div class="sec-head"><h2 class="h2">Admission Process</h2><span class="idx">02 — Process</span></div>
-      <p class="sec-note">A temporary Reference ID is issued on registration. Curriculum submission issues an Admission ID and provisionally accepts you. A pass at the IFB/AE issues your permanent Student Number.</p>
-      <div class="steps">
-        <div class="step"><div class="k">01</div><h3>Enrol</h3><p>Create your account. A temporary Reference ID is issued immediately.</p></div>
-        <div class="step"><div class="k">02</div><h3>Choose Curriculum</h3><p>Select a stream, duration, and electives. On submit, an Admission ID is issued.</p></div>
-        <div class="step"><div class="k">03</div><h3>Sit the IFB/AE</h3><p>The paper is issued in Jan–Feb 2027. A pass issues your permanent Student Number.</p></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="wrap">
-      <div class="sec-head"><h2 class="h2">Resources &amp; Downloads</h2><span class="idx">03 — Library</span></div>
-      <p class="sec-note">Documents are being prepared and will appear here as standalone HTML files — printable to A4, viewable in any browser.</p>
-      <div class="stack" style="max-width:820px">
-        <div class="doc-card">
-          <div class="doc-ico"><svg><use href="#i-file-text"/></svg></div>
-          <div class="doc-body">
-            <h3>IFB/AE Examination Guidelines</h3>
-            <p>Purpose, structure, format rules, timing, conduct in the Examination Room, and marking protocol.</p>
-            <div class="doc-actions"><span class="chip">Coming soon</span></div>
-          </div>
-        </div>
-        <div class="doc-card">
-          <div class="doc-ico"><svg><use href="#i-book-open"/></svg></div>
-          <div class="doc-body">
-            <h3>IFB/AE Preparation Guide</h3>
-            <p>Per-stream preparation focus, practice prompts, what markers credit, and a pre-sitting checklist.</p>
-            <div class="doc-actions"><span class="chip">Coming soon</span></div>
-          </div>
-        </div>
-        <div class="doc-card">
-          <div class="doc-ico"><svg><use href="#i-file-text"/></svg></div>
-          <div class="doc-body">
-            <h3>Admission Slip</h3>
-            <p>Your official slip with Admission ID, barcode and subject register. Issued on provisional acceptance.</p>
-            <div class="doc-actions"><span class="chip">Coming soon</span></div>
-          </div>
+    <div class="section section--bg">
+      <div class="wrap">
+        <div class="sec-head"><h2 class="h2">The Eight Streams</h2><span class="idx">01 — Programmes</span></div>
+        <p class="lede" style="margin-bottom:32px">Each stream has its own durations. Mathematics is a recommended elective; Physics requires it as a co-requisite.</p>
+        <div class="grid-4">
+          <div class="grid-item"><svg class="icon"><use href="#i-layers"/></svg><h3>Full Stack Engineering</h3><p>End-to-end systems</p><span class="tag">3 · 6 · 12 Months</span></div>
+          <div class="grid-item"><svg class="icon"><use href="#i-monitor"/></svg><h3>Frontend Development</h3><p>Interface engineering</p><span class="tag">3 · 6 Months</span></div>
+          <div class="grid-item"><svg class="icon"><use href="#i-server"/></svg><h3>Backend Engineering</h3><p>Services & data flow</p><span class="tag">6 · 12 Months</span></div>
+          <div class="grid-item"><svg class="icon"><use href="#i-smartphone"/></svg><h3>Mobile Development</h3><p>Native & cross-platform</p><span class="tag">6 · 12 Months</span></div>
+          <div class="grid-item"><svg class="icon"><use href="#i-pen-tool"/></svg><h3>Web Design</h3><p>Layout & typography</p><span class="tag">3 · 6 Months</span></div>
+          <div class="grid-item"><svg class="icon"><use href="#i-frame"/></svg><h3>UI/UX Design</h3><p>Flow & usability</p><span class="tag">3 · 6 Months</span></div>
+          <div class="grid-item"><svg class="icon"><use href="#i-bar-chart"/></svg><h3>Data & Analytics</h3><p>Interpretation & modelling</p><span class="tag">6 · 12 Months</span></div>
+          <div class="grid-item"><svg class="icon"><use href="#i-atom"/></svg><h3>STEM & Physics</h3><p>Mathematics co-requisite</p><span class="tag">6 · 12 Months</span></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="section" style="background:var(--bg)">
-    <div class="wrap">
-      <div class="sec-head"><h2 class="h2">Legal Status</h2><span class="idx">04 — Notice</span></div>
-      <div class="prose" style="max-width:80ch">
-        <p>The IFB Institute is an independent board. It is not accredited, not registered, and not aligned to the National Qualifications Framework. The IFB Institute does not issue official certificates or qualifications, and makes no claim of equivalence to the Department of Higher Education and Training, Umalusi, or the South African Qualifications Authority.</p>
-        <p>While the Institute's frameworks draw on South African educational conventions, candidates receive an <b>Internal Record of Completion</b> detailing their programme, subjects and examination results. This record is internal to the IFB Institute and carries no external recognition.</p>
+    <div class="section">
+      <div class="wrap">
+        <div class="sec-head"><h2 class="h2">Admission Process</h2><span class="idx">02 — Process</span></div>
+        <div class="grid-4">
+          <div class="grid-item"><div style="font-size:24px;font-family:var(--serif);color:var(--maroon);margin-bottom:12px">01</div><h3>Enrol</h3><p>Create your account. A temporary Reference ID is issued immediately.</p></div>
+          <div class="grid-item"><div style="font-size:24px;font-family:var(--serif);color:var(--maroon);margin-bottom:12px">02</div><h3>Choose Curriculum</h3><p>Select a stream, duration, and electives. On submit, a permanent Admission ID is issued.</p></div>
+          <div class="grid-item"><div style="font-size:24px;font-family:var(--serif);color:var(--maroon);margin-bottom:12px">03</div><h3>Sit the IFB/AE</h3><p>The paper is issued in January–February 2027. A pass issues your permanent Student Number.</p></div>
+          <div class="grid-item"><div style="font-size:24px;font-family:var(--serif);color:var(--maroon);margin-bottom:12px">04</div><h3>Examinations</h3><p>Three distinct periods: May/June, Sept/Oct, Nov/Dec. AI-marked, human-administered.</p></div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- PAGE 2: ADMISSIONS -->
-<section class="view" data-view="admissions">
-  <div class="section">
-    <div class="wrap">
-      <span class="eyebrow">Admissions · 2027</span>
-      <h1 class="h2" style="margin:10px 0 8px">Apply to the IFB</h1>
-      <p class="muted" style="font-size:14.5px;max-width:52ch;margin-bottom:32px">Name, email, password. On curriculum submission you'll be provisionally accepted and an Admission ID will be issued.</p>
-
-      <div class="split">
-        <div>
-          <div class="stepper" id="stepper">
-            <span class="s on" data-s="1"><i>1</i><span>Account</span></span><span class="bar"></span>
-            <span class="s" data-s="2"><i>2</i><span>Curriculum</span></span><span class="bar"></span>
-            <span class="s" data-s="3"><i>3</i><span>Electives</span></span>
-          </div>
-
-          <div id="step1" class="card card--pad-lg">
-            <div class="tabs" role="tablist">
-              <button role="tab" aria-selected="true" data-tab="signup">Create account</button>
-              <button role="tab" aria-selected="false" data-tab="signin">Sign in</button>
-            </div>
-
-            <form id="formSignup" novalidate>
-              <div class="field"><label for="suName">Full name</label>
-                <input class="input" id="suName" autocomplete="name" placeholder="As it appears on your record"></div>
-              <div class="field"><label for="suEmail">Email address</label>
-                <input class="input" id="suEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
-              <div class="field"><label for="suPass">Password</label>
-                <input class="input" id="suPass" type="password" autocomplete="new-password" placeholder="Minimum 8 characters">
-                <span class="hint">No ID numbers or physical addresses are collected.</span></div>
-              <div class="err" id="suErr"></div>
-              <button class="btn btn--primary btn--block" type="submit" id="suBtn" style="margin-top:8px">Create account</button>
-            </form>
-
-            <form id="formSignin" class="hide" novalidate>
-              <div class="field"><label for="siEmail">Email address</label>
-                <input class="input" id="siEmail" type="email" autocomplete="email"></div>
-              <div class="field"><label for="siPass">Password</label>
-                <input class="input" id="siPass" type="password" autocomplete="current-password"></div>
-              <div class="err" id="siErr"></div>
-              <button class="btn btn--primary btn--block" type="submit" id="siBtn" style="margin-top:8px">Sign in</button>
-            </form>
-
-            <div style="display:flex;align-items:center;gap:12px;margin:24px 0">
-              <span style="flex:1;height:1px;background:var(--line)"></span>
-              <span style="font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--grey-l)">or</span>
-              <span style="flex:1;height:1px;background:var(--line)"></span>
-            </div>
-
-            <button class="btn btn--ghost btn--block" id="btnGoogle"><svg><use href="#i-chrome"/></svg> Continue with Google</button>
-
-            <div id="deviceHint" class="hide" style="margin-top:24px;padding-top:20px;border-top:1px solid var(--line)">
-              <div class="lbl" style="margin-bottom:10px">Detected on this device</div>
-              <div id="deviceList" class="stack" style="gap:8px"></div>
-            </div>
-          </div>
-
-          <div id="step2" class="card card--pad-lg hide">
-            <div class="lbl" style="margin-bottom:12px">Select a stream</div>
-            <div class="opts opts--2" id="progOpts"></div>
-            <div class="lbl" style="margin-bottom:10px;margin-top:24px">Duration</div>
-            <div class="opts opts--2" id="durOpts"></div>
-            <div class="err" id="s2Err" style="margin-top:12px"></div>
-            <div style="display:flex;gap:10px;margin-top:24px">
-              <button class="btn" id="back1">Back</button>
-              <button class="btn btn--primary" id="next2" style="flex:1">Continue</button>
-            </div>
-          </div>
-
-          <div id="step3" class="card card--pad-lg hide">
-            <div class="lbl" style="margin-bottom:10px">Electives <span id="elecCount" class="muted" style="letter-spacing:0;text-transform:none;font-weight:500"></span></div>
-            <div class="opts opts--2" id="elecOpts"></div>
-            <p class="hint" style="margin-top:14px">Mathematics is recommended but not compulsory. Physics requires Mathematics.</p>
-            <div class="err" id="s3Err" style="margin-top:12px"></div>
-            <div style="display:flex;gap:10px;margin-top:24px">
-              <button class="btn" id="back2">Back</button>
-              <button class="btn btn--primary" id="submitApp" style="flex:1">Submit application</button>
-            </div>
-          </div>
-
-          <div id="signedInPanel" class="card card--pad-lg hide">
-            <div class="lbl">Already signed in</div>
-            <div style="display:flex;align-items:center;gap:14px;margin:16px 0 20px">
-              <div class="avatar avatar-lg" id="siAvatar"></div>
-              <div style="min-width:0">
-                <div style="font-weight:600;font-size:16px;overflow-wrap:anywhere" id="siName"></div>
-                <div class="muted" style="font-size:12.5px;overflow-wrap:anywhere" id="siEmail"></div>
-                <div class="mono" style="font-size:12px;margin-top:4px;font-weight:600" id="siRef"></div>
-              </div>
-            </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <a class="btn btn--primary" href="#portal">Open portal</a>
-              <button class="btn" id="btnSwitch">Switch account</button>
-              <button class="btn btn--quiet" id="btnSignOut">Sign out</button>
-            </div>
-          </div>
+    <div class="section section--bg" id="resources">
+      <div class="wrap">
+        <div class="sec-head"><h2 class="h2">Academic Resources</h2><span class="idx">03 — Library</span></div>
+        <p class="lede" style="margin-bottom:32px">Official documents will be published here as standalone HTML files. They are formatted for A4 printing and viewable in any browser.</p>
+        <div class="grid-4">
+          <div class="grid-item" style="opacity:.7"><svg class="icon"><use href="#i-file"/></svg><h3>IFB/AE Guidelines</h3><p>Format rules, timing, and marking protocol.</p><span class="tag">Coming Soon</span></div>
+          <div class="grid-item" style="opacity:.7"><svg class="icon"><use href="#i-file"/></svg><h3>IFB/AE Prep Guide</h3><p>Per-stream focus and pre-sitting checklist.</p><span class="tag">Coming Soon</span></div>
+          <div class="grid-item" style="opacity:.7"><svg class="icon"><use href="#i-file"/></svg><h3>Admission Slip</h3><p>Official slip with Admission ID and barcode.</p><span class="tag">Coming Soon</span></div>
+          <div class="grid-item" style="opacity:.7"><svg class="icon"><use href="#i-file"/></svg><h3>Past Papers</h3><p>Archived papers for practice.</p><span class="tag">Coming Later</span></div>
         </div>
-
-        <aside class="summary">
-          <div class="card card--pad-lg">
-            <div class="lbl" style="margin-bottom:16px">Application summary</div>
-            <dl>
-              <div class="row"><dt>Status</dt><dd id="sumStatus">Draft</dd></div>
-              <div class="row"><dt>Reference</dt><dd id="sumRef" class="mono">—</dd></div>
-              <div class="row"><dt>Stream</dt><dd id="sumProg">—</dd></div>
-              <div class="row"><dt>Duration</dt><dd id="sumDur">—</dd></div>
-              <div class="row"><dt>Periods</dt><dd id="sumPeriods">—</dd></div>
-              <div class="row"><dt>Electives</dt><dd id="sumElec">—</dd></div>
-            </dl>
-            <hr style="border:0;height:1px;background:var(--line);margin:20px 0">
-            <p class="hint">Curriculum remains editable until <b>21 March 2027</b>. Admission ID issued on submit.</p>
-          </div>
-        </aside>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- PAGE 3: PORTAL -->
-<section class="view" data-view="portal">
-  <div class="section">
-    <div class="wrap">
-      <div id="portalGuest" class="card card--pad-lg hide" style="max-width:560px;margin:20px auto;text-align:center">
-        <div style="font-family:var(--serif);font-size:48px;line-height:1;margin-bottom:20px">∆</div>
-        <h2 class="h2" style="margin-bottom:8px">Sign in to continue</h2>
-        <p class="muted" style="font-size:14px;margin-bottom:24px">The portal is for enrolled candidates only.</p>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-          <a class="btn btn--primary" href="#admissions">Sign in</a>
-        </div>
-      </div>
-
-      <div id="portalMain" class="hide">
-        <div class="profile-head">
-          <div class="avatar avatar-lg" id="pAvatar"></div>
-          <div class="who">
-            <h1 id="pName">—</h1>
-            <p id="pEmail">—</p>
-            <span class="ref" id="pRef">—</span>
-          </div>
-          <div class="actions">
-            <button class="btn btn--sm" id="pSwitch"><svg><use href="#i-switch"/></svg>Switch</button>
-            <button class="btn btn--sm btn--quiet" id="pSignout"><svg><use href="#i-log-out"/></svg>Sign out</button>
-          </div>
-        </div>
-
-        <div class="split">
+  <!-- PAGE 2: ADMISSIONS -->
+  <section class="view" data-view="admissions">
+    <div class="section">
+      <div class="wrap">
+        <span class="eyebrow">Admissions · 2027</span>
+        <h1 class="h2" style="margin-bottom:32px">Apply to the IFB</h1>
+        
+        <div style="display:grid;grid-template-columns:1fr;gap:40px" id="admLayout">
+          
           <div>
-            <div id="statusCard" class="status-card" style="display:none">
-              <div class="lbl">Application status</div>
-              <div class="status-title" id="statusTitle">—</div>
-              <div class="status-sub" id="statusSub">—</div>
+            <div class="stepper" id="stepper">
+              <span class="s on" data-s="1"><i>1</i><span>Account</span></span><span class="bar"></span>
+              <span class="s" data-s="2"><i>2</i><span>Curriculum</span></span><span class="bar"></span>
+              <span class="s" data-s="3"><i>3</i><span>Electives</span></span>
             </div>
 
-            <div id="admidBox" class="admid" style="display:none">
-              <div class="lbl">Admission ID</div>
-              <div class="admid-num" id="pAdmid">—</div>
-              <div class="admid-note" id="pAdmidNote">Year · Course · Application</div>
+            <div id="step1" class="card">
+              <div style="display:flex;gap:24px;border-bottom:1px solid var(--silver-d);margin-bottom:24px">
+                <button style="background:none;border:none;padding:12px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--maroon);border-bottom:3px solid var(--maroon);cursor:pointer" data-tab="signup">Create Account</button>
+                <button style="background:none;border:none;padding:12px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--grey);border-bottom:3px solid transparent;cursor:pointer" data-tab="signin">Sign In</button>
+              </div>
+
+              <form id="formSignup">
+                <div class="field"><label>Full Name</label><input class="input" id="suName" placeholder="As it appears on your record"></div>
+                <div class="field"><label>Email Address</label><input class="input" id="suEmail" type="email" placeholder="you@example.com"></div>
+                <div class="field"><label>Password</label><input class="input" id="suPass" type="password" placeholder="Minimum 8 characters"><span class="hint">No ID numbers or physical addresses are collected.</span></div>
+                <div class="err" id="suErr" style="color:var(--maroon);font-size:12px;font-weight:700;margin-bottom:16px"></div>
+                <button class="btn btn--primary btn--block" type="submit" id="suBtn">Create Account</button>
+              </form>
+
+              <form id="formSignin" class="hide">
+                <div class="field"><label>Email Address</label><input class="input" id="siEmail" type="email"></div>
+                <div class="field"><label>Password</label><input class="input" id="siPass" type="password"></div>
+                <div class="err" id="siErr" style="color:var(--maroon);font-size:12px;font-weight:700;margin-bottom:16px"></div>
+                <button class="btn btn--primary btn--block" type="submit" id="siBtn">Sign In</button>
+              </form>
             </div>
 
-            <div class="card" style="margin-bottom:16px">
-              <div class="kv">
-                <dt>Reference ID</dt><dd id="pReference" class="mono">—</dd>
-                <dt>Student Number</dt><dd id="pStudentNo">Not issued — pending IFB/AE result</dd>
-                <dt>IFB/AE paper</dt><dd>Issued Jan–Feb 2027</dd>
-                <dt>Curriculum lock</dt><dd>21 March 2027</dd>
+            <div id="step2" class="card hide">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Select a Stream</div>
+              <div class="opts opts--2" id="progOpts"></div>
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:32px 0 16px">Duration</div>
+              <div class="opts opts--2" id="durOpts"></div>
+              <div class="err" id="s2Err" style="color:var(--maroon);font-size:12px;font-weight:700;margin-top:16px"></div>
+              <div style="display:flex;gap:12px;margin-top:32px">
+                <button class="btn" id="back1">Back</button>
+                <button class="btn btn--primary" id="next2" style="flex:1">Continue</button>
               </div>
             </div>
 
-            <div id="pAqae"></div>
-
-            <div class="card">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
-                <div class="lbl">Your curriculum</div>
-                <button class="btn btn--sm" id="pEditCurr"><svg><use href="#i-edit-3"/></svg>Change</button>
+            <div id="step3" class="card hide">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Electives <span id="elecCount" class="muted" style="text-transform:none;font-weight:400"></span></div>
+              <div class="opts opts--2" id="elecOpts"></div>
+              <p class="hint" style="margin-top:16px;font-size:12px;color:var(--grey)">Mathematics is recommended but not compulsory. Physics requires Mathematics.</p>
+              <div class="err" id="s3Err" style="color:var(--maroon);font-size:12px;font-weight:700;margin-top:16px"></div>
+              <div style="display:flex;gap:12px;margin-top:32px">
+                <button class="btn" id="back2">Back</button>
+                <button class="btn btn--primary" id="submitApp" style="flex:1">Submit Application</button>
               </div>
-              <div id="pCurrView"><div class="kv">
-                <dt>Stream</dt><dd id="pProg">—</dd>
-                <dt>Duration</dt><dd id="pDur">—</dd>
-                <dt>Exam periods</dt><dd id="pPeriods">—</dd>
-                <dt>Electives</dt><dd id="pElec">—</dd>
-              </div></div>
-              <div id="pCurrEdit" class="hide">
-                <div class="lbl" style="margin-bottom:10px">Stream</div>
-                <div class="opts opts--2" id="editProgOpts"></div>
-                <div class="lbl" style="margin-bottom:10px;margin-top:20px">Duration</div>
-                <div class="opts opts--2" id="editDurOpts"></div>
-                <div class="lbl" style="margin-bottom:10px;margin-top:20px">Electives <span id="editElecCount" class="muted" style="letter-spacing:0;text-transform:none;font-weight:500"></span></div>
-                <div class="opts opts--2" id="editElecOpts"></div>
-                <div class="err" id="editErr" style="margin-top:12px"></div>
-                <div style="display:flex;gap:10px;margin-top:20px">
-                  <button class="btn" id="editCancel">Cancel</button>
-                  <button class="btn btn--primary" id="editSave" style="flex:1">Save changes</button>
+            </div>
+
+            <div id="signedInPanel" class="card hide">
+              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Already Signed In</div>
+              <div style="display:flex;gap:16px;align-items:center;margin-bottom:24px">
+                <div class="avatar" id="siAvatar" style="width:64px;height:64px"></div>
+                <div>
+                  <div style="font-size:18px;font-weight:700" id="siName"></div>
+                  <div style="font-size:13px;color:var(--grey)" id="siEmail"></div>
+                  <div class="mono" style="font-size:12px;color:var(--maroon);font-weight:700;margin-top:4px" id="siRef"></div>
                 </div>
               </div>
+              <div style="display:flex;gap:12px">
+                <a href="#portal" class="btn btn--primary">Open Portal</a>
+                <button class="btn" id="btnSignOut">Sign Out</button>
+              </div>
             </div>
           </div>
 
-          <aside>
-            <div class="card card--pad-lg">
-              <div class="lbl" style="margin-bottom:14px">Next steps</div>
-              <ol style="font-size:13.5px;color:var(--grey);line-height:1.7;padding-left:20px;list-style:decimal">
-                <li>Confirm your curriculum before <b style="color:var(--ink)">21 March 2027</b>.</li>
-                <li>Read the IFB/AE guidelines in the Resources section.</li>
-                <li>Await Examination Room access via email.</li>
-              </ol>
-              <hr style="border:0;height:1px;background:var(--line);margin:20px 0">
-              <p class="hint">Your Admission ID is permanent once issued. A separate Student Number follows only on IFB/AE pass.</p>
+          <aside style="background:var(--silver);padding:32px;border:1px solid var(--silver-d)">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:20px;border-bottom:1px solid var(--silver-d);padding-bottom:12px">Application Summary</div>
+            <div style="display:flex;flex-direction:column;gap:12px;font-size:14px">
+              <div style="display:flex;justify-content:space-between"><span class="muted">Status</span><span id="sumStatus" style="font-weight:700">Draft</span></div>
+              <div style="display:flex;justify-content:space-between"><span class="muted">Reference</span><span id="sumRef" class="mono">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span class="muted">Stream</span><span id="sumProg">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span class="muted">Duration</span><span id="sumDur">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span class="muted">Periods</span><span id="sumPeriods">—</span></div>
+              <div style="display:flex;justify-content:space-between"><span class="muted">Electives</span><span id="sumElec">—</span></div>
+            </div>
+            <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--silver-d);font-size:12px;color:var(--grey);line-height:1.6">
+              Curriculum remains editable until <b>21 March 2027</b>. Admission ID issued on submit.
             </div>
           </aside>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- PAGE 3: PORTAL -->
+  <section class="view" data-view="portal">
+    <div class="section">
+      <div class="wrap">
+        
+        <div id="portalGuest" class="card hide" style="text-align:center;max-width:500px;margin:0 auto">
+          <div style="font-family:var(--serif);font-size:48px;color:var(--maroon);margin-bottom:16px">∆</div>
+          <h2 class="h2" style="margin-bottom:8px">Sign in to continue</h2>
+          <p class="muted" style="margin-bottom:24px">The portal is for enrolled candidates only.</p>
+          <a href="#admissions" class="btn btn--primary">Go to Admissions</a>
+        </div>
+
+        <div id="portalMain" class="hide">
+          <div class="portal-head">
+            <div class="portal-avatar" id="pAvatar"></div>
+            <div class="portal-info">
+              <h1 id="pName">—</h1>
+              <p id="pEmail">—</p>
+              <div class="ref" id="pRef">—</div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button class="btn" id="pSignout" style="background:rgba(0,0,0,.2);border-color:transparent;color:#fff">Sign Out</button>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr;gap:32px" class="portal-layout">
+            
+            <div>
+              <div id="statusCard" class="status-box"></div>
+
+              <div id="admidBox" style="background:var(--white);border:1px solid var(--silver-d);padding:24px;margin-bottom:24px;border-top:4px solid var(--maroon)">
+                <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey);margin-bottom:8px">Admission ID</div>
+                <div class="mono" style="font-size:24px;font-weight:700;color:var(--ink)" id="pAdmid">—</div>
+                <div style="font-size:11px;color:var(--grey);margin-top:8px" id="pAdmidNote">Format: Year · Stream · Application #</div>
+              </div>
+
+              <div class="card" style="padding:24px;margin-bottom:24px">
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--silver-d);padding-bottom:12px;margin-bottom:12px;font-size:14px">
+                  <span class="muted">Reference ID</span><span class="mono" id="pReference">—</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--silver-d);padding-bottom:12px;margin-bottom:12px;font-size:14px">
+                  <span class="muted">Student Number</span><span id="pStudentNo">Not issued — pending IFB/AE</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:14px">
+                  <span class="muted">Curriculum Lock</span><span>21 March 2027</span>
+                </div>
+              </div>
+
+              <div id="pAqae"></div>
+
+              <div class="card" style="padding:24px">
+                <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--silver-d);padding-bottom:12px;margin-bottom:16px">
+                  <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Your Curriculum</div>
+                  <button class="btn btn--sm" id="pEditCurr">Edit</button>
+                </div>
+                
+                <div id="pCurrView">
+                  <div style="display:grid;grid-template-columns:120px 1fr;gap:12px;font-size:14px">
+                    <span class="muted">Stream</span><b id="pProg">—</b>
+                    <span class="muted">Duration</span><span id="pDur">—</span>
+                    <span class="muted">Exam Periods</span><span id="pPeriods">—</span>
+                    <span class="muted">Electives</span><span id="pElec">—</span>
+                  </div>
+                </div>
+
+                <div id="pCurrEdit" class="hide">
+                  <div class="opts opts--2" id="editProgOpts" style="margin-bottom:16px"></div>
+                  <div class="opts opts--2" id="editDurOpts" style="margin-bottom:16px"></div>
+                  <div class="opts opts--2" id="editElecOpts"></div>
+                  <div style="display:flex;gap:12px;margin-top:24px">
+                    <button class="btn" id="editCancel">Cancel</button>
+                    <button class="btn btn--primary" id="editSave">Save</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside>
+              <div class="card" style="padding:24px">
+                <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Next Steps</div>
+                <ol style="font-size:14px;color:var(--grey);padding-left:20px;list-style:decimal;line-height:1.7">
+                  <li style="margin-bottom:8px">Confirm curriculum before <b>21 March 2027</b>.</li>
+                  <li style="margin-bottom:8px">Review IFB/AE guidelines in Resources.</li>
+                  <li>Await Examination Room access via email.</li>
+                </ol>
+              </div>
+            </aside>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
 </main>
 
-<footer class="foot">
+<footer class="site-footer">
   <div class="wrap">
-    <div class="foot-in">
-      <div class="sig"><span class="delta">∆</span><span>IFB Institute</span></div>
-      <div class="legal-line">Non-accredited · Non-registered · Not NQF-aligned · Issues Internal Record of Completion only.</div>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="delta">∆</span>
+        <p>Independent Examination Board.<br>Non-accredited. Non-registered.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Institution</h4>
+        <a href="#home">About Us</a>
+        <a href="#home">Legal Status</a>
+      </div>
+      <div class="footer-col">
+        <h4>Admissions</h4>
+        <a href="#admissions">Apply</a>
+        <a href="#portal">Student Portal</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="#home">Document Library</a>
+        <a href="#home">IFB/AE Guidelines</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2027 IFB Institute. Not registered with DHET, Umalusi, or SAQA. Not NQF-aligned. Issues Internal Record of Completion only.
     </div>
   </div>
 </footer>
 
 <div class="toast" id="toast"></div>
-<div class="scrim" id="scrim"></div>
-<aside class="drawer" id="drawer" aria-hidden="true">
-  <div class="drawer-head">
-    <span class="lbl">Accounts on this device</span>
-    <button class="btn btn--quiet btn--sm" id="drawerClose"><svg><use href="#i-x"/></svg></button>
-  </div>
-  <div class="drawer-body" id="drawerBody"></div>
-</aside>
 
 <script>
 (function(){
 'use strict';
 
-var K={ users:'ifb.users', session:'ifb.session', device:'ifb.device', appCount:'ifb.appCount' };
-var ADMISSION_YEAR=2027;
+var K={ users:'ifb.users', session:'ifb.session' };
+var YEAR=2027;
 
 var PROGRAMMES={
   'fullstack':{ num:1, code:'FSE', name:'Full Stack Engineering', durations:[3,6,12],
     aqae:{ theory:['Algorithmic reasoning','HTTP & the request/response cycle','Data structures & persistence','Architecture trade-offs'],
-           practical:'Build a small two-screen application — a form, a stored list — and submit a short written walk-through of the data flow.' } },
+           practical:'Build a small two-screen application and submit a written walk-through of the data flow.' } },
   'frontend':{ num:2, code:'FED', name:'Frontend Development', durations:[3,6],
     aqae:{ theory:['HTML semantics & accessibility','CSS layout & typography','Browser rendering model','Responsive reasoning'],
-           practical:'Build a responsive page from a written spec, and annotate each breakpoint with a one-line justification.' } },
+           practical:'Build a responsive page from a written spec, and annotate each breakpoint.' } },
   'backend':{ num:3, code:'BED', name:'Backend Engineering', durations:[6,12],
     aqae:{ theory:['HTTP & REST semantics','Database modelling','Concurrency basics','Error handling'],
-           practical:'Implement one API endpoint with persistence, plus a short written note on the trade-offs you made.' } },
+           practical:'Implement one API endpoint with persistence, and note the trade-offs you made.' } },
   'mobile':{ num:4, code:'MOB', name:'Mobile Development', durations:[6,12],
     aqae:{ theory:['Platform patterns','State & lifecycle','Offline-first reasoning','Device constraints'],
-           practical:'Build a single-screen mobile app from a spec, with one interactive control and a documented edge case.' } },
+           practical:'Build a single-screen mobile app with one interactive control and a documented edge case.' } },
   'webdesign':{ num:5, code:'WDS', name:'Web Design', durations:[3,6],
     aqae:{ theory:['Typographic hierarchy','Grid systems','Colour & contrast','Layout composition'],
            practical:'Design and code a landing page from a written brief. Document three typographic choices.' } },
   'uiux':{ num:6, code:'UXD', name:'UI/UX Design', durations:[3,6],
     aqae:{ theory:['Usability heuristics','Flow design','Accessibility basics','Problem framing'],
-           practical:'Sketch a user flow for a stated task, then write a short rationale for two decisions you made.' } },
+           practical:'Sketch a user flow for a stated task, then write a short rationale for two decisions.' } },
   'data':{ num:7, code:'DAN', name:'Data & Analytics', durations:[6,12],
     aqae:{ theory:['Ratios, proportions & averages','Probability basics','Data interpretation','Reasoning under uncertainty'],
            practical:'Given a small dataset, produce one written analysis and one chart. Show your working.' } },
@@ -739,425 +577,156 @@ function users(){ return read(K.users,{}) }
 function getUser(e){ if(!e) return null; return users()[e.toLowerCase()]||null }
 function saveUser(u){ var a=users(); a[u.email.toLowerCase()]=u; write(K.users,a) }
 function hash(s){ var h=5381; for(var i=0;i<s.length;i++) h=((h<<5)+h)^s.charCodeAt(i); return (h>>>0).toString(16) }
-function uid(){ return 'u_'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4) }
+function uid(){ return 'u_'+Math.random().toString(36).slice(2,10) }
 function refId(){ var a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',o=''; for(var i=0;i<6;i++) o+=a[Math.floor(Math.random()*a.length)]; return 'IFB-REF-'+o }
 function session(){ return read(K.session,null) }
-function setSession(e){ write(K.session,e?e.toLowerCase():null); if(e) addDevice(e) }
+function setSession(e){ write(K.session,e?e.toLowerCase():null) }
 function signOut(){ write(K.session,null) }
 function currentUser(){ var e=session(); return e?getUser(e):null }
-function deviceAccounts(){ return read(K.device,[]) }
-function addDevice(e){ var l=deviceAccounts(),x=e.toLowerCase(); if(l.indexOf(x)===-1){ l.unshift(x); write(K.device,l.slice(0,8)) } }
 
 function issueAdmissionId(courseNum){
-  var counts=read(K.appCount,{});
+  var counts=read('ifb.appCount',{});
   var next=(counts[courseNum]||0)+1;
   counts[courseNum]=next;
-  write(K.appCount,counts);
-  return String(ADMISSION_YEAR)+String(courseNum)+String(next);
+  write('ifb.appCount',counts);
+  return String(YEAR)+String(courseNum)+String(next);
 }
 
 function createAccount(o){
   var email=(o.email||'').trim().toLowerCase();
   if(!email||email.indexOf('@')<1) return {ok:false,error:'Enter a valid email address.'};
-  if(getUser(email)) return {ok:false,error:'An account already exists for this email. Sign in instead.'};
-  if(o.provider!=='google'&&(!o.password||o.password.length<8)) return {ok:false,error:'Password must be at least 8 characters.'};
-  var u={ id:uid(), name:(o.name||'').trim()||email.split('@')[0], email:email,
-    provider:o.provider||'email',
-    passHash:o.provider==='google'?null:hash(email+':'+o.password),
-    refId:refId(), admissionId:null, studentNo:null, status:'pending',
-    createdAt:new Date().toISOString(), curriculum:null };
-  saveUser(u); setSession(email); addDevice(email);
-  return {ok:true,user:u};
+  if(getUser(email)) return {ok:false,error:'An account already exists. Sign in instead.'};
+  if(o.password.length<8) return {ok:false,error:'Password must be at least 8 characters.'};
+  var u={ id:uid(), name:o.name.trim(), email:email, passHash:hash(email+':'+o.password), refId:refId(), status:'pending', curriculum:null };
+  saveUser(u); setSession(email); return {ok:true,user:u};
 }
 function signIn(email,password){
-  var u=getUser((email||'').trim());
-  if(!u) return {ok:false,error:'No account found for that email.'};
-  if(u.provider==='google') return {ok:false,error:'This account uses Google sign-in.'};
+  var u=getUser(email);
+  if(!u) return {ok:false,error:'No account found.'};
   if(u.passHash!==hash(u.email+':'+password)) return {ok:false,error:'Incorrect password.'};
   setSession(u.email); return {ok:true,user:u};
-}
-function signInWithGoogle(email,name){
-  var e=(email||'').trim().toLowerCase();
-  if(!e||e.indexOf('@')<1) return {ok:false,error:'Enter a valid email address.'};
-  var u=getUser(e);
-  if(!u) return createAccount({name:name,email:e,provider:'google'});
-  setSession(e); return {ok:true,user:u};
 }
 function saveCurriculum(email,c){
   var u=getUser(email); if(!u) return {ok:false,error:'No account.'};
   u.curriculum=c;
-  if(!u.admissionId){
-    var prog=PROGRAMMES[c.prog];
-    u.admissionId=issueAdmissionId(prog.num);
-    u.status='provisional';
-  }
-  u.updatedAt=new Date().toISOString();
-  saveUser(u);
-  return {ok:true,user:u};
+  if(!u.admissionId){ u.admissionId=issueAdmissionId(PROGRAMMES[c.prog].num); u.status='provisional'; }
+  saveUser(u); return {ok:true,user:u};
 }
-function electiveLabels(c){
-  if(!c) return [];
-  return (c.electives||[]).map(function(id){
-    var e=ELECTIVES.filter(function(x){return x.id===id})[0];
-    return e?e.label:id;
-  });
-}
+function electiveLabels(c){ if(!c) return []; return (c.electives||[]).map(function(id){ var e=ELECTIVES.filter(function(x){return x.id===id})[0]; return e?e.label:id; }); }
 function periodsFor(dur){ return dur===3?1:dur===6?2:3 }
 
-function mulberry32(a){
-  return function(){
-    a|=0;a=a+0x6D2B79F5|0;
-    var t=Math.imul(a^a>>>15,1|a);
-    t=t+Math.imul(t^t>>>7,61|t)^t;
-    return ((t^t>>>14)>>>0)/4294967296;
-  };
-}
+function mulberry32(a){ return function(){ a|=0;a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
 function avatarSVG(seed,size){
   seed=String(seed||'ifb'); size=size||40;
-  var h=2166136261;
-  for(var i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}
-  var rnd=mulberry32(h>>>0);
-  var n=5,cell=50/n,rects='';
-  var pal=['#0b0b0b','#1c1c1c','#2b2b2b','#6b6b6b','#909090','#d4d4d4','#e5e5e5'];
-  for(var y=0;y<n;y++){for(var x=0;x<n;x++){
-    if(rnd()<0.54){
-      var c=pal[Math.floor(rnd()*pal.length)];
-      rects+='<rect x="'+(x*cell+0.6).toFixed(1)+'" y="'+(y*cell+0.6).toFixed(1)+
-        '" width="'+(cell-1.2).toFixed(1)+'" height="'+(cell-1.2).toFixed(1)+'" fill="'+c+'"/>';
-    }
-  }}
-  return '<svg viewBox="0 0 50 50" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="img" aria-label="Grid avatar"><rect width="50" height="50" fill="#f2f2f2"/>'+rects+'</svg>';
+  var h=2166136261; for(var i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}
+  var rnd=mulberry32(h>>>0), n=5, cell=50/n, rects='';
+  var pal=['#6e1423','#520e19','#111111','#333333','#555555','#dcdcdc','#f4f4f4'];
+  for(var y=0;y<n;y++){for(var x=0;x<n;x++){ if(rnd()<0.54){ var c=pal[Math.floor(rnd()*pal.length)]; rects+='<rect x="'+(x*cell+0.6).toFixed(1)+'" y="'+(y*cell+0.6).toFixed(1)+'" width="'+(cell-1.2).toFixed(1)+'" height="'+(cell-1.2).toFixed(1)+'" fill="'+c+'"/>'; } }}
+  return '<svg viewBox="0 0 50 50" width="'+size+'" height="'+size+'" shape-rendering="crispEdges"><rect width="50" height="50" fill="#f2f2f2"/>'+rects+'</svg>';
 }
 
-function toast(msg){
-  var t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('on');
-  clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('on')},2800);
-}
-
-function setBtnLoading(btn,loading){
-  if(!btn) return;
-  if(loading){
-    btn.setAttribute('aria-busy','true');
-    btn._orig=btn.innerHTML;
-    btn.innerHTML='<span class="btn-spinner"></span>';
-  } else {
-    btn.removeAttribute('aria-busy');
-    if(btn._orig!==undefined) btn.innerHTML=btn._orig;
-  }
-}
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('on')},3000); }
 
 function mountAuth(){
   var el=document.getElementById('headerAuth');
   if(!el) return;
   var u=currentUser();
   if(!u){
-    el.innerHTML='<a class="btn btn--quiet btn--sm" href="#admissions">Sign in</a>'+
-      '<a class="btn btn--primary btn--sm" href="#admissions">Enrol</a>';
+    el.innerHTML='<a href="#admissions" class="btn btn--sm">Sign In</a>';
     return;
   }
-  var statusPill = u.status==='provisional'
-    ? '<span class="dd-pill dd-pill--prov">Provisionally Accepted</span>'
-    : '<span class="dd-pill dd-pill--pending">Pending admission</span>';
-  var admidRow = u.admissionId
-    ? '<div class="dd-row"><span class="k">Admission ID</span><span class="v">'+u.admissionId+'</span></div>'
-    : '';
   el.innerHTML=
-    '<button class="avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false" aria-controls="profileDropdown" title="'+u.name+'">'+
-      avatarSVG(u.id,36)+
-    '</button>'+
-    '<div class="dropdown" id="profileDropdown" role="menu" aria-hidden="true">'+
-      '<div class="dd-head">'+
-        '<div class="avatar-sm">'+avatarSVG(u.id,40)+'</div>'+
-        '<div class="who"><b>'+u.name+'</b><span>'+u.email+'</span></div>'+
-      '</div>'+
+    '<button class="avatar" id="avatarBtn">'+avatarSVG(u.id,40)+'</button>'+
+    '<div class="dropdown" id="profileDropdown">'+
+      '<div class="dd-head"><div style="width:40px;height:40px">'+avatarSVG(u.id,40)+'</div><div><div style="font-weight:700">'+u.name+'</div><div style="font-size:12px;color:var(--grey)">'+u.email+'</div></div></div>'+
       '<div class="dd-body">'+
-        '<div class="dd-row"><span class="k">Status</span>'+statusPill+'</div>'+
+        '<div class="dd-row"><span class="k">Status</span><span class="v">'+(u.status==='provisional'?'Provisionally Accepted':'Pending')+'</span></div>'+
         '<div class="dd-row"><span class="k">Reference</span><span class="v">'+u.refId+'</span></div>'+
-        admidRow+
       '</div>'+
       '<div class="dd-foot">'+
-        '<a href="#portal" role="menuitem"><svg><use href="#i-user"/></svg>Open Portal</a>'+
-        '<button type="button" id="ddSwitch" role="menuitem"><svg><use href="#i-switch"/></svg>Switch Account</button>'+
-        '<button type="button" id="ddSignOut" role="menuitem" class="danger"><svg><use href="#i-log-out"/></svg>Sign Out</button>'+
+        '<a href="#portal">Open Portal</a>'+
+        '<button id="ddSignOut" class="danger">Sign Out</button>'+
       '</div>'+
     '</div>';
 
-  var btn=document.getElementById('avatarBtn');
-  var dd=document.getElementById('profileDropdown');
-  btn.onclick=function(e){
-    e.stopPropagation();
-    var open=dd.classList.contains('on');
-    if(open){ closeDropdown(); }
-    else {
-      dd.classList.add('on');
-      dd.setAttribute('aria-hidden','false');
-      btn.setAttribute('aria-expanded','true');
-    }
-  };
-  document.getElementById('ddSwitch').onclick=function(){
-    closeDropdown(); openDrawer();
-  };
-  document.getElementById('ddSignOut').onclick=function(){
-    closeDropdown(); signOut(); toast('Signed out');
-    setTimeout(function(){ location.hash='#home'; location.reload() },400);
-  };
+  var btn=document.getElementById('avatarBtn'), dd=document.getElementById('profileDropdown');
+  btn.onclick=function(e){ e.stopPropagation(); dd.classList.toggle('on'); };
+  document.getElementById('ddSignOut').onclick=function(){ signOut(); location.hash='#home'; location.reload(); };
 }
-function closeDropdown(){
-  var dd=document.getElementById('profileDropdown');
-  var btn=document.getElementById('avatarBtn');
-  if(dd){ dd.classList.remove('on'); dd.setAttribute('aria-hidden','true') }
-  if(btn) btn.setAttribute('aria-expanded','false');
-}
-document.addEventListener('click',function(e){
-  var dd=document.getElementById('profileDropdown');
-  if(!dd || !dd.classList.contains('on')) return;
-  if(e.target.closest('#profileDropdown')||e.target.closest('#avatarBtn')) return;
-  closeDropdown();
-});
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape'){ closeDropdown(); closeDrawer(); }
-});
+document.addEventListener('click',function(e){ if(!e.target.closest('#profileDropdown') && !e.target.closest('#avatarBtn')) { var d=document.getElementById('profileDropdown'); if(d) d.classList.remove('on'); } });
 
 function route(){
-  closeDropdown();
   var h=(location.hash||'#home').replace('#','').split('?')[0];
   var valid=['home','admissions','portal'];
   if(valid.indexOf(h)<0) h='home';
-  document.querySelectorAll('.view').forEach(function(v){
-    v.classList.toggle('on',v.getAttribute('data-view')===h);
-  });
-  document.querySelectorAll('[data-nav]').forEach(function(a){
-    if(a.getAttribute('data-nav')===h) a.setAttribute('aria-current','page');
-    else a.removeAttribute('aria-current');
-  });
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('on',v.getAttribute('data-view')===h); });
+  document.querySelectorAll('[data-nav]').forEach(function(a){ if(a.getAttribute('data-nav')===h) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
   window.scrollTo(0,0);
   mountAuth();
-  if(h==='home') initHome();
   if(h==='admissions') initAdmissions();
   if(h==='portal') initPortal();
 }
 window.addEventListener('hashchange',route);
 
-function initHome(){
-  var cta=document.getElementById('homeCTA');
-  if(cta){
-    var u=currentUser();
-    if(u){
-      cta.innerHTML='<a class="btn btn--primary" href="#portal"><svg><use href="#i-arrow-right"/></svg>Open portal</a>'+
-        '<a class="btn btn--ghost" href="#home" onclick="document.getElementById(\'resources\').scrollIntoView({behavior:\'smooth\'})"><svg><use href="#i-file-text"/></svg>Resources</a>';
-    } else {
-      cta.innerHTML='<a class="btn btn--primary" href="#admissions"><svg><use href="#i-arrow-right"/></svg>Apply to IFB</a>'+
-        '<a class="btn btn--ghost" href="#home" onclick="document.getElementById(\'resources\').scrollIntoView({behavior:\'smooth\'})"><svg><use href="#i-file-text"/></svg>Resources</a>';
-    }
-  }
-}
-
-function openDrawer(){
-  var cur=currentUser();
-  var list=deviceAccounts().map(getUser).filter(function(x){
-    return x && (!cur||x.email!==cur.email)
-  });
-  var body=document.getElementById('drawerBody');
-  if(!list.length){
-    body.innerHTML='<p class="hint">No other accounts on this device. Sign in with a different email on the Admissions page.</p>';
-  } else {
-    body.innerHTML=list.map(function(x){
-      return '<button class="acct" data-email="'+x.email+'">'+
-        '<span class="avatar" style="width:28px;height:28px">'+avatarSVG(x.id,28)+'</span>'+
-        '<span class="meta"><b>'+x.name+'</b><span>'+x.email+'</span></span>'+
-        '<span class="tick">Switch</span></button>';
-    }).join('');
-    body.querySelectorAll('.acct').forEach(function(b){
-      b.onclick=function(){
-        setSession(b.getAttribute('data-email'));
-        closeDrawer();
-        toast('Switching account');
-        setTimeout(function(){ location.hash='#portal'; location.reload() },500);
-      };
-    });
-  }
-  document.getElementById('scrim').classList.add('on');
-  document.getElementById('drawer').classList.add('on');
-  document.getElementById('drawer').setAttribute('aria-hidden','false');
-}
-function closeDrawer(){
-  document.getElementById('scrim').classList.remove('on');
-  document.getElementById('drawer').classList.remove('on');
-  document.getElementById('drawer').setAttribute('aria-hidden','true');
-}
-
 var admState={ step:1, prog:null, duration:null, electives:[] };
-
 function initAdmissions(){
   var $=function(id){return document.getElementById(id)};
-  if(!$('step1')) return;
-
-  document.querySelectorAll('.tabs button').forEach(function(b){
+  
+  document.querySelectorAll('[data-tab]').forEach(function(b){
     b.onclick=function(){
-      document.querySelectorAll('.tabs button').forEach(function(x){
-        x.setAttribute('aria-selected','false') });
-      b.setAttribute('aria-selected','true');
-      var t=b.getAttribute('data-tab');
-      $('formSignup').classList.toggle('hide',t!=='signup');
-      $('formSignin').classList.toggle('hide',t!=='signin');
+      document.querySelectorAll('[data-tab]').forEach(function(x){ x.style.color='var(--grey)'; x.style.borderBottomColor='transparent'; });
+      b.style.color='var(--maroon)'; b.style.borderBottomColor='var(--maroon)';
+      $('formSignup').classList.toggle('hide', b.getAttribute('data-tab')!=='signup');
+      $('formSignin').classList.toggle('hide', b.getAttribute('data-tab')!=='signin');
     };
   });
 
   var u=currentUser();
   if(u){
-    $('signedInPanel').classList.remove('hide');
-    $('step1').classList.add('hide');
-    $('siAvatar').innerHTML=avatarSVG(u.id,72);
-    $('siName').textContent=u.name;
-    $('siEmail').textContent=u.email;
-    $('siRef').textContent=u.refId;
-    $('sumRef').textContent=u.refId;
-    $('sumStatus').textContent=u.curriculum?'Provisionally accepted':'Draft';
+    $('signedInPanel').classList.remove('hide'); $('step1').classList.add('hide');
+    $('siAvatar').innerHTML=avatarSVG(u.id,64); $('siName').textContent=u.name; $('siEmail').textContent=u.email; $('siRef').textContent=u.refId;
+    $('sumRef').textContent=u.refId; $('sumStatus').textContent=u.curriculum?'Provisionally Accepted':'Draft';
     if(u.curriculum) fillSummary(u.curriculum); else goStep(2);
   } else {
-    $('signedInPanel').classList.add('hide');
-    $('step1').classList.remove('hide');
+    $('signedInPanel').classList.add('hide'); $('step1').classList.remove('hide');
   }
-
-  renderDevice();
 
   $('formSignup').onsubmit=function(e){
     e.preventDefault();
-    var btn=$('suBtn');
-    setBtnLoading(btn,true);
-    setTimeout(function(){
-      var r=createAccount({name:$('suName').value,email:$('suEmail').value,password:$('suPass').value});
-      setBtnLoading(btn,false);
-      if(!r.ok){ $('suErr').textContent=r.error; return }
-      $('suErr').textContent='';
-      toast('Account created · '+r.user.refId);
-      $('sumRef').textContent=r.user.refId;
-      $('sumStatus').textContent='Draft';
-      mountAuth();
-      goStep(2);
-    },400);
+    var r=createAccount({name:$('suName').value,email:$('suEmail').value,password:$('suPass').value});
+    if(!r.ok){ $('suErr').textContent=r.error; return }
+    toast('Account created'); mountAuth(); goStep(2);
   };
 
   $('formSignin').onsubmit=function(e){
     e.preventDefault();
-    var btn=$('siBtn');
-    setBtnLoading(btn,true);
-    setTimeout(function(){
-      var r=signIn($('siEmail').value,$('siPass').value);
-      setBtnLoading(btn,false);
-      if(!r.ok){ $('siErr').textContent=r.error; return }
-      toast('Signed in');
-      setTimeout(function(){ location.hash='#portal'; location.reload() },400);
-    },400);
+    var r=signIn($('siEmail').value,$('siPass').value);
+    if(!r.ok){ $('siErr').textContent=r.error; return }
+    location.hash='#portal'; location.reload();
   };
 
-  $('btnGoogle').onclick=function(){
-    var known=deviceAccounts().map(getUser).filter(Boolean);
-    openGoogleDrawer(known);
-  };
-  $('btnSwitch').onclick=openDrawer;
-  $('btnSignOut').onclick=function(){ signOut(); toast('Signed out'); location.reload() };
+  $('btnSignOut').onclick=function(){ signOut(); location.reload(); };
   $('back1').onclick=function(){ goStep(1) };
   $('back2').onclick=function(){ goStep(2) };
   $('next2').onclick=function(){
-    if(!admState.prog){ $('s2Err').textContent='Select a stream to continue.'; return }
-    if(!admState.duration){ $('s2Err').textContent='Select a duration to continue.'; return }
+    if(!admState.prog || !admState.duration){ $('s2Err').textContent='Select stream and duration.'; return }
     $('s2Err').textContent=''; goStep(3);
   };
   $('submitApp').onclick=function(){
     var need=periodsFor(admState.duration);
-    if(admState.electives.length!==need){
-      $('s3Err').textContent='Select exactly '+need+' elective'+(need>1?'s':'')+'.';
-      return;
-    }
-    var cu=currentUser();
-    if(!cu){ $('s3Err').textContent='Session expired.'; return }
-    var btn=$('submitApp');
-    setBtnLoading(btn,true);
-    setTimeout(function(){
-      var r=saveCurriculum(cu.email,{ prog:admState.prog,
-        duration:admState.duration, electives:admState.electives.slice() });
-      setBtnLoading(btn,false);
-      if(!r.ok){ $('s3Err').textContent=r.error; return }
-      toast('Provisionally accepted · Admission ID '+r.user.admissionId);
-      setTimeout(function(){ location.hash='#portal'; location.reload() },700);
-    },500);
+    if(admState.electives.length!==need){ $('s3Err').textContent='Select exactly '+need+' elective(s).'; return }
+    var r=saveCurriculum(currentUser().email,{ prog:admState.prog, duration:admState.duration, electives:admState.electives });
+    if(!r.ok){ $('s3Err').textContent=r.error; return }
+    toast('Provisionally accepted · '+r.user.admissionId); setTimeout(function(){ location.hash='#portal'; location.reload(); }, 800);
   };
 
   if(u && !u.curriculum) goStep(2);
 }
 
-function renderDevice(){
-  var $=function(id){return document.getElementById(id)};
-  var cur=currentUser();
-  var list=deviceAccounts().filter(function(e){
-    var x=getUser(e); return x && (!cur||x.email!==cur.email)
-  });
-  if(!list.length){ $('deviceHint').classList.add('hide'); return }
-  $('deviceHint').classList.remove('hide');
-  $('deviceList').innerHTML=list.map(function(e){
-    var x=getUser(e);
-    return '<button class="acct" data-email="'+e+'">'+
-      '<span class="avatar" style="width:28px;height:28px">'+avatarSVG(x.id,28)+'</span>'+
-      '<span class="meta"><b>'+x.name+'</b><span>'+x.email+'</span></span>'+
-      '<span class="tick">Continue</span></button>';
-  }).join('');
-  $('deviceList').querySelectorAll('.acct').forEach(function(b){
-    b.onclick=function(){
-      setSession(b.getAttribute('data-email'));
-      toast('Signed in');
-      setTimeout(function(){ location.hash='#portal'; location.reload() },500);
-    };
-  });
-}
-
-function openGoogleDrawer(accounts){
-  var body=document.getElementById('drawerBody');
-  body.innerHTML='<p class="hint" style="margin-bottom:6px">Choose a Google account to link or sign in with.</p>';
-  accounts.forEach(function(x){
-    var b=document.createElement('button');
-    b.className='acct';
-    b.innerHTML='<span class="avatar" style="width:28px;height:28px">'+avatarSVG(x.id,28)+'</span>'+
-      '<span class="meta"><b>'+x.name+'</b><span>'+x.email+'</span></span>';
-    b.onclick=function(){ useGoogle(x.email,x.name) };
-    body.appendChild(b);
-  });
-  var f=document.createElement('div');
-  f.style.marginTop='10px';
-  f.innerHTML='<div class="field"><label for="gEmail">Use another Google account</label>'+
-    '<input class="input" id="gEmail" type="email" placeholder="you@gmail.com"></div>'+
-    '<button class="btn btn--primary btn--block" id="gGo">Continue</button>';
-  body.appendChild(f);
-  f.querySelector('#gGo').onclick=function(){ useGoogle(f.querySelector('#gEmail').value,'') };
-  document.getElementById('scrim').classList.add('on');
-  document.getElementById('drawer').classList.add('on');
-  document.getElementById('drawer').setAttribute('aria-hidden','false');
-}
-
-function useGoogle(email,name){
-  var r=signInWithGoogle(email,name);
-  if(!r.ok){ toast(r.error); return }
-  closeDrawer();
-  toast('Linked · '+r.user.refId);
-  mountAuth();
-  if(r.user.curriculum){ location.hash='#portal'; location.reload() }
-  else { document.getElementById('sumRef').textContent=r.user.refId; goStep(2) }
-}
-
 function goStep(n){
   admState.step=n;
-  ['step1','step2','step3'].forEach(function(id,i){
-    var el=document.getElementById(id);
-    if(el) el.classList.toggle('hide',(i+1)!==n);
-  });
-  var panel=document.getElementById('signedInPanel');
-  if(panel && currentUser() && !currentUser().curriculum) panel.classList.toggle('hide',n!==1);
-  document.querySelectorAll('.stepper .s').forEach(function(s){
-    var k=+s.getAttribute('data-s');
-    s.classList.toggle('on',k===n);
-    s.classList.toggle('done',k<n);
-  });
+  ['step1','step2','step3'].forEach(function(id,i){ document.getElementById(id).classList.toggle('hide',(i+1)!==n); });
+  document.querySelectorAll('.stepper .s').forEach(function(s){ var k=+s.getAttribute('data-s'); s.classList.toggle('on',k===n); s.classList.toggle('done',k<n); });
   if(n===2) renderStep2();
   if(n===3) renderStep3();
 }
@@ -1166,40 +735,19 @@ function renderStep2(){
   var po=document.getElementById('progOpts');
   po.innerHTML=Object.keys(PROGRAMMES).map(function(k){
     var p=PROGRAMMES[k];
-    return '<label class="opt"><input type="radio" name="prog" value="'+k+'"'+
-      (admState.prog===k?' checked':'')+'><span class="dot"></span>'+
-      '<span class="txt"><b>'+p.name+'</b></span></label>';
+    return '<label class="opt"><input type="radio" name="prog" value="'+k+'"'+(admState.prog===k?' checked':'')+'><span class="dot"></span><span class="txt"><b>'+p.name+'</b></span></label>';
   }).join('');
-  po.querySelectorAll('input').forEach(function(i){
-    i.onchange=function(){
-      admState.prog=i.value;
-      admState.duration=PROGRAMMES[i.value].durations[0];
-      admState.electives=[];
-      renderDurations(); updateSummary();
-    };
-  });
-  renderDurations();
-  if(!admState.duration) admState.duration=6;
-  updateSummary();
+  po.querySelectorAll('input').forEach(function(i){ i.onchange=function(){ admState.prog=i.value; admState.duration=PROGRAMMES[i.value].durations[0]; admState.electives=[]; renderDurations(); updateSummary(); }; });
+  renderDurations(); updateSummary();
 }
 
 function renderDurations(){
   var doEl=document.getElementById('durOpts');
   if(!admState.prog){ doEl.innerHTML='<p class="hint">Select a stream first.</p>'; return }
-  var opts=PROGRAMMES[admState.prog].durations;
-  doEl.innerHTML=opts.map(function(d){
-    return '<label class="opt"><input type="radio" name="dur" value="'+d+'"'+
-      (admState.duration===d?' checked':'')+'><span class="dot"></span>'+
-      '<span class="txt"><b>'+d+' months</b><span>'+periodsFor(d)+' exam period'+
-      (periodsFor(d)>1?'s':'')+'</span></span></label>';
+  doEl.innerHTML=PROGRAMMES[admState.prog].durations.map(function(d){
+    return '<label class="opt"><input type="radio" name="dur" value="'+d+'"'+(admState.duration===d?' checked':'')+'><span class="dot"></span><span class="txt"><b>'+d+' months</b><span>'+periodsFor(d)+' period(s)</span></span></label>';
   }).join('');
-  doEl.querySelectorAll('input').forEach(function(i){
-    i.onchange=function(){
-      admState.duration=+i.value;
-      admState.electives=admState.electives.slice(0,periodsFor(admState.duration));
-      updateSummary();
-    };
-  });
+  doEl.querySelectorAll('input').forEach(function(i){ i.onchange=function(){ admState.duration=+i.value; admState.electives=admState.electives.slice(0,periodsFor(admState.duration)); updateSummary(); }; });
 }
 
 function renderStep3(){
@@ -1209,24 +757,17 @@ function renderStep3(){
   eo.innerHTML=ELECTIVES.map(function(e){
     var dis=e.req.some(function(r){return admState.electives.indexOf(r)===-1});
     var ch=admState.electives.indexOf(e.id)>-1;
-    return '<label class="opt opt--box"><input type="checkbox" value="'+e.id+'"'+
-      (ch?' checked':'')+(dis?' disabled':'')+'><span class="dot"></span>'+
-      '<span class="txt"><b>'+e.label+'</b><span>'+e.note+'</span></span></label>';
+    return '<label class="opt"><input type="checkbox" value="'+e.id+'"'+(ch?' checked':'')+(dis?' disabled':'')+'><span class="dot"></span><span class="txt"><b>'+e.label+'</b><span>'+e.note+'</span></span></label>';
   }).join('');
   eo.querySelectorAll('input').forEach(function(i){
     i.onchange=function(){
       var id=i.value;
       if(i.checked){
-        if(admState.electives.length>=need){
-          i.checked=false; toast('Maximum '+need+' elective'+(need>1?'s':'')); return
-        }
+        if(admState.electives.length>=need){ i.checked=false; toast('Max '+need); return }
         admState.electives.push(id);
       } else {
         admState.electives=admState.electives.filter(function(x){return x!==id});
-        if(id==='math' && admState.electives.indexOf('physics')>-1){
-          admState.electives=admState.electives.filter(function(x){return x!=='physics'});
-          toast('Physics removed — requires Mathematics');
-        }
+        if(id==='math' && admState.electives.indexOf('physics')>-1){ admState.electives=admState.electives.filter(function(x){return x!=='physics'}); toast('Physics removed'); }
       }
       renderStep3(); updateSummary();
     };
@@ -1243,20 +784,12 @@ function updateSummary(){
   document.getElementById('sumProg').textContent=admState.prog?PROGRAMMES[admState.prog].name:'—';
   document.getElementById('sumDur').textContent=admState.duration?admState.duration+' months':'—';
   document.getElementById('sumPeriods').textContent=admState.duration?periodsFor(admState.duration):'—';
-  document.getElementById('sumElec').textContent=admState.electives.map(function(id){
-    var e=ELECTIVES.filter(function(x){return x.id===id})[0];
-    return e?e.label:id;
-  }).join(', ')||'—';
+  document.getElementById('sumElec').textContent=admState.electives.map(function(id){ var e=ELECTIVES.filter(function(x){return x.id===id})[0]; return e?e.label:id; }).join(', ')||'—';
 }
-
-var editState={ prog:null, duration:null, electives:[] };
 
 function initPortal(){
   var u=currentUser();
-  var guest=document.getElementById('portalGuest');
-  var main=document.getElementById('portalMain');
-  if(!guest||!main) return;
-
+  var guest=document.getElementById('portalGuest'), main=document.getElementById('portalMain');
   if(!u){ guest.classList.remove('hide'); main.classList.add('hide'); return }
   guest.classList.add('hide'); main.classList.remove('hide');
 
@@ -1265,32 +798,18 @@ function initPortal(){
   document.getElementById('pEmail').textContent=u.email;
   document.getElementById('pRef').textContent=u.refId;
   document.getElementById('pReference').textContent=u.refId;
-  document.getElementById('pStudentNo').textContent=u.studentNo||'Not issued — pending IFB/AE result';
+  document.getElementById('pStudentNo').textContent=u.studentNo||'Not issued — pending IFB/AE';
 
   var statusCard=document.getElementById('statusCard');
-  var statusTitle=document.getElementById('statusTitle');
-  var statusSub=document.getElementById('statusSub');
   if(u.status==='provisional'){
-    statusCard.className='status-card';
-    statusTitle.textContent='Provisionally Accepted';
-    statusSub.textContent='Pending IFB/AE examination result · January–February 2027';
-    statusCard.style.display='';
+    statusCard.innerHTML='<h3>Provisionally Accepted</h3><p>Pending IFB/AE examination result · January–February 2027</p>';
   } else {
-    statusCard.className='status-card status-card--pending';
-    statusTitle.textContent='Pending admission';
-    statusSub.textContent='Complete your curriculum to be provisionally accepted.';
-    statusCard.style.display='';
+    statusCard.innerHTML='<h3>Pending admission</h3><p>Complete your curriculum to be provisionally accepted.</p>';
   }
 
-  var admidBox=document.getElementById('admidBox');
   if(u.admissionId){
-    admidBox.style.display='';
     document.getElementById('pAdmid').textContent=u.admissionId;
-    document.getElementById('pAdmidNote').textContent=
-      'Format: '+ADMISSION_YEAR+' · Stream '+PROGRAMMES[u.curriculum.prog].num+' · Application #'+
-      u.admissionId.slice(String(ADMISSION_YEAR).length+1);
-  } else {
-    admidBox.style.display='none';
+    document.getElementById('pAdmidNote').textContent='Format: '+YEAR+' · Stream '+PROGRAMMES[u.curriculum.prog].num+' · Application #'+u.admissionId.slice(String(YEAR).length+1);
   }
 
   var aqaePanel=document.getElementById('pAqae');
@@ -1300,157 +819,31 @@ function initPortal(){
     document.getElementById('pDur').textContent=u.curriculum.duration+' months';
     document.getElementById('pPeriods').textContent=periodsFor(u.curriculum.duration);
     document.getElementById('pElec').textContent=electiveLabels(u.curriculum).join(', ')||'—';
-    document.getElementById('pCurrView').classList.remove('hide');
-    document.getElementById('pCurrEdit').classList.add('hide');
 
     aqaePanel.innerHTML=
-      '<div class="aqae">'+
-        '<div class="lbl">Your IFB/AE</div>'+
-        '<div class="badge-row"><span class="badge">'+p.code+'</span><span class="badge">Jan–Feb 2027</span></div>'+
-        '<h3>'+p.name+'</h3>'+
-        '<p>Your paper is stream-specific. Theory is written; practical is submitted. Both are marked by DeepSeek AI.</p>'+
-        '<div class="divider"></div>'+
-        '<dl>'+
-          '<dt>Theory focus</dt>'+
-          '<dd><ul>'+p.aqae.theory.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul></dd>'+
-          '<dt>Practical brief</dt>'+
-          '<dd>'+p.aqae.practical+'</dd>'+
-        '</dl>'+
+      '<div class="card" style="border-top:4px solid var(--maroon);padding:24px;margin-bottom:24px">'+
+        '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--grey);margin-bottom:12px">Your IFB/AE Paper</div>'+
+        '<h3 style="font-family:var(--serif);font-size:20px;margin-bottom:12px">'+p.name+' ('+p.code+')</h3>'+
+        '<p style="font-size:13px;color:var(--grey);margin-bottom:16px">Theory is written; practical is submitted. Both are marked by DeepSeek AI.</p>'+
+        '<div style="font-size:12px;font-weight:700;text-transform:uppercase;margin-bottom:8px">Theory Focus</div>'+
+        '<ul style="list-style:disc;padding-left:20px;font-size:13px;color:var(--grey);margin-bottom:16px">'+p.aqae.theory.map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul>'+
+        '<div style="font-size:12px;font-weight:700;text-transform:uppercase;margin-bottom:8px">Practical Brief</div>'+
+        '<p style="font-size:13px;color:var(--grey)">'+p.aqae.practical+'</p>'+
       '</div>';
-  } else {
-    ['pProg','pDur','pPeriods','pElec'].forEach(function(id){
-      document.getElementById(id).textContent='—';
-    });
-    aqaePanel.innerHTML='';
   }
 
-  document.getElementById('pSwitch').onclick=openDrawer;
-  document.getElementById('pSignout').onclick=function(){
-    signOut(); toast('Signed out');
-    setTimeout(function(){ location.hash='#home'; location.reload() },400);
-  };
-
-  document.getElementById('pEditCurr').onclick=function(){
-    var cu=currentUser();
-    if(cu.curriculum){
-      editState.prog=cu.curriculum.prog;
-      editState.duration=cu.curriculum.duration;
-      editState.electives=cu.curriculum.electives.slice();
-    } else {
-      editState={prog:null,duration:6,electives:[]};
-    }
-    document.getElementById('pCurrView').classList.add('hide');
-    document.getElementById('pCurrEdit').classList.remove('hide');
-    renderEdit();
-  };
-  document.getElementById('editCancel').onclick=function(){
-    document.getElementById('pCurrView').classList.remove('hide');
-    document.getElementById('pCurrEdit').classList.add('hide');
-    document.getElementById('editErr').textContent='';
-  };
-  document.getElementById('editSave').onclick=function(){
-    if(!editState.prog || !editState.duration){
-      document.getElementById('editErr').textContent='Select a stream and duration.'; return
-    }
-    var need=periodsFor(editState.duration);
-    if(editState.electives.length!==need){
-      document.getElementById('editErr').textContent='Select exactly '+need+' elective'+(need>1?'s':'')+'.';
-      return;
-    }
-    var cu=currentUser();
-    var btn=document.getElementById('editSave');
-    setBtnLoading(btn,true);
-    setTimeout(function(){
-      var r=saveCurriculum(cu.email,{ prog:editState.prog,
-        duration:editState.duration, electives:editState.electives.slice() });
-      setBtnLoading(btn,false);
-      if(!r.ok){ document.getElementById('editErr').textContent=r.error; return }
-      toast('Curriculum updated');
-      setTimeout(function(){ location.reload() },500);
-    },400);
-  };
-
-  function renderEdit(){
-    var po=document.getElementById('editProgOpts');
-    po.innerHTML=Object.keys(PROGRAMMES).map(function(k){
-      var p=PROGRAMMES[k];
-      return '<label class="opt"><input type="radio" name="eprog" value="'+k+'"'+
-        (editState.prog===k?' checked':'')+'><span class="dot"></span>'+
-        '<span class="txt"><b>'+p.name+'</b></span></label>';
-    }).join('');
-    po.querySelectorAll('input').forEach(function(i){
-      i.onchange=function(){
-        editState.prog=i.value;
-        editState.duration=PROGRAMMES[i.value].durations[0];
-        editState.electives=[];
-        renderEdit();
-      };
-    });
-
-    var doEl=document.getElementById('editDurOpts');
-    if(editState.prog){
-      doEl.innerHTML=PROGRAMMES[editState.prog].durations.map(function(d){
-        return '<label class="opt"><input type="radio" name="edur" value="'+d+'"'+
-          (editState.duration===d?' checked':'')+'><span class="dot"></span>'+
-          '<span class="txt"><b>'+d+' months</b><span>'+periodsFor(d)+' period'+
-          (periodsFor(d)>1?'s':'')+'</span></span></label>';
-      }).join('');
-      doEl.querySelectorAll('input').forEach(function(i){
-        i.onchange=function(){
-          editState.duration=+i.value;
-          editState.electives=editState.electives.slice(0,periodsFor(editState.duration));
-          renderEdit();
-        };
-      });
-    } else doEl.innerHTML='<p class="hint">Select a stream first.</p>';
-
-    if(editState.duration){
-      var need=periodsFor(editState.duration);
-      document.getElementById('editElecCount').textContent='('+editState.electives.length+' / '+need+')';
-      var eo=document.getElementById('editElecOpts');
-      eo.innerHTML=ELECTIVES.map(function(e){
-        var dis=e.req.some(function(r){return editState.electives.indexOf(r)===-1});
-        var ch=editState.electives.indexOf(e.id)>-1;
-        return '<label class="opt opt--box"><input type="checkbox" value="'+e.id+'"'+
-          (ch?' checked':'')+(dis?' disabled':'')+'><span class="dot"></span>'+
-          '<span class="txt"><b>'+e.label+'</b><span>'+e.note+'</span></span></label>';
-      }).join('');
-      eo.querySelectorAll('input').forEach(function(i){
-        i.onchange=function(){
-          var id=i.value;
-          if(i.checked){
-            if(editState.electives.length>=need){ i.checked=false; toast('Maximum '+need); return }
-            editState.electives.push(id);
-          } else {
-            editState.electives=editState.electives.filter(function(x){return x!==id});
-            if(id==='math' && editState.electives.indexOf('physics')>-1){
-              editState.electives=editState.electives.filter(function(x){return x!=='physics'});
-              toast('Physics removed — requires Mathematics');
-            }
-          }
-          renderEdit();
-        };
-      });
-    }
-  }
+  document.getElementById('pSignout').onclick=function(){ signOut(); location.hash='#home'; location.reload(); };
 }
 
-function boot(){
-  var el=document.getElementById('boot');
-  var done=function(){ setTimeout(function(){ el.classList.add('done') },450) };
-  if(document.readyState==='complete') done();
-  else window.addEventListener('load',done);
-  setTimeout(function(){ el.classList.add('done') },2200);
-}
-
-document.getElementById('scrim').addEventListener('click',closeDrawer);
-document.getElementById('drawerClose').addEventListener('click',closeDrawer);
-
-document.addEventListener('DOMContentLoaded',function(){
-  boot();
-  route();
+document.getElementById('scrim').addEventListener('click',function(){
+  document.getElementById('drawer').classList.remove('on');
+  document.getElementById('scrim').classList.remove('on');
 });
 
+document.addEventListener('DOMContentLoaded',function(){
+  setTimeout(function(){ document.getElementById('boot').classList.add('done'); }, 600);
+  route();
+});
 })();
 </script>
 </body>
