@@ -42,47 +42,122 @@ ul,ol{list-style:none;padding:0}
 .mono{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .hide{display:none!important}
 
-.boot{position:fixed;inset:0;z-index:9999;background:var(--white);display:grid;place-items:center;
-transition:opacity .5s var(--ease),visibility .5s var(--ease)}
-.boot.done{opacity:0;visibility:hidden;pointer-events:none}
-.boot-inner{display:flex;flex-direction:column;align-items:center;gap:20px}
-.boot-mark{font-family:var(--serif);font-size:46px;line-height:1;animation:bp 1.7s var(--ease) infinite}
-.boot-bar{width:140px;height:1px;background:var(--silver-l);overflow:hidden}
-.boot-bar span{display:block;height:100%;width:0;background:var(--maroon);animation:bf 1.2s var(--ease) forwards}
-.boot-label{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--silver-d)}
-@keyframes bp{0%,100%{opacity:1}50%{opacity:.35}}
-@keyframes bf{0%{width:0}100%{width:100%}}
+/* ── spinner ── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{
+  width:32px;height:32px;
+  border:2.5px solid var(--silver-l);
+  border-top-color:var(--maroon);
+  border-radius:50%;
+  animation:spin .75s linear infinite;
+}
+.spinner--sm{width:16px;height:16px;border-width:2px}
+.btn-spinner{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid currentColor;
+  border-top-color:transparent;border-radius:50%;
+  animation:spin .75s linear infinite;
+}
 
-.site-header{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.94);
--webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);
-border-bottom:1px solid var(--line)}
+/* ── boot ── */
+.boot{
+  position:fixed;inset:0;z-index:9999;background:var(--white);
+  display:grid;place-items:center;
+  transition:opacity .45s var(--ease),visibility .45s var(--ease);
+}
+.boot.done{opacity:0;visibility:hidden;pointer-events:none}
+.boot-inner{display:flex;flex-direction:column;align-items:center;gap:22px}
+.boot-mark{font-family:var(--serif);font-size:46px;line-height:1;animation:bp 2s var(--ease) infinite}
+.boot-label{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--silver-d);font-weight:600}
+@keyframes bp{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── header ── */
+.site-header{
+  position:sticky;top:0;z-index:200;
+  background:rgba(255,255,255,.94);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);
+  backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid var(--line);
+}
 .header-in{max-width:var(--max);margin:0 auto;padding:0 var(--pad);height:var(--header-h);
-display:flex;align-items:center;gap:12px}
+  display:flex;align-items:center;gap:12px}
 .brand{display:flex;align-items:center;gap:9px;flex:0 0 auto;min-width:0}
-.brand .delta{font-family:var(--serif);font-size:22px;line-height:1;color:var(--ink);flex:0 0 auto}
+.brand .delta{font-family:var(--serif);font-size:22px;line-height:1;flex:0 0 auto}
 .brand .wm b{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap}
 .nav{display:flex;gap:1px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto;-webkit-overflow-scrolling:touch}
 .nav::-webkit-scrollbar{display:none}
 .nav a{position:relative;padding:8px 11px;font-size:11.5px;font-weight:500;letter-spacing:.04em;
-color:var(--grey);white-space:nowrap;border-radius:6px;transition:color .2s,background .2s}
+  color:var(--grey);white-space:nowrap;border-radius:6px;transition:color .2s,background .2s}
 .nav a:hover{color:var(--ink);background:var(--silver-4)}
 .nav a[aria-current="page"]{color:var(--maroon);font-weight:600}
 .nav a[aria-current="page"]::after{content:"";position:absolute;left:11px;right:11px;bottom:2px;
-height:1.5px;background:var(--maroon)}
-.header-auth{flex:0 0 auto;display:flex;align-items:center;gap:6px}
+  height:1.5px;background:var(--maroon)}
+.header-auth{flex:0 0 auto;display:flex;align-items:center;gap:6px;position:relative}
 @media(max-width:540px){.brand .wm b{font-size:10px}.nav a{padding:8px 9px;font-size:11px}}
 
-.avatar{width:32px;height:32px;border-radius:6px;overflow:hidden;border:1px solid var(--line);
-background:var(--silver-4);flex:0 0 auto;cursor:pointer;display:block;transition:border-color .2s}
-.avatar:hover{border-color:var(--maroon)}
+/* ── avatar ── */
+.avatar{width:34px;height:34px;border-radius:7px;overflow:hidden;border:1px solid var(--line);
+  background:var(--silver-4);flex:0 0 auto;cursor:pointer;display:block;
+  transition:border-color .2s,transform .15s;padding:0}
+.avatar:hover{border-color:var(--maroon);transform:translateY(-1px)}
 .avatar svg{width:100%;height:100%;display:block}
 .avatar-lg{width:72px;height:72px;border-radius:10px;cursor:default}
+.avatar-lg:hover{border-color:var(--line);transform:none}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
-min-height:44px;padding:0 18px;border:1px solid var(--line);border-radius:var(--r);
-background:var(--white);color:var(--ink);font-size:12.5px;font-weight:600;letter-spacing:.03em;
-cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s,color .2s,transform .15s;
-font-family:inherit;text-decoration:none}
+/* ── dropdown ── */
+.dropdown{
+  position:absolute;top:calc(100% + 10px);right:0;width:300px;
+  background:var(--white);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 12px 40px rgba(0,0,0,.11),0 2px 8px rgba(0,0,0,.05);
+  opacity:0;transform:translateY(-8px) scale(.96);
+  transform-origin:top right;pointer-events:none;
+  transition:opacity .22s var(--ease),transform .22s var(--ease);
+  z-index:100;overflow:hidden;
+}
+.dropdown.on{opacity:1;transform:none;pointer-events:auto}
+.dd-head{padding:18px;border-bottom:1px solid var(--line);
+  display:flex;gap:12px;align-items:center;background:var(--silver-4)}
+.dd-head .avatar-sm{width:44px;height:44px;border-radius:9px;overflow:hidden;flex:0 0 auto}
+.dd-head .avatar-sm svg{width:100%;height:100%}
+.dd-head .who{display:flex;flex-direction:column;min-width:0;flex:1}
+.dd-head .who b{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dd-head .who span{font-size:11px;color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.dd-body{padding:8px}
+.dd-row{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:9px 10px;border-radius:6px;font-size:12px}
+.dd-row .k{color:var(--grey);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.dd-row .v{font-family:var(--mono);font-weight:600;text-align:right;overflow-wrap:anywhere;font-size:11.5px}
+.dd-row .v--maroon{color:var(--maroon)}
+.dd-pill{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;
+  border-radius:999px;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;white-space:nowrap}
+.dd-pill--pending{background:var(--silver-4);color:var(--silver-d);border:1px solid var(--line)}
+.dd-pill--prov{background:var(--maroon-wash);color:var(--maroon);border:1px solid var(--maroon)}
+.dd-pill::before{content:"";width:4px;height:4px;border-radius:50%;background:currentColor}
+.dd-foot{padding:8px;border-top:1px solid var(--line)}
+.dd-foot a,.dd-foot button{display:flex;align-items:center;gap:10px;width:100%;
+  padding:10px 10px;border:0;border-radius:6px;background:none;cursor:pointer;
+  font-size:12.5px;font-weight:500;text-align:left;font-family:inherit;color:var(--ink);
+  transition:background .15s}
+.dd-foot a:hover,.dd-foot button:hover{background:var(--silver-4)}
+.dd-foot a svg,.dd-foot button svg{width:15px;height:15px;flex:0 0 auto;color:var(--grey)}
+.dd-foot button.danger{color:var(--maroon)}
+.dd-foot button.danger svg{color:var(--maroon)}
+@media(max-width:540px){
+  .dropdown{position:fixed;top:calc(var(--header-h) + 6px);right:8px;left:8px;width:auto;
+    max-width:400px;margin-left:auto}
+}
+
+/* ── buttons ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:0 18px;
+  border:1px solid var(--line);border-radius:var(--r);
+  background:var(--white);color:var(--ink);
+  font-size:12.5px;font-weight:600;letter-spacing:.03em;
+  cursor:pointer;white-space:nowrap;font-family:inherit;text-decoration:none;
+  transition:background .2s,border-color .2s,color .2s,transform .15s;
+}
 .btn:hover{border-color:var(--ink)}
 .btn:active{transform:translateY(1px)}
 .btn svg{width:15px;height:15px;flex:0 0 auto}
@@ -97,14 +172,16 @@ font-family:inherit;text-decoration:none}
 .btn--block{width:100%}
 .btn--sm{min-height:36px;padding:0 13px;font-size:11.5px;border-radius:6px}
 .btn--sm svg{width:13px;height:13px}
-.btn:disabled,.btn[aria-disabled="true"]{opacity:.4;cursor:not-allowed;transform:none;pointer-events:none}
+.btn:disabled,.btn[aria-busy="true"]{opacity:.55;cursor:wait;transform:none;pointer-events:none}
 
+/* ── notice ── */
 .notice{border-bottom:1px solid var(--line);background:var(--silver-4)}
 .notice .wrap{display:flex;gap:10px;align-items:flex-start;padding:10px var(--pad)}
 .notice svg{width:14px;height:14px;flex:0 0 auto;margin-top:3px;color:var(--maroon)}
 .notice p{font-size:11px;line-height:1.55;color:var(--grey)}
 .notice b{color:var(--ink);font-weight:600}
 
+/* ── type ── */
 .eyebrow{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--silver-d);font-weight:600}
 .display{font-size:clamp(1.85rem,5.5vw,3.6rem);line-height:1.06;letter-spacing:-.032em;font-weight:600}
 .h2{font-size:clamp(1.3rem,3.2vw,1.95rem);line-height:1.16;letter-spacing:-.022em;font-weight:600}
@@ -114,45 +191,51 @@ font-family:inherit;text-decoration:none}
 .prose p+p{margin-top:11px}
 .prose b{color:var(--ink);font-weight:600}
 
+/* ── section ── */
 .section{padding:clamp(40px,6vw,80px) 0;border-bottom:1px solid var(--line)}
 .section:last-of-type{border-bottom:0}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
-flex-wrap:wrap;margin-bottom:10px}
-.sec-head .idx{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--silver-d);font-weight:600}
+  flex-wrap:wrap;margin-bottom:10px}
+.sec-head .idx{font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--silver-d);font-weight:600}
 .sec-note{color:var(--grey);font-size:14px;max-width:66ch;margin-bottom:28px}
 .split{display:grid;grid-template-columns:1fr;gap:clamp(22px,4vw,48px)}
 @media(min-width:920px){.split{grid-template-columns:1.05fr .95fr;align-items:start}}
 .stack{display:flex;flex-direction:column;gap:13px}
 
+/* ── cards ── */
 .card{border:1px solid var(--line);border-radius:10px;padding:20px;background:var(--white);
-box-shadow:0 1px 2px rgba(0,0,0,.02)}
+  box-shadow:0 1px 2px rgba(0,0,0,.02)}
 .card--pad-lg{padding:clamp(18px,3vw,30px)}
 @media(max-width:540px){.card{padding:16px;border-radius:8px}}
 
+/* ── chip ── */
 .chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;
-border:1px solid var(--line);border-radius:999px;font-size:10px;letter-spacing:.13em;
-text-transform:uppercase;font-weight:700;color:var(--grey);white-space:nowrap;background:var(--white)}
+  border:1px solid var(--line);border-radius:999px;font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;font-weight:700;color:var(--grey);white-space:nowrap;
+  background:var(--white)}
 .chip--live{border-color:var(--maroon);color:var(--maroon);background:var(--maroon-wash)}
 .chip--live::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--maroon);
-animation:pulse 2s ease-in-out infinite}
+  animation:pulse 2s ease-in-out infinite}
 .chip--later{border-color:var(--silver-d);color:var(--silver-d);background:var(--silver-4)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
+/* ── carousel ── */
 .carousel{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--white);
-box-shadow:0 2px 8px rgba(0,0,0,.03)}
+  box-shadow:0 2px 8px rgba(0,0,0,.03)}
 .car-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
-padding:12px 16px;border-bottom:1px solid var(--line);background:var(--silver-4);flex-wrap:wrap}
-.car-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex:1 1 auto}
+  padding:12px 16px;border-bottom:1px solid var(--line);background:var(--silver-4);flex-wrap:wrap}
+.car-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto;-webkit-overflow-scrolling:touch}
 .car-tabs::-webkit-scrollbar{display:none}
 .car-tabs button{background:none;border:0;padding:6px 10px;border-radius:5px;
-font-family:var(--mono);font-size:11px;font-weight:600;color:var(--grey);
-cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+  font-family:var(--mono);font-size:11px;font-weight:600;color:var(--grey);
+  cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
 .car-tabs button:hover{color:var(--ink);background:var(--white)}
 .car-tabs button[aria-selected="true"]{color:var(--white);background:var(--maroon)}
 .car-nav{display:flex;gap:4px;flex:0 0 auto}
 .car-nav button{width:32px;height:32px;border:1px solid var(--line);background:var(--white);
-border-radius:5px;display:grid;place-items:center;cursor:pointer;color:var(--grey);
-transition:border-color .2s,color .2s}
+  border-radius:5px;display:grid;place-items:center;cursor:pointer;color:var(--grey);
+  transition:border-color .2s,color .2s}
 .car-nav button:hover{border-color:var(--maroon);color:var(--maroon)}
 .car-nav svg{width:12px;height:12px}
 .car-body{position:relative;overflow:hidden}
@@ -162,15 +245,15 @@ transition:border-color .2s,color .2s}
 .slide-img svg{width:100%;height:100%;display:block}
 .slide-info{padding:16px 18px;border-top:1px solid var(--line)}
 .slide-meta{font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-color:var(--maroon);font-weight:700;margin-bottom:4px}
+  color:var(--maroon);font-weight:700;margin-bottom:4px}
 .slide-cap{font-size:13px;color:var(--grey);line-height:1.5}
 @media(min-width:720px){.slide-info{padding:20px 24px}.slide-cap{font-size:14px}}
 .car-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;
-padding:10px 16px;border-top:1px solid var(--line);background:var(--silver-4);
-font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--silver-d);font-weight:600}
+  padding:10px 16px;border-top:1px solid var(--line);background:var(--silver-4);
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--silver-d);font-weight:600}
 .dots{display:flex;gap:5px}
 .dots button{width:6px;height:6px;border-radius:50%;border:0;padding:0;background:var(--silver);
-cursor:pointer;transition:background .2s,transform .2s}
+  cursor:pointer;transition:background .2s,transform .2s}
 .dots button[aria-current="true"]{background:var(--maroon);transform:scale(1.35)}
 @media(max-width:540px){
   .car-head{padding:10px 12px}
@@ -178,65 +261,57 @@ cursor:pointer;transition:background .2s,transform .2s}
   .car-foot{padding:8px 12px;font-size:10px}
 }
 
+/* ── cells ── */
 .cells{display:grid;grid-template-columns:1fr;border-top:1px solid var(--line);border-left:1px solid var(--line)}
 @media(min-width:560px){.cells{grid-template-columns:1fr 1fr}}
 @media(min-width:980px){.cells{grid-template-columns:repeat(4,1fr)}}
 .cell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 14px;
-display:flex;gap:11px;align-items:flex-start;transition:background .2s;background:var(--white)}
+  display:flex;gap:11px;align-items:flex-start;transition:background .2s;background:var(--white)}
 .cell:hover{background:var(--silver-4)}
 .cell svg{width:18px;height:18px;flex:0 0 auto;margin-top:2px;color:var(--maroon)}
 .cell .label{font-size:13px;font-weight:600;line-height:1.35;letter-spacing:-.005em}
 .cell .sub{display:block;font-size:11px;font-weight:400;color:var(--grey);margin-top:3px}
 .cell .dur{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.08em;
-color:var(--maroon);background:var(--maroon-wash);border:1px solid var(--maroon);
-padding:1px 6px;border-radius:3px;margin-top:6px;text-transform:uppercase}
+  color:var(--maroon);background:var(--maroon-wash);border:1px solid var(--maroon);
+  padding:1px 6px;border-radius:3px;margin-top:6px;text-transform:uppercase}
 
-.tracks{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);
-border:1px solid var(--line);border-radius:10px;overflow:hidden}
-@media(min-width:720px){.tracks{grid-template-columns:repeat(3,1fr)}}
-.track{background:var(--white);padding:22px 18px;transition:background .2s}
-.track:hover{background:var(--silver-4)}
-.track .num{font-size:30px;line-height:1;font-weight:600;letter-spacing:-.03em}
-.track .num span{display:block;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
-color:var(--silver-d);font-weight:600;margin-top:8px}
-.track ul{margin-top:14px}
-.track li{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--grey);
-padding:7px 0;border-top:1px solid var(--line)}
-.track li:first-child{border-top:0}
-.track li b{color:var(--ink);font-weight:600}
-
+/* ── steps ── */
 .steps{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);
-border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  border:1px solid var(--line);border-radius:10px;overflow:hidden}
 @media(min-width:720px){.steps{grid-template-columns:repeat(3,1fr)}}
 .step{background:var(--white);padding:22px 18px}
 .step .k{font-size:10px;letter-spacing:.22em;color:var(--maroon);font-weight:700}
 .step h3{font-size:14.5px;font-weight:600;margin:10px 0 8px;letter-spacing:-.01em}
 .step p{font-size:13px;color:var(--grey);line-height:1.6}
 
+/* ── forms ── */
 .field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
 .field>label,.lbl{font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;
-font-weight:700;color:var(--grey)}
+  font-weight:700;color:var(--grey)}
 .input,.select{height:46px;padding:0 14px;border:1px solid var(--line);border-radius:var(--r);
-background:var(--white);font-size:15px;width:100%;transition:border-color .2s,box-shadow .2s;
-appearance:none;-webkit-appearance:none;font-family:inherit}
+  background:var(--white);font-size:15px;width:100%;
+  transition:border-color .2s,box-shadow .2s;
+  appearance:none;-webkit-appearance:none;font-family:inherit}
 .select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:38px}
 .input:focus,.select:focus{outline:none;border-color:var(--maroon);box-shadow:0 0 0 3px rgba(110,20,35,.08)}
 .hint{font-size:11.5px;color:var(--silver-d);line-height:1.5}
 .err{font-size:12px;color:var(--maroon);font-weight:500}
 .err:empty{display:none}
 
+/* ── opts ── */
 .opts{display:grid;grid-template-columns:1fr;gap:9px}
 @media(min-width:560px){.opts--2{grid-template-columns:1fr 1fr}}
 .opt{position:relative;display:flex;gap:10px;align-items:flex-start;padding:13px 14px;
-border:1px solid var(--line);border-radius:var(--r);cursor:pointer;background:var(--white);
-transition:border-color .2s,background .2s;min-width:0}
+  border:1px solid var(--line);border-radius:var(--r);cursor:pointer;background:var(--white);
+  transition:border-color .2s,background .2s;min-width:0}
 .opt:hover{border-color:var(--silver-d)}
 .opt input{position:absolute;opacity:0;pointer-events:none}
-.opt .dot{width:15px;height:15px;border:1.5px solid var(--silver);border-radius:50%;flex:0 0 auto;
-margin-top:2px;display:grid;place-items:center;transition:border-color .2s}
+.opt .dot{width:15px;height:15px;border:1.5px solid var(--silver);border-radius:50%;
+  flex:0 0 auto;margin-top:2px;display:grid;place-items:center;
+  transition:border-color .2s}
 .opt .dot::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--maroon);
-transform:scale(0);transition:transform .2s var(--ease)}
+  transform:scale(0);transition:transform .2s var(--ease)}
 .opt .txt{display:flex;flex-direction:column;gap:2px;min-width:0}
 .opt .txt b{font-size:13px;font-weight:600;letter-spacing:-.005em;line-height:1.3}
 .opt .txt span{font-size:11px;color:var(--grey);line-height:1.45}
@@ -247,125 +322,166 @@ transform:scale(0);transition:transform .2s var(--ease)}
 .opt--box .dot{border-radius:4px}
 .opt--box .dot::after{border-radius:1px}
 
+/* ── tabs ── */
 .tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:20px}
 .tabs button{background:none;border:0;padding:10px 2px;margin-right:20px;font-size:12px;
-font-weight:600;letter-spacing:.03em;color:var(--silver-d);cursor:pointer;
-border-bottom:2px solid transparent;transition:color .2s,border-color .2s;font-family:inherit}
+  font-weight:600;letter-spacing:.03em;color:var(--silver-d);cursor:pointer;
+  border-bottom:2px solid transparent;transition:color .2s,border-color .2s;
+  font-family:inherit}
 .tabs button[aria-selected="true"]{color:var(--maroon);border-bottom-color:var(--maroon)}
 
+/* ── stepper ── */
 .stepper{display:flex;align-items:center;gap:6px;margin-bottom:20px;flex-wrap:wrap}
 .stepper .s{display:flex;align-items:center;gap:5px;font-size:9.5px;
-letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--silver-d);white-space:nowrap}
+  letter-spacing:.13em;text-transform:uppercase;font-weight:700;
+  color:var(--silver-d);white-space:nowrap}
 .stepper .s i{width:17px;height:17px;border:1px solid var(--line);border-radius:50%;
-display:grid;place-items:center;font-style:normal;font-size:9px;color:var(--silver-d)}
+  display:grid;place-items:center;font-style:normal;font-size:9px;color:var(--silver-d)}
 .stepper .s.on{color:var(--maroon)}
 .stepper .s.on i{border-color:var(--maroon);color:var(--maroon)}
 .stepper .s.done i{background:var(--maroon);border-color:var(--maroon);color:#fff}
 .stepper .bar{flex:1;height:1px;background:var(--line);min-width:8px}
 @media(max-width:420px){.stepper .s span{display:none}.stepper .s{gap:0}}
 
+/* ── summary ── */
 .summary dl{display:grid;gap:0;margin:0}
 .summary .row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;
-border-top:1px solid var(--line);font-size:12.5px}
+  border-top:1px solid var(--line);font-size:12.5px}
 .summary .row:first-child{border-top:0}
 .summary dt{color:var(--grey)}
 .summary dd{margin:0;font-weight:600;text-align:right;min-width:0;overflow-wrap:anywhere}
 
+/* ── toast ── */
 .toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,18px);z-index:900;
-background:var(--ink);color:#fff;border-radius:8px;padding:11px 16px;font-size:12.5px;
-font-weight:500;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s var(--ease);
-max-width:calc(100% - 32px);box-shadow:0 8px 30px rgba(0,0,0,.2);text-align:center}
+  background:var(--ink);color:#fff;border-radius:8px;padding:11px 16px;font-size:12.5px;
+  font-weight:500;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s var(--ease);
+  max-width:calc(100% - 32px);box-shadow:0 8px 30px rgba(0,0,0,.2);text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 
+/* ── scrim ── */
 .scrim{position:fixed;inset:0;background:rgba(17,17,17,.32);z-index:400;opacity:0;
-pointer-events:none;transition:opacity .3s}
+  pointer-events:none;transition:opacity .3s}
 .scrim.on{opacity:1;pointer-events:auto}
+
+/* ── drawer ── */
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(360px,100%);background:var(--white);
-z-index:401;border-left:1px solid var(--line);transform:translateX(102%);
-transition:transform .34s var(--ease);display:flex;flex-direction:column;overflow-y:auto}
+  z-index:401;border-left:1px solid var(--line);transform:translateX(102%);
+  transition:transform .34s var(--ease);display:flex;flex-direction:column;overflow-y:auto}
 .drawer.on{transform:translateX(0)}
 .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px;
-border-bottom:1px solid var(--line)}
+  border-bottom:1px solid var(--line)}
 .drawer-body{padding:18px;display:flex;flex-direction:column;gap:9px}
 .acct{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid var(--line);
-border-radius:var(--r);cursor:pointer;background:var(--white);text-align:left;width:100%;
-transition:border-color .2s,background .2s;font-family:inherit;color:inherit;min-height:52px}
+  border-radius:var(--r);cursor:pointer;background:var(--white);text-align:left;width:100%;
+  transition:border-color .2s,background .2s;font-family:inherit;color:inherit;min-height:52px}
 .acct:hover{border-color:var(--maroon);background:var(--maroon-wash)}
 .acct .meta{display:flex;flex-direction:column;min-width:0;flex:1;text-align:left}
 .acct .meta b{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acct .meta span{font-size:11px;color:var(--grey);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acct .tick{font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
-color:var(--maroon);flex:0 0 auto}
+  color:var(--maroon);flex:0 0 auto}
 
+/* ── footer ── */
 .foot{border-top:1px solid var(--line);padding:26px 0 40px;background:var(--white)}
 .foot-in{display:flex;flex-wrap:wrap;gap:16px 28px;align-items:flex-start;justify-content:space-between}
 .foot .sig{display:flex;align-items:center;gap:10px;font-size:10px;
-letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
+  letter-spacing:.16em;text-transform:uppercase;color:var(--grey)}
 .foot .sig .delta{font-family:var(--serif);font-size:18px;color:var(--ink)}
 .foot .legal-line{width:100%;border-top:1px solid var(--line);padding-top:14px;
-margin-top:6px;font-size:10.5px;color:var(--silver-d)}
+  margin-top:6px;font-size:10.5px;color:var(--silver-d)}
 
+/* ── router ── */
 .view{display:none}
 .view.on{display:block}
 
+/* ── portal ── */
 .profile-head{display:flex;gap:16px;align-items:center;flex-wrap:wrap;
-padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:22px}
+  padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:22px}
 .profile-head .who{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 200px}
 .profile-head .who h1{font-size:20px;font-weight:600;letter-spacing:-.02em;overflow-wrap:anywhere}
 .profile-head .who p{font-size:12.5px;color:var(--grey);overflow-wrap:anywhere}
 .profile-head .who .ref{font-family:var(--mono);font-size:12px;letter-spacing:.06em;
-color:var(--maroon);margin-top:4px;font-weight:600}
+  color:var(--maroon);margin-top:4px;font-weight:600}
 .profile-head .actions{display:flex;gap:6px;flex-wrap:wrap;width:100%}
 @media(min-width:720px){
   .profile-head .who h1{font-size:24px}
   .profile-head .actions{margin-left:auto;width:auto}
 }
+
+/* status card */
+.status-card{border:1px solid var(--maroon);background:var(--white);border-radius:12px;
+  padding:22px;position:relative;overflow:hidden;margin-bottom:14px}
+.status-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:var(--maroon)}
+.status-card .lbl{margin-bottom:6px}
+.status-title{font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--maroon);margin-bottom:4px}
+.status-sub{font-size:13px;color:var(--grey)}
+.status-card--pending{border-color:var(--line)}
+.status-card--pending::before{background:var(--silver-d)}
+.status-card--pending .status-title{color:var(--grey)}
+
+/* admission ID box */
+.admid{border:1px solid var(--line);border-radius:10px;padding:18px;
+  background:var(--silver-4);margin-bottom:14px}
+.admid .lbl{margin-bottom:8px}
+.admid-num{font-family:var(--mono);font-size:22px;font-weight:600;letter-spacing:.08em;
+  color:var(--maroon);overflow-wrap:anywhere}
+@media(min-width:720px){.admid-num{font-size:26px}}
+.admid-note{font-size:11px;color:var(--silver-d);margin-top:6px;font-family:var(--mono)}
+
+/* kv */
 .kv{display:grid;grid-template-columns:1fr;gap:2px;font-size:13.5px}
 .kv dt{color:var(--grey);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-font-weight:600;margin-top:10px}
+  font-weight:600;margin-top:10px}
 .kv dd{margin:0;font-weight:500;overflow-wrap:anywhere}
 @media(min-width:560px){
   .kv{grid-template-columns:150px 1fr;gap:8px 18px}
-  .kv dt{margin-top:0;font-size:12px;letter-spacing:.02em;text-transform:none;font-weight:400;padding-top:2px}
+  .kv dt{margin-top:0;font-size:12px;letter-spacing:.02em;text-transform:none;
+    font-weight:400;padding-top:2px}
   .kv dd{margin-bottom:0}
 }
 
+/* aqae */
 .aqae{background:var(--maroon);color:#fff;border-radius:10px;padding:22px;
-position:relative;overflow:hidden}
+  position:relative;overflow:hidden;margin-bottom:14px}
 .aqae::before{content:"∆";position:absolute;top:-30px;right:-20px;font-family:var(--serif);
-font-size:180px;line-height:1;opacity:.06;pointer-events:none}
-.aqae .lbl{color:rgba(255,255,255,.7);font-size:10px;letter-spacing:.16em;
-text-transform:uppercase;font-weight:700;margin-bottom:8px}
+  font-size:180px;line-height:1;opacity:.06;pointer-events:none}
+.aqae .lbl{color:rgba(255,255,255,.7);margin-bottom:8px}
 .aqae h3{font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px;position:relative}
 .aqae p{font-size:13px;color:rgba(255,255,255,.82);line-height:1.6;position:relative;margin-bottom:14px}
 .aqae .divider{border-top:1px solid rgba(255,255,255,.16);margin:14px 0}
 .aqae .badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;position:relative}
 .aqae .badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
-padding:3px 9px;border-radius:999px;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+  padding:3px 9px;border-radius:999px;font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;font-weight:700}
 .aqae dl{margin:0;position:relative}
-.aqae dt{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.6);font-weight:700;margin-top:10px}
+.aqae dt{font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.6);font-weight:700;margin-top:10px}
 .aqae dd{margin:4px 0 0;font-size:13px;color:#fff;line-height:1.55}
-.aqae ul{list-style:disc;padding-left:16px;margin:6px 0 0;font-size:12.5px;color:rgba(255,255,255,.9);line-height:1.6}
+.aqae ul{list-style:disc;padding-left:16px;margin:6px 0 0;font-size:12.5px;
+  color:rgba(255,255,255,.9);line-height:1.6}
 
+/* doc card */
 .doc-card{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);
-border-radius:10px;padding:18px;background:var(--white);transition:border-color .2s;
-box-shadow:0 1px 2px rgba(0,0,0,.02)}
-.doc-card:hover{border-color:var(--maroon)}
-.doc-card--later{opacity:.72}
-.doc-card--later:hover{border-color:var(--line)}
+  border-radius:10px;padding:18px;background:var(--white);transition:border-color .2s;
+  box-shadow:0 1px 2px rgba(0,0,0,.02);opacity:.72}
+.doc-card:hover{border-color:var(--line)}
 .doc-card .doc-ico{width:38px;height:38px;border:1px solid var(--line);border-radius:8px;
-display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);color:var(--maroon)}
-.doc-card--later .doc-ico{background:var(--silver-4);color:var(--silver-d)}
+  display:grid;place-items:center;flex:0 0 auto;background:var(--silver-4);color:var(--silver-d)}
 .doc-card .doc-ico svg{width:18px;height:18px}
 .doc-card .doc-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
 .doc-card .doc-body h3{font-size:14.5px;font-weight:600;letter-spacing:-.005em}
 .doc-card .doc-body p{font-size:12.5px;color:var(--grey);line-height:1.55}
 .doc-card .doc-actions{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
-@media(max-width:540px){.doc-card{flex-direction:column;gap:10px}.doc-card .doc-actions .btn{width:100%}}
+@media(max-width:540px){.doc-card{flex-direction:column;gap:10px}}
 
+/* legal */
 .legal{background:var(--silver-4);border-top:1px solid var(--ink);border-bottom:0}
 
-.reveal{opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+/* reveal */
+.reveal{opacity:0;transform:translateY(12px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -375,14 +491,16 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
 </head>
 <body>
 
+<!-- BOOT -->
 <div class="boot" id="boot" aria-hidden="true">
   <div class="boot-inner">
     <div class="boot-mark">∆</div>
-    <div class="boot-bar"><span></span></div>
+    <div class="spinner"></div>
     <div class="boot-label">IFB Institute</div>
   </div>
 </div>
 
+<!-- ICONS -->
 <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
 <symbol id="i-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></symbol>
 <symbol id="i-monitor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></symbol>
@@ -394,7 +512,6 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
 <symbol id="i-atom" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.36-4.5-11.9-4.54-4.52-9.87-6.54-11.9-4.5-2.04 2.03-.02 7.36 4.5 11.9 4.54 4.52 9.87 6.54 11.9 4.5Z"/><path d="M15.7 15.7c4.52-4.54 6.54-9.87 4.5-11.9-2.03-2.04-7.36-.02-11.9 4.5-4.52 4.54-6.54 9.87-4.5 11.9 2.03 2.04 7.36.02 11.9-4.5Z"/></symbol>
 <symbol id="i-shield-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></symbol>
 <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
-<symbol id="i-external-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
 <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
 <symbol id="i-log-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></symbol>
 <symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
@@ -405,8 +522,10 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
 <symbol id="i-chrome" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="21.17" x2="12" y1="8" y2="8"/><line x1="3.95" x2="8.54" y1="6.06" y2="14"/><line x1="10.88" x2="15.46" y1="21.94" y2="14"/></symbol>
 <symbol id="i-book-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol>
 <symbol id="i-calendar-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h5"/><path d="M17.5 17.5 16 16.3V14"/><circle cx="16" cy="16" r="6"/></symbol>
+<symbol id="i-switch" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></symbol>
 </defs></svg>
 
+<!-- HEADER -->
 <header class="site-header">
   <div class="header-in">
     <a href="#home" class="brand" aria-label="IFB Institute — home">
@@ -495,11 +614,11 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
   <div class="section">
     <div class="wrap">
       <div class="sec-head"><h2 class="h2">Admission</h2><span class="idx">03 — Process</span></div>
-      <p class="sec-note">Enrollment is open now. A Reference ID is issued on registration. The AQ-AE paper itself is issued in <b>January–February 2027</b> — a pass at that point issues your permanent Student Number.</p>
+      <p class="sec-note">Enrollment is open now. A temporary Reference ID is issued on registration. Curriculum submission issues an Admission ID and provisionally accepts you. A pass at the AQ-AE issues your permanent Student Number.</p>
       <div class="steps reveal">
-        <div class="step"><div class="k">01</div><h3>Enrol</h3><p>Name, email, password. Choose a programme and a valid duration track. A temporary Reference ID is issued.</p></div>
-        <div class="step"><div class="k">02</div><h3>Prepare</h3><p>Download the AQ-AE guidelines and preparation guide from Resources — tailored to your programme.</p></div>
-        <div class="step"><div class="k">03</div><h3>Sit the AQ-AE</h3><p>The paper is issued in January–February 2027. Pass issues your Student Number in the university format.</p></div>
+        <div class="step"><div class="k">01</div><h3>Enrol</h3><p>Name, email, password. A temporary Reference ID is issued immediately.</p></div>
+        <div class="step"><div class="k">02</div><h3>Choose programme</h3><p>Select a programme, major, duration and electives. On submit, an Admission ID is issued and you're provisionally accepted.</p></div>
+        <div class="step"><div class="k">03</div><h3>Sit the AQ-AE</h3><p>The paper is issued in January–February 2027. A pass issues your permanent Student Number.</p></div>
       </div>
     </div>
   </div>
@@ -538,7 +657,7 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
     <div class="wrap">
       <span class="eyebrow">Admissions · 2027</span>
       <h1 class="h2" style="margin:10px 0 8px">Enrol for the IFB AQ-AE</h1>
-      <p class="muted" style="font-size:14px;max-width:52ch;margin-bottom:26px">Name, email, password. A temporary Reference ID is issued immediately. The AQ-AE paper itself is issued in January–February 2027 — your Student Number follows on pass.</p>
+      <p class="muted" style="font-size:14px;max-width:52ch;margin-bottom:26px">Name, email, password. On curriculum submission you'll be provisionally accepted and an Admission ID will be issued.</p>
 
       <div class="split">
         <div>
@@ -563,7 +682,7 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
                 <input class="input" id="suPass" type="password" autocomplete="new-password" placeholder="Minimum 8 characters">
                 <span class="hint">No ID numbers or physical addresses are collected.</span></div>
               <div class="err" id="suErr"></div>
-              <button class="btn btn--primary btn--block" type="submit" style="margin-top:6px">Create account</button>
+              <button class="btn btn--primary btn--block" type="submit" id="suBtn" style="margin-top:6px">Create account</button>
             </form>
 
             <form id="formSignin" class="hide" novalidate>
@@ -572,7 +691,7 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
               <div class="field"><label for="siPass">Password</label>
                 <input class="input" id="siPass" type="password" autocomplete="current-password"></div>
               <div class="err" id="siErr"></div>
-              <button class="btn btn--primary btn--block" type="submit" style="margin-top:6px">Sign in</button>
+              <button class="btn btn--primary btn--block" type="submit" id="siBtn" style="margin-top:6px">Sign in</button>
             </form>
 
             <div style="display:flex;align-items:center;gap:12px;margin:20px 0">
@@ -610,7 +729,7 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
             <div class="err" id="s3Err" style="margin-top:12px"></div>
             <div style="display:flex;gap:9px;margin-top:20px">
               <button class="btn" id="back2">Back</button>
-              <button class="btn btn--primary" id="submitApp" style="flex:1">Submit application</button>
+              <button class="btn btn--primary" id="submitApp" style="flex:1">Submit &amp; provisionally accept</button>
             </div>
           </div>
 
@@ -645,8 +764,7 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
               <div class="row"><dt>Electives</dt><dd id="sumElec">—</dd></div>
             </dl>
             <hr style="border:0;height:1px;background:var(--line);margin:16px 0">
-            <p class="hint">Curriculum remains editable in the portal until <b>21 March 2027</b>.</p>
-            <p class="hint" style="margin-top:10px">AQ-AE paper: <b>issued Jan–Feb 2027</b>.</p>
+            <p class="hint">Curriculum remains editable until <b>21 March 2027</b>. Admission ID issued on submit.</p>
           </div>
         </aside>
       </div>
@@ -677,39 +795,35 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
             <span class="ref" id="pRef">—</span>
           </div>
           <div class="actions">
-            <button class="btn btn--sm" id="pSwitch"><svg><use href="#i-user"/></svg>Switch</button>
+            <button class="btn btn--sm" id="pSwitch"><svg><use href="#i-switch"/></svg>Switch</button>
             <button class="btn btn--sm btn--quiet" id="pSignout"><svg><use href="#i-log-out"/></svg>Sign out</button>
           </div>
         </div>
 
         <div class="split">
           <div>
+            <div id="statusCard" class="status-card" style="display:none">
+              <div class="lbl">Application status</div>
+              <div class="status-title" id="statusTitle">—</div>
+              <div class="status-sub" id="statusSub">—</div>
+            </div>
+
+            <div id="admidBox" class="admid" style="display:none">
+              <div class="lbl">Admission ID</div>
+              <div class="admid-num" id="pAdmid">—</div>
+              <div class="admid-note" id="pAdmidNote">Year · Course · Application</div>
+            </div>
+
             <div class="card" style="margin-bottom:14px">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
-                <div>
-                  <div class="lbl">Application status</div>
-                  <div style="font-size:19px;font-weight:600;letter-spacing:-.01em;margin-top:4px" id="pStatus">—</div>
-                </div>
-                <span class="chip chip--live">AQ-AE · Pending</span>
-              </div>
-              <hr style="border:0;height:1px;background:var(--line);margin:16px 0">
               <div class="kv">
+                <dt>Reference ID</dt><dd id="pReference" class="mono">—</dd>
                 <dt>Student Number</dt><dd id="pStudentNo">Not issued — pending AQ-AE result</dd>
                 <dt>AQ-AE paper</dt><dd>Issued Jan–Feb 2027</dd>
-                <dt>AQ-L paper</dt><dd>Later in year</dd>
                 <dt>Curriculum lock</dt><dd>21 March 2027</dd>
               </div>
             </div>
 
-            <div id="pAqae" style="margin-bottom:14px"></div>
-
-            <div class="card" style="margin-bottom:14px">
-              <div class="lbl">Admission slip</div>
-              <p class="muted" style="font-size:13px;margin:8px 0 14px">Your official Admission Slip — Reference ID, barcode, sequence number and full subject register.</p>
-              <a class="btn btn--primary" href="documents/admission-slip.html" target="_blank" rel="noopener">
-                <svg><use href="#i-external-link"/></svg> Open admission slip
-              </a>
-            </div>
+            <div id="pAqae"></div>
 
             <div class="card">
               <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
@@ -745,13 +859,12 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
             <div class="card card--pad-lg">
               <div class="lbl" style="margin-bottom:12px">Next steps</div>
               <ol style="font-size:13px;color:var(--grey);line-height:1.7;padding-left:18px;list-style:decimal">
-                <li>Read the AQ-AE guidelines and preparation guide from Resources.</li>
                 <li>Confirm your curriculum before <b style="color:var(--ink)">21 March 2027</b>.</li>
-                <li>Await Examination Room access via email when the paper is issued.</li>
+                <li>Read the AQ-AE guidelines when they're published to Resources.</li>
+                <li>Await Examination Room access via email.</li>
               </ol>
               <hr style="border:0;height:1px;background:var(--line);margin:16px 0">
-              <p class="hint">Your Reference ID is temporary. A Student Number (format: 2027·PROG·NNNN) is issued only on pass of the AQ-AE.</p>
-              <a class="btn btn--silver btn--sm" href="#resources" style="margin-top:14px"><svg><use href="#i-file-text"/></svg>Open Resources</a>
+              <p class="hint">Your Admission ID is permanent once issued. A separate Student Number follows only on AQ-AE pass.</p>
             </div>
           </aside>
         </div>
@@ -765,7 +878,7 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
   <div class="section">
     <div class="wrap">
       <div class="sec-head"><h2 class="h2">Resources</h2><span class="idx">AQ-AE · 2027</span></div>
-      <p class="sec-note">The AQ-AE is issued in <b>January–February 2027</b>. Documents below prepare you for it. Each opens as a standalone HTML file that works in any browser and prints to A4.</p>
+      <p class="sec-note">Documents are being prepared and will appear here as standalone HTML files — printable to A4, viewable in any browser, no internet required once saved.</p>
 
       <div class="stack" style="max-width:820px">
         <div class="doc-card">
@@ -773,11 +886,7 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
           <div class="doc-body">
             <h3>IFB AQ-AE · Examination Guidelines</h3>
             <p>Purpose, structure, format rules, timing, conduct in the Examination Room, and marking protocol.</p>
-            <div class="doc-actions">
-              <a class="btn btn--primary btn--sm" href="documents/aq-ae-guidelines.html" target="_blank" rel="noopener">
-                <svg><use href="#i-external-link"/></svg> Open document
-              </a>
-            </div>
+            <div class="doc-actions"><span class="chip chip--later">Coming soon</span></div>
           </div>
         </div>
 
@@ -786,33 +895,34 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
           <div class="doc-body">
             <h3>IFB AQ-AE · Preparation Guide</h3>
             <p>Per-programme preparation focus, practice prompts, what markers credit, and a pre-sitting checklist.</p>
-            <div class="doc-actions">
-              <a class="btn btn--silver btn--sm" href="documents/aq-ae-preparation.html" target="_blank" rel="noopener">
-                <svg><use href="#i-external-link"/></svg> Open document
-              </a>
-            </div>
+            <div class="doc-actions"><span class="chip chip--later">Coming soon</span></div>
           </div>
         </div>
 
-        <div class="doc-card doc-card--later">
+        <div class="doc-card">
+          <div class="doc-ico"><svg><use href="#i-file-text"/></svg></div>
+          <div class="doc-body">
+            <h3>Admission Slip</h3>
+            <p>Your official slip with Admission ID, barcode and subject register. Issued on provisional acceptance.</p>
+            <div class="doc-actions"><span class="chip chip--later">Coming soon</span></div>
+          </div>
+        </div>
+
+        <div class="doc-card">
           <div class="doc-ico"><svg><use href="#i-calendar-clock"/></svg></div>
           <div class="doc-body">
             <h3>IFB AQ-L · Guidelines</h3>
             <p>Guidelines for the AQ-L paper, written later in the year. Issued closer to the date.</p>
-            <div class="doc-actions">
-              <span class="chip chip--later">Coming later</span>
-            </div>
+            <div class="doc-actions"><span class="chip chip--later">Coming later</span></div>
           </div>
         </div>
 
-        <div class="doc-card doc-card--later">
+        <div class="doc-card">
           <div class="doc-ico"><svg><use href="#i-calendar-clock"/></svg></div>
           <div class="doc-body">
             <h3>Past papers</h3>
             <p>Archived papers for practice. Listed here once the first AQ-AE cycle completes.</p>
-            <div class="doc-actions">
-              <span class="chip chip--later">Coming later</span>
-            </div>
+            <div class="doc-actions"><span class="chip chip--later">Coming later</span></div>
           </div>
         </div>
       </div>
@@ -832,7 +942,6 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
 </footer>
 
 <div class="toast" id="toast"></div>
-
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-head">
@@ -846,47 +955,40 @@ display:grid;place-items:center;flex:0 0 auto;background:var(--maroon-wash);colo
 (function(){
 'use strict';
 
-var K={ users:'ifb.users', session:'ifb.session', device:'ifb.device' };
+var K={ users:'ifb.users', session:'ifb.session', device:'ifb.device', appCount:'ifb.appCount' };
+var ADMISSION_YEAR=2027;
 var LOCK=new Date('2027-03-21T23:59:59');
 
 var PROGRAMMES={
-  'full-stack':{ code:'FSE', name:'Full Stack Engineering',
-    durations:[12],
+  'full-stack':{ num:1, code:'FSE', name:'Full Stack Engineering', durations:[12],
     majors:['Frontend-weighted','Backend-weighted','Systems & DevOps'],
     aqae:{ theory:['Algorithmic reasoning','HTTP & the request/response cycle','Data structures & persistence','Architecture trade-offs'],
            practical:'Build a small two-screen application — a form, a stored list — and submit a short written walk-through of the data flow.' } },
-  'frontend':{ code:'FED', name:'Frontend Development',
-    durations:[3,6],
+  'frontend':{ num:2, code:'FED', name:'Frontend Development', durations:[3,6],
     majors:['Interface Engineering','Design Systems','Web Performance'],
     aqae:{ theory:['HTML semantics & accessibility','CSS layout & typography','Browser rendering model','Responsive reasoning'],
            practical:'Build a responsive page from a written spec, and annotate each breakpoint with a one-line justification.' } },
-  'backend':{ code:'BED', name:'Backend Engineering',
-    durations:[6,12],
+  'backend':{ num:3, code:'BED', name:'Backend Engineering', durations:[6,12],
     majors:['APIs & Services','Data Engineering','Distributed Systems'],
     aqae:{ theory:['HTTP & REST semantics','Database modelling','Concurrency basics','Error handling'],
            practical:'Implement one API endpoint with persistence, plus a short written note on the trade-offs you made.' } },
-  'mobile':{ code:'MOB', name:'Mobile Development',
-    durations:[6,12],
+  'mobile':{ num:4, code:'MOB', name:'Mobile Development', durations:[6,12],
     majors:['Native iOS & Android','Cross-Platform','Mobile Systems'],
     aqae:{ theory:['Platform patterns','State & lifecycle','Offline-first reasoning','Device constraints'],
            practical:'Build a single-screen mobile app from a spec, with one interactive control and a documented edge case.' } },
-  'web-design':{ code:'WDS', name:'Web Design',
-    durations:[3,6],
+  'web-design':{ num:5, code:'WDS', name:'Web Design', durations:[3,6],
     majors:['Editorial & Layout','Interaction Design','Brand Systems'],
     aqae:{ theory:['Typographic hierarchy','Grid systems','Colour & contrast','Layout composition'],
            practical:'Design and code a landing page from a written brief. Document three typographic choices.' } },
-  'uiux':{ code:'UXD', name:'UI/UX Design',
-    durations:[3,6],
+  'uiux':{ num:6, code:'UXD', name:'UI/UX Design', durations:[3,6],
     majors:['Product Design','Research & Usability','Accessibility'],
     aqae:{ theory:['Usability heuristics','Flow design','Accessibility basics','Problem framing'],
            practical:'Sketch a user flow for a stated task, then write a short rationale for two decisions you made.' } },
-  'data':{ code:'DAN', name:'Data & Analytics',
-    durations:[6,12],
+  'data':{ num:7, code:'DAN', name:'Data & Analytics', durations:[6,12],
     majors:['Analysis & Modelling','Data Engineering','Visual Analytics'],
     aqae:{ theory:['Ratios, proportions & averages','Probability basics','Data interpretation','Reasoning under uncertainty'],
            practical:'Given a small dataset, produce one written analysis and one chart. Show your working.' } },
-  'stem':{ code:'STP', name:'STEM & Physics',
-    durations:[6,12],
+  'stem':{ num:8, code:'STP', name:'STEM & Physics', durations:[6,12],
     majors:['Applied Physics','Mathematical Physics','Computational Science'],
     aqae:{ theory:['Algebraic manipulation','Applied mechanics','Unit reasoning','Measurement & error'],
            practical:'Solve one stated physical problem end-to-end. Every line of working must be shown.' } }
@@ -905,10 +1007,10 @@ var ELECTIVES=[
 
 var POSTERS=[
   { key:'stack', tab:'FSE', meta:'01 · Full Stack Engineering', cap:'Twelve months · end-to-end systems · theory and deployment' },
-  { key:'grid',  tab:'FED', meta:'02 · Interface Design',       cap:'Frontend · Web Design · UI/UX — layout, typography, accessibility' },
-  { key:'nodes', tab:'BED', meta:'03 · Systems Engineering',    cap:'Backend · Mobile — services, persistence, device integration' },
-  { key:'data',  tab:'DAN', meta:'04 · Data & Analytics',       cap:'Statistical reasoning · data models · illustrated conclusions' },
-  { key:'orbit', tab:'STP', meta:'05 · STEM & Physics',         cap:'Applied physics · mathematical methods · computational models' }
+  { key:'grid',  tab:'FED', meta:'02 · Interface Design', cap:'Frontend · Web Design · UI/UX — layout, typography, accessibility' },
+  { key:'nodes', tab:'BED', meta:'03 · Systems Engineering', cap:'Backend · Mobile — services, persistence, device integration' },
+  { key:'data',  tab:'DAN', meta:'04 · Data & Analytics', cap:'Statistical reasoning · data models · illustrated conclusions' },
+  { key:'orbit', tab:'STP', meta:'05 · STEM & Physics', cap:'Applied physics · mathematical methods · computational models' }
 ];
 
 function read(k,fb){ try{var v=localStorage.getItem(k);return v?JSON.parse(v):fb}catch(e){return fb} }
@@ -926,6 +1028,15 @@ function currentUser(){ var e=session(); return e?getUser(e):null }
 function deviceAccounts(){ return read(K.device,[]) }
 function addDevice(e){ var l=deviceAccounts(),x=e.toLowerCase(); if(l.indexOf(x)===-1){ l.unshift(x); write(K.device,l.slice(0,8)) } }
 
+/* Admission ID: YYYY + course (1-8) + sequential app number (starts at 1 digit) */
+function issueAdmissionId(courseNum){
+  var counts=read(K.appCount,{});
+  var next=(counts[courseNum]||0)+1;
+  counts[courseNum]=next;
+  write(K.appCount,counts);
+  return String(ADMISSION_YEAR)+String(courseNum)+String(next);
+}
+
 function createAccount(o){
   var email=(o.email||'').trim().toLowerCase();
   if(!email||email.indexOf('@')<1) return {ok:false,error:'Enter a valid email address.'};
@@ -934,7 +1045,7 @@ function createAccount(o){
   var u={ id:uid(), name:(o.name||'').trim()||email.split('@')[0], email:email,
     provider:o.provider||'email',
     passHash:o.provider==='google'?null:hash(email+':'+o.password),
-    refId:refId(), studentNo:null, status:'applicant',
+    refId:refId(), admissionId:null, studentNo:null, status:'pending',
     createdAt:new Date().toISOString(), curriculum:null };
   saveUser(u); setSession(email); addDevice(email);
   return {ok:true,user:u};
@@ -955,7 +1066,14 @@ function signInWithGoogle(email,name){
 }
 function saveCurriculum(email,c){
   var u=getUser(email); if(!u) return {ok:false,error:'No account.'};
-  u.curriculum=c; u.updatedAt=new Date().toISOString(); saveUser(u);
+  u.curriculum=c;
+  if(!u.admissionId){
+    var prog=PROGRAMMES[c.prog];
+    u.admissionId=issueAdmissionId(prog.num);
+    u.status='provisional';
+  }
+  u.updatedAt=new Date().toISOString();
+  saveUser(u);
   return {ok:true,user:u};
 }
 function electiveLabels(c){
@@ -989,7 +1107,7 @@ function avatarSVG(seed,size){
         '" width="'+(cell-1.2).toFixed(1)+'" height="'+(cell-1.2).toFixed(1)+'" fill="'+c+'"/>';
     }
   }}
-  return '<svg viewBox="0 0 50 50" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="img" aria-label="Candidate grid"><rect width="50" height="50" fill="#f2f2f2"/>'+rects+'</svg>';
+  return '<svg viewBox="0 0 50 50" width="'+size+'" height="'+size+'" shape-rendering="crispEdges" role="img" aria-label="Grid avatar"><rect width="50" height="50" fill="#f2f2f2"/>'+rects+'</svg>';
 }
 
 function toast(msg){
@@ -998,18 +1116,92 @@ function toast(msg){
   clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('on')},2800);
 }
 
+function setBtnLoading(btn,loading){
+  if(!btn) return;
+  if(loading){
+    btn.setAttribute('aria-busy','true');
+    btn._orig=btn.innerHTML;
+    btn.innerHTML='<span class="btn-spinner"></span>';
+  } else {
+    btn.removeAttribute('aria-busy');
+    if(btn._orig!==undefined) btn.innerHTML=btn._orig;
+  }
+}
+
+/* ── header auth with dropdown ── */
 function mountAuth(){
   var el=document.getElementById('headerAuth');
   if(!el) return;
   var u=currentUser();
-  if(u){
-    el.innerHTML='<a href="#portal" class="avatar" title="'+u.name+'" aria-label="Open portal">'+avatarSVG(u.id,32)+'</a>';
-  } else {
+  if(!u){
     el.innerHTML='<a class="btn btn--quiet btn--sm" href="#admissions">Sign in</a>'+
       '<a class="btn btn--primary btn--sm" href="#admissions">Enrol</a>';
+    return;
   }
-}
+  var statusPill = u.status==='provisional'
+    ? '<span class="dd-pill dd-pill--prov">Provisionally Accepted</span>'
+    : '<span class="dd-pill dd-pill--pending">Pending admission</span>';
+  var admidRow = u.admissionId
+    ? '<div class="dd-row"><span class="k">Admission ID</span><span class="v v--maroon">'+u.admissionId+'</span></div>'
+    : '';
+  el.innerHTML=
+    '<button class="avatar" id="avatarBtn" aria-haspopup="true" aria-expanded="false" aria-controls="profileDropdown" title="'+u.name+'">'+
+      avatarSVG(u.id,34)+
+    '</button>'+
+    '<div class="dropdown" id="profileDropdown" role="menu" aria-hidden="true">'+
+      '<div class="dd-head">'+
+        '<div class="avatar-sm">'+avatarSVG(u.id,44)+'</div>'+
+        '<div class="who"><b>'+u.name+'</b><span>'+u.email+'</span></div>'+
+      '</div>'+
+      '<div class="dd-body">'+
+        '<div class="dd-row"><span class="k">Status</span>'+statusPill+'</div>'+
+        '<div class="dd-row"><span class="k">Reference</span><span class="v">'+u.refId+'</span></div>'+
+        admidRow+
+      '</div>'+
+      '<div class="dd-foot">'+
+        '<a href="#portal" role="menuitem"><svg><use href="#i-user"/></svg>Open Portal</a>'+
+        '<button type="button" id="ddSwitch" role="menuitem"><svg><use href="#i-switch"/></svg>Switch Account</button>'+
+        '<button type="button" id="ddSignOut" role="menuitem" class="danger"><svg><use href="#i-log-out"/></svg>Sign Out</button>'+
+      '</div>'+
+    '</div>';
 
+  var btn=document.getElementById('avatarBtn');
+  var dd=document.getElementById('profileDropdown');
+  btn.onclick=function(e){
+    e.stopPropagation();
+    var open=dd.classList.contains('on');
+    if(open){ closeDropdown(); }
+    else {
+      dd.classList.add('on');
+      dd.setAttribute('aria-hidden','false');
+      btn.setAttribute('aria-expanded','true');
+    }
+  };
+  document.getElementById('ddSwitch').onclick=function(){
+    closeDropdown(); openDrawer();
+  };
+  document.getElementById('ddSignOut').onclick=function(){
+    closeDropdown(); signOut(); toast('Signed out');
+    setTimeout(function(){ location.hash='#home'; location.reload() },400);
+  };
+}
+function closeDropdown(){
+  var dd=document.getElementById('profileDropdown');
+  var btn=document.getElementById('avatarBtn');
+  if(dd){ dd.classList.remove('on'); dd.setAttribute('aria-hidden','true') }
+  if(btn) btn.setAttribute('aria-expanded','false');
+}
+document.addEventListener('click',function(e){
+  var dd=document.getElementById('profileDropdown');
+  if(!dd || !dd.classList.contains('on')) return;
+  if(e.target.closest('#profileDropdown')||e.target.closest('#avatarBtn')) return;
+  closeDropdown();
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){ closeDropdown(); closeDrawer(); }
+});
+
+/* ── carousel ── */
 var carIdx=0, carTimer=null;
 
 function posterSVG(key){
@@ -1133,8 +1325,10 @@ function goTo(i,manual){
   carIdx=(i+POSTERS.length)%POSTERS.length;
   var t=document.getElementById('carTrack');
   if(t) t.style.transform='translateX(-'+(carIdx*100)+'%)';
-  document.querySelectorAll('#carTabs button').forEach(function(b,k){ b.setAttribute('aria-selected',k===carIdx?'true':'false') });
-  document.querySelectorAll('#carDots button').forEach(function(b,k){ b.setAttribute('aria-current',k===carIdx?'true':'false') });
+  document.querySelectorAll('#carTabs button').forEach(function(b,k){
+    b.setAttribute('aria-selected',k===carIdx?'true':'false') });
+  document.querySelectorAll('#carDots button').forEach(function(b,k){
+    b.setAttribute('aria-current',k===carIdx?'true':'false') });
   var lbl=document.getElementById('carLabel');
   if(lbl) lbl.textContent=String(carIdx+1).padStart(2,'0')+' / '+String(POSTERS.length).padStart(2,'0');
   if(manual) restartAuto();
@@ -1152,7 +1346,9 @@ function initCarousel(){
   restartAuto();
 }
 
+/* ── router ── */
 function route(){
+  closeDropdown();
   var h=(location.hash||'#home').replace('#','').split('?')[0];
   var valid=['home','admissions','portal','resources'];
   if(valid.indexOf(h)<0) h='home';
@@ -1186,9 +1382,12 @@ function initHome(){
   initCarousel();
 }
 
+/* ── drawer ── */
 function openDrawer(){
   var cur=currentUser();
-  var list=deviceAccounts().map(getUser).filter(function(x){ return x && (!cur||x.email!==cur.email) });
+  var list=deviceAccounts().map(getUser).filter(function(x){
+    return x && (!cur||x.email!==cur.email)
+  });
   var body=document.getElementById('drawerBody');
   if(!list.length){
     body.innerHTML='<p class="hint">No other accounts on this device. Sign in with a different email on the Admissions page.</p>';
@@ -1204,7 +1403,7 @@ function openDrawer(){
         setSession(b.getAttribute('data-email'));
         closeDrawer();
         toast('Switching account');
-        setTimeout(function(){ location.hash='#portal'; location.reload() },600);
+        setTimeout(function(){ location.hash='#portal'; location.reload() },500);
       };
     });
   }
@@ -1218,6 +1417,7 @@ function closeDrawer(){
   document.getElementById('drawer').setAttribute('aria-hidden','true');
 }
 
+/* ── admissions ── */
 var admState={ step:1, prog:null, major:null, duration:null, electives:[] };
 
 function initAdmissions(){
@@ -1226,7 +1426,8 @@ function initAdmissions(){
 
   document.querySelectorAll('.tabs button').forEach(function(b){
     b.onclick=function(){
-      document.querySelectorAll('.tabs button').forEach(function(x){ x.setAttribute('aria-selected','false') });
+      document.querySelectorAll('.tabs button').forEach(function(x){
+        x.setAttribute('aria-selected','false') });
       b.setAttribute('aria-selected','true');
       var t=b.getAttribute('data-tab');
       $('formSignup').classList.toggle('hide',t!=='signup');
@@ -1243,7 +1444,7 @@ function initAdmissions(){
     $('siEmail').textContent=u.email;
     $('siRef').textContent=u.refId;
     $('sumRef').textContent=u.refId;
-    $('sumStatus').textContent=u.curriculum?'Submitted':'Draft';
+    $('sumStatus').textContent=u.curriculum?'Provisionally accepted':'Draft';
     if(u.curriculum) fillSummary(u.curriculum); else goStep(2);
   } else {
     $('signedInPanel').classList.add('hide');
@@ -1254,22 +1455,34 @@ function initAdmissions(){
 
   $('formSignup').onsubmit=function(e){
     e.preventDefault();
-    var r=createAccount({name:$('suName').value,email:$('suEmail').value,password:$('suPass').value});
-    if(!r.ok){ $('suErr').textContent=r.error; return }
-    $('suErr').textContent='';
-    toast('Account created · '+r.user.refId);
-    $('sumRef').textContent=r.user.refId;
-    $('sumStatus').textContent='Draft';
-    mountAuth();
-    goStep(2);
+    var btn=$('suBtn');
+    setBtnLoading(btn,true);
+    setTimeout(function(){
+      var r=createAccount({name:$('suName').value,email:$('suEmail').value,password:$('suPass').value});
+      setBtnLoading(btn,false);
+      if(!r.ok){ $('suErr').textContent=r.error; return }
+      $('suErr').textContent='';
+      toast('Account created · '+r.user.refId);
+      $('sumRef').textContent=r.user.refId;
+      $('sumStatus').textContent='Draft';
+      mountAuth();
+      goStep(2);
+    },400);
   };
+
   $('formSignin').onsubmit=function(e){
     e.preventDefault();
-    var r=signIn($('siEmail').value,$('siPass').value);
-    if(!r.ok){ $('siErr').textContent=r.error; return }
-    toast('Signed in');
-    setTimeout(function(){ location.hash='#portal'; location.reload() },500);
+    var btn=$('siBtn');
+    setBtnLoading(btn,true);
+    setTimeout(function(){
+      var r=signIn($('siEmail').value,$('siPass').value);
+      setBtnLoading(btn,false);
+      if(!r.ok){ $('siErr').textContent=r.error; return }
+      toast('Signed in');
+      setTimeout(function(){ location.hash='#portal'; location.reload() },400);
+    },400);
   };
+
   $('btnGoogle').onclick=function(){
     var known=deviceAccounts().map(getUser).filter(Boolean);
     openGoogleDrawer(known);
@@ -1291,11 +1504,16 @@ function initAdmissions(){
     }
     var cu=currentUser();
     if(!cu){ $('s3Err').textContent='Session expired.'; return }
-    var r=saveCurriculum(cu.email,{ prog:admState.prog, major:admState.major,
-      duration:admState.duration, electives:admState.electives.slice() });
-    if(!r.ok){ $('s3Err').textContent=r.error; return }
-    toast('Application submitted · '+cu.refId);
-    setTimeout(function(){ location.hash='#portal'; location.reload() },800);
+    var btn=$('submitApp');
+    setBtnLoading(btn,true);
+    setTimeout(function(){
+      var r=saveCurriculum(cu.email,{ prog:admState.prog, major:admState.major,
+        duration:admState.duration, electives:admState.electives.slice() });
+      setBtnLoading(btn,false);
+      if(!r.ok){ $('s3Err').textContent=r.error; return }
+      toast('Provisionally accepted · Admission ID '+r.user.admissionId);
+      setTimeout(function(){ location.hash='#portal'; location.reload() },700);
+    },500);
   };
 
   if(u && !u.curriculum) goStep(2);
@@ -1381,7 +1599,8 @@ function renderStep2(){
     var p=PROGRAMMES[k];
     return '<label class="opt"><input type="radio" name="prog" value="'+k+'"'+
       (admState.prog===k?' checked':'')+'><span class="dot"></span>'+
-      '<span class="txt"><b>'+p.name+'</b><span>'+p.durations.map(function(d){return d+' mo'}).join(' · ')+'</span></span></label>';
+      '<span class="txt"><b>'+p.name+'</b><span>'+p.durations.map(function(d){
+        return d+' mo' }).join(' · ')+'</span></span></label>';
   }).join('');
   po.querySelectorAll('input').forEach(function(i){
     i.onchange=function(){
@@ -1414,8 +1633,8 @@ function renderDurations(){
   doEl.innerHTML=opts.map(function(d){
     return '<label class="opt"><input type="radio" name="dur" value="'+d+'"'+
       (admState.duration===d?' checked':'')+'><span class="dot"></span>'+
-      '<span class="txt"><b>'+d+' months</b><span>'+periodsFor(d)+' exam period'+(periodsFor(d)>1?'s':'')+
-      ' · '+periodsFor(d)+' theory paper'+(periodsFor(d)>1?'s':'')+'</span></span></label>';
+      '<span class="txt"><b>'+d+' months</b><span>'+periodsFor(d)+' exam period'+
+      (periodsFor(d)>1?'s':'')+'</span></span></label>';
   }).join('');
   doEl.querySelectorAll('input').forEach(function(i){
     i.onchange=function(){
@@ -1441,7 +1660,9 @@ function renderStep3(){
     i.onchange=function(){
       var id=i.value;
       if(i.checked){
-        if(admState.electives.length>=need){ i.checked=false; toast('Maximum '+need+' elective'+(need>1?'s':'')); return }
+        if(admState.electives.length>=need){
+          i.checked=false; toast('Maximum '+need+' elective'+(need>1?'s':'')); return
+        }
         admState.electives.push(id);
       } else {
         admState.electives=admState.electives.filter(function(x){return x!==id});
@@ -1473,6 +1694,7 @@ function updateSummary(){
   }).join(', ')||'—';
 }
 
+/* ── portal ── */
 var editState={ prog:null, major:null, duration:null, electives:[] };
 
 function initPortal(){
@@ -1488,8 +1710,34 @@ function initPortal(){
   document.getElementById('pName').textContent=u.name;
   document.getElementById('pEmail').textContent=u.email;
   document.getElementById('pRef').textContent=u.refId;
-  document.getElementById('pStatus').textContent=u.curriculum?'Application submitted':'Draft — curriculum not selected';
+  document.getElementById('pReference').textContent=u.refId;
   document.getElementById('pStudentNo').textContent=u.studentNo||'Not issued — pending AQ-AE result';
+
+  var statusCard=document.getElementById('statusCard');
+  var statusTitle=document.getElementById('statusTitle');
+  var statusSub=document.getElementById('statusSub');
+  if(u.status==='provisional'){
+    statusCard.className='status-card';
+    statusTitle.textContent='Provisionally Accepted';
+    statusSub.textContent='Pending AQ-AE examination result · January–February 2027';
+    statusCard.style.display='';
+  } else {
+    statusCard.className='status-card status-card--pending';
+    statusTitle.textContent='Pending admission';
+    statusSub.textContent='Complete your curriculum to be provisionally accepted.';
+    statusCard.style.display='';
+  }
+
+  var admidBox=document.getElementById('admidBox');
+  if(u.admissionId){
+    admidBox.style.display='';
+    document.getElementById('pAdmid').textContent=u.admissionId;
+    document.getElementById('pAdmidNote').textContent=
+      'Format: '+ADMISSION_YEAR+' · Course '+PROGRAMMES[u.curriculum.prog].num+' · Application #'+
+      u.admissionId.slice(String(ADMISSION_YEAR).length+1);
+  } else {
+    admidBox.style.display='none';
+  }
 
   var aqaePanel=document.getElementById('pAqae');
   if(u.curriculum){
@@ -1505,7 +1753,7 @@ function initPortal(){
     aqaePanel.innerHTML=
       '<div class="aqae">'+
         '<div class="lbl">Your AQ-AE</div>'+
-        '<div class="badge-row"><span class="badge">'+p.code+'</span><span class="badge">Issued Jan–Feb 2027</span></div>'+
+        '<div class="badge-row"><span class="badge">'+p.code+'</span><span class="badge">Jan–Feb 2027</span></div>'+
         '<h3>'+p.name+'</h3>'+
         '<p>Your paper is programme-specific. Theory is written; practical is submitted. Both are marked by DeepSeek AI.</p>'+
         '<div class="divider"></div>'+
@@ -1549,18 +1797,25 @@ function initPortal(){
     document.getElementById('editErr').textContent='';
   };
   document.getElementById('editSave').onclick=function(){
-    if(!editState.prog || !editState.duration){ document.getElementById('editErr').textContent='Select a programme and duration.'; return }
+    if(!editState.prog || !editState.duration){
+      document.getElementById('editErr').textContent='Select a programme and duration.'; return
+    }
     var need=periodsFor(editState.duration);
     if(editState.electives.length!==need){
       document.getElementById('editErr').textContent='Select exactly '+need+' elective'+(need>1?'s':'')+'.';
       return;
     }
     var cu=currentUser();
-    var r=saveCurriculum(cu.email,{ prog:editState.prog, major:editState.major,
-      duration:editState.duration, electives:editState.electives.slice() });
-    if(!r.ok){ document.getElementById('editErr').textContent=r.error; return }
-    toast('Curriculum updated');
-    setTimeout(function(){ location.reload() },500);
+    var btn=document.getElementById('editSave');
+    setBtnLoading(btn,true);
+    setTimeout(function(){
+      var r=saveCurriculum(cu.email,{ prog:editState.prog, major:editState.major,
+        duration:editState.duration, electives:editState.electives.slice() });
+      setBtnLoading(btn,false);
+      if(!r.ok){ document.getElementById('editErr').textContent=r.error; return }
+      toast('Curriculum updated');
+      setTimeout(function(){ location.reload() },500);
+    },400);
   };
 
   function renderEdit(){
@@ -1594,7 +1849,8 @@ function initPortal(){
       doEl.innerHTML=PROGRAMMES[editState.prog].durations.map(function(d){
         return '<label class="opt"><input type="radio" name="edur" value="'+d+'"'+
           (editState.duration===d?' checked':'')+'><span class="dot"></span>'+
-          '<span class="txt"><b>'+d+' months</b><span>'+periodsFor(d)+' period'+(periodsFor(d)>1?'s':'')+'</span></span></label>';
+          '<span class="txt"><b>'+d+' months</b><span>'+periodsFor(d)+' period'+
+          (periodsFor(d)>1?'s':'')+'</span></span></label>';
       }).join('');
       doEl.querySelectorAll('input').forEach(function(i){
         i.onchange=function(){
@@ -1636,12 +1892,13 @@ function initPortal(){
   }
 }
 
+/* ── boot ── */
 function boot(){
   var el=document.getElementById('boot');
-  var done=function(){ setTimeout(function(){ el.classList.add('done') },420) };
+  var done=function(){ setTimeout(function(){ el.classList.add('done') },450) };
   if(document.readyState==='complete') done();
   else window.addEventListener('load',done);
-  setTimeout(function(){ el.classList.add('done') },2600);
+  setTimeout(function(){ el.classList.add('done') },2200);
 }
 function revealInit(){
   var els=document.querySelectorAll('.reveal');
@@ -1656,7 +1913,6 @@ function revealInit(){
 
 document.getElementById('scrim').addEventListener('click',closeDrawer);
 document.getElementById('drawerClose').addEventListener('click',closeDrawer);
-document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeDrawer() });
 
 document.addEventListener('DOMContentLoaded',function(){
   boot();
