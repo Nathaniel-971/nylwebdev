@@ -64,8 +64,6 @@ ul,ol{list-style:none;padding:0}
 .nav{display:flex;gap:32px}
 .nav a{font-size:13px;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.05em;position:relative;padding:8px 0;transition:color .2s}
 .nav a:hover{color:var(--ink)}
-.nav a[aria-current="page"]{color:var(--maroon)}
-.nav a[aria-current="page"]::after{content:"";position:absolute;bottom:-4px;left:0;right:0;height:2px;background:var(--maroon)}
 .header-auth{position:relative;display:flex;align-items:center;gap:16px}
 @media(max-width:860px){
   .header-in{height:auto;padding:20px var(--pad);flex-wrap:wrap;gap:20px}
@@ -207,6 +205,7 @@ ul,ol{list-style:none;padding:0}
 <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
 <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></symbol>
 <symbol id="i-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
 </defs></svg>
 
 <header class="site-header">
@@ -219,9 +218,10 @@ ul,ol{list-style:none;padding:0}
       </span>
     </a>
     <nav class="nav">
-      <a href="#home" data-nav="home">Institution</a>
-      <a href="#admissions" data-nav="admissions">Admissions</a>
-      <a href="#portal" data-nav="portal">Portal</a>
+      <a href="#home">Institution</a>
+      <a href="#admissions">Admissions</a>
+      <a href="#portal">Portal</a>
+      <a href="#resources">Resources</a>
     </nav>
     <div class="header-auth" id="headerAuth"></div>
   </div>
@@ -232,171 +232,152 @@ ul,ol{list-style:none;padding:0}
 </div>
 
 <main>
-  <!-- PAGE 1: HOME -->
-  <section class="view" data-view="home">
-    <div class="section" style="padding-top:100px;padding-bottom:100px">
-      <div class="wrap">
-        <div class="eyebrow">2027 Intake Open</div>
-        <h1 class="display" style="max-width:900px">Technical education, held to a written standard.</h1>
-        <p class="lede">Every programme is assessed through rigorous written theory and practical submission. All papers are set, regulated, and marked by the IFB Examination Board using DeepSeek AI.</p>
-        <div style="display:flex;gap:16px;flex-wrap:wrap" id="homeCTA">
-          <a href="#admissions" class="btn btn--primary"><svg><use href="#i-arrow-right"/></svg>Apply to IFB</a>
-          <a href="#home" onclick="document.getElementById('resources').scrollIntoView({behavior:'smooth'})" class="btn btn--ghost"><svg><use href="#i-file"/></svg>Academic Resources</a>
-        </div>
+  <!-- SECTION 1: INSTITUTION -->
+  <section id="home" class="section" style="padding-top:100px;padding-bottom:100px">
+    <div class="wrap">
+      <div class="eyebrow">2027 Intake Open</div>
+      <h1 class="display" style="max-width:900px">Technical education, held to a written standard.</h1>
+      <p class="lede">Every programme is assessed through rigorous written theory and practical submission. All papers are set, regulated, and marked by the IFB Examination Board using DeepSeek AI.</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <a href="#admissions" class="btn btn--primary"><svg><use href="#i-arrow-right"/></svg>Apply to IFB</a>
+        <a href="#resources" class="btn btn--ghost"><svg><use href="#i-file"/></svg>Academic Resources</a>
       </div>
     </div>
+  </section>
 
-    <div class="section section--bg">
-      <div class="wrap">
-        <div class="sec-head"><h2>The Eight Streams</h2><span class="mono" style="color:var(--grey)">01 / Programmes</span></div>
-        <div class="grid-4">
-          <div class="stream-card"><svg class="icon"><use href="#i-layers"/></svg><h3>Full Stack Engineering</h3><p>End-to-end systems, architecture, and deployment.</p><span class="meta">3 · 6 · 12 Months</span></div>
-          <div class="stream-card"><svg class="icon"><use href="#i-monitor"/></svg><h3>Frontend Development</h3><p>Interface engineering, accessibility, and performance.</p><span class="meta">3 · 6 Months</span></div>
-          <div class="stream-card"><svg class="icon"><use href="#i-server"/></svg><h3>Backend Engineering</h3><p>Services, data flow, and concurrency models.</p><span class="meta">6 · 12 Months</span></div>
-          <div class="stream-card"><svg class="icon"><use href="#i-smartphone"/></svg><h3>Mobile Development</h3><p>Native and cross-platform application engineering.</p><span class="meta">6 · 12 Months</span></div>
-          <div class="stream-card"><svg class="icon"><use href="#i-pen-tool"/></svg><h3>Web Design</h3><p>Layout, typography, grid systems, and visual craft.</p><span class="meta">3 · 6 Months</span></div>
-          <div class="stream-card"><svg class="icon"><use href="#i-frame"/></svg><h3>UI/UX Design</h3><p>User flows, usability heuristics, and research.</p><span class="meta">3 · 6 Months</span></div>
-          <div class="stream-card"><svg class="icon"><use href="#i-bar-chart"/></svg><h3>Data & Analytics</h3><p>Interpretation, data modelling, and statistics.</p><span class="meta">6 · 12 Months</span></div>
-          <div class="stream-card"><svg class="icon"><use href="#i-atom"/></svg><h3>STEM & Physics</h3><p>Applied physics and mathematical methods.</p><span class="meta">6 · 12 Months</span></div>
-        </div>
+  <section class="section section--bg">
+    <div class="wrap">
+      <div class="sec-head"><h2>The Eight Streams</h2><span class="mono" style="color:var(--grey)">01 / Programmes</span></div>
+      <div class="grid-4">
+        <div class="stream-card"><svg class="icon"><use href="#i-layers"/></svg><h3>Full Stack Engineering</h3><p>End-to-end systems, architecture, and deployment.</p><span class="meta">3 · 6 · 12 Months</span></div>
+        <div class="stream-card"><svg class="icon"><use href="#i-monitor"/></svg><h3>Frontend Development</h3><p>Interface engineering, accessibility, and performance.</p><span class="meta">3 · 6 Months</span></div>
+        <div class="stream-card"><svg class="icon"><use href="#i-server"/></svg><h3>Backend Engineering</h3><p>Services, data flow, and concurrency models.</p><span class="meta">6 · 12 Months</span></div>
+        <div class="stream-card"><svg class="icon"><use href="#i-smartphone"/></svg><h3>Mobile Development</h3><p>Native and cross-platform application engineering.</p><span class="meta">6 · 12 Months</span></div>
+        <div class="stream-card"><svg class="icon"><use href="#i-pen-tool"/></svg><h3>Web Design</h3><p>Layout, typography, grid systems, and visual craft.</p><span class="meta">3 · 6 Months</span></div>
+        <div class="stream-card"><svg class="icon"><use href="#i-frame"/></svg><h3>UI/UX Design</h3><p>User flows, usability heuristics, and research.</p><span class="meta">3 · 6 Months</span></div>
+        <div class="stream-card"><svg class="icon"><use href="#i-bar-chart"/></svg><h3>Data & Analytics</h3><p>Interpretation, data modelling, and statistics.</p><span class="meta">6 · 12 Months</span></div>
+        <div class="stream-card"><svg class="icon"><use href="#i-atom"/></svg><h3>STEM & Physics</h3><p>Applied physics and mathematical methods.</p><span class="meta">6 · 12 Months</span></div>
       </div>
     </div>
+  </section>
 
-    <div class="section">
-      <div class="wrap">
-        <div class="sec-head"><h2>Admission Process</h2><span class="mono" style="color:var(--grey)">02 / Process</span></div>
-        <div class="grid-2">
-          <div>
-            <h3 class="h2" style="font-size:24px">A rigid, transparent pathway.</h3>
-            <p style="color:var(--grey);font-size:16px;line-height:1.7">We do not accept prior grades as a proxy for readiness. Every applicant must sit the IFB/AE, a written assessment designed to test foundational logic, comprehension, and numerical reasoning.</p>
-          </div>
-          <div>
-            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">01 / Enrol</span><span class="v">Create account, receive Reference ID</span></div>
-            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">02 / Choose</span><span class="v">Select stream, duration, and electives</span></div>
-            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">03 / Accept</span><span class="v">Submit curriculum, receive Admission ID</span></div>
-            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">04 / Assess</span><span class="v">Sit IFB/AE in Jan–Feb 2027</span></div>
-            <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">05 / Qualify</span><span class="v">Pass IFB/AE, receive Student Number</span></div>
-          </div>
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head"><h2>Admission Process</h2><span class="mono" style="color:var(--grey)">02 / Process</span></div>
+      <div class="grid-2">
+        <div>
+          <h3 class="h2" style="font-size:24px">A rigid, transparent pathway.</h3>
+          <p style="color:var(--grey);font-size:16px;line-height:1.7">We do not accept prior grades as a proxy for readiness. Every applicant must sit the IFB/AE, a written assessment designed to test foundational logic, comprehension, and numerical reasoning.</p>
         </div>
-      </div>
-    </div>
-
-    <div class="section section--bg" id="resources">
-      <div class="wrap">
-        <div class="sec-head"><h2>Academic Resources</h2><span class="mono" style="color:var(--grey)">03 / Library</span></div>
-        <p class="lede">Official documents will be published here as standalone HTML files. Formatted for A4 printing, viewable in any browser.</p>
-        <div class="grid-4">
-          <div class="stream-card" style="border-color:var(--silver-dark);opacity:.6"><svg class="icon" style="color:var(--grey)"><use href="#i-file"/></svg><h3>IFB/AE Guidelines</h3><p>Format rules, timing, and marking protocol.</p><span class="meta">Coming Soon</span></div>
-          <div class="stream-card" style="border-color:var(--silver-dark);opacity:.6"><svg class="icon" style="color:var(--grey)"><use href="#i-file"/></svg><h3>IFB/AE Prep Guide</h3><p>Per-stream focus and pre-sitting checklist.</p><span class="meta">Coming Soon</span></div>
-          <div class="stream-card" style="border-color:var(--silver-dark);opacity:.6"><svg class="icon" style="color:var(--grey)"><use href="#i-file"/></svg><h3>Admission Slip</h3><p>Official slip with Admission ID and barcode.</p><span class="meta">Coming Soon</span></div>
-          <div class="stream-card" style="border-color:var(--silver-dark);opacity:.6"><svg class="icon" style="color:var(--grey)"><use href="#i-file"/></svg><h3>Past Papers</h3><p>Archived papers for practice.</p><span class="meta">Coming Later</span></div>
+        <div>
+          <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">01 / Enrol</span><span class="v">Create account, receive Reference ID</span></div>
+          <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">02 / Choose</span><span class="v">Select stream, duration, and electives</span></div>
+          <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">03 / Accept</span><span class="v">Submit curriculum, receive Admission ID</span></div>
+          <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">04 / Assess</span><span class="v">Sit IFB/AE in Jan–Feb 2027</span></div>
+          <div class="data-row"><span class="k" style="font-weight:700;color:var(--ink)">05 / Qualify</span><span class="v">Pass IFB/AE, receive Student Number</span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PAGE 2: ADMISSIONS -->
-  <section class="view" data-view="admissions">
-    <div class="section">
-      <div class="wrap">
-        <div style="max-width:600px;margin-bottom:48px">
-          <div class="eyebrow">Admissions · 2027</div>
-          <h1 class="h2">Apply to the IFB</h1>
-          <p style="color:var(--grey);font-size:16px">Name, email, password. On curriculum submission you will be provisionally accepted and an Admission ID will be issued.</p>
-        </div>
-        
-        <div class="grid-2">
-          <div>
-            <div id="step1">
-              <div style="display:flex;gap:32px;border-bottom:1px solid var(--silver-line);margin-bottom:32px">
-                <button style="background:none;border:none;padding:16px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--maroon);border-bottom:2px solid var(--maroon);cursor:pointer" data-tab="signup">Create Account</button>
-                <button style="background:none;border:none;padding:16px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--grey);border-bottom:2px solid transparent;cursor:pointer" data-tab="signin">Sign In</button>
-              </div>
-
-              <form id="formSignup">
-                <div class="form-group"><label>Full Name</label><input class="input" id="suName" placeholder="As it appears on your record"></div>
-                <div class="form-group"><label>Email Address</label><input class="input" id="suEmail" type="email" placeholder="you@example.com"></div>
-                <div class="form-group"><label>Password</label><input class="input" id="suPass" type="password" placeholder="Minimum 8 characters"><span style="font-size:12px;color:var(--grey)">No ID numbers or physical addresses are collected.</span></div>
-                <div class="err" id="suErr" style="color:var(--maroon);font-size:13px;font-weight:700;margin-bottom:16px"></div>
-                <button class="btn btn--primary btn--block" type="submit" id="suBtn">Create Account</button>
-              </form>
-
-              <form id="formSignin" class="hide">
-                <div class="form-group"><label>Email Address</label><input class="input" id="siEmail" type="email"></div>
-                <div class="form-group"><label>Password</label><input class="input" id="siPass" type="password"></div>
-                <div class="err" id="siErr" style="color:var(--maroon);font-size:13px;font-weight:700;margin-bottom:16px"></div>
-                <button class="btn btn--primary btn--block" type="submit" id="siBtn">Sign In</button>
-              </form>
+  <!-- SECTION 2: ADMISSIONS -->
+  <section id="admissions" class="section section--bg">
+    <div class="wrap">
+      <div style="max-width:600px;margin-bottom:48px">
+        <div class="eyebrow">Admissions · 2027</div>
+        <h1 class="h2">Apply to the IFB</h1>
+        <p style="color:var(--grey);font-size:16px">Name, email, password. On curriculum submission you will be provisionally accepted and an Admission ID will be issued.</p>
+      </div>
+      
+      <div class="grid-2">
+        <div>
+          <div id="step1">
+            <div style="display:flex;gap:32px;border-bottom:1px solid var(--silver-line);margin-bottom:32px">
+              <button style="background:none;border:none;padding:16px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--maroon);border-bottom:2px solid var(--maroon);cursor:pointer" data-tab="signup">Create Account</button>
+              <button style="background:none;border:none;padding:16px 0;font-weight:700;font-size:13px;text-transform:uppercase;color:var(--grey);border-bottom:2px solid transparent;cursor:pointer" data-tab="signin">Sign In</button>
             </div>
 
-            <div id="step2" class="hide">
-              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Select a Stream</div>
-              <div class="opts opts--2" id="progOpts"></div>
-              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:32px 0 16px">Duration</div>
-              <div class="opts opts--2" id="durOpts"></div>
-              <div class="err" id="s2Err" style="color:var(--maroon);font-size:13px;font-weight:700;margin-top:16px"></div>
-              <div style="display:flex;gap:16px;margin-top:40px">
-                <button class="btn" id="back1">Back</button>
-                <button class="btn btn--primary" id="next2" style="flex:1">Continue</button>
-              </div>
-            </div>
+            <form id="formSignup">
+              <div class="form-group"><label>Full Name</label><input class="input" id="suName" placeholder="As it appears on your record"></div>
+              <div class="form-group"><label>Email Address</label><input class="input" id="suEmail" type="email" placeholder="you@example.com"></div>
+              <div class="form-group"><label>Password</label><input class="input" id="suPass" type="password" placeholder="Minimum 8 characters"><span style="font-size:12px;color:var(--grey)">No ID numbers or physical addresses are collected.</span></div>
+              <div class="err" id="suErr" style="color:var(--maroon);font-size:13px;font-weight:700;margin-bottom:16px"></div>
+              <button class="btn btn--primary btn--block" type="submit" id="suBtn">Create Account</button>
+            </form>
 
-            <div id="step3" class="hide">
-              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Electives <span id="elecCount" style="color:var(--grey);text-transform:none;font-weight:400"></span></div>
-              <div class="opts opts--2" id="elecOpts"></div>
-              <p style="font-size:12px;color:var(--grey);margin-top:16px">Mathematics is recommended but not compulsory. Physics requires Mathematics.</p>
-              <div class="err" id="s3Err" style="color:var(--maroon);font-size:13px;font-weight:700;margin-top:16px"></div>
-              <div style="display:flex;gap:16px;margin-top:40px">
-                <button class="btn" id="back2">Back</button>
-                <button class="btn btn--primary" id="submitApp" style="flex:1">Submit Application</button>
-              </div>
-            </div>
+            <form id="formSignin" class="hide">
+              <div class="form-group"><label>Email Address</label><input class="input" id="siEmail" type="email"></div>
+              <div class="form-group"><label>Password</label><input class="input" id="siPass" type="password"></div>
+              <div class="err" id="siErr" style="color:var(--maroon);font-size:13px;font-weight:700;margin-bottom:16px"></div>
+              <button class="btn btn--primary btn--block" type="submit" id="siBtn">Sign In</button>
+            </form>
+          </div>
 
-            <div id="signedInPanel" class="hide" style="background:var(--silver-bg);padding:32px;border-radius:4px;border:1px solid var(--silver-line)">
-              <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:24px">Already Signed In</div>
-              <div style="display:flex;gap:16px;align-items:center;margin-bottom:32px">
-                <div class="avatar" id="siAvatar" style="width:64px;height:64px"></div>
-                <div>
-                  <div style="font-size:20px;font-family:var(--serif);font-weight:700" id="siName"></div>
-                  <div style="font-size:13px;color:var(--grey)" id="siEmail"></div>
-                  <div class="mono" style="font-size:12px;color:var(--maroon);font-weight:700;margin-top:4px" id="siRef"></div>
-                </div>
-              </div>
-              <div style="display:flex;gap:12px">
-                <a href="#portal" class="btn btn--primary">Open Portal</a>
-                <button class="btn" id="btnSignOut">Sign Out</button>
-              </div>
+          <div id="step2" class="hide">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Select a Stream</div>
+            <div class="opts opts--2" id="progOpts"></div>
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:32px 0 16px">Duration</div>
+            <div class="opts opts--2" id="durOpts"></div>
+            <div class="err" id="s2Err" style="color:var(--maroon);font-size:13px;font-weight:700;margin-top:16px"></div>
+            <div style="display:flex;gap:16px;margin-top:40px">
+              <button class="btn" id="back1">Back</button>
+              <button class="btn btn--primary" id="next2" style="flex:1">Continue</button>
             </div>
           </div>
 
-          <aside style="background:var(--white);border:1px solid var(--silver-line);border-top:4px solid var(--maroon);padding:32px;height:fit-content;position:sticky;top:100px">
-            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:24px">Application Summary</div>
-            <div style="display:flex;flex-direction:column;gap:16px;font-size:14px">
-              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Status</span><span id="sumStatus" style="font-weight:700;color:var(--maroon)">Draft</span></div>
-              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Reference</span><span id="sumRef" class="mono">—</span></div>
-              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Stream</span><span id="sumProg" style="font-weight:600">—</span></div>
-              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Duration</span><span id="sumDur">—</span></div>
-              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Periods</span><span id="sumPeriods">—</span></div>
-              <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Electives</span><span id="sumElec">—</span></div>
+          <div id="step3" class="hide">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px">Electives <span id="elecCount" style="color:var(--grey);text-transform:none;font-weight:400"></span></div>
+            <div class="opts opts--2" id="elecOpts"></div>
+            <p style="font-size:12px;color:var(--grey);margin-top:16px">Mathematics is recommended but not compulsory. Physics requires Mathematics.</p>
+            <div class="err" id="s3Err" style="color:var(--maroon);font-size:13px;font-weight:700;margin-top:16px"></div>
+            <div style="display:flex;gap:16px;margin-top:40px">
+              <button class="btn" id="back2">Back</button>
+              <button class="btn btn--primary" id="submitApp" style="flex:1">Submit Application</button>
             </div>
-            <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--silver-line);font-size:12px;color:var(--grey);line-height:1.6">
-              Curriculum remains editable until <b>21 March 2027</b>. Admission ID issued on submit.
+          </div>
+
+          <div id="signedInPanel" class="hide" style="background:var(--white);padding:32px;border-radius:4px;border:1px solid var(--silver-line)">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:24px">Already Signed In</div>
+            <div style="display:flex;gap:16px;align-items:center;margin-bottom:32px">
+              <div class="avatar" id="siAvatar" style="width:64px;height:64px"></div>
+              <div>
+                <div style="font-size:20px;font-family:var(--serif);font-weight:700" id="siName"></div>
+                <div style="font-size:13px;color:var(--grey)" id="siEmail"></div>
+                <div class="mono" style="font-size:12px;color:var(--maroon);font-weight:700;margin-top:4px" id="siRef"></div>
+              </div>
             </div>
-          </aside>
+            <div style="display:flex;gap:12px">
+              <a href="#portal" class="btn btn--primary">Go to Portal</a>
+              <button class="btn" id="btnSignOut">Sign Out</button>
+            </div>
+          </div>
         </div>
+
+        <aside style="background:var(--white);border:1px solid var(--silver-line);border-top:4px solid var(--maroon);padding:32px;height:fit-content;position:sticky;top:100px">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:24px">Application Summary</div>
+          <div style="display:flex;flex-direction:column;gap:16px;font-size:14px">
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Status</span><span id="sumStatus" style="font-weight:700;color:var(--maroon)">Draft</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Reference</span><span id="sumRef" class="mono">—</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Stream</span><span id="sumProg" style="font-weight:600">—</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Duration</span><span id="sumDur">—</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Periods</span><span id="sumPeriods">—</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--grey)">Electives</span><span id="sumElec">—</span></div>
+          </div>
+          <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--silver-line);font-size:12px;color:var(--grey);line-height:1.6">
+            Curriculum remains editable until <b>21 March 2027</b>. Admission ID issued on submit.
+          </div>
+        </aside>
       </div>
     </div>
   </section>
 
-  <!-- PAGE 3: PORTAL -->
-  <section class="view" data-view="portal">
-    <div id="portalGuest" class="section hide">
-      <div class="wrap" style="text-align:center;max-width:500px">
-        <div style="font-family:var(--serif);font-size:56px;color:var(--maroon);margin-bottom:24px">∆</div>
-        <h2 class="h2">Sign in to continue</h2>
-        <p style="color:var(--grey);margin-bottom:32px">The portal is for enrolled candidates only.</p>
-        <a href="#admissions" class="btn btn--primary">Go to Admissions</a>
-      </div>
+  <!-- SECTION 3: PORTAL -->
+  <section id="portal" class="section">
+    <div id="portalGuest" class="wrap hide" style="text-align:center;max-width:500px;padding-top:40px;padding-bottom:80px">
+      <div style="font-family:var(--serif);font-size:56px;color:var(--maroon);margin-bottom:24px">∆</div>
+      <h2 class="h2">Sign in to continue</h2>
+      <p style="color:var(--grey);margin-bottom:32px">The portal is for enrolled candidates only.</p>
+      <a href="#admissions" class="btn btn--primary">Go to Admissions</a>
     </div>
 
     <div id="portalMain" class="hide">
@@ -476,6 +457,45 @@ ul,ol{list-style:none;padding:0}
       </div>
     </div>
   </section>
+
+  <!-- SECTION 4: RESOURCES -->
+  <section id="resources" class="section section--bg">
+    <div class="wrap">
+      <div class="sec-head"><h2>Academic Resources</h2><span class="mono" style="color:var(--grey)">03 / Library</span></div>
+      <p class="lede">Official documents are provided as standalone HTML files. They are formatted for A4 printing and viewable in any browser. Click to download.</p>
+      
+      <div class="grid-4">
+        <!-- Replace href with actual file names when uploaded -->
+        <a href="IFB-AE-Guidelines.html" download class="stream-card" style="text-decoration:none;display:block">
+          <svg class="icon"><use href="#i-download"/></svg>
+          <h3>IFB/AE Guidelines</h3>
+          <p>Format rules, timing, and marking protocol.</p>
+          <span class="meta" style="background:var(--maroon);color:var(--white)">Download HTML</span>
+        </a>
+        
+        <a href="IFB-AE-Prep-Guide.html" download class="stream-card" style="text-decoration:none;display:block">
+          <svg class="icon"><use href="#i-download"/></svg>
+          <h3>IFB/AE Prep Guide</h3>
+          <p>Per-stream focus and pre-sitting checklist.</p>
+          <span class="meta" style="background:var(--maroon);color:var(--white)">Download HTML</span>
+        </a>
+        
+        <a href="Admission-Slip.html" download class="stream-card" style="text-decoration:none;display:block">
+          <svg class="icon"><use href="#i-download"/></svg>
+          <h3>Admission Slip</h3>
+          <p>Official slip with Admission ID and barcode.</p>
+          <span class="meta" style="background:var(--maroon);color:var(--white)">Download HTML</span>
+        </a>
+
+        <a href="Past-Papers.html" download class="stream-card" style="text-decoration:none;display:block;opacity:0.6">
+          <svg class="icon"><use href="#i-download"/></svg>
+          <h3>Past Papers</h3>
+          <p>Archived papers for practice.</p>
+          <span class="meta">Coming Later</span>
+        </a>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="site-footer">
@@ -497,8 +517,8 @@ ul,ol{list-style:none;padding:0}
       </div>
       <div class="footer-col">
         <h4>Resources</h4>
-        <a href="#home">Document Library</a>
-        <a href="#home">IFB/AE Guidelines</a>
+        <a href="#resources">Document Library</a>
+        <a href="#resources">IFB/AE Guidelines</a>
       </div>
     </div>
     <div class="footer-legal">
@@ -634,22 +654,9 @@ function mountAuth(){
 
   var btn=document.getElementById('avatarBtn'), dd=document.getElementById('profileDropdown');
   btn.onclick=function(e){ e.stopPropagation(); dd.classList.toggle('on'); };
-  document.getElementById('ddSignOut').onclick=function(){ signOut(); location.hash='#home'; location.reload(); };
+  document.getElementById('ddSignOut').onclick=function(){ signOut(); location.reload(); };
 }
 document.addEventListener('click',function(e){ if(!e.target.closest('#profileDropdown') && !e.target.closest('#avatarBtn')) { var d=document.getElementById('profileDropdown'); if(d) d.classList.remove('on'); } });
-
-function route(){
-  var h=(location.hash||'#home').replace('#','').split('?')[0];
-  var valid=['home','admissions','portal'];
-  if(valid.indexOf(h)<0) h='home';
-  document.querySelectorAll('.view').forEach(function(v){ v.classList.toggle('on',v.getAttribute('data-view')===h); });
-  document.querySelectorAll('[data-nav]').forEach(function(a){ if(a.getAttribute('data-nav')===h) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
-  window.scrollTo(0,0);
-  mountAuth();
-  if(h==='admissions') initAdmissions();
-  if(h==='portal') initPortal();
-}
-window.addEventListener('hashchange',route);
 
 var admState={ step:1, prog:null, duration:null, electives:[] };
 function initAdmissions(){
@@ -685,7 +692,7 @@ function initAdmissions(){
     e.preventDefault();
     var r=signIn($('siEmail').value,$('siPass').value);
     if(!r.ok){ $('siErr').textContent=r.error; return }
-    location.hash='#portal'; location.reload();
+    toast('Signed in'); initAdmissions(); initPortal();
   };
 
   $('btnSignOut').onclick=function(){ signOut(); location.reload(); };
@@ -700,7 +707,7 @@ function initAdmissions(){
     if(admState.electives.length!==need){ $('s3Err').textContent='Select exactly '+need+' elective(s).'; return }
     var r=saveCurriculum(currentUser().email,{ prog:admState.prog, duration:admState.duration, electives:admState.electives });
     if(!r.ok){ $('s3Err').textContent=r.error; return }
-    toast('Provisionally accepted · '+r.user.admissionId); setTimeout(function(){ location.hash='#portal'; location.reload(); }, 800);
+    toast('Provisionally accepted · '+r.user.admissionId); setTimeout(function(){ initAdmissions(); initPortal(); document.getElementById('portal').scrollIntoView(); }, 800);
   };
 
   if(u && !u.curriculum) goStep(2);
@@ -772,6 +779,7 @@ function updateSummary(){
 function initPortal(){
   var u=currentUser();
   var guest=document.getElementById('portalGuest'), main=document.getElementById('portalMain');
+  if(!guest||!main) return;
   if(!u){ guest.classList.remove('hide'); main.classList.add('hide'); return }
   guest.classList.add('hide'); main.classList.remove('hide');
 
@@ -815,12 +823,23 @@ function initPortal(){
       '</div>';
   }
 
-  document.getElementById('pSignout').onclick=function(){ signOut(); location.hash='#home'; location.reload(); };
+  document.getElementById('pSignout').onclick=function(){ signOut(); location.reload(); };
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  setTimeout(function(){ document.getElementById('boot').classList.add('done'); }, 600);
-  route();
+  setTimeout(function(){ document.getElementById('boot').classList.add('done'); }, 500);
+  mountAuth();
+  initAdmissions();
+  initPortal();
+  
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if(target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
 });
 })();
 </script>
