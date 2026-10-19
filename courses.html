@@ -11,101 +11,86 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
 
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; }
-
         nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-left { display: flex; align-items: center; gap: 16px; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; }
+        .back-btn:hover { background: var(--silver-light); color: var(--maroon); }
         .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; }
-        .nav-links { display: flex; gap: 32px; }
-        .nav-links a { text-decoration: none; color: var(--black); font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--maroon); }
+        .profile-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none; font-weight: 600; }
 
         .container { max-width: 1000px; margin: 60px auto; padding: 0 24px; flex: 1; width: 100%; }
         .header-title { text-align: center; margin-bottom: 48px; }
         .header-title h1 { font-size: 2.2rem; margin-bottom: 12px; }
         .header-title p { color: var(--text-muted); font-size: 1.1rem; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
-        .course-card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 24px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); display: flex; flex-direction: column; }
-        .course-card:hover { border-color: var(--maroon); transform: translateY(-5px); box-shadow: 0 15px 20px -10px rgba(122,0,0,0.15); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+        .course-card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 24px; transition: 0.3s; display: flex; flex-direction: column; }
+        .course-card:hover { border-color: var(--maroon); transform: translateY(-5px); box-shadow: 0 10px 20px -10px rgba(122,0,0,0.15); }
         
-        .course-icon { width: 48px; height: 48px; background: var(--silver-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--maroon); margin-bottom: 20px; transition: background 0.3s, color 0.3s; }
+        .course-icon { width: 48px; height: 48px; background: var(--silver-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--maroon); margin-bottom: 20px; transition: 0.3s; }
         .course-card:hover .course-icon { background: var(--maroon); color: var(--white); }
         
         .course-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
         .course-card p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; flex: 1; }
         
-        .course-btn { display: block; text-align: center; padding: 12px; background: var(--silver-light); color: var(--black); text-decoration: none; font-weight: 600; border-radius: 6px; font-size: 0.9rem; transition: all 0.2s; }
+        .course-btn { display: block; text-align: center; padding: 12px; background: var(--silver-light); color: var(--black); text-decoration: none; font-weight: 600; border-radius: 6px; font-size: 0.9rem; transition: 0.2s; }
         .course-btn:hover { background: var(--maroon); color: var(--white); }
 
-        footer { background: var(--white); border-top: 1px solid var(--silver); color: var(--text-muted); text-align: center; padding: 32px; font-size: 0.85rem; margin-top: auto; }
+        footer { border-top: 1px solid var(--silver); text-align: center; padding: 32px; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
         @media (max-width: 768px) { .nav-links { display: none; } }
     </style>
 </head>
 <body>
     <nav>
-        <a href="index.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
-        <div class="nav-links">
-            <a href="courses.html" style="color: var(--maroon);"><i data-lucide="book-open" size="18"></i> Courses</a>
-            <a href="documents.html"><i data-lucide="folder" size="18"></i> Resources</a>
-            <a href="profile.html"><i data-lucide="user" size="18"></i> Profile</a>
+        <div class="nav-left">
+            <button class="back-btn" onclick="history.back()"><i data-lucide="arrow-left" size="24"></i></button>
+            <a href="dashboard.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
         </div>
+        <a href="dashboard.html" class="profile-circle"><i data-lucide="user" size="20"></i></a>
     </nav>
 
     <main class="container">
-        <div class="header-title animate-fade-up" style="animation-delay: 0.1s;">
-            <h1>Academic Tracks</h1>
-            <p>All candidates complete the compulsory core modules before specializing in one of our 8 rigorous tracks.</p>
+        <div class="header-title">
+            <h1>Academic Tracks (2026—2027)</h1>
+            <p>Explore our specialized curriculum focusing on modern web deployment, mathematics, and application architecture.</p>
         </div>
 
         <div class="grid">
-            <div class="course-card animate-fade-up" style="animation-delay: 0.2s;">
+            <div class="course-card">
                 <div class="course-icon"><i data-lucide="layers"></i></div>
-                <h3>Track 1: Full Stack Engineering</h3>
-                <p>Comprehensive mastery of both frontend and backend architectures, databases, and deployment.</p>
-                <a href="index.html" class="course-btn">Select Track</a>
+                <h3>Full Stack Development</h3>
+                <p>Master both client-side and server-side architecture. Learn how to build, connect, and deploy complete web applications.</p>
+                <a href="dashboard.html" class="course-btn">View Curriculum</a>
             </div>
-            <div class="course-card animate-fade-up" style="animation-delay: 0.25s;">
+            <div class="course-card">
                 <div class="course-icon"><i data-lucide="layout"></i></div>
-                <h3>Track 2: Frontend Architecture</h3>
-                <p>Focus on user interfaces, DOM manipulation, modern frameworks, and responsive design.</p>
-                <a href="index.html" class="course-btn">Select Track</a>
+                <h3>Frontend Development</h3>
+                <p>Deep dive into UI/UX implementation, DOM manipulation, and modern frameworks to build stunning, responsive interfaces.</p>
+                <a href="dashboard.html" class="course-btn">View Curriculum</a>
             </div>
-            <div class="course-card animate-fade-up" style="animation-delay: 0.3s;">
+            <div class="course-card">
                 <div class="course-icon"><i data-lucide="server"></i></div>
-                <h3>Track 3: Backend Systems</h3>
-                <p>Server logic, API development, database management, and cloud infrastructure.</p>
-                <a href="index.html" class="course-btn">Select Track</a>
+                <h3>Backend Development</h3>
+                <p>Focus on server logic, database management, API creation, and ensuring secure, scalable application performance.</p>
+                <a href="dashboard.html" class="course-btn">View Curriculum</a>
             </div>
-            <div class="course-card animate-fade-up" style="animation-delay: 0.35s;">
+            <div class="course-card">
                 <div class="course-icon"><i data-lucide="smartphone"></i></div>
-                <h3>Track 4: Mobile App Development</h3>
-                <p>Cross-platform mobile applications, native features, and mobile UI/UX principles.</p>
-                <a href="index.html" class="course-btn">Select Track</a>
+                <h3>App Development</h3>
+                <p>Build cross-platform mobile applications using Expo Go and TypeScript, preparing for real-world app store deployment.</p>
+                <a href="dashboard.html" class="course-btn">View Curriculum</a>
             </div>
-            <div class="course-card animate-fade-up" style="animation-delay: 0.4s;">
-                <div class="course-icon"><i data-lucide="pen-tool"></i></div>
-                <h3>Track 5: Digital Visual Design</h3>
-                <p>Graphic design, typography, color theory, and digital asset creation.</p>
-                <a href="index.html" class="course-btn">Select Track</a>
-            </div>
-            <div class="course-card animate-fade-up" style="animation-delay: 0.45s;">
-                <div class="course-icon"><i data-lucide="mouse-pointer-2"></i></div>
-                <h3>Track 6: Human-Computer Interaction</h3>
-                <p>UI/UX research, wireframing, prototyping, and user-centric design methodologies.</p>
-                <a href="index.html" class="course-btn">Select Track</a>
-            </div>
-            <div class="course-card animate-fade-up" style="animation-delay: 0.5s;">
+            <div class="course-card">
                 <div class="course-icon"><i data-lucide="bar-chart-3"></i></div>
-                <h3>Track 7: Data & Statistical Analysis</h3>
-                <p>Data manipulation, statistical modeling, machine learning basics, and visualization.</p>
-                <a href="index.html" class="course-btn">Select Track</a>
+                <h3>Mathematics</h3>
+                <p>Advanced computational mathematics and logical foundations required for high-level software engineering and data analysis.</p>
+                <a href="dashboard.html" class="course-btn">View Curriculum</a>
             </div>
-            <div class="course-card animate-fade-up" style="animation-delay: 0.55s;">
+            <div class="course-card">
                 <div class="course-icon"><i data-lucide="atom"></i></div>
-                <h3>Track 8: Applied Physics & Mathematics</h3>
-                <p>Advanced computational mathematics, physical systems modeling, and theoretical physics.</p>
-                <a href="index.html" class="course-btn">Select Track</a>
+                <h3>Physics</h3>
+                <p>Applied physics and systems modeling, bridging the gap between theoretical science and algorithmic simulation.</p>
+                <a href="dashboard.html" class="course-btn">View Curriculum</a>
             </div>
         </div>
     </main>
