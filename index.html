@@ -3,66 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFB | Official Gateway 2026-2027</title>
+    <title>IFB | Gateway</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --black: #111827; --maroon: #7A0000; --maroon-hover: #9C0000; --silver: #D1D5DB; --silver-light: #F9FAFB; --white: #FFFFFF; --text-muted: #4B5563; }
+        :root { 
+            --black: #111827; 
+            --maroon: #7A0000; 
+            --silver: #D1D5DB; 
+            --silver-light: #F3F4F6; 
+            --white: #FFFFFF; 
+            --gray: #4B5563; 
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-        
-        /* Loading Screen */
-        #loader { position: fixed; inset: 0; background: var(--white); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
-        .loader-delta { font-size: 4rem; color: var(--maroon); font-weight: 700; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; line-height: 1.5; }
 
         /* Animations */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; }
+        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; }
 
-        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; }
-        .profile-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none; font-weight: 600; transition: transform 0.2s; }
-        .profile-circle:hover { transform: scale(1.05); }
+        /* Navigation */
+        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 20px; height: 64px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.2rem; }
+        .hamburger { background: none; border: none; cursor: pointer; color: var(--black); padding: 8px; }
+        .hamburger:hover { color: var(--maroon); }
 
-        .hero { text-align: center; padding: 80px 24px 40px; }
-        .hero h1 { font-size: 2.8rem; margin-bottom: 16px; letter-spacing: -1px; }
-        .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
+        /* Slide-out Menu */
+        .side-menu { position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; background: var(--white); border-left: 1px solid var(--silver); z-index: 1000; transition: right 0.3s ease; padding: 24px; display: flex; flex-direction: column; }
+        .side-menu.open { right: 0; }
+        .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
+        .menu-close { background: none; border: none; cursor: pointer; color: var(--gray); }
+        .menu-links { display: flex; flex-direction: column; gap: 8px; }
+        .menu-links a { text-decoration: none; color: var(--black); font-weight: 500; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; }
+        .menu-links a:hover { background: var(--silver-light); color: var(--maroon); }
 
-        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; width: 100%; }
-        .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
-        .card h2 { font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
+        /* Content */
+        .container { max-width: 600px; margin: 32px auto; padding: 0 20px; flex: 1; width: 100%; }
+        .hero { text-align: center; margin-bottom: 32px; }
+        .hero h1 { font-size: 2rem; margin-bottom: 8px; }
+        .hero p { color: var(--gray); font-size: 0.95rem; }
+
+        .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+        .card h2 { font-size: 1.2rem; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--silver); }
         
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
-        .input-group input { width: 100%; padding: 14px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; transition: 0.2s; }
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; transition: 0.2s; font-size: 1rem; }
         .input-group input:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122,0,0,0.1); }
         
-        .btn { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .btn:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
-        footer { border-top: 1px solid var(--silver); text-align: center; padding: 32px; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
-        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+        footer { border-top: 1px solid var(--silver); text-align: center; padding: 24px; font-size: 0.8rem; color: var(--gray); }
     </style>
 </head>
 <body>
-    <div id="loader"><div class="loader-delta">∆</div></div>
-
     <nav>
         <a href="index.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
-        <a href="dashboard.html" class="profile-circle"><i data-lucide="user" size="20"></i></a>
+        <button class="hamburger" onclick="toggleMenu()"><i data-lucide="menu" size="28"></i></button>
     </nav>
 
-    <header class="hero animate-fade-up">
-        <h1>Official Candidate Gateway</h1>
-        <p>Register for the 2026-2027 Academic Year. Access your dashboard, download admission slips, and view examination schedules.</p>
-    </header>
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <span style="font-weight: 700; color: var(--maroon);">Navigation</span>
+            <button class="menu-close" onclick="toggleMenu()"><i data-lucide="x" size="24"></i></button>
+        </div>
+        <div class="menu-links">
+            <a href="index.html"><i data-lucide="home" size="20"></i> Gateway</a>
+            <a href="dashboard.html"><i data-lucide="user" size="20"></i> Dashboard</a>
+            <a href="courses.html"><i data-lucide="book-open" size="20"></i> Courses</a>
+            <a href="documents.html"><i data-lucide="folder" size="20"></i> Documents</a>
+        </div>
+    </div>
 
-    <main class="container">
-        <!-- Registration -->
-        <div class="card animate-fade-up delay-1">
-            <h2>Full Student Sign Up</h2>
+    <main class="container animate-fade-up">
+        <div class="hero">
+            <h1>Official Gateway</h1>
+            <p>Register for the 2026—2027 Academic Year.</p>
+        </div>
+
+        <div class="card">
+            <h2>Create Student Profile</h2>
             <form id="regForm">
                 <div class="input-group">
                     <label>Full Name</label>
@@ -80,11 +101,19 @@
             </form>
         </div>
 
-        <!-- Login -->
-        <div class="card animate-fade-up delay-2" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
-            <h2 style="border: none;">Existing Student</h2>
-            <p style="color: var(--text-muted); margin-bottom: 24px;">Log in to your dashboard to access your ID, Exam Number, and documents.</p>
-            <button onclick="login()" class="btn">Student Login <i data-lucide="log-in" size="18"></i></button>
+        <div class="card">
+            <h2>Student Login</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" required placeholder="john@example.com">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn">Login <i data-lucide="log-in" size="18"></i></button>
+            </form>
         </div>
     </main>
 
@@ -92,31 +121,73 @@
 
     <script>
         lucide.createIcons();
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-            }, 1000);
-        });
 
-        document.getElementById('regForm').addEventListener('submit', (e) => {
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('open');
+        }
+
+        // SHA-256 Hashing Function
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Initialize DB if not exists
+        if (!localStorage.getItem('ifb_db')) {
+            localStorage.setItem('ifb_db', JSON.stringify([]));
+        }
+
+        // Registration Logic (Automatic ID Generation)
+        document.getElementById('regForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
-            
-            localStorage.setItem('ifb_name', name);
-            localStorage.setItem('ifb_email', email);
+            const password = document.getElementById('regPass').value;
+
+            const hashedPass = await hashPassword(password);
+            const db = JSON.parse(localStorage.getItem('ifb_db'));
+
+            // Check if email exists
+            if(db.find(u => u.email === email)) {
+                alert("Email already registered.");
+                return;
+            }
+
+            // Auto Generate IDs
+            const year = new Date().getFullYear(); // 2026
+            const seq = String(db.length + 1).padStart(4, '0'); // 0001
+            const examNumber = `${year}${seq}`; // 20260001
+            const studentId = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digits
+            const admissionId = `ADM-${examNumber}`;
+
+            const newUser = { name, email, password: hashedPass, examNumber, studentId, admissionId };
+            db.push(newUser);
+            localStorage.setItem('ifb_db', JSON.stringify(db));
+
+            // Auto Login
+            localStorage.setItem('ifb_current_user', JSON.stringify(newUser));
             window.location.href = 'dashboard.html';
         });
 
-        function login() {
-            // Mock login for demonstration - defaults to admin if no email
-            if (!localStorage.getItem('ifb_email')) {
-                localStorage.setItem('ifb_name', 'Admin User');
-                localStorage.setItem('ifb_email', 'n1nathaniel971@gmail.com');
+        // Login Logic
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPass').value;
+            const hashedPass = await hashPassword(password);
+            
+            const db = JSON.parse(localStorage.getItem('ifb_db'));
+            const user = db.find(u => u.email === email && u.password === hashedPass);
+
+            if (user) {
+                localStorage.setItem('ifb_current_user', JSON.stringify(user));
+                window.location.href = 'dashboard.html';
+            } else {
+                alert("Invalid credentials.");
             }
-            window.location.href = 'dashboard.html';
-        }
+        });
     </script>
 </body>
 </html>
