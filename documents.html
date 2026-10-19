@@ -3,91 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFB | Official Documents</title>
+    <title>IFB | Documents</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --black: #111827; --maroon: #7A0000; --silver: #D1D5DB; --silver-light: #F9FAFB; --white: #FFFFFF; --text-muted: #4B5563; }
+        :root { --black: #111827; --maroon: #7A0000; --silver: #D1D5DB; --silver-light: #F3F4F6; --white: #FFFFFF; --gray: #4B5563; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
 
-        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .nav-left { display: flex; align-items: center; gap: 16px; }
-        .back-btn { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; }
-        .back-btn:hover { background: var(--silver-light); color: var(--maroon); }
-        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; }
-        .profile-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none; font-weight: 600; }
+        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 20px; height: 64px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-logo { text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.2rem; }
+        .hamburger { background: none; border: none; cursor: pointer; padding: 8px; }
 
-        .container { max-width: 900px; margin: 60px auto; padding: 0 24px; flex: 1; width: 100%; }
-        .header-title { text-align: center; margin-bottom: 48px; }
-        .header-title h1 { font-size: 2.2rem; margin-bottom: 12px; }
-        .header-title p { color: var(--text-muted); font-size: 1.1rem; }
+        .side-menu { position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; background: var(--white); border-left: 1px solid var(--silver); z-index: 1000; transition: right 0.3s ease; padding: 24px; }
+        .side-menu.open { right: 0; }
+        .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
+        .menu-links { display: flex; flex-direction: column; gap: 8px; }
+        .menu-links a { text-decoration: none; color: var(--black); font-weight: 500; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; }
 
-        .grid { display: grid; gap: 20px; }
-        .resource-card { border: 1px solid var(--silver); border-radius: 12px; padding: 24px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; background: var(--white); }
-        .resource-card:hover { border-color: var(--maroon); box-shadow: 0 10px 15px -3px rgba(122,0,0,0.1); transform: translateX(4px); }
+        .container { max-width: 800px; margin: 32px auto; padding: 0 20px; flex: 1; width: 100%; }
+        .header-title { text-align: center; margin-bottom: 32px; }
+        .header-title h1 { font-size: 2rem; margin-bottom: 8px; }
+
+        .grid { display: grid; gap: 12px; }
+        .resource-card { border: 1px solid var(--silver); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; background: var(--white); transition: 0.2s; }
+        .res-info h3 { font-size: 1rem; margin-bottom: 4px; }
+        .res-info p { font-size: 0.8rem; color: var(--gray); }
         
-        .res-info h3 { font-size: 1.1rem; margin-bottom: 6px; }
-        .res-info p { font-size: 0.9rem; color: var(--text-muted); }
-        
-        .download-btn { background: var(--silver-light); border: 1px solid var(--silver); color: var(--black); padding: 12px 20px; font-weight: 600; font-size: 0.9rem; text-decoration: none; cursor: pointer; transition: 0.2s; border-radius: 8px; display: flex; align-items: center; gap: 8px; }
-        .download-btn:hover { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
+        .download-btn { background: var(--silver-light); color: var(--black); padding: 10px 16px; font-weight: 600; font-size: 0.8rem; border-radius: 6px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
 
-        footer { border-top: 1px solid var(--silver); text-align: center; padding: 32px; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
-        @media (max-width: 768px) { .resource-card { flex-direction: column; align-items: flex-start; gap: 16px; } }
+        footer { border-top: 1px solid var(--silver); text-align: center; padding: 24px; font-size: 0.8rem; color: var(--gray); margin-top: auto; }
     </style>
 </head>
 <body>
     <nav>
         <div class="nav-left">
-            <button class="back-btn" onclick="history.back()"><i data-lucide="arrow-left" size="24"></i></button>
-            <a href="dashboard.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
+            <button class="back-btn" onclick="history.back()"><i data-lucide="arrow-left" size="22"></i></button>
+            <a href="dashboard.html" class="nav-logo"><i data-lucide="triangle" size="20" style="vertical-align: middle;"></i> IFB</a>
         </div>
-        <a href="dashboard.html" class="profile-circle"><i data-lucide="user" size="20"></i></a>
+        <button class="hamburger" onclick="toggleMenu()"><i data-lucide="menu" size="28"></i></button>
     </nav>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <span style="font-weight: 700; color: var(--maroon);">Navigation</span>
+            <button class="menu-close" onclick="toggleMenu()"><i data-lucide="x" size="24"></i></button>
+        </div>
+        <div class="menu-links">
+            <a href="index.html"><i data-lucide="home" size="20"></i> Gateway</a>
+            <a href="dashboard.html"><i data-lucide="user" size="20"></i> Dashboard</a>
+            <a href="courses.html"><i data-lucide="book-open" size="20"></i> Courses</a>
+            <a href="documents.html"><i data-lucide="folder" size="20"></i> Documents</a>
+        </div>
+    </div>
 
     <main class="container">
         <div class="header-title">
-            <h1>Official Documentation Hub</h1>
-            <p>Access all official IFB resources, policies, and schedules for the 2026—2027 Academic Year.</p>
+            <h1>Document Hub</h1>
+            <p style="color: var(--gray);">Official 2026—2027 Resources</p>
         </div>
 
         <div class="grid">
             <div class="resource-card">
                 <div class="res-info">
                     <h3>Admission Slip</h3>
-                    <p>Your official provisional admission letter and barcode.</p>
+                    <p>Provisional admission letter.</p>
                 </div>
-                <a href="admission-slip.html" class="download-btn">View Document <i data-lucide="external-link" size="16"></i></a>
+                <a href="#" class="download-btn" onclick="alert('Downloading...')">Download</a>
             </div>
-
             <div class="resource-card">
                 <div class="res-info">
-                    <h3>AQ-AE Examination Timetable 2027</h3>
-                    <p>The official schedule for the January Admission Examinations.</p>
+                    <h3>AQ-AE Timetable 2027</h3>
+                    <p>Examination schedule.</p>
                 </div>
-                <a href="timetable.html" class="download-btn">View Document <i data-lucide="external-link" size="16"></i></a>
+                <a href="#" class="download-btn" onclick="alert('Downloading...')">Download</a>
             </div>
-
             <div class="resource-card">
                 <div class="res-info">
                     <h3>Examination Guidelines</h3>
-                    <p>Strict rules regarding AI moderation, numeric IDs, and secure environments.</p>
+                    <p>Rules & AI moderation policy.</p>
                 </div>
-                <a href="guidelines.html" class="download-btn">View Document <i data-lucide="external-link" size="16"></i></a>
+                <a href="#" class="download-btn" onclick="alert('Downloading...')">Download</a>
             </div>
-
             <div class="resource-card">
                 <div class="res-info">
-                    <h3>Non-Accredited Status Notice</h3>
-                    <p>Official documentation regarding your Internal Record of Completion.</p>
+                    <h3>Non-Accredited Notice</h3>
+                    <p>Internal record of completion.</p>
                 </div>
-                <a href="notice.html" class="download-btn">View Document <i data-lucide="external-link" size="16"></i></a>
+                <a href="#" class="download-btn" onclick="alert('Downloading...')">Download</a>
             </div>
         </div>
     </main>
 
     <footer>&copy; 2026—2027 IFB. Non-Accredited Independent Platform.</footer>
-    <script>lucide.createIcons();</script>
+    <script>
+        lucide.createIcons();
+        function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
+    </script>
 </body>
 </html>
