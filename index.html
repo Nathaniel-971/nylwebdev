@@ -3,130 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFB | Gateway</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>IFB | Institute of Board</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root { 
             --black: #111827; 
             --maroon: #7A0000; 
+            --maroon-dark: #5a0000;
             --silver: #D1D5DB; 
             --silver-light: #F3F4F6; 
             --white: #FFFFFF; 
             --gray: #4B5563; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; line-height: 1.5; }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; line-height: 1.6; }
 
         /* Animations */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; }
 
         /* Navigation */
-        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 20px; height: 64px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.2rem; }
+        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 20px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        
+        .profile-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 700; text-decoration: none; transition: 0.2s; border: 2px solid transparent; }
+        .profile-icon:hover { border-color: var(--maroon); background: var(--white); color: var(--maroon); }
+        
         .hamburger { background: none; border: none; cursor: pointer; color: var(--black); padding: 8px; }
         .hamburger:hover { color: var(--maroon); }
 
         /* Slide-out Menu */
-        .side-menu { position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; background: var(--white); border-left: 1px solid var(--silver); z-index: 1000; transition: right 0.3s ease; padding: 24px; display: flex; flex-direction: column; }
+        .side-menu { position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; background: var(--white); border-left: 1px solid var(--silver); z-index: 1000; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
         .side-menu.open { right: 0; }
         .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
         .menu-close { background: none; border: none; cursor: pointer; color: var(--gray); }
         .menu-links { display: flex; flex-direction: column; gap: 8px; }
-        .menu-links a { text-decoration: none; color: var(--black); font-weight: 500; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; }
+        .menu-links a { text-decoration: none; color: var(--black); font-weight: 600; padding: 14px; border-radius: 8px; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
         .menu-links a:hover { background: var(--silver-light); color: var(--maroon); }
 
-        /* Content */
-        .container { max-width: 600px; margin: 32px auto; padding: 0 20px; flex: 1; width: 100%; }
-        .hero { text-align: center; margin-bottom: 32px; }
-        .hero h1 { font-size: 2rem; margin-bottom: 8px; }
-        .hero p { color: var(--gray); font-size: 0.95rem; }
+        /* Hero Section (E-commerce/University feel) */
+        .hero { background: var(--silver-light); padding: 60px 20px; text-align: center; border-bottom: 1px solid var(--silver); }
+        .hero-content { max-width: 800px; margin: 0 auto; }
+        .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; color: var(--black); letter-spacing: -1px; line-height: 1.2; }
+        .hero p { color: var(--gray); font-size: 1.1rem; margin-bottom: 32px; }
+        .hero-badge { display: inline-block; background: var(--white); border: 1px solid var(--silver); color: var(--maroon); padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
 
-        .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
-        .card h2 { font-size: 1.2rem; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--silver); }
+        /* Main Container */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; }
+
+        /* Auto Sign-In / Auth Section */
+        .auth-box { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); margin-bottom: 48px; }
         
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; transition: 0.2s; font-size: 1rem; }
-        .input-group input:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122,0,0,0.1); }
+        .welcome-back { text-align: center; display: none; }
+        .welcome-back h2 { font-size: 1.8rem; color: var(--maroon); margin-bottom: 8px; }
+        .welcome-back p { color: var(--gray); margin-bottom: 24px; }
+        .btn-dashboard { display: inline-flex; justify-content: center; align-items: center; gap: 8px; background: var(--maroon); color: var(--white); padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: 0.2s; }
+        .btn-dashboard:hover { background: var(--maroon-dark); transform: translateY(-2px); }
+
+        .auth-forms { display: grid; grid-template-columns: 1fr; gap: 32px; }
+        .form-group { width: 100%; }
+        .form-group h3 { font-size: 1.2rem; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--silver); }
+        
+        .input-field { margin-bottom: 16px; }
+        .input-field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--black); }
+        .input-field input { width: 100%; padding: 14px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; transition: 0.2s; font-size: 0.95rem; }
+        .input-field input:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122,0,0,0.1); }
         
         .btn { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn:hover { background: var(--maroon-hover); transform: translateY(-2px); }
+        .btn:hover { background: var(--maroon-dark); }
 
-        footer { border-top: 1px solid var(--silver); text-align: center; padding: 24px; font-size: 0.8rem; color: var(--gray); }
+        /* Course Preview (E-commerce Grid) */
+        .section-title { text-align: center; font-size: 2rem; font-weight: 800; margin-bottom: 32px; letter-spacing: -0.5px; }
+        .course-preview-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        .course-preview-card { border: 1px solid var(--silver); border-radius: 12px; padding: 24px; transition: 0.3s; background: var(--white); display: flex; flex-direction: column; }
+        .course-preview-card:hover { border-color: var(--maroon); transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        .course-icon { width: 48px; height: 48px; background: var(--silver-light); color: var(--maroon); border-radius: 8px; display: flex; justify-content: center; align-items: center; margin-bottom: 16px; }
+        .course-preview-card h3 { font-size: 1.2rem; margin-bottom: 8px; }
+        .course-preview-card p { font-size: 0.9rem; color: var(--gray); margin-bottom: 24px; flex: 1; }
+        .course-link { color: var(--maroon); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+        .course-link:hover { text-decoration: underline; }
+
+        footer { background: var(--white); border-top: 1px solid var(--silver); padding: 32px 20px; text-align: center; font-size: 0.85rem; color: var(--gray); margin-top: auto; }
+
+        /* Desktop Overrides */
+        @media (min-width: 768px) {
+            .auth-forms { grid-template-columns: 1fr 1fr; }
+            .course-preview-grid { grid-template-columns: 1fr 1fr 1fr; }
+            .hero h1 { font-size: 3.5rem; }
+            .hamburger { display: block; } /* Keeping hamburger for directory access as requested */
+        }
     </style>
 </head>
 <body>
-    <nav>
-        <a href="index.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
-        <button class="hamburger" onclick="toggleMenu()"><i data-lucide="menu" size="28"></i></button>
-    </nav>
-
+    <!-- Slide-out Menu -->
     <div class="side-menu" id="sideMenu">
         <div class="menu-header">
-            <span style="font-weight: 700; color: var(--maroon);">Navigation</span>
-            <button class="menu-close" onclick="toggleMenu()"><i data-lucide="x" size="24"></i></button>
+            <span style="font-weight: 800; color: var(--maroon); font-size: 1.2rem;">∆ IFB Directory</span>
+            <button class="menu-close" onclick="toggleMenu()"><i data-lucide="x" size="28"></i></button>
         </div>
         <div class="menu-links">
-            <a href="index.html"><i data-lucide="home" size="20"></i> Gateway</a>
-            <a href="dashboard.html"><i data-lucide="user" size="20"></i> Dashboard</a>
-            <a href="courses.html"><i data-lucide="book-open" size="20"></i> Courses</a>
-            <a href="documents.html"><i data-lucide="folder" size="20"></i> Documents</a>
+            <a href="index.html"><i data-lucide="home" size="22"></i> Landing Page</a>
+            <a href="dashboard.html"><i data-lucide="layout-dashboard" size="22"></i> Student Portal</a>
+            <a href="courses.html"><i data-lucide="book-open" size="22"></i> Academic Tracks</a>
+            <a href="documents.html"><i data-lucide="folder" size="22"></i> Document Hub</a>
         </div>
     </div>
 
-    <main class="container animate-fade-up">
-        <div class="hero">
-            <h1>Official Gateway</h1>
-            <p>Register for the 2026—2027 Academic Year.</p>
+    <nav>
+        <a href="index.html" class="nav-logo"><i data-lucide="triangle" size="28"></i> IFB</a>
+        <div class="nav-right">
+            <a href="dashboard.html" class="profile-icon" id="navProfileIcon" style="display: none;">
+                <!-- Letter will be injected via JS -->
+            </a>
+            <button class="hamburger" onclick="toggleMenu()"><i data-lucide="menu" size="32"></i></button>
+        </div>
+    </nav>
+
+    <header class="hero animate-fade-up">
+        <div class="hero-content">
+            <span class="hero-badge">2026 — 2027 Academic Year</span>
+            <h1>Engineering the Future of Digital Sciences</h1>
+            <p>The Institute of Board (IFB) offers an independent, technologically advanced educational framework designed for the modern web. Master full-stack deployment, mathematical logic, and applied sciences.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- Auth Section -->
+        <div class="auth-box animate-fade-up" style="animation-delay: 0.1s;">
+            
+            <!-- Show this if logged in -->
+            <div class="welcome-back" id="welcomeBack">
+                <h2>Welcome back, <span id="welcomeName"></span>.</h2>
+                <p>You are securely logged in to the IFB Portal.</p>
+                <a href="dashboard.html" class="btn-dashboard">Go to Dashboard <i data-lucide="arrow-right" size="18"></i></a>
+            </div>
+
+            <!-- Show this if logged out -->
+            <div class="auth-forms" id="authForms">
+                <!-- Registration -->
+                <div class="form-group">
+                    <h3>New Applicant</h3>
+                    <form id="regForm">
+                        <div class="input-field">
+                            <label>Full Name</label>
+                            <input type="text" id="regName" required placeholder="John Doe">
+                        </div>
+                        <div class="input-field">
+                            <label>Email Address</label>
+                            <input type="email" id="regEmail" required placeholder="john@example.com">
+                        </div>
+                        <div class="input-field">
+                            <label>Password</label>
+                            <input type="password" id="regPass" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn">Create Profile <i data-lucide="user-plus" size="18"></i></button>
+                    </form>
+                </div>
+
+                <!-- Login -->
+                <div class="form-group">
+                    <h3>Returning Student</h3>
+                    <form id="loginForm">
+                        <div class="input-field">
+                            <label>Email Address</label>
+                            <input type="email" id="loginEmail" required placeholder="john@example.com">
+                        </div>
+                        <div class="input-field">
+                            <label>Password</label>
+                            <input type="password" id="loginPass" required placeholder="••••••••">
+                        </div>
+                        <div style="margin-top: 42px;"> <!-- Spacer to align button with other form -->
+                            <button type="submit" class="btn">Secure Login <i data-lucide="log-in" size="18"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h2>Create Student Profile</h2>
-            <form id="regForm">
-                <div class="input-group">
-                    <label>Full Name</label>
-                    <input type="text" id="regName" required placeholder="John Doe">
-                </div>
-                <div class="input-group">
-                    <label>Email Address</label>
-                    <input type="email" id="regEmail" required placeholder="john@example.com">
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="regPass" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn">Create Profile <i data-lucide="arrow-right" size="18"></i></button>
-            </form>
+        <!-- Course Preview -->
+        <h2 class="section-title animate-fade-up" style="animation-delay: 0.2s;">Explore Academic Tracks</h2>
+        <div class="course-preview-grid animate-fade-up" style="animation-delay: 0.3s;">
+            <div class="course-preview-card">
+                <div class="course-icon"><i data-lucide="layers" size="24"></i></div>
+                <h3>Full Stack Development</h3>
+                <p>Master both client-side and server-side architecture, databases, and deployment.</p>
+                <a href="courses.html" class="course-link">View Track <i data-lucide="arrow-right" size="16"></i></a>
+            </div>
+            <div class="course-preview-card">
+                <div class="course-icon"><i data-lucide="layout" size="24"></i></div>
+                <h3>Frontend Development</h3>
+                <p>UI/UX implementation, DOM manipulation, modern frameworks, and responsive design.</p>
+                <a href="courses.html" class="course-link">View Track <i data-lucide="arrow-right" size="16"></i></a>
+            </div>
+            <div class="course-preview-card">
+                <div class="course-icon"><i data-lucide="server" size="24"></i></div>
+                <h3>Backend Development</h3>
+                <p>Server logic, API creation, and robust database management.</p>
+                <a href="courses.html" class="course-link">View Track <i data-lucide="arrow-right" size="16"></i></a>
+            </div>
         </div>
 
-        <div class="card">
-            <h2>Student Login</h2>
-            <form id="loginForm">
-                <div class="input-group">
-                    <label>Email Address</label>
-                    <input type="email" id="loginEmail" required placeholder="john@example.com">
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPass" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="btn">Login <i data-lucide="log-in" size="18"></i></button>
-            </form>
-        </div>
     </main>
 
     <footer>&copy; 2026—2027 IFB. Non-Accredited Independent Platform.</footer>
 
     <script>
         lucide.createIcons();
+        
+        function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
 
-        function toggleMenu() {
-            document.getElementById('sideMenu').classList.toggle('open');
-        }
-
-        // SHA-256 Hashing Function
+        // Hashing Function
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -134,12 +223,24 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // Initialize DB if not exists
-        if (!localStorage.getItem('ifb_db')) {
-            localStorage.setItem('ifb_db', JSON.stringify([]));
+        // Initialize DB
+        if (!localStorage.getItem('ifb_db')) localStorage.setItem('ifb_db', JSON.stringify([]));
+
+        // --- AUTO SIGN IN LOGIC ---
+        const currentUser = JSON.parse(localStorage.getItem('ifb_current_user'));
+        if (currentUser) {
+            // User is logged in
+            document.getElementById('authForms').style.display = 'none';
+            document.getElementById('welcomeBack').style.display = 'block';
+            document.getElementById('welcomeName').textContent = currentUser.name;
+            
+            // Show profile icon in nav
+            const profileIcon = document.getElementById('navProfileIcon');
+            profileIcon.style.display = 'flex';
+            profileIcon.innerHTML = currentUser.name.charAt(0).toUpperCase();
         }
 
-        // Registration Logic (Automatic ID Generation)
+        // --- REGISTRATION ---
         document.getElementById('regForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('regName').value;
@@ -149,29 +250,24 @@
             const hashedPass = await hashPassword(password);
             const db = JSON.parse(localStorage.getItem('ifb_db'));
 
-            // Check if email exists
-            if(db.find(u => u.email === email)) {
-                alert("Email already registered.");
-                return;
-            }
+            if(db.find(u => u.email === email)) { alert("Email already registered."); return; }
 
-            // Auto Generate IDs
-            const year = new Date().getFullYear(); // 2026
-            const seq = String(db.length + 1).padStart(4, '0'); // 0001
-            const examNumber = `${year}${seq}`; // 20260001
-            const studentId = Math.floor(100000 + Math.random() * 900000).toString(); // 6 digits
+            // Auto Generate IDs (YEAR + 4 digit sequence)
+            const year = new Date().getFullYear();
+            const seq = String(db.length + 1).padStart(4, '0'); 
+            const examNumber = `${year}${seq}`; 
+            const studentId = Math.floor(100000 + Math.random() * 900000).toString(); 
             const admissionId = `ADM-${examNumber}`;
 
             const newUser = { name, email, password: hashedPass, examNumber, studentId, admissionId };
             db.push(newUser);
             localStorage.setItem('ifb_db', JSON.stringify(db));
-
-            // Auto Login
             localStorage.setItem('ifb_current_user', JSON.stringify(newUser));
+            
             window.location.href = 'dashboard.html';
         });
 
-        // Login Logic
+        // --- LOGIN ---
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
