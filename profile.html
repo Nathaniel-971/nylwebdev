@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFB | Student Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root { --black: #111827; --maroon: #7A0000; --silver: #D1D5DB; --silver-light: #F9FAFB; --white: #FFFFFF; --text-muted: #4B5563; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; }
+
+        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; }
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a { text-decoration: none; color: var(--black); font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--maroon); }
+
+        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; flex: 1; width: 100%; }
+
+        .profile-header { display: flex; align-items: center; gap: 24px; margin-bottom: 40px; background: var(--silver-light); padding: 32px; border-radius: 12px; border: 1px solid var(--silver); }
+        .profile-avatar { width: 96px; height: 96px; border-radius: 16px; border: 4px solid var(--maroon); object-fit: cover; background: var(--white); box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.3s; }
+        .profile-avatar:hover { transform: scale(1.05); }
+        .profile-info h1 { font-size: 1.8rem; margin-bottom: 4px; }
+        .profile-info p { color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        .document { background: var(--white); border: 1px solid var(--silver); border-top: 8px solid var(--maroon); border-radius: 8px; padding: 40px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); }
+        .doc-header { display: flex; justify-content: space-between; border-bottom: 2px solid var(--silver); padding-bottom: 20px; margin-bottom: 30px; }
+        .doc-header h1 { color: var(--maroon); font-size: 1.8rem; display: flex; align-items: center; gap: 8px; }
+        
+        .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px; }
+        .doc-grid strong { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .doc-grid span { font-weight: 600; font-size: 1.1rem; color: var(--black); }
+        
+        .barcode-box { background: var(--silver-light); padding: 24px; text-align: center; border: 1px dashed var(--silver); border-radius: 8px; margin-bottom: 30px; }
+        .barcode { height: 60px; width: 100%; max-width: 300px; margin: 0 auto 12px; background: repeating-linear-gradient(to right, var(--black) 0, var(--black) 2px, transparent 2px, transparent 4px, var(--black) 4px, var(--black) 8px, transparent 8px, transparent 10px, var(--black) 10px, var(--black) 12px, transparent 12px, transparent 16px); }
+
+        footer { background: var(--white); border-top: 1px solid var(--silver); color: var(--text-muted); text-align: center; padding: 32px; font-size: 0.85rem; margin-top: auto; }
+        
+        @media (max-width: 768px) {
+            .profile-header { flex-direction: column; text-align: center; }
+            .doc-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
+        <div class="nav-links">
+            <a href="courses.html"><i data-lucide="book-open" size="18"></i> Courses</a>
+            <a href="documents.html"><i data-lucide="folder" size="18"></i> Resources</a>
+            <a href="profile.html" style="color: var(--maroon);"><i data-lucide="user" size="18"></i> Profile</a>
+        </div>
+    </nav>
+
+    <main class="container animate-fade-up">
+        <div class="profile-header">
+            <img id="studentAvatar" class="profile-avatar" src="" alt="Student Avatar">
+            <div class="profile-info">
+                <h1 id="profileName">Student Name</h1>
+                <p>Provisionally Accepted</p>
+            </div>
+        </div>
+
+        <div class="document">
+            <div class="doc-header">
+                <div>
+                    <h1><i data-lucide="triangle"></i> IFB</h1>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Institute of Board</p>
+                </div>
+                <div style="text-align: right;">
+                    <h2 style="color: var(--maroon); font-size: 1.4rem;">Admission Letter</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">2026—2027</p>
+                </div>
+            </div>
+            
+            <div class="doc-grid">
+                <div><strong>Admission ID</strong><span id="docAdmId" style="color: var(--maroon);">-</span></div>
+                <div><strong>Specialization Track</strong><span>Track 1: Full Stack Engineering</span></div>
+            </div>
+
+            <div class="barcode-box">
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 12px;">EXAMINATION ID</div>
+                <div class="barcode"></div>
+                <div style="font-family: monospace; font-size: 1.4rem; letter-spacing: 6px; font-weight: 700;" id="docExamId">00000000</div>
+            </div>
+
+            <div style="background: var(--silver-light); padding: 16px; border-left: 4px solid var(--maroon); font-size: 0.9rem; color: var(--text-muted);">
+                <strong>Important Notice:</strong> Examination access is currently closed. Your schedule will be released prior to the January 2027 assessment period.
+            </div>
+        </div>
+    </main>
+
+    <footer>&copy; 2026—2027 IFB. Non-Accredited Independent Platform.</footer>
+
+    <script>
+        lucide.createIcons();
+        let studentName = localStorage.getItem('ifb_student_name') || "New Candidate";
+        document.getElementById('profileName').textContent = studentName;
+
+        // Generates a modern, minimalist avatar
+        const formattedName = encodeURIComponent(studentName);
+        document.getElementById('studentAvatar').src = `https://ui-avatars.com/api/?name=${formattedName}&background=7A0000&color=fff&size=128&rounded=false&bold=true&font-size=0.4`;
+
+        const admId = "2026" + Math.floor(100000 + Math.random() * 900000);
+        const examId = Math.floor(10000000 + Math.random() * 90000000);
+        
+        document.getElementById('docAdmId').textContent = admId;
+        document.getElementById('docExamId').textContent = examId;
+    </script>
+</body>
+</html>
