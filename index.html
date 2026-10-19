@@ -9,125 +9,61 @@
     <style>
         :root { --black: #111827; --maroon: #7A0000; --maroon-hover: #9C0000; --silver: #D1D5DB; --silver-light: #F9FAFB; --white: #FFFFFF; --text-muted: #4B5563; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; line-height: 1.5; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        
+        /* Loading Screen */
+        #loader { position: fixed; inset: 0; background: var(--white); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease; }
+        .loader-delta { font-size: 4rem; color: var(--maroon); font-weight: 700; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* Minimalist Animations */
+        /* Animations */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
+        .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; } .delay-2 { animation-delay: 0.2s; }
 
-        nav { background: var(--white); border-bottom: 1px solid var(--silver); position: sticky; top: 0; z-index: 100; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; }
-        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; transition: transform 0.2s; }
-        .nav-logo:hover { transform: scale(1.02); }
-        .nav-links { display: flex; gap: 32px; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--black); font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--maroon); }
+        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; }
+        .profile-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none; font-weight: 600; transition: transform 0.2s; }
+        .profile-circle:hover { transform: scale(1.05); }
 
-        .hero { text-align: center; padding: 80px 24px 40px; background: var(--white); }
-        .hero-badge { display: inline-block; background: var(--silver-light); color: var(--maroon); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; border: 1px solid var(--silver); }
+        .hero { text-align: center; padding: 80px 24px 40px; }
         .hero h1 { font-size: 2.8rem; margin-bottom: 16px; letter-spacing: -1px; }
         .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
 
-        /* Minimalist Carousel */
-        .carousel-container { position: relative; width: 100%; max-width: 1200px; margin: 0 auto 60px; height: 400px; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); }
-        .carousel-track { display: flex; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
-        .carousel-slide { min-width: 100%; height: 100%; position: relative; }
-        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); }
-        .carousel-slide::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); }
-        .slide-caption { position: absolute; bottom: 40px; left: 40px; color: var(--white); z-index: 10; }
-        .slide-caption h2 { font-size: 2rem; font-weight: 600; margin-bottom: 8px; }
-        .slide-caption p { font-size: 1.1rem; opacity: 0.9; }
-        
-        .carousel-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: 0.3s; }
-        .dot.active { background: var(--white); width: 24px; border-radius: 5px; }
-
-        .mission { background: var(--silver-light); padding: 64px 24px; border-top: 1px solid var(--silver); border-bottom: 1px solid var(--silver); text-align: center; }
-        .mission-content { max-width: 800px; margin: 0 auto; }
-        .mission h2 { color: var(--maroon); font-size: 1.5rem; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 2px; }
-        .mission p { font-size: 1.2rem; color: var(--black); font-style: italic; line-height: 1.6; }
-
-        .container { max-width: 900px; margin: 60px auto; padding: 0 24px; flex: 1; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-        .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); transition: transform 0.3s, box-shadow 0.3s; }
-        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -8px rgba(0,0,0,0.1); }
-        .card h2 { color: var(--black); font-size: 1.3rem; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--silver); }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; width: 100%; }
+        .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+        .card h2 { font-size: 1.3rem; margin-bottom: 24px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
         
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
-        .input-group input { width: 100%; padding: 14px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; background: var(--white); transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-group input { width: 100%; padding: 14px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; transition: 0.2s; }
         .input-group input:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122,0,0,0.1); }
         
-        .btn { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn:hover { background: var(--maroon-hover); transform: scale(1.01); }
+        .btn { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
-        footer { background: var(--white); border-top: 1px solid var(--silver); color: var(--text-muted); text-align: center; padding: 32px; font-size: 0.85rem; margin-top: auto; }
-
-        @media (max-width: 768px) {
-            .container { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
-            .carousel-container { height: 300px; border-radius: 0; }
-            .slide-caption h2 { font-size: 1.4rem; }
-            .slide-caption p { font-size: 0.9rem; }
-        }
+        footer { border-top: 1px solid var(--silver); text-align: center; padding: 32px; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
+    <div id="loader"><div class="loader-delta">∆</div></div>
+
     <nav>
         <a href="index.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
-        <div class="nav-links">
-            <a href="courses.html"><i data-lucide="book-open" size="18"></i> Courses</a>
-            <a href="documents.html"><i data-lucide="folder" size="18"></i> Resources</a>
-            <a href="profile.html"><i data-lucide="user" size="18"></i> Profile</a>
-        </div>
+        <a href="dashboard.html" class="profile-circle"><i data-lucide="user" size="20"></i></a>
     </nav>
 
     <header class="hero animate-fade-up">
-        <span class="hero-badge">2026—2027 Academic Year</span>
         <h1>Official Candidate Gateway</h1>
-        <p>Register for the IFB Professional Certificate. Select your specialization track and generate your formal digital admission letter.</p>
+        <p>Register for the 2026-2027 Academic Year. Access your dashboard, download admission slips, and view examination schedules.</p>
     </header>
 
-    <!-- Minimalist Image Carousel -->
-    <div class="carousel-container animate-fade-up delay-1">
-        <div class="carousel-track" id="carouselTrack">
-            <div class="carousel-slide">
-                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Technology">
-                <div class="slide-caption">
-                    <h2>Advanced Digital Sciences</h2>
-                    <p>Equipping candidates with modern technological frameworks.</p>
-                </div>
-            </div>
-            <div class="carousel-slide">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop" alt="Data">
-                <div class="slide-caption">
-                    <h2>AI-Driven Evaluation</h2>
-                    <p>Rigorous, unbiased marking powered by DeepSeek AI.</p>
-                </div>
-            </div>
-            <div class="carousel-slide">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" alt="Students">
-                <div class="slide-caption">
-                    <h2>Independent Excellence</h2>
-                    <p>Unconstrained by traditional accreditation bottlenecks.</p>
-                </div>
-            </div>
-        </div>
-        <div class="carousel-dots" id="carouselDots"></div>
-    </div>
-
-    <section class="mission animate-fade-up delay-2">
-        <div class="mission-content">
-            <h2>Our Mission</h2>
-            <p>"To provide an independent, technologically advanced educational framework that equips candidates with rigorous, AI-evaluated academic and practical skills."</p>
-        </div>
-    </section>
-
     <main class="container">
-        <div class="card animate-fade-up delay-3">
-            <h2><i data-lucide="user-plus" style="color: var(--maroon);"></i> New Registration</h2>
-            <form id="regForm" onsubmit="registerUser(event)">
+        <!-- Registration -->
+        <div class="card animate-fade-up delay-1">
+            <h2>Full Student Sign Up</h2>
+            <form id="regForm">
                 <div class="input-group">
                     <label>Full Name</label>
                     <input type="text" id="regName" required placeholder="John Doe">
@@ -136,14 +72,19 @@
                     <label>Email Address</label>
                     <input type="email" id="regEmail" required placeholder="john@example.com">
                 </div>
-                <button type="submit" class="btn">Generate Reference ID <i data-lucide="arrow-right" size="18"></i></button>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="regPass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn">Create Profile <i data-lucide="arrow-right" size="18"></i></button>
             </form>
         </div>
 
-        <div class="card animate-fade-up delay-3" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
-            <h2 style="border: none; justify-content: center;">Already Registered?</h2>
-            <p style="color: var(--text-muted); margin-bottom: 24px;">Access your student profile, admission letter, and examination IDs.</p>
-            <a href="profile.html" class="btn" style="text-decoration: none;">Student Login <i data-lucide="log-in" size="18"></i></a>
+        <!-- Login -->
+        <div class="card animate-fade-up delay-2" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+            <h2 style="border: none;">Existing Student</h2>
+            <p style="color: var(--text-muted); margin-bottom: 24px;">Log in to your dashboard to access your ID, Exam Number, and documents.</p>
+            <button onclick="login()" class="btn">Student Login <i data-lucide="log-in" size="18"></i></button>
         </div>
     </main>
 
@@ -151,47 +92,31 @@
 
     <script>
         lucide.createIcons();
-
-        // Registration Logic
-        function registerUser(e) {
-            e.preventDefault();
-            const name = document.getElementById('regName').value;
-            localStorage.setItem('ifb_student_name', name);
-            window.location.href = 'profile.html';
-        }
-
-        // Carousel Logic
-        const track = document.getElementById('carouselTrack');
-        const slides = document.querySelectorAll('.carousel-slide');
-        const dotsContainer = document.getElementById('carouselDots');
-        let currentSlide = 0;
-
-        // Create dots
-        slides.forEach((_, i) => {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            if(i === 0) dot.classList.add('active');
-            dot.addEventListener('click', () => goToSlide(i));
-            dotsContainer.appendChild(dot);
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+            }, 1000);
         });
 
-        function updateCarousel() {
-            track.style.transform = `translateX(-${currentSlide * 100}%)`;
-            document.querySelectorAll('.dot').forEach((dot, i) => {
-                dot.classList.toggle('active', i === currentSlide);
-            });
-        }
+        document.getElementById('regForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            
+            localStorage.setItem('ifb_name', name);
+            localStorage.setItem('ifb_email', email);
+            window.location.href = 'dashboard.html';
+        });
 
-        function goToSlide(index) {
-            currentSlide = index;
-            updateCarousel();
+        function login() {
+            // Mock login for demonstration - defaults to admin if no email
+            if (!localStorage.getItem('ifb_email')) {
+                localStorage.setItem('ifb_name', 'Admin User');
+                localStorage.setItem('ifb_email', 'n1nathaniel971@gmail.com');
+            }
+            window.location.href = 'dashboard.html';
         }
-
-        // Auto-play
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % slides.length;
-            updateCarousel();
-        }, 5000);
     </script>
 </body>
 </html>
