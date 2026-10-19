@@ -3,118 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFB | Official Gateway</title>
+    <title>IFB | Official Gateway 2026-2027</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --black: #0a0a0a;
-            --maroon: #800000;
-            --maroon-hover: #a30000;
-            --silver: #c0c0c0;
-            --silver-light: #f3f4f6;
-            --white: #ffffff;
-            --text-muted: #555555;
+            --black: #111827;
+            --maroon: #7A0000; /* Formal, deep maroon */
+            --maroon-hover: #9C0000;
+            --silver: #D1D5DB;
+            --silver-light: #F3F4F6;
+            --white: #FFFFFF;
+            --text-muted: #4B5563;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--white); 
+            color: var(--black); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            line-height: 1.5;
+        }
 
-        /* Loading Screen */
-        #loader { position: fixed; inset: 0; background: var(--black); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s; }
-        .loader-delta { font-size: 4rem; color: var(--maroon); font-weight: 700; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        /* --- Navigation --- */
+        nav { 
+            background: var(--white); 
+            border-bottom: 1px solid var(--silver); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            padding: 0 24px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            height: 72px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .nav-logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            text-decoration: none; 
+            color: var(--maroon); 
+            font-weight: 700; 
+            font-size: 1.25rem; 
+            letter-spacing: 0.5px;
+        }
+        .nav-logo i { stroke-width: 2.5; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { 
+            text-decoration: none; 
+            color: var(--black); 
+            font-weight: 500; 
+            font-size: 0.95rem; 
+            transition: color 0.2s; 
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-links a:hover { color: var(--maroon); }
+        .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; color: var(--black); }
 
-        /* Nav */
-        nav { background: var(--white); border-bottom: 2px solid var(--black); position: sticky; top: 0; z-index: 100; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; height: 70px; }
-        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.2rem; letter-spacing: 1px; }
-        .nav-links { display: flex; gap: 30px; align-items: center; }
-        .nav-links a, .dropbtn { text-decoration: none; color: var(--black); font-weight: 600; font-size: 0.9rem; transition: color 0.2s; background: none; border: none; cursor: pointer; text-transform: uppercase; }
-        .nav-links a:hover, .dropbtn:hover { color: var(--maroon); }
-        
-        /* Dropdown */
-        .dropdown { position: relative; }
-        .dropdown-content { display: none; position: absolute; background: var(--white); min-width: 280px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 1px solid var(--silver); top: 35px; right: 0; z-index: 10; }
-        .dropdown-content a { color: var(--black); padding: 12px 16px; display: block; font-size: 0.85rem; border-bottom: 1px solid var(--silver-light); text-transform: none; font-weight: 500; }
-        .dropdown-content a:hover { background: var(--silver-light); color: var(--maroon); }
-        .dropdown:hover .dropdown-content { display: block; }
+        /* --- Hero --- */
+        .hero { 
+            text-align: center; 
+            padding: 80px 24px; 
+            background: var(--white); 
+            border-bottom: 1px solid var(--silver);
+        }
+        .hero-badge {
+            display: inline-block;
+            background: var(--silver-light);
+            color: var(--maroon);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px solid var(--silver);
+        }
+        .hero h1 { font-size: 2.5rem; color: var(--black); margin-bottom: 16px; letter-spacing: -0.5px; }
+        .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
 
-        /* Hero */
-        .hero { background: var(--black); color: var(--white); text-align: center; padding: 60px 20px; }
-        .hero h1 { font-size: 2.5rem; color: var(--silver); margin-bottom: 10px; }
-        .hero p { color: var(--silver); max-width: 600px; margin: 0 auto; font-size: 1rem; opacity: 0.8; }
-
-        /* Main Content */
-        .container { max-width: 700px; margin: 40px auto; padding: 0 20px; flex: 1; }
-        .card { background: var(--white); border: 1px solid var(--silver); padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 40px; }
-        .card h2 { color: var(--maroon); font-size: 1.4rem; margin-bottom: 20px; border-bottom: 2px solid var(--black); padding-bottom: 10px; }
+        /* --- Main Layout --- */
+        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; flex: 1; width: 100%; }
         
-        .alert-box { background: var(--silver-light); border-left: 4px solid var(--maroon); padding: 15px; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; }
+        .card { 
+            background: var(--white); 
+            border: 1px solid var(--silver); 
+            border-radius: 12px;
+            padding: 40px; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); 
+            margin-bottom: 40px; 
+        }
+        .card h2 { 
+            color: var(--black); 
+            font-size: 1.5rem; 
+            margin-bottom: 24px; 
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--silver);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2 i { color: var(--maroon); }
         
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
-        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid var(--silver); border-radius: 4px; font-size: 1rem; font-family: inherit; }
-        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--black); }
+        .alert-box { 
+            background: var(--silver-light); 
+            border-left: 4px solid var(--maroon); 
+            padding: 16px; 
+            font-size: 0.9rem; 
+            color: var(--text-muted); 
+            margin-bottom: 32px; 
+            border-radius: 0 8px 8px 0;
+        }
         
-        .locked { background: var(--silver-light); padding: 12px; border: 1px solid var(--silver); margin-bottom: 10px; display: flex; justify-content: space-between; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+        .input-group { margin-bottom: 24px; }
+        .input-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--black); }
+        .input-group input, .input-group select { 
+            width: 100%; 
+            padding: 14px 16px; 
+            border: 1px solid var(--silver); 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            font-family: inherit; 
+            background: var(--white);
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122, 0, 0, 0.1); }
         
-        .btn { width: 100%; padding: 15px; background: var(--maroon); color: var(--white); border: none; font-weight: 700; font-size: 1rem; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
+        .locked { 
+            background: var(--silver-light); 
+            padding: 16px; 
+            border: 1px solid var(--silver); 
+            border-radius: 8px;
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            font-weight: 500; 
+            font-size: 0.95rem; 
+            color: var(--text-muted); 
+            align-items: center;
+        }
+        
+        .btn { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--maroon); 
+            color: var(--white); 
+            border: none; 
+            border-radius: 8px;
+            font-weight: 600; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
         .btn:hover { background: var(--maroon-hover); }
+
+        /* --- Admission Letter --- */
+        .document { 
+            background: var(--white); 
+            border: 1px solid var(--silver); 
+            border-top: 8px solid var(--maroon);
+            border-radius: 8px; 
+            padding: 40px; 
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
+            margin-bottom: 40px; 
+        }
+        .doc-header { display: flex; justify-content: space-between; border-bottom: 2px solid var(--silver); padding-bottom: 20px; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;}
+        .doc-header h1 { color: var(--maroon); font-size: 1.8rem; display: flex; align-items: center; gap: 8px;}
+        .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px; font-size: 0.95rem; }
+        .doc-grid strong { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px;}
+        .doc-grid span { font-weight: 600; font-size: 1.1rem; color: var(--black);}
         
-        /* Admission Letter Profile */
-        .document { background: var(--white); border: 1px solid var(--black); padding: 40px; position: relative; overflow: hidden; margin-bottom: 40px; }
-        .doc-header { display: flex; justify-content: space-between; border-bottom: 2px solid var(--maroon); padding-bottom: 20px; margin-bottom: 20px; }
-        .doc-header h1 { color: var(--maroon); font-size: 1.8rem; }
-        .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; font-size: 0.9rem; }
-        .doc-grid strong { display: block; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-        .doc-grid span { font-weight: 600; font-size: 1.1rem; }
+        .barcode-box { 
+            background: var(--silver-light); 
+            padding: 24px; 
+            text-align: center; 
+            border: 1px dashed var(--silver); 
+            border-radius: 8px;
+            margin-bottom: 30px; 
+        }
+        .barcode { 
+            height: 60px; 
+            width: 100%; 
+            max-width: 300px; 
+            margin: 0 auto 12px; 
+            background: repeating-linear-gradient(to right, var(--black) 0, var(--black) 2px, transparent 2px, transparent 4px, var(--black) 4px, var(--black) 8px, transparent 8px, transparent 10px, var(--black) 10px, var(--black) 12px, transparent 12px, transparent 16px); 
+        }
         
-        .barcode-box { background: var(--silver-light); padding: 20px; text-align: center; border: 1px dashed var(--maroon); margin-bottom: 20px; }
-        .barcode { height: 50px; width: 200px; margin: 0 auto 10px; background: repeating-linear-gradient(to right, var(--black) 0, var(--black) 2px, transparent 2px, transparent 4px, var(--black) 4px, var(--black) 8px, transparent 8px, transparent 10px, var(--black) 10px, var(--black) 12px, transparent 12px, transparent 16px); }
-        
-        .table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 15px; }
-        .table th, .table td { border: 1px solid var(--silver); padding: 10px; text-align: left; }
-        .table th { background: var(--silver-light); color: var(--maroon); }
+        .table-responsive { overflow-x: auto; }
+        .table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 15px; text-align: left; }
+        .table th, .table td { border-bottom: 1px solid var(--silver); padding: 16px; }
+        .table th { background: var(--silver-light); color: var(--black); font-weight: 600; }
 
         .hidden { display: none !important; }
-        footer { background: var(--black); color: var(--silver); text-align: center; padding: 20px; font-size: 0.8rem; margin-top: auto; }
+        
+        footer { 
+            background: var(--white); 
+            border-top: 1px solid var(--silver); 
+            color: var(--text-muted); 
+            text-align: center; 
+            padding: 32px 24px; 
+            font-size: 0.85rem; 
+            margin-top: auto; 
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero h1 { font-size: 2rem; }
+            .card, .document { padding: 24px; }
+            .doc-grid { grid-template-columns: 1fr; }
+            .doc-header { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="loader"><div class="loader-delta">∆</div></div>
-
     <nav>
-        <a href="index.html" class="nav-logo"><span>∆</span> IFB</a>
+        <a href="index.html" class="nav-logo">
+            <i data-lucide="triangle"></i> IFB
+        </a>
         <div class="nav-links">
-            <div class="dropdown">
-                <button class="dropbtn">Courses ▾</button>
-                <div class="dropdown-content">
-                    <a href="#curriculum" onclick="preSelectTrack('1')">Track 1: Full Stack Engineering</a>
-                    <a href="#curriculum" onclick="preSelectTrack('2')">Track 2: Frontend Architecture</a>
-                    <a href="#curriculum" onclick="preSelectTrack('3')">Track 3: Backend Systems</a>
-                    <a href="#curriculum" onclick="preSelectTrack('4')">Track 4: Mobile Application Development</a>
-                    <a href="#curriculum" onclick="preSelectTrack('5')">Track 5: Digital Visual Design</a>
-                    <a href="#curriculum" onclick="preSelectTrack('6')">Track 6: Human-Computer Interaction</a>
-                    <a href="#curriculum" onclick="preSelectTrack('7')">Track 7: Data & Statistical Analysis</a>
-                    <a href="#curriculum" onclick="preSelectTrack('8')">Track 8: Applied Physics & Mathematics</a>
-                </div>
-            </div>
-            <a href="#curriculum">Curriculum</a>
-            <a href="examination.html">Examination</a>
-            <a href="documents.html">Resources</a>
+            <a href="#curriculum"><i data-lucide="book-open" size="18"></i> Curriculum</a>
+            <a href="documents.html"><i data-lucide="folder" size="18"></i> Resources</a>
         </div>
+        <button class="mobile-menu-btn"><i data-lucide="menu"></i></button>
     </nav>
 
     <header class="hero">
-        <h1>Official Gateway</h1>
-        <p>Register for the IFB Professional Certificate. Select your track and generate your digital admission letter.</p>
+        <span class="hero-badge">2026—2027 Academic Year</span>
+        <h1>Official Candidate Gateway</h1>
+        <p>Register for the IFB Professional Certificate. Select your specialization track and generate your formal digital admission letter.</p>
     </header>
 
     <main class="container">
         
         <!-- Step 1: Registration -->
         <div id="registrationView" class="card">
-            <h2>Candidate Registration</h2>
+            <h2><i data-lucide="user-plus"></i> Candidate Registration</h2>
             <div class="alert-box">
                 <strong>Institutional Notice:</strong> The IFB is an independent, non-accredited platform. We are not registered with SAQA, DHET, or Umalusi.
             </div>
@@ -131,22 +269,22 @@
                     <label>Password</label>
                     <input type="password" id="regPass" required>
                 </div>
-                <button type="submit" class="btn">Generate Reference ID</button>
+                <button type="submit" class="btn">Generate Reference ID <i data-lucide="arrow-right" size="18"></i></button>
             </form>
         </div>
 
         <!-- Step 2: Curriculum -->
         <div id="curriculumView" class="card hidden" style="scroll-margin-top: 100px;" id="curriculum">
-            <h2>Curriculum Lock & Track Selection</h2>
+            <h2><i data-lucide="layout-list"></i> Curriculum Lock & Track</h2>
             <div class="alert-box" style="border-left-color: #16a34a; color: #166534;">
                 Registration successful. Your Reference ID is: <strong id="displayRefId"></strong>
             </div>
             <form id="currForm" onsubmit="submitCurriculum(event)">
-                <label style="font-size: 0.8rem; font-weight: 700; color: var(--maroon); margin-bottom: 10px; display: block; text-transform: uppercase;">Compulsory Core</label>
-                <div class="locked"><span>Mathematics</span> <span>🔒</span></div>
-                <div class="locked"><span>Logic & Algorithmic Foundations</span> <span>🔒</span></div>
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); margin-bottom: 12px; display: block; text-transform: uppercase;">Compulsory Core Modules</label>
+                <div class="locked"><span>Mathematics</span> <i data-lucide="lock" size="18"></i></div>
+                <div class="locked"><span>Logic & Algorithmic Foundations</span> <i data-lucide="lock" size="18"></i></div>
 
-                <div class="input-group" style="margin-top: 30px;">
+                <div class="input-group" style="margin-top: 32px;">
                     <label>Select Specialization Track</label>
                     <select id="trackSelect" required>
                         <option value="" disabled selected>Choose your track...</option>
@@ -161,59 +299,72 @@
                     </select>
                 </div>
 
-                <div class="input-group" style="display: flex; gap: 15px; background: var(--silver-light); padding: 15px; border: 1px solid var(--silver);">
-                    <input type="checkbox" id="ackBox" required style="width: 20px; height: 20px; accent-color: var(--maroon);">
-                    <label for="ackBox" style="font-weight: 400; font-size: 0.85rem; line-height: 1.5; color: var(--text-muted);">
+                <div class="input-group" style="display: flex; gap: 16px; background: var(--silver-light); padding: 16px; border: 1px solid var(--silver); border-radius: 8px; align-items: flex-start;">
+                    <input type="checkbox" id="ackBox" required style="width: 20px; height: 20px; accent-color: var(--maroon); margin-top: 2px;">
+                    <label for="ackBox" style="font-weight: 400; font-size: 0.9rem; line-height: 1.5; color: var(--text-muted);">
                         I acknowledge the non-accredited status of the IFB. My curriculum will lock on <strong>21 March 2027</strong>.
                     </label>
                 </div>
-                <button type="submit" class="btn" style="margin-top: 20px;">Generate Admission Letter</button>
+                <button type="submit" class="btn" style="margin-top: 24px;">Generate Admission Letter <i data-lucide="file-text" size="18"></i></button>
             </form>
         </div>
 
         <!-- Step 3: Profile / Admission Letter -->
         <div id="profileView" class="document hidden">
             <div class="doc-header">
-                <div><h1>∆ IFB</h1><p style="font-size: 0.8rem; color: var(--text-muted);">Institute of Board</p></div>
-                <div style="text-align: right;"><h1 style="font-size: 1.3rem;">Admission Letter</h1><p style="font-size: 0.8rem; color: var(--text-muted);">Provisional</p></div>
+                <div>
+                    <h1><i data-lucide="triangle"></i> IFB</h1>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Institute of Board</p>
+                </div>
+                <div style="text-align: right;">
+                    <h2 style="color: var(--maroon); font-size: 1.4rem;">Admission Letter</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Provisional Acceptance</p>
+                </div>
             </div>
             
             <div class="doc-grid">
                 <div><strong>Candidate Name</strong><span id="docName">-</span></div>
-                <div><strong>Email</strong><span id="docEmail">-</span></div>
+                <div><strong>Email Address</strong><span id="docEmail">-</span></div>
                 <div><strong>Admission ID</strong><span id="docAdmId" style="color: var(--maroon);">-</span></div>
                 <div><strong>Specialization Track</strong><span id="docTrack">-</span></div>
             </div>
 
             <div class="barcode-box">
-                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">EXAMINATION ID</div>
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase;">Examination ID</div>
                 <div class="barcode"></div>
-                <div style="font-family: monospace; font-size: 1.2rem; letter-spacing: 5px;" id="docExamId">00000000</div>
-                <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 10px;">Print and attach this barcode to your answer sheets.</p>
+                <div style="font-family: monospace; font-size: 1.4rem; letter-spacing: 6px; font-weight: 700;" id="docExamId">00000000</div>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 12px;">Print and attach this barcode to your handwritten answer sheets.</p>
             </div>
 
-            <h3 style="font-size: 1rem; color: var(--maroon); margin-bottom: 10px;">AQ-AE 2027 Examination Schedule</h3>
-            <table class="table">
-                <tr><th>Paper</th><th>Date</th><th>Time</th></tr>
-                <tr><td>Track Core Assessment</td><td>2027-01-14</td><td>09:00</td></tr>
-                <tr><td>Mathematics (Compulsory)</td><td>2027-01-15</td><td>09:00</td></tr>
-            </table>
+            <h3 style="font-size: 1.1rem; color: var(--black); margin-bottom: 16px;">2027 Examination Schedule</h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr><th>Paper</th><th>Date</th><th>Time</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Track Core Assessment</td><td>2027-01-14</td><td>09:00</td></tr>
+                        <tr><td>Mathematics (Compulsory)</td><td>2027-01-15</td><td>09:00</td></tr>
+                    </tbody>
+                </table>
+            </div>
             
-            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 30px; border-top: 1px solid var(--silver); padding-top: 10px;">
-                <strong>Note:</strong> Your official Student ID will be issued upon passing the AQ-AE examination.
-            </p>
+            <div class="alert-box" style="margin-top: 32px; margin-bottom: 0;">
+                <strong>Note:</strong> Examination access will be granted upon schedule release. Your official Student ID will be issued upon passing the AQ-AE.
+            </div>
         </div>
 
     </main>
 
-    <footer>&copy; 2027 IFB. Non-Accredited Independent Platform.</footer>
+    <footer>
+        &copy; 2026—2027 IFB (Institute of Board). Non-Accredited Independent Platform.
+    </footer>
 
     <script>
-        let cName = "", cEmail = "";
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-        window.addEventListener('load', () => {
-            setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 1000);
-        });
+        let cName = "", cEmail = "";
 
         function registerUser(e) {
             e.preventDefault();
@@ -225,7 +376,7 @@
             
             document.getElementById('registrationView').classList.add('hidden');
             document.getElementById('curriculumView').classList.remove('hidden');
-            document.getElementById('curriculum').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('curriculumView').scrollIntoView({ behavior: 'smooth' });
         }
 
         function submitCurriculum(e) {
@@ -234,8 +385,8 @@
             const trackCode = trackSelect.value;
             const trackName = trackSelect.options[trackSelect.selectedIndex].text;
 
-            // Numeric Admission ID (2027 + Track + Random 3)
-            const admId = "2027" + trackCode + Math.floor(100 + Math.random() * 900);
+            // Numeric Admission ID (2026 + Track + Random 3) - Updated Year
+            const admId = "2026" + trackCode + Math.floor(100 + Math.random() * 900);
             // Numeric Exam ID (8 digits)
             const examId = Math.floor(10000000 + Math.random() * 90000000);
 
@@ -248,11 +399,6 @@
             document.getElementById('curriculumView').classList.add('hidden');
             document.getElementById('profileView').classList.remove('hidden');
             document.getElementById('profileView').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function preSelectTrack(val) {
-            const sel = document.getElementById('trackSelect');
-            if(sel) sel.value = val;
         }
     </script>
 </body>
