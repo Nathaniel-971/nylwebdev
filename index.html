@@ -7,255 +7,126 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --black: #111827;
-            --maroon: #7A0000; /* Formal, deep maroon */
-            --maroon-hover: #9C0000;
-            --silver: #D1D5DB;
-            --silver-light: #F3F4F6;
-            --white: #FFFFFF;
-            --text-muted: #4B5563;
-        }
-
+        :root { --black: #111827; --maroon: #7A0000; --maroon-hover: #9C0000; --silver: #D1D5DB; --silver-light: #F9FAFB; --white: #FFFFFF; --text-muted: #4B5563; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--white); 
-            color: var(--black); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            line-height: 1.5;
-        }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; line-height: 1.5; overflow-x: hidden; }
 
-        /* --- Navigation --- */
-        nav { 
-            background: var(--white); 
-            border-bottom: 1px solid var(--silver); 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            padding: 0 24px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            height: 72px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .nav-logo { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            text-decoration: none; 
-            color: var(--maroon); 
-            font-weight: 700; 
-            font-size: 1.25rem; 
-            letter-spacing: 0.5px;
-        }
-        .nav-logo i { stroke-width: 2.5; }
+        /* Minimalist Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        nav { background: var(--white); border-bottom: 1px solid var(--silver); position: sticky; top: 0; z-index: 100; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; transition: transform 0.2s; }
+        .nav-logo:hover { transform: scale(1.02); }
         .nav-links { display: flex; gap: 32px; align-items: center; }
-        .nav-links a { 
-            text-decoration: none; 
-            color: var(--black); 
-            font-weight: 500; 
-            font-size: 0.95rem; 
-            transition: color 0.2s; 
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+        .nav-links a { text-decoration: none; color: var(--black); font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
         .nav-links a:hover { color: var(--maroon); }
-        .mobile-menu-btn { display: none; background: none; border: none; cursor: pointer; color: var(--black); }
 
-        /* --- Hero --- */
-        .hero { 
-            text-align: center; 
-            padding: 80px 24px; 
-            background: var(--white); 
-            border-bottom: 1px solid var(--silver);
-        }
-        .hero-badge {
-            display: inline-block;
-            background: var(--silver-light);
-            color: var(--maroon);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            border: 1px solid var(--silver);
-        }
-        .hero h1 { font-size: 2.5rem; color: var(--black); margin-bottom: 16px; letter-spacing: -0.5px; }
+        .hero { text-align: center; padding: 80px 24px 40px; background: var(--white); }
+        .hero-badge { display: inline-block; background: var(--silver-light); color: var(--maroon); padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 20px; border: 1px solid var(--silver); }
+        .hero h1 { font-size: 2.8rem; margin-bottom: 16px; letter-spacing: -1px; }
         .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem; }
 
-        /* --- Main Layout --- */
-        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; flex: 1; width: 100%; }
+        /* Minimalist Carousel */
+        .carousel-container { position: relative; width: 100%; max-width: 1200px; margin: 0 auto 60px; height: 400px; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); }
+        .carousel-track { display: flex; height: 100%; transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+        .carousel-slide { min-width: 100%; height: 100%; position: relative; }
+        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.9); }
+        .carousel-slide::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); }
+        .slide-caption { position: absolute; bottom: 40px; left: 40px; color: var(--white); z-index: 10; }
+        .slide-caption h2 { font-size: 2rem; font-weight: 600; margin-bottom: 8px; }
+        .slide-caption p { font-size: 1.1rem; opacity: 0.9; }
         
-        .card { 
-            background: var(--white); 
-            border: 1px solid var(--silver); 
-            border-radius: 12px;
-            padding: 40px; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); 
-            margin-bottom: 40px; 
-        }
-        .card h2 { 
-            color: var(--black); 
-            font-size: 1.5rem; 
-            margin-bottom: 24px; 
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--silver);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card h2 i { color: var(--maroon); }
-        
-        .alert-box { 
-            background: var(--silver-light); 
-            border-left: 4px solid var(--maroon); 
-            padding: 16px; 
-            font-size: 0.9rem; 
-            color: var(--text-muted); 
-            margin-bottom: 32px; 
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .input-group { margin-bottom: 24px; }
-        .input-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--black); }
-        .input-group input, .input-group select { 
-            width: 100%; 
-            padding: 14px 16px; 
-            border: 1px solid var(--silver); 
-            border-radius: 8px; 
-            font-size: 1rem; 
-            font-family: inherit; 
-            background: var(--white);
-            transition: border-color 0.2s;
-        }
-        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122, 0, 0, 0.1); }
-        
-        .locked { 
-            background: var(--silver-light); 
-            padding: 16px; 
-            border: 1px solid var(--silver); 
-            border-radius: 8px;
-            margin-bottom: 12px; 
-            display: flex; 
-            justify-content: space-between; 
-            font-weight: 500; 
-            font-size: 0.95rem; 
-            color: var(--text-muted); 
-            align-items: center;
-        }
-        
-        .btn { 
-            width: 100%; 
-            padding: 16px; 
-            background: var(--maroon); 
-            color: var(--white); 
-            border: none; 
-            border-radius: 8px;
-            font-weight: 600; 
-            font-size: 1rem; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn:hover { background: var(--maroon-hover); }
+        .carousel-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--white); width: 24px; border-radius: 5px; }
 
-        /* --- Admission Letter --- */
-        .document { 
-            background: var(--white); 
-            border: 1px solid var(--silver); 
-            border-top: 8px solid var(--maroon);
-            border-radius: 8px; 
-            padding: 40px; 
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); 
-            margin-bottom: 40px; 
-        }
-        .doc-header { display: flex; justify-content: space-between; border-bottom: 2px solid var(--silver); padding-bottom: 20px; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;}
-        .doc-header h1 { color: var(--maroon); font-size: 1.8rem; display: flex; align-items: center; gap: 8px;}
-        .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px; font-size: 0.95rem; }
-        .doc-grid strong { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px;}
-        .doc-grid span { font-weight: 600; font-size: 1.1rem; color: var(--black);}
-        
-        .barcode-box { 
-            background: var(--silver-light); 
-            padding: 24px; 
-            text-align: center; 
-            border: 1px dashed var(--silver); 
-            border-radius: 8px;
-            margin-bottom: 30px; 
-        }
-        .barcode { 
-            height: 60px; 
-            width: 100%; 
-            max-width: 300px; 
-            margin: 0 auto 12px; 
-            background: repeating-linear-gradient(to right, var(--black) 0, var(--black) 2px, transparent 2px, transparent 4px, var(--black) 4px, var(--black) 8px, transparent 8px, transparent 10px, var(--black) 10px, var(--black) 12px, transparent 12px, transparent 16px); 
-        }
-        
-        .table-responsive { overflow-x: auto; }
-        .table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 15px; text-align: left; }
-        .table th, .table td { border-bottom: 1px solid var(--silver); padding: 16px; }
-        .table th { background: var(--silver-light); color: var(--black); font-weight: 600; }
+        .mission { background: var(--silver-light); padding: 64px 24px; border-top: 1px solid var(--silver); border-bottom: 1px solid var(--silver); text-align: center; }
+        .mission-content { max-width: 800px; margin: 0 auto; }
+        .mission h2 { color: var(--maroon); font-size: 1.5rem; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 2px; }
+        .mission p { font-size: 1.2rem; color: var(--black); font-style: italic; line-height: 1.6; }
 
-        .hidden { display: none !important; }
+        .container { max-width: 900px; margin: 60px auto; padding: 0 24px; flex: 1; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); transition: transform 0.3s, box-shadow 0.3s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -8px rgba(0,0,0,0.1); }
+        .card h2 { color: var(--black); font-size: 1.3rem; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--silver); }
         
-        footer { 
-            background: var(--white); 
-            border-top: 1px solid var(--silver); 
-            color: var(--text-muted); 
-            text-align: center; 
-            padding: 32px 24px; 
-            font-size: 0.85rem; 
-            margin-top: auto; 
-        }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
+        .input-group input { width: 100%; padding: 14px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; background: var(--white); transition: border-color 0.2s, box-shadow 0.2s; }
+        .input-group input:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122,0,0,0.1); }
+        
+        .btn { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn:hover { background: var(--maroon-hover); transform: scale(1.01); }
 
-        /* --- Mobile Responsiveness --- */
+        footer { background: var(--white); border-top: 1px solid var(--silver); color: var(--text-muted); text-align: center; padding: 32px; font-size: 0.85rem; margin-top: auto; }
+
         @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
             .nav-links { display: none; }
-            .mobile-menu-btn { display: block; }
-            .hero h1 { font-size: 2rem; }
-            .card, .document { padding: 24px; }
-            .doc-grid { grid-template-columns: 1fr; }
-            .doc-header { flex-direction: column; }
+            .carousel-container { height: 300px; border-radius: 0; }
+            .slide-caption h2 { font-size: 1.4rem; }
+            .slide-caption p { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
-
     <nav>
-        <a href="index.html" class="nav-logo">
-            <i data-lucide="triangle"></i> IFB
-        </a>
+        <a href="index.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
         <div class="nav-links">
-            <a href="#curriculum"><i data-lucide="book-open" size="18"></i> Curriculum</a>
+            <a href="courses.html"><i data-lucide="book-open" size="18"></i> Courses</a>
             <a href="documents.html"><i data-lucide="folder" size="18"></i> Resources</a>
+            <a href="profile.html"><i data-lucide="user" size="18"></i> Profile</a>
         </div>
-        <button class="mobile-menu-btn"><i data-lucide="menu"></i></button>
     </nav>
 
-    <header class="hero">
+    <header class="hero animate-fade-up">
         <span class="hero-badge">2026—2027 Academic Year</span>
         <h1>Official Candidate Gateway</h1>
         <p>Register for the IFB Professional Certificate. Select your specialization track and generate your formal digital admission letter.</p>
     </header>
 
-    <main class="container">
-        
-        <!-- Step 1: Registration -->
-        <div id="registrationView" class="card">
-            <h2><i data-lucide="user-plus"></i> Candidate Registration</h2>
-            <div class="alert-box">
-                <strong>Institutional Notice:</strong> The IFB is an independent, non-accredited platform. We are not registered with SAQA, DHET, or Umalusi.
+    <!-- Minimalist Image Carousel -->
+    <div class="carousel-container animate-fade-up delay-1">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop" alt="Technology">
+                <div class="slide-caption">
+                    <h2>Advanced Digital Sciences</h2>
+                    <p>Equipping candidates with modern technological frameworks.</p>
+                </div>
             </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop" alt="Data">
+                <div class="slide-caption">
+                    <h2>AI-Driven Evaluation</h2>
+                    <p>Rigorous, unbiased marking powered by DeepSeek AI.</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" alt="Students">
+                <div class="slide-caption">
+                    <h2>Independent Excellence</h2>
+                    <p>Unconstrained by traditional accreditation bottlenecks.</p>
+                </div>
+            </div>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <section class="mission animate-fade-up delay-2">
+        <div class="mission-content">
+            <h2>Our Mission</h2>
+            <p>"To provide an independent, technologically advanced educational framework that equips candidates with rigorous, AI-evaluated academic and practical skills."</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <div class="card animate-fade-up delay-3">
+            <h2><i data-lucide="user-plus" style="color: var(--maroon);"></i> New Registration</h2>
             <form id="regForm" onsubmit="registerUser(event)">
                 <div class="input-group">
                     <label>Full Name</label>
@@ -265,141 +136,62 @@
                     <label>Email Address</label>
                     <input type="email" id="regEmail" required placeholder="john@example.com">
                 </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="regPass" required>
-                </div>
                 <button type="submit" class="btn">Generate Reference ID <i data-lucide="arrow-right" size="18"></i></button>
             </form>
         </div>
 
-        <!-- Step 2: Curriculum -->
-        <div id="curriculumView" class="card hidden" style="scroll-margin-top: 100px;" id="curriculum">
-            <h2><i data-lucide="layout-list"></i> Curriculum Lock & Track</h2>
-            <div class="alert-box" style="border-left-color: #16a34a; color: #166534;">
-                Registration successful. Your Reference ID is: <strong id="displayRefId"></strong>
-            </div>
-            <form id="currForm" onsubmit="submitCurriculum(event)">
-                <label style="font-size: 0.85rem; font-weight: 600; color: var(--maroon); margin-bottom: 12px; display: block; text-transform: uppercase;">Compulsory Core Modules</label>
-                <div class="locked"><span>Mathematics</span> <i data-lucide="lock" size="18"></i></div>
-                <div class="locked"><span>Logic & Algorithmic Foundations</span> <i data-lucide="lock" size="18"></i></div>
-
-                <div class="input-group" style="margin-top: 32px;">
-                    <label>Select Specialization Track</label>
-                    <select id="trackSelect" required>
-                        <option value="" disabled selected>Choose your track...</option>
-                        <option value="1">Track 1: Full Stack Engineering</option>
-                        <option value="2">Track 2: Frontend Architecture</option>
-                        <option value="3">Track 3: Backend Systems</option>
-                        <option value="4">Track 4: Mobile Application Development</option>
-                        <option value="5">Track 5: Digital Visual Design</option>
-                        <option value="6">Track 6: Human-Computer Interaction</option>
-                        <option value="7">Track 7: Data & Statistical Analysis</option>
-                        <option value="8">Track 8: Applied Physics & Mathematics</option>
-                    </select>
-                </div>
-
-                <div class="input-group" style="display: flex; gap: 16px; background: var(--silver-light); padding: 16px; border: 1px solid var(--silver); border-radius: 8px; align-items: flex-start;">
-                    <input type="checkbox" id="ackBox" required style="width: 20px; height: 20px; accent-color: var(--maroon); margin-top: 2px;">
-                    <label for="ackBox" style="font-weight: 400; font-size: 0.9rem; line-height: 1.5; color: var(--text-muted);">
-                        I acknowledge the non-accredited status of the IFB. My curriculum will lock on <strong>21 March 2027</strong>.
-                    </label>
-                </div>
-                <button type="submit" class="btn" style="margin-top: 24px;">Generate Admission Letter <i data-lucide="file-text" size="18"></i></button>
-            </form>
+        <div class="card animate-fade-up delay-3" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+            <h2 style="border: none; justify-content: center;">Already Registered?</h2>
+            <p style="color: var(--text-muted); margin-bottom: 24px;">Access your student profile, admission letter, and examination IDs.</p>
+            <a href="profile.html" class="btn" style="text-decoration: none;">Student Login <i data-lucide="log-in" size="18"></i></a>
         </div>
-
-        <!-- Step 3: Profile / Admission Letter -->
-        <div id="profileView" class="document hidden">
-            <div class="doc-header">
-                <div>
-                    <h1><i data-lucide="triangle"></i> IFB</h1>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Institute of Board</p>
-                </div>
-                <div style="text-align: right;">
-                    <h2 style="color: var(--maroon); font-size: 1.4rem;">Admission Letter</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Provisional Acceptance</p>
-                </div>
-            </div>
-            
-            <div class="doc-grid">
-                <div><strong>Candidate Name</strong><span id="docName">-</span></div>
-                <div><strong>Email Address</strong><span id="docEmail">-</span></div>
-                <div><strong>Admission ID</strong><span id="docAdmId" style="color: var(--maroon);">-</span></div>
-                <div><strong>Specialization Track</strong><span id="docTrack">-</span></div>
-            </div>
-
-            <div class="barcode-box">
-                <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase;">Examination ID</div>
-                <div class="barcode"></div>
-                <div style="font-family: monospace; font-size: 1.4rem; letter-spacing: 6px; font-weight: 700;" id="docExamId">00000000</div>
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 12px;">Print and attach this barcode to your handwritten answer sheets.</p>
-            </div>
-
-            <h3 style="font-size: 1.1rem; color: var(--black); margin-bottom: 16px;">2027 Examination Schedule</h3>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr><th>Paper</th><th>Date</th><th>Time</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Track Core Assessment</td><td>2027-01-14</td><td>09:00</td></tr>
-                        <tr><td>Mathematics (Compulsory)</td><td>2027-01-15</td><td>09:00</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="alert-box" style="margin-top: 32px; margin-bottom: 0;">
-                <strong>Note:</strong> Examination access will be granted upon schedule release. Your official Student ID will be issued upon passing the AQ-AE.
-            </div>
-        </div>
-
     </main>
 
-    <footer>
-        &copy; 2026—2027 IFB (Institute of Board). Non-Accredited Independent Platform.
-    </footer>
+    <footer>&copy; 2026—2027 IFB. Non-Accredited Independent Platform.</footer>
 
     <script>
-        // Initialize Lucide Icons
         lucide.createIcons();
 
-        let cName = "", cEmail = "";
-
+        // Registration Logic
         function registerUser(e) {
             e.preventDefault();
-            cName = document.getElementById('regName').value;
-            cEmail = document.getElementById('regEmail').value;
-            
-            // 6-digit numeric ref ID
-            document.getElementById('displayRefId').textContent = Math.floor(100000 + Math.random() * 900000);
-            
-            document.getElementById('registrationView').classList.add('hidden');
-            document.getElementById('curriculumView').classList.remove('hidden');
-            document.getElementById('curriculumView').scrollIntoView({ behavior: 'smooth' });
+            const name = document.getElementById('regName').value;
+            localStorage.setItem('ifb_student_name', name);
+            window.location.href = 'profile.html';
         }
 
-        function submitCurriculum(e) {
-            e.preventDefault();
-            const trackSelect = document.getElementById('trackSelect');
-            const trackCode = trackSelect.value;
-            const trackName = trackSelect.options[trackSelect.selectedIndex].text;
+        // Carousel Logic
+        const track = document.getElementById('carouselTrack');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dotsContainer = document.getElementById('carouselDots');
+        let currentSlide = 0;
 
-            // Numeric Admission ID (2026 + Track + Random 3) - Updated Year
-            const admId = "2026" + trackCode + Math.floor(100 + Math.random() * 900);
-            // Numeric Exam ID (8 digits)
-            const examId = Math.floor(10000000 + Math.random() * 90000000);
+        // Create dots
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if(i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        });
 
-            document.getElementById('docName').textContent = cName;
-            document.getElementById('docEmail').textContent = cEmail;
-            document.getElementById('docAdmId').textContent = admId;
-            document.getElementById('docTrack').textContent = trackName;
-            document.getElementById('docExamId').textContent = examId;
-
-            document.getElementById('curriculumView').classList.add('hidden');
-            document.getElementById('profileView').classList.remove('hidden');
-            document.getElementById('profileView').scrollIntoView({ behavior: 'smooth' });
+        function updateCarousel() {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentSlide);
+            });
         }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        // Auto-play
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateCarousel();
+        }, 5000);
     </script>
 </body>
 </html>
