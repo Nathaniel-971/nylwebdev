@@ -3,101 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFB | Student Dashboard</title>
+    <title>IFB | Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --black: #111827; --maroon: #7A0000; --silver: #D1D5DB; --silver-light: #F9FAFB; --white: #FFFFFF; --text-muted: #4B5563; }
+        :root { 
+            --black: #111827; --maroon: #7A0000; --silver: #D1D5DB; 
+            --silver-light: #F3F4F6; --white: #FFFFFF; --gray: #4B5563; 
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        .animate-slide { animation: slideIn 0.5s ease-out forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; }
 
-        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .nav-left { display: flex; align-items: center; gap: 16px; }
-        .back-btn { background: none; border: none; cursor: pointer; color: var(--black); display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 50%; transition: 0.2s; }
-        .back-btn:hover { background: var(--silver-light); color: var(--maroon); }
-        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; }
-        .profile-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); display: flex; align-items: center; justify-content: center; color: var(--white); font-weight: 700; }
+        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 20px; height: 64px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; cursor: pointer; color: var(--black); padding: 8px; }
+        .nav-logo { text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.2rem; }
+        .hamburger { background: none; border: none; cursor: pointer; padding: 8px; }
 
-        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; flex: 1; width: 100%; }
-        
-        .admin-panel { background: #111827; color: #fff; padding: 16px 24px; border-radius: 12px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center; }
-        .admin-panel select { padding: 8px; border-radius: 6px; border: none; font-family: inherit; }
+        .side-menu { position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; background: var(--white); border-left: 1px solid var(--silver); z-index: 1000; transition: right 0.3s ease; padding: 24px; display: flex; flex-direction: column; }
+        .side-menu.open { right: 0; }
+        .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
+        .menu-links { display: flex; flex-direction: column; gap: 8px; }
+        .menu-links a { text-decoration: none; color: var(--black); font-weight: 500; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; }
+        .menu-links a:hover { background: var(--silver-light); color: var(--maroon); }
 
-        .profile-header { display: flex; align-items: center; gap: 24px; margin-bottom: 40px; background: var(--silver-light); padding: 32px; border-radius: 16px; border: 1px solid var(--silver); }
-        .avatar-lg { width: 96px; height: 96px; border-radius: 50%; border: 4px solid var(--maroon); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .profile-info h1 { font-size: 1.8rem; margin-bottom: 8px; }
-        .profile-info p { color: var(--text-muted); font-weight: 500; }
+        .container { max-width: 800px; margin: 24px auto; padding: 0 20px; flex: 1; width: 100%; }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
-        .info-card { border: 1px solid var(--silver); padding: 24px; border-radius: 12px; background: var(--white); }
-        .info-card h3 { font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 1px; }
-        .info-card p { font-size: 1.5rem; font-weight: 700; color: var(--maroon); font-family: monospace; }
+        /* Profile Header */
+        .profile-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; background: var(--silver-light); padding: 24px; border-radius: 16px; border: 1px solid var(--silver); }
+        .avatar-lg { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--maroon); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .profile-info h1 { font-size: 1.5rem; margin-bottom: 4px; }
+        .profile-info p { color: var(--gray); font-size: 0.9rem; font-weight: 500; }
 
-        .downloads-section { border-top: 1px solid var(--silver); padding-top: 32px; }
-        .downloads-section h2 { font-size: 1.3rem; margin-bottom: 24px; }
-        .download-grid { display: grid; gap: 16px; }
-        .download-btn { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--white); border: 1px solid var(--silver); border-radius: 8px; text-decoration: none; color: var(--black); font-weight: 600; transition: 0.2s; }
-        .download-btn:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        /* ID Grid */
+        .grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
+        .info-card { border: 1px solid var(--silver); padding: 20px; border-radius: 12px; background: var(--white); text-align: center; }
+        .info-card h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; letter-spacing: 1px; }
+        .info-card p { font-size: 1.4rem; font-weight: 700; color: var(--maroon); font-family: monospace; word-break: break-all; }
 
-        footer { border-top: 1px solid var(--silver); text-align: center; padding: 32px; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
-        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } .profile-header { flex-direction: column; text-align: center; } }
+        /* Downloads */
+        .downloads-section { border-top: 1px solid var(--silver); padding-top: 24px; }
+        .downloads-section h2 { font-size: 1.2rem; margin-bottom: 16px; }
+        .download-grid { display: grid; gap: 12px; }
+        .download-btn { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--white); border: 1px solid var(--silver); border-radius: 8px; text-decoration: none; color: var(--black); font-weight: 600; font-size: 0.95rem; transition: 0.2s; }
+        .download-btn:hover { border-color: var(--maroon); background: var(--silver-light); }
+
+        /* Admin View */
+        .admin-panel { background: var(--black); color: var(--white); padding: 20px; border-radius: 12px; margin-bottom: 24px; display: none; }
+        .admin-panel h2 { font-size: 1.1rem; margin-bottom: 12px; border-bottom: 1px solid var(--gray); padding-bottom: 8px; }
+        .candidate-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .candidate-item { background: #1F2937; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; font-size: 0.9rem; }
+
+        footer { border-top: 1px solid var(--silver); text-align: center; padding: 24px; font-size: 0.8rem; color: var(--gray); }
+
+        /* Desktop View Fixes */
+        @media (min-width: 768px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+            .profile-header { padding: 32px; }
+            .avatar-lg { width: 100px; height: 100px; }
+            .profile-info h1 { font-size: 2rem; }
+            .hamburger { display: none; } /* Hide hamburger on desktop if we want, but keeping it based on prompt */
+        }
     </style>
 </head>
 <body>
     <nav>
         <div class="nav-left">
-            <button class="back-btn" onclick="history.back()"><i data-lucide="arrow-left" size="24"></i></button>
-            <a href="dashboard.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
+            <button class="back-btn" onclick="history.back()"><i data-lucide="arrow-left" size="22"></i></button>
+            <a href="dashboard.html" class="nav-logo"><i data-lucide="triangle" size="20" style="vertical-align: middle;"></i> IFB</a>
         </div>
-        <div class="profile-circle" id="navAvatar">N</div>
+        <button class="hamburger" onclick="toggleMenu()"><i data-lucide="menu" size="28"></i></button>
     </nav>
 
-    <main class="container animate-slide">
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <span style="font-weight: 700; color: var(--maroon);">Navigation</span>
+            <button class="menu-close" onclick="toggleMenu()"><i data-lucide="x" size="24"></i></button>
+        </div>
+        <div class="menu-links">
+            <a href="index.html"><i data-lucide="home" size="20"></i> Gateway</a>
+            <a href="dashboard.html"><i data-lucide="user" size="20"></i> Dashboard</a>
+            <a href="courses.html"><i data-lucide="book-open" size="20"></i> Courses</a>
+            <a href="documents.html"><i data-lucide="folder" size="20"></i> Documents</a>
+        </div>
+    </div>
+
+    <main class="container animate-fade-up">
         
-        <!-- Admin Only Panel -->
-        <div id="adminPanel" class="admin-panel" style="display: none;">
-            <div><strong>Administrator Mode</strong> (n1nathaniel971@gmail.com)</div>
-            <select id="profileSwitcher" onchange="switchProfile(this.value)">
-                <option value="admin">View Admin Profile</option>
-                <option value="student1">View: John Doe (Student)</option>
-                <option value="student2">View: Jane Smith (Student)</option>
-            </select>
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <h2>Administrator Dashboard (n1nathaniel971@gmail.com)</h2>
+            <ul class="candidate-list" id="adminCandidateList">
+                <!-- Populated by JS -->
+            </ul>
         </div>
 
+        <!-- Student Profile -->
         <div class="profile-header">
             <img id="profileAvatar" class="avatar-lg" src="" alt="Avatar">
             <div class="profile-info">
                 <h1 id="profileName">Loading...</h1>
-                <p>2026—2027 Academic Year</p>
+                <p id="profileEmail">...</p>
             </div>
         </div>
 
         <div class="grid">
             <div class="info-card">
                 <h3>Student ID (6 Digits)</h3>
-                <p id="studentIdDisplay">000000</p>
+                <p id="displayStudentId">000000</p>
             </div>
             <div class="info-card">
-                <h3>Examination Number (13 Digits)</h3>
-                <p id="examNumDisplay">0000000000000</p>
+                <h3>Examination Number</h3>
+                <p id="displayExamNum">20260000</p>
+            </div>
+            <div class="info-card" style="grid-column: 1 / -1;">
+                <h3>Admission ID</h3>
+                <p id="displayAdmissionId">ADM-20260000</p>
             </div>
         </div>
 
         <div class="downloads-section">
             <h2>Official Documents</h2>
             <div class="download-grid">
-                <a href="admission-slip.html" class="download-btn">
+                <a href="#" class="download-btn" onclick="alert('Downloading Admission Slip...')">
                     <span>Download Admission Slip</span>
                     <i data-lucide="download" size="20" style="color: var(--maroon);"></i>
                 </a>
-                <a href="timetable.html" class="download-btn">
+                <a href="#" class="download-btn" onclick="alert('Downloading Timetable...')">
                     <span>AQ-AE Examination Timetable 2027</span>
                     <i data-lucide="calendar" size="20" style="color: var(--maroon);"></i>
                 </a>
-                <a href="guidelines.html" class="download-btn">
+                <a href="#" class="download-btn" onclick="alert('Downloading Guidelines...')">
                     <span>Examination Guidelines</span>
                     <i data-lucide="book" size="20" style="color: var(--maroon);"></i>
                 </a>
@@ -109,51 +148,41 @@
 
     <script>
         lucide.createIcons();
+        function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
 
-        // --- AUTHENTICATION & ADMIN LOGIC ---
-        let currentEmail = localStorage.getItem('ifb_email') || 'n1nathaniel971@gmail.com'; // Defaults to admin for testing
-        let currentName = localStorage.getItem('ifb_name') || 'Nathaniel';
-
-        const isAdmin = currentEmail === 'n1nathaniel971@gmail.com';
-
-        // Admin Logic
-        if (isAdmin) {
-            document.getElementById('adminPanel').style.display = 'flex';
-        }
-
-        function switchProfile(type) {
-            if (type === 'admin') {
-                localStorage.setItem('ifb_name', 'Nathaniel');
-                localStorage.setItem('ifb_email', 'n1nathaniel971@gmail.com');
-            } else if (type === 'student1') {
-                localStorage.setItem('ifb_name', 'John Doe');
-                localStorage.setItem('ifb_email', 'john@example.com');
-            } else if (type === 'student2') {
-                localStorage.setItem('ifb_name', 'Jane Smith');
-                localStorage.setItem('ifb_email', 'jane@example.com');
-            }
-            window.location.reload();
-        }
-
-        // --- PROFILE RENDER ---
-        document.getElementById('profileName').textContent = currentName;
-        document.getElementById('navAvatar').textContent = currentName.charAt(0).toUpperCase();
+        const currentUser = JSON.parse(localStorage.getItem('ifb_current_user'));
         
-        const formattedName = encodeURIComponent(currentName);
-        document.getElementById('profileAvatar').src = `https://ui-avatars.com/api/?name=${formattedName}&background=7A0000&color=fff&size=128&bold=true`;
+        if (!currentUser) {
+            window.location.href = 'index.html';
+        } else {
+            // Render Profile
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('displayStudentId').textContent = currentUser.studentId;
+            document.getElementById('displayExamNum').textContent = currentUser.examNumber;
+            document.getElementById('displayAdmissionId').textContent = currentUser.admissionId;
+            
+            const formattedName = encodeURIComponent(currentUser.name);
+            document.getElementById('profileAvatar').src = `https://ui-avatars.com/api/?name=${formattedName}&background=7A0000&color=fff&size=128&bold=true`;
 
-        // --- ID GENERATION (STRICT FORMAT) ---
-        // Student ID: Exactly 6 Digits
-        const studentId = Math.floor(100000 + Math.random() * 900000).toString();
-        document.getElementById('studentIdDisplay').textContent = studentId;
-
-        // Exam Number: Exactly 13 Digits
-        const examNum = Math.floor(1000000000000 + Math.random() * 9000000000000).toString();
-        document.getElementById('examNumDisplay').textContent = examNum;
-
-        // Store for other pages
-        localStorage.setItem('ifb_student_id', studentId);
-        localStorage.setItem('ifb_exam_num', examNum);
+            // Admin Logic
+            if (currentUser.email === 'n1nathaniel971@gmail.com') {
+                document.getElementById('adminPanel').style.display = 'block';
+                const db = JSON.parse(localStorage.getItem('ifb_db')) || [];
+                const list = document.getElementById('adminCandidateList');
+                
+                if(db.length === 0) {
+                    list.innerHTML = '<li class="candidate-item">No candidates registered yet.</li>';
+                } else {
+                    db.forEach(user => {
+                        const li = document.createElement('li');
+                        li.className = 'candidate-item';
+                        li.innerHTML = `<span><strong>${user.name}</strong><br>${user.email}</span> <span style="color:var(--maroon); font-weight:bold;">${user.examNumber}</span>`;
+                        list.appendChild(li);
+                    });
+                }
+            }
+        }
     </script>
 </body>
 </html>
