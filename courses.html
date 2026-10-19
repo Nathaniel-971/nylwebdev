@@ -3,99 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFB | Academic Tracks</title>
+    <title>IFB | Courses</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --black: #111827; --maroon: #7A0000; --silver: #D1D5DB; --silver-light: #F9FAFB; --white: #FFFFFF; --text-muted: #4B5563; }
+        :root { --black: #111827; --maroon: #7A0000; --silver: #D1D5DB; --silver-light: #F3F4F6; --white: #FFFFFF; --gray: #4B5563; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; }
 
-        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .nav-left { display: flex; align-items: center; gap: 16px; }
-        .back-btn { background: none; border: none; cursor: pointer; padding: 8px; border-radius: 50%; }
-        .back-btn:hover { background: var(--silver-light); color: var(--maroon); }
-        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.25rem; }
-        .profile-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); display: flex; align-items: center; justify-content: center; color: var(--white); text-decoration: none; font-weight: 600; }
+        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 20px; height: 64px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .back-btn { background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-logo { text-decoration: none; color: var(--maroon); font-weight: 700; font-size: 1.2rem; }
+        .hamburger { background: none; border: none; cursor: pointer; padding: 8px; }
 
-        .container { max-width: 1000px; margin: 60px auto; padding: 0 24px; flex: 1; width: 100%; }
-        .header-title { text-align: center; margin-bottom: 48px; }
-        .header-title h1 { font-size: 2.2rem; margin-bottom: 12px; }
-        .header-title p { color: var(--text-muted); font-size: 1.1rem; }
+        .side-menu { position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; background: var(--white); border-left: 1px solid var(--silver); z-index: 1000; transition: right 0.3s ease; padding: 24px; }
+        .side-menu.open { right: 0; }
+        .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
+        .menu-links { display: flex; flex-direction: column; gap: 8px; }
+        .menu-links a { text-decoration: none; color: var(--black); font-weight: 500; padding: 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-        .course-card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 24px; transition: 0.3s; display: flex; flex-direction: column; }
-        .course-card:hover { border-color: var(--maroon); transform: translateY(-5px); box-shadow: 0 10px 20px -10px rgba(122,0,0,0.15); }
+        .container { max-width: 900px; margin: 32px auto; padding: 0 20px; flex: 1; width: 100%; }
+        .header-title { text-align: center; margin-bottom: 32px; }
+        .header-title h1 { font-size: 2rem; margin-bottom: 8px; }
         
-        .course-icon { width: 48px; height: 48px; background: var(--silver-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--maroon); margin-bottom: 20px; transition: 0.3s; }
-        .course-card:hover .course-icon { background: var(--maroon); color: var(--white); }
-        
+        .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .course-card { border: 1px solid var(--silver); border-radius: 12px; padding: 20px; transition: 0.3s; background: var(--white); }
+        .course-icon { width: 40px; height: 40px; background: var(--silver-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--maroon); margin-bottom: 16px; }
         .course-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
-        .course-card p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; flex: 1; }
+        .course-card p { font-size: 0.9rem; color: var(--gray); margin-bottom: 16px; }
         
-        .course-btn { display: block; text-align: center; padding: 12px; background: var(--silver-light); color: var(--black); text-decoration: none; font-weight: 600; border-radius: 6px; font-size: 0.9rem; transition: 0.2s; }
-        .course-btn:hover { background: var(--maroon); color: var(--white); }
+        footer { border-top: 1px solid var(--silver); text-align: center; padding: 24px; font-size: 0.8rem; color: var(--gray); margin-top: auto; }
 
-        footer { border-top: 1px solid var(--silver); text-align: center; padding: 32px; font-size: 0.85rem; color: var(--text-muted); margin-top: auto; }
-        @media (max-width: 768px) { .nav-links { display: none; } }
+        @media (min-width: 768px) { .grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
     <nav>
         <div class="nav-left">
-            <button class="back-btn" onclick="history.back()"><i data-lucide="arrow-left" size="24"></i></button>
-            <a href="dashboard.html" class="nav-logo"><i data-lucide="triangle"></i> IFB</a>
+            <button class="back-btn" onclick="history.back()"><i data-lucide="arrow-left" size="22"></i></button>
+            <a href="dashboard.html" class="nav-logo"><i data-lucide="triangle" size="20" style="vertical-align: middle;"></i> IFB</a>
         </div>
-        <a href="dashboard.html" class="profile-circle"><i data-lucide="user" size="20"></i></a>
+        <button class="hamburger" onclick="toggleMenu()"><i data-lucide="menu" size="28"></i></button>
     </nav>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <span style="font-weight: 700; color: var(--maroon);">Navigation</span>
+            <button class="menu-close" onclick="toggleMenu()"><i data-lucide="x" size="24"></i></button>
+        </div>
+        <div class="menu-links">
+            <a href="index.html"><i data-lucide="home" size="20"></i> Gateway</a>
+            <a href="dashboard.html"><i data-lucide="user" size="20"></i> Dashboard</a>
+            <a href="courses.html"><i data-lucide="book-open" size="20"></i> Courses</a>
+            <a href="documents.html"><i data-lucide="folder" size="20"></i> Documents</a>
+        </div>
+    </div>
 
     <main class="container">
         <div class="header-title">
-            <h1>Academic Tracks (2026—2027)</h1>
-            <p>Explore our specialized curriculum focusing on modern web deployment, mathematics, and application architecture.</p>
+            <h1>Academic Tracks</h1>
+            <p style="color: var(--gray);">2026—2027 Curriculum</p>
         </div>
 
         <div class="grid">
             <div class="course-card">
                 <div class="course-icon"><i data-lucide="layers"></i></div>
                 <h3>Full Stack Development</h3>
-                <p>Master both client-side and server-side architecture. Learn how to build, connect, and deploy complete web applications.</p>
-                <a href="dashboard.html" class="course-btn">View Curriculum</a>
+                <p>Master client-side and server-side architecture, databases, and deployment.</p>
+                <a href="dashboard.html" style="color: var(--maroon); font-weight: 600; text-decoration: none; font-size: 0.9rem;">View Track →</a>
             </div>
             <div class="course-card">
                 <div class="course-icon"><i data-lucide="layout"></i></div>
                 <h3>Frontend Development</h3>
-                <p>Deep dive into UI/UX implementation, DOM manipulation, and modern frameworks to build stunning, responsive interfaces.</p>
-                <a href="dashboard.html" class="course-btn">View Curriculum</a>
+                <p>UI/UX implementation, DOM manipulation, modern frameworks.</p>
+                <a href="dashboard.html" style="color: var(--maroon); font-weight: 600; text-decoration: none; font-size: 0.9rem;">View Track →</a>
             </div>
             <div class="course-card">
                 <div class="course-icon"><i data-lucide="server"></i></div>
                 <h3>Backend Development</h3>
-                <p>Focus on server logic, database management, API creation, and ensuring secure, scalable application performance.</p>
-                <a href="dashboard.html" class="course-btn">View Curriculum</a>
+                <p>Server logic, API creation, and database management.</p>
+                <a href="dashboard.html" style="color: var(--maroon); font-weight: 600; text-decoration: none; font-size: 0.9rem;">View Track →</a>
             </div>
             <div class="course-card">
                 <div class="course-icon"><i data-lucide="smartphone"></i></div>
                 <h3>App Development</h3>
-                <p>Build cross-platform mobile applications using Expo Go and TypeScript, preparing for real-world app store deployment.</p>
-                <a href="dashboard.html" class="course-btn">View Curriculum</a>
+                <p>Cross-platform mobile applications using Expo Go and TypeScript.</p>
+                <a href="dashboard.html" style="color: var(--maroon); font-weight: 600; text-decoration: none; font-size: 0.9rem;">View Track →</a>
             </div>
             <div class="course-card">
                 <div class="course-icon"><i data-lucide="bar-chart-3"></i></div>
                 <h3>Mathematics</h3>
-                <p>Advanced computational mathematics and logical foundations required for high-level software engineering and data analysis.</p>
-                <a href="dashboard.html" class="course-btn">View Curriculum</a>
+                <p>Computational math and logical foundations for software engineering.</p>
+                <a href="dashboard.html" style="color: var(--maroon); font-weight: 600; text-decoration: none; font-size: 0.9rem;">View Track →</a>
             </div>
             <div class="course-card">
                 <div class="course-icon"><i data-lucide="atom"></i></div>
                 <h3>Physics</h3>
-                <p>Applied physics and systems modeling, bridging the gap between theoretical science and algorithmic simulation.</p>
-                <a href="dashboard.html" class="course-btn">View Curriculum</a>
+                <p>Applied physics and systems modeling.</p>
+                <a href="dashboard.html" style="color: var(--maroon); font-weight: 600; text-decoration: none; font-size: 0.9rem;">View Track →</a>
             </div>
         </div>
     </main>
 
     <footer>&copy; 2026—2027 IFB. Non-Accredited Independent Platform.</footer>
-    <script>lucide.createIcons();</script>
+    <script>
+        lucide.createIcons();
+        function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
+    </script>
 </body>
 </html>
