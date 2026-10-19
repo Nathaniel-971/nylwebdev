@@ -4,252 +4,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IFB | Official Gateway</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --maroon: #800000;
-            --silver: #C0C0C0;
-            --dark-grey: #222222;
+            --maroon: #6b0f1a; /* Richer, modern maroon */
+            --maroon-hover: #851322;
+            --silver: #e2e8f0;
+            --bg-color: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Times New Roman', Times, serif;
-            background-color: #FFFFFF;
-            color: var(--dark-grey);
-            margin: 0;
-            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            align-items: center;
         }
 
-        /* Header */
+        /* Modern Header */
         header {
-            background-color: var(--maroon);
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            border-bottom: 5px solid var(--silver);
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--silver);
+            background: white;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            letter-spacing: 2px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        header p {
-            margin: 5px 0 0 0;
-            font-size: 1.1em;
-            color: var(--silver);
-        }
-
-        /* Main Content */
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-            flex: 1;
-        }
-
-        /* Legal Box */
-        .legal-box {
-            background-color: #fcf8f8;
-            border-left: 6px solid var(--maroon);
-            padding: 20px;
-            margin-bottom: 30px;
-            font-size: 0.95em;
-            line-height: 1.5;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        /* Forms */
-        .form-section {
-            border: 1px solid var(--silver);
-            padding: 30px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .form-section h2 {
+        .logo-delta {
+            font-size: 2rem;
             color: var(--maroon);
-            margin-top: 0;
-            border-bottom: 2px solid var(--silver);
-            padding-bottom: 10px;
+            font-weight: 700;
         }
 
+        .logo-text h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--maroon);
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Main Container */
+        .container {
+            width: 100%;
+            max-width: 540px;
+            padding: 40px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Card Style */
+        .card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--silver);
+            padding: 40px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            color: var(--maroon);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* Legal Disclaimer - Clean but noticeable */
+        .legal-banner {
+            background-color: #fff1f2;
+            border-left: 4px solid var(--maroon);
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+            color: #881337;
+            line-height: 1.5;
+        }
+
+        /* Form Inputs */
         .input-group {
             margin-bottom: 20px;
         }
 
         .input-group label {
             display: block;
-            font-weight: bold;
+            font-size: 0.85rem;
+            font-weight: 600;
             margin-bottom: 8px;
+            color: var(--text-main);
         }
 
         .input-group input, .input-group select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            font-size: 1em;
-            font-family: Arial, sans-serif;
-            box-sizing: border-box;
+            padding: 14px 16px;
+            border: 1px solid var(--silver);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
         }
 
         .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: var(--maroon);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(107, 15, 26, 0.1);
         }
 
-        /* Locked Core Module */
-        .core-module {
-            background-color: #f0f0f0;
-            padding: 15px;
-            border: 1px solid var(--silver);
-            margin-bottom: 20px;
+        /* Locked Module Boxes */
+        .locked-module {
             display: flex;
             align-items: center;
+            background-color: #f1f5f9;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--silver);
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.95rem;
         }
 
-        .core-module input {
-            margin-right: 10px;
-            transform: scale(1.2);
+        .locked-module input {
+            margin-right: 12px;
+            accent-color: var(--maroon);
         }
 
-        .core-module span {
-            font-weight: bold;
-            color: var(--maroon);
+        .locked-module .lock-icon {
+            margin-left: auto;
+            font-size: 1.1rem;
         }
 
-        /* Buttons */
+        /* Modern Button */
         .btn {
+            width: 100%;
+            padding: 16px;
             background-color: var(--maroon);
             color: white;
-            padding: 15px 20px;
             border: none;
-            font-size: 1.1em;
-            font-weight: bold;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
             cursor: pointer;
-            width: 100%;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: background 0.3s;
+            transition: all 0.2s ease;
+            margin-top: 10px;
         }
 
         .btn:hover {
-            background-color: #a00000;
+            background-color: var(--maroon-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(107, 15, 26, 0.2);
         }
 
-        /* Hidden Sections */
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Success State */
+        .success-id {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--maroon);
+            letter-spacing: 4px;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px dashed var(--maroon);
+        }
+
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         /* Footer */
         footer {
-            background-color: #333;
-            color: var(--silver);
+            padding: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
             text-align: center;
-            padding: 15px;
-            font-size: 0.8em;
-            margin-top: auto;
         }
+
     </style>
 </head>
 <body>
 
     <header>
-        <h1>∆ IFB</h1>
-        <p>Institute of Board | Official Gateway</p>
+        <div class="logo-container">
+            <div class="logo-delta">∆</div>
+            <div class="logo-text">
+                <h1>IFB</h1>
+                <p>Institute of Board</p>
+            </div>
+        </div>
     </header>
 
     <div class="container">
 
-        <!-- Step 1: Registration (Visible by default) -->
-        <div id="registrationView">
-            <div class="legal-box">
-                <strong>Institutional Notice:</strong> The IFB is an independent, non-accredited platform. We are not registered with SAQA, DHET, or Umalusi. All qualifications issued are strictly for Internal Records of Completion and do not equate to NQF-level credits.
+        <!-- Step 1: Registration -->
+        <div id="registrationView" class="card">
+            <h2>Candidate Registration</h2>
+            
+            <div class="legal-banner">
+                <strong>Institutional Notice:</strong> The IFB is an independent, non-accredited platform. We are not registered with SAQA, DHET, or Umalusi. All qualifications issued are strictly for Internal Records of Completion.
             </div>
 
-            <div class="form-section">
-                <h2>Candidate Registration</h2>
-                <form id="regForm" onsubmit="registerUser(event)">
-                    <div class="input-group">
-                        <label>Full Name</label>
-                        <input type="text" id="regName" required placeholder="John Doe">
-                    </div>
-                    <div class="input-group">
-                        <label>Email Address</label>
-                        <input type="email" id="regEmail" required placeholder="john@example.com">
-                    </div>
-                    <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" id="regPass" required>
-                    </div>
-                    <button type="submit" class="btn">Generate Reference ID</button>
-                </form>
-            </div>
+            <form id="regForm" onsubmit="registerUser(event)">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regName" required placeholder="John Doe" autocomplete="name">
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" required placeholder="john@example.com" autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="regPass" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn">Generate Reference ID</button>
+            </form>
         </div>
 
-        <!-- Step 2: Curriculum Dashboard (Hidden until Registration) -->
-        <div id="dashboardView" class="hidden">
-            <div class="legal-box" style="background-color: #e6f7ff; border-left: 6px solid #0050b3;">
-                <strong>Registration Successful.</strong> Your strictly numeric Reference ID is: <strong id="displayRefId" style="font-size: 1.2em;"></strong><br>
-                Please proceed to select your curriculum to generate your Admission ID.
+        <!-- Step 2: Curriculum Dashboard -->
+        <div id="dashboardView" class="card hidden">
+            <h2>Curriculum & Track Selection</h2>
+            
+            <div class="legal-banner" style="background-color: #f0fdf4; border-color: #16a34a; color: #166534;">
+                Registration successful. Your numeric Reference ID is: <strong id="displayRefId"></strong>
             </div>
 
-            <div class="form-section">
-                <h2>Curriculum Lock & Admission</h2>
-                <form id="currForm" onsubmit="submitCurriculum(event)">
-                    
-                    <h3>1. Compulsory Core Modules</h3>
-                    <p style="font-size: 0.9em; margin-top: 0;">The following modules are locked and mandatory for all tracks.</p>
-                    
-                    <div class="core-module">
-                        <input type="checkbox" checked disabled>
-                        <span>Mathematics (Compulsory Core)</span>
-                    </div>
-                    <div class="core-module">
-                        <input type="checkbox" checked disabled>
-                        <span>Logic & Algorithmic Foundations (Compulsory Core)</span>
-                    </div>
+            <form id="currForm" onsubmit="submitCurriculum(event)">
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; display: block; text-transform: uppercase; letter-spacing: 0.5px;">Compulsory Core</label>
+                
+                <div class="locked-module">
+                    <input type="checkbox" checked disabled>
+                    <span>Mathematics</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
+                <div class="locked-module">
+                    <input type="checkbox" checked disabled>
+                    <span>Logic & Algorithmic Foundations</span>
+                    <span class="lock-icon">🔒</span>
+                </div>
 
-                    <h3 style="margin-top: 30px;">2. Select Specialization Track</h3>
-                    <div class="input-group">
-                        <select id="trackSelect" required>
-                            <option value="" disabled selected>Choose your track...</option>
-                            <option value="1">Track 1: Full Stack Engineering</option>
-                            <option value="2">Track 2: Frontend Architecture</option>
-                            <option value="3">Track 3: Backend Systems</option>
-                            <option value="4">Track 4: Mobile Application Development</option>
-                            <option value="5">Track 5: Digital Visual Design</option>
-                            <option value="6">Track 6: Human-Computer Interaction (UI/UX)</option>
-                            <option value="7">Track 7: Data & Statistical Analysis</option>
-                            <option value="8">Track 8: Applied Physics & Mathematics</option>
-                        </select>
-                    </div>
+                <div class="input-group" style="margin-top: 30px;">
+                    <label>Select Specialization Track</label>
+                    <select id="trackSelect" required>
+                        <option value="" disabled selected>Choose your track...</option>
+                        <option value="1">Track 1: Full Stack Engineering</option>
+                        <option value="2">Track 2: Frontend Architecture</option>
+                        <option value="3">Track 3: Backend Systems</option>
+                        <option value="4">Track 4: Mobile Application Development</option>
+                        <option value="5">Track 5: Digital Visual Design</option>
+                        <option value="6">Track 6: Human-Computer Interaction</option>
+                        <option value="7">Track 7: Data & Statistical Analysis</option>
+                        <option value="8">Track 8: Applied Physics & Mathematics</option>
+                    </select>
+                </div>
 
-                    <h3 style="margin-top: 30px;">3. Academic Acknowledgment</h3>
-                    <div class="input-group" style="display: flex; align-items: flex-start;">
-                        <input type="checkbox" id="ackBox" required style="width: auto; margin-right: 15px; margin-top: 5px; transform: scale(1.2);">
-                        <label for="ackBox" style="font-weight: normal; font-size: 0.9em; line-height: 1.4;">
-                            I acknowledge that the IFB is a non-accredited institution and that my curriculum will be permanently locked after 21 March 2027. I accept the AI Moderation policy for all examinations.
-                        </label>
-                    </div>
+                <div class="input-group" style="display: flex; align-items: flex-start; margin-top: 25px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--silver);">
+                    <input type="checkbox" id="ackBox" required style="width: 18px; height: 18px; margin-right: 15px; margin-top: 2px; accent-color: var(--maroon);">
+                    <label for="ackBox" style="font-weight: 400; font-size: 0.85rem; line-height: 1.5; color: var(--text-muted); margin: 0;">
+                        I acknowledge the non-accredited status of the IFB. I understand my curriculum will lock permanently on <strong>21 March 2027</strong> and that all exams are AI-moderated.
+                    </label>
+                </div>
 
-                    <button type="submit" class="btn" style="margin-top: 10px;">Submit & Generate Admission ID</button>
-                </form>
-            </div>
+                <button type="submit" class="btn" style="margin-top: 20px;">Generate Admission ID</button>
+            </form>
         </div>
 
-        <!-- Final State (Hidden until Curriculum Submission) -->
-        <div id="successView" class="hidden">
-             <div class="form-section" style="text-align: center; border-top: 5px solid var(--maroon);">
-                <h2 style="border: none; font-size: 2em; color: var(--maroon);">Curriculum Locked</h2>
-                <p>Your official Admission ID (Provisionally Accepted) is:</p>
-                <h1 id="displayAdmId" style="color: var(--maroon); font-size: 3em; letter-spacing: 5px; margin: 20px 0;"></h1>
-                <p style="font-size: 0.9em; color: #555;">Please write this number down. Your unique candidate barcode and examination schedule will be issued closer to the examination period.</p>
-            </div>
+        <!-- Step 3: Success View -->
+        <div id="successView" class="card hidden" style="text-align: center;">
+            <h2 style="justify-content: center;">Provisional Acceptance</h2>
+            <p style="color: var(--text-muted); margin-bottom: 10px;">Your official Admission ID is:</p>
+            
+            <div class="success-id" id="displayAdmId"></div>
+            
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-top: 20px;">
+                <strong>Important:</strong> Please screenshot this ID. You will need it to access the secure examination environment. Your barcode will be issued closer to the examination date.
+            </p>
         </div>
 
     </div>
@@ -258,38 +331,30 @@
         &copy; 2027 IFB (Institute of Board). Non-Accredited Independent Platform.
     </footer>
 
-    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // 1. REGISTRATION LOGIC
         function registerUser(event) {
             event.preventDefault();
             
-            // Generate a STRICTLY NUMERIC Reference ID (6 digits)
+            // Strictly numeric 6-digit ID
             const refId = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            // Display the ID
             document.getElementById('displayRefId').textContent = refId;
 
-            // Switch Views
+            // Smooth transition
             document.getElementById('registrationView').classList.add('hidden');
             document.getElementById('dashboardView').classList.remove('hidden');
         }
 
-        // 2. CURRICULUM SUBMISSION LOGIC
         function submitCurriculum(event) {
             event.preventDefault();
             
             const trackCode = document.getElementById('trackSelect').value;
             
-            // Generate a STRICTLY NUMERIC Admission ID
-            // Format: 2027 + Track Code (1 digit) + Random 3 digits (e.g., 202710045)
+            // Strictly numeric Admission ID (2027 + Track + Random)
             const randomSeq = Math.floor(100 + Math.random() * 900).toString();
             const admId = "2027" + trackCode + randomSeq;
-
-            // Display the ID
             document.getElementById('displayAdmId').textContent = admId;
 
-            // Switch Views
+            // Smooth transition
             document.getElementById('dashboardView').classList.add('hidden');
             document.getElementById('successView').classList.remove('hidden');
         }
