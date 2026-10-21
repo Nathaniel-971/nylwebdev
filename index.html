@@ -1,289 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFB | Institute of Board</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        :root { 
-            --black: #111827; 
-            --maroon: #7A0000; 
-            --maroon-dark: #5a0000;
-            --silver: #D1D5DB; 
-            --silver-light: #F3F4F6; 
-            --white: #FFFFFF; 
-            --gray: #4B5563; 
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; line-height: 1.6; }
-
-        /* Animations */
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; opacity: 0; }
-
-        /* Navigation */
-        nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 20px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--maroon); font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
-        .nav-right { display: flex; align-items: center; gap: 16px; }
-        
-        .profile-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 700; text-decoration: none; transition: 0.2s; border: 2px solid transparent; }
-        .profile-icon:hover { border-color: var(--maroon); background: var(--white); color: var(--maroon); }
-        
-        .hamburger { background: none; border: none; cursor: pointer; color: var(--black); padding: 8px; }
-        .hamburger:hover { color: var(--maroon); }
-
-        /* Slide-out Menu */
-        .side-menu { position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh; background: var(--white); border-left: 1px solid var(--silver); z-index: 1000; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 24px; display: flex; flex-direction: column; box-shadow: -5px 0 25px rgba(0,0,0,0.1); }
-        .side-menu.open { right: 0; }
-        .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
-        .menu-close { background: none; border: none; cursor: pointer; color: var(--gray); }
-        .menu-links { display: flex; flex-direction: column; gap: 8px; }
-        .menu-links a { text-decoration: none; color: var(--black); font-weight: 600; padding: 14px; border-radius: 8px; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
-        .menu-links a:hover { background: var(--silver-light); color: var(--maroon); }
-
-        /* Hero Section (E-commerce/University feel) */
-        .hero { background: var(--silver-light); padding: 60px 20px; text-align: center; border-bottom: 1px solid var(--silver); }
-        .hero-content { max-width: 800px; margin: 0 auto; }
-        .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; color: var(--black); letter-spacing: -1px; line-height: 1.2; }
-        .hero p { color: var(--gray); font-size: 1.1rem; margin-bottom: 32px; }
-        .hero-badge { display: inline-block; background: var(--white); border: 1px solid var(--silver); color: var(--maroon); padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Main Container */
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; width: 100%; flex: 1; }
-
-        /* Auto Sign-In / Auth Section */
-        .auth-box { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); margin-bottom: 48px; }
-        
-        .welcome-back { text-align: center; display: none; }
-        .welcome-back h2 { font-size: 1.8rem; color: var(--maroon); margin-bottom: 8px; }
-        .welcome-back p { color: var(--gray); margin-bottom: 24px; }
-        .btn-dashboard { display: inline-flex; justify-content: center; align-items: center; gap: 8px; background: var(--maroon); color: var(--white); padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: 0.2s; }
-        .btn-dashboard:hover { background: var(--maroon-dark); transform: translateY(-2px); }
-
-        .auth-forms { display: grid; grid-template-columns: 1fr; gap: 32px; }
-        .form-group { width: 100%; }
-        .form-group h3 { font-size: 1.2rem; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--silver); }
-        
-        .input-field { margin-bottom: 16px; }
-        .input-field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--black); }
-        .input-field input { width: 100%; padding: 14px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; transition: 0.2s; font-size: 0.95rem; }
-        .input-field input:focus { outline: none; border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122,0,0,0.1); }
-        
-        .btn { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn:hover { background: var(--maroon-dark); }
-
-        /* Course Preview (E-commerce Grid) */
-        .section-title { text-align: center; font-size: 2rem; font-weight: 800; margin-bottom: 32px; letter-spacing: -0.5px; }
-        .course-preview-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
-        .course-preview-card { border: 1px solid var(--silver); border-radius: 12px; padding: 24px; transition: 0.3s; background: var(--white); display: flex; flex-direction: column; }
-        .course-preview-card:hover { border-color: var(--maroon); transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
-        .course-icon { width: 48px; height: 48px; background: var(--silver-light); color: var(--maroon); border-radius: 8px; display: flex; justify-content: center; align-items: center; margin-bottom: 16px; }
-        .course-preview-card h3 { font-size: 1.2rem; margin-bottom: 8px; }
-        .course-preview-card p { font-size: 0.9rem; color: var(--gray); margin-bottom: 24px; flex: 1; }
-        .course-link { color: var(--maroon); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 4px; }
-        .course-link:hover { text-decoration: underline; }
-
-        footer { background: var(--white); border-top: 1px solid var(--silver); padding: 32px 20px; text-align: center; font-size: 0.85rem; color: var(--gray); margin-top: auto; }
-
-        /* Desktop Overrides */
-        @media (min-width: 768px) {
-            .auth-forms { grid-template-columns: 1fr 1fr; }
-            .course-preview-grid { grid-template-columns: 1fr 1fr 1fr; }
-            .hero h1 { font-size: 3.5rem; }
-            .hamburger { display: block; } /* Keeping hamburger for directory access as requested */
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyl Dev — Admission</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<style>
+:root{--black:#0d0d0d;--white:#fff;--grey:#6b6b6b;--light:#f5f5f5;--line:#e5e5e5;--mid:#333;--gold:#d4af37}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--white);color:var(--black);line-height:1.6}
+a{color:var(--black);text-decoration:none}
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:12px 32px;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.5px}
+.mark{font-family:'Courier New',monospace;font-size:26px;font-weight:700;letter-spacing:-2px}
+.nav-links{display:flex;gap:6px}
+.nav-links a{padding:8px 14px;border-radius:8px;font-size:14px;font-weight:500}
+.nav-links a:hover{background:var(--light)}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+.hero{text-align:center;padding:70px 20px 40px}
+.mark-lg{width:64px;height:64px;display:grid;place-items:center;background:var(--black);color:var(--white);border-radius:14px;font-size:30px;font-weight:800;margin:0 auto 20px;font-family:'Courier New',monospace}
+h1{font-size:clamp(28px,5vw,44px);letter-spacing:-1.5px;margin-bottom:12px}
+h2{font-size:22px;margin-bottom:14px}
+.hero p{color:var(--grey);max-width:560px;margin:0 auto}
+section{padding:32px 0;border-top:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{border:1px solid var(--line);border-radius:12px;padding:20px;background:var(--white)}
+.card h3{font-size:16px;margin-bottom:6px}
+.card p{font-size:13.5px;color:var(--grey)}
+.form-card{max-width:520px;margin:0 auto;padding:24px}
+.tabs{display:flex;gap:6px;background:var(--light);padding:4px;border-radius:10px;margin-bottom:20px;max-width:520px;margin-left:auto;margin-right:auto}
+.tab{flex:1;padding:10px;border:none;background:transparent;border-radius:8px;font-weight:600;font-size:13.5px;font-family:inherit;cursor:pointer;color:var(--grey)}
+.tab.active{background:var(--black);color:var(--white)}
+label{display:block;font-size:12.5px;font-weight:600;margin:14px 0 6px}
+input,select{width:100%;padding:11px 13px;font-size:14.5px;font-family:inherit;border:1.5px solid var(--line);border-radius:9px;background:var(--white);color:var(--black)}
+input:focus,select:focus{outline:none;border-color:var(--black)}
+.btn{width:100%;padding:13px;font-size:14.5px;font-weight:600;border-radius:10px;border:1.5px solid var(--black);background:var(--black);color:var(--white);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:20px}
+.btn:hover{background:var(--mid)}.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-ghost{background:var(--white);color:var(--black);border-color:var(--line)}
+.btn-ghost:hover{background:var(--light);border-color:var(--black)}
+.msg{padding:11px 14px;border-radius:8px;font-size:13px;margin-top:14px}
+.msg.error{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.msg.success{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+.hide{display:none !important}
+/* slip */
+.slip{border:2px solid var(--black);border-radius:14px;padding:32px 28px;background:var(--white);max-width:560px;margin:0 auto;position:relative;overflow:hidden}
+.slip::before{content:"PROVISIONALLY ACCEPTED";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:56px;font-weight:900;color:rgba(13,13,13,.05);letter-spacing:6px;pointer-events:none;white-space:nowrap}
+.slip-head{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:2px solid var(--black);margin-bottom:20px;position:relative}
+.slip-mark{width:52px;height:52px;display:grid;place-items:center;background:var(--black);color:var(--white);border-radius:12px;font-family:'Courier New',monospace;font-size:26px;font-weight:800}
+.slip-head strong{display:block;font-size:18px;letter-spacing:-.3px}
+.slip-head span{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--grey)}
+.slip-dl{display:grid;grid-template-columns:140px 1fr;gap:8px 16px;font-size:13.5px;position:relative}
+.slip-dl dt{color:var(--grey);font-weight:600}
+.slip-dl dd{font-weight:600;margin:0}
+.status-badge{display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#15803d;padding:3px 10px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid #bbf7d0}
+.admission-num{font-family:'Courier New',monospace;font-size:24px;font-weight:800;letter-spacing:3px;text-align:center;padding:16px 0 8px;margin-top:20px;border-top:1px dashed var(--line);position:relative}
+.barcode-wrap{text-align:center;padding-top:8px;position:relative}
+.barcode-wrap svg{width:100%;max-width:280px;height:60px}
+.slip-foot{display:flex;justify-content:space-between;font-size:11px;color:var(--grey);margin-top:20px;padding-top:12px;border-top:1px solid var(--line);position:relative}
+.actions{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap;max-width:520px;margin-left:auto;margin-right:auto}
+.actions .btn{width:auto;padding:12px 20px;margin-top:0}
+@media print{.nav,footer,#hero,#courses,#authSection,.actions,.no-print{display:none !important}body{background:#fff}.slip{border-width:1px;margin:0}.slip::before{color:rgba(13,13,13,.06)}}
+footer{text-align:center;padding:32px 20px;color:var(--grey);font-size:12.5px;border-top:1px solid var(--line);margin-top:40px}
+</style>
 </head>
 <body>
-    <!-- Slide-out Menu -->
-    <div class="side-menu" id="sideMenu">
-        <div class="menu-header">
-            <span style="font-weight: 800; color: var(--maroon); font-size: 1.2rem;">∆ IFB Directory</span>
-            <button class="menu-close" onclick="toggleMenu()"><i data-lucide="x" size="28"></i></button>
+
+<nav class="nav">
+  <a class="brand" href="/"><span class="mark">∆</span> Nyl Dev</a>
+  <div class="nav-links">
+    <a href="resources.html">Resources</a>
+    <a href="profile.html">Portal</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="hero">
+  <div class="mark-lg">∆</div>
+  <h1>Free courses. 2027 intake.</h1>
+  <p>Mathematics, Physical Sciences, Software Engineering. Skills-based, non-accredited, built to international standard.</p>
+</section>
+
+<section id="courses">
+  <h2>Courses we offer</h2>
+  <div class="grid">
+    <div class="card"><h3>Mathematics</h3><p>Algebra · Functions · Calculus · Finance · Probability · Statistics</p></div>
+    <div class="card"><h3>Physical Sciences</h3><p>Mechanics · Momentum · Electricity · Electrostatics · Chemistry</p></div>
+    <div class="card"><h3>Software Engineering</h3><p>HTML · CSS · JavaScript · Git · APIs · Deployment</p></div>
+  </div>
+</section>
+
+<section id="authSection">
+  <h2 style="text-align:center;margin-bottom:20px">Apply now</h2>
+  <div class="tabs">
+    <button class="tab active" data-tab="signup">Apply</button>
+    <button class="tab" data-tab="signin">Sign in</button>
+  </div>
+
+  <form id="signupForm" class="form-card card" novalidate>
+    <label>Full name *</label><input id="sName" required autocomplete="name">
+    <label>Email *</label><input id="sEmail" type="email" required autocomplete="email">
+    <label>Password * (min 8 chars)</label><input id="sPass" type="password" minlength="8" required autocomplete="new-password">
+    <label>Phone *</label><input id="sPhone" type="tel" required autocomplete="tel">
+    <label>Course *</label>
+    <select id="sCourse" required>
+      <option value="">— Select —</option>
+      <option value="Mathematics">Mathematics</option>
+      <option value="Physical Sciences">Physical Sciences</option>
+      <option value="Software Engineering">Software Engineering</option>
+    </select>
+    <button type="submit" class="btn">Submit application</button>
+    <div id="signupMsg" class="msg hide"></div>
+  </form>
+
+  <form id="signinForm" class="form-card card hide" novalidate>
+    <label>Email</label><input id="inEmail" type="email" required>
+    <label>Password</label><input id="inPass" type="password" required>
+    <button type="submit" class="btn">Sign in</button>
+    <div id="signinMsg" class="msg hide"></div>
+  </form>
+</section>
+
+<section id="slipSection" class="hide">
+  <div id="slipRoot"></div>
+  <div class="actions">
+    <button class="btn" id="printSlip">Download slip (PDF)</button>
+    <a href="profile.html" class="btn btn-ghost">Go to portal</a>
+  </div>
+</section>
+
+</main>
+
+<footer>Non-accredited skills development · © 2026—2027 · Nyl Dev</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function showMsg(id, text, type) {
+  const el = $(id);
+  el.textContent = text;
+  el.className = "msg " + type;
+}
+
+function friendly(code) {
+  const m = {
+    "auth/email-already-in-use": "That email is already registered. Try signing in.",
+    "auth/invalid-email": "Enter a valid email.",
+    "auth/weak-password": "Password must be at least 8 characters.",
+    "auth/user-not-found": "No account found.",
+    "auth/wrong-password": "Incorrect password.",
+    "auth/invalid-credential": "Incorrect email or password.",
+    "auth/too-many-requests": "Too many attempts. Try again later."
+  };
+  return m[code] || "Something went wrong. Try again.";
+}
+
+async function generateUniqueAdmissionNumber() {
+  const year = new Date().getFullYear();
+  for (let i = 0; i < 6; i++) {
+    const num = String(year) + String(Math.floor(1000 + Math.random() * 9000));
+    const snap = await getDocs(query(collection(db, "users"), where("admissionNumber", "==", num)));
+    if (snap.empty) return num;
+  }
+  throw new Error("Could not generate unique number. Try again.");
+}
+
+function slipHTML(data) {
+  const issued = new Date().toISOString().slice(0, 10);
+  return `
+    <div class="slip" id="slipCard">
+      <div class="slip-head">
+        <div class="slip-mark">∆</div>
+        <div>
+          <strong>Nyl Dev · Institute of Board</strong>
+          <span>Admission Slip · 2027 Intake</span>
         </div>
-        <div class="menu-links">
-            <a href="index.html"><i data-lucide="home" size="22"></i> Landing Page</a>
-            <a href="dashboard.html"><i data-lucide="layout-dashboard" size="22"></i> Student Portal</a>
-            <a href="courses.html"><i data-lucide="book-open" size="22"></i> Academic Tracks</a>
-            <a href="documents.html"><i data-lucide="folder" size="22"></i> Document Hub</a>
-        </div>
-    </div>
+      </div>
+      <dl class="slip-dl">
+        <dt>Admission №</dt><dd>${esc(data.admissionNumber)}</dd>
+        <dt>Status</dt><dd><span class="status-badge">● Provisionally Accepted</span></dd>
+        <dt>Full name</dt><dd>${esc(data.name)}</dd>
+        <dt>Email</dt><dd>${esc(data.email)}</dd>
+        <dt>Phone</dt><dd>${esc(data.phone)}</dd>
+        <dt>Course</dt><dd>${esc(data.course)}</dd>
+        <dt>Issued</dt><dd>${issued}</dd>
+      </dl>
+      <div class="admission-num">${esc(data.admissionNumber)}</div>
+      <div class="barcode-wrap"><svg id="barcodeSvg"></svg></div>
+      <div class="slip-foot">
+        <span>Non-accredited · Not NQF-registered</span>
+        <span>∆ 2026—2027</span>
+      </div>
+    </div>`;
+}
 
-    <nav>
-        <a href="index.html" class="nav-logo"><i data-lucide="triangle" size="28"></i> IFB</a>
-        <div class="nav-right">
-            <a href="dashboard.html" class="profile-icon" id="navProfileIcon" style="display: none;">
-                <!-- Letter will be injected via JS -->
-            </a>
-            <button class="hamburger" onclick="toggleMenu()"><i data-lucide="menu" size="32"></i></button>
-        </div>
-    </nav>
+function renderSlip(data) {
+  $("slipRoot").innerHTML = slipHTML(data);
+  $("authSection").classList.add("hide");
+  $("slipSection").classList.remove("hide");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  setTimeout(() => {
+    if (typeof JsBarcode !== "undefined") {
+      try { JsBarcode("#barcodeSvg", data.admissionNumber, { format: "CODE128", width: 2, height: 60, displayValue: false, margin: 0, background: "#ffffff", lineColor: "#000000" }); } catch(e){}
+    }
+  }, 100);
+  $("printSlip").onclick = () => window.print();
+  if (window.lucide) lucide.createIcons();
+}
 
-    <header class="hero animate-fade-up">
-        <div class="hero-content">
-            <span class="hero-badge">2026 — 2027 Academic Year</span>
-            <h1>Engineering the Future of Digital Sciences</h1>
-            <p>The Institute of Board (IFB) offers an independent, technologically advanced educational framework designed for the modern web. Master full-stack deployment, mathematical logic, and applied sciences.</p>
-        </div>
-    </header>
+function renderAuthForms() {
+  $("slipSection").classList.add("hide");
+  $("authSection").classList.remove("hide");
+}
 
-    <main class="container">
-        
-        <!-- Auth Section -->
-        <div class="auth-box animate-fade-up" style="animation-delay: 0.1s;">
-            
-            <!-- Show this if logged in -->
-            <div class="welcome-back" id="welcomeBack">
-                <h2>Welcome back, <span id="welcomeName"></span>.</h2>
-                <p>You are securely logged in to the IFB Portal.</p>
-                <a href="dashboard.html" class="btn-dashboard">Go to Dashboard <i data-lucide="arrow-right" size="18"></i></a>
-            </div>
+/* Tabs */
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  if (t.dataset.tab === "signup") {
+    $("signupForm").classList.remove("hide");
+    $("signinForm").classList.add("hide");
+  } else {
+    $("signupForm").classList.add("hide");
+    $("signinForm").classList.remove("hide");
+  }
+}));
 
-            <!-- Show this if logged out -->
-            <div class="auth-forms" id="authForms">
-                <!-- Registration -->
-                <div class="form-group">
-                    <h3>New Applicant</h3>
-                    <form id="regForm">
-                        <div class="input-field">
-                            <label>Full Name</label>
-                            <input type="text" id="regName" required placeholder="John Doe">
-                        </div>
-                        <div class="input-field">
-                            <label>Email Address</label>
-                            <input type="email" id="regEmail" required placeholder="john@example.com">
-                        </div>
-                        <div class="input-field">
-                            <label>Password</label>
-                            <input type="password" id="regPass" required placeholder="••••••••">
-                        </div>
-                        <button type="submit" class="btn">Create Profile <i data-lucide="user-plus" size="18"></i></button>
-                    </form>
-                </div>
+/* Auth state */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { renderAuthForms(); return; }
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) renderSlip(snap.data());
+    else renderAuthForms(); // edge case
+  } catch (e) {
+    console.error(e);
+    renderAuthForms();
+  }
+});
 
-                <!-- Login -->
-                <div class="form-group">
-                    <h3>Returning Student</h3>
-                    <form id="loginForm">
-                        <div class="input-field">
-                            <label>Email Address</label>
-                            <input type="email" id="loginEmail" required placeholder="john@example.com">
-                        </div>
-                        <div class="input-field">
-                            <label>Password</label>
-                            <input type="password" id="loginPass" required placeholder="••••••••">
-                        </div>
-                        <div style="margin-top: 42px;"> <!-- Spacer to align button with other form -->
-                            <button type="submit" class="btn">Secure Login <i data-lucide="log-in" size="18"></i></button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+/* Sign up = create account + save application */
+$("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!e.target.checkValidity()) { e.target.reportValidity(); return; }
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true; btn.textContent = "Submitting…";
+  try {
+    const name = $("sName").value.trim();
+    const email = $("sEmail").value.trim();
+    const password = $("sPass").value;
+    const phone = $("sPhone").value.trim();
+    const course = $("sCourse").value;
 
-        <!-- Course Preview -->
-        <h2 class="section-title animate-fade-up" style="animation-delay: 0.2s;">Explore Academic Tracks</h2>
-        <div class="course-preview-grid animate-fade-up" style="animation-delay: 0.3s;">
-            <div class="course-preview-card">
-                <div class="course-icon"><i data-lucide="layers" size="24"></i></div>
-                <h3>Full Stack Development</h3>
-                <p>Master both client-side and server-side architecture, databases, and deployment.</p>
-                <a href="courses.html" class="course-link">View Track <i data-lucide="arrow-right" size="16"></i></a>
-            </div>
-            <div class="course-preview-card">
-                <div class="course-icon"><i data-lucide="layout" size="24"></i></div>
-                <h3>Frontend Development</h3>
-                <p>UI/UX implementation, DOM manipulation, modern frameworks, and responsive design.</p>
-                <a href="courses.html" class="course-link">View Track <i data-lucide="arrow-right" size="16"></i></a>
-            </div>
-            <div class="course-preview-card">
-                <div class="course-icon"><i data-lucide="server" size="24"></i></div>
-                <h3>Backend Development</h3>
-                <p>Server logic, API creation, and robust database management.</p>
-                <a href="courses.html" class="course-link">View Track <i data-lucide="arrow-right" size="16"></i></a>
-            </div>
-        </div>
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
+    const admissionNumber = await generateUniqueAdmissionNumber();
 
-    </main>
+    const data = {
+      name, email, phone, course, admissionNumber,
+      status: "Provisionally Accepted",
+      appliedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+    await setDoc(doc(db, "users", cred.user.uid), data);
+    renderSlip(data);
+  } catch (err) {
+    showMsg("signupMsg", friendly(err.code) || err.message, "error");
+    btn.disabled = false; btn.textContent = "Submit application";
+  }
+});
 
-    <footer>&copy; 2026—2027 IFB. Non-Accredited Independent Platform.</footer>
+/* Sign in */
+$("signinForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true; btn.textContent = "Signing in…";
+  try {
+    const cred = await signInWithEmailAndPassword(auth, $("inEmail").value.trim(), $("inPass").value);
+    const snap = await getDoc(doc(db, "users", cred.user.uid));
+    if (snap.exists()) renderSlip(snap.data());
+    else showMsg("signinMsg", "Profile missing — please contact us.", "error");
+  } catch (err) {
+    showMsg("signinMsg", friendly(err.code) || err.message, "error");
+    btn.disabled = false; btn.textContent = "Sign in";
+  }
+});
 
-    <script>
-        lucide.createIcons();
-        
-        function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
-
-        // Hashing Function
-        async function hashPassword(password) {
-            const msgBuffer = new TextEncoder().encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // Initialize DB
-        if (!localStorage.getItem('ifb_db')) localStorage.setItem('ifb_db', JSON.stringify([]));
-
-        // --- AUTO SIGN IN LOGIC ---
-        const currentUser = JSON.parse(localStorage.getItem('ifb_current_user'));
-        if (currentUser) {
-            // User is logged in
-            document.getElementById('authForms').style.display = 'none';
-            document.getElementById('welcomeBack').style.display = 'block';
-            document.getElementById('welcomeName').textContent = currentUser.name;
-            
-            // Show profile icon in nav
-            const profileIcon = document.getElementById('navProfileIcon');
-            profileIcon.style.display = 'flex';
-            profileIcon.innerHTML = currentUser.name.charAt(0).toUpperCase();
-        }
-
-        // --- REGISTRATION ---
-        document.getElementById('regForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPass').value;
-
-            const hashedPass = await hashPassword(password);
-            const db = JSON.parse(localStorage.getItem('ifb_db'));
-
-            if(db.find(u => u.email === email)) { alert("Email already registered."); return; }
-
-            // Auto Generate IDs (YEAR + 4 digit sequence)
-            const year = new Date().getFullYear();
-            const seq = String(db.length + 1).padStart(4, '0'); 
-            const examNumber = `${year}${seq}`; 
-            const studentId = Math.floor(100000 + Math.random() * 900000).toString(); 
-            const admissionId = `ADM-${examNumber}`;
-
-            const newUser = { name, email, password: hashedPass, examNumber, studentId, admissionId };
-            db.push(newUser);
-            localStorage.setItem('ifb_db', JSON.stringify(db));
-            localStorage.setItem('ifb_current_user', JSON.stringify(newUser));
-            
-            window.location.href = 'dashboard.html';
-        });
-
-        // --- LOGIN ---
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPass').value;
-            const hashedPass = await hashPassword(password);
-            
-            const db = JSON.parse(localStorage.getItem('ifb_db'));
-            const user = db.find(u => u.email === email && u.password === hashedPass);
-
-            if (user) {
-                localStorage.setItem('ifb_current_user', JSON.stringify(user));
-                window.location.href = 'dashboard.html';
-            } else {
-                alert("Invalid credentials.");
-            }
-        });
-    </script>
+if (window.lucide) lucide.createIcons();
+</script>
 </body>
 </html>
