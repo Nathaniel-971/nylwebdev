@@ -3,144 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nyl Dev — Admission · 2027</title>
+<title>IFB — Institute of Board · Admissions Open Soon</title>
+<meta name="description" content="IFB — Institute of Board. Web development courses. 2027 intake, admissions open soon.">
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <style>
-:root{--ink:#0d0d0d;--paper:#fff;--grey:#6b6b6b;--soft:#f7f7f7;--line:#e6e6e6;--mid:#333}
+:root{
+  --maroon:#7A1F2B;
+  --maroon-deep:#5A1620;
+  --maroon-dark:#3E0F16;
+  --silver:#C7CBD1;
+  --silver-light:#ECEEF1;
+  --ink:#141414;
+  --grey:#6B7280;
+  --paper:#FFFFFF;
+  --soft:#F7F5F3;
+  --line:#E7E2DE;
+  --line-strong:#D8D2CC;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;
+}
 a{color:inherit;text-decoration:none}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes popIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 .fade{animation:fadeUp .7s cubic-bezier(.16,1,.3,1) both}
 .fade-1{animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .08s both}
 .fade-2{animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .16s both}
+.fade-3{animation:fadeUp .7s cubic-bezier(.16,1,.3,1) .24s both}
 
 /* NAV */
-.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-.nav-inner{max-width:1080px;margin:0 auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
-.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.2px;font-size:15px}
-.brand .mark{width:34px;height:34px;display:grid;place-items:center;background:var(--ink);color:#fff;border-radius:9px;font-family:'Courier New',monospace;font-size:19px;font-weight:800;letter-spacing:-2px}
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.5px;font-size:16px;color:var(--maroon)}
+.brand .mark{
+  width:36px;height:36px;display:grid;place-items:center;
+  background:var(--maroon);color:#fff;border-radius:10px;
+  font-family:'Courier New',monospace;font-size:20px;font-weight:800;
+  letter-spacing:-2px;line-height:1;
+}
+.brand .name{display:flex;flex-direction:column;line-height:1.05}
+.brand .name strong{font-size:16px;letter-spacing:.8px}
+.brand .name span{font-size:9.5px;letter-spacing:2.5px;color:var(--grey);font-weight:600;text-transform:uppercase;margin-top:2px}
 .nav-links{display:flex;gap:4px}
-.nav-links a{padding:9px 15px;border-radius:9px;font-size:13.5px;font-weight:500;color:var(--ink);transition:background .18s}
+.nav-links a{padding:9px 15px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink);transition:background .18s}
 .nav-links a:hover{background:var(--soft)}
+.nav-links a.cta{background:var(--maroon);color:#fff}
+.nav-links a.cta:hover{background:var(--maroon-deep)}
 
 /* SHELL */
-.shell{max-width:1080px;margin:0 auto;padding:0 24px}
+.shell{max-width:1120px;margin:0 auto;padding:0 24px}
 
 /* HERO */
-.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;padding:80px 0 72px;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) both}
-.eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-bottom:18px;display:flex;align-items:center;gap:9px}
-.eyebrow svg{width:14px;height:14px}
-.hero h1{font-size:clamp(38px,5.4vw,62px);line-height:1.03;letter-spacing:-2.6px;font-weight:700;margin-bottom:22px}
-.hero h1 em{font-style:normal;color:var(--grey)}
-.hero p{font-size:16.5px;color:var(--grey);max-width:480px;margin-bottom:32px}
-.hero-cta{display:flex;gap:11px;flex-wrap:wrap}
-.badge-art{width:100%;max-width:260px;height:auto;filter:drop-shadow(0 24px 48px rgba(0,0,0,.14));animation:popIn .9s cubic-bezier(.16,1,.3,1) .2s both;justify-self:center}
+.hero{padding:96px 0 84px;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) both}
+.hero-inner{max-width:800px}
+.pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--soft);border:1px solid var(--line-strong);
+  padding:7px 14px;border-radius:100px;
+  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--maroon);
+  margin-bottom:24px;
+}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--maroon);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+.hero h1{
+  font-size:clamp(40px,7vw,76px);
+  line-height:1.02;letter-spacing:-3.5px;font-weight:800;
+  margin-bottom:24px;color:var(--ink);
+}
+.hero h1 em{font-style:normal;color:var(--maroon)}
+.hero h1 span{display:block}
+.hero p{font-size:17.5px;color:var(--grey);max-width:600px;margin-bottom:36px;line-height:1.65}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:14px 24px;font-size:14px;font-weight:600;font-family:inherit;border-radius:11px;border:1.5px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;transition:all .18s}
-.btn:hover{background:var(--mid);border-color:var(--mid);transform:translateY(-1px)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:15px 26px;font-size:14.5px;font-weight:600;font-family:inherit;
+  border-radius:11px;border:1.5px solid var(--maroon);
+  background:var(--maroon);color:#fff;cursor:pointer;
+  transition:all .2s cubic-bezier(.16,1,.3,1);
+}
+.btn:hover{background:var(--maroon-deep);border-color:var(--maroon-deep);transform:translateY(-1px);box-shadow:0 10px 26px rgba(122,31,43,.25)}
 .btn svg{width:16px;height:16px}
 .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-ghost{background:var(--paper);color:var(--ink);border-color:var(--line)}
-.btn-ghost:hover{background:var(--soft);border-color:var(--ink)}
-.btn-block{width:100%}
+.btn-ghost{background:var(--paper);color:var(--maroon);border-color:var(--line-strong)}
+.btn-ghost:hover{background:var(--soft);border-color:var(--maroon);color:var(--maroon)}
 
 /* SECTIONS */
-section.block{padding:64px 0;border-top:1px solid var(--line)}
-.sec-head{margin-bottom:32px}
-.sec-head h2{font-size:clamp(24px,3vw,34px);letter-spacing:-1.2px;font-weight:700;margin-bottom:8px}
-.sec-head p{color:var(--grey);font-size:15px;max-width:520px}
+section.block{padding:80px 0;border-top:1px solid var(--line)}
+.sec-head{margin-bottom:44px;max-width:640px}
+.eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--maroon);margin-bottom:16px;
+  display:flex;align-items:center;gap:9px;
+}
+.eyebrow svg{width:14px;height:14px}
+.sec-head h2{
+  font-size:clamp(28px,4vw,44px);letter-spacing:-1.8px;line-height:1.08;
+  font-weight:800;margin-bottom:14px;
+}
+.sec-head h2 em{font-style:normal;color:var(--maroon)}
+.sec-head p{color:var(--grey);font-size:16px;line-height:1.6}
 
 /* COURSE CARDS */
-.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-.course{border:1px solid var(--line);border-radius:16px;padding:26px 24px;background:var(--paper);transition:all .22s}
-.course:hover{border-color:var(--ink);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.07)}
-.course .ico{width:42px;height:42px;border-radius:11px;background:var(--soft);display:grid;place-items:center;margin-bottom:16px}
-.course .ico svg{width:20px;height:20px}
-.course h3{font-size:16.5px;font-weight:700;margin-bottom:7px;letter-spacing:-.2px}
-.course p{font-size:13.5px;color:var(--grey);line-height:1.55}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.course{
+  border:1px solid var(--line);border-radius:16px;padding:28px 26px;
+  background:var(--paper);transition:all .25s cubic-bezier(.16,1,.3,1);
+  position:relative;overflow:hidden;
+}
+.course::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--maroon),var(--maroon-deep));
+  transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.16,1,.3,1);
+}
+.course:hover{border-color:var(--maroon);transform:translateY(-4px);box-shadow:0 20px 44px rgba(122,31,43,.1)}
+.course:hover::before{transform:scaleX(1)}
+.course .ico{
+  width:44px;height:44px;border-radius:11px;
+  background:var(--soft);border:1px solid var(--line-strong);
+  display:grid;place-items:center;margin-bottom:18px;
+  transition:all .25s;
+}
+.course:hover .ico{background:var(--maroon);border-color:var(--maroon)}
+.course .ico svg{width:20px;height:20px;color:var(--maroon);transition:color .25s}
+.course:hover .ico svg{color:#fff}
+.course .num{
+  position:absolute;top:24px;right:26px;
+  font-family:'Courier New',monospace;
+  font-size:11px;font-weight:800;letter-spacing:2px;
+  color:var(--line-strong);
+}
+.course h3{font-size:18px;font-weight:800;margin-bottom:8px;letter-spacing:-.3px;color:var(--ink)}
+.course .lead{font-size:13.5px;color:var(--maroon);font-weight:600;margin-bottom:14px}
+.course ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:14px;padding-top:16px;border-top:1px solid var(--line)}
+.course ul li{font-size:13px;color:var(--grey);display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+.course ul li svg{width:13px;height:13px;color:var(--maroon);flex-shrink:0;margin-top:3px}
 
-/* FORM */
-.form-shell{max-width:520px;margin:0 auto}
-.tabs{display:flex;gap:4px;padding:4px;background:var(--soft);border-radius:12px;margin-bottom:24px}
-.tab{flex:1;padding:11px;border:none;background:transparent;border-radius:9px;font-size:13.5px;font-weight:600;font-family:inherit;color:var(--grey);cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:7px}
-.tab svg{width:15px;height:15px}
-.tab.active{background:var(--ink);color:#fff}
-.tab:hover:not(.active){color:var(--ink)}
+/* FEATURE STRIP */
+.features{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;margin-top:8px;
+}
+.feature{background:var(--paper);padding:26px 24px;transition:background .2s}
+.feature:hover{background:var(--soft)}
+.feature .ico{
+  width:34px;height:34px;border-radius:9px;background:var(--soft);
+  display:grid;place-items:center;margin-bottom:14px;
+}
+.feature .ico svg{width:16px;height:16px;color:var(--maroon)}
+.feature h4{font-size:14px;font-weight:800;margin-bottom:5px;letter-spacing:-.2px}
+.feature p{font-size:12.5px;color:var(--grey);line-height:1.55}
 
-.form-card{border:1px solid var(--line);border-radius:16px;padding:30px 28px;background:var(--paper)}
-.field{margin-bottom:16px}
-.field label{display:block;font-size:12px;font-weight:600;letter-spacing:.2px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
-.field label svg{width:13px;height:13px;color:var(--grey)}
-.field input,.field select{width:100%;padding:13px 15px;font-size:14.5px;font-family:inherit;border:1.5px solid var(--line);border-radius:11px;background:var(--paper);color:var(--ink);transition:border-color .18s,box-shadow .18s}
-.field input:focus,.field select:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(13,13,13,.06)}
-.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d0d0d' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:42px}
-.field input[disabled]{background:var(--soft);color:var(--grey);cursor:not-allowed}
-.form-card .btn{margin-top:8px}
+/* WAITLIST */
+.waitlist{
+  background:linear-gradient(135deg,var(--maroon),var(--maroon-deep));
+  color:#fff;border-radius:24px;padding:64px 48px;margin:40px 0;
+  position:relative;overflow:hidden;
+}
+.waitlist::before{
+  content:"∆";position:absolute;top:-80px;right:-40px;
+  font-family:'Courier New',monospace;font-size:400px;font-weight:800;
+  color:rgba(255,255,255,.035);line-height:1;pointer-events:none;
+}
+.waitlist-inner{position:relative;max-width:620px}
+.waitlist h2{
+  font-size:clamp(28px,4vw,42px);letter-spacing:-1.5px;line-height:1.08;
+  font-weight:800;margin-bottom:14px;
+}
+.waitlist p{font-size:16px;color:rgba(255,255,255,.8);margin-bottom:30px;line-height:1.6;max-width:520px}
+.waitlist-form{display:flex;gap:10px;flex-wrap:wrap}
+.waitlist-form input{
+  flex:1;min-width:220px;padding:15px 18px;font-size:14.5px;font-family:inherit;
+  border:none;border-radius:11px;background:rgba(255,255,255,.12);
+  color:#fff;border:1.5px solid rgba(255,255,255,.2);
+  transition:all .2s;
+}
+.waitlist-form input::placeholder{color:rgba(255,255,255,.55)}
+.waitlist-form input:focus{outline:none;border-color:var(--silver);background:rgba(255,255,255,.18)}
+.waitlist-form .btn{background:#fff;color:var(--maroon);border-color:#fff}
+.waitlist-form .btn:hover{background:var(--silver-light);border-color:var(--silver-light);color:var(--maroon-deep)}
+.waitlist-msg{font-size:13px;margin-top:14px;min-height:20px;display:flex;align-items:center;gap:7px}
+.waitlist-msg.ok{color:var(--silver-light)}
+.waitlist-msg.err{color:#FFD4D4}
+.waitlist-msg svg{width:14px;height:14px}
+.waitlist-note{font-size:11.5px;color:rgba(255,255,255,.55);margin-top:16px;letter-spacing:.3px}
 
-/* MSG */
-.msg{display:none;padding:12px 15px;border-radius:10px;font-size:13px;margin-top:16px;align-items:flex-start;gap:9px}
-.msg.show{display:flex}
-.msg svg{width:15px;height:15px;flex-shrink:0;margin-top:2px}
-.msg.error{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
-.msg.success{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
-
-/* SLIP */
-.slip{position:relative;max-width:540px;margin:0 auto;background:var(--paper);border:1.5px solid var(--ink);border-radius:18px;padding:34px 30px;overflow:hidden;animation:fadeUp .6s cubic-bezier(.16,1,.3,1) both}
-.slip::before{content:"PROVISIONALLY ACCEPTED";position:absolute;top:52%;left:50%;transform:translate(-50%,-50%) rotate(-26deg);font-size:52px;font-weight:900;color:rgba(13,13,13,.045);letter-spacing:5px;white-space:nowrap;pointer-events:none;font-family:'Times New Roman',serif}
-.slip-top{display:flex;align-items:center;gap:13px;padding-bottom:18px;border-bottom:1.5px solid var(--ink);margin-bottom:22px;position:relative}
-.slip-mark{width:48px;height:48px;display:grid;place-items:center;background:var(--ink);color:#fff;border-radius:11px;font-family:'Courier New',monospace;font-size:24px;font-weight:800;letter-spacing:-2px;flex-shrink:0}
-.slip-top strong{display:block;font-size:16px;letter-spacing:-.3px;line-height:1.3}
-.slip-top span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--grey);font-weight:600}
-.slip-rows{position:relative;display:flex;flex-direction:column;gap:0}
-.slip-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
-.slip-row:last-child{border-bottom:none}
-.slip-row .k{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--grey);font-weight:700;flex-shrink:0}
-.slip-row .v{font-weight:600;text-align:right}
-.pill{display:inline-flex;align-items:center;gap:6px;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;padding:3px 10px;border-radius:100px;font-size:11.5px;font-weight:700}
-.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:#15803d}
-.slip-num{position:relative;font-family:'Courier New',monospace;font-size:26px;font-weight:800;letter-spacing:5px;text-align:center;padding:20px 0 10px;margin-top:18px;border-top:1.5px dashed var(--line)}
-.barcode{position:relative;text-align:center;padding-top:6px}
-.barcode svg{width:100%;max-width:290px;height:58px;display:block;margin:0 auto}
-.slip-foot{position:relative;display:flex;justify-content:space-between;gap:12px;font-size:10.5px;color:var(--grey);margin-top:20px;padding-top:13px;border-top:1px solid var(--line);flex-wrap:wrap}
-.slip-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;max-width:540px;margin-left:auto;margin-right:auto}
-
-/* HIDE */
-.hide{display:none !important}
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.about-text h2{
+  font-size:clamp(26px,3.5vw,38px);letter-spacing:-1.4px;line-height:1.1;
+  font-weight:800;margin-bottom:20px;
+}
+.about-text h2 em{font-style:normal;color:var(--maroon)}
+.about-text p{font-size:15.5px;color:var(--grey);line-height:1.7;margin-bottom:16px}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{
+  border:1px solid var(--line);border-radius:14px;padding:24px 22px;
+  background:var(--paper);transition:all .2s;
+}
+.stat:hover{border-color:var(--maroon);transform:translateY(-2px)}
+.stat .num{
+  font-family:'Courier New',monospace;font-size:38px;font-weight:800;
+  color:var(--maroon);line-height:1;letter-spacing:-2px;margin-bottom:8px;
+}
+.stat .lbl{font-size:12px;color:var(--grey);font-weight:600;letter-spacing:.3px;line-height:1.4}
 
 /* FOOTER */
-footer{border-top:1px solid var(--line);margin-top:64px}
-.foot-inner{max-width:1080px;margin:0 auto;padding:32px 24px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12.5px;color:var(--grey)}
-.foot-inner a{font-weight:500;color:var(--ink)}
-.foot-inner a:hover{text-decoration:underline}
+footer{border-top:1px solid var(--line);margin-top:40px;background:var(--soft)}
+.foot-inner{max-width:1120px;margin:0 auto;padding:44px 24px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot-brand{display:flex;align-items:center;gap:12px;max-width:320px}
+.foot-brand .mark{
+  width:32px;height:32px;display:grid;place-items:center;
+  background:var(--maroon);color:#fff;border-radius:9px;
+  font-family:'Courier New',monospace;font-size:18px;font-weight:800;
+  letter-spacing:-2px;flex-shrink:0;
+}
+.foot-brand .txt strong{display:block;font-size:13.5px;font-weight:800;letter-spacing:.5px;color:var(--maroon)}
+.foot-brand .txt span{display:block;font-size:11px;color:var(--grey);margin-top:3px;line-height:1.5}
+.foot-links{display:flex;gap:28px;flex-wrap:wrap;font-size:13px}
+.foot-links a{color:var(--ink);font-weight:500}
+.foot-links a:hover{color:var(--maroon)}
+.foot-bottom{border-top:1px solid var(--line);padding:20px 24px;text-align:center;font-size:11.5px;color:var(--grey);max-width:1120px;margin:0 auto;line-height:1.6}
+.foot-bottom strong{color:var(--maroon);font-weight:700}
 
+/* RESPONSIVE */
 @media(max-width:820px){
-  .hero{grid-template-columns:1fr;gap:40px;padding:56px 0 48px;text-align:center}
-  .hero p{margin-left:auto;margin-right:auto}
-  .hero-cta{justify-content:center}
-  .hero h1{letter-spacing:-2px}
-  .badge-art{max-width:190px;order:-1}
+  .hero{padding:64px 0 56px}
+  .hero h1{letter-spacing:-2.5px}
+  .about-grid{grid-template-columns:1fr;gap:40px}
+  .waitlist{padding:48px 28px;border-radius:20px}
 }
 @media(max-width:560px){
   .shell{padding:0 18px}
   .nav-inner{padding:12px 18px}
-  .brand span:last-child{display:none}
-  .form-card{padding:24px 20px}
-  .slip{padding:26px 20px}
-  .slip-num{font-size:20px;letter-spacing:3px}
-  .slip::before{font-size:36px}
-  section.block{padding:48px 0}
-}
-@media print{
-  .nav,footer,.hero,.block#courses,.block#auth,.slip-actions,.hide-print{display:none !important}
-  body{background:#fff}
-  .slip{border-width:1px;margin:0;max-width:100%;animation:none}
-  .slip::before{color:rgba(13,13,13,.06)}
-  section.block{padding:0;border:none}
+  .brand .name span{display:none}
+  .nav-links a{padding:8px 12px;font-size:13px}
+  section.block{padding:56px 0}
+  .course{padding:24px 22px}
+  .waitlist{padding:40px 22px;border-radius:16px}
+  .foot-inner{padding:32px 18px;flex-direction:column}
+  .foot-bottom{padding:16px 18px}
 }
 </style>
 </head>
@@ -148,137 +256,165 @@ footer{border-top:1px solid var(--line);margin-top:64px}
 
 <nav class="nav">
   <div class="nav-inner">
-    <a class="brand" href="/"><span class="mark">∆</span><span>Nyl Dev</span></a>
+    <a class="brand" href="/">
+      <span class="mark">∆</span>
+      <span class="name">
+        <strong>IFB</strong>
+        <span>Institute of Board</span>
+      </span>
+    </a>
     <div class="nav-links">
-      <a href="resources.html">Resources</a>
-      <a href="profile.html">Portal</a>
+      <a href="#courses">Courses</a>
+      <a href="#waitlist" class="cta">Get notified</a>
     </div>
   </div>
 </nav>
 
 <div class="shell">
 
+  <!-- HERO -->
   <header class="hero">
-    <div>
-      <div class="eyebrow"><svg data-lucide="sparkles"></svg> 2027 Intake · Now Open</div>
-      <h1>Free courses.<br><em>Built to international standard.</em></h1>
-      <p>Mathematics, Physical Sciences, and Software Engineering. Skills-based, non-accredited, and open to everyone.</p>
-      <div class="hero-cta">
-        <a href="#auth" class="btn"><svg data-lucide="user-plus"></svg> Apply now</a>
-        <a href="resources.html" class="btn btn-ghost"><svg data-lucide="book-open"></svg> Resources</a>
+    <div class="hero-inner">
+      <div class="pill fade"><span class="dot"></span> Admissions Open Soon · 2027 Intake</div>
+      <h1 class="fade-1">
+        Learn to build <span>for the <em>web.</em></span>
+      </h1>
+      <p class="fade-2">IFB teaches web development the way it's actually done — real projects, real tools, real code. Small groups, project-first, non-accredited, built to international standard.</p>
+      <div class="hero-cta fade-3">
+        <a href="#waitlist" class="btn">
+          <svg data-lucide="bell"></svg> Get notified
+        </a>
+        <a href="#courses" class="btn btn-ghost">
+          <svg data-lucide="layers"></svg> See courses
+        </a>
       </div>
     </div>
-    <svg class="badge-art" viewBox="0 0 240 360" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5d76e"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#8f6b1a"/></linearGradient>
-        <linearGradient id="r1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a4a9e"/><stop offset="1" stop-color="#0f1f5c"/></linearGradient>
-        <linearGradient id="s1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f9"/><stop offset="1" stop-color="#a8b0bd"/></linearGradient>
-      </defs>
-      <path d="M 120 8 L 228 48 L 228 200 Q 228 310 120 348 Q 12 310 12 200 L 12 48 Z" fill="url(#g1)"/>
-      <path d="M 120 22 L 214 58 L 214 198 Q 214 300 120 334 Q 26 300 26 198 L 26 58 Z" fill="url(#r1)"/>
-      <path d="M 120 36 L 200 68 L 200 196 Q 200 290 120 320 Q 40 290 40 196 L 40 68 Z" fill="none" stroke="url(#s1)" stroke-width="2.5"/>
-      <path d="M 120 46 L 190 76 L 190 194 Q 190 282 120 310 Q 50 282 50 194 L 50 76 Z" fill="url(#r1)"/>
-      <path d="M 120 54 L 182 82 L 182 192 Q 182 276 120 302 Q 58 276 58 192 L 58 82 Z" fill="none" stroke="url(#s1)" stroke-width=".8" opacity=".55"/>
-      <path d="M 120 70 L 123.5 80 L 134 80 L 125.5 86.5 L 129 96 L 120 89.5 L 111 96 L 114.5 86.5 L 106 80 L 116.5 80 Z" fill="url(#g1)"/>
-      <path d="M 100 108 L 120 138 L 140 108" fill="none" stroke="url(#g1)" stroke-width="4.5" stroke-linecap="square"/>
-      <path d="M 66 190 Q 93 179 120 187 L 120 218 Q 93 210 66 221 Z" fill="url(#s1)" stroke="#0f1f5c"/>
-      <path d="M 174 190 Q 147 179 120 187 L 120 218 Q 147 210 174 221 Z" fill="url(#s1)" stroke="#0f1f5c"/>
-      <line x1="120" y1="187" x2="120" y2="218" stroke="#0f1f5c" stroke-width="1.2"/>
-      <g transform="translate(120,262)">
-        <circle r="16" fill="url(#s1)" stroke="#0f1f5c"/>
-        <ellipse rx="28" ry="9" fill="none" stroke="url(#g1)" stroke-width="2" transform="rotate(-20)"/>
-      </g>
-      <path d="M 28 308 L 212 308 L 212 334 Q 120 350 28 334 Z" fill="url(#g1)" stroke="#0f1f5c" stroke-width="1.5"/>
-      <text x="120" y="326" text-anchor="middle" font-family="'Times New Roman',serif" font-size="9.5" font-weight="700" fill="#0f1f5c" letter-spacing="1.2">SCIENCE · MATHEMATICS · CRAFT</text>
-    </svg>
   </header>
 
+  <!-- COURSES -->
   <section class="block" id="courses">
     <div class="sec-head">
-      <h2>What we teach.</h2>
-      <p>Three subjects. One path. All free.</p>
+      <div class="eyebrow"><svg data-lucide="code-2"></svg> Courses</div>
+      <h2>Four tracks. <em>One craft.</em></h2>
+      <p>Every track is taught in small cohorts with live code review. You don't just watch — you ship.</p>
     </div>
+
     <div class="course-grid">
       <article class="course">
-        <div class="ico"><svg data-lucide="sigma"></svg></div>
-        <h3>Mathematics</h3>
-        <p>Algebra · Functions · Calculus · Finance · Probability · Statistics</p>
+        <span class="num">01</span>
+        <div class="ico"><svg data-lucide="layout-template"></svg></div>
+        <h3>Web Foundations</h3>
+        <div class="lead">The starting point</div>
+        <ul>
+          <li><svg data-lucide="check"></svg> HTML5 semantics &amp; accessibility</li>
+          <li><svg data-lucide="check"></svg> CSS3 layout — Flexbox &amp; Grid</li>
+          <li><svg data-lucide="check"></svg> Responsive design &amp; media queries</li>
+          <li><svg data-lucide="check"></svg> Git &amp; GitHub from day one</li>
+        </ul>
       </article>
+
       <article class="course">
-        <div class="ico"><svg data-lucide="atom"></svg></div>
-        <h3>Physical Sciences</h3>
-        <p>Mechanics · Momentum · Electricity · Electrostatics · Chemistry</p>
+        <span class="num">02</span>
+        <div class="ico"><svg data-lucide="braces"></svg></div>
+        <h3>JavaScript &amp; Frontend</h3>
+        <div class="lead">Make it interactive</div>
+        <ul>
+          <li><svg data-lucide="check"></svg> Modern JavaScript (ES2024)</li>
+          <li><svg data-lucide="check"></svg> DOM, events &amp; APIs</li>
+          <li><svg data-lucide="check"></svg> Fetch, async/await &amp; state</li>
+          <li><svg data-lucide="check"></svg> Build &amp; deploy a real app</li>
+        </ul>
       </article>
+
       <article class="course">
-        <div class="ico"><svg data-lucide="code-2"></svg></div>
-        <h3>Software Engineering</h3>
-        <p>HTML · CSS · JavaScript · Git · APIs · Deployment</p>
+        <span class="num">03</span>
+        <div class="ico"><svg data-lucide="server"></svg></div>
+        <h3>Backend &amp; Databases</h3>
+        <div class="lead">Build the engine</div>
+        <ul>
+          <li><svg data-lucide="check"></svg> Node.js &amp; Express</li>
+          <li><svg data-lucide="check"></svg> REST APIs &amp; authentication</li>
+          <li><svg data-lucide="check"></svg> SQL &amp; NoSQL databases</li>
+          <li><svg data-lucide="check"></svg> Deploy to production</li>
+        </ul>
+      </article>
+
+      <article class="course">
+        <span class="num">04</span>
+        <div class="ico"><svg data-lucide="palette"></svg></div>
+        <h3>UI &amp; Interaction Design</h3>
+        <div class="lead">Design how it feels</div>
+        <ul>
+          <li><svg data-lucide="check"></svg> Figma &amp; design systems</li>
+          <li><svg data-lucide="check"></svg> Typography, colour &amp; spacing</li>
+          <li><svg data-lucide="check"></svg> Prototyping &amp; user testing</li>
+          <li><svg data-lucide="check"></svg> Ship a portfolio</li>
+        </ul>
       </article>
     </div>
   </section>
 
-  <section class="block" id="auth">
-    <div class="sec-head" style="text-align:center">
-      <h2>Apply now.</h2>
-      <p style="margin:0 auto">Free. Two minutes. Immediate provisional acceptance.</p>
+  <!-- FEATURES -->
+  <section class="block">
+    <div class="sec-head">
+      <div class="eyebrow"><svg data-lucide="sparkles"></svg> Why IFB</div>
+      <h2>How we teach.</h2>
     </div>
-
-    <div class="form-shell">
-      <div class="tabs">
-        <button class="tab active" data-tab="signup"><svg data-lucide="user-plus"></svg> Apply</button>
-        <button class="tab" data-tab="signin"><svg data-lucide="log-in"></svg> Sign in</button>
+    <div class="features">
+      <div class="feature">
+        <div class="ico"><svg data-lucide="users"></svg></div>
+        <h4>Small cohorts</h4>
+        <p>Focused groups. Real attention. No lecture halls.</p>
       </div>
-
-      <form id="signupForm" class="form-card" novalidate>
-        <div class="field">
-          <label><svg data-lucide="user"></svg> Full name</label>
-          <input id="sName" required autocomplete="name" placeholder="Jane Doe">
-        </div>
-        <div class="field">
-          <label><svg data-lucide="mail"></svg> Email</label>
-          <input id="sEmail" type="email" required autocomplete="email" placeholder="jane@example.com">
-        </div>
-        <div class="field">
-          <label><svg data-lucide="lock"></svg> Password <span style="color:var(--grey);font-weight:400">(min 8 characters)</span></label>
-          <input id="sPass" type="password" minlength="8" required autocomplete="new-password" placeholder="••••••••">
-        </div>
-        <div class="field">
-          <label><svg data-lucide="phone"></svg> Phone</label>
-          <input id="sPhone" type="tel" required autocomplete="tel" placeholder="0XX XXX XXXX">
-        </div>
-        <div class="field">
-          <label><svg data-lucide="book"></svg> Course</label>
-          <select id="sCourse" required>
-            <option value="">— Select a course —</option>
-            <option value="Mathematics">Mathematics</option>
-            <option value="Physical Sciences">Physical Sciences</option>
-            <option value="Software Engineering">Software Engineering</option>
-          </select>
-        </div>
-        <button type="submit" class="btn btn-block"><svg data-lucide="send"></svg> Submit application</button>
-        <div id="signupMsg" class="msg"></div>
-      </form>
-
-      <form id="signinForm" class="form-card hide" novalidate>
-        <div class="field">
-          <label><svg data-lucide="mail"></svg> Email</label>
-          <input id="inEmail" type="email" required placeholder="jane@example.com">
-        </div>
-        <div class="field">
-          <label><svg data-lucide="lock"></svg> Password</label>
-          <input id="inPass" type="password" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn btn-block"><svg data-lucide="log-in"></svg> Sign in</button>
-        <div id="signinMsg" class="msg"></div>
-      </form>
+      <div class="feature">
+        <div class="ico"><svg data-lucide="git-branch"></svg></div>
+        <h4>Project-first</h4>
+        <p>You build real things — not tutorial clones.</p>
+      </div>
+      <div class="feature">
+        <div class="ico"><svg data-lucide="message-square-code"></svg></div>
+        <h4>Live code review</h4>
+        <p>Every submission gets marked, explained, and pushed.</p>
+      </div>
+      <div class="feature">
+        <div class="ico"><svg data-lucide="globe"></svg></div>
+        <h4>Built to standard</h4>
+        <p>Curriculum aligned to industry practice, not exams.</p>
+      </div>
     </div>
   </section>
 
-  <section class="block hide" id="slipSection">
-    <div id="slipRoot"></div>
-    <div class="slip-actions">
-      <button class="btn" id="printSlip"><svg data-lucide="download"></svg> Download slip</button>
-      <a href="profile.html" class="btn btn-ghost"><svg data-lucide="layout-dashboard"></svg> Go to portal</a>
+  <!-- WAITLIST -->
+  <section class="waitlist" id="waitlist">
+    <div class="waitlist-inner">
+      <h2>Be first in line.</h2>
+      <p>Admissions open soon. Drop your email and we'll let you know the moment we go live — no spam, ever.</p>
+      <form class="waitlist-form" id="waitlistForm" novalidate>
+        <input id="waitlistEmail" type="email" required placeholder="you@example.com" autocomplete="email">
+        <button type="submit" class="btn">
+          <svg data-lucide="arrow-right"></svg> Notify me
+        </button>
+      </form>
+      <div class="waitlist-msg" id="waitlistMsg"></div>
+      <div class="waitlist-note">∆ IFB · Institute of Board · Non-accredited</div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="block">
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="eyebrow"><svg data-lucide="info"></svg> About IFB</div>
+        <h2>Built by people who <em>actually code.</em></h2>
+        <p>IFB — Institute of Board — is a small, focused web development school. We're opening our doors for the 2027 intake and building every course around one rule: <strong>if it doesn't ship, we don't teach it.</strong></p>
+        <p>Our curriculum is non-accredited and unapologetically practical. It's for people who want to build, not just collect certificates.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat"><div class="num">4</div><div class="lbl">Web development tracks</div></div>
+        <div class="stat"><div class="num">0</div><div class="lbl">Tutorials you just copy</div></div>
+        <div class="stat"><div class="num">100%</div><div class="lbl">Project-based</div></div>
+        <div class="stat"><div class="num">2027</div><div class="lbl">First intake</div></div>
+      </div>
     </div>
   </section>
 
@@ -286,177 +422,53 @@ footer{border-top:1px solid var(--line);margin-top:64px}
 
 <footer>
   <div class="foot-inner">
-    <span>Non-accredited skills development · © 2026—2027</span>
-    <span><a href="resources.html">Resources</a> · <a href="profile.html">Portal</a></span>
+    <div class="foot-brand">
+      <span class="mark">∆</span>
+      <span class="txt">
+        <strong>IFB · Institute of Board</strong>
+        <span>Web development. Built to international standard. Non-accredited.</span>
+      </span>
+    </div>
+    <div class="foot-links">
+      <a href="#courses">Courses</a>
+      <a href="#waitlist">Get notified</a>
+      <a href="mailto:hello@ifb.dev">Contact</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    © 2026—2027 <strong>IFB — Institute of Board</strong> · Non-accredited skills development · Not registered with DHET or Umalusi
   </div>
 </footer>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<script>
+(function(){
+  const form = document.getElementById("waitlistForm");
+  const input = document.getElementById("waitlistEmail");
+  const msg = document.getElementById("waitlistMsg");
 
-const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (!input.checkValidity()){ input.reportValidity(); return; }
 
-const $ = id => document.getElementById(id);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const email = input.value.trim().toLowerCase();
+    const stored = JSON.parse(localStorage.getItem("ifb_waitlist") || "[]");
 
-function showMsg(id, text, type){
-  const el = $(id);
-  el.innerHTML = `<svg data-lucide="${type === "error" ? "alert-circle" : "check-circle"}"></svg><span>${esc(text)}</span>`;
-  el.className = "msg show " + type;
-  if (window.lucide) lucide.createIcons();
-}
-function hideMsg(id){ $(id).className = "msg"; }
-
-function friendly(code){
-  return ({
-    "auth/email-already-in-use": "That email is already registered — try signing in.",
-    "auth/invalid-email": "Enter a valid email address.",
-    "auth/weak-password": "Password must be at least 8 characters.",
-    "auth/user-not-found": "No account found with that email.",
-    "auth/wrong-password": "Incorrect password.",
-    "auth/invalid-credential": "Incorrect email or password.",
-    "auth/too-many-requests": "Too many attempts. Try again later."
-  })[code] || "Something went wrong. Try again.";
-}
-
-async function newAdmissionNumber(){
-  const year = new Date().getFullYear();
-  for (let i = 0; i < 6; i++){
-    const num = String(year) + String(Math.floor(1000 + Math.random() * 9000));
-    const snap = await getDocs(query(collection(db, "users"), where("admissionNumber", "==", num)));
-    if (snap.empty) return num;
-  }
-  throw new Error("Could not generate a unique number. Try again.");
-}
-
-function slipHTML(data){
-  const issued = data.issued || new Date().toISOString().slice(0, 10);
-  return `
-    <div class="slip" id="slipCard">
-      <div class="slip-top">
-        <div class="slip-mark">∆</div>
-        <div>
-          <strong>Nyl Dev · Institute of Board</strong>
-          <span>Admission Slip · 2027 Intake</span>
-        </div>
-      </div>
-      <div class="slip-rows">
-        <div class="slip-row"><span class="k">Admission №</span><span class="v">${esc(data.admissionNumber)}</span></div>
-        <div class="slip-row"><span class="k">Status</span><span class="v"><span class="pill">Provisionally Accepted</span></span></div>
-        <div class="slip-row"><span class="k">Name</span><span class="v">${esc(data.name)}</span></div>
-        <div class="slip-row"><span class="k">Email</span><span class="v">${esc(data.email)}</span></div>
-        <div class="slip-row"><span class="k">Phone</span><span class="v">${esc(data.phone)}</span></div>
-        <div class="slip-row"><span class="k">Course</span><span class="v">${esc(data.course)}</span></div>
-        <div class="slip-row"><span class="k">Issued</span><span class="v">${issued}</span></div>
-      </div>
-      <div class="slip-num">${esc(data.admissionNumber)}</div>
-      <div class="barcode"><svg id="barcodeSvg"></svg></div>
-      <div class="slip-foot">
-        <span>Non-accredited · Not NQF-registered</span>
-        <span>∆ 2026—2027</span>
-      </div>
-    </div>`;
-}
-
-function renderSlip(data){
-  $("slipRoot").innerHTML = slipHTML(data);
-  $("auth").classList.add("hide");
-  $("courses").classList.add("hide");
-  $("slipSection").classList.remove("hide");
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  setTimeout(() => {
-    if (typeof JsBarcode !== "undefined"){
-      try { JsBarcode("#barcodeSvg", data.admissionNumber, { format:"CODE128", width:2, height:58, displayValue:false, margin:0, background:"#ffffff", lineColor:"#0d0d0d" }); } catch(e){}
+    if (stored.includes(email)){
+      msg.className = "waitlist-msg ok";
+      msg.innerHTML = '<svg data-lucide="check-circle"></svg> You are already on the list.';
+      if (window.lucide) lucide.createIcons();
+      return;
     }
-  }, 100);
-  $("printSlip").onclick = () => window.print();
-  if (window.lucide) lucide.createIcons();
-}
 
-function renderAuth(){
-  $("slipSection").classList.add("hide");
-  $("auth").classList.remove("hide");
-  $("courses").classList.remove("hide");
-}
+    stored.push(email);
+    localStorage.setItem("ifb_waitlist", JSON.stringify(stored));
 
-/* Tabs */
-document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
-  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-  t.classList.add("active");
-  const isSignup = t.dataset.tab === "signup";
-  $("signupForm").classList.toggle("hide", !isSignup);
-  $("signinForm").classList.toggle("hide", isSignup);
-}));
-
-/* Auth state */
-onAuthStateChanged(auth, async (user) => {
-  if (!user) return renderAuth();
-  try {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) renderSlip(snap.data());
-    else renderAuth();
-  } catch (e){ renderAuth(); }
-});
-
-/* Signup */
-$("signupForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  hideMsg("signupMsg");
-  if (!e.target.checkValidity()){ e.target.reportValidity(); return; }
-  const btn = e.target.querySelector("button[type=submit]");
-  const original = btn.innerHTML;
-  btn.disabled = true; btn.innerHTML = "Submitting…";
-  try {
-    const name = $("sName").value.trim();
-    const email = $("sEmail").value.trim();
-    const password = $("sPass").value;
-    const phone = $("sPhone").value.trim();
-    const course = $("sCourse").value;
-
-    const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(cred.user, { displayName: name });
-    const admissionNumber = await newAdmissionNumber();
-
-    const data = {
-      name, email, phone, course, admissionNumber,
-      status: "Provisionally Accepted",
-      issued: new Date().toISOString().slice(0, 10),
-      appliedAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    };
-    await setDoc(doc(db, "users", cred.user.uid), data);
-    renderSlip(data);
-  } catch (err){
-    showMsg("signupMsg", friendly(err.code) || err.message, "error");
-    btn.disabled = false; btn.innerHTML = original;
+    msg.className = "waitlist-msg ok";
+    msg.innerHTML = '<svg data-lucide="check-circle"></svg> You are on the list. We will be in touch.';
     if (window.lucide) lucide.createIcons();
-  }
-});
-
-/* Signin */
-$("signinForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  hideMsg("signinMsg");
-  const btn = e.target.querySelector("button[type=submit]");
-  const original = btn.innerHTML;
-  btn.disabled = true; btn.innerHTML = "Signing in…";
-  try {
-    const cred = await signInWithEmailAndPassword(auth, $("inEmail").value.trim(), $("inPass").value);
-    const snap = await getDoc(doc(db, "users", cred.user.uid));
-    if (snap.exists()) renderSlip(snap.data());
-    else showMsg("signinMsg", "Profile missing. Please contact us.", "error");
-  } catch (err){
-    showMsg("signinMsg", friendly(err.code) || err.message, "error");
-    btn.disabled = false; btn.innerHTML = original;
-    if (window.lucide) lucide.createIcons();
-  }
-});
-
+    form.reset();
+  });
+})();
 if (window.lucide) lucide.createIcons();
 </script>
 </body>
