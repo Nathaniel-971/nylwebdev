@@ -45,53 +45,15 @@ button, input { font-family: inherit; border-radius: 0; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-@keyframes slideDown {
-  from { transform: translateY(-100%); }
-  to { transform: translateY(0); }
-}
-
-/* ====== E-COMMERCE TOP PROMO BAR & COUNTDOWN ====== */
-.promo-bar {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 2000;
-  background: linear-gradient(90deg, var(--maroon), var(--maroon-glow), var(--maroon));
-  background-size: 200% 200%;
-  animation: gradientShift 4s infinite, slideDown 0.5s ease-out;
-  color: var(--white);
-  display: flex; justify-content: center; align-items: center;
-  padding: 12px 24px;
-  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-  box-shadow: 0 4px 20px rgba(122,31,43,0.3);
-}
-.promo-bar.hidden {
-  transform: translateY(-100%); opacity: 0; pointer-events: none;
-}
-.promo-content {
-  display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center;
-  font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-}
-.promo-timer {
-  display: flex; gap: 8px; align-items: center;
-}
-.promo-block {
-  background: rgba(0,0,0,0.25); padding: 4px 10px; border-radius: 6px;
-  font-family: 'Courier New', monospace; font-size: 16px; font-weight: 800;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.promo-close {
-  background: none; border: none; color: var(--white); cursor: pointer; 
-  opacity: 0.7; padding: 4px; display: flex; align-items: center;
-}
-.promo-close:hover { opacity: 1; }
 
 /* NAVBAR */
 .nav {
-  position: fixed; top: 56px; left: 0; right: 0; z-index: 1000;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--silver);
-  height: 80px; transition: top 0.5s ease-in-out;
+  height: 80px;
 }
-.nav.full-top { top: 0; }
 .nav-inner {
   max-width: 1200px; margin: 0 auto; padding: 0 24px;
   display: flex; justify-content: space-between; align-items: center; height: 100%;
@@ -99,7 +61,7 @@ button, input { font-family: inherit; border-radius: 0; }
 .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
 .logo-mark {
   font-family: 'Courier New', monospace;
-  font-size: 48px; font-weight: 900; line-height: 1;
+  font-size: 52px; font-weight: 900; line-height: 1;
   color: var(--maroon);
   animation: pulseLogo 3s infinite ease-in-out;
 }
@@ -125,20 +87,32 @@ button, input { font-family: inherit; border-radius: 0; }
 
 /* HERO CAROUSEL */
 .hero {
-  position: relative; margin-top: 136px; height: calc(100vh - 136px); min-height: 650px;
+  position: relative; margin-top: 80px; height: calc(100vh - 80px); min-height: 650px;
   display: flex; align-items: center; justify-content: center; text-align: center;
-  background: var(--ink); overflow: hidden; transition: margin-top 0.5s ease-in-out;
+  background: var(--ink); overflow: hidden;
 }
-.hero.full-top { margin-top: 80px; height: calc(100vh - 80px); }
 .carousel-bg {
   position: absolute; inset: 0; z-index: 1;
   background-size: cover; background-position: center;
   opacity: 0.25; transition: background-image 1.5s ease-in-out;
-  background: linear-gradient(to bottom, rgba(15,23,42,0.7), rgba(15,23,42,0.9)); /* Fallback */
 }
-.hero-content { position: relative; z-index: 2; padding: 0 24px; max-width: 900px; }
+.hero-content { position: relative; z-index: 2; padding: 0 24px; max-width: 900px; display: flex; flex-direction: column; align-items: center; }
 .hero h1 { font-size: clamp(40px, 6vw, 72px); line-height: 1.05; font-weight: 900; color: var(--white); letter-spacing: -2px; margin-bottom: 24px; }
-.hero p { font-size: 20px; color: var(--silver); max-width: 600px; margin: 0 auto 48px; font-weight: 500; }
+.hero p { font-size: 20px; color: var(--silver); max-width: 600px; margin: 0 auto 32px; font-weight: 500; }
+
+/* DATE & TINY COUNTDOWN */
+.hero-date-wrap {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 40px;
+  background: rgba(255, 255, 255, 0.1); padding: 10px 20px; border-radius: var(--radius-pill);
+  border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+}
+.hero-date {
+  font-size: 15px; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 1px;
+}
+.tiny-countdown {
+  font-size: 11px; color: var(--silver-dark); font-family: 'Courier New', monospace; font-weight: 600;
+  border-left: 1px solid rgba(255,255,255,0.2); padding-left: 12px;
+}
 
 /* BUTTONS */
 .btn-modern {
@@ -177,7 +151,7 @@ button, input { font-family: inherit; border-radius: 0; }
 .info-card p { font-size: 16px; color: var(--gray); margin-bottom: 20px; line-height: 1.7; }
 .adv-list { list-style: none; display: flex; flex-direction: column; gap: 20px; }
 .adv-list li { display: flex; align-items: flex-start; gap: 16px; font-size: 16px; font-weight: 600; line-height: 1.5; }
-.adv-list li i { color: var(--maroon); flex-shrink: 0; background: var(--silver-light); padding: 6px; border-radius: 50%; }
+.adv-list li i { color: var(--maroon); flex-shrink: 0; margin-top: 3px; }
 
 /* E-COMMERCE PRODUCT CARDS (Download & Fund) */
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
@@ -197,8 +171,11 @@ button, input { font-family: inherit; border-radius: 0; }
 .action-card:hover::before { transform: scaleX(1); }
 .action-card h3 { font-size: 28px; font-weight: 800; margin-bottom: 16px; }
 .action-card p { font-size: 16px; color: var(--gray); margin-bottom: 32px; line-height: 1.6; }
-.action-card .icon-large { width: 72px; height: 72px; border-radius: 50%; background: var(--silver-light); color: var(--maroon); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; transition: 0.3s; }
-.action-card:hover .icon-large { background: var(--maroon); color: var(--white); transform: scale(1.1); }
+.action-card .icon-large { 
+  width: 72px; height: 72px; border-radius: 50%; background: transparent; color: var(--maroon); 
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; transition: 0.3s; 
+}
+.action-card:hover .icon-large { transform: scale(1.1); }
 
 /* CONTACT */
 .contact-section { background: var(--ink); padding: 80px 24px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
@@ -231,36 +208,19 @@ button, input { font-family: inherit; border-radius: 0; }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .promo-bar { padding: 10px 16px; }
-  .promo-content { font-size: 12px; gap: 8px; }
-  .promo-block { font-size: 14px; padding: 2px 6px; }
   .split-grid, .action-grid { grid-template-columns: 1fr; }
   .hero { height: auto; padding: 120px 24px 80px; }
-  .hero.full-top { height: auto; }
-  .hero-btns { flex-direction: column; }
+  .hero-btns { flex-direction: column; width: 100%; }
+  .hero-btns a { width: 100%; }
   .nav-inner { padding: 0 16px; }
-  .logo-mark { font-size: 38px; }
+  .logo-mark { font-size: 42px; }
   .contact-links { flex-direction: column; }
+  .hero-date-wrap { flex-direction: column; gap: 6px; padding: 12px 20px; }
+  .tiny-countdown { border-left: none; padding-left: 0; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 6px; }
 }
 </style>
 </head>
 <body>
-
-<!-- E-COMMERCE PROMO BAR WITH COUNTDOWN -->
-<div class="promo-bar" id="promoBar">
-  <div class="promo-content">
-    <span>2027 Admissions Open In:</span>
-    <div class="promo-timer">
-      <span class="promo-block" id="promo-d">00</span>d
-      <span class="promo-block" id="promo-h">00</span>h
-      <span class="promo-block" id="promo-m">00</span>m
-      <span class="promo-block" id="promo-s">00</span>s
-    </div>
-  </div>
-  <button class="promo-close" id="promoClose" aria-label="Close">
-    <i data-lucide="x" style="width: 18px; height: 18px;"></i>
-  </button>
-</div>
 
 <!-- NAVBAR -->
 <nav class="nav" id="mainNav">
@@ -292,6 +252,12 @@ button, input { font-family: inherit; border-radius: 0; }
   <div class="hero-content">
     <h1>IFB / 2027 Academic Year<br>STEM Education</h1>
     <p>Web Development. Science. Mathematics. We are building the next generation of technical minds, completely fee-free.</p>
+    
+    <!-- Date and Tiny Countdown -->
+    <div class="hero-date-wrap">
+      <span class="hero-date">Applications Open: 1 November 2026</span>
+      <span class="tiny-countdown" id="tinyCountdown">Calculating...</span>
+    </div>
     
     <div class="hero-btns" style="display: flex; gap: 16px; justify-content: center;">
       <a href="#curriculum" class="btn-modern">Download Guide</a>
@@ -339,7 +305,7 @@ button, input { font-family: inherit; border-radius: 0; }
     <div class="action-grid">
       <!-- Guide Download -->
       <div class="action-card">
-        <div class="icon-large"><i data-lucide="file-text" style="width: 32px; height: 32px;"></i></div>
+        <div class="icon-large"><i data-lucide="file-text" style="width: 48px; height: 48px;"></i></div>
         <h3>The IFB Guide</h3>
         <p>Download the comprehensive guide to learn exactly what IFB is, what we offer, and how our fee-free STEM programs work.</p>
         <a href="curriculum-ifb.html" target="_blank" class="btn-modern" style="width: 100%;">Download Curriculum Guide</a>
@@ -347,7 +313,7 @@ button, input { font-family: inherit; border-radius: 0; }
       
       <!-- Fund IFB -->
       <div class="action-card" id="fund">
-        <div class="icon-large"><i data-lucide="heart-handshake" style="width: 32px; height: 32px;"></i></div>
+        <div class="icon-large"><i data-lucide="heart-handshake" style="width: 48px; height: 48px;"></i></div>
         <h3>Fund IFB</h3>
         <p>We do not charge tuition fees. To bring in new teachers and expand our STEM offerings, we rely entirely on sponsors and donors.</p>
         <a href="fund-ifb.html" target="_blank" class="btn-outline" style="border-color: var(--maroon); color: var(--maroon); width: 100%;">Sponsor Our Institute</a>
@@ -409,20 +375,16 @@ button, input { font-family: inherit; border-radius: 0; }
   changeBg(); 
   setInterval(changeBg, 6000);
 
-  // Countdown Timer Logic (Target: Nov 1, 2026)
+  // Tiny Countdown Timer Logic
   const targetDate = new Date("2026-11-01T00:00:00").getTime();
-  
-  const pd = document.getElementById('promo-d');
-  const ph = document.getElementById('promo-h');
-  const pm = document.getElementById('promo-m');
-  const ps = document.getElementById('promo-s');
+  const tc = document.getElementById('tinyCountdown');
 
   setInterval(() => {
     const now = new Date().getTime();
     const distance = targetDate - now;
 
     if (distance < 0) {
-      pd.innerText = "00"; ph.innerText = "00"; pm.innerText = "00"; ps.innerText = "00";
+      tc.innerText = "(Opened)";
       return;
     }
 
@@ -431,29 +393,8 @@ button, input { font-family: inherit; border-radius: 0; }
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    pd.innerText = days < 10 ? "0" + days : days;
-    ph.innerText = hours < 10 ? "0" + hours : hours;
-    pm.innerText = minutes < 10 ? "0" + minutes : minutes;
-    ps.innerText = seconds < 10 ? "0" + seconds : seconds;
+    tc.innerText = `(${days}d : ${hours}h : ${minutes}m : ${seconds}s)`;
   }, 1000);
-
-  // Promo Bar Auto-Hide Logic
-  const promoBar = document.getElementById('promoBar');
-  const mainNav = document.getElementById('mainNav');
-  const hero = document.querySelector('.hero');
-  let promoTimeout;
-
-  function hidePromo() {
-    promoBar.classList.add('hidden');
-    mainNav.classList.add('full-top');
-    hero.classList.add('full-top');
-    clearTimeout(promoTimeout);
-  }
-
-  // Auto hide after 8 seconds
-  promoTimeout = setTimeout(hidePromo, 8000);
-
-  document.getElementById('promoClose').addEventListener('click', hidePromo);
 
   // Cookie Popup Logic
   const cookiePopup = document.getElementById('cookiePopup');
