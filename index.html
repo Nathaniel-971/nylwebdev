@@ -3,182 +3,179 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IFB — Institute of Board | Web Development</title>
-<meta name="description" content="IFB — Institute of Board. Intensive web development curriculum. 2027 intake.">
+<title>IFB — Institute of Board | STEM Education</title>
+<meta name="description" content="IFB is a STEM education institution. Download our 2027 curriculum guide.">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
 :root {
   --maroon: #7A1F2B;
   --maroon-deep: #5A1620;
-  --maroon-light: #F9F6F6;
-  --gray-bg: #F3F4F6;
-  --gray-border: #E5E7EB;
-  --gray-text: #4B5563;
-  --gray-light: #9CA3AF;
-  --ink: #111827;
+  --maroon-light: #FdfAfA;
+  --ink: #0F172A;
+  --gray: #64748B;
+  --light-gray: #F1F5F9;
+  --border: #E2E8F0;
   --white: #FFFFFF;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: auto; } /* Removed smooth scroll */
+html { scroll-behavior: auto; } /* Explicitly no smooth scroll */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--white);
   color: var(--ink);
   line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
+
 a { text-decoration: none; color: inherit; }
 button, input { font-family: inherit; border-radius: 0; }
 
-/* STRICT NO ANIMATIONS */
-*, *::before, *::after {
-  transition: none !important;
-  animation: none !important;
+/* ANIMATIONS */
+@keyframes logoPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* NAV */
+/* CUSTOM SCROLLBAR (For Desktop/Windows) */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--light-gray); }
+::-webkit-scrollbar-thumb { background: var(--maroon); }
+
+/* NAVBAR */
 .nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   background: var(--white);
-  border-bottom: 1px solid var(--gray-border);
+  border-bottom: 1px solid var(--border);
   height: 72px;
 }
 .nav-inner {
   max-width: 1200px; margin: 0 auto; padding: 0 24px;
   display: flex; justify-content: space-between; align-items: center; height: 100%;
 }
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: var(--maroon); }
-.nav-links { display: flex; gap: 32px; align-items: center; }
-.nav-links a { font-size: 14px; font-weight: 600; color: var(--gray-text); }
-.nav-links a:hover { color: var(--maroon); }
-.btn-nav {
-  background: var(--maroon); color: var(--white) !important;
-  padding: 10px 20px; font-size: 14px; font-weight: 600;
-}
-.btn-nav:hover { background: var(--maroon-deep); }
+.brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.logo-emblem { animation: logoPulse 3s infinite ease-in-out; }
+.brand-text { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; color: var(--maroon); }
 
-/* HERO / CAROUSEL */
+/* HAMBURGER MENU */
+.menu-btn { background: none; border: none; cursor: pointer; z-index: 1001; display: flex; flex-direction: column; gap: 6px; }
+.menu-btn span { display: block; width: 28px; height: 3px; background: var(--ink); transition: 0.3s; }
+.menu-btn.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.menu-btn.active span:nth-child(2) { opacity: 0; }
+.menu-btn.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
+.nav-dropdown {
+  position: absolute; top: 72px; left: 0; right: 0; background: var(--white);
+  border-bottom: 1px solid var(--border); padding: 24px; display: none;
+  flex-direction: column; gap: 16px; text-align: center;
+}
+.nav-dropdown.active { display: flex; }
+.nav-dropdown a { font-size: 18px; font-weight: 700; color: var(--ink); }
+.nav-dropdown a:hover { color: var(--maroon); }
+
+/* HERO CAROUSEL */
 .hero {
-  position: relative;
-  margin-top: 72px;
-  height: 600px;
-  background: var(--ink);
-  display: flex; align-items: center;
-  overflow: hidden;
+  position: relative; margin-top: 72px; height: calc(100vh - 72px); min-height: 600px;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  background: var(--ink); overflow: hidden;
 }
 .carousel-bg {
   position: absolute; inset: 0; z-index: 1;
   background-size: cover; background-position: center;
-  opacity: 0.3;
+  opacity: 0.25; transition: background-image 1s ease-in-out;
 }
-.hero-content {
-  position: relative; z-index: 2;
-  max-width: 1200px; margin: 0 auto; padding: 0 24px; width: 100%;
-}
-.hero-tag {
-  display: inline-block;
-  background: var(--white); color: var(--maroon);
-  font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-  padding: 6px 12px; margin-bottom: 24px;
-}
-.hero h1 {
-  font-size: 64px; line-height: 1.05; font-weight: 800; color: var(--white);
-  max-width: 800px; letter-spacing: -2px; margin-bottom: 24px;
-}
-.hero p {
-  font-size: 18px; color: #D1D5DB; max-width: 600px; margin-bottom: 40px;
-}
-.hero-btns { display: flex; gap: 16px; }
-.btn-primary {
-  background: var(--maroon); color: var(--white);
-  padding: 16px 32px; font-size: 16px; font-weight: 700;
-  display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
-}
-.btn-primary:hover { background: var(--maroon-deep); }
-.btn-outline {
-  background: transparent; color: var(--white);
-  padding: 16px 32px; font-size: 16px; font-weight: 700;
-  border: 2px solid var(--white); cursor: pointer;
-}
-.btn-outline:hover { background: var(--white); color: var(--ink); }
+.hero-content { position: relative; z-index: 2; padding: 0 24px; max-width: 900px; }
+.hero h1 { font-size: clamp(40px, 6vw, 72px); line-height: 1.05; font-weight: 800; color: var(--white); letter-spacing: -2px; margin-bottom: 24px; }
+.hero p { font-size: 18px; color: #CBD5E1; max-width: 600px; margin: 0 auto 40px; }
 
-/* TRUST BAR */
-.trust-bar {
-  background: var(--gray-bg); border-bottom: 1px solid var(--gray-border);
-  padding: 20px 0;
+/* COUNTDOWN TIMER */
+.countdown-container { display: flex; justify-content: center; gap: 16px; margin-bottom: 40px; }
+.flip-card { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 16px 20px; min-width: 90px; perspective: 1000px; }
+.flip-card-inner { transition: transform 0.6s; transform-style: preserve-3d; position: relative; }
+.flip-card.flipped .flip-card-inner { transform: rotateX(360deg); }
+.time-num { font-size: 36px; font-weight: 800; color: var(--white); font-family: 'Courier New', monospace; display: block; line-height: 1; }
+.time-lbl { font-size: 11px; color: #CBD5E1; text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; display: block; font-weight: 600; }
+
+/* BUTTONS */
+.btn-modern {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 16px 32px; font-size: 16px; font-weight: 700; cursor: pointer; border: none;
+  background: linear-gradient(90deg, var(--maroon), #B03040, var(--maroon));
+  background-size: 200% 200%; color: var(--white);
+  animation: gradientShift 4s infinite; transition: transform 0.2s;
 }
-.trust-inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 24px;
-  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+.btn-modern:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(122,31,43,0.3); }
+.btn-outline {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 16px 32px; font-size: 16px; font-weight: 700; cursor: pointer;
+  background: transparent; color: var(--white); border: 2px solid var(--white);
+  transition: all 0.3s;
 }
-.trust-item { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; color: var(--gray-text); }
-.trust-item svg { color: var(--maroon); width: 18px; height: 18px; }
+.btn-outline:hover { background: var(--white); color: var(--maroon); }
 
 /* SECTIONS */
-.section { padding: 96px 0; }
-.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 96px 24px; }
+.container { max-width: 1200px; margin: 0 auto; }
 .section-head { margin-bottom: 56px; max-width: 700px; }
-.section-head h2 { font-size: 40px; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px; color: var(--ink); }
-.section-head p { font-size: 18px; color: var(--gray-text); }
+.section-head h2 { font-size: clamp(32px, 4vw, 48px); font-weight: 800; letter-spacing: -1.5px; margin-bottom: 16px; }
+.section-head p { font-size: 18px; color: var(--gray); }
 
-/* CURRICULUM GRID */
-.curriculum-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
-.module-card {
-  border: 1px solid var(--gray-border);
-  background: var(--white);
-  padding: 32px;
-  display: flex; flex-direction: column;
+/* WHY NON-ACCREDITED & ADVANTAGES */
+.philosophy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.philosophy-box { background: var(--light-gray); padding: 40px; border-left: 4px solid var(--maroon); }
+.philosophy-box h3 { font-size: 24px; font-weight: 800; margin-bottom: 16px; }
+.philosophy-box p { font-size: 16px; color: var(--gray); margin-bottom: 16px; }
+.adv-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.adv-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 16px; font-weight: 600; }
+.adv-list li i { color: var(--maroon); flex-shrink: 0; }
+
+/* DOWNLOAD & FUND */
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+.action-card { border: 1px solid var(--border); padding: 40px; text-align: center; transition: all 0.3s; }
+.action-card:hover { border-color: var(--maroon); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.action-card h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
+.action-card p { font-size: 15px; color: var(--gray); margin-bottom: 24px; }
+
+/* CONTACT */
+.contact-bar { background: var(--ink); color: var(--white); padding: 64px 24px; text-align: center; }
+.contact-bar h2 { font-size: 32px; font-weight: 800; margin-bottom: 24px; }
+.contact-links { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+.contact-links a { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; color: var(--white); }
+.contact-links a:hover { color: var(--maroon-light); text-decoration: underline; }
+
+/* COOKIE POPUP */
+.cookie-popup {
+  position: fixed; bottom: 24px; left: 24px; right: 24px; max-width: 400px;
+  background: var(--white); border: 1px solid var(--border); padding: 24px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1); z-index: 2000; display: none;
 }
-.module-card:hover { border-color: var(--maroon); }
-.module-icon {
-  width: 48px; height: 48px; background: var(--maroon-light);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 24px; color: var(--maroon);
+.cookie-popup.active { display: block; }
+.cookie-popup p { font-size: 14px; color: var(--gray); margin-bottom: 16px; }
+.cookie-popup button { background: var(--maroon); color: var(--white); border: none; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; }
+
+/* AUDIO CONTROLS */
+.audio-control {
+  position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+  background: var(--maroon); color: var(--white); width: 48px; height: 48px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: none;
 }
-.module-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--ink); }
-.module-card p.sub { font-size: 14px; color: var(--maroon); font-weight: 600; margin-bottom: 20px; }
-.module-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: auto; }
-.module-list li { font-size: 15px; color: var(--gray-text); display: flex; align-items: flex-start; gap: 12px; }
-.module-list li svg { width: 16px; height: 16px; color: var(--gray-light); flex-shrink: 0; margin-top: 4px; }
+.audio-control:hover { transform: scale(1.1); }
 
-/* E-COMMERCE STYLE BANNER */
-.banner-section { background: var(--maroon); padding: 80px 0; color: var(--white); }
-.banner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
-.banner-text h2 { font-size: 42px; font-weight: 800; letter-spacing: -1px; margin-bottom: 20px; }
-.banner-text p { font-size: 18px; color: rgba(255,255,255,0.8); margin-bottom: 32px; }
-.banner-features { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.b-feat { border-left: 2px solid rgba(255,255,255,0.3); padding-left: 16px; }
-.b-feat h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-.b-feat p { font-size: 14px; color: rgba(255,255,255,0.7); margin: 0; }
-
-/* WAITLIST FORM */
-.waitlist-box { background: var(--gray-bg); border: 1px solid var(--gray-border); padding: 48px; text-align: center; max-width: 600px; margin: 0 auto; }
-.waitlist-box h3 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
-.waitlist-box p { font-size: 16px; color: var(--gray-text); margin-bottom: 32px; }
-.form-row { display: flex; gap: 12px; }
-.form-row input {
-  flex: 1; padding: 16px; border: 1px solid var(--gray-border);
-  font-size: 16px; outline: none;
-}
-.form-row input:focus { border-color: var(--maroon); }
-.msg { margin-top: 16px; font-size: 14px; font-weight: 600; color: var(--maroon); display: none; }
-
-/* FOOTER */
-footer { border-top: 1px solid var(--gray-border); padding: 48px 0; background: var(--white); }
-.footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px; }
-.footer-links { display: flex; gap: 24px; }
-.footer-links a { font-size: 14px; color: var(--gray-text); font-weight: 500; }
-.footer-links a:hover { color: var(--maroon); }
-.disclaimer { text-align: center; font-size: 12px; color: var(--gray-light); margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--gray-bg); }
-
+/* RESPONSIVE (Mobile & Windows Desktop) */
 @media (max-width: 768px) {
-  .hero h1 { font-size: 40px; }
-  .banner-grid { grid-template-columns: 1fr; }
-  .banner-features { grid-template-columns: 1fr; }
-  .form-row { flex-direction: column; }
-  .trust-inner { justify-content: center; }
+  .philosophy-grid, .action-grid { grid-template-columns: 1fr; }
+  .countdown-container { gap: 8px; }
+  .flip-card { padding: 12px 14px; min-width: 70px; }
+  .time-num { font-size: 26px; }
+  .hero { height: auto; padding: 96px 24px; }
+  .hero-btns { display: flex; flex-direction: column; gap: 12px; }
 }
 </style>
 </head>
@@ -187,9 +184,9 @@ footer { border-top: 1px solid var(--gray-border); padding: 48px 0; background: 
 <!-- NAVBAR -->
 <nav class="nav">
   <div class="nav-inner">
-    <a href="#" class="brand">
-      <!-- GRAY SCROLL EMBLEM -->
-      <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="brand" onclick="window.location.reload()">
+      <!-- Gray Scroll Emblem (No Background) -->
+      <svg class="logo-emblem" width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M50 10 L90 85 H10 Z" stroke="#9CA3AF" stroke-width="8" stroke-linejoin="round"/>
         <path d="M30 85 C30 75, 70 75, 70 85" stroke="#9CA3AF" stroke-width="8" stroke-linecap="round" fill="none"/>
         <path d="M10 85 C10 95, 90 95, 90 85" stroke="#9CA3AF" stroke-width="8" stroke-linecap="round" fill="none"/>
@@ -197,209 +194,273 @@ footer { border-top: 1px solid var(--gray-border); padding: 48px 0; background: 
         <circle cx="50" cy="75" r="5" fill="#9CA3AF"/>
       </svg>
       <span class="brand-text">IFB</span>
-    </a>
-    <div class="nav-links">
-      <a href="#curriculum">Curriculum</a>
-      <a href="#about">Why IFB</a>
-      <a href="#admissions" class="btn-nav">Apply Now</a>
     </div>
+    
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  
+  <!-- Dropdown -->
+  <div class="nav-dropdown" id="navDropdown">
+    <a href="#curriculum" onclick="toggleMenu()">Download Curriculum</a>
+    <a href="#philosophy" onclick="toggleMenu()">Why Non-Accredited?</a>
+    <a href="#fund" onclick="toggleMenu()">Fund IFB</a>
+    <a href="#contact" onclick="toggleMenu()">Contact</a>
   </div>
 </nav>
 
-<!-- HERO WITH BACKGROUND CAROUSEL -->
-<header class="hero">
-  <div class="carousel-bg" id="heroBg" style="background-image: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1920');"></div>
+<!-- HERO WITH CAROUSEL & COUNTDOWN -->
+<header class="hero" id="home">
+  <div class="carousel-bg" id="heroBg"></div>
   <div class="hero-content">
-    <span class="hero-tag">Admissions Open Soon · 2027</span>
-    <h1>Build for the web. <br>Master the stack.</h1>
-    <p>IFB delivers a rigorous, project-driven curriculum. Learn to architect, secure, and deploy modern applications from the ground up.</p>
-    <div class="hero-btns">
-      <button class="btn-primary" onclick="document.getElementById('admissions').scrollIntoView()">Get Notified <i data-lucide="arrow-right"></i></button>
-      <button class="btn-outline" onclick="document.getElementById('curriculum').scrollIntoView()">Explore Curriculum</button>
+    <h1>IFB / 2027 Academic Year<br>STEM Education</h1>
+    <p>Web Development. Science. Mathematics. We are building the next generation of technical minds.</p>
+    
+    <!-- COUNTDOWN WITH FLIP ANIMATION -->
+    <div class="countdown-container">
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <span class="time-num" id="days">00</span>
+          <span class="time-lbl">Days</span>
+        </div>
+      </div>
+      <div class="flip-card">
+        <div class="flip-card-inner">
+          <span class="time-num" id="hours">00</span>
+          <span class="time-lbl">Hours</span>
+        </div>
+      </div>
+      <div class="flip-card" id="flipMin">
+        <div class="flip-card-inner">
+          <span class="time-num" id="minutes">00</span>
+          <span class="time-lbl">Minutes</span>
+        </div>
+      </div>
+      <div class="flip-card" id="flipSec">
+        <div class="flip-card-inner">
+          <span class="time-num" id="seconds">00</span>
+          <span class="time-lbl">Seconds</span>
+        </div>
+      </div>
+    </div>
+    
+    <p style="font-size: 14px; font-weight: 700; color: var(--maroon-light); text-transform: uppercase; margin-bottom: 32px;">Applications Open: 1 November 2026</p>
+    
+    <div class="hero-btns" style="display: flex; gap: 16px; justify-content: center;">
+      <a href="#curriculum" class="btn-modern">Download Guide</a>
+      <a href="#fund" class="btn-outline">Sponsor a Student</a>
     </div>
   </div>
 </header>
 
-<!-- TRUST BAR -->
-<div class="trust-bar">
-  <div class="trust-inner">
-    <div class="trust-item"><i data-lucide="shield-alert"></i> 100% Non-Accredited</div>
-    <div class="trust-item"><i data-lucide="cpu"></i> AI-Integrated Learning</div>
-    <div class="trust-item"><i data-lucide="git-merge"></i> Full-Stack Deployment</div>
-    <div class="trust-item"><i data-lucide="lock"></i> Security-First Approach</div>
-  </div>
-</div>
-
-<!-- CURRICULUM -->
-<section class="section" id="curriculum">
+<!-- PHILOSOPHY SECTION -->
+<section class="section" id="philosophy">
   <div class="container">
     <div class="section-head">
-      <h2>Comprehensive Web Development Curriculum</h2>
-      <p>An intensive, practical syllabus designed to take you from core fundamentals to advanced API integration, deployment, and security.</p>
+      <h2>The IFB Philosophy</h2>
+      <p>We are not just a web development bootcamp. We are a fully-fledged STEM educational institution.</p>
     </div>
     
-    <div class="curriculum-grid">
-      <!-- Module 1 -->
-      <div class="module-card">
-        <div class="module-icon"><i data-lucide="code"></i></div>
-        <h3>Core Fundamentals</h3>
-        <p class="sub">The foundation of the web</p>
-        <ul class="module-list">
-          <li><i data-lucide="check"></i> HTML5 (HyperText Markup Language)</li>
-          <li><i data-lucide="check"></i> CSS3 (Cascading Style Sheets)</li>
-          <li><i data-lucide="check"></i> JavaScript & TypeScript</li>
-          <li><i data-lucide="check"></i> File Management & Folder Structures</li>
-          <li><i data-lucide="check"></i> Multi-Page Web Apps</li>
-        </ul>
+    <div class="philosophy-grid">
+      <div class="philosophy-box">
+        <h3>Why we are non-accredited</h3>
+        <p>IFB is a non-accredited institution. We chose this path deliberately. Traditional accreditation often forces institutions to teach outdated syllabuses to meet bureaucratic standards. We are not registered with DHET or Umalusi.</p>
+        <p>Instead, we focus entirely on what actually matters: modern industry practices, live code, and real-world application. We measure success by what you can build, not by a stamp on a piece of paper.</p>
       </div>
-
-      <!-- Module 2 -->
-      <div class="module-card">
-        <div class="module-icon"><i data-lucide="database"></i></div>
-        <h3>Backend & Databases</h3>
-        <p class="sub">Data, Auth, and APIs</p>
-        <ul class="module-list">
-          <li><i data-lucide="check"></i> Firebase Console Setup (Auth & DB)</li>
-          <li><i data-lucide="check"></i> Database Indexing & Role Setup</li>
-          <li><i data-lucide="check"></i> API Linking & Setup</li>
-          <li><i data-lucide="check"></i> DeepSeek AI API Integration</li>
-          <li><i data-lucide="check"></i> AI Agents for the Web</li>
-          <li><i data-lucide="check"></i> Webhooks & API Restrictions</li>
-        </ul>
-      </div>
-
-      <!-- Module 3 -->
-      <div class="module-card">
-        <div class="module-icon"><i data-lucide="server"></i></div>
-        <h3>Deployment & DevOps</h3>
-        <p class="sub">Pushing to production</p>
-        <ul class="module-list">
-          <li><i data-lucide="check"></i> Git & GitHub Workspace</li>
-          <li><i data-lucide="check"></i> Vercel & Render Deployment</li>
-          <li><i data-lucide="check"></i> Console Commands & Setup</li>
-          <li><i data-lucide="check"></i> Environment Variables (.env)</li>
-          <li><i data-lucide="check"></i> PWA (Progressive Web Apps)</li>
-          <li><i data-lucide="check"></i> Expo Go Integration</li>
-        </ul>
-      </div>
-
-      <!-- Module 4 -->
-      <div class="module-card">
-        <div class="module-icon"><i data-lucide="shield-check"></i></div>
-        <h3>Security & Advanced Features</h3>
-        <p class="sub">Building it safely and smartly</p>
-        <ul class="module-list">
-          <li><i data-lucide="check"></i> Blocking XSS Attacks</li>
-          <li><i data-lucide="check"></i> Security Hashing & Loop Gates</li>
-          <li><i data-lucide="check"></i> Payment Gateway Setup</li>
-          <li><i data-lucide="check"></i> Barcode Generation & Setup</li>
-          <li><i data-lucide="check"></i> File Uploads & Handling</li>
-          <li><i data-lucide="check"></i> Prompt Engineering for Code</li>
+      
+      <div>
+        <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">The Advantages</h3>
+        <ul class="adv-list">
+          <li><i data-lucide="check-circle"></i> Zero tuition fees. Education should not be gatekept by wealth.</li>
+          <li><i data-lucide="check-circle"></i> Curriculum updated continuously to match current tech ecosystems.</li>
+          <li><i data-lucide="check-circle"></i> Deep integration of AI agents and modern deployment pipelines.</li>
+          <li><i data-lucide="check-circle"></i> Pure focus on technical competence, not academic bureaucracy.</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- WHY IFB / BANNER -->
-<section class="banner-section" id="about">
-  <div class="container banner-grid">
-    <div class="banner-text">
-      <h2>Built for the modern developer.</h2>
-      <p>We don't just teach theory. We teach you how to build a full, working website from scratch, secure it, and deploy it to the world.</p>
-      <button class="btn-primary" style="background: white; color: var(--maroon);" onclick="document.getElementById('admissions').scrollIntoView()">Secure Your Spot</button>
-    </div>
-    <div class="banner-features">
-      <div class="b-feat">
-        <h4>Project-Based</h4>
-        <p>Every module culminates in a real, deployed project.</p>
-      </div>
-      <div class="b-feat">
-        <h4>AI Integrated</h4>
-        <p>Learn to harness DeepSeek and AI agents to build smarter.</p>
-      </div>
-      <div class="b-feat">
-        <h4>Full-Stack</h4>
-        <p>From HTML basics to database indexing and API security.</p>
-      </div>
-      <div class="b-feat">
-        <h4>Industry Standard</h4>
-        <p>Learn the tools professionals actually use: Git, Vercel, TypeScript.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ADMISSIONS / WAITLIST -->
-<section class="section" id="admissions">
+<!-- DOWNLOAD & FUND SECTION -->
+<section class="section" style="background: var(--light-gray); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);" id="curriculum">
   <div class="container">
-    <div class="waitlist-box">
-      <h3>Admissions Open Soon</h3>
-      <p>Drop your email below to get notified the moment applications open for the 2027 intake.</p>
-      <div class="form-row">
-        <input type="email" id="emailInput" placeholder="Enter your email address" required>
-        <button class="btn-primary" onclick="submitWaitlist()">Notify Me</button>
+    <div class="section-head" style="text-align: center; margin: 0 auto 48px;">
+      <h2>Explore the Curriculum</h2>
+      <p>To see our full 2027 STEM tracks (Mathematics IFB-S, Physics IFB-S, App Development IFB FCA, Full Stack IFB AQ-A, Back-end IFB AQ-C, and Front-end IFB AQ-B), you must download the official guide.</p>
+    </div>
+    
+    <div class="action-grid">
+      <!-- Guide Download -->
+      <div class="action-card">
+        <h3>Student Guide</h3>
+        <p>Download the comprehensive PDF/HTML guide to learn exactly what IFB is, what we offer, and how our STEM programs work.</p>
+        <a href="curriculum-ifb.html" target="_blank" class="btn-modern" style="width: 100%;">Download Curriculum Guide</a>
       </div>
-      <div class="msg" id="formMsg">You have been added to the waitlist.</div>
-      <p style="font-size: 12px; margin-top: 16px; color: var(--gray-light);">IFB is a non-accredited skills development institution. Not registered with DHET or Umalusi.</p>
+      
+      <!-- Fund IFB -->
+      <div class="action-card" id="fund">
+        <h3>Fund IFB</h3>
+        <p>We do not charge fees. Our institution is powered by sponsors and donors who believe in accessible, high-tier technical education.</p>
+        <a href="fund-ifb.html" target="_blank" class="btn-outline" style="border-color: var(--maroon); color: var(--maroon); width: 100%;">Donate / Sponsor Us</a>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="brand">
-      <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50 10 L90 85 H10 Z" stroke="#9CA3AF" stroke-width="8" stroke-linejoin="round"/>
-        <path d="M30 85 C30 75, 70 75, 70 85" stroke="#9CA3AF" stroke-width="8" stroke-linecap="round" fill="none"/>
-        <path d="M10 85 C10 95, 90 95, 90 85" stroke="#9CA3AF" stroke-width="8" stroke-linecap="round" fill="none"/>
-        <path d="M50 30 V65" stroke="#9CA3AF" stroke-width="8" stroke-linecap="round"/>
-        <circle cx="50" cy="75" r="5" fill="#9CA3AF"/>
-      </svg>
-      <span class="brand-text">IFB · Institute of Board</span>
-    </div>
-    <div class="footer-links">
-      <a href="#curriculum">Curriculum</a>
-      <a href="#about">About</a>
-      <a href="mailto:hello@ifb.dev">Contact</a>
+<!-- CONTACT -->
+<section class="contact-bar" id="contact">
+  <div class="container">
+    <h2>Get in Touch</h2>
+    <div class="contact-links">
+      <a href="mailto:n1nathaniel971@gmail.com"><i data-lucide="mail"></i> n1nathaniel971@gmail.com</a>
+      <a href="tel:+27609583089"><i data-lucide="phone"></i> +27 60 958 3089</a>
     </div>
   </div>
-  <div class="disclaimer container">
-    &copy; 2026—2027 IFB. All rights reserved. Non-accredited skills development.
-  </div>
-</footer>
+</section>
+
+<!-- COOKIE POPUP -->
+<div class="cookie-popup" id="cookiePopup">
+  <p>We use cookies to analyze traffic and ensure you get the best experience on our platform. By clicking accept, you agree to our privacy policy.</p>
+  <button onclick="acceptCookies()">Accept & Continue</button>
+</div>
+
+<!-- AUDIO CONTROL (Motivational Background Track) -->
+<audio id="bgAudio" loop>
+  <!-- Replace src with your actual hosted motivational track -->
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8c8a73467.mp3" type="audio/mpeg">
+</audio>
+<button class="audio-control" id="audioBtn" title="Play Music">
+  <i data-lucide="music"></i>
+</button>
 
 <script>
-  // Initialize Lucide Icons
+  // Init Icons
   lucide.createIcons();
 
-  // Background Carousel Logic (No animations/transitions)
-  const images = [
-    "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1920", // Coding
-    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1920", // Code
-    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1920", // Cyber
-    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1920"  // Matrix/Data
+  // Hamburger Menu Logic
+  const menuBtn = document.getElementById('menuBtn');
+  const navDropdown = document.getElementById('navDropdown');
+  
+  menuBtn.addEventListener('click', () => {
+    menuBtn.classList.toggle('active');
+    navDropdown.classList.toggle('active');
+  });
+
+  function toggleMenu() {
+    menuBtn.classList.remove('active');
+    navDropdown.classList.remove('active');
+  }
+
+  // Hero Background Carousel
+  const bgImages = [
+    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=1920", // Coding
+    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1920", // Tech/Space (STEM)
+    "https://images.unsplash.com/photo-1507413245164-6160d8298b31?auto=format&fit=crop&q=80&w=1920", // Science
+    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1920"  // Cyber Security
   ];
-  let currentIndex = 0;
+  let currentBg = 0;
   const heroBg = document.getElementById('heroBg');
+  
+  function changeBg() {
+    heroBg.style.backgroundImage = `url('${bgImages[currentBg]}')`;
+    currentBg = (currentBg + 1) % bgImages.length;
+  }
+  changeBg(); // Initial load
+  setInterval(changeBg, 5000);
+
+  // Countdown Timer Logic (Target: Nov 1, 2026)
+  const targetDate = new Date("2026-11-01T00:00:00").getTime();
+  
+  // Elements
+  const dEl = document.getElementById('days');
+  const hEl = document.getElementById('hours');
+  const mEl = document.getElementById('minutes');
+  const sEl = document.getElementById('seconds');
+  const flipMin = document.getElementById('flipMin');
+  const flipSec = document.getElementById('flipSec');
+
+  let lastSec = -1;
+  let lastMin = -1;
 
   setInterval(() => {
-    currentIndex = (currentIndex + 1) % images.length;
-    heroBg.style.backgroundImage = `url('${images[currentIndex]}')`;
-  }, 5000); // Changes every 5 seconds instantly
+    const now = new Date().getTime();
+    const distance = targetDate - now;
 
-  // Waitlist Form Logic
-  function submitWaitlist() {
-    const email = document.getElementById('emailInput').value;
-    const msg = document.getElementById('formMsg');
-    if (email && email.includes('@')) {
-      msg.style.display = 'block';
-      document.getElementById('emailInput').value = '';
-      setTimeout(() => { msg.style.display = 'none'; }, 3000); // Hide message after 3s
-    } else {
-      alert("Please enter a valid email address.");
+    if (distance < 0) {
+      dEl.innerText = "00"; hEl.innerText = "00"; mEl.innerText = "00"; sEl.innerText = "00";
+      return;
     }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    dEl.innerText = days < 10 ? "0" + days : days;
+    hEl.innerText = hours < 10 ? "0" + hours : hours;
+    mEl.innerText = minutes < 10 ? "0" + minutes : minutes;
+    sEl.innerText = seconds < 10 ? "0" + seconds : seconds;
+
+    // Trigger flip animations when time changes
+    if (seconds !== lastSec && lastSec !== -1) {
+      flipSec.classList.remove('flipped');
+      void flipSec.offsetWidth; // Trigger reflow
+      flipSec.classList.add('flipped');
+    }
+    if (minutes !== lastMin && lastMin !== -1) {
+      flipMin.classList.remove('flipped');
+      void flipMin.offsetWidth;
+      flipMin.classList.add('flipped');
+    }
+    
+    lastSec = seconds;
+    lastMin = minutes;
+  }, 1000);
+
+  // Audio Control Logic
+  const audio = document.getElementById('bgAudio');
+  const audioBtn = document.getElementById('audioBtn');
+  let isPlaying = false;
+
+  // Browsers block autoplay, so we wait for first click
+  document.body.addEventListener('click', () => {
+    if (!isPlaying) {
+      audio.volume = 0.3; // Keep it low as requested
+      audio.play().then(() => {
+        isPlaying = true;
+        audioBtn.innerHTML = '<i data-lucide="pause"></i>';
+        lucide.createIcons();
+      }).catch(() => {});
+    }
+  }, { once: true });
+
+  audioBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (isPlaying) {
+      audio.pause();
+      audioBtn.innerHTML = '<i data-lucide="music"></i>';
+    } else {
+      audio.play();
+      audioBtn.innerHTML = '<i data-lucide="pause"></i>';
+    }
+    isPlaying = !isPlaying;
+    lucide.createIcons();
+  });
+
+  // Cookie Popup Logic
+  const cookiePopup = document.getElementById('cookiePopup');
+  if (!localStorage.getItem('ifb_cookies')) {
+    setTimeout(() => {
+      cookiePopup.classList.add('active');
+    }, 2000);
+  }
+
+  function acceptCookies() {
+    localStorage.setItem('ifb_cookies', 'true');
+    cookiePopup.classList.remove('active');
   }
 </script>
 </body>
