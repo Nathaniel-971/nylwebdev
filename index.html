@@ -10,7 +10,6 @@
     :root {
         --maroon: #7A1F2B;
         --maroon-hover: #5A1620;
-        --maroon-glow: #B03040;
         --silver: #E2E8F0;
         --silver-dark: #94A3B8;
         --ink: #0F172A;
@@ -38,6 +37,12 @@
     @keyframes pulseLogo { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.95); opacity: 0.7; } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    
+    @keyframes pulseDot {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(122, 31, 43, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(122, 31, 43, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(122, 31, 43, 0); }
+    }
 
     /* DASHBOARD LAYOUT */
     .dashboard {
@@ -53,11 +58,19 @@
     .brand-text { display: flex; flex-direction: column; }
     .brand-text h1 { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: var(--ink); line-height: 1.1; }
     .brand-text span { font-size: 13px; font-weight: 600; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 1px; }
+    
     .header-right { display: flex; align-items: center; gap: 20px; }
-    .countdown-container { text-align: right; }
-    .countdown-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver-dark); margin-bottom: 4px; }
-    .countdown-timer { font-size: 16px; font-weight: 700; color: var(--maroon); font-variant-numeric: tabular-nums; }
-    .date-badge { background: var(--maroon); color: var(--white); padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 20px rgba(122,31,43,0.2); }
+    
+    .status-badge {
+        display: flex; align-items: center; gap: 10px;
+        background: var(--white); border: 2px solid var(--maroon);
+        color: var(--maroon); padding: 10px 20px; border-radius: 100px;
+        font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .status-dot { width: 10px; height: 10px; background: var(--maroon); border-radius: 50%; animation: pulseDot 2s infinite; }
+    
+    .btn-header { padding: 12px 24px; font-size: 14px; font-weight: 700; border-radius: 10px; text-decoration: none; background: var(--maroon); color: var(--white); transition: background 0.2s; }
+    .btn-header:hover { background: var(--maroon-hover); }
 
     /* MAIN GRID */
     .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; height: 100%; min-height: 0; }
@@ -117,11 +130,11 @@
                 </div>
             </div>
             <div class="header-right">
-                <div class="countdown-container">
-                    <div class="countdown-label">Applications Open In</div>
-                    <div class="countdown-timer" id="countdown">Calculating...</div>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    Admissions Open
                 </div>
-                <div class="date-badge">1 November 2026</div>
+                <a href="admission.html" class="btn-header">Apply Now</a>
             </div>
         </header>
 
@@ -138,7 +151,7 @@
             <!-- Card 2: Official Admission Form -->
             <div class="card">
                 <h2><i data-lucide="file-signature"></i> Official Admission Form</h2>
-                <p>Apply for the 2027 academic year. Please note that submitting this form makes you an <strong>Applicant</strong>. Official admission is strictly granted upon passing the AQ/AE Examination.</p>
+                <p>Admissions are now open. Submit your official application. Please note that submitting this form registers you as an <strong>Applicant</strong>.</p>
                 <a href="admission.html" class="btn btn-primary">
                     <i data-lucide="edit-3"></i> Complete Application
                 </a>
@@ -147,7 +160,7 @@
             <!-- Card 3: Exam Timetable -->
             <div class="card">
                 <h2><i data-lucide="calendar"></i> AQ/AE Examination Timetable</h2>
-                <p>Curriculum Assessment and Examination (AE) schedules are held on Saturdays throughout January and February. Please consult the timetable for your specific stream dates.</p>
+                <p>Curriculum Assessment and Examination (AE) schedules are held on Saturdays throughout January and February. Official admission is granted upon passing this examination.</p>
                 <a href="exam-timetable.html" class="btn btn-outline">
                     <i data-lucide="clock"></i> View AQ/AE Timetable
                 </a>
@@ -184,20 +197,6 @@
     window.addEventListener('load', () => {
         setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 800);
     });
-    const targetDate = new Date("2026-11-01T00:00:00").getTime();
-    const countdownEl = document.getElementById('countdown');
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = targetDate - now;
-        if (distance < 0) { countdownEl.innerHTML = "Applications Open"; return; }
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        countdownEl.innerHTML = `${days}d : ${hours}h : ${minutes}m : ${seconds}s`;
-    }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
 </script>
 </body>
 </html>
