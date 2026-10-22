@@ -15,6 +15,7 @@
         --ink: #0F172A;
         --bg: #F8FAFC;
         --white: #FFFFFF;
+        --gray-btn: #64748B; /* Gray for button animation */
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -23,10 +24,10 @@
         background: var(--bg);
         color: var(--ink);
         height: 100%;
-        overflow: hidden; /* Desktop fit to screen */
+        overflow: hidden; 
     }
 
-    /* LOADING SCREEN (LOGO ONLY) */
+    /* LOADING SCREEN */
     #loader {
         position: fixed; inset: 0; background: var(--white); z-index: 9999;
         display: flex; justify-content: center; align-items: center;
@@ -43,7 +44,7 @@
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(122, 31, 43, 0); }
     }
 
-    /* DASHBOARD LAYOUT (FIT TO SCREEN) */
+    /* DASHBOARD LAYOUT */
     .dashboard {
         display: flex; flex-direction: column;
         height: 100dvh; padding: 20px; max-width: 1400px; margin: 0 auto; gap: 16px;
@@ -52,7 +53,8 @@
 
     /* HEADER */
     header { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-    .brand { display: flex; align-items: center; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 16px; cursor: pointer; transition: transform 0.2s; }
+    .brand:active { transform: scale(0.98); }
     .logo-delta { font-size: 56px; font-weight: 900; color: var(--maroon); line-height: 0.8; animation: float 4s ease-in-out infinite; }
     .brand-text { display: flex; flex-direction: column; }
     .brand-text h1 { font-size: 24px; font-weight: 900; letter-spacing: -1px; color: var(--ink); line-height: 1.1; }
@@ -128,7 +130,7 @@
     .btn { 
         display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
         padding: 12px 24px; font-size: 14px; font-weight: 700; 
-        border-radius: 50px; /* Fully rounded */
+        border-radius: 50px; 
         text-decoration: none; transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; 
         cursor: pointer; border: none; font-family: 'Inter', sans-serif; 
     }
@@ -137,7 +139,7 @@
     .btn-outline { background: transparent; border: 2px solid var(--silver); color: var(--ink); }
     .btn-outline:hover { border-color: var(--maroon); color: var(--maroon); background: #FFF5F6; transform: translateY(-2px); }
 
-    /* SPONSOR & SUPPORT (SPLIT ROW) */
+    /* BOTTOM ROW (SPONSOR & SUPPORT) */
     .bottom-row { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .action-card { flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 30px; border-radius: 20px; }
     .sponsor-card { background: var(--ink); border: none; }
@@ -152,11 +154,66 @@
     .support-card .btn-primary { background: #9F1239; }
     .support-card .btn-primary:hover { background: #881337; }
 
-    /* DISCLAIMER & FOOTER */
-    .disclaimer { text-align: center; font-size: 11px; color: var(--silver-dark); font-weight: 600; line-height: 1.4; flex-shrink: 0; }
     footer { text-align: center; font-size: 11px; color: var(--silver-dark); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0; }
 
-    /* MOBILE VIEW OPTIMIZATION (FIT TO SCREEN WITH SCROLL) */
+    /* =========================================
+       LEGAL MODAL (DISCLAIMER, T&C, PRIVACY) 
+       ========================================= */
+    .modal-overlay {
+        position: fixed; inset: 0; z-index: 10000;
+        background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+        display: flex; justify-content: center; align-items: center;
+        opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+        padding: 20px;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    
+    .modal-content {
+        background: var(--white); border-radius: 24px;
+        width: 100%; max-width: 650px; max-height: 85vh;
+        display: flex; flex-direction: column;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transform: translateY(30px) scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+
+    .modal-header {
+        padding: 24px; border-bottom: 1px solid var(--silver);
+        display: flex; justify-content: space-between; align-items: center;
+        background: var(--white); border-radius: 24px 24px 0 0;
+    }
+    .modal-header h2 { font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 10px; color: var(--maroon); }
+    .close-btn { background: transparent; border: none; cursor: pointer; color: var(--silver-dark); transition: color 0.2s; padding: 4px; }
+    .close-btn:hover { color: var(--ink); }
+
+    .modal-body {
+        padding: 24px; overflow-y: auto; font-size: 14px; color: #475569; line-height: 1.6;
+    }
+    .modal-body h3 { font-size: 16px; color: var(--ink); margin: 16px 0 8px 0; font-weight: 800; }
+    .modal-body h3:first-child { margin-top: 0; }
+    .modal-body p { margin-bottom: 12px; }
+    .modal-body ul { margin-left: 20px; margin-bottom: 12px; }
+
+    .modal-footer {
+        padding: 20px 24px; border-top: 1px solid var(--silver);
+        background: var(--bg); border-radius: 0 0 24px 24px;
+        display: flex; justify-content: flex-end;
+    }
+
+    /* MODAL ACCEPT BUTTON (Maroon to Gray Animation) */
+    .btn-accept {
+        background-color: var(--maroon); color: var(--white);
+        padding: 14px 32px; font-size: 15px; font-weight: 800; border-radius: 50px;
+        border: none; cursor: pointer; font-family: 'Inter', sans-serif;
+        transition: background-color 0.4s ease, transform 0.2s ease;
+        box-shadow: 0 4px 12px rgba(122, 31, 43, 0.3);
+        width: 100%;
+    }
+    .btn-accept:hover { background-color: var(--gray-btn); transform: translateY(-2px); }
+    .btn-accept:active { transform: scale(0.98); }
+
+
+    /* MOBILE VIEW OPTIMIZATION */
     @media (max-width: 900px) {
         html, body { overflow-y: auto; height: auto; }
         .dashboard { height: auto; min-height: 100dvh; padding: 16px; gap: 16px; }
@@ -172,19 +229,22 @@
         .sponsor-card p, .support-card p { max-width: 100%; }
         .countdown { width: 100%; justify-content: space-between; margin-top: 8px; }
         .cd-box { flex: 1; }
+        .modal-content { max-height: 90vh; }
+        .modal-body { padding: 20px; }
+        .btn-accept { padding: 16px; }
     }
 </style>
 </head>
 <body>
 
-    <!-- LOADER (LOGO ONLY) -->
     <div id="loader">
         <div class="loader-logo">∆</div>
     </div>
 
     <div class="dashboard">
         <header>
-            <div class="brand">
+            <!-- LOGO OPENS MODAL -->
+            <div class="brand" onclick="openModal()" title="View Legal & Privacy">
                 <div class="logo-delta">∆</div>
                 <div class="brand-text">
                     <h1>Institute of Board</h1>
@@ -196,14 +256,12 @@
                     <div class="status-dot"></div>
                     Admissions Open
                 </div>
-                <!-- PROFILE GRID ICON (Replaces Apply Now for signed in) -->
                 <a href="profile.html" class="profile-btn" title="Dashboard">
                     <i data-lucide="layout-grid"></i>
                 </a>
             </div>
         </header>
 
-        <!-- CAROUSEL -->
         <div class="carousel-container">
             <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop');">
                 <h2>Build the Future.<br>Master the Code.</h2>
@@ -222,7 +280,6 @@
             </div>
         </div>
 
-        <!-- COUNTDOWN -->
         <div class="announce">
             <div class="announce-text">
                 <i data-lucide="megaphone"></i>
@@ -237,7 +294,6 @@
         </div>
 
         <div class="main-grid">
-            <!-- Curriculum (Download Only) -->
             <div class="card">
                 <h2><i data-lucide="book-open"></i> Curriculum Guideline</h2>
                 <p>Download the comprehensive 2027 academic guide. Explore our STEM tracks, Web Development streams, and Integrated Software Engineering programmes in full detail.</p>
@@ -246,7 +302,6 @@
                 </a>
             </div>
 
-            <!-- Admission Form -->
             <div class="card">
                 <h2><i data-lucide="file-signature"></i> Official Admission Form</h2>
                 <p>Submit your official application for the 2027 intake. Submitting this form registers you as an Applicant for the entrance examination.</p>
@@ -255,7 +310,6 @@
                 </a>
             </div>
 
-            <!-- Sponsor & Support Row -->
             <div class="bottom-row">
                 <div class="card action-card sponsor-card">
                     <div>
@@ -275,24 +329,83 @@
             </div>
         </div>
 
-        <div class="disclaimer">
-            The Institute of Board is a non-accredited educational institution.<br>Not registered with DHET or Umalusi.
-        </div>
-
         <footer>
             <div>© 2026—2027 Institute of Board. All Rights Reserved.</div>
         </footer>
     </div>
 
+    <!-- LEGAL MODAL -->
+    <div id="legalModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i data-lucide="shield-alert"></i> Terms, Privacy & Disclaimer</h2>
+                <button class="close-btn" onclick="closeModal()"><i data-lucide="x"></i></button>
+            </div>
+            
+            <div class="modal-body">
+                <h3>1. Institutional Disclaimer</h3>
+                <p>The Institute of Board (IFB) is a <strong>non-accredited educational institution</strong>. We are not registered with the Department of Higher Education and Training (DHET) or Umalusi. Our curriculum and AQ/AE examinations are internal assessments designed to validate technical competency and do not confer formal academic degrees or national qualifications.</p>
+                
+                <h3>2. Terms and Conditions</h3>
+                <p>By accessing this portal and applying to IFB, you agree to the following:</p>
+                <ul>
+                    <li>You will provide accurate and truthful information during the application process.</li>
+                    <li>You understand that submitting an application registers you as an "Applicant" and does not guarantee admission.</li>
+                    <li>Admission is strictly conditional upon passing the internal AQ/AE entrance examination.</li>
+                    <li>IFB operates on a 100% fee-free model funded by sponsors; however, we reserve the right to amend operational policies as necessary.</li>
+                </ul>
+
+                <h3>3. Privacy Policy</h3>
+                <p>We respect your privacy. Any personal information (such as your name, email address, and academic history) submitted through our admission forms is collected solely for the purpose of processing your application and communicating with you regarding examinations and institutional updates.</p>
+                <ul>
+                    <li>We do not sell, rent, or trade your personal data to third parties.</li>
+                    <li>Your data is stored securely and access is restricted to authorized IFB administrative staff.</li>
+                </ul>
+
+                <h3>4. Cookie Policy</h3>
+                <p>This website uses essential cookies and local storage to ensure proper functionality. These are used to manage your session, remember your preferences (such as acknowledging this disclaimer), and secure your portal access. We do not use invasive tracking or advertising cookies.</p>
+                
+                <h3>5. Copyright Notice</h3>
+                <p>All content, including but not limited to text, graphics, logos, and code, is the property of the Institute of Board and is protected by copyright laws. © 2026—2027 Institute of Board.</p>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-accept" onclick="closeModal()">Accept & Continue</button>
+            </div>
+        </div>
+    </div>
+
 <script>
     lucide.createIcons();
     
-    // Loader
+    // Loader logic
     window.addEventListener('load', () => {
-        setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 1000);
+        setTimeout(() => { 
+            document.getElementById('loader').classList.add('hidden'); 
+            // Automatically open modal after loader fades out
+            setTimeout(openModal, 600);
+        }, 1000);
     });
 
-    // Countdown Timer to 30 Jan 2027
+    // Modal Logic
+    const modal = document.getElementById('legalModal');
+
+    function openModal() {
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('active');
+    }
+
+    // Close modal if clicking outside the box
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    // Countdown Timer
     const examDate = new Date("Jan 30, 2027 08:00:00").getTime();
     const timer = setInterval(function() {
         const now = new Date().getTime();
