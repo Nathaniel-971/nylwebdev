@@ -19,25 +19,25 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-        height: 100%;
-        overflow: hidden;
         font-family: 'Inter', sans-serif;
         background: var(--bg);
         color: var(--ink);
+        min-height: 100vh;
+        scroll-behavior: smooth;
     }
 
-    /* LOADING SCREEN */
+    /* ENHANCED LOADING SCREEN */
     #loader {
         position: fixed; inset: 0; background: var(--white); z-index: 9999;
-        display: flex; justify-content: center; align-items: center;
-        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;
+        transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
     }
     #loader.hidden { opacity: 0; visibility: hidden; }
     .loader-logo { font-size: 120px; font-weight: 900; color: var(--maroon); line-height: 1; animation: pulseLogo 1.5s infinite ease-in-out; }
+    .loader-text { font-size: 12px; font-weight: 700; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 2px; animation: pulseLogo 1.5s infinite ease-in-out; }
     @keyframes pulseLogo { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.95); opacity: 0.7; } }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-
     @keyframes pulseDot {
         0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(122, 31, 43, 0.7); }
         70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(122, 31, 43, 0); }
@@ -46,117 +46,140 @@
 
     /* DASHBOARD LAYOUT */
     .dashboard {
-        display: grid; grid-template-rows: auto auto 1fr auto;
-        height: 100vh; padding: 24px; max-width: 1400px; margin: 0 auto; gap: 18px;
+        display: flex; flex-direction: column;
+        padding: 24px; max-width: 1400px; margin: 0 auto; gap: 24px;
         animation: slideUp 0.6s ease-out 0.3s both;
     }
 
     /* HEADER */
-    header { display: flex; justify-content: space-between; align-items: center; }
+    header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 16px; }
     .logo-delta { font-size: 64px; font-weight: 900; color: var(--maroon); line-height: 0.8; animation: float 4s ease-in-out infinite; }
     .brand-text { display: flex; flex-direction: column; }
     .brand-text h1 { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: var(--ink); line-height: 1.1; }
     .brand-text span { font-size: 13px; font-weight: 600; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 1px; }
-
+    
     .header-right { display: flex; align-items: center; gap: 20px; }
-
     .status-badge {
         display: flex; align-items: center; gap: 10px;
         background: var(--white); border: 2px solid var(--maroon);
         color: var(--maroon); padding: 10px 20px; border-radius: 100px;
         font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
+        box-shadow: 0 4px 12px rgba(122, 31, 43, 0.1);
     }
     .status-dot { width: 10px; height: 10px; background: var(--maroon); border-radius: 50%; animation: pulseDot 2s infinite; }
+    .btn-header { padding: 12px 24px; font-size: 14px; font-weight: 700; border-radius: 10px; text-decoration: none; background: var(--maroon); color: var(--white); transition: all 0.2s; box-shadow: 0 4px 12px rgba(122, 31, 43, 0.2); }
+    .btn-header:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
-    .btn-header { padding: 12px 24px; font-size: 14px; font-weight: 700; border-radius: 10px; text-decoration: none; background: var(--maroon); color: var(--white); transition: background 0.2s; }
-    .btn-header:hover { background: var(--maroon-hover); }
-
-    /* ANNOUNCEMENT BAR */
-    .announce {
-        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-        background: var(--maroon); color: var(--white);
-        padding: 12px 22px; border-radius: 14px;
-        font-size: 13px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
+    /* MODERN CAROUSEL / HERO */
+    .carousel-container {
+        position: relative; width: 100%; height: 320px; border-radius: 24px; overflow: hidden;
+        background: var(--ink); color: var(--white);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     }
-    .announce i { width: 18px; height: 18px; flex-shrink: 0; }
-    .announce .announce-detail { font-weight: 600; text-transform: none; letter-spacing: 0; opacity: 0.9; }
+    .carousel-slide {
+        position: absolute; inset: 0; opacity: 0; transition: opacity 0.8s ease-in-out;
+        display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 60px;
+        background-size: cover; background-position: center;
+    }
+    .carousel-slide.active { opacity: 1; z-index: 1; }
+    .carousel-slide::before {
+        content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.7) 100%); z-index: -1;
+    }
+    .carousel-slide h2 { font-size: 42px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; max-width: 700px; line-height: 1.1; }
+    .carousel-slide p { font-size: 18px; color: var(--silver); margin-bottom: 24px; max-width: 600px; line-height: 1.5; }
+    .carousel-slide .btn-primary { background: var(--maroon); color: var(--white); padding: 16px 32px; font-size: 16px; font-weight: 800; border: none; box-shadow: 0 8px 20px rgba(122, 31, 43, 0.4); }
+    .carousel-slide .btn-primary:hover { background: var(--maroon-hover); transform: translateY(-2px); }
+    
+    .carousel-dots { position: absolute; bottom: 20px; right: 40px; display: flex; gap: 10px; z-index: 2; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
+    .dot.active { background: var(--white); width: 24px; border-radius: 10px; }
+
+    /* ANNOUNCEMENT BAR & COUNTDOWN */
+    .announce {
+        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+        background: var(--maroon); color: var(--white);
+        padding: 16px 24px; border-radius: 16px; box-shadow: 0 10px 30px rgba(122, 31, 43, 0.2);
+    }
+    .announce-text { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+    .countdown { display: flex; gap: 12px; }
+    .cd-box { background: rgba(255,255,255,0.15); padding: 10px 14px; border-radius: 10px; text-align: center; min-width: 70px; backdrop-filter: blur(4px); }
+    .cd-box span { display: block; font-size: 22px; font-weight: 900; line-height: 1; }
+    .cd-box small { font-size: 10px; text-transform: uppercase; font-weight: 700; opacity: 0.9; margin-top: 4px; display: block; }
 
     /* MAIN GRID */
-    .main-grid {
-        display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;
-        height: 100%; min-height: 0; overflow-y: auto; padding-right: 4px; align-content: start;
+    .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+
+    /* MISSION STATEMENT */
+    .mission-section { grid-column: 1 / -1; background: var(--white); border-radius: 24px; padding: 40px; border: 1px solid var(--silver); text-align: center; }
+    .mission-section h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; }
+    .mission-section p { font-size: 18px; color: #475569; max-width: 800px; margin: 0 auto; line-height: 1.6; font-weight: 500; }
+
+    /* SUBJECTS / ROADMAP SECTION */
+    .roadmap-section { grid-column: 1 / -1; background: var(--white); border-radius: 24px; padding: 40px; border: 1px solid var(--silver); }
+    .roadmap-section h2 { font-size: 24px; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+    .roadmap-section h2 i { color: var(--maroon); width: 28px; height: 28px; }
+    .roadmap-section p.desc { color: #475569; font-size: 16px; margin-bottom: 28px; }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .stage-card {
+        background: var(--bg); border: 1px solid var(--silver); border-radius: 16px; padding: 24px;
+        transition: all 0.3s ease;
     }
+    .stage-card:hover { border-color: var(--maroon); transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    .stage-card h4 { font-size: 14px; font-weight: 900; color: var(--maroon); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stage-card strong { display: block; font-size: 16px; font-weight: 800; margin-bottom: 6px; color: var(--ink); }
+    .stage-card small { font-size: 14px; color: var(--silver-dark); font-weight: 500; line-height: 1.5; display: block; }
+
+    /* CARDS */
     .card {
-        background: var(--white); border-radius: 20px; padding: 28px; border: 1px solid var(--silver);
+        background: var(--white); border-radius: 24px; padding: 40px; border: 1px solid var(--silver);
         display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; transition: all 0.3s ease;
     }
-    .card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--maroon); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
     .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
-    .card:hover::before { transform: scaleX(1); }
-    .card h2 { font-size: 19px; font-weight: 800; margin-bottom: 12px; color: var(--ink); display: flex; align-items: center; gap: 12px; }
-    .card h2 i { color: var(--maroon); width: 22px; height: 22px; }
-    .card p { color: #475569; font-size: 15px; margin-bottom: 22px; line-height: 1.6; flex-grow: 1; }
+    .card h2 { font-size: 22px; font-weight: 900; margin-bottom: 16px; color: var(--ink); display: flex; align-items: center; gap: 12px; }
+    .card h2 i { color: var(--maroon); width: 24px; height: 24px; }
+    .card p { color: #475569; font-size: 16px; margin-bottom: 28px; line-height: 1.6; flex-grow: 1; }
 
     /* BUTTONS */
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; font-size: 14px; font-weight: 600; border-radius: 10px; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
-    .btn-primary { background: var(--maroon); color: var(--white); }
-    .btn-primary:hover { background: var(--maroon-hover); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 28px; font-size: 15px; font-weight: 700; border-radius: 12px; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
+    .btn-primary { background: var(--maroon); color: var(--white); box-shadow: 0 4px 12px rgba(122, 31, 43, 0.2); }
+    .btn-primary:hover { background: var(--maroon-hover); transform: translateY(-2px); }
     .btn-outline { background: transparent; border: 2px solid var(--silver); color: var(--ink); }
     .btn-outline:hover { border-color: var(--maroon); color: var(--maroon); background: #FFF5F6; }
 
-    /* COURSE PATHS — 3 BUTTONS */
-    .paths {
-        grid-column: 1 / -1; background: var(--white); border: 1px solid var(--silver);
-        border-radius: 20px; padding: 26px 28px; display: flex; flex-direction: column; gap: 16px;
-    }
-    .paths h2 { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 12px; }
-    .paths h2 i { color: var(--maroon); width: 22px; height: 22px; }
-    .path-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    .path-btn {
-        display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
-        padding: 18px 20px; border: 2px solid var(--silver); border-radius: 14px;
-        text-decoration: none; color: var(--ink); background: var(--white);
-        transition: all 0.2s ease; text-align: left; font-family: 'Inter', sans-serif; cursor: pointer;
-    }
-    .path-btn:hover { border-color: var(--maroon); background: #FFF5F6; transform: translateY(-2px); }
-    .path-btn strong { font-size: 15px; font-weight: 800; }
-    .path-btn small { font-size: 12px; color: var(--silver-dark); font-weight: 600; letter-spacing: 0.3px; line-height: 1.4; }
-    .subject-note {
-        font-size: 13px; color: #475569; line-height: 1.7;
-        border-left: 3px solid var(--maroon); padding-left: 14px;
-    }
-    .subject-note strong { color: var(--ink); font-weight: 800; }
-
-    /* SPONSOR CARD */
-    .sponsor-card { grid-column: 1 / -1; background: var(--ink); border-color: var(--ink); flex-direction: row; align-items: center; justify-content: space-between; padding: 24px 40px; }
-    .sponsor-card h2 { color: var(--white); margin-bottom: 4px; }
-    .sponsor-card p { color: var(--silver-dark); margin-bottom: 0; font-size: 14px; max-width: 800px; }
-    .sponsor-card .btn-primary { background: var(--white); color: var(--maroon); white-space: nowrap; }
+    /* SPONSOR */
+    .sponsor-card { grid-column: 1 / -1; background: var(--ink); border: none; flex-direction: row; align-items: center; justify-content: space-between; padding: 40px; border-radius: 24px; }
+    .sponsor-card h2 { color: var(--white); margin-bottom: 8px; }
+    .sponsor-card p { color: var(--silver-dark); margin-bottom: 0; font-size: 15px; max-width: 700px; }
+    .sponsor-card .btn-primary { background: var(--white); color: var(--maroon); white-space: nowrap; box-shadow: none; }
     .sponsor-card .btn-primary:hover { background: var(--silver); color: var(--ink); }
 
-    /* FOOTER */
-    footer { text-align: center; font-size: 12px; color: var(--silver-dark); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+    /* DISCLAIMER & FOOTER */
+    .disclaimer-section {
+        background: #FFF1F2; border: 1px solid #FECDD3; color: #9F1239;
+        padding: 24px; border-radius: 16px; font-size: 14px; text-align: center; font-weight: 600; line-height: 1.6;
+    }
+    footer { text-align: center; font-size: 13px; color: var(--silver-dark); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 20px; padding-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
 
-    /* MOBILE OPTIMIZATION */
     @media (max-width: 1024px) {
-        html, body { overflow: auto; height: auto; }
-        .dashboard { height: auto; min-height: 100vh; padding: 16px; gap: 16px; grid-template-rows: auto auto auto auto; }
-        header { flex-direction: column; align-items: flex-start; gap: 20px; }
-        .header-right { width: 100%; justify-content: space-between; flex-wrap: wrap; }
-        .main-grid { grid-template-columns: 1fr; overflow: visible; }
-        .path-row { grid-template-columns: 1fr; }
-        .sponsor-card { flex-direction: column; align-items: flex-start; text-align: left; gap: 20px; padding: 24px; }
+        .main-grid { grid-template-columns: 1fr; }
+        .sponsor-card { flex-direction: column; align-items: flex-start; gap: 24px; padding: 32px; }
         .logo-delta { font-size: 48px; }
         .brand-text h1 { font-size: 22px; }
-        .card { padding: 24px; }
-        .paths { padding: 22px; }
+        .countdown { width: 100%; justify-content: space-between; }
+        .carousel-slide { padding: 0 30px; }
+        .carousel-slide h2 { font-size: 32px; }
+        .carousel-slide p { font-size: 16px; }
+        .carousel-container { height: 400px; }
     }
 </style>
 </head>
 <body>
 
-    <div id="loader"><div class="loader-logo">∆</div></div>
+    <div id="loader">
+        <div class="loader-logo">∆</div>
+        <div class="loader-text">Initializing Portal...</div>
+    </div>
 
     <div class="dashboard">
         <header>
@@ -176,75 +199,120 @@
             </div>
         </header>
 
-        <!-- ANNOUNCEMENT: ADMISSION EXAMINATION IS NEXT -->
+        <!-- MODERN CAROUSEL (COVER PAGE) -->
+        <div class="carousel-container">
+            <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop');">
+                <h2>Build the Future.<br>Master the Code.</h2>
+                <p>Join the Institute of Board. A rigorous, fee-free STEM institution designed for the architects of tomorrow.</p>
+                <a href="admission.html" class="btn btn-primary">Apply for IFB 2027</a>
+            </div>
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop');">
+                <h2>Full Stack.<br>Real World Skills.</h2>
+                <p>From HTML to Cloud Architecture. A comprehensive roadmap that takes you from beginner to enterprise developer.</p>
+                <a href="#roadmap" class="btn btn-primary">View Curriculum</a>
+            </div>
+            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop');">
+                <h2>100% Fee-Free.<br>Funded by Sponsors.</h2>
+                <p>We believe education should be accessible. No tuition fees. Just your commitment to excellence.</p>
+                <a href="fund-ifb.html" class="btn btn-primary">Support the Mission</a>
+            </div>
+            
+            <div class="carousel-dots">
+                <div class="dot active" onclick="currentSlide(0)"></div>
+                <div class="dot" onclick="currentSlide(1)"></div>
+                <div class="dot" onclick="currentSlide(2)"></div>
+            </div>
+        </div>
+
+        <!-- COUNTDOWN & ANNOUNCEMENT -->
         <div class="announce">
-            <i data-lucide="megaphone"></i>
-            Admission Examination is next
-            <span class="announce-detail">— Commences <strong>[ADD DATE &amp; TIME]</strong> · Saturday sittings, January – February</span>
+            <div class="announce-text">
+                <i data-lucide="megaphone"></i>
+                Admission Examination: 30 January 2027
+            </div>
+            <div class="countdown" id="countdown">
+                <div class="cd-box"><span id="cd-days">00</span><small>Days</small></div>
+                <div class="cd-box"><span id="cd-hours">00</span><small>Hrs</small></div>
+                <div class="cd-box"><span id="cd-mins">00</span><small>Mins</small></div>
+                <div class="cd-box"><span id="cd-secs">00</span><small>Secs</small></div>
+            </div>
         </div>
 
         <div class="main-grid">
 
-            <!-- 3 BUTTONS: CHOOSE YOUR PATH -->
-            <div class="paths">
-                <h2><i data-lucide="git-branch"></i> Choose Your Path</h2>
-                <div class="path-row">
-                    <a href="admission.html?course=IFB-S" class="path-btn">
-                        <strong>IFB-S</strong>
-                        <small>STEM Foundation — Mathematics &amp; Physics</small>
-                    </a>
-                    <a href="admission.html?course=IFB-AQ" class="path-btn">
-                        <strong>IFB AQ</strong>
-                        <small>Web Development — Streams A, B, C</small>
-                    </a>
-                    <a href="admission.html?course=IFB-ISE" class="path-btn">
-                        <strong>IFB-ISE</strong>
-                        <small>Integrated Software Engineering — 2 Years</small>
-                    </a>
-                </div>
-                <p class="subject-note">
-                    <strong>Mathematics is compulsory with Physics.</strong>
-                    Mathematics may also be chosen alongside any other stream, and is highly recommended.
-                </p>
+            <!-- MISSION STATEMENT -->
+            <div class="mission-section">
+                <h2>Our Mission</h2>
+                <p>To provide a rigorous, accessible, and non-accredited STEM and software engineering education. We empower driven individuals to master web development and integrated systems through practical, real-world curriculum and assessment—completely free of tuition fees.</p>
             </div>
 
-            <!-- Card 1: Curriculum -->
+            <!-- SUBJECTS & ROADMAP -->
+            <div class="roadmap-section" id="roadmap">
+                <h2><i data-lucide="map"></i> Full Stack Developer Curriculum</h2>
+                <p class="desc"><strong>Mathematics is compulsory with Physics</strong>, and highly recommended alongside any other stream. These stages form our core subjects.</p>
+                
+                <div class="roadmap-grid">
+                    <div class="stage-card">
+                        <h4>Stage 1 & 2</h4>
+                        <strong>Web Foundations</strong>
+                        <small>HTML5, CSS3, Git & GitHub</small>
+                    </div>
+                    <div class="stage-card">
+                        <h4>Stage 3 & 4</h4>
+                        <strong>Programming & UI</strong>
+                        <small>JavaScript, ES6, Bootstrap, Tailwind</small>
+                    </div>
+                    <div class="stage-card">
+                        <h4>Stage 5 & 6</h4>
+                        <strong>Front-End Systems</strong>
+                        <small>React.js, Vue.js, State Management</small>
+                    </div>
+                    <div class="stage-card">
+                        <h4>Stage 7 & 8</h4>
+                        <strong>Back-End Systems</strong>
+                        <small>Node.js, Express, APIs</small>
+                    </div>
+                    <div class="stage-card">
+                        <h4>Stage 9 & 10</h4>
+                        <strong>Databases</strong>
+                        <small>MongoDB, MySQL, Indexing</small>
+                    </div>
+                    <div class="stage-card">
+                        <h4>Stage 11</h4>
+                        <strong>Deployment & Cloud</strong>
+                        <small>AWS, Render, Vercel, CI/CD</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 1: Curriculum Download -->
             <div class="card">
                 <h2><i data-lucide="book-open"></i> Curriculum Guideline</h2>
-                <p>Download the comprehensive 2027 academic guide. Explore our STEM tracks, Web Development streams, and Integrated Software Engineering programmes.</p>
+                <p>Download the comprehensive 2027 academic guide. Explore our STEM tracks, Web Development streams, and Integrated Software Engineering programmes in full detail.</p>
                 <a href="curriculum-ifb.html" download class="btn btn-primary">
-                    <i data-lucide="download"></i> Download Curriculum Guide
+                    <i data-lucide="download"></i> Download Full Guide
                 </a>
             </div>
 
-            <!-- Card 2: Official Admission Form -->
+            <!-- Card 2: Admission -->
             <div class="card">
                 <h2><i data-lucide="file-signature"></i> Official Admission Form</h2>
                 <p>Admissions are now open. Submit your official application. Please note that submitting this form registers you as an <strong>Applicant</strong>.</p>
                 <a href="admission.html" class="btn btn-primary">
-                    <i data-lucide="edit-3"></i> Complete Application
+                    <i data-lucide="edit-3"></i> Apply for IFB 2027
                 </a>
             </div>
 
-            <!-- Card 3: Exam Timetable -->
-            <div class="card">
-                <h2><i data-lucide="calendar"></i> AQ/AE Examination Timetable</h2>
-                <p>Curriculum Assessment and Examination (AE) schedules are held on Saturdays throughout January and February. Official admission is granted upon passing this examination.</p>
-                <a href="exam-timetable.html" class="btn btn-outline">
-                    <i data-lucide="clock"></i> View AQ/AE Timetable
-                </a>
-            </div>
-
-            <!-- Card 4: Comprehensive Guidelines -->
+            <!-- Card 3: Guidelines -->
             <div class="card">
                 <h2><i data-lucide="shield-check"></i> Institutional Guidelines</h2>
-                <p>Read the comprehensive document detailing our non-accredited status, the structure of our streams, and the official operational guidelines of the Institute.</p>
+                <p>Read the comprehensive document detailing our structure, streams, and the official operational guidelines of the Institute.</p>
                 <a href="guidelines.html" class="btn btn-outline" target="_blank">
                     <i data-lucide="book"></i> Read Full Guidelines
                 </a>
             </div>
 
-            <!-- Card 5: Sponsor -->
+            <!-- Card 4: Sponsor -->
             <div class="card sponsor-card">
                 <div>
                     <h2><i data-lucide="heart"></i> Sponsor the Institute</h2>
@@ -256,16 +324,79 @@
             </div>
         </div>
 
-        <footer>
+        <!-- DISCLAIMER -->
+        <div class="disclaimer-section">
+            <i data-lucide="alert-triangle" style="width:16px; height:16px; vertical-align:middle; margin-right:6px;"></i>
             The Institute of Board is a non-accredited educational institution. Not registered with the Department of Higher Education and Training (DHET) or Umalusi.
+        </div>
+
+        <footer>
+            <div>© 2026—2027 Institute of Board. All Rights Reserved.</div>
         </footer>
     </div>
 
 <script>
     lucide.createIcons();
+    
+    // Loader
     window.addEventListener('load', () => {
-        setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 800);
+        setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 1000);
     });
+
+    // Countdown Timer to 30 Jan 2027
+    const examDate = new Date("Jan 30, 2027 08:00:00").getTime();
+    const timer = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = examDate - now;
+
+        if (distance < 0) {
+            clearInterval(timer);
+            document.getElementById("countdown").innerHTML = "<div style='font-weight:900; font-size:18px;'>EXAM IN PROGRESS</div>";
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("cd-days").innerText = days;
+        document.getElementById("cd-hours").innerText = hours.toString().padStart(2, '0');
+        document.getElementById("cd-mins").innerText = minutes.toString().padStart(2, '0');
+        document.getElementById("cd-secs").innerText = seconds.toString().padStart(2, '0');
+    }, 1000);
+
+    // Carousel Logic
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.dot');
+    let slideInterval;
+
+    function showSlides(n) {
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        slides[n].classList.add('active');
+        dots[n].classList.add('active');
+    }
+
+    function currentSlide(n) {
+        clearInterval(slideInterval);
+        slideIndex = n;
+        showSlides(slideIndex);
+        startCarousel();
+    }
+
+    function nextSlide() {
+        slideIndex = (slideIndex + 1) % slides.length;
+        showSlides(slideIndex);
+    }
+
+    function startCarousel() {
+        slideInterval = setInterval(nextSlide, 5000); // Changes every 5 seconds
+    }
+
+    // Start carousel on load
+    startCarousel();
 </script>
 </body>
 </html>
