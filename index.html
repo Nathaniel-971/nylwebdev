@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Institute of Board — Official Portal</title>
 <script src="https://unpkg.com/lucide@latest"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
     :root {
@@ -21,10 +19,9 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     html, body {
         height: 100%;
-        overflow: hidden; /* Prevents scrolling on desktop */
+        overflow: hidden;
         font-family: 'Inter', sans-serif;
         background: var(--bg);
         color: var(--ink);
@@ -32,248 +29,65 @@
 
     /* LOADING SCREEN */
     #loader {
-        position: fixed;
-        inset: 0;
-        background: var(--white);
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        position: fixed; inset: 0; background: var(--white); z-index: 9999;
+        display: flex; justify-content: center; align-items: center;
         transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
     }
-    #loader.hidden {
-        opacity: 0;
-        visibility: hidden;
-    }
-    .loader-logo {
-        font-size: 120px;
-        font-weight: 900;
-        color: var(--maroon);
-        line-height: 1;
-        animation: pulseLogo 1.5s infinite ease-in-out;
-    }
-    @keyframes pulseLogo {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(0.95); opacity: 0.7; }
-    }
-
-    /* ANIMATIONS */
-    @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
-    }
+    #loader.hidden { opacity: 0; visibility: hidden; }
+    .loader-logo { font-size: 120px; font-weight: 900; color: var(--maroon); line-height: 1; animation: pulseLogo 1.5s infinite ease-in-out; }
+    @keyframes pulseLogo { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.95); opacity: 0.7; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 
     /* DASHBOARD LAYOUT */
     .dashboard {
-        display: grid;
-        grid-template-rows: auto 1fr auto;
-        height: 100vh;
-        padding: 24px;
-        max-width: 1400px;
-        margin: 0 auto;
-        gap: 24px;
+        display: grid; grid-template-rows: auto 1fr auto;
+        height: 100vh; padding: 24px; max-width: 1400px; margin: 0 auto; gap: 24px;
         animation: slideUp 0.6s ease-out 0.3s both;
     }
 
     /* HEADER */
-    header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-    /* BIG MAROON LOGO */
-    .logo-delta {
-        font-size: 64px;
-        font-weight: 900;
-        color: var(--maroon);
-        line-height: 0.8;
-        animation: float 4s ease-in-out infinite;
-    }
-    .brand-text {
-        display: flex;
-        flex-direction: column;
-    }
-    .brand-text h1 {
-        font-size: 28px;
-        font-weight: 900;
-        letter-spacing: -1px;
-        color: var(--ink);
-        line-height: 1.1;
-    }
-    .brand-text span {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--silver-dark);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-    
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .countdown-container {
-        text-align: right;
-    }
-    .countdown-label {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: var(--silver-dark);
-        margin-bottom: 4px;
-    }
-    .countdown-timer {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--maroon);
-        font-variant-numeric: tabular-nums;
-    }
-
-    .date-badge {
-        background: var(--maroon);
-        color: var(--white);
-        padding: 12px 24px;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 15px;
-        box-shadow: 0 8px 20px rgba(122,31,43,0.2);
-    }
+    header { display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .logo-delta { font-size: 64px; font-weight: 900; color: var(--maroon); line-height: 0.8; animation: float 4s ease-in-out infinite; }
+    .brand-text { display: flex; flex-direction: column; }
+    .brand-text h1 { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: var(--ink); line-height: 1.1; }
+    .brand-text span { font-size: 13px; font-weight: 600; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 1px; }
+    .header-right { display: flex; align-items: center; gap: 20px; }
+    .countdown-container { text-align: right; }
+    .countdown-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--silver-dark); margin-bottom: 4px; }
+    .countdown-timer { font-size: 16px; font-weight: 700; color: var(--maroon); font-variant-numeric: tabular-nums; }
+    .date-badge { background: var(--maroon); color: var(--white); padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 20px rgba(122,31,43,0.2); }
 
     /* MAIN GRID */
-    .main-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        height: 100%;
-        min-height: 0;
-    }
-
+    .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; height: 100%; min-height: 0; }
     .card {
-        background: var(--white);
-        border-radius: 20px;
-        padding: 32px;
-        border: 1px solid var(--silver);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
+        background: var(--white); border-radius: 20px; padding: 32px; border: 1px solid var(--silver);
+        display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; transition: all 0.3s ease;
     }
-
-    .card::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; height: 4px;
-        background: var(--maroon);
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.3s ease;
-    }
-
-    .card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-    }
+    .card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--maroon); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
     .card:hover::before { transform: scaleX(1); }
-
-    .card h2 {
-        font-size: 20px;
-        font-weight: 800;
-        margin-bottom: 12px;
-        color: var(--ink);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
+    .card h2 { font-size: 20px; font-weight: 800; margin-bottom: 12px; color: var(--ink); display: flex; align-items: center; gap: 12px; }
     .card h2 i { color: var(--maroon); width: 22px; height: 22px; }
-    
-    .card p {
-        color: #475569;
-        font-size: 15px;
-        margin-bottom: 24px;
-        line-height: 1.6;
-        flex-grow: 1;
-    }
+    .card p { color: #475569; font-size: 15px; margin-bottom: 24px; line-height: 1.6; flex-grow: 1; }
 
     /* BUTTONS */
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 14px 24px;
-        font-size: 14px;
-        font-weight: 600;
-        border-radius: 10px;
-        text-decoration: none;
-        transition: all 0.2s;
-        cursor: pointer;
-        border: none;
-        font-family: 'Inter', sans-serif;
-    }
-    .btn-primary {
-        background: var(--maroon);
-        color: var(--white);
-    }
-    .btn-primary:hover {
-        background: var(--maroon-hover);
-    }
-    .btn-outline {
-        background: transparent;
-        border: 2px solid var(--silver);
-        color: var(--ink);
-    }
-    .btn-outline:hover {
-        border-color: var(--maroon);
-        color: var(--maroon);
-        background: #FFF5F6;
-    }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; font-size: 14px; font-weight: 600; border-radius: 10px; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
+    .btn-primary { background: var(--maroon); color: var(--white); }
+    .btn-primary:hover { background: var(--maroon-hover); }
+    .btn-outline { background: transparent; border: 2px solid var(--silver); color: var(--ink); }
+    .btn-outline:hover { border-color: var(--maroon); color: var(--maroon); background: #FFF5F6; }
 
     /* SPONSOR CARD */
-    .sponsor-card {
-        grid-column: 1 / -1;
-        background: var(--ink);
-        border-color: var(--ink);
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        padding: 24px 40px;
-    }
+    .sponsor-card { grid-column: 1 / -1; background: var(--ink); border-color: var(--ink); flex-direction: row; align-items: center; justify-content: space-between; padding: 24px 40px; }
     .sponsor-card h2 { color: var(--white); margin-bottom: 4px; }
     .sponsor-card p { color: var(--silver-dark); margin-bottom: 0; font-size: 14px; max-width: 800px; }
-    .sponsor-card .btn-primary {
-        background: var(--white);
-        color: var(--maroon);
-        white-space: nowrap;
-    }
-    .sponsor-card .btn-primary:hover {
-        background: var(--silver);
-        color: var(--ink);
-    }
+    .sponsor-card .btn-primary { background: var(--white); color: var(--maroon); white-space: nowrap; }
+    .sponsor-card .btn-primary:hover { background: var(--silver); color: var(--ink); }
 
-    /* NON-ACCREDITED FOOTER */
-    footer {
-        text-align: center;
-        font-size: 12px;
-        color: var(--silver-dark);
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
+    /* FOOTER */
+    footer { text-align: center; font-size: 12px; color: var(--silver-dark); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
 
     /* MOBILE OPTIMIZATION */
     @media (max-width: 1024px) {
@@ -291,14 +105,9 @@
 </head>
 <body>
 
-    <!-- LOADING SCREEN -->
-    <div id="loader">
-        <div class="loader-logo">∆</div>
-    </div>
+    <div id="loader"><div class="loader-logo">∆</div></div>
 
     <div class="dashboard">
-        
-        <!-- HEADER -->
         <header>
             <div class="brand">
                 <div class="logo-delta">∆</div>
@@ -307,7 +116,6 @@
                     <span>Official Student Portal</span>
                 </div>
             </div>
-            
             <div class="header-right">
                 <div class="countdown-container">
                     <div class="countdown-label">Applications Open In</div>
@@ -317,9 +125,7 @@
             </div>
         </header>
 
-        <!-- MAIN GRID -->
         <div class="main-grid">
-            
             <!-- Card 1: Curriculum -->
             <div class="card">
                 <h2><i data-lucide="book-open"></i> Curriculum Guideline</h2>
@@ -329,12 +135,12 @@
                 </a>
             </div>
 
-            <!-- Card 2: Admission Guidelines -->
+            <!-- Card 2: Official Admission Form -->
             <div class="card">
-                <h2><i data-lucide="file-text"></i> Admission Guidelines</h2>
-                <p>Understand the entry requirements, application process, and required documentation for the upcoming 2027 academic year. The Institute operates on a completely fee-free basis.</p>
-                <a href="admission-guidelines.html" class="btn btn-outline">
-                    <i data-lucide="external-link"></i> View Admission Guidelines
+                <h2><i data-lucide="file-signature"></i> Official Admission Form</h2>
+                <p>Apply for the 2027 academic year. Please note that submitting this form makes you an <strong>Applicant</strong>. Official admission is strictly granted upon passing the AQ/AE Examination.</p>
+                <a href="admission.html" class="btn btn-primary">
+                    <i data-lucide="edit-3"></i> Complete Application
                 </a>
             </div>
 
@@ -366,47 +172,30 @@
                     <i data-lucide="hand-coins"></i> Fund the Institute
                 </a>
             </div>
-
         </div>
 
-        <!-- FOOTER -->
         <footer>
             The Institute of Board is a non-accredited educational institution. Not registered with the Department of Higher Education and Training (DHET) or Umalusi.
         </footer>
     </div>
 
 <script>
-    // Initialize Icons
     lucide.createIcons();
-
-    // Hide Loader after page load
     window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.getElementById('loader').classList.add('hidden');
-        }, 800); // 800ms delay for smooth transition
+        setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 800);
     });
-
-    // Countdown Timer Logic
     const targetDate = new Date("2026-11-01T00:00:00").getTime();
     const countdownEl = document.getElementById('countdown');
-
     function updateCountdown() {
         const now = new Date().getTime();
         const distance = targetDate - now;
-
-        if (distance < 0) {
-            countdownEl.innerHTML = "Applications Open";
-            return;
-        }
-
+        if (distance < 0) { countdownEl.innerHTML = "Applications Open"; return; }
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        countdownEl.innerHTML = `${days} Days, ${hours} Hours, ${minutes} Minutes, ${seconds} Seconds`;
+        countdownEl.innerHTML = `${days}d : ${hours}h : ${minutes}m : ${seconds}s`;
     }
-
     updateCountdown();
     setInterval(updateCountdown, 1000);
 </script>
