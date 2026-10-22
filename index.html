@@ -37,7 +37,7 @@
     @keyframes pulseLogo { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.95); opacity: 0.7; } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    
+
     @keyframes pulseDot {
         0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(122, 31, 43, 0.7); }
         70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(122, 31, 43, 0); }
@@ -46,8 +46,8 @@
 
     /* DASHBOARD LAYOUT */
     .dashboard {
-        display: grid; grid-template-rows: auto 1fr auto;
-        height: 100vh; padding: 24px; max-width: 1400px; margin: 0 auto; gap: 24px;
+        display: grid; grid-template-rows: auto auto 1fr auto;
+        height: 100vh; padding: 24px; max-width: 1400px; margin: 0 auto; gap: 18px;
         animation: slideUp 0.6s ease-out 0.3s both;
     }
 
@@ -58,9 +58,9 @@
     .brand-text { display: flex; flex-direction: column; }
     .brand-text h1 { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: var(--ink); line-height: 1.1; }
     .brand-text span { font-size: 13px; font-weight: 600; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 1px; }
-    
+
     .header-right { display: flex; align-items: center; gap: 20px; }
-    
+
     .status-badge {
         display: flex; align-items: center; gap: 10px;
         background: var(--white); border: 2px solid var(--maroon);
@@ -68,22 +68,35 @@
         font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
     }
     .status-dot { width: 10px; height: 10px; background: var(--maroon); border-radius: 50%; animation: pulseDot 2s infinite; }
-    
+
     .btn-header { padding: 12px 24px; font-size: 14px; font-weight: 700; border-radius: 10px; text-decoration: none; background: var(--maroon); color: var(--white); transition: background 0.2s; }
     .btn-header:hover { background: var(--maroon-hover); }
 
+    /* ANNOUNCEMENT BAR */
+    .announce {
+        display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        background: var(--maroon); color: var(--white);
+        padding: 12px 22px; border-radius: 14px;
+        font-size: 13px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase;
+    }
+    .announce i { width: 18px; height: 18px; flex-shrink: 0; }
+    .announce .announce-detail { font-weight: 600; text-transform: none; letter-spacing: 0; opacity: 0.9; }
+
     /* MAIN GRID */
-    .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; height: 100%; min-height: 0; }
+    .main-grid {
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;
+        height: 100%; min-height: 0; overflow-y: auto; padding-right: 4px; align-content: start;
+    }
     .card {
-        background: var(--white); border-radius: 20px; padding: 32px; border: 1px solid var(--silver);
+        background: var(--white); border-radius: 20px; padding: 28px; border: 1px solid var(--silver);
         display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; transition: all 0.3s ease;
     }
     .card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--maroon); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
     .card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
     .card:hover::before { transform: scaleX(1); }
-    .card h2 { font-size: 20px; font-weight: 800; margin-bottom: 12px; color: var(--ink); display: flex; align-items: center; gap: 12px; }
+    .card h2 { font-size: 19px; font-weight: 800; margin-bottom: 12px; color: var(--ink); display: flex; align-items: center; gap: 12px; }
     .card h2 i { color: var(--maroon); width: 22px; height: 22px; }
-    .card p { color: #475569; font-size: 15px; margin-bottom: 24px; line-height: 1.6; flex-grow: 1; }
+    .card p { color: #475569; font-size: 15px; margin-bottom: 22px; line-height: 1.6; flex-grow: 1; }
 
     /* BUTTONS */
     .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; font-size: 14px; font-weight: 600; border-radius: 10px; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'Inter', sans-serif; }
@@ -91,6 +104,29 @@
     .btn-primary:hover { background: var(--maroon-hover); }
     .btn-outline { background: transparent; border: 2px solid var(--silver); color: var(--ink); }
     .btn-outline:hover { border-color: var(--maroon); color: var(--maroon); background: #FFF5F6; }
+
+    /* COURSE PATHS — 3 BUTTONS */
+    .paths {
+        grid-column: 1 / -1; background: var(--white); border: 1px solid var(--silver);
+        border-radius: 20px; padding: 26px 28px; display: flex; flex-direction: column; gap: 16px;
+    }
+    .paths h2 { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 12px; }
+    .paths h2 i { color: var(--maroon); width: 22px; height: 22px; }
+    .path-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .path-btn {
+        display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+        padding: 18px 20px; border: 2px solid var(--silver); border-radius: 14px;
+        text-decoration: none; color: var(--ink); background: var(--white);
+        transition: all 0.2s ease; text-align: left; font-family: 'Inter', sans-serif; cursor: pointer;
+    }
+    .path-btn:hover { border-color: var(--maroon); background: #FFF5F6; transform: translateY(-2px); }
+    .path-btn strong { font-size: 15px; font-weight: 800; }
+    .path-btn small { font-size: 12px; color: var(--silver-dark); font-weight: 600; letter-spacing: 0.3px; line-height: 1.4; }
+    .subject-note {
+        font-size: 13px; color: #475569; line-height: 1.7;
+        border-left: 3px solid var(--maroon); padding-left: 14px;
+    }
+    .subject-note strong { color: var(--ink); font-weight: 800; }
 
     /* SPONSOR CARD */
     .sponsor-card { grid-column: 1 / -1; background: var(--ink); border-color: var(--ink); flex-direction: row; align-items: center; justify-content: space-between; padding: 24px 40px; }
@@ -105,14 +141,16 @@
     /* MOBILE OPTIMIZATION */
     @media (max-width: 1024px) {
         html, body { overflow: auto; height: auto; }
-        .dashboard { height: auto; min-height: 100vh; padding: 16px; gap: 16px; }
+        .dashboard { height: auto; min-height: 100vh; padding: 16px; gap: 16px; grid-template-rows: auto auto auto auto; }
         header { flex-direction: column; align-items: flex-start; gap: 20px; }
         .header-right { width: 100%; justify-content: space-between; flex-wrap: wrap; }
-        .main-grid { grid-template-columns: 1fr; }
+        .main-grid { grid-template-columns: 1fr; overflow: visible; }
+        .path-row { grid-template-columns: 1fr; }
         .sponsor-card { flex-direction: column; align-items: flex-start; text-align: left; gap: 20px; padding: 24px; }
         .logo-delta { font-size: 48px; }
         .brand-text h1 { font-size: 22px; }
         .card { padding: 24px; }
+        .paths { padding: 22px; }
     }
 </style>
 </head>
@@ -138,11 +176,42 @@
             </div>
         </header>
 
+        <!-- ANNOUNCEMENT: ADMISSION EXAMINATION IS NEXT -->
+        <div class="announce">
+            <i data-lucide="megaphone"></i>
+            Admission Examination is next
+            <span class="announce-detail">— Commences <strong>[ADD DATE &amp; TIME]</strong> · Saturday sittings, January – February</span>
+        </div>
+
         <div class="main-grid">
+
+            <!-- 3 BUTTONS: CHOOSE YOUR PATH -->
+            <div class="paths">
+                <h2><i data-lucide="git-branch"></i> Choose Your Path</h2>
+                <div class="path-row">
+                    <a href="admission.html?course=IFB-S" class="path-btn">
+                        <strong>IFB-S</strong>
+                        <small>STEM Foundation — Mathematics &amp; Physics</small>
+                    </a>
+                    <a href="admission.html?course=IFB-AQ" class="path-btn">
+                        <strong>IFB AQ</strong>
+                        <small>Web Development — Streams A, B, C</small>
+                    </a>
+                    <a href="admission.html?course=IFB-ISE" class="path-btn">
+                        <strong>IFB-ISE</strong>
+                        <small>Integrated Software Engineering — 2 Years</small>
+                    </a>
+                </div>
+                <p class="subject-note">
+                    <strong>Mathematics is compulsory with Physics.</strong>
+                    Mathematics may also be chosen alongside any other stream, and is highly recommended.
+                </p>
+            </div>
+
             <!-- Card 1: Curriculum -->
             <div class="card">
                 <h2><i data-lucide="book-open"></i> Curriculum Guideline</h2>
-                <p>Download the comprehensive 2027 academic guide. Explore our Science, Technology, Engineering, and Mathematics (STEM) tracks, Web Development streams, and Integrated Software Engineering programs.</p>
+                <p>Download the comprehensive 2027 academic guide. Explore our STEM tracks, Web Development streams, and Integrated Software Engineering programmes.</p>
                 <a href="curriculum-ifb.html" download class="btn btn-primary">
                     <i data-lucide="download"></i> Download Curriculum Guide
                 </a>
