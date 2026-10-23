@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documents & Portal — IFB</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    :root { 
+        --maroon: #7A1F2B; 
+        --maroon-hover: #5A1620; 
+        --silver: #E2E8F0; 
+        --silver-dark: #94A3B8;
+        --ink: #0F172A; 
+        --bg: #F8FAFC; 
+        --white: #FFFFFF; 
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; padding: 40px 24px; }
+    .container { max-width: 900px; margin: 0 auto; }
+    
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--silver-dark); text-decoration: none; font-weight: 600; margin-bottom: 24px; transition: color 0.2s; }
+    .nav-back:hover { color: var(--maroon); }
+
+    .header { margin-bottom: 40px; }
+    h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
+    p.sub { color: var(--silver-dark); font-size: 16px; }
+
+    /* DOCUMENTS GRID */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 48px; }
+    .doc-card { 
+        background: var(--white); border-radius: 16px; padding: 32px; 
+        border: 1px solid var(--silver); display: flex; flex-direction: column;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .doc-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.05); }
+    .doc-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(122,31,43,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: var(--maroon); }
+    .doc-icon i { width: 24px; height: 24px; }
+    
+    .doc-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .doc-card p { font-size: 14px; color: #64748B; margin-bottom: 24px; flex-grow: 1; line-height: 1.6; }
+    
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; font-size: 14px; font-weight: 600; border-radius: 10px; text-decoration: none; width: 100%; border: none; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .btn-primary { background: var(--maroon); color: var(--white); }
+    .btn-primary:hover { background: var(--maroon-hover); }
+    .btn-outline { background: transparent; border: 2px solid var(--silver); color: var(--ink); }
+    .btn-outline:hover { border-color: var(--maroon); color: var(--maroon); background: #FFF5F6; }
+
+    /* PORTAL SECTION */
+    .portal-section { background: var(--white); border: 2px solid var(--maroon); border-radius: 20px; padding: 40px; text-align: center; }
+    .portal-section h2 { font-size: 28px; font-weight: 900; color: var(--maroon); margin-bottom: 12px; }
+    .portal-section > p { font-size: 15px; color: #64748B; margin-bottom: 32px; }
+    
+    .input-group { max-width: 320px; margin: 0 auto 16px; }
+    .input-group input { width: 100%; padding: 16px; font-family: monospace; font-size: 22px; letter-spacing: 4px; text-align: center; border: 2px solid var(--silver); border-radius: 12px; outline: none; transition: border-color 0.2s; }
+    .input-group input:focus { border-color: var(--maroon); }
+    
+    /* COURSE SELECTION (Hidden by default) */
+    #courseSelection { display: none; margin-top: 32px; text-align: left; border-top: 1px solid var(--silver); padding-top: 32px; }
+    #courseSelection h3 { font-size: 22px; margin-bottom: 8px; }
+    #courseSelection > p { font-size: 14px; color: #64748B; margin-bottom: 24px; }
+    
+    .course-option { 
+        display: flex; align-items: flex-start; gap: 16px; padding: 24px; 
+        border: 2px solid var(--silver); border-radius: 16px; background: var(--bg); 
+        margin-bottom: 16px; cursor: pointer; transition: all 0.2s; 
+    }
+    .course-option:hover { border-color: var(--maroon); background: #FFF5F6; }
+    .course-option input[type="radio"] { width: 22px; height: 22px; accent-color: var(--maroon); margin-top: 2px; cursor: pointer; }
+    .course-option-content { flex: 1; }
+    .course-option-content strong { display: block; font-size: 18px; color: var(--ink); margin-bottom: 6px; }
+    .course-option-content span { font-size: 14px; color: #64748B; line-height: 1.5; display: block; }
+    .exam-tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; background: var(--maroon); color: var(--white); margin-left: 8px; vertical-align: middle; }
+</style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="nav-back"><i data-lucide="arrow-left"></i> Back to Dashboard</a>
+    
+    <div class="header">
+        <h1>Documents & Portal</h1>
+        <p class="sub">Download your study materials, and access the Applicant Portal.</p>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <div class="grid">
+        <div class="doc-card">
+            <div class="doc-icon"><i data-lucide="sigma"></i></div>
+            <h3>IFB-S: Mathematics</h3>
+            <p>Download the official 2027 curriculum guide for the elite, 4-paper advanced Mathematics track.</p>
+            <a href="curriculum-ifb.html" download class="btn btn-primary">Download Curriculum</a>
+        </div>
+        
+        <div class="doc-card">
+            <div class="doc-icon"><i data-lucide="code-2"></i></div>
+            <h3>IFB AQ-B: Front-End Web</h3>
+            <p>Download the curriculum for the Front-End Web Development track. Master HTML, CSS, JS, and React.</p>
+            <a href="curriculum-web.html" download class="btn btn-primary">Download Curriculum</a>
+        </div>
+        
+        <div class="doc-card">
+            <div class="doc-icon"><i data-lucide="shield-check"></i></div>
+            <h3>Examination Guidelines</h3>
+            <p>Read the strict rules, cognitive weightings, and the "No Formula Sheet" policy for the Admission Examinations.</p>
+            <a href="guidelines.html" class="btn btn-outline">Read Guidelines</a>
+        </div>
+    </div>
+
+    <!-- THE PORTAL -->
+    <div class="portal-section">
+        <h2>Applicant Portal</h2>
+        <p>Enter your 13-digit Examination Number to select your course. <br> <em>(Course selection is locked until your Admission Exam is passed).</em></p>
+        
+        <div class="input-group">
+            <input type="text" id="examInput" placeholder="2027010000000" maxlength="13">
+        </div>
+        <button class="btn btn-primary" style="max-width: 320px; margin: 0 auto;" onclick="checkPortal()">Access Portal</button>
+
+        <!-- HIDDEN COURSE SELECTION -->
+        <div id="courseSelection">
+            <h3>Select Your Course</h3>
+            <p>You have passed the Admission Exam. Choose the track you want to study for 2027.</p>
+            
+            <label class="course-option">
+                <input type="radio" name="course" value="math">
+                <div class="course-option-content">
+                    <strong>IFB-S: Mathematics <span class="exam-tag">AQ/AE Math Exam</span></strong>
+                    <span>The elite, 4-paper, 600-mark advanced mathematics track. Prerequisite for engineering and data science.</span>
+                </div>
+            </label>
+
+            <label class="course-option">
+                <input type="radio" name="course" value="web">
+                <div class="course-option-content">
+                    <strong>IFB AQ-B: Front-End Web Development <span class="exam-tag">AQ/AE Web Dev Exam</span></strong>
+                    <span>Master HTML, CSS, JavaScript, React, and modern UI/UX. Build real, deployed projects.</span>
+                </div>
+            </label>
+            
+            <button class="btn btn-primary" style="margin-top: 16px;" onclick="confirmCourse()">Confirm Course Selection</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    function checkPortal() {
+        const input = document.getElementById('examInput').value;
+        
+        // Simulation: Any valid 13-digit number starting with 202701 works for now
+        if (input.length === 13 && input.startsWith('202701')) {
+            document.getElementById('courseSelection').style.display = 'block';
+        } else {
+            alert("Invalid Examination Number. Make sure it starts with 202701 and is 13 digits long.");
+        }
+    }
+
+    function confirmCourse() {
+        const selected = document.querySelector('input[name="course"]:checked');
+        if (!selected) {
+            alert("Please select a course.");
+            return;
+        }
+        
+        if (selected.value === 'math') {
+            alert("Welcome to IFB-S Mathematics. Your AQ/AE Mathematics Examination enrollment is confirmed.");
+        } else {
+            alert("Welcome to IFB AQ-B Front-End Web Development. Your AQ/AE Web Development Examination enrollment is confirmed.");
+        }
+        
+        // In the real app, you would update Firebase here and redirect them to their dashboard.
+    }
+</script>
+</body>
+</html>
