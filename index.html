@@ -177,7 +177,6 @@
                     <a href="admission.html" class="nav-cta">Apply</a>
                 </div>
 
-                <!-- LOGGED IN: 2-DIGIT BADGE -->
                 <div class="nav-logged-in" id="navLoggedIn">
                     <div class="profile-badge" id="navProfileBadge" onclick="window.location.href='student-dashboard.html'" title="Dashboard"></div>
                 </div>
@@ -407,7 +406,6 @@
         setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
         if (user) {
-            // Logged In
             document.getElementById('navLoggedOut').style.display = 'none';
             document.getElementById('navLoggedIn').style.display = 'flex';
             document.getElementById('heroLoggedOut').style.display = 'none';
@@ -417,18 +415,15 @@
             const docSnap = await getDoc(doc(db, "users", user.uid));
             if(docSnap.exists()){
                 const id = docSnap.data().studentId || "27011026001";
-                // Get the last 2 digits of the Student ID
                 const badgeText = id.slice(-2);
                 document.getElementById('navProfileBadge').innerText = badgeText;
             }
         } else {
-            // Logged Out
             document.getElementById('navLoggedOut').style.display = 'flex';
             document.getElementById('navLoggedIn').style.display = 'none';
             document.getElementById('heroLoggedOut').style.display = 'flex';
             document.getElementById('heroLoggedIn').style.display = 'none';
             document.getElementById('coursesSection').style.display = 'block'; 
-            
             document.getElementById('noticeModal').classList.add('active');
         }
     });
