@@ -67,15 +67,19 @@
     .section-title { font-size: 24px; font-weight: 900; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; color: var(--black); }
     .section-title i { color: var(--maroon); width: 28px; height: 28px; }
 
-    /* TIMETABLE */
-    .tt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
-    .btn-download-tt { padding: 12px 24px; background: var(--white); border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
-    .btn-download-tt:hover { border-color: var(--black); }
-    .timetable-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; overflow: hidden; margin-bottom: 64px; }
-    .tt-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--silver); }
-    .tt-row:last-child { border-bottom: none; }
-    .tt-date { font-size: 18px; font-weight: 800; color: var(--black); }
-    .tt-desc { font-size: 15px; color: var(--gray); font-weight: 500; }
+    /* TIMETABLE CARD (No visible dates) */
+    .timetable-action-card { 
+        background: var(--white); border: 1px solid var(--silver); border-radius: 16px; 
+        padding: 32px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 64px; 
+    }
+    .tt-text h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .tt-text p { font-size: 15px; color: var(--gray); }
+    .btn-download-tt { 
+        padding: 14px 28px; background: var(--maroon); color: var(--white); 
+        border: none; border-radius: 8px; font-size: 15px; font-weight: 700; 
+        cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; flex-shrink: 0;
+    }
+    .btn-download-tt:hover { background: var(--maroon-hover); }
 
     /* PORTAL LOGIN */
     .portal-card { background: var(--white); border: 2px solid var(--maroon); border-radius: 24px; padding: 48px; text-align: center; margin-bottom: 64px; box-shadow: var(--shadow-lg); }
@@ -114,11 +118,12 @@
     @media (min-width: 1025px) { .nav-cta { display: block; } }
     @media (max-width: 768px) {
         .input-group { flex-direction: column; }
-        .tt-row { flex-direction: column; align-items: flex-start; gap: 8px; }
         .page-header h1 { font-size: 32px; }
         .doc-item { flex-direction: column; align-items: flex-start; }
         .doc-actions { width: 100%; }
         .doc-actions button { flex: 1; justify-content: center; }
+        .timetable-action-card { flex-direction: column; align-items: flex-start; gap: 24px; }
+        .btn-download-tt { width: 100%; justify-content: center; }
     }
 </style>
 </head>
@@ -180,15 +185,16 @@
             <p>Download guidelines, view the AE Examination timetable, and access your applicant dashboard.</p>
         </div>
 
-        <!-- 1. AE TIMETABLE -->
-        <div class="tt-header">
-            <h2 class="section-title" style="margin-bottom: 0;"><i data-lucide="calendar"></i> AE Examination Timetable</h2>
-            <button class="btn-download-tt" onclick="alert('Timetable PDF coming soon.')"><i data-lucide="download"></i> Download PDF</button>
-        </div>
-        <div class="timetable-card">
-            <div class="tt-row"><span class="tt-date">13 January 2027</span><span class="tt-desc">Admission Examination - Session 1</span></div>
-            <div class="tt-row"><span class="tt-date">18 January 2027</span><span class="tt-desc">Admission Examination - Session 2</span></div>
-            <div class="tt-row"><span class="tt-date">31 January 2027</span><span class="tt-desc">Admission Examination - Session 3</span></div>
+        <!-- 1. AE TIMETABLE (Download Only) -->
+        <h2 class="section-title"><i data-lucide="calendar"></i> Examination Schedule</h2>
+        <div class="timetable-action-card">
+            <div class="tt-text">
+                <h3>AE Examination Timetable (2027)</h3>
+                <p>Download the official PDF schedule to see all available examination dates and sessions.</p>
+            </div>
+            <button class="btn-download-tt" onclick="alert('Timetable PDF coming soon.')">
+                <i data-lucide="download"></i> Download Timetable
+            </button>
         </div>
 
         <!-- 2. PORTAL LOGIN -->
