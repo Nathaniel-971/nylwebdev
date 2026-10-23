@@ -9,8 +9,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
     :root { 
-        --maroon: #7A1F2B; --maroon-hover: #5A1620; --silver: #E2E8F0; 
-        --silver-dark: #94A3B8; --ink: #0F172A; --bg: #F8FAFC; --white: #FFFFFF; 
+        --maroon: #7A1F2B; 
+        --maroon-hover: #5A1620; 
+        --maroon-glow: #B03040;
+        --silver: #E2E8F0; 
+        --silver-dark: #94A3B8; 
+        --ink: #0F172A; 
+        --bg: #F8FAFC; 
+        --white: #FFFFFF; 
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; padding: 40px 24px; }
@@ -55,34 +61,73 @@
     .course-option-content span { font-size: 14px; color: #64748B; line-height: 1.5; display: block; }
 
     /* MODAL FOR DOCUMENT VIEWING */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); z-index: 9999; display: none; flex-direction: column; align-items: center; overflow-y: auto; padding: 24px; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; overflow-y: auto; padding: 24px; }
     .modal-overlay.active { display: flex; }
-    .modal-toolbar { position: sticky; top: 0; width: 100%; max-width: 210mm; background: var(--white); padding: 12px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+    .modal-toolbar { position: sticky; top: 0; width: 100%; max-width: 210mm; background: var(--white); padding: 12px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 10; }
     .modal-toolbar h4 { font-size: 15px; font-weight: 700; color: var(--ink); margin: 0; }
     .modal-actions { display: flex; gap: 10px; }
     .modal-actions button, .modal-actions a { padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;}
     .modal-actions .btn-print { background: var(--maroon); color: var(--white); }
     .modal-actions .btn-close { background: var(--bg); color: var(--ink); border: 1px solid var(--silver); }
+
+    /* ========================================= */
+    /* A4 DOCUMENT TEMPLATE (COLORIZED)          */
+    /* ========================================= */
+    .a4-page { 
+        background: #fff; width: 100%; max-width: 210mm; min-height: 297mm; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; 
+        font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5; 
+        padding: 0; /* Padding handled inside */
+    }
+
+    /* The border around the page */
+    .page-inner { 
+        width: 100%; height: 100%; min-height: 297mm; padding: 15mm 18mm 20mm 18mm; 
+        border: 3px solid var(--maroon); display: flex; flex-direction: column; position: relative;
+    }
+
+    /* Watermarks */
+    .wm-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 80pt; font-weight: 900; color: rgba(122,31,43,0.03); letter-spacing: 25px; pointer-events: none; z-index: 0; white-space: nowrap; font-family: 'Inter', sans-serif; }
+    .wm-grid { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(122,31,43,0.015) 0 1px, transparent 1px 15px), repeating-linear-gradient(-45deg, rgba(122,31,43,0.015) 0 1px, transparent 1px 15px); pointer-events: none; z-index: 0; }
     
-    /* A4 DOCUMENT TEMPLATE */
-    .a4-page { background: var(--white); width: 100%; max-width: 210mm; min-height: 297mm; padding: 20mm; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; font-family: 'Times New Roman', Times, serif; color: #000; line-height: 1.5; }
-    .doc-cover { text-align: center; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: center; }
-    .doc-confidential { font-size: 12pt; font-style: italic; margin-bottom: 30px; letter-spacing: 1px; }
-    .doc-logo { font-size: 80pt; font-weight: 900; color: var(--maroon); line-height: 1; margin-bottom: 20px; font-family: 'Inter', sans-serif;}
-    .doc-title { font-size: 28pt; font-weight: 700; letter-spacing: 2px; line-height: 1.1; margin-bottom: 10px; text-transform: uppercase; }
-    .doc-subtitle { font-size: 14pt; font-weight: 700; margin-bottom: 40px; }
-    .doc-box { border: 2px solid #000; padding: 30px; width: 80%; background: #fff9c4; border-radius: 8px; margin-bottom: 30px; }
-    .doc-box .doc-type { font-size: 16pt; font-weight: 700; letter-spacing: 1px; margin-bottom: 15px; text-transform: uppercase; }
-    .doc-box .doc-year { font-size: 14pt; font-weight: 700; }
-    .doc-footer { position: absolute; bottom: 15mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; font-size: 10pt; font-style: italic; }
+    .content-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; text-align: center; align-items: center; }
+
+    /* Header Section */
+    .doc-confidential { font-size: 11pt; font-style: italic; margin-bottom: 20px; letter-spacing: 1px; }
+    .doc-logo { width: 100px; height: auto; margin-bottom: 10px; }
+    .doc-title { font-size: 24pt; font-weight: 700; letter-spacing: 2px; line-height: 1.1; margin-bottom: 3px; font-family: 'Inter', sans-serif; color: var(--ink); }
+    .doc-subtitle { font-size: 11pt; line-height: 1.3; font-weight: 700; font-size: 12pt; font-family: 'Inter', sans-serif; color: var(--maroon); }
+    .doc-subtitle span { display: block; font-size: 10pt; color: #444; font-weight: 400; }
+
+    /* The Black/Maroon Block */
+    .maroon-block { background: var(--maroon); color: #fff; padding: 12px 40px; border-radius: 8px; font-weight: 700; font-size: 16pt; letter-spacing: 1px; line-height: 1.3; margin: 30px 0 20px; display: inline-block; font-family: 'Inter', sans-serif; text-transform: uppercase;}
+    
+    /* The Silver Box */
+    .silver-box { border: 2px solid var(--silver-dark); padding: 8px 40px; border-radius: 5px; background: #F8FAFC; font-weight: 700; font-size: 14pt; letter-spacing: 1px; margin-bottom: 30px; display: inline-block; font-family: 'Inter', sans-serif;}
+
+    /* The Dashed Subject Box */
+    .subject-box { border: 2px dashed var(--maroon); padding: 22px 30px; margin-bottom: 22px; width: 90%; background: #FFF5F6; border-radius: 10px; }
+    .subject-box .subject { font-size: 16pt; font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; color: var(--maroon); font-family: 'Inter', sans-serif; }
+    .subject-box .date { font-size: 14pt; font-weight: 700; margin-bottom: 12px; font-family: 'Inter', sans-serif;}
+    .subject-box .doc-type { font-size: 14pt; font-weight: 700; font-family: 'Inter', sans-serif;}
+
+    /* C1 Barcode Section */
+    .c1-section { width: 100%; text-align: left; padding-left: 5mm; margin-bottom: 30px; }
+    .c1-label { font-size: 13pt; font-weight: 700; margin-bottom: 8px; font-family: 'Inter', sans-serif;}
+    
+    /* Footer */
+    .page-footer { position: absolute; bottom: 5mm; left: 18mm; right: 18mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 5; font-size: 10pt; font-style: italic; }
+    .footer-barcode { position: absolute; bottom: 12mm; right: 18mm; z-index: 6; }
+    .page-count { font-size: 12pt; font-weight: 700; text-align: center; width: 90%; margin-top: auto; margin-bottom: 20px; line-height: 1.5; font-family: 'Inter', sans-serif;}
 
     /* PRINT STYLES */
     @media print {
         body { background: #fff; padding: 0; margin: 0; }
-        .container, .header, .grid, .portal-section { display: none !important; }
+        .container, .header, .grid, .portal-section, .nav-back { display: none !important; }
         .modal-overlay { position: static; background: transparent; padding: 0; display: block; overflow: visible; }
         .modal-toolbar { display: none !important; }
-        .a4-page { box-shadow: none; width: 210mm; min-height: 297mm; margin: 0; padding: 20mm; page-break-after: always; }
+        .a4-page { box-shadow: none; width: 210mm; min-height: 297mm; margin: 0; }
+        .page-inner { border-width: 2px; }
     }
 </style>
 </head>
@@ -96,7 +141,6 @@
         <p class="sub">View your study materials, download them as A4 PDFs, and access the Applicant Portal.</p>
     </div>
 
-    <!-- DOCUMENTS GRID -->
     <div class="grid">
         <div class="doc-card">
             <div class="doc-icon"><i data-lucide="sigma"></i></div>
@@ -120,7 +164,6 @@
         </div>
     </div>
 
-    <!-- THE PORTAL -->
     <div class="portal-section">
         <h2>Applicant Portal</h2>
         <p>Enter your 13-digit Examination Number to select your course. <br> <em>(Course selection is locked until your Admission Exam is passed).</em></p>
@@ -174,62 +217,113 @@
 <script>
     lucide.createIcons();
 
+    // SVG Logo for the A4 Document
+    const ifbLogoSVG = `
+        <svg class="doc-logo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5 L95 85 H5 Z" stroke="#7A1F2B" stroke-width="6" stroke-linejoin="round" fill="rgba(122,31,43,0.1)"/>
+            <path d="M50 25 L75 75 H25 Z" stroke="#C7CBD1" stroke-width="4" stroke-linejoin="round" fill="none"/>
+            <circle cx="50" cy="55" r="8" fill="#7A1F2B"/>
+        </svg>
+    `;
+
     const documents = {
         math: `
-            <div class="doc-cover">
-                <div class="doc-confidential">Confidential</div>
-                <div class="doc-logo">∆</div>
-                <div class="doc-title">Institute of Board</div>
-                <div class="doc-subtitle">IFB-S: Advanced Mathematics</div>
-                <div class="doc-box">
-                    <div class="doc-type">Curriculum Guideline</div>
-                    <div class="doc-year">2027 Academic Year</div>
+            <div class="page-inner">
+                <div class="wm-grid"></div>
+                <div class="wm-text">IFB 2027</div>
+                <div class="content-wrap">
+                    <div class="doc-confidential">Confidential</div>
+                    ${ifbLogoSVG}
+                    <div class="doc-title">INSTITUTE OF BOARD</div>
+                    <div class="doc-subtitle">Department of Mathematics<span>Republic of South Africa</span></div>
+
+                    <div class="maroon-block">2027<br>Academic Year</div>
+                    <div class="silver-box">IFB-S Certification</div>
+
+                    <div class="subject-box">
+                        <div class="subject">Mathematics</div>
+                        <div class="date">Advanced 4-Paper Track</div>
+                        <div class="doc-type">Curriculum Guideline</div>
+                    </div>
+
+                    <div class="c1-section">
+                        <div class="c1-label">C1</div>
+                        <svg class="barcode-c1" data-barcode="2027010000001"></svg>
+                    </div>
+
+                    <div class="page-count">This document consists of 3 pages.</div>
                 </div>
-                <p style="font-size: 12pt; max-width: 80%; margin-top: 20px;">
-                    This document outlines the rigorous 4-paper, 600-mark curriculum required for the IFB-S Mathematics Certification. Candidates are required to memorize all formulas; no formula sheet will be provided.
-                </p>
-            </div>
-            <div class="doc-footer">
-                <div>IFB-S Mathematics</div>
-                <div>© 2027</div>
+                <div class="footer-barcode"><svg class="barcode-footer" data-barcode="2027010000001"></svg></div>
+                <div class="page-footer">
+                    <div>Copyright reserved</div>
+                    <div>Please turn over</div>
+                </div>
             </div>
         `,
         web: `
-            <div class="doc-cover">
-                <div class="doc-confidential">Confidential</div>
-                <div class="doc-logo">∆</div>
-                <div class="doc-title">Institute of Board</div>
-                <div class="doc-subtitle">IFB AQ-B: Front-End Web Development</div>
-                <div class="doc-box">
-                    <div class="doc-type">Curriculum Guideline</div>
-                    <div class="doc-year">2027 Academic Year</div>
+            <div class="page-inner">
+                <div class="wm-grid"></div>
+                <div class="wm-text">IFB 2027</div>
+                <div class="content-wrap">
+                    <div class="doc-confidential">Confidential</div>
+                    ${ifbLogoSVG}
+                    <div class="doc-title">INSTITUTE OF BOARD</div>
+                    <div class="doc-subtitle">Department of Web Development<span>Republic of South Africa</span></div>
+
+                    <div class="maroon-block">2027<br>Academic Year</div>
+                    <div class="silver-box">IFB AQ-B Certification</div>
+
+                    <div class="subject-box">
+                        <div class="subject">Front-End Web Development</div>
+                        <div class="date">12-Month Practical Track</div>
+                        <div class="doc-type">Curriculum Guideline</div>
+                    </div>
+
+                    <div class="c1-section">
+                        <div class="c1-label">C1</div>
+                        <svg class="barcode-c1" data-barcode="2027010000002"></svg>
+                    </div>
+
+                    <div class="page-count">This document consists of 3 pages.</div>
                 </div>
-                <p style="font-size: 12pt; max-width: 80%; margin-top: 20px;">
-                    This document outlines the modern technological stack taught in the IFB AQ-B track. Students will master HTML5, CSS3, JavaScript, React, and deployment pipelines.
-                </p>
-            </div>
-            <div class="doc-footer">
-                <div>IFB AQ-B Web Development</div>
-                <div>© 2027</div>
+                <div class="footer-barcode"><svg class="barcode-footer" data-barcode="2027010000002"></svg></div>
+                <div class="page-footer">
+                    <div>Copyright reserved</div>
+                    <div>Please turn over</div>
+                </div>
             </div>
         `,
         guidelines: `
-            <div class="doc-cover">
-                <div class="doc-confidential">Confidential</div>
-                <div class="doc-logo">∆</div>
-                <div class="doc-title">Institute of Board</div>
-                <div class="doc-subtitle">Admission Examination Guidelines</div>
-                <div class="doc-box">
-                    <div class="doc-type">AQ/AE Assessment Policy</div>
-                    <div class="doc-year">2027 Academic Year</div>
+            <div class="page-inner">
+                <div class="wm-grid"></div>
+                <div class="wm-text">IFB 2027</div>
+                <div class="content-wrap">
+                    <div class="doc-confidential">Confidential</div>
+                    ${ifbLogoSVG}
+                    <div class="doc-title">INSTITUTE OF BOARD</div>
+                    <div class="doc-subtitle">Department of Assessment<span>Republic of South Africa</span></div>
+
+                    <div class="maroon-block">2027<br>Academic Year</div>
+                    <div class="silver-box">AQ/AE Assessment Policy</div>
+
+                    <div class="subject-box">
+                        <div class="subject">Admission Examination</div>
+                        <div class="date">100-Mark Assessment Filter</div>
+                        <div class="doc-type">Examination Guidelines</div>
+                    </div>
+
+                    <div class="c1-section">
+                        <div class="c1-label">C1</div>
+                        <svg class="barcode-c1" data-barcode="2027010000003"></svg>
+                    </div>
+
+                    <div class="page-count">This document consists of 3 pages.</div>
                 </div>
-                <p style="font-size: 12pt; max-width: 80%; margin-top: 20px;">
-                    This document outlines the 100-mark Admission Examination structure, the cognitive weightings, and the strict execution rules for applicants.
-                </p>
-            </div>
-            <div class="doc-footer">
-                <div>IFB AQ/AE Guidelines</div>
-                <div>© 2027</div>
+                <div class="footer-barcode"><svg class="barcode-footer" data-barcode="2027010000003"></svg></div>
+                <div class="page-footer">
+                    <div>Copyright reserved</div>
+                    <div>Please turn over</div>
+                </div>
             </div>
         `
     };
@@ -239,15 +333,31 @@
         if (content) {
             document.getElementById('a4Content').innerHTML = content;
             document.getElementById('docModal').classList.add('active');
-            // Prevent body scrolling when modal is open
             document.body.style.overflow = 'hidden';
+            
+            // Render barcodes dynamically
+            setTimeout(() => {
+                const barcodes = document.querySelectorAll('.barcode-c1, .barcode-footer');
+                barcodes.forEach(el => {
+                    try {
+                        JsBarcode(el, el.dataset.barcode, {
+                            format: "CODE128",
+                            width: el.classList.contains('barcode-footer') ? 1.5 : 2,
+                            height: el.classList.contains('barcode-footer') ? 20 : 40,
+                            displayValue: false,
+                            margin: 0,
+                            background: "#ffffff",
+                            lineColor: "#000000"
+                        });
+                    } catch(e) {}
+                });
+            }, 50);
         }
     }
 
     function closeDocument() {
         document.getElementById('docModal').classList.remove('active');
         document.getElementById('a4Content').innerHTML = '';
-        // Restore body scrolling
         document.body.style.overflow = '';
     }
 
