@@ -32,18 +32,22 @@
     
     .nav-right { display: flex; align-items: center; gap: 12px; }
     
-    /* BUTTONS */
+    /* LOGGED OUT BUTTONS */
     .nav-logged-out { display: flex; align-items: center; gap: 8px; }
     .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--black); white-space: nowrap; }
     .btn-login:hover { border-color: var(--black); background: #FAFAFA; }
     .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
     .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
-    /* LOGGED IN ROUNDED GRID ICON */
+    /* LOGGED IN BUTTONS */
     .nav-logged-in { display: none; align-items: center; gap: 12px; }
+    .btn-profile-text { background: transparent; border: 1.5px solid var(--maroon); color: var(--maroon); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .btn-profile-text:hover { background: var(--maroon); color: var(--white); }
+    
+    /* ROUNDED GRID ICON */
     .profile-grid-mini { 
         width: 46px; height: 46px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; 
-        border-radius: 50%; /* Makes it perfectly round */
+        border-radius: 50%; /* Round */
         overflow: hidden; border: 2px solid var(--silver); background: var(--white); cursor: pointer; 
         transition: transform 0.2s;
     }
@@ -82,12 +86,17 @@
     .hero h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 900; line-height: 1.1; letter-spacing: -2px; margin-bottom: 24px; }
     .hero h1 span { color: var(--maroon); }
     .hero p { font-size: 18px; max-width: 600px; margin: 0 auto 40px; color: var(--gray); font-weight: 500; }
+    
+    /* HERO BUTTONS */
     .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
     .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
     .btn-primary { background: var(--maroon); color: var(--white); border: 2px solid var(--maroon); }
     .btn-primary:hover { background: var(--maroon-hover); box-shadow: 0 10px 20px rgba(122,31,43,0.2); }
     .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
     .btn-outline:hover { border-color: var(--black); }
+
+    /* LOGGED IN HERO BUTTONS */
+    .hero-logged-in { display: none; }
 
     /* CAROUSEL */
     .courses-section { padding: 80px 0; background: #FAFAFA; border-top: 1px solid var(--silver); overflow: hidden; }
@@ -147,11 +156,14 @@
         .brand-logo { font-size: 28px; }
         .btn-login { padding: 8px 12px; font-size: 13px; }
         .nav-cta { padding: 8px 12px; font-size: 13px; }
+        .btn-profile-text { padding: 8px 12px; font-size: 13px; }
+        
         .hero { padding: 80px 20px; }
         .hero h1 { margin-bottom: 16px; }
         .hero p { margin-bottom: 24px; font-size: 16px; }
         .hero-buttons { flex-direction: column; gap: 12px; }
         .btn-lg { width: 100%; justify-content: center; padding: 14px; }
+        
         .course-card { flex: 0 0 280px; }
         .footer-grid { flex-direction: column; gap: 24px; }
         .footer-links { flex-direction: column; gap: 24px; }
@@ -163,6 +175,7 @@
 
     <div id="loader"><div class="loader-logo">∆</div></div>
 
+    <!-- HEADER -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="brand">
@@ -171,13 +184,15 @@
             </a>
             <div class="nav-right">
                 
+                <!-- LOGGED OUT BUTTONS -->
                 <div class="nav-logged-out" id="navLoggedOut">
                     <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
                     <a href="admission.html" class="nav-cta">Apply</a>
                 </div>
 
-                <!-- LOGGED IN: ROUNDED GRID ICON ONLY -->
+                <!-- LOGGED IN BUTTONS (Profile Text + Grid Icon) -->
                 <div class="nav-logged-in" id="navLoggedIn">
+                    <a href="student-dashboard.html" class="btn-profile-text">My Profile</a>
                     <div class="profile-grid-mini" id="navGridIcon" onclick="window.location.href='student-dashboard.html'" title="Dashboard"></div>
                 </div>
                 
@@ -190,8 +205,11 @@
         </div>
     </header>
 
+    <!-- FULLSCREEN MENU -->
     <div class="mobile-menu" id="mobileMenu">
-        <div class="menu-header"><button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button></div>
+        <div class="menu-header">
+            <button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button>
+        </div>
         <div class="menu-content">
             <ul class="menu-list">
                 <li class="menu-item">
@@ -213,6 +231,7 @@
         <div class="menu-footer"><a href="admission.html" class="btn-menu-apply">Apply Now</a></div>
     </div>
 
+    <!-- HERO -->
     <section class="hero">
         <div class="hero-carousel" id="heroCarousel">
             <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1920&auto=format&fit=crop');"></div>
@@ -225,13 +244,23 @@
             <div class="hero-badge"><i data-lucide="clock"></i> Applications Close: 13 January 2027</div>
             <h1>Master the disciplines<br>that <span>build the future.</span></h1>
             <p>The Institute of Board is an independent, non-accredited academic institution. We offer rigorous, university-level training, completely free of charge.</p>
-            <div class="hero-buttons">
+            
+            <!-- LOGGED OUT HERO BUTTONS -->
+            <div class="hero-buttons hero-logged-out" id="heroLoggedOut">
                 <a href="admission.html" class="btn-lg btn-primary">Apply for Admission</a>
                 <a href="documents.html" class="btn-lg btn-outline">Check Documents</a>
+            </div>
+
+            <!-- LOGGED IN HERO BUTTONS -->
+            <div class="hero-buttons hero-logged-in" id="heroLoggedIn">
+                <a href="student-dashboard.html" class="btn-lg btn-primary">View My Courses</a>
+                <a href="ae-timetable.html" class="btn-lg btn-outline">Check Timetable</a>
+                <a href="documents.html" class="btn-lg btn-outline">View Resources</a>
             </div>
         </div>
     </section>
 
+    <!-- COURSE CAROUSEL -->
     <section class="courses-section">
         <div class="section-header">
             <h2>Our Programs</h2>
@@ -239,6 +268,7 @@
         </div>
         
         <div class="carousel-wrapper" id="courseCarousel">
+            <!-- Card 1 -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -251,6 +281,7 @@
                 </div>
             </div>
             
+            <!-- Card 2 -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
                 <div class="course-content">
@@ -263,18 +294,7 @@
                 </div>
             </div>
 
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop" alt="Coding" class="course-image">
-                <div class="course-content">
-                    <h3>Advanced Full Stack</h3>
-                    <p>Go beyond the front-end. Master Node.js, Express, and database integration.</p>
-                    <div class="course-actions">
-                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
-                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-            
+            <!-- Duplicate 1 for infinite scroll -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -287,6 +307,7 @@
                 </div>
             </div>
             
+            <!-- Duplicate 2 for infinite scroll -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
                 <div class="course-content">
@@ -330,6 +351,7 @@
         </div>
     </footer>
 
+    <!-- MODALS -->
     <div class="modal-overlay" id="noticeModal">
         <div class="modal-content">
             <div class="modal-title" style="color: var(--maroon);">Important Notice</div>
@@ -391,13 +413,17 @@
         setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
         if (user) {
-            // Logged In: Hide Login/Apply, Show Grid Icon
+            // Logged In: Toggle Header
             document.getElementById('navLoggedOut').style.display = 'none';
             document.getElementById('navLoggedIn').style.display = 'flex';
             
+            // Logged In: Toggle Hero Buttons
+            document.getElementById('heroLoggedOut').style.display = 'none';
+            document.getElementById('heroLoggedIn').style.display = 'flex';
+            
             const docSnap = await getDoc(doc(db, "users", user.uid));
             if(docSnap.exists()){
-                const id = docSnap.data().studentId || "27011026001"; // Fallback
+                const id = docSnap.data().studentId || "27011026001";
                 const c = document.getElementById('navGridIcon'); 
                 c.innerHTML = '';
                 const colors = ['#7A1F2B', '#C7CBD1', '#111111', '#FAFAFA', '#E2E8F0'];
@@ -409,9 +435,12 @@
                 }
             }
         } else {
-            // Logged Out: Show Login/Apply, Hide Grid Icon
+            // Logged Out
             document.getElementById('navLoggedOut').style.display = 'flex';
             document.getElementById('navLoggedIn').style.display = 'none';
+            
+            document.getElementById('heroLoggedOut').style.display = 'flex';
+            document.getElementById('heroLoggedIn').style.display = 'none';
             
             document.getElementById('noticeModal').classList.add('active');
         }
