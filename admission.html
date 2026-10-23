@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Application — Institute of Board</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
+    .container { width: 100%; max-width: 500px; }
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
+    .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
+    .header { text-align: center; margin-bottom: 32px; }
+    .header .logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
+    .header h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+    .header p { font-size: 14px; color: var(--gray); }
+    .warning { background: #FFF5F6; border: 1px solid var(--maroon); color: var(--maroon); padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 24px; }
+    .form-group { margin-bottom: 20px; }
+    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; }
+    input:focus { border-color: var(--maroon); }
+    .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; }
+    .btn:hover { background: var(--maroon-hover); }
+    
+    #successState { display: none; text-align: center; }
+    .id-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; margin: 20px 0; }
+    .id-box .label { font-size: 11px; text-transform: uppercase; color: var(--gray); font-weight: 700; }
+    .id-box .value { font-family: monospace; font-size: 24px; font-weight: 800; color: var(--black); }
+</style>
+</head>
+<body>
+<div class="container">
+    <a href="index.html" class="nav-back"><i data-lucide="arrow-left"></i> Back to Home</a>
+    
+    <div class="form-card" id="formCard">
+        <div class="header">
+            <div class="logo">∆</div>
+            <h1>2027 Application</h1>
+            <p>Register to receive your unique Admission ID.</p>
+        </div>
+        <div class="warning">Applications Close: 10 January 2027</div>
+        
+        <form id="admissionForm">
+            <div class="form-group">
+                <label>Full Legal Name</label>
+                <input type="text" id="fullName" required placeholder="e.g. Nathaniel Nyl">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" required placeholder="+27 XX XXX XXXX">
+            </div>
+            <button type="submit" class="btn">Submit Application</button>
+        </form>
+    </div>
+
+    <div class="form-card" id="successState">
+        <div style="font-size: 48px; font-weight: 900; color: var(--maroon);">∆</div>
+        <h2>Application Successful</h2>
+        <p style="font-size: 14px; color: var(--gray); margin-top: 8px;">Save your Admission ID. You need it to log into your dashboard.</p>
+        
+        <div class="id-box">
+            <div class="label">13-Digit Admission ID</div>
+            <div class="value" id="displayId">202701XXXX</div>
+        </div>
+
+        <a href="student-dashboard.html" class="btn" style="display: block; text-decoration: none;">Go to Dashboard</a>
+    </div>
+</div>
+
+<script type="module">
+    lucide.createIcons();
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
+        authDomain: "nyldevcourses.firebaseapp.com",
+        projectId: "nyldevcourses",
+        storageBucket: "nyldevcourses.firebasestorage.app",
+        messagingSenderId: "16687006873",
+        appId: "1:16687006873:web:b7d66ad1024ccd92722408"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    document.getElementById('admissionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('fullName').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        
+        // Temporary password
+        const tempPassword = "IFB2027!" + Math.floor(Math.random() * 1000);
+
+        try {
+            // Create Auth User
+            const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
+            const user = userCredential.user;
+
+            // Generate 13-digit ID
+            const timestampStr = Date.now().toString().slice(-6);
+            const randomDigit = Math.floor(Math.random() * 10);
+            const admissionId = `202701${timestampStr}${randomDigit}`;
+
+            // Save to Firestore
+            await setDoc(doc(db, "users", user.uid), {
+                name: name,
+                email: email,
+                phone: phone,
+                admissionId: admissionId,
+                curriculum: "Not Selected",
+                status: "Applicant",
+                createdAt: new Date()
+            });
+
+            document.getElementById('formCard').style.display = 'none';
+            document.getElementById('displayId').innerText = admissionId;
+            document.getElementById('successState').style.display = 'block';
+
+        } catch (error) {
+            alert("Registration Error: " + error.message);
+        }
+    });
+</script>
+</body>
+</html>
