@@ -32,26 +32,23 @@
     
     .nav-right { display: flex; align-items: center; gap: 12px; }
     
-    /* ANIMATED HEADER BUTTONS */
-    @keyframes pulseBtn {
-        0% { box-shadow: 0 0 0 0 rgba(122,31,43,0.4); }
-        70% { box-shadow: 0 0 0 10px rgba(122,31,43,0); }
-        100% { box-shadow: 0 0 0 0 rgba(122,31,43,0); }
-    }
-    .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--black); display: inline-block; animation: pulseBtn 2s infinite; }
-    .btn-login:hover { border-color: var(--black); background: #FAFAFA; animation: none; }
-    
-    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; display: inline-block; animation: pulseBtn 2s infinite 0.5s; }
-    .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); animation: none; }
+    /* BUTTON CONFLICT RESOLVED */
+    .nav-logged-out { display: flex; align-items: center; gap: 8px; }
+    .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--black); white-space: nowrap; }
+    .btn-login:hover { border-color: var(--black); background: #FAFAFA; }
+    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
+    .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
-    /* 3-LINE HAMBURGER MENU */
+    .nav-logged-in { display: none; align-items: center; gap: 12px; }
+    .btn-dashboard { background: transparent; border: 1.5px solid var(--maroon); color: var(--maroon); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .btn-dashboard:hover { background: var(--maroon); color: var(--white); }
+    
+    .profile-grid-mini { width: 44px; height: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-radius: 12px; overflow: hidden; border: 2px solid var(--silver); background: var(--white); cursor: pointer; }
+    .profile-grid-mini div { border-radius: 2px; }
+
+    /* MENU BUTTON */
     .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; z-index: 2001; }
     .menu-btn span { display: block; width: 100%; height: 2px; background: var(--black); transition: var(--transition); }
-
-    /* PROFILE GRID AVATAR (Replaces Buttons when logged in) */
-    .nav-profile { display: none; align-items: center; gap: 12px; cursor: pointer; }
-    .profile-grid-mini { width: 44px; height: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-radius: 12px; overflow: hidden; border: 2px solid var(--silver); background: var(--white); }
-    .profile-grid-mini div { border-radius: 2px; }
 
     /* FULLSCREEN MENU */
     .mobile-menu { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: 0.4s ease; overflow-y: auto; }
@@ -88,12 +85,18 @@
     .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
     .btn-outline:hover { border-color: var(--black); }
 
-    /* SCROLLABLE & ANIMATED COURSE CAROUSEL */
+    /* CAROUSEL (FIXED SCROLL) */
     .courses-section { padding: 80px 0; background: #FAFAFA; border-top: 1px solid var(--silver); overflow: hidden; }
     .section-header { text-align: center; margin-bottom: 48px; padding: 0 24px; }
     .section-header h2 { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
     
-    .carousel-wrapper { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 24px; padding: 10px 24px 30px; scrollbar-width: none; -ms-overflow-style: none; }
+    /* Hide scrollbar but keep functionality */
+    .carousel-wrapper { 
+        display: flex; gap: 24px; padding: 10px 24px 30px; 
+        overflow-x: auto; scroll-snap-type: x mandatory; 
+        scrollbar-width: none; -ms-overflow-style: none;
+        scroll-behavior: smooth;
+    }
     .carousel-wrapper::-webkit-scrollbar { display: none; }
     
     .course-card { 
@@ -127,15 +130,12 @@
     @keyframes popUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .modal-content.legal { max-width: 600px; max-height: 80vh; overflow-y: auto; text-align: left; }
     .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
-    
     .modal-logo { font-size: 40px; font-weight: 900; color: var(--maroon); text-align: center; margin-bottom: 16px; }
     .modal-title { font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px; }
     .modal-subtitle { font-size: 14px; color: var(--gray); text-align: center; margin-bottom: 32px; }
-    
     .auth-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
     .btn-auth { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px; border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; background: var(--white); transition: 0.2s; }
     .btn-auth:hover { background: #FAFAFA; border-color: var(--black); }
-    
     .divider { display: flex; align-items: center; text-align: center; margin: 16px 0; color: var(--gray); font-size: 13px; }
     .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--silver); }
     .divider::before { margin-right: 16px; } .divider::after { margin-left: 16px; }
@@ -150,8 +150,11 @@
         .nav-container { padding: 0 16px; }
         .brand-text h1 { font-size: 16px; }
         .brand-logo { font-size: 28px; }
-        .btn-login { display: none; } 
+        
+        /* Make buttons smaller to fit */
+        .btn-login { padding: 8px 12px; font-size: 13px; }
         .nav-cta { padding: 8px 12px; font-size: 13px; }
+        .btn-dashboard { padding: 8px 12px; font-size: 13px; }
         
         .hero { padding: 80px 20px; }
         .hero h1 { margin-bottom: 16px; }
@@ -178,13 +181,17 @@
                 <div class="brand-text"><h1>Institute of Board</h1></div>
             </a>
             <div class="nav-right">
-                <!-- Buttons Show when logged out -->
-                <button class="btn-login" id="headerLoginBtn" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
-                <a href="admission.html" class="nav-cta" id="headerApplyBtn">Apply</a>
                 
-                <!-- Profile Icon Shows when logged in -->
-                <div class="nav-profile" id="headerProfile" onclick="window.location.href='student-dashboard.html'" title="Go to Dashboard">
-                    <div class="profile-grid-mini" id="navGridIcon"></div>
+                <!-- LOGGED OUT BUTTONS -->
+                <div class="nav-logged-out" id="navLoggedOut">
+                    <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
+                    <a href="admission.html" class="nav-cta">Apply</a>
+                </div>
+
+                <!-- LOGGED IN BUTTONS -->
+                <div class="nav-logged-in" id="navLoggedIn">
+                    <a href="student-dashboard.html" class="btn-dashboard">Dashboard</a>
+                    <div class="profile-grid-mini" id="navGridIcon" onclick="window.location.href='student-dashboard.html'"></div>
                 </div>
                 
                 <button class="menu-btn" id="menuBtn">
@@ -250,6 +257,7 @@
         </div>
         
         <div class="carousel-wrapper" id="courseCarousel">
+            <!-- Duplicated items for seamless looping -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -274,6 +282,43 @@
                 </div>
             </div>
 
+            <div class="course-card">
+                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop" alt="Coding" class="course-image">
+                <div class="course-content">
+                    <h3>Advanced Full Stack</h3>
+                    <p>Go beyond the front-end. Master Node.js, Express, and database integration.</p>
+                    <div class="course-actions">
+                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
+                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copy 2 -->
+            <div class="course-card">
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
+                <div class="course-content">
+                    <h3>IFB-S: Mathematics</h3>
+                    <p>Advanced university-level mathematics. Covers Algebra, Calculus, Matrices, and Geometry.</p>
+                    <div class="course-actions">
+                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
+                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="course-card">
+                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
+                <div class="course-content">
+                    <h3>IFB AQ-B: Front-End</h3>
+                    <p>Master HTML, CSS, JavaScript, React, and modern UI/UX. Build real projects.</p>
+                    <div class="course-actions">
+                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
+                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
+                    </div>
+                </div>
+            </div>
+            
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop" alt="Coding" class="course-image">
                 <div class="course-content">
@@ -374,47 +419,46 @@
     const googleProvider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
 
-    // Check login state
+    // CHECK LOGIN STATE & SWAP BUTTONS
     onAuthStateChanged(auth, async (user) => {
         document.getElementById('loader').style.opacity = '0';
         setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
         if (user) {
-            // User is signed in
-            document.getElementById('headerLoginBtn').style.display = 'none';
-            document.getElementById('headerApplyBtn').style.display = 'none';
-            document.getElementById('headerProfile').style.display = 'flex';
+            // Logged In: Hide Login/Apply, Show Dashboard/Profile
+            document.getElementById('navLoggedOut').style.display = 'none';
+            document.getElementById('navLoggedIn').style.display = 'flex';
             
+            // Fetch Student ID to build the grid icon
             const docSnap = await getDoc(doc(db, "users", user.uid));
             if(docSnap.exists()){
                 const id = docSnap.data().studentId || "1234567890123";
-                const c = document.getElementById('navGridIcon'); c.innerHTML = '';
+                const c = document.getElementById('navGridIcon'); 
+                c.innerHTML = '';
                 const colors = ['#7A1F2B', '#C7CBD1', '#111111', '#FAFAFA', '#E2E8F0'];
+                
                 for (let i = 0; i < 9; i++) { 
                     const div = document.createElement('div'); 
                     div.style.backgroundColor = colors[id.charCodeAt(i % id.length) % colors.length]; 
                     c.appendChild(div); 
                 }
             }
-            
-            // Check for welcome redirect
-            if (localStorage.getItem('just_applied') === 'true') {
-                localStorage.removeItem('just_applied');
-                setTimeout(() => alert("Welcome to IFB! Your account is ready. Tap the profile icon in the top right to view your dashboard."), 600);
-            }
-            
         } else {
-            // User is logged out
+            // Logged Out: Show Login/Apply, Hide Dashboard/Profile
+            document.getElementById('navLoggedOut').style.display = 'flex';
+            document.getElementById('navLoggedIn').style.display = 'none';
+            
+            // Show Notice Modal
             document.getElementById('noticeModal').classList.add('active');
         }
     });
 
-    // Auth Functions
+    // AUTH FUNCTIONS
     window.googleLogin = async function() { try { await signInWithPopup(auth, googleProvider); window.location.reload(); } catch (e) { alert(e.message); } };
     window.githubLogin = async function() { try { await signInWithPopup(auth, githubProvider); window.location.reload(); } catch (e) { alert(e.message); } };
     window.emailLogin = async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); window.location.reload(); } catch (e) { alert(e.message); } };
 
-    // Menu Logic
+    // MENU LOGIC
     const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
     menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
     closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
@@ -426,7 +470,7 @@
         sub.style.maxHeight = sub.style.maxHeight ? null : sub.scrollHeight + "px";
     }
 
-    // Hero Carousel Logic
+    // HERO CAROUSEL
     let currentSlide = 0;
     const slides = document.querySelectorAll('.hero-slide');
     setInterval(() => {
@@ -435,43 +479,44 @@
         slides[currentSlide].classList.add('active');
     }, 5000);
 
-    // Course Carousel Auto-Scroll (Pauses on manual interaction)
+    // SCROLLABLE & AUTO-SCROLLING COURSE CAROUSEL
     const carousel = document.getElementById('courseCarousel');
-    let isHovering = false;
+    let isInteracting = false;
     let scrollAmount = 0;
-    let slideTimer;
+    let autoScrollInterval;
 
-    function autoScroll() {
-        if (!isHovering) {
-            scrollAmount += 1;
-            if (scrollAmount >= carousel.scrollWidth - carousel.clientWidth) {
-                scrollAmount = 0;
+    function startAutoScroll() {
+        autoScrollInterval = setInterval(() => {
+            if (!isInteracting) {
+                scrollAmount += 1;
+                // If we reach the end, reset to start
+                if (scrollAmount >= carousel.scrollWidth / 2) {
+                    scrollAmount = 0;
+                }
+                carousel.scrollLeft = scrollAmount;
             }
-            carousel.scrollLeft = scrollAmount;
-        }
-        slideTimer = requestAnimationFrame(autoScroll);
+        }, 20); // Speed of auto-scroll (lower is faster)
     }
 
     // Pause auto-scroll on hover or touch
-    carousel.addEventListener('mouseenter', () => { isHovering = true; });
-    carousel.addEventListener('mouseleave', () => { isHovering = false; });
-    carousel.addEventListener('touchstart', () => { isHovering = true; }, {passive: true});
+    carousel.addEventListener('mouseenter', () => { isInteracting = true; });
+    carousel.addEventListener('mouseleave', () => { isInteracting = false; scrollAmount = carousel.scrollLeft; });
+    carousel.addEventListener('touchstart', () => { isInteracting = true; });
     carousel.addEventListener('touchend', () => { 
         setTimeout(() => { 
-            isHovering = false; 
-            // Update scrollAmount so it doesn't snap back after manual scroll
+            isInteracting = false; 
             scrollAmount = carousel.scrollLeft; 
-        }, 2000); 
+        }, 1500); 
     });
-    
-    // Update scrollAmount on manual scroll
+
+    // Update scrollAmount if user manually scrolls
     carousel.addEventListener('scroll', () => {
-        if (isHovering) scrollAmount = carousel.scrollLeft;
+        if (isInteracting) scrollAmount = carousel.scrollLeft;
     });
 
-    autoScroll();
+    startAutoScroll();
 
-    // Legal Modals
+    // LEGAL MODALS
     const legalTexts = {
         privacy: `<h2>Privacy Policy</h2><p>Last updated: January 2027</p><p>The Institute of Board collects essential information (Name, Email, Date of Birth) solely to generate your Student ID. We use Firebase for secure storage and comply with GDPR.</p>`,
         terms: `<h2>Terms & Conditions</h2><p>Last updated: January 2027</p><p>1. IFB is an independent, non-accredited institution. We are not affiliated with DHET or Umalusi.</p><p>2. Admission is conditional on passing the Admission Examination. Applications close 13 January 2027.</p>`
