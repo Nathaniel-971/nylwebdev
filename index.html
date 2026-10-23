@@ -38,10 +38,8 @@
     .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
     .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
-    /* LOGGED IN (ONLY GRID ICON) */
+    /* LOGGED IN */
     .nav-logged-in { display: none; align-items: center; }
-    
-    /* UNIQUE ROUNDED GRID ICON */
     .profile-grid-mini { 
         width: 46px; height: 46px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; 
         border-radius: 50%; overflow: hidden; border: 2px solid var(--silver); background: var(--white); cursor: pointer; transition: transform 0.2s;
@@ -179,7 +177,6 @@
                     <a href="admission.html" class="nav-cta">Apply</a>
                 </div>
 
-                <!-- LOGGED IN: ONLY THE GRID ICON -->
                 <div class="nav-logged-in" id="navLoggedIn">
                     <div class="profile-grid-mini" id="navGridIcon" onclick="window.location.href='student-dashboard.html'" title="Dashboard"></div>
                 </div>
@@ -215,6 +212,13 @@
                     </div></div>
                 </li>
                 <li class="menu-item">
+                    <div class="menu-link" onclick="toggleSubmenu(this)">Courses <i data-lucide="chevron-right"></i></div>
+                    <div class="submenu"><div class="submenu-inner">
+                        <a href="courses-ifb.html">Mathematics</a>
+                        <a href="courses-ifb.html">Front-end Web Development</a>
+                    </div></div>
+                </li>
+                <li class="menu-item">
                     <div class="menu-link" onclick="toggleSubmenu(this)">Institution <i data-lucide="chevron-right"></i></div>
                     <div class="submenu"><div class="submenu-inner">
                         <a href="fund-ifb.html">Sponsor Us</a>
@@ -240,13 +244,11 @@
             <h1>Master the disciplines<br>that <span>build the future.</span></h1>
             <p>The Institute of Board is an independent, non-accredited academic institution. We offer rigorous, university-level training, completely free of charge.</p>
             
-            <!-- LOGGED OUT BUTTONS -->
             <div class="hero-buttons hero-logged-out" id="heroLoggedOut">
                 <a href="admission.html" class="btn-lg btn-primary">Apply for Admission</a>
                 <a href="documents.html" class="btn-lg btn-outline">Check Documents</a>
             </div>
 
-            <!-- LOGGED IN BUTTONS -->
             <div class="hero-buttons hero-logged-in" id="heroLoggedIn">
                 <a href="student-dashboard.html" class="btn-lg btn-primary">View My Courses</a>
                 <a href="ae-timetable.html" class="btn-lg btn-outline">Check Timetable</a>
@@ -256,17 +258,18 @@
     </section>
 
     <!-- COURSE CAROUSEL -->
-    <section class="courses-section">
+    <section class="courses-section" id="coursesSection">
         <div class="section-header">
             <h2>Our Programs</h2>
             <p>Scroll to view and apply below.</p>
         </div>
         
         <div class="carousel-wrapper" id="courseCarousel">
+            <!-- Card 1: Mathematics -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
-                    <h3>IFB-S: Mathematics</h3>
+                    <h3>Mathematics</h3>
                     <p>Advanced university-level mathematics. Covers Algebra, Calculus, Matrices, and Geometry.</p>
                     <div class="course-actions">
                         <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
@@ -275,10 +278,11 @@
                 </div>
             </div>
             
+            <!-- Card 2: Front-end Web Development -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
                 <div class="course-content">
-                    <h3>IFB AQ-B: Front-End</h3>
+                    <h3>Front-end Web Development</h3>
                     <p>Master HTML, CSS, JavaScript, React, and modern UI/UX. Build real projects.</p>
                     <div class="course-actions">
                         <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
@@ -291,7 +295,7 @@
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
-                    <h3>IFB-S: Mathematics</h3>
+                    <h3>Mathematics</h3>
                     <p>Advanced university-level mathematics. Covers Algebra, Calculus, Matrices, and Geometry.</p>
                     <div class="course-actions">
                         <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
@@ -303,7 +307,7 @@
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
                 <div class="course-content">
-                    <h3>IFB AQ-B: Front-End</h3>
+                    <h3>Front-end Web Development</h3>
                     <p>Master HTML, CSS, JavaScript, React, and modern UI/UX. Build real projects.</p>
                     <div class="course-actions">
                         <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
@@ -410,6 +414,7 @@
             document.getElementById('navLoggedIn').style.display = 'flex';
             document.getElementById('heroLoggedOut').style.display = 'none';
             document.getElementById('heroLoggedIn').style.display = 'flex';
+            document.getElementById('coursesSection').style.display = 'none'; // Hide carousel
             
             const docSnap = await getDoc(doc(db, "users", user.uid));
             if(docSnap.exists()){
@@ -430,6 +435,7 @@
             document.getElementById('navLoggedIn').style.display = 'none';
             document.getElementById('heroLoggedOut').style.display = 'flex';
             document.getElementById('heroLoggedIn').style.display = 'none';
+            document.getElementById('coursesSection').style.display = 'block'; // Show carousel
             
             document.getElementById('noticeModal').classList.add('active');
         }
