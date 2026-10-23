@@ -3,544 +3,190 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Institute of Board | Academic Excellence</title>
-<meta name="description" content="IFB is an elite, fee-free academic institution offering advanced Mathematics and Front-End Web Development.">
+<title>Institute of Board | Elite Education</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    /* =========================================
-       STRICT COLOR PALETTE
-       ========================================= */
     :root { 
-        --white: #FFFFFF;
-        --black: #111111;
-        --gray: #666666;
-        --gray-light: #999999;
-        --silver: #E2E8F0; 
-        --silver-dark: #C7CBD1; 
-        --maroon: #7A1F2B; 
-        --maroon-hover: #5A1620; 
-        
-        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --white: #FFFFFF; --black: #111111; --gray: #666666; 
+        --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620;
+        --transition: all 0.3s ease;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-
-    body { 
-        font-family: 'Inter', sans-serif; 
-        background: var(--white); 
-        color: var(--black); 
-        line-height: 1.6; 
-        overflow-x: hidden;
-    }
-
+    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; overflow-x: hidden; }
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
 
-    /* =========================================
-       LOADING SCREEN
-       ========================================= */
-    #loader {
-        position: fixed; inset: 0; background: var(--white); z-index: 9999;
-        display: flex; justify-content: center; align-items: center;
-        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
-    }
-    #loader.hidden { opacity: 0; visibility: hidden; }
-    .loader-logo { 
-        font-size: 140px; font-weight: 900; color: var(--maroon); line-height: 1; 
-        animation: pulseLogo 1.5s infinite ease-in-out; 
-    }
-    @keyframes pulseLogo { 
-        0%, 100% { transform: scale(1); opacity: 1; } 
-        50% { transform: scale(0.9); opacity: 0.6; } 
-    }
-
-    /* =========================================
-       HEADER
-       ========================================= */
-    .header {
-        position: sticky; top: 0; z-index: 1000;
-        background: var(--white);
-        border-bottom: 1px solid var(--silver);
-        height: 80px;
-    }
-    .nav-container {
-        max-width: 1300px; margin: 0 auto; padding: 0 24px;
-        display: flex; justify-content: space-between; align-items: center; height: 100%;
-    }
-    
+    /* HEADER */
+    .header { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--silver); height: 80px; }
+    .nav-container { max-width: 1300px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
     .brand { display: flex; align-items: center; gap: 12px; }
     .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
     .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--black); }
-
-    .nav-right { display: flex; align-items: center; gap: 24px; }
-    
-    .nav-cta { 
-        background: var(--maroon); color: var(--white) !important; 
-        padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
-        display: none; /* Hidden on mobile, shown on desktop */
-    }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+    .btn-login:hover { border-color: var(--black); }
+    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; }
     .nav-cta:hover { background: var(--maroon-hover); }
 
-    /* Hamburger Button */
-    .menu-btn {
-        display: flex; flex-direction: column; justify-content: space-around;
-        width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; z-index: 2001;
-    }
-    .menu-btn span {
-        display: block; width: 100%; height: 2px; background: var(--black); transition: var(--transition);
-    }
-
-    /* =========================================
-       FULLSCREEN MENU (OCR Style)
-       ========================================= */
-    .mobile-menu {
-        position: fixed; inset: 0; background: var(--black); z-index: 2000;
-        display: flex; flex-direction: column;
-        transform: translateX(100%); opacity: 0; visibility: hidden; 
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, visibility 0.4s;
-        overflow-y: auto;
-    }
-    .mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
-
-    .menu-header {
-        display: flex; justify-content: flex-end; padding: 24px; 
-    }
-    .close-btn {
-        background: transparent; border: none; color: var(--white); cursor: pointer; padding: 8px;
-    }
-    .close-btn i { width: 32px; height: 32px; }
-
-    .menu-content { padding: 0 32px 32px; flex-grow: 1; }
-    .menu-list { display: flex; flex-direction: column; }
-    
-    .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .menu-item:last-child { border-bottom: none; }
-
-    .menu-link {
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 24px 0; font-size: 20px; font-weight: 500; color: var(--silver); 
-        cursor: pointer; transition: var(--transition);
-    }
-    .menu-link:hover { color: var(--white); }
-    .menu-link i { width: 20px; height: 20px; transition: var(--transition); }
-    
-    .menu-item.active .menu-link { color: var(--white); }
-    .menu-item.active .menu-link i { transform: rotate(90deg); color: var(--white); }
-
-    .submenu {
-        max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out;
-        background: rgba(255,255,255,0.03); border-radius: 8px;
-    }
-    .submenu-inner { padding: 8px 0; }
-    .submenu a {
-        display: block; padding: 16px 24px; font-size: 16px; color: var(--gray-light);
-        transition: var(--transition);
-    }
-    .submenu a:hover { color: var(--white); padding-left: 32px; }
-
-    .menu-footer { padding: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
-    .btn-menu-apply {
-        display: flex; justify-content: center; align-items: center; width: 100%;
-        background: var(--maroon); color: var(--white); padding: 16px; 
-        border-radius: 8px; font-size: 16px; font-weight: 700; text-align: center;
-    }
-
-    /* =========================================
-       HERO SECTION
-       ========================================= */
-    .hero {
-        padding: 100px 24px; background: var(--white); text-align: center; border-bottom: 1px solid var(--silver);
-    }
-    .hero-badge {
-        display: inline-flex; align-items: center; gap: 8px;
-        background: var(--white); border: 1px solid var(--silver-dark);
-        color: var(--maroon); padding: 8px 16px; border-radius: 100px;
-        font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;
-    }
-    .hero h2 { font-size: clamp(40px, 6vw, 76px); font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px; color: var(--black); }
-    .hero h2 span { color: var(--maroon); }
-    .hero p { font-size: 18px; color: var(--gray); max-width: 650px; margin: 0 auto 48px; line-height: 1.6; }
-    
+    /* HERO */
+    .hero { padding: 120px 24px; text-align: center; background: var(--white); border-bottom: 1px solid var(--silver); }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--maroon); margin-bottom: 24px; }
+    .hero h1 { font-size: clamp(44px, 6vw, 80px); font-weight: 900; line-height: 1.05; letter-spacing: -2.5px; margin-bottom: 24px; color: var(--black); }
+    .hero h1 span { color: var(--maroon); }
+    .hero p { font-size: 18px; color: var(--gray); max-width: 600px; margin: 0 auto 40px; }
     .hero-buttons { display: flex; gap: 16px; justify-content: center; }
-    .btn-lg { 
-        padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; 
-        display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); 
-    }
+    .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
     .btn-primary { background: var(--maroon); color: var(--white); border: 2px solid var(--maroon); }
-    .btn-primary:hover { background: var(--maroon-hover); border-color: var(--maroon-hover); transform: translateY(-2px); }
+    .btn-primary:hover { background: var(--maroon-hover); }
     .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
-    .btn-outline:hover { border-color: var(--black); transform: translateY(-2px); }
+    .btn-outline:hover { border-color: var(--black); }
 
-    /* =========================================
-       FEATURED PROSPECTUS
-       ========================================= */
-    .featured-section { padding: 80px 24px 40px; max-width: 1200px; margin: 0 auto; }
-    .featured-card {
-        background: var(--white); border-radius: 24px; padding: 48px;
-        display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 48px; align-items: center;
-        box-shadow: var(--shadow-lg); border: 1px solid var(--silver); position: relative;
-    }
-    .featured-card::before {
-        content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-        background: var(--maroon); border-radius: 24px 24px 0 0;
-    }
-    .fc-content h3 { font-size: 13px; font-weight: 800; color: var(--maroon); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; }
-    .fc-content h2 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 20px; line-height: 1.1; color: var(--black); }
-    .fc-content p { font-size: 16px; color: var(--gray); margin-bottom: 32px; line-height: 1.7; max-width: 90%; }
+    /* COURSES SECTION */
+    .section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-header h2 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 16px; }
     
-    .fc-actions { display: flex; gap: 16px; }
-    .btn-featured { padding: 14px 28px; font-size: 15px; font-weight: 700; border-radius: 10px; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); }
-    .btn-fc-primary { background: var(--black); color: var(--white); border: 2px solid var(--black); }
-    .btn-fc-primary:hover { background: #000; transform: translateY(-2px); }
-    .btn-fc-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
-    .btn-fc-outline:hover { border-color: var(--black); }
+    .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .course-card { border: 1px solid var(--silver); border-radius: 20px; padding: 40px; transition: var(--transition); }
+    .course-card:hover { border-color: var(--maroon); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .course-card i { width: 48px; height: 48px; color: var(--maroon); margin-bottom: 24px; }
+    .course-card h3 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+    .course-card .duration { font-size: 13px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: block; }
+    .course-card p { font-size: 15px; color: var(--gray); }
 
-    .fc-image {
-        background: var(--white); border-radius: 20px; padding: 40px;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        border: 2px dashed var(--silver-dark);
-    }
-    .fc-image i { width: 64px; height: 64px; color: var(--maroon); margin-bottom: 16px; }
-    .fc-image span { font-size: 13px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
-
-    /* =========================================
-       DYNAMIC GRID
-       ========================================= */
-    .section { padding: 40px 24px 100px; max-width: 1200px; margin: 0 auto; }
-    .section-header { margin-bottom: 40px; border-bottom: 2px solid var(--silver); padding-bottom: 16px; }
-    .section-header h2 { font-size: 32px; font-weight: 900; color: var(--black); letter-spacing: -1px; }
-
-    .dynamic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-    .course-card {
-        background: var(--white); border: 1px solid var(--silver); border-radius: 20px;
-        padding: 32px; display: flex; flex-direction: column; transition: var(--transition);
-    }
-    .course-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--maroon); }
-    .cc-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--white); border: 1px solid var(--silver); color: var(--maroon); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
-    .cc-icon i { width: 24px; height: 24px; }
-    .course-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; color: var(--black); }
-    .course-card .cc-type { font-size: 12px; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
-    .course-card p { font-size: 14px; color: var(--gray); margin-bottom: 24px; flex-grow: 1; }
-    
-    .cc-actions { display: flex; gap: 12px; margin-top: auto; }
-    .cc-actions a { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); }
-    .cc-actions .btn-view { background: var(--white); color: var(--black); border: 1.5px solid var(--silver); }
-    .cc-actions .btn-view:hover { border-color: var(--black); }
-    .cc-actions .btn-down { background: var(--maroon); color: var(--white); border: 1.5px solid var(--maroon); }
-    .cc-actions .btn-down:hover { background: var(--maroon-hover); }
-
-    /* =========================================
-       FOOTER
-       ========================================= */
-    .footer { background: var(--white); color: var(--black); padding: 80px 24px 40px; border-top: 2px solid var(--silver); }
-    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 64px; }
-    .footer-brand h2 { font-size: 24px; font-weight: 900; color: var(--black); margin-bottom: 16px; }
-    .footer-brand h2 span { color: var(--maroon); }
-    .footer-brand p { font-size: 14px; color: var(--gray); line-height: 1.8; max-width: 300px; }
-    .footer-col h4 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; color: var(--black); }
+    /* FOOTER & LEGAL */
+    .footer { background: var(--white); padding: 64px 24px 40px; border-top: 1px solid var(--silver); }
+    .footer-grid { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 32px; margin-bottom: 48px; }
+    .footer-brand { max-width: 300px; }
+    .footer-brand h2 { font-size: 20px; font-weight: 900; margin-bottom: 16px; }
+    .footer-brand p { font-size: 13px; color: var(--gray); }
+    .footer-links { display: flex; gap: 48px; }
+    .footer-col h4 { font-size: 14px; font-weight: 800; margin-bottom: 16px; }
     .footer-col ul { display: flex; flex-direction: column; gap: 12px; }
-    .footer-col a { font-size: 14px; color: var(--gray); transition: var(--transition); }
+    .footer-col a { font-size: 14px; color: var(--gray); }
     .footer-col a:hover { color: var(--maroon); }
-    .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 32px; border-top: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--gray); }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
 
-    /* =========================================
-       RESPONSIVE
-       ========================================= */
-    @media (min-width: 1025px) {
-        .nav-cta { display: block; }
-    }
-    @media (max-width: 1024px) {
-        .featured-card { grid-template-columns: 1fr; padding: 32px; }
-        .fc-image { display: none; }
-    }
+    /* COOKIE BANNER */
+    .cookie-banner { position: fixed; bottom: 24px; left: 24px; right: 24px; max-width: 600px; background: var(--white); border: 1px solid var(--silver); padding: 24px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 9999; display: none; align-items: center; justify-content: space-between; gap: 24px; }
+    .cookie-banner.active { display: flex; }
+    .cookie-banner p { font-size: 13px; color: var(--gray); margin: 0; }
+    .cookie-btn { background: var(--maroon); color: var(--white); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+
     @media (max-width: 768px) {
+        .course-grid { grid-template-columns: 1fr; }
         .hero-buttons { flex-direction: column; }
-        .fc-actions { flex-direction: column; }
-        .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-        .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        .footer-grid { flex-direction: column; }
+        .cookie-banner { flex-direction: column; text-align: center; }
     }
 </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="loader-logo">∆</div>
-    </div>
-
-    <!-- HEADER -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="brand">
                 <div class="brand-logo">∆</div>
-                <div class="brand-text">
-                    <h1>Institute of Board</h1>
-                </div>
+                <div class="brand-text"><h1>Institute of Board</h1></div>
             </a>
-            
             <div class="nav-right">
+                <button class="btn-login" onclick="promptLogin()">Login</button>
                 <a href="admission.html" class="nav-cta">Apply Now</a>
-                <button class="menu-btn" id="menuBtn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
             </div>
         </div>
     </header>
 
-    <!-- FULLSCREEN MENU -->
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="menu-header">
-            <button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button>
-        </div>
-        
-        <div class="menu-content">
-            <ul class="menu-list">
-                
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Admissions <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="admission.html">Apply Now</a>
-                            <a href="documents.html">Examination Timetable</a>
-                            <a href="documents.html">Admission Requirements</a>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Academics <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="curriculum-ifb.html">IFB-S: Mathematics</a>
-                            <a href="curriculum-web.html">IFB AQ-B: Web Development</a>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Student Portal <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="student-portal.html">Applicant Login</a>
-                            <a href="documents.html">Download Documents</a>
-                        </div>
-                    </div>
-                </li>
-
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Institution <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="courses-ifb.html">Prospectus</a>
-                            <a href="fund-ifb.html">Sponsor IFB</a>
-                            <a href="index.html">Contact Us</a>
-                        </div>
-                    </div>
-                </li>
-
-            </ul>
-        </div>
-
-        <div class="menu-footer">
-            <a href="admission.html" class="btn-menu-apply">Apply Now</a>
-        </div>
-    </div>
-
-    <!-- HERO SECTION -->
     <section class="hero">
-        <div class="hero-badge">
-            <i data-lucide="award"></i> 100% Fee-Free Institution
-        </div>
-        <h2>Master the disciplines<br>that <span>build the future.</span></h2>
-        <p>The Institute of Board is an elite, non-accredited academic institution offering rigorous, university-level training in Mathematics and Front-End Web Development.</p>
+        <div class="hero-badge"><i data-lucide="clock"></i> Applications Close: 10 January 2027</div>
+        <h1>Master the disciplines<br>that <span>build the future.</span></h1>
+        <p>The Institute of Board is an independent, non-accredited academic institution. We offer rigorous, university-level training, completely free of charge.</p>
         <div class="hero-buttons">
-            <a href="admission.html" class="btn-lg btn-primary">
-                Start Application <i data-lucide="arrow-right"></i>
-            </a>
-            <a href="documents.html" class="btn-lg btn-outline">
-                View All Documents <i data-lucide="file-text"></i>
-            </a>
+            <a href="admission.html" class="btn-lg btn-primary">Apply for Admission</a>
+            <a href="documents.html" class="btn-lg btn-outline">Public Documents</a>
         </div>
     </section>
 
-    <!-- FEATURED PROSPECTUS -->
-    <section class="featured-section">
-        <div class="featured-card">
-            <div class="fc-content">
-                <h3><i data-lucide="star"></i> Key Institution Document</h3>
-                <h2>The Official IFB Prospectus</h2>
-                <p>Before applying, you must read the official prospectus. Understand our non-accredited legal status, our zero-tolerance examination rules, the curriculum structure, and what it truly means to be a student at the Institute of Board.</p>
-                <div class="fc-actions">
-                    <a href="courses-ifb.html" target="_blank" class="btn-featured btn-fc-primary">
-                        Read Prospectus <i data-lucide="book-open"></i>
-                    </a>
-                    <a href="courses-ifb.html" download class="btn-featured btn-fc-outline">
-                        Download PDF <i data-lucide="download"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="fc-image">
-                <i data-lucide="file-text"></i>
-                <span>PDF Format</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- DYNAMIC PROGRAMS GRID -->
-    <section class="section" id="programs">
+    <section class="section">
         <div class="section-header">
-            <h2>Academic Programs</h2>
+            <h2>Our Academic Programs</h2>
+            <p>Select your curriculum upon successful admission.</p>
         </div>
-        <div class="dynamic-grid" id="documentGrid"></div>
+        <div class="course-grid">
+            <div class="course-card">
+                <i data-lucide="sigma"></i>
+                <h3>IFB-S: Mathematics</h3>
+                <span class="duration">12-Month Intensive Track</span>
+                <p>Advanced university-level mathematics. Covers Algebra, Calculus, Matrices, and Advanced Geometry.</p>
+            </div>
+            <div class="course-card">
+                <i data-lucide="code-2"></i>
+                <h3>IFB AQ-B: Front-End</h3>
+                <span class="duration">9-Month Practical Track</span>
+                <p>Master HTML, CSS, JavaScript, React, and modern UI/UX. Build real, deployed projects from scratch.</p>
+            </div>
+        </div>
     </section>
 
-    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-grid">
             <div class="footer-brand">
-                <h2><span>∆</span> Institute of Board</h2>
-                <p>Dedicated to providing elite, rigorous, and fee-free education to the next generation of engineers and mathematicians.</p>
+                <h2><span>∆</span> IFB</h2>
+                <p>The Institute of Board is an independent institution. We are not affiliated with any government department, public university, or external examining body.</p>
+                <p style="margin-top: 12px; font-weight: 700;">Contact: +27 60 958 3089<br>n1nathaniel971@gmail.com</p>
             </div>
-            
-            <div class="footer-col">
-                <h4>Institution</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="documents.html">Documents</a></li>
-                    <li><a href="fund-ifb.html">Sponsor Us</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col">
-                <h4>Admissions</h4>
-                <ul>
-                    <li><a href="admission.html">Apply Now</a></li>
-                    <li><a href="documents.html">Examination Guidelines</a></li>
-                    <li><a href="student-portal.html">Applicant Portal</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-col">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="courses-ifb.html">Institution Prospectus</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                </ul>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Institution</h4>
+                    <ul>
+                        <li><a href="courses-ifb.html">Prospectus</a></li>
+                        <li><a href="documents.html">Documents</a></li>
+                        <li><a href="fund-ifb.html">Sponsor Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms & Conditions</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-
         <div class="footer-bottom">
-            <p>&copy; 2026—2027 Institute of Board. All rights reserved.</p>
-            <p style="font-weight: 700; color: var(--maroon);">Non-accredited institution. Not registered with DHET or Umalusi.</p>
+            &copy; 2026—2027 Institute of Board. Non-accredited institution.
         </div>
     </footer>
 
-    <!-- JAVASCRIPT -->
-    <script>
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader').classList.add('hidden');
-            }, 600);
-        });
+    <!-- COOKIE BANNER -->
+    <div class="cookie-banner" id="cookieBanner">
+        <p>We use essential cookies to ensure you get the best experience on our platform. By continuing, you agree to our <a href="privacy.html" style="color: var(--maroon); font-weight: 600;">Privacy Policy</a>.</p>
+        <button class="cookie-btn" onclick="acceptCookies()">Accept & Close</button>
+    </div>
 
-        lucide.createIcons();
+<script>
+    lucide.createIcons();
 
-        const menuBtn = document.getElementById('menuBtn');
-        const closeMenu = document.getElementById('closeMenu');
-        const mobileMenu = document.getElementById('mobileMenu');
+    // COOKIE LOGIC
+    if (!localStorage.getItem('ifb_cookies')) {
+        document.getElementById('cookieBanner').classList.add('active');
+    }
+    function acceptCookies() {
+        localStorage.setItem('ifb_cookies', 'true');
+        document.getElementById('cookieBanner').classList.remove('active');
+    }
 
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('active');
-        });
-
-        closeMenu.addEventListener('click', () => {
-            mobileMenu.classList.remove('active');
-        });
-
-        function toggleSubmenu(element) {
-            const parentItem = element.parentElement;
-            const submenu = parentItem.querySelector('.submenu');
-            
-            document.querySelectorAll('.menu-item').forEach(item => {
-                if (item !== parentItem) {
-                    item.classList.remove('active');
-                    item.querySelector('.submenu').style.maxHeight = null;
-                }
-            });
-
-            parentItem.classList.toggle('active');
-            
-            if (submenu.style.maxHeight) {
-                submenu.style.maxHeight = null;
-            } else {
-                submenu.style.maxHeight = submenu.scrollHeight + "px";
-            }
+    // LOGIN PROMPT
+    function promptLogin() {
+        const id = prompt("Enter your 13-digit Admission ID:");
+        if (id && id.length === 13 && id.startsWith('202701')) {
+            localStorage.setItem('ifb_session', id);
+            window.location.href = "student-dashboard.html";
+        } else if (id) {
+            alert("Invalid ID. Must be 13 digits starting with 202701.");
         }
-
-        const dynamicPrograms = [
-            {
-                title: "IFB-S: Mathematics",
-                type: "Advanced 4-Paper Track",
-                description: "The elite, 600-mark advanced mathematics curriculum. Master algebra, calculus, matrices, and advanced geometry.",
-                icon: "sigma",
-                url: "curriculum-ifb.html"
-            },
-            {
-                title: "IFB AQ-B: Front-End",
-                type: "Practical Web Development",
-                description: "Master HTML, CSS, JavaScript, React, and UI/UX. Build real, deployed projects from scratch.",
-                icon: "code-2",
-                url: "curriculum-web.html"
-            },
-            {
-                title: "Examination Guidelines",
-                type: "Assessment Structure",
-                description: "Official examination guidelines, assessment structures, and criteria for all applicants.",
-                icon: "shield-check",
-                url: "guidelines.html"
-            },
-            {
-                title: "Sponsor the Institute",
-                type: "Financial Support",
-                description: "We are 100% fee-free. Help us cover our hosting, software, and examination costs by making a donation.",
-                icon: "heart-handshake",
-                url: "fund-ifb.html"
-            }
-        ];
-
-        const grid = document.getElementById('documentGrid');
-        
-        dynamicPrograms.forEach(doc => {
-            const cardHTML = `
-                <div class="course-card">
-                    <div class="cc-icon"><i data-lucide="${doc.icon}"></i></div>
-                    <h3>${doc.title}</h3>
-                    <div class="cc-type">${doc.type}</div>
-                    <p>${doc.description}</p>
-                    <div class="cc-actions">
-                        <a href="${doc.url}" target="_blank" class="btn-view"><i data-lucide="eye"></i> View</a>
-                        <a href="${doc.url}" download class="btn-down"><i data-lucide="download"></i> Download</a>
-                    </div>
-                </div>
-            `;
-            grid.insertAdjacentHTML('beforeend', cardHTML);
-        });
-
-        lucide.createIcons();
-    </script>
+    }
+</script>
 </body>
 </html>
