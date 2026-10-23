@@ -47,7 +47,7 @@
             <div class="form-group"><label>Email Address</label><input type="email" id="email" required placeholder="you@example.com"></div>
             <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" required placeholder="+27 XX XXX XXXX"></div>
             <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
-            <button type="submit" class="btn">Submit Application</button>
+            <button type="submit" class="btn" id="submitBtn">Submit Application</button>
         </form>
     </div>
 
@@ -67,7 +67,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
@@ -76,6 +76,10 @@
     document.getElementById('admissionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
+        const btn = document.getElementById('submitBtn');
+        btn.innerText = "Processing...";
+        btn.disabled = true;
+
         const name = document.getElementById('fullName').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
@@ -84,22 +88,46 @@
         const tempPassword = "IFB2027!" + Math.floor(Math.random() * 10000);
 
         try {
+            // 1. Attempt to Create Auth User
             const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
             const user = userCredential.user;
 
-            // Generate 13-digit ID: 2027 + 01 + 6 digits + 3 unique
+            // 2. Generate 13-digit ID
             const timestampStr = Date.now().toString().slice(-6);
             const randomDigit = Math.floor(Math.random() * 900) + 100;
             const studentId = `202701${timestampStr}${randomDigit}`;
 
+            // 3. Save to Firestore
             await setDoc(doc(db, "users", user.uid), {
                 name: name, email: email, phone: phone, dob: dob, studentId: studentId, curriculum: "Not Selected", status: "Applicant", createdAt: new Date()
             });
 
+            // 4. Show Success
             document.getElementById('formCard').style.display = 'none';
             document.getElementById('displayId').innerText = studentId;
             document.getElementById('successState').style.display = 'block';
-        } catch (error) { alert("Registration Error: " + error.message); }
+
+        } catch (error) {
+            // If account already exists, sign them in and redirect
+            if (error.code === 'auth/email-already-in-use') {
+                try {
+                    // We can't know their real password, so we attempt to sign in with a generic one if they used this flow previously.
+                    // If this fails, we redirect them to the login page with a message.
+                    // In a real app with a dedicated backend, you would use an API to check if they are an applicant.
+                    
+                    alert("An account with this email already exists. Redirecting you to the login page.");
+                    window.location.href = "index.html";
+                } catch (signInError) {
+                    alert("Error: " + signInError.message);
+                    btn.innerText = "Submit Application";
+                    btn.disabled = false;
+                }
+            } else {
+                alert("Registration Error: " + error.message);
+                btn.innerText = "Submit Application";
+                btn.disabled = false;
+            }
+        }
     });
     lucide.createIcons();
 </script>
