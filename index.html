@@ -2,42 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Institute of Board — Official Portal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFB — Institute of Board | Admissions Open</title>
+<meta name="description" content="IFB is an elite, non-accredited educational institution. Advanced Mathematics and Front-End Web Development. 2027 Admissions Open.">
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
     :root {
         --maroon: #7A1F2B;
         --maroon-hover: #5A1620;
+        --maroon-glow: #B03040;
         --silver: #E2E8F0;
         --silver-dark: #94A3B8;
         --ink: #0F172A;
         --bg: #F8FAFC;
         --white: #FFFFFF;
-        --gray-btn: #64748B; /* Gray for button animation */
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     html, body {
+        height: 100%;
+        overflow: hidden; /* Prevents scrolling on desktop */
         font-family: 'Inter', sans-serif;
         background: var(--bg);
         color: var(--ink);
-        height: 100%;
-        overflow: hidden; 
     }
 
     /* LOADING SCREEN */
     #loader {
         position: fixed; inset: 0; background: var(--white); z-index: 9999;
         display: flex; justify-content: center; align-items: center;
-        transition: opacity 0.6s ease-out, visibility 0.6s ease-out;
+        transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
     }
     #loader.hidden { opacity: 0; visibility: hidden; }
-    .loader-logo { font-size: 120px; font-weight: 900; color: var(--maroon); line-height: 1; animation: pulseLogo 1.5s infinite ease-in-out; }
-    @keyframes pulseLogo { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.95); opacity: 0.7; } }
+    .loader-logo { font-size: 120px; font-weight: 900; color: var(--maroon); line-height: 1; animation: pulseLogo 1.2s infinite ease-in-out; }
+    @keyframes pulseLogo { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.92); opacity: 0.7; } }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    
     @keyframes pulseDot {
         0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(122, 31, 43, 0.7); }
         70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(122, 31, 43, 0); }
@@ -46,413 +49,147 @@
 
     /* DASHBOARD LAYOUT */
     .dashboard {
-        display: flex; flex-direction: column;
-        height: 100dvh; padding: 20px; max-width: 1400px; margin: 0 auto; gap: 16px;
-        animation: slideUp 0.6s ease-out 0.3s both;
+        display: grid; grid-template-rows: auto 1fr auto;
+        height: 100vh; padding: 24px; max-width: 1400px; margin: 0 auto; gap: 24px;
+        animation: slideUp 0.6s ease-out 0.2s both;
     }
 
     /* HEADER */
-    header { display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-    .brand { display: flex; align-items: center; gap: 16px; cursor: pointer; transition: transform 0.2s; }
-    .brand:active { transform: scale(0.98); }
-    .logo-delta { font-size: 56px; font-weight: 900; color: var(--maroon); line-height: 0.8; animation: float 4s ease-in-out infinite; }
+    header { display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 16px; cursor: pointer; text-decoration: none; color: inherit; }
+    .logo-delta { font-size: 64px; font-weight: 900; color: var(--maroon); line-height: 0.8; animation: float 4s ease-in-out infinite; }
     .brand-text { display: flex; flex-direction: column; }
-    .brand-text h1 { font-size: 24px; font-weight: 900; letter-spacing: -1px; color: var(--ink); line-height: 1.1; }
-    .brand-text span { font-size: 12px; font-weight: 600; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 1px; }
+    .brand-text h1 { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: var(--ink); line-height: 1.1; }
+    .brand-text span { font-size: 13px; font-weight: 600; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 1px; }
     
-    .header-right { display: flex; align-items: center; gap: 16px; }
+    .header-right { display: flex; align-items: center; gap: 20px; }
     .status-badge {
-        display: flex; align-items: center; gap: 8px;
+        display: flex; align-items: center; gap: 10px;
         background: var(--white); border: 2px solid var(--maroon);
-        color: var(--maroon); padding: 8px 16px; border-radius: 100px;
-        font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;
+        color: var(--maroon); padding: 10px 20px; border-radius: 100px;
+        font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
     }
-    .status-dot { width: 8px; height: 8px; background: var(--maroon); border-radius: 50%; animation: pulseDot 2s infinite; }
-    
-    /* PROFILE GRID ICON */
-    .profile-btn { 
-        display: flex; justify-content: center; align-items: center;
-        width: 44px; height: 44px; border-radius: 50%;
-        background: var(--white); color: var(--ink); border: 2px solid var(--silver);
-        text-decoration: none; transition: all 0.3s;
-    }
-    .profile-btn:hover { border-color: var(--maroon); color: var(--maroon); background: #FFF5F6; }
-    .profile-btn i { width: 20px; height: 20px; }
-
-    /* CAROUSEL (HERO) */
-    .carousel-container {
-        position: relative; width: 100%; flex: 1; min-height: 0; border-radius: 20px; overflow: hidden;
-        background: var(--ink); color: var(--white); box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    .carousel-slide {
-        position: absolute; inset: 0; opacity: 0; transition: opacity 0.6s ease-in-out;
-        display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 50px;
-        background-size: cover; background-position: center;
-    }
-    .carousel-slide.active { opacity: 1; z-index: 1; }
-    .carousel-slide::before {
-        content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.6) 100%); z-index: -1;
-    }
-    .carousel-slide h2 { font-size: 38px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; max-width: 700px; line-height: 1.1; }
-    .carousel-slide p { font-size: 16px; color: var(--silver); margin-bottom: 20px; max-width: 600px; line-height: 1.5; }
-    
-    .carousel-dots { position: absolute; bottom: 16px; right: 30px; display: flex; gap: 8px; z-index: 2; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s; }
-    .dot.active { background: var(--white); width: 20px; border-radius: 10px; }
-
-    /* ANNOUNCEMENT BAR & COUNTDOWN */
-    .announce {
-        display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; flex-shrink: 0;
-        background: var(--maroon); color: var(--white);
-        padding: 12px 20px; border-radius: 16px; box-shadow: 0 6px 20px rgba(122, 31, 43, 0.2);
-    }
-    .announce-text { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 800; text-transform: uppercase; }
-    .announce-text i { width: 18px; height: 18px; }
-    .countdown { display: flex; gap: 8px; }
-    .cd-box { background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 8px; text-align: center; min-width: 55px; }
-    .cd-box span { display: block; font-size: 18px; font-weight: 900; line-height: 1; }
-    .cd-box small { font-size: 9px; text-transform: uppercase; font-weight: 700; opacity: 0.9; margin-top: 2px; display: block; }
+    .status-dot { width: 10px; height: 10px; background: var(--maroon); border-radius: 50%; animation: pulseDot 2s infinite; }
+    .btn-header { padding: 12px 24px; font-size: 14px; font-weight: 700; border-radius: 10px; text-decoration: none; background: var(--maroon); color: var(--white); transition: background 0.2s; }
+    .btn-header:hover { background: var(--maroon-hover); }
 
     /* MAIN GRID */
-    .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; flex-shrink: 0; }
-
-    /* CARDS */
+    .main-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; height: 100%; min-height: 0; }
+    
     .card {
-        background: var(--white); border-radius: 20px; padding: 24px; border: 1px solid var(--silver);
-        display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; transition: all 0.3s ease;
+        background: var(--white); border-radius: 20px; padding: 32px; border: 1px solid var(--silver);
+        display: flex; flex-direction: column; justify-content: flex-start; position: relative; overflow: hidden; transition: all 0.3s ease;
     }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.06); }
-    .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--ink); display: flex; align-items: center; gap: 10px; }
-    .card h2 i { color: var(--maroon); width: 20px; height: 20px; }
-    .card p { color: #475569; font-size: 14px; margin-bottom: 16px; line-height: 1.5; flex-grow: 1; }
+    .card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--maroon); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+    .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
+    .card:hover::before { transform: scaleX(1); }
+    
+    .card-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(122,31,43,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; color: var(--maroon); }
+    .card-icon i { width: 24px; height: 24px; }
+    
+    .card h2 { font-size: 20px; font-weight: 800; margin-bottom: 12px; color: var(--ink); line-height: 1.2; }
+    .card p { color: #475569; font-size: 14px; margin-bottom: 24px; line-height: 1.6; flex-grow: 1; }
 
-    /* BUTTONS (ROUNDED & ANIMATED) */
-    .btn { 
-        display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
-        padding: 12px 24px; font-size: 14px; font-weight: 700; 
-        border-radius: 50px; 
-        text-decoration: none; transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease; 
-        cursor: pointer; border: none; font-family: 'Inter', sans-serif; 
-    }
-    .btn-primary { background: var(--maroon); color: var(--white); box-shadow: 0 4px 12px rgba(122, 31, 43, 0.2); }
-    .btn-primary:hover { background: var(--maroon-hover); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(122, 31, 43, 0.3); }
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; font-size: 14px; font-weight: 600; border-radius: 10px; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'Inter', sans-serif; width: 100%; }
+    .btn-primary { background: var(--maroon); color: var(--white); }
+    .btn-primary:hover { background: var(--maroon-hover); }
     .btn-outline { background: transparent; border: 2px solid var(--silver); color: var(--ink); }
-    .btn-outline:hover { border-color: var(--maroon); color: var(--maroon); background: #FFF5F6; transform: translateY(-2px); }
+    .btn-outline:hover { border-color: var(--maroon); color: var(--maroon); background: #FFF5F6; }
 
-    /* BOTTOM ROW (SPONSOR & SUPPORT) */
-    .bottom-row { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .action-card { flex-direction: row; align-items: center; justify-content: space-between; padding: 20px 30px; border-radius: 20px; }
-    .sponsor-card { background: var(--ink); border: none; }
-    .sponsor-card h2 { color: var(--white); margin-bottom: 4px; }
-    .sponsor-card p { color: var(--silver-dark); margin-bottom: 0; font-size: 13px; max-width: 80%; }
-    .sponsor-card .btn-primary { background: var(--white); color: var(--maroon); }
-    .sponsor-card .btn-primary:hover { background: var(--silver); color: var(--ink); }
-    
-    .support-card { background: #FFF1F2; border: 1px solid #FECDD3; }
-    .support-card h2 { color: #9F1239; margin-bottom: 4px; }
-    .support-card p { color: #9F1239; margin-bottom: 0; font-size: 13px; max-width: 80%; opacity: 0.8; }
-    .support-card .btn-primary { background: #9F1239; }
-    .support-card .btn-primary:hover { background: #881337; }
+    /* FOOTER */
+    footer { text-align: center; font-size: 12px; color: var(--silver-dark); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
 
-    footer { text-align: center; font-size: 11px; color: var(--silver-dark); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; flex-shrink: 0; }
-
-    /* =========================================
-       LEGAL MODAL (DISCLAIMER, T&C, PRIVACY) 
-       ========================================= */
-    .modal-overlay {
-        position: fixed; inset: 0; z-index: 10000;
-        background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
-        display: flex; justify-content: center; align-items: center;
-        opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
-        padding: 20px;
-    }
-    .modal-overlay.active { opacity: 1; visibility: visible; }
-    
-    .modal-content {
-        background: var(--white); border-radius: 24px;
-        width: 100%; max-width: 650px; max-height: 85vh;
-        display: flex; flex-direction: column;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        transform: translateY(30px) scale(0.95); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
-
-    .modal-header {
-        padding: 24px; border-bottom: 1px solid var(--silver);
-        display: flex; justify-content: space-between; align-items: center;
-        background: var(--white); border-radius: 24px 24px 0 0;
-    }
-    .modal-header h2 { font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 10px; color: var(--maroon); }
-    .close-btn { background: transparent; border: none; cursor: pointer; color: var(--silver-dark); transition: color 0.2s; padding: 4px; }
-    .close-btn:hover { color: var(--ink); }
-
-    .modal-body {
-        padding: 24px; overflow-y: auto; font-size: 14px; color: #475569; line-height: 1.6;
-    }
-    .modal-body h3 { font-size: 16px; color: var(--ink); margin: 16px 0 8px 0; font-weight: 800; }
-    .modal-body h3:first-child { margin-top: 0; }
-    .modal-body p { margin-bottom: 12px; }
-    .modal-body ul { margin-left: 20px; margin-bottom: 12px; }
-
-    .modal-footer {
-        padding: 20px 24px; border-top: 1px solid var(--silver);
-        background: var(--bg); border-radius: 0 0 24px 24px;
-        display: flex; justify-content: flex-end;
-    }
-
-    /* MODAL ACCEPT BUTTON (Maroon to Gray Animation) */
-    .btn-accept {
-        background-color: var(--maroon); color: var(--white);
-        padding: 14px 32px; font-size: 15px; font-weight: 800; border-radius: 50px;
-        border: none; cursor: pointer; font-family: 'Inter', sans-serif;
-        transition: background-color 0.4s ease, transform 0.2s ease;
-        box-shadow: 0 4px 12px rgba(122, 31, 43, 0.3);
-        width: 100%;
-    }
-    .btn-accept:hover { background-color: var(--gray-btn); transform: translateY(-2px); }
-    .btn-accept:active { transform: scale(0.98); }
-
-
-    /* MOBILE VIEW OPTIMIZATION */
-    @media (max-width: 900px) {
-        html, body { overflow-y: auto; height: auto; }
-        .dashboard { height: auto; min-height: 100dvh; padding: 16px; gap: 16px; }
-        header { flex-direction: column; align-items: flex-start; gap: 12px; }
-        .header-right { width: 100%; justify-content: space-between; }
-        .carousel-container { min-height: 300px; flex: none; }
-        .carousel-slide { padding: 0 24px; }
-        .carousel-slide h2 { font-size: 28px; }
-        .carousel-slide p { font-size: 14px; }
+    /* MOBILE OPTIMIZATION */
+    @media (max-width: 1024px) {
+        html, body { overflow: auto; height: auto; }
+        .dashboard { height: auto; min-height: 100vh; padding: 16px; gap: 16px; }
+        header { flex-direction: column; align-items: flex-start; gap: 20px; }
+        .header-right { width: 100%; justify-content: space-between; flex-wrap: wrap; }
         .main-grid { grid-template-columns: 1fr; }
-        .bottom-row { grid-template-columns: 1fr; }
-        .action-card { flex-direction: column; align-items: flex-start; gap: 16px; padding: 24px; }
-        .sponsor-card p, .support-card p { max-width: 100%; }
-        .countdown { width: 100%; justify-content: space-between; margin-top: 8px; }
-        .cd-box { flex: 1; }
-        .modal-content { max-height: 90vh; }
-        .modal-body { padding: 20px; }
-        .btn-accept { padding: 16px; }
+        .logo-delta { font-size: 48px; }
+        .brand-text h1 { font-size: 22px; }
+        .card { padding: 24px; }
     }
 </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="loader-logo">∆</div>
-    </div>
+    <div id="loader"><div class="loader-logo">∆</div></div>
 
     <div class="dashboard">
         <header>
-            <!-- LOGO OPENS MODAL -->
-            <div class="brand" onclick="openModal()" title="View Legal & Privacy">
+            <a href="/" class="brand">
                 <div class="logo-delta">∆</div>
                 <div class="brand-text">
                     <h1>Institute of Board</h1>
-                    <span>Official Student Portal</span>
+                    <span>Official Applicant Portal</span>
                 </div>
-            </div>
+            </a>
             <div class="header-right">
                 <div class="status-badge">
                     <div class="status-dot"></div>
-                    Admissions Open
+                    2027 Admissions Open
                 </div>
-                <a href="profile.html" class="profile-btn" title="Dashboard">
-                    <i data-lucide="layout-grid"></i>
-                </a>
+                <a href="admission.html" class="btn-header">Apply Now</a>
             </div>
         </header>
 
-        <div class="carousel-container">
-            <div class="carousel-slide active" style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop');">
-                <h2>Build the Future.<br>Master the Code.</h2>
-                <p>Join the Institute of Board. A rigorous, fee-free STEM institution designed for the architects of tomorrow.</p>
-                <a href="admission.html" class="btn btn-primary">Apply for IFB 2027</a>
-            </div>
-            <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop');">
-                <h2>100% Fee-Free.<br>Funded by Sponsors.</h2>
-                <p>We believe education should be accessible. No tuition fees. Just your commitment to excellence.</p>
-                <a href="fund-ifb.html" class="btn btn-primary">Support the Mission</a>
-            </div>
-            
-            <div class="carousel-dots">
-                <div class="dot active" onclick="currentSlide(0)"></div>
-                <div class="dot" onclick="currentSlide(1)"></div>
-            </div>
-        </div>
-
-        <div class="announce">
-            <div class="announce-text">
-                <i data-lucide="megaphone"></i>
-                Admission Exam: 30 Jan 2027
-            </div>
-            <div class="countdown" id="countdown">
-                <div class="cd-box"><span id="cd-days">00</span><small>Days</small></div>
-                <div class="cd-box"><span id="cd-hours">00</span><small>Hrs</small></div>
-                <div class="cd-box"><span id="cd-mins">00</span><small>Mins</small></div>
-                <div class="cd-box"><span id="cd-secs">00</span><small>Secs</small></div>
-            </div>
-        </div>
-
         <div class="main-grid">
+            
+            <!-- Card 1: Admission Form -->
             <div class="card">
-                <h2><i data-lucide="book-open"></i> Curriculum Guideline</h2>
-                <p>Download the comprehensive 2027 academic guide. Explore our STEM tracks, Web Development streams, and Integrated Software Engineering programmes in full detail.</p>
-                <a href="curriculum-ifb.html" download class="btn btn-primary">
-                    <i data-lucide="download"></i> Download Guide
-                </a>
-            </div>
-
-            <div class="card">
-                <h2><i data-lucide="file-signature"></i> Official Admission Form</h2>
-                <p>Submit your official application for the 2027 intake. Submitting this form registers you as an Applicant for the entrance examination.</p>
+                <div class="card-icon"><i data-lucide="file-signature"></i></div>
+                <h2>Official Admission Form</h2>
+                <p>Submit your application to the Institute. Once you apply, you will receive your official 13-digit Examination Number. Course selection unlocks only after you pass.</p>
                 <a href="admission.html" class="btn btn-primary">
                     <i data-lucide="edit-3"></i> Start Application
                 </a>
             </div>
 
-            <div class="bottom-row">
-                <div class="card action-card sponsor-card">
-                    <div>
-                        <h2><i data-lucide="heart"></i> Sponsor</h2>
-                        <p>Help us expand our STEM offerings and cover admin costs.</p>
-                    </div>
-                    <a href="fund-ifb.html" class="btn btn-primary">Fund</a>
-                </div>
-                
-                <div class="card action-card support-card">
-                    <div>
-                        <h2><i data-lucide="life-buoy"></i> Support</h2>
-                        <p>Need help with your application or portal access?</p>
-                    </div>
-                    <a href="support.html" class="btn btn-primary">Help</a>
+            <!-- Card 2: Documents & Portal -->
+            <div class="card">
+                <div class="card-icon"><i data-lucide="folder-open"></i></div>
+                <h2>Documents & Applicant Portal</h2>
+                <p>Download the specific Curriculum and Admission Exam Guidelines for your chosen track. Access the portal to check your Exam Number and select your course.</p>
+                <a href="documents.html" class="btn btn-outline">
+                    <i data-lucide="external-link"></i> Access Documents
+                </a>
+            </div>
+
+            <!-- Card 3: Sponsor -->
+            <div class="card">
+                <div class="card-icon"><i data-lucide="heart-handshake"></i></div>
+                <h2>Sponsor the Institute</h2>
+                <p>IFB is a fee-free institution. We rely entirely on sponsors and donors to cover the costs of examination administration, platform hosting, and institutional expansion.</p>
+                <a href="fund-ifb.html" class="btn btn-outline">
+                    <i data-lucide="hand-coins"></i> Fund IFB
+                </a>
+            </div>
+
+            <!-- Bottom Banner (Full Width) -->
+            <div class="card" style="grid-column: 1 / -1; background: var(--ink); border-color: var(--ink); flex-direction: row; align-items: center; justify-content: space-between; padding: 24px 40px;">
+                <div style="max-width: 800px;">
+                    <h2 style="color: var(--white); margin-bottom: 8px;">Available Tracks for 2027</h2>
+                    <p style="color: var(--silver-dark); margin-bottom: 0;">
+                        <strong style="color: var(--white);">IFB-S:</strong> Advanced Mathematics (4-Paper AQ/AE Exam) &nbsp;|&nbsp; 
+                        <strong style="color: var(--white);">IFB AQ-B:</strong> Front-End Web Development (Practical AQ/AE Exam)
+                    </p>
                 </div>
             </div>
+
         </div>
 
         <footer>
-            <div>© 2026—2027 Institute of Board. All Rights Reserved.</div>
+            The Institute of Board is a non-accredited educational institution. Not registered with the Department of Higher Education and Training (DHET) or Umalusi.
         </footer>
-    </div>
-
-    <!-- LEGAL MODAL -->
-    <div id="legalModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2><i data-lucide="shield-alert"></i> Terms, Privacy & Disclaimer</h2>
-                <button class="close-btn" onclick="closeModal()"><i data-lucide="x"></i></button>
-            </div>
-            
-            <div class="modal-body">
-                <h3>1. Institutional Disclaimer</h3>
-                <p>The Institute of Board (IFB) is a <strong>non-accredited educational institution</strong>. We are not registered with the Department of Higher Education and Training (DHET) or Umalusi. Our curriculum and AQ/AE examinations are internal assessments designed to validate technical competency and do not confer formal academic degrees or national qualifications.</p>
-                
-                <h3>2. Terms and Conditions</h3>
-                <p>By accessing this portal and applying to IFB, you agree to the following:</p>
-                <ul>
-                    <li>You will provide accurate and truthful information during the application process.</li>
-                    <li>You understand that submitting an application registers you as an "Applicant" and does not guarantee admission.</li>
-                    <li>Admission is strictly conditional upon passing the internal AQ/AE entrance examination.</li>
-                    <li>IFB operates on a 100% fee-free model funded by sponsors; however, we reserve the right to amend operational policies as necessary.</li>
-                </ul>
-
-                <h3>3. Privacy Policy</h3>
-                <p>We respect your privacy. Any personal information (such as your name, email address, and academic history) submitted through our admission forms is collected solely for the purpose of processing your application and communicating with you regarding examinations and institutional updates.</p>
-                <ul>
-                    <li>We do not sell, rent, or trade your personal data to third parties.</li>
-                    <li>Your data is stored securely and access is restricted to authorized IFB administrative staff.</li>
-                </ul>
-
-                <h3>4. Cookie Policy</h3>
-                <p>This website uses essential cookies and local storage to ensure proper functionality. These are used to manage your session, remember your preferences (such as acknowledging this disclaimer), and secure your portal access. We do not use invasive tracking or advertising cookies.</p>
-                
-                <h3>5. Copyright Notice</h3>
-                <p>All content, including but not limited to text, graphics, logos, and code, is the property of the Institute of Board and is protected by copyright laws. © 2026—2027 Institute of Board.</p>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn-accept" onclick="closeModal()">Accept & Continue</button>
-            </div>
-        </div>
     </div>
 
 <script>
     lucide.createIcons();
-    
-    // Loader logic
     window.addEventListener('load', () => {
-        setTimeout(() => { 
-            document.getElementById('loader').classList.add('hidden'); 
-            // Automatically open modal after loader fades out
-            setTimeout(openModal, 600);
-        }, 1000);
+        setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 600);
     });
-
-    // Modal Logic
-    const modal = document.getElementById('legalModal');
-
-    function openModal() {
-        modal.classList.add('active');
-    }
-
-    function closeModal() {
-        modal.classList.remove('active');
-    }
-
-    // Close modal if clicking outside the box
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-
-    // Countdown Timer
-    const examDate = new Date("Jan 30, 2027 08:00:00").getTime();
-    const timer = setInterval(function() {
-        const now = new Date().getTime();
-        const distance = examDate - now;
-
-        if (distance < 0) {
-            clearInterval(timer);
-            document.getElementById("countdown").innerHTML = "<div style='font-weight:900; font-size:16px;'>EXAM IN PROGRESS</div>";
-            return;
-        }
-
-        document.getElementById("cd-days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
-        document.getElementById("cd-hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-        document.getElementById("cd-mins").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-        document.getElementById("cd-secs").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
-    }, 1000);
-
-    // Carousel Logic
-    let slideIndex = 0;
-    const slides = document.querySelectorAll('.carousel-slide');
-    const dots = document.querySelectorAll('.dot');
-    let slideInterval;
-
-    function showSlides(n) {
-        slides.forEach(s => s.classList.remove('active'));
-        dots.forEach(d => d.classList.remove('active'));
-        slides[n].classList.add('active');
-        dots[n].classList.add('active');
-    }
-
-    function currentSlide(n) {
-        clearInterval(slideInterval);
-        slideIndex = n;
-        showSlides(slideIndex);
-        startCarousel();
-    }
-
-    function nextSlide() {
-        slideIndex = (slideIndex + 1) % slides.length;
-        showSlides(slideIndex);
-    }
-
-    function startCarousel() {
-        slideInterval = setInterval(nextSlide, 6000);
-    }
-
-    startCarousel();
 </script>
 </body>
 </html>
