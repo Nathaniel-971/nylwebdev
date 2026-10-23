@@ -30,10 +30,14 @@
     .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
     .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
     
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--black); }
-    .btn-login:hover { border-color: var(--black); }
-    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    
+    /* Login Button */
+    .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--black); display: inline-block; }
+    .btn-login:hover { border-color: var(--black); background: #FAFAFA; }
+    
+    /* Apply Button */
+    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; display: inline-block; }
     .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
     
     .menu-btn { display: none; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; }
@@ -44,27 +48,30 @@
     .profile-grid-mini { width: 40px; height: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-radius: 8px; overflow: hidden; border: 1px solid var(--silver); }
     .profile-grid-mini div { border-radius: 1px; }
 
-    /* HERO CAROUSEL */
-    .hero { position: relative; padding: 120px 24px; text-align: center; overflow: hidden; background: var(--black); }
+    /* HERO CAROUSEL (WHITE THEME) */
+    .hero { position: relative; padding: 120px 24px; text-align: center; overflow: hidden; background: var(--white); }
     .hero-carousel { position: absolute; inset: 0; z-index: 0; }
     .hero-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1s ease-in-out, transform 10s linear; transform: scale(1.05); }
     .hero-slide.active { opacity: 1; transform: scale(1); }
-    .hero-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 1; }
     
-    .hero-content { position: relative; z-index: 2; color: var(--white); }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 24px; background: rgba(0,0,0,0.5); color: var(--white); }
+    /* Light, white overlay to keep text readable but image visible */
+    .hero-overlay { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(6px); z-index: 1; }
+    
+    .hero-content { position: relative; z-index: 2; color: var(--black); }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 24px; background: var(--white); color: var(--maroon); }
     .hero h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 900; line-height: 1.1; letter-spacing: -2px; margin-bottom: 24px; }
-    .hero h1 span { color: #FFB3C1; }
-    .hero p { font-size: 18px; max-width: 600px; margin: 0 auto 40px; opacity: 0.9; }
+    .hero h1 span { color: var(--maroon); }
+    .hero p { font-size: 18px; max-width: 600px; margin: 0 auto 40px; color: var(--gray); font-weight: 500; }
+    
     .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
     .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
     .btn-primary { background: var(--maroon); color: var(--white); border: 2px solid var(--maroon); }
-    .btn-primary:hover { background: var(--maroon-hover); }
-    .btn-outline { background: transparent; color: var(--white); border: 2px solid var(--white); }
-    .btn-outline:hover { background: var(--white); color: var(--black); }
+    .btn-primary:hover { background: var(--maroon-hover); box-shadow: 0 10px 20px rgba(122,31,43,0.2); }
+    .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
+    .btn-outline:hover { border-color: var(--black); }
 
     /* COURSES CAROUSEL SECTION */
-    .courses-section { padding: 80px 24px; background: #FAFAFA; }
+    .courses-section { padding: 80px 24px; background: #FAFAFA; border-top: 1px solid var(--silver); }
     .section-header { text-align: center; margin-bottom: 48px; }
     .section-header h2 { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
     .courses-carousel { display: flex; gap: 24px; overflow-x: auto; padding: 10px 0 30px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
@@ -120,14 +127,21 @@
     /* MOBILE FIXES */
     @media (max-width: 768px) {
         .nav-container { padding: 0 16px; }
-        .brand-text h1 { font-size: 18px; }
-        .btn-login { display: none; } /* Hide on mobile to save space */
-        .menu-btn { display: flex; }
+        .brand-text h1 { font-size: 16px; }
+        .brand-logo { font-size: 28px; }
+        /* Show Login and Apply buttons on mobile */
+        .btn-login { display: inline-block; padding: 8px 12px; font-size: 13px; }
+        .nav-cta { padding: 8px 12px; font-size: 13px; }
+        
         .hero { padding: 80px 20px; }
+        .hero h1 { margin-bottom: 16px; }
+        .hero p { margin-bottom: 24px; font-size: 16px; }
         .hero-buttons { flex-direction: column; gap: 12px; }
-        .btn-lg { width: 100%; justify-content: center; }
+        .btn-lg { width: 100%; justify-content: center; padding: 14px; }
+
         .footer-grid { flex-direction: column; gap: 24px; }
         .footer-links { flex-direction: column; gap: 24px; }
+        .modal-content { padding: 32px 20px; }
     }
 </style>
 </head>
@@ -143,23 +157,26 @@
                 <div class="brand-text"><h1>Institute of Board</h1></div>
             </a>
             <div class="nav-right">
+                <!-- Login button is visible now -->
                 <button class="btn-login" id="headerLoginBtn" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
-                <a href="admission.html" class="nav-cta" id="headerApplyBtn">Apply Now</a>
+                <a href="admission.html" class="nav-cta" id="headerApplyBtn">Apply</a>
+                
                 <div class="nav-profile" id="headerProfile" onclick="window.location.href='student-dashboard.html'">
                     <div class="profile-grid-mini" id="navGridIcon"></div>
                 </div>
-                <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
             </div>
         </div>
     </header>
 
-    <!-- HERO WITH ANIMATED CAROUSEL -->
+    <!-- HERO WITH ANIMATED CAROUSEL (WHITE IMAGES) -->
     <section class="hero">
         <div class="hero-carousel" id="heroCarousel">
-            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1920&auto=format&fit=crop');"></div>
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1920&auto=format&fit=crop');"></div>
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop');"></div>
+            <!-- White/Bright Images -->
+            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1920&auto=format&fit=crop');"></div>
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1920&auto=format&fit=crop');"></div>
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1920&auto=format&fit=crop');"></div>
         </div>
+        <!-- White overlay to keep it modern and light -->
         <div class="hero-overlay"></div>
         
         <div class="hero-content">
@@ -237,7 +254,7 @@
             <div class="modal-subtitle" style="text-align: left; margin-bottom: 24px; font-size: 15px; color: var(--black);">
                 <p><strong>Applications for the 2027 academic year close on 13 January 2027.</strong></p>
                 <br>
-                <p style="font-size: 13px; color: var(--gray);">The Institute of Board is a non-accredited institution. We are not registered with DHET or Umalusi. Students are encouraged to check out our mock papers and download the examination timetable ahead of the exams.</p>
+                <p style="font-size: 13px; color: var(--gray);">The Institute of Board is a non-accredited institution. Students are encouraged to check out our mock papers and download the examination timetable ahead of the exams.</p>
             </div>
             <button class="btn-submit" onclick="document.getElementById('noticeModal').classList.remove('active')">I Understand</button>
         </div>
