@@ -32,24 +32,19 @@
     
     .nav-right { display: flex; align-items: center; gap: 12px; }
     
-    /* LOGGED OUT BUTTONS */
     .nav-logged-out { display: flex; align-items: center; gap: 8px; }
     .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--black); white-space: nowrap; }
     .btn-login:hover { border-color: var(--black); background: #FAFAFA; }
     .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
     .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
-    /* LOGGED IN BUTTONS */
-    .nav-logged-in { display: none; align-items: center; gap: 12px; }
-    .btn-profile-text { background: transparent; border: 1.5px solid var(--maroon); color: var(--maroon); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-    .btn-profile-text:hover { background: var(--maroon); color: var(--white); }
+    /* LOGGED IN (ONLY GRID ICON) */
+    .nav-logged-in { display: none; align-items: center; }
     
-    /* ROUNDED GRID ICON */
+    /* UNIQUE ROUNDED GRID ICON */
     .profile-grid-mini { 
         width: 46px; height: 46px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; 
-        border-radius: 50%; /* Round */
-        overflow: hidden; border: 2px solid var(--silver); background: var(--white); cursor: pointer; 
-        transition: transform 0.2s;
+        border-radius: 50%; overflow: hidden; border: 2px solid var(--silver); background: var(--white); cursor: pointer; transition: transform 0.2s;
     }
     .profile-grid-mini:hover { transform: scale(1.05); border-color: var(--maroon); }
     .profile-grid-mini div { border-radius: 1px; }
@@ -87,7 +82,6 @@
     .hero h1 span { color: var(--maroon); }
     .hero p { font-size: 18px; max-width: 600px; margin: 0 auto 40px; color: var(--gray); font-weight: 500; }
     
-    /* HERO BUTTONS */
     .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
     .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
     .btn-primary { background: var(--maroon); color: var(--white); border: 2px solid var(--maroon); }
@@ -95,7 +89,6 @@
     .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
     .btn-outline:hover { border-color: var(--black); }
 
-    /* LOGGED IN HERO BUTTONS */
     .hero-logged-in { display: none; }
 
     /* CAROUSEL */
@@ -156,14 +149,11 @@
         .brand-logo { font-size: 28px; }
         .btn-login { padding: 8px 12px; font-size: 13px; }
         .nav-cta { padding: 8px 12px; font-size: 13px; }
-        .btn-profile-text { padding: 8px 12px; font-size: 13px; }
-        
         .hero { padding: 80px 20px; }
         .hero h1 { margin-bottom: 16px; }
         .hero p { margin-bottom: 24px; font-size: 16px; }
         .hero-buttons { flex-direction: column; gap: 12px; }
         .btn-lg { width: 100%; justify-content: center; padding: 14px; }
-        
         .course-card { flex: 0 0 280px; }
         .footer-grid { flex-direction: column; gap: 24px; }
         .footer-links { flex-direction: column; gap: 24px; }
@@ -184,15 +174,13 @@
             </a>
             <div class="nav-right">
                 
-                <!-- LOGGED OUT BUTTONS -->
                 <div class="nav-logged-out" id="navLoggedOut">
                     <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
                     <a href="admission.html" class="nav-cta">Apply</a>
                 </div>
 
-                <!-- LOGGED IN BUTTONS (Profile Text + Grid Icon) -->
+                <!-- LOGGED IN: ONLY THE GRID ICON -->
                 <div class="nav-logged-in" id="navLoggedIn">
-                    <a href="student-dashboard.html" class="btn-profile-text">My Profile</a>
                     <div class="profile-grid-mini" id="navGridIcon" onclick="window.location.href='student-dashboard.html'" title="Dashboard"></div>
                 </div>
                 
@@ -226,6 +214,13 @@
                         <a href="ae-timetable.html">AE Timetable</a>
                     </div></div>
                 </li>
+                <li class="menu-item">
+                    <div class="menu-link" onclick="toggleSubmenu(this)">Institution <i data-lucide="chevron-right"></i></div>
+                    <div class="submenu"><div class="submenu-inner">
+                        <a href="fund-ifb.html">Sponsor Us</a>
+                        <a href="documents.html">Prospectus</a>
+                    </div></div>
+                </li>
             </ul>
         </div>
         <div class="menu-footer"><a href="admission.html" class="btn-menu-apply">Apply Now</a></div>
@@ -245,13 +240,13 @@
             <h1>Master the disciplines<br>that <span>build the future.</span></h1>
             <p>The Institute of Board is an independent, non-accredited academic institution. We offer rigorous, university-level training, completely free of charge.</p>
             
-            <!-- LOGGED OUT HERO BUTTONS -->
+            <!-- LOGGED OUT BUTTONS -->
             <div class="hero-buttons hero-logged-out" id="heroLoggedOut">
                 <a href="admission.html" class="btn-lg btn-primary">Apply for Admission</a>
                 <a href="documents.html" class="btn-lg btn-outline">Check Documents</a>
             </div>
 
-            <!-- LOGGED IN HERO BUTTONS -->
+            <!-- LOGGED IN BUTTONS -->
             <div class="hero-buttons hero-logged-in" id="heroLoggedIn">
                 <a href="student-dashboard.html" class="btn-lg btn-primary">View My Courses</a>
                 <a href="ae-timetable.html" class="btn-lg btn-outline">Check Timetable</a>
@@ -268,7 +263,6 @@
         </div>
         
         <div class="carousel-wrapper" id="courseCarousel">
-            <!-- Card 1 -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -281,7 +275,6 @@
                 </div>
             </div>
             
-            <!-- Card 2 -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
                 <div class="course-content">
@@ -294,7 +287,7 @@
                 </div>
             </div>
 
-            <!-- Duplicate 1 for infinite scroll -->
+            <!-- Duplicates for scrolling -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -307,7 +300,6 @@
                 </div>
             </div>
             
-            <!-- Duplicate 2 for infinite scroll -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
                 <div class="course-content">
@@ -382,8 +374,8 @@
             </div>
             <div class="divider">or sign in with email</div>
             <form onsubmit="event.preventDefault(); emailLogin();">
-                <div class="input-group"><label>Email Address</label><input type="email" id="loginEmail" required placeholder="you@example.com"></div>
-                <div class="input-group"><label>Password</label><input type="password" id="loginPass" required placeholder="••••••••"></div>
+                <div class="input-group"><label>Email Address</label><input type="email" id="loginEmail" required placeholder="you@example.com" autocomplete="off"></div>
+                <div class="input-group"><label>Password</label><input type="password" id="loginPass" required placeholder="••••••••" autocomplete="new-password"></div>
                 <button type="submit" class="btn-submit">Sign In</button>
             </form>
         </div>
@@ -413,11 +405,9 @@
         setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
         if (user) {
-            // Logged In: Toggle Header
+            // Logged In
             document.getElementById('navLoggedOut').style.display = 'none';
             document.getElementById('navLoggedIn').style.display = 'flex';
-            
-            // Logged In: Toggle Hero Buttons
             document.getElementById('heroLoggedOut').style.display = 'none';
             document.getElementById('heroLoggedIn').style.display = 'flex';
             
@@ -438,7 +428,6 @@
             // Logged Out
             document.getElementById('navLoggedOut').style.display = 'flex';
             document.getElementById('navLoggedIn').style.display = 'none';
-            
             document.getElementById('heroLoggedOut').style.display = 'flex';
             document.getElementById('heroLoggedIn').style.display = 'none';
             
@@ -446,9 +435,9 @@
         }
     });
 
-    window.googleLogin = async function() { try { await signInWithPopup(auth, googleProvider); window.location.reload(); } catch (e) { alert(e.message); } };
-    window.githubLogin = async function() { try { await signInWithPopup(auth, githubProvider); window.location.reload(); } catch (e) { alert(e.message); } };
-    window.emailLogin = async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); window.location.reload(); } catch (e) { alert(e.message); } };
+    window.googleLogin = async function() { try { await signInWithPopup(auth, googleProvider); window.location.reload(); } catch (e) { console.error(e.message); } };
+    window.githubLogin = async function() { try { await signInWithPopup(auth, githubProvider); window.location.reload(); } catch (e) { console.error(e.message); } };
+    window.emailLogin = async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); window.location.reload(); } catch (e) { console.error(e.message); } };
 
     const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
     menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
