@@ -7,7 +7,7 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; }
+    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); opacity: 0; animation: fadeIn 0.4s ease forwards; }
     @keyframes fadeIn { to { opacity: 1; } }
@@ -18,11 +18,18 @@
     .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); transition: 0.2s; }
     .btn-back:hover { border-color: var(--black); }
 
-    .container { max-width: 1200px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 320px 1fr; gap: 32px; align-items: start; }
+    .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 320px 1fr; gap: 32px; align-items: start; }
     
+    /* SIDEBAR */
     .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; position: sticky; top: 100px; text-align: center; }
-    .profile-grid-icon { width: 80px; height: 80px; margin: 0 auto 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-    .profile-grid-icon div { border-radius: 4px; }
+    
+    /* 2-DIGIT PROFILE BADGE */
+    .profile-badge-large { 
+        width: 90px; height: 90px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+        border-radius: 50%; border: 3px solid var(--maroon); background: var(--white); 
+        font-size: 32px; font-weight: 900; color: var(--maroon);
+    }
+    
     .sidebar h2 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
     .sidebar p { font-size: 13px; color: var(--gray); margin-bottom: 24px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
     .detail-row { margin-bottom: 16px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
@@ -31,23 +38,31 @@
     .btn-action { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; margin-bottom: 12px; }
     .btn-action:hover { background: var(--maroon-hover); }
 
+    /* MAIN CONTENT */
     .main-content { display: flex; flex-direction: column; gap: 24px; }
     .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; }
     .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; }
     
-    .category { margin-bottom: 32px; }
-    .category h4 { font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 16px; }
-    
+    /* EDIT PROFILE FORM */
+    .edit-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 13px; font-weight: 700; color: var(--gray); }
+    .form-group input { padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; background: var(--white); }
+    .form-group input:focus { border-color: var(--maroon); }
+    .form-group input:disabled { background: #FAFAFA; color: var(--gray); cursor: not-allowed; }
+    .btn-save { padding: 12px 24px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: auto; }
+    .btn-save:hover { background: var(--maroon-hover); }
+
+    /* DOCUMENTS */
     .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--silver); border-radius: 8px; margin-bottom: 12px; gap: 16px; }
     .doc-info h5 { font-size: 16px; font-weight: 700; }
     .doc-info p { font-size: 13px; color: var(--gray); }
     .btn-doc { background: var(--white); border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; text-decoration: none; color: var(--black); white-space: nowrap; transition: 0.2s; }
     .btn-doc:hover { border-color: var(--black); }
     .btn-doc.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
-    .btn-doc.primary:hover { background: var(--maroon-hover); }
 
     @media (max-width: 900px) { .container { grid-template-columns: 1fr; } .sidebar { position: static; } }
-    @media (max-width: 600px) { .doc-item { flex-direction: column; align-items: flex-start; } .btn-doc { width: 100%; justify-content: center; } }
+    @media (max-width: 600px) { .edit-form { grid-template-columns: 1fr; } .doc-item { flex-direction: column; align-items: flex-start; } .btn-doc { width: 100%; justify-content: center; } }
 </style>
 </head>
 <body>
@@ -59,7 +74,7 @@
 
     <div class="container">
         <div class="sidebar">
-            <div class="profile-grid-icon" id="gridIcon"></div>
+            <div class="profile-badge-large" id="profileBadge">00</div>
             <h2 id="userName">Loading...</h2>
             <p>Applicant Profile</p>
             <div class="detail-row"><div class="label">Student ID</div><div class="value" id="userStudentId">-</div></div>
@@ -68,35 +83,73 @@
         </div>
 
         <div class="main-content">
+            
+            <!-- EDIT INFO -->
             <div class="card">
-                <h3>Curriculum Selection</h3>
-                <div class="curr-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                    <div class="curr-box" onclick="selectCurriculum(this, 'IFB-S Mathematics')" style="border: 2px solid var(--silver); border-radius: 12px; padding: 20px; cursor: pointer;">
-                        <h4 style="font-size: 18px; font-weight: 800;">IFB-S Mathematics</h4><p style="font-size: 13px; color: var(--gray);">12-Month Track</p>
+                <h3>Edit Personal Information</h3>
+                <form id="editForm" autocomplete="off">
+                    <div class="edit-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="editName" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="editPhone" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" id="editDob" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Email (Read-only)</label>
+                            <input type="email" id="editEmail" disabled>
+                        </div>
                     </div>
-                    <div class="curr-box" onclick="selectCurriculum(this, 'IFB AQ-B Front-End')" style="border: 2px solid var(--silver); border-radius: 12px; padding: 20px; cursor: pointer;">
-                        <h4 style="font-size: 18px; font-weight: 800;">IFB AQ-B Front-End</h4><p style="font-size: 13px; color: var(--gray);">9-Month Track</p>
-                    </div>
-                </div>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </form>
             </div>
 
+            <!-- SECURITY / ACCOUNT -->
+            <div class="card">
+                <h3>Account Security</h3>
+                <form id="securityForm" autocomplete="off">
+                    <div class="edit-form">
+                        <div class="form-group">
+                            <label>Update Email Address</label>
+                            <input type="email" id="updateEmail" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="updatePass" placeholder="Leave blank to keep current" autocomplete="new-password">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" id="updatePassConfirm" placeholder="Confirm new password" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-save" id="saveSecurityBtn">Update Account</button>
+                </form>
+            </div>
+
+            <!-- DOCUMENTS -->
             <div class="card">
                 <h3>Gated Materials (Enrolled Students Only)</h3>
                 
-                <div class="category">
-                    <h4>Annual Teaching Plan (ATP 2027)</h4>
+                <div class="category" style="margin-bottom: 24px;">
+                    <h4 style="font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 12px;">Annual Teaching Plan (ATP 2027)</h4>
                     <div class="doc-item"><div class="doc-info"><h5>ATP 2027: Mathematics</h5></div><a href="atp-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                     <div class="doc-item"><div class="doc-info"><h5>ATP 2027: Web Development</h5></div><a href="atp-web.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                 </div>
 
-                <div class="category">
-                    <h4>Examination Guidelines 2027</h4>
+                <div class="category" style="margin-bottom: 24px;">
+                    <h4 style="font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 12px;">Examination Guidelines 2027</h4>
                     <div class="doc-item"><div class="doc-info"><h5>IFB-AE-S Mathematics Guidelines</h5></div><a href="guidelines-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                     <div class="doc-item"><div class="doc-info"><h5>IFB-AE-W Web Dev Guidelines</h5></div><a href="guidelines-web.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                 </div>
 
                 <div class="category">
-                    <h4>Practice Papers (Mock Codes)</h4>
+                    <h4 style="font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 12px;">Practice Papers</h4>
                     <div class="doc-item"><div class="doc-info"><h5>Practice Question Paper</h5></div><a href="practice-paper-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                     <div class="doc-item"><div class="doc-info"><h5>Practice Answer Book</h5></div><a href="answer-book.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                 </div>
@@ -106,35 +159,106 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
-    function generateGridIcon(id) {
-        const c = document.getElementById('gridIcon'); c.innerHTML = '';
-        const colors = ['#7A1F2B', '#C7CBD1', '#111111', '#FAFAFA', '#E2E8F0'];
-        for (let i = 0; i < 9; i++) { const div = document.createElement('div'); div.style.backgroundColor = colors[id.charCodeAt(i % id.length) % colors.length]; c.appendChild(div); }
-    }
+    let currentData = null;
 
     onAuthStateChanged(auth, async (user) => {
         if (!user) { window.location.href = "index.html"; return; }
         const docSnap = await getDoc(doc(db, "users", user.uid));
         if (docSnap.exists()) {
-            const data = docSnap.data();
-            document.getElementById('userName').innerText = data.name;
-            document.getElementById('userStudentId').innerText = data.studentId;
-            generateGridIcon(data.studentId);
+            currentData = docSnap.data();
+            
+            // Populate UI
+            document.getElementById('userName').innerText = currentData.name;
+            document.getElementById('userStudentId').innerText = currentData.studentId;
+            
+            // Generate 2-digit badge
+            const badgeText = currentData.studentId.slice(-2);
+            document.getElementById('profileBadge').innerText = badgeText;
+            
+            // Populate Edit Form
+            document.getElementById('editName').value = currentData.name || "";
+            document.getElementById('editPhone').value = currentData.phone || "";
+            document.getElementById('editDob').value = currentData.dob || "";
+            document.getElementById('editEmail').value = currentData.email || user.email;
+            
+            // Populate Security Form
+            document.getElementById('updateEmail').value = user.email || "";
+        }
+    });
+
+    // Handle Edit Profile Form Submit
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!auth.currentUser) return;
+        
+        const btn = e.target.querySelector('button');
+        btn.innerText = "Saving...";
+        
+        try {
+            await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                name: document.getElementById('editName').value,
+                phone: document.getElementById('editPhone').value
+            });
+            alert("Profile updated successfully!");
+            window.location.reload();
+        } catch (error) {
+            alert("Error updating profile: " + error.message);
+            btn.innerText = "Save Changes";
+        }
+    });
+
+    // Handle Security Form Submit (Email & Password)
+    document.getElementById('securityForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!auth.currentUser) return;
+
+        const newEmail = document.getElementById('updateEmail').value;
+        const newPass = document.getElementById('updatePass').value;
+        const confirmPass = document.getElementById('updatePassConfirm').value;
+        const btn = document.getElementById('saveSecurityBtn');
+
+        if (newPass && newPass !== confirmPass) {
+            alert("Passwords do not match.");
+            return;
+        }
+
+        btn.innerText = "Updating...";
+        btn.disabled = true;
+
+        try {
+            // Update Email in Firebase Auth
+            if (auth.currentUser.email !== newEmail) {
+                await updateEmail(auth.currentUser, newEmail);
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { email: newEmail });
+            }
+
+            // Update Password in Firebase Auth
+            if (newPass) {
+                await updatePassword(auth.currentUser, newPass);
+            }
+
+            alert("Account details updated successfully! Please sign in again.");
+            await signOut(auth);
+            window.location.href = "index.html";
+
+        } catch (error) {
+            if (error.code === 'auth/requires-recent-login') {
+                alert("For security reasons, you must sign out and log back in before changing your email or password.");
+            } else {
+                alert("Error updating account: " + error.message);
+            }
+            btn.innerText = "Update Account";
+            btn.disabled = false;
         }
     });
 
     window.signOutUser = async function() { await signOut(auth); window.location.href = "index.html"; };
-    window.selectCurriculum = async function(el, name) {
-        document.querySelectorAll('.curr-box').forEach(o => o.style.borderColor = 'var(--silver)');
-        el.style.borderColor = 'var(--maroon)';
-        if (auth.currentUser) await updateDoc(doc(db, "users", auth.currentUser.uid), { curriculum: name });
-    };
     lucide.createIcons();
 </script>
 </body>
