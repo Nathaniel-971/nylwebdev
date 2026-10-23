@@ -140,6 +140,7 @@
                     <div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div>
                     <div class="submenu"><div class="submenu-inner">
                         <a href="student-dashboard.html">Student Dashboard</a>
+                        <a href="documents.html">Public Documents</a>
                     </div></div>
                 </li>
             </ul>
@@ -221,10 +222,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408"
-    };
-
+    const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
@@ -235,12 +233,10 @@
 
     window.googleLogin = async function() { try { await signInWithPopup(auth, provider); } catch (e) { alert(e.message); } };
     window.emailLogin = async function() {
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
+        const email = document.getElementById('loginEmail').value, pass = document.getElementById('loginPass').value;
         try { await signInWithEmailAndPassword(auth, email, pass); } catch (e) { alert(e.message); }
     };
 
-    // MENU LOGIC
     const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
     menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
     closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
