@@ -41,8 +41,8 @@
     .edit-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-size: 13px; font-weight: 700; color: var(--gray); }
-    .form-group input, .form-group select { padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; background: var(--white); }
-    .form-group input:focus, .form-group select:focus { border-color: var(--maroon); }
+    .form-group input { padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; background: var(--white); }
+    .form-group input:focus { border-color: var(--maroon); }
     .form-group input:disabled { background: #FAFAFA; color: var(--gray); cursor: not-allowed; }
     .btn-save { padding: 12px 24px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: auto; }
     .btn-save:hover { background: var(--maroon-hover); }
@@ -55,12 +55,18 @@
     .btn-doc:hover { border-color: var(--black); }
     .btn-doc.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
 
-    /* DANGER ZONE & BOTTOM ACTIONS */
+    /* INLINE ALERTS */
+    .inline-alert { display: none; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+    .inline-alert.success { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+    .inline-alert.error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
+
+    /* DANGER ZONE */
     .danger-card { border-color: #FECACA; background: #FEF2F2; }
     .danger-card h3 { color: #B91C1C; border-bottom-color: #FECACA; }
     .btn-danger { padding: 12px 24px; background: #DC2626; color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
     .btn-danger:hover { background: #B91C1C; }
     
+    /* BOTTOM ACTIONS */
     .bottom-actions { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; margin-bottom: 64px; }
     .btn-signout { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; background: var(--white); border: 2px solid var(--silver); color: var(--black); border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
     .btn-signout:hover { border-color: var(--black); background: #FAFAFA; }
@@ -94,6 +100,9 @@
             <!-- PROFILE INFO -->
             <div class="card">
                 <h3>Profile Information</h3>
+                <div class="inline-alert success" id="profileSuccess">Profile updated successfully!</div>
+                <div class="inline-alert error" id="profileError">Error updating profile.</div>
+                
                 <form id="editForm" autocomplete="off">
                     <div class="edit-form">
                         <div class="form-group">
@@ -124,6 +133,9 @@
             <!-- SECURITY -->
             <div class="card">
                 <h3>Account Security</h3>
+                <div class="inline-alert success" id="securitySuccess">Account updated! Please sign in again.</div>
+                <div class="inline-alert error" id="securityError">Error updating account.</div>
+
                 <form id="securityForm" autocomplete="off">
                     <div class="edit-form">
                         <div class="form-group">
@@ -146,17 +158,10 @@
             <!-- DOCUMENTS -->
             <div class="card">
                 <h3>Gated Materials (Enrolled Students Only)</h3>
-                
                 <div class="category" style="margin-bottom: 24px;">
                     <h4 style="font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 12px;">Annual Teaching Plan (ATP 2027)</h4>
                     <div class="doc-item"><div class="doc-info"><h5>ATP 2027: Mathematics</h5></div><a href="atp-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                     <div class="doc-item"><div class="doc-info"><h5>ATP 2027: Web Development</h5></div><a href="atp-web.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
-                </div>
-
-                <div class="category" style="margin-bottom: 24px;">
-                    <h4 style="font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 12px;">Examination Guidelines 2027</h4>
-                    <div class="doc-item"><div class="doc-info"><h5>IFB-AE-S Mathematics Guidelines</h5></div><a href="guidelines-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
-                    <div class="doc-item"><div class="doc-info"><h5>IFB-AE-W Web Dev Guidelines</h5></div><a href="guidelines-web.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                 </div>
             </div>
 
@@ -193,16 +198,13 @@
         if (docSnap.exists()) {
             currentData = docSnap.data();
             
-            // Populate UI
             document.getElementById('userName').innerText = currentData.name || "Applicant";
             document.getElementById('userStudentId').innerText = currentData.studentId || "---";
             
-            // 2-digit badge
             if (currentData.studentId) {
                 document.getElementById('profileBadge').innerText = currentData.studentId.slice(-2);
             }
             
-            // Pre-fill Form
             document.getElementById('editName').value = currentData.name || "";
             document.getElementById('editPhone').value = currentData.phone || "";
             document.getElementById('editDob').value = currentData.dob || "";
@@ -219,15 +221,20 @@
         const btn = e.target.querySelector('button');
         btn.innerText = "Saving...";
         
+        document.getElementById('profileSuccess').style.display = 'none';
+        document.getElementById('profileError').style.display = 'none';
+
         try {
             await updateDoc(doc(db, "users", auth.currentUser.uid), {
                 name: document.getElementById('editName').value,
                 phone: document.getElementById('editPhone').value
             });
-            alert("Profile updated successfully!");
-            window.location.reload();
+            document.getElementById('profileSuccess').style.display = 'block';
+            setTimeout(() => document.getElementById('profileSuccess').style.display = 'none', 3000);
+            btn.innerText = "Save Changes";
         } catch (error) {
-            alert("Error: " + error.message);
+            document.getElementById('profileError').innerText = "Error: " + error.message;
+            document.getElementById('profileError').style.display = 'block';
             btn.innerText = "Save Changes";
         }
     });
@@ -241,7 +248,14 @@
         const confirmPass = document.getElementById('updatePassConfirm').value;
         const btn = document.getElementById('saveSecurityBtn');
 
-        if (newPass && newPass !== confirmPass) { alert("Passwords do not match."); return; }
+        document.getElementById('securitySuccess').style.display = 'none';
+        document.getElementById('securityError').style.display = 'none';
+
+        if (newPass && newPass !== confirmPass) { 
+            document.getElementById('securityError').innerText = "Passwords do not match.";
+            document.getElementById('securityError').style.display = 'block';
+            return; 
+        }
 
         btn.innerText = "Updating..."; btn.disabled = true;
         try {
@@ -252,33 +266,33 @@
             if (newPass) {
                 await updatePassword(auth.currentUser, newPass);
             }
-            alert("Account details updated! Please sign in again.");
-            await signOut(auth);
-            window.location.href = "index.html";
+            document.getElementById('securitySuccess').style.display = 'block';
+            setTimeout(async () => {
+                await signOut(auth);
+                window.location.href = "index.html";
+            }, 2000);
         } catch (error) {
             if (error.code === 'auth/requires-recent-login') {
-                alert("For security, you must sign out and log back in before changing your email or password.");
+                document.getElementById('securityError').innerText = "For security, you must sign out and log back in before changing your email or password.";
             } else {
-                alert("Error: " + error.message);
+                document.getElementById('securityError').innerText = "Error: " + error.message;
             }
+            document.getElementById('securityError').style.display = 'block';
             btn.innerText = "Update Account"; btn.disabled = false;
         }
     });
 
-    // Delete Account
+    // Delete Account (No prompt popup)
     window.deleteAccount = async function() {
         if (!auth.currentUser) return;
-        const confirm = prompt("Type 'DELETE' to permanently deregister your account:");
-        if (confirm !== 'DELETE') return;
+        
+        // Instead of a prompt, we confirm via a double-click or simple confirm dialogue (built-in is fine, but let's make it clear)
+        if (!confirm("Are you absolutely sure you want to permanently delete your account? This action cannot be undone.")) return;
 
         try {
             const uid = auth.currentUser.uid;
-            // 1. Delete Firestore Document
             await deleteDoc(doc(db, "users", uid));
-            // 2. Delete Auth User
             await deleteUser(auth.currentUser);
-            
-            alert("Your account has been permanently deleted.");
             window.location.href = "index.html";
         } catch (error) {
             if (error.code === 'auth/requires-recent-login') {
