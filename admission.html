@@ -14,7 +14,6 @@
     .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
     .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
     
-    /* TABS */
     .tabs { display: flex; gap: 4px; padding: 4px; background: #FAFAFA; border-radius: 12px; margin-bottom: 32px; border: 1px solid var(--silver); }
     .tab { flex: 1; padding: 12px; border: none; background: transparent; border-radius: 8px; font-size: 15px; font-weight: 700; color: var(--gray); cursor: pointer; transition: 0.2s; }
     .tab.active { background: var(--maroon); color: var(--white); box-shadow: 0 4px 10px rgba(122,31,43,0.2); }
@@ -29,7 +28,6 @@
     input, select { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; background: var(--white); }
     input:focus, select:focus { border-color: var(--maroon); }
     
-    /* COURSE CAROUSEL */
     .course-carousel { display: flex; gap: 16px; overflow-x: auto; padding: 10px 0 20px; scrollbar-width: none; }
     .course-carousel::-webkit-scrollbar { display: none; }
     .course-select-card { 
@@ -51,7 +49,6 @@
     .id-box .label { font-size: 11px; text-transform: uppercase; color: var(--gray); font-weight: 700; }
     .id-box .value { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--black); }
 
-    /* INLINE ERROR */
     .error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
 
     @media (max-width: 768px) { .form-card { padding: 24px; } }
@@ -63,7 +60,6 @@
     
     <div class="form-card">
         
-        <!-- TABS -->
         <div class="tabs">
             <button class="tab active" onclick="switchTab('apply')">Apply</button>
             <button class="tab" onclick="switchTab('login')">Login</button>
@@ -86,14 +82,14 @@
                 <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required autocomplete="off"></div>
                 
                 <div class="form-group" style="margin-top: 24px;">
-                    <label>Select Courses (Tap to select)</label>
+                    <label>Select Courses (Tap to select one or both)</label>
                     <div class="course-carousel">
-                        <div class="course-select-card" data-course="IFB-S Mathematics" onclick="toggleCourse(this)">
-                            <h4>IFB-S: Mathematics</h4>
+                        <div class="course-select-card" data-course="Mathematics" onclick="toggleCourse(this)">
+                            <h4>Mathematics</h4>
                             <p>Advanced Mathematics Track</p>
                         </div>
-                        <div class="course-select-card" data-course="IFB AQ-B Front-End" onclick="toggleCourse(this)">
-                            <h4>IFB AQ-B: Front-End</h4>
+                        <div class="course-select-card" data-course="Front-end Web Development" onclick="toggleCourse(this)">
+                            <h4>Front-end Web Development</h4>
                             <p>Web Development Track</p>
                         </div>
                     </div>
@@ -144,7 +140,6 @@
 
     let selectedCourses = [];
 
-    // TAB SWITCHING
     window.switchTab = function(tab) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('#applyError, #loginError').forEach(e => e.style.display = 'none');
@@ -160,7 +155,6 @@
         }
     }
 
-    // COURSE CAROUSEL SELECTION
     window.toggleCourse = function(el) {
         const course = el.dataset.course;
         if (selectedCourses.includes(course)) {
@@ -172,7 +166,6 @@
         }
     }
 
-    // SUBMIT APPLICATION
     document.getElementById('admissionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
@@ -193,7 +186,6 @@
         const phone = document.getElementById('phone').value;
         const dobValue = document.getElementById('dob').value;
         
-        // FORMAT STUDENT ID: 2701 + YYMMDD + 001
         const dobClean = dobValue.replace(/-/g, ''); 
         const yy = dobClean.substring(2, 4); 
         const mmdd = dobClean.substring(4, 8); 
@@ -226,7 +218,6 @@
         }
     });
 
-    // LOGIN
     document.getElementById('loginForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('loginBtn');
