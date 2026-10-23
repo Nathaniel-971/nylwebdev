@@ -38,14 +38,14 @@
     .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
     .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
-    /* LOGGED IN */
+    /* LOGGED IN: 2-DIGIT BADGE */
     .nav-logged-in { display: none; align-items: center; }
-    .profile-grid-mini { 
-        width: 46px; height: 46px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; 
-        border-radius: 50%; overflow: hidden; border: 2px solid var(--silver); background: var(--white); cursor: pointer; transition: transform 0.2s;
+    .profile-badge { 
+        width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+        border-radius: 50%; border: 2px solid var(--maroon); background: var(--white); 
+        cursor: pointer; transition: transform 0.2s; font-size: 16px; font-weight: 900; color: var(--maroon);
     }
-    .profile-grid-mini:hover { transform: scale(1.05); border-color: var(--maroon); }
-    .profile-grid-mini div { border-radius: 1px; }
+    .profile-badge:hover { transform: scale(1.05); background: #FFF5F6; }
 
     /* MENU BUTTON */
     .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; z-index: 2001; }
@@ -177,8 +177,9 @@
                     <a href="admission.html" class="nav-cta">Apply</a>
                 </div>
 
+                <!-- LOGGED IN: 2-DIGIT BADGE -->
                 <div class="nav-logged-in" id="navLoggedIn">
-                    <div class="profile-grid-mini" id="navGridIcon" onclick="window.location.href='student-dashboard.html'" title="Dashboard"></div>
+                    <div class="profile-badge" id="navProfileBadge" onclick="window.location.href='student-dashboard.html'" title="Dashboard"></div>
                 </div>
                 
                 <button class="menu-btn" id="menuBtn">
@@ -265,7 +266,6 @@
         </div>
         
         <div class="carousel-wrapper" id="courseCarousel">
-            <!-- Card 1: Mathematics -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -278,7 +278,6 @@
                 </div>
             </div>
             
-            <!-- Card 2: Front-end Web Development -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
                 <div class="course-content">
@@ -291,7 +290,6 @@
                 </div>
             </div>
 
-            <!-- Duplicates for scrolling -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -414,20 +412,14 @@
             document.getElementById('navLoggedIn').style.display = 'flex';
             document.getElementById('heroLoggedOut').style.display = 'none';
             document.getElementById('heroLoggedIn').style.display = 'flex';
-            document.getElementById('coursesSection').style.display = 'none'; // Hide carousel
+            document.getElementById('coursesSection').style.display = 'none'; 
             
             const docSnap = await getDoc(doc(db, "users", user.uid));
             if(docSnap.exists()){
                 const id = docSnap.data().studentId || "27011026001";
-                const c = document.getElementById('navGridIcon'); 
-                c.innerHTML = '';
-                const colors = ['#7A1F2B', '#C7CBD1', '#111111', '#FAFAFA', '#E2E8F0'];
-                
-                for (let i = 0; i < 9; i++) { 
-                    const div = document.createElement('div'); 
-                    div.style.backgroundColor = colors[id.charCodeAt(i % id.length) % colors.length]; 
-                    c.appendChild(div); 
-                }
+                // Get the last 2 digits of the Student ID
+                const badgeText = id.slice(-2);
+                document.getElementById('navProfileBadge').innerText = badgeText;
             }
         } else {
             // Logged Out
@@ -435,7 +427,7 @@
             document.getElementById('navLoggedIn').style.display = 'none';
             document.getElementById('heroLoggedOut').style.display = 'flex';
             document.getElementById('heroLoggedIn').style.display = 'none';
-            document.getElementById('coursesSection').style.display = 'block'; // Show carousel
+            document.getElementById('coursesSection').style.display = 'block'; 
             
             document.getElementById('noticeModal').classList.add('active');
         }
