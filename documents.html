@@ -8,14 +8,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
     :root { 
-        --white: #FFFFFF; --black: #111111; --gray: #666666; 
-        --silver: #E2E8F0; --silver-dark: #C7CBD1; 
-        --maroon: #7A1F2B; --maroon-hover: #5A1620; 
+        --white: #FFFFFF; 
+        --black: #111111; 
+        --gray: #666666; 
+        --silver: #E2E8F0; 
+        --silver-dark: #C7CBD1; 
+        --maroon: #7A1F2B; 
+        --maroon-hover: #5A1620; 
         --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         --transition: all 0.3s ease;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; overflow-x: hidden; }
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
@@ -63,10 +68,9 @@
     .section-title i { color: var(--maroon); width: 28px; height: 28px; }
 
     /* TIMETABLE */
-    .tt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .tt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
     .btn-download-tt { padding: 12px 24px; background: var(--white); border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
     .btn-download-tt:hover { border-color: var(--black); }
-
     .timetable-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; overflow: hidden; margin-bottom: 64px; }
     .tt-row { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--silver); }
     .tt-row:last-child { border-bottom: none; }
@@ -83,25 +87,38 @@
     .input-group button { padding: 16px 32px; background: var(--maroon); color: var(--white); border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
     .input-group button:hover { background: var(--maroon-hover); }
 
-    /* DOCUMENTS */
-    .doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
-    .doc-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; display: flex; flex-direction: column; }
-    .doc-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--white); border: 1px solid var(--silver); color: var(--maroon); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    /* DOCUMENTS LIST */
+    .doc-list-container { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; overflow: hidden; }
+    .doc-item { display: flex; align-items: center; justify-content: space-between; padding: 24px; border-bottom: 1px solid var(--silver); transition: background 0.2s; gap: 24px; }
+    .doc-item:last-child { border-bottom: none; }
+    .doc-item:hover { background: #FAFAFA; }
+    
+    .doc-info { display: flex; align-items: center; gap: 20px; flex: 1; }
+    .doc-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--white); border: 1px solid var(--silver); color: var(--maroon); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .doc-icon i { width: 24px; height: 24px; }
-    .doc-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
-    .doc-card p { font-size: 14px; color: var(--gray); margin-bottom: 24px; flex-grow: 1; }
-    .doc-actions { display: flex; gap: 12px; }
-    .doc-actions button { flex: 1; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; border: 1.5px solid var(--silver); background: var(--white); color: var(--black); }
+    
+    .doc-text h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: var(--black); }
+    .doc-text p { font-size: 14px; color: var(--gray); }
+    
+    .doc-actions { display: flex; gap: 12px; flex-shrink: 0; }
+    .doc-actions button { 
+        padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; 
+        cursor: pointer; transition: 0.2s; border: 1.5px solid var(--silver);
+        background: var(--white); color: var(--black); display: flex; align-items: center; gap: 6px;
+    }
     .doc-actions button:hover { border-color: var(--black); }
     .doc-actions button.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
     .doc-actions button.primary:hover { background: var(--maroon-hover); }
+    .doc-actions button i { width: 16px; height: 16px; }
 
     @media (min-width: 1025px) { .nav-cta { display: block; } }
     @media (max-width: 768px) {
         .input-group { flex-direction: column; }
         .tt-row { flex-direction: column; align-items: flex-start; gap: 8px; }
         .page-header h1 { font-size: 32px; }
-        .tt-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+        .doc-item { flex-direction: column; align-items: flex-start; }
+        .doc-actions { width: 100%; }
+        .doc-actions button { flex: 1; justify-content: center; }
     }
 </style>
 </head>
@@ -120,6 +137,7 @@
         </div>
     </header>
 
+    <!-- MENU -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="menu-header"><button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button></div>
         <div class="menu-content">
@@ -155,13 +173,14 @@
         <div class="menu-footer"><a href="admission.html" class="btn-menu-apply">Apply Now</a></div>
     </div>
 
+    <!-- PAGE CONTENT -->
     <div class="page-container">
         <div class="page-header">
             <h1>Documents & Portal</h1>
-            <p>Download guidelines, view the timetable, and access your applicant dashboard.</p>
+            <p>Download guidelines, view the AE Examination timetable, and access your applicant dashboard.</p>
         </div>
 
-        <!-- TIMETABLE WITH DOWNLOAD -->
+        <!-- 1. AE TIMETABLE -->
         <div class="tt-header">
             <h2 class="section-title" style="margin-bottom: 0;"><i data-lucide="calendar"></i> AE Examination Timetable</h2>
             <button class="btn-download-tt" onclick="alert('Timetable PDF coming soon.')"><i data-lucide="download"></i> Download PDF</button>
@@ -172,7 +191,7 @@
             <div class="tt-row"><span class="tt-date">31 January 2027</span><span class="tt-desc">Admission Examination - Session 3</span></div>
         </div>
 
-        <!-- PORTAL -->
+        <!-- 2. PORTAL LOGIN -->
         <h2 class="section-title"><i data-lucide="lock"></i> Student Dashboard</h2>
         <div class="portal-card">
             <h2>Access Your Dashboard</h2>
@@ -183,36 +202,55 @@
             </div>
         </div>
 
-        <!-- DOCUMENTS -->
+        <!-- 3. DOCUMENTS LIST -->
         <h2 class="section-title"><i data-lucide="file-text"></i> Academic Guidelines</h2>
-        <div class="doc-grid">
-            <div class="doc-card">
-                <div class="doc-icon"><i data-lucide="sigma"></i></div>
-                <h3>Mathematics Guideline</h3>
-                <p>The curriculum and examination structure for the IFB-S Mathematics track.</p>
+        <div class="doc-list-container">
+            
+            <!-- Math Guideline -->
+            <div class="doc-item">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="sigma"></i></div>
+                    <div class="doc-text">
+                        <h3>Mathematics Guideline</h3>
+                        <p>The curriculum and examination structure for the IFB-S Mathematics track.</p>
+                    </div>
+                </div>
                 <div class="doc-actions">
-                    <button onclick="alert('Document coming soon.')">View</button>
-                    <button class="primary" onclick="alert('Document coming soon.')">Download</button>
+                    <button onclick="alert('Document coming soon.')"><i data-lucide="eye"></i> View</button>
+                    <button class="primary" onclick="alert('Document coming soon.')"><i data-lucide="download"></i> Download</button>
                 </div>
             </div>
-            <div class="doc-card">
-                <div class="doc-icon"><i data-lucide="code-2"></i></div>
-                <h3>Web Development Guideline</h3>
-                <p>The curriculum and examination structure for the IFB AQ-B Front-End track.</p>
+
+            <!-- Web Dev Guideline -->
+            <div class="doc-item">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="code-2"></i></div>
+                    <div class="doc-text">
+                        <h3>Web Development Guideline</h3>
+                        <p>The curriculum and examination structure for the IFB AQ-B Front-End track.</p>
+                    </div>
+                </div>
                 <div class="doc-actions">
-                    <button onclick="alert('Document coming soon.')">View</button>
-                    <button class="primary" onclick="alert('Document coming soon.')">Download</button>
+                    <button onclick="alert('Document coming soon.')"><i data-lucide="eye"></i> View</button>
+                    <button class="primary" onclick="alert('Document coming soon.')"><i data-lucide="download"></i> Download</button>
                 </div>
             </div>
-            <div class="doc-card">
-                <div class="doc-icon"><i data-lucide="shield-check"></i></div>
-                <h3>Examination Guidelines</h3>
-                <p>Official examination guidelines and assessment structures for all applicants.</p>
+
+            <!-- Exam Guidelines -->
+            <div class="doc-item">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="shield-check"></i></div>
+                    <div class="doc-text">
+                        <h3>Examination Guidelines</h3>
+                        <p>Official examination rules and assessment structures for all applicants.</p>
+                    </div>
+                </div>
                 <div class="doc-actions">
-                    <button onclick="alert('Document coming soon.')">View</button>
-                    <button class="primary" onclick="alert('Document coming soon.')">Download</button>
+                    <button onclick="alert('Document coming soon.')"><i data-lucide="eye"></i> View</button>
+                    <button class="primary" onclick="alert('Document coming soon.')"><i data-lucide="download"></i> Download</button>
                 </div>
             </div>
+
         </div>
     </div>
 
