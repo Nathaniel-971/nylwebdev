@@ -10,7 +10,7 @@
     :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
-    .container { width: 100%; max-width: 700px; }
+    .container { width: 100%; max-width: 600px; }
     .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
     .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
     
@@ -25,11 +25,30 @@
     
     .form-group { margin-bottom: 20px; }
     label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    input, select { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; background: var(--white); }
-    input:focus, select:focus { border-color: var(--maroon); }
+    input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; background: var(--white); }
+    input:focus { border-color: var(--maroon); }
     
     .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+    /* CUSTOM COUNTRY DROPDOWN */
+    .custom-select { position: relative; user-select: none; }
+    .select-trigger { 
+        width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); 
+        border-radius: 10px; background: var(--white); cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
+    }
+    .select-trigger span { color: var(--gray); }
+    .select-trigger.active { border-color: var(--maroon); }
+    .select-options { 
+        position: absolute; top: 100%; left: 0; right: 0; background: var(--white); 
+        border: 1px solid var(--silver); border-radius: 10px; margin-top: 8px; 
+        max-height: 200px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+    }
+    .select-options.active { display: block; }
+    .select-option { padding: 12px 16px; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 10px; }
+    .select-option:hover { background: #FAFAFA; }
+    .select-option.selected { background: #FFF5F6; color: var(--maroon); font-weight: 700; }
+
+    /* COURSE CAROUSEL */
     .course-carousel { display: flex; gap: 16px; overflow-x: auto; padding: 10px 0 20px; scrollbar-width: none; }
     .course-carousel::-webkit-scrollbar { display: none; }
     .course-select-card { 
@@ -51,6 +70,7 @@
     .id-box .label { font-size: 11px; text-transform: uppercase; color: var(--gray); font-weight: 700; }
     .id-box .value { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--black); }
 
+    /* INLINE ERROR */
     .error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
 
     @media (max-width: 768px) { .form-card { padding: 24px; } .row { grid-template-columns: 1fr; } }
@@ -83,24 +103,30 @@
                     <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required autocomplete="off"></div>
                 </div>
 
+                <!-- CUSTOM COUNTRY SELECT -->
                 <div class="form-group">
                     <label>Country</label>
-                    <select id="country" required>
-                        <option value="" disabled selected>Select your country...</option>
-                        <option value="South Africa">South Africa (+27)</option>
-                        <option value="United States">United States (+1)</option>
-                        <option value="United Kingdom">United Kingdom (+44)</option>
-                        <option value="Nigeria">Nigeria (+234)</option>
-                        <option value="Kenya">Kenya (+254)</option>
-                        <option value="India">India (+91)</option>
-                        <option value="Australia">Australia (+61)</option>
-                        <option value="Other">Other / International</option>
-                    </select>
+                    <div class="custom-select" id="countrySelect">
+                        <div class="select-trigger" onclick="toggleCountryDropdown()">
+                            <span id="selectedCountryText">Select your country...</span>
+                            <i data-lucide="chevron-down" style="width:16px; height:16px; color:var(--gray);"></i>
+                        </div>
+                        <div class="select-options" id="countryOptions">
+                            <div class="select-option" data-value="South Africa" onclick="selectCountry(this)">🇿🇦 South Africa</div>
+                            <div class="select-option" data-value="United States" onclick="selectCountry(this)">🇺🇸 United States</div>
+                            <div class="select-option" data-value="United Kingdom" onclick="selectCountry(this)">🇬🇧 United Kingdom</div>
+                            <div class="select-option" data-value="Nigeria" onclick="selectCountry(this)">🇳🇬 Nigeria</div>
+                            <div class="select-option" data-value="Kenya" onclick="selectCountry(this)">🇰🇪 Kenya</div>
+                            <div class="select-option" data-value="India" onclick="selectCountry(this)">🇮🇳 India</div>
+                            <div class="select-option" data-value="Australia" onclick="selectCountry(this)">🇦🇺 Australia</div>
+                            <div class="select-option" data-value="Other" onclick="selectCountry(this)">🌍 Other / International</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">
                     <div class="form-group"><label>Email Address</label><input type="email" id="email" required placeholder="you@example.com" autocomplete="off"></div>
-                    <div class="form-group"><label>Phone Number (with code)</label><input type="tel" id="phone" required placeholder="+27 60 123 4567" autocomplete="off"></div>
+                    <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" required placeholder="+27 60 123 4567" autocomplete="off"></div>
                 </div>
                 
                 <div class="form-group" style="margin-top: 24px;">
@@ -161,6 +187,31 @@
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
     let selectedCourses = [];
+    let selectedCountry = "";
+
+    // CUSTOM DROPDOWN LOGIC
+    window.toggleCountryDropdown = function() {
+        document.getElementById('countryOptions').classList.toggle('active');
+        document.querySelector('.select-trigger').classList.toggle('active');
+    }
+
+    window.selectCountry = function(el) {
+        selectedCountry = el.dataset.value;
+        document.getElementById('selectedCountryText').innerText = el.innerText;
+        document.getElementById('selectedCountryText').style.color = 'var(--black)';
+        
+        document.querySelectorAll('.select-option').forEach(o => o.classList.remove('selected'));
+        el.classList.add('selected');
+        toggleCountryDropdown();
+    }
+
+    // Close dropdown if clicked outside
+    window.addEventListener('click', function(e) {
+        if (!document.getElementById('countrySelect').contains(e.target)) {
+            document.getElementById('countryOptions').classList.remove('active');
+            document.querySelector('.select-trigger').classList.remove('active');
+        }
+    });
 
     window.switchTab = function(tab) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -199,31 +250,48 @@
             errorBox.style.display = 'block';
             return;
         }
+        if (!selectedCountry) {
+            errorBox.innerText = "Please select your country.";
+            errorBox.style.display = 'block';
+            return;
+        }
 
         btn.innerText = "Processing...";
         btn.disabled = true;
 
         const name = document.getElementById('fullName').value;
         const dobValue = document.getElementById('dob').value;
-        const country = document.getElementById('country').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
         
+        // Generate 13-digit ID: 2701 + YYMMDD + 3 random digits (to avoid collisions)
         const dobClean = dobValue.replace(/-/g, ''); 
         const yy = dobClean.substring(2, 4); 
         const mmdd = dobClean.substring(4, 8); 
-        const studentId = `2701${yy}${mmdd}001`; 
+        const random3 = Math.floor(100 + Math.random() * 900);
+        const studentId = `2701${yy}${mmdd}${random3}`; 
 
         const tempPassword = "IFB2027!" + Math.floor(Math.random() * 10000);
 
         try {
+            // 1. Create Auth User
             const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
             const user = userCredential.user;
 
+            // 2. Create Document in Firestore using Auth UID as the Document ID
             await setDoc(doc(db, "users", user.uid), {
-                name: name, email: email, phone: phone, dob: dobValue, country: country, studentId: studentId, courses: selectedCourses, status: "Applicant", createdAt: new Date()
+                name: name, 
+                email: email, 
+                phone: phone, 
+                dob: dobValue, 
+                country: selectedCountry, 
+                studentId: studentId, 
+                courses: selectedCourses, 
+                status: "Applicant", 
+                createdAt: new Date()
             });
 
+            // 3. Show Success
             document.getElementById('applyTab').style.display = 'none';
             document.querySelector('.tabs').style.display = 'none';
             document.getElementById('displayId').innerText = studentId;
