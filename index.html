@@ -98,7 +98,7 @@
                 <div class="brand-text"><h1>Institute of Board</h1></div>
             </a>
             <div class="nav-right">
-                <button class="btn-login" onclick="openAuth()">Login</button>
+                <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
                 <a href="admission.html" class="nav-cta">Apply Now</a>
             </div>
         </div>
@@ -172,10 +172,7 @@
             <div class="modal-title">Welcome Back</div>
             <div class="modal-subtitle">Sign in to access your dashboard.</div>
 
-            <button class="btn-google" onclick="simulateGoogleLogin()">
-                Continue with Google
-            </button>
-
+            <button class="btn-google" onclick="simulateGoogleLogin()">Continue with Google</button>
             <div class="divider">or sign in with email</div>
 
             <form onsubmit="event.preventDefault(); simulateEmailLogin();">
@@ -185,7 +182,7 @@
                 </div>
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" required placeholder="••••••••">
+                    <input type="password" id="loginPass" required placeholder="••••••••">
                 </div>
                 <button type="submit" class="btn-submit">Sign In</button>
             </form>
@@ -200,58 +197,49 @@
         </div>
     </div>
 
-<script>
+<script type="module">
     lucide.createIcons();
 
-    function openAuth() { document.getElementById('authModal').classList.add('active'); }
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    // Simulate Google Login
-    function simulateGoogleLogin() {
-        const email = prompt("Simulate Google Sign-In\nEnter your Google Email:");
-        if (!email || !email.includes('@')) return;
-        loginUser(email);
-    }
+    const firebaseConfig = {
+        apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
+        authDomain: "nyldevcourses.firebaseapp.com",
+        projectId: "nyldevcourses",
+        storageBucket: "nyldevcourses.firebasestorage.app",
+        messagingSenderId: "16687006873",
+        appId: "1:16687006873:web:b7d66ad1024ccd92722408"
+    };
 
-    // Simulate Email Login
-    function simulateEmailLogin() {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    window.simulateGoogleLogin = async function() {
+        try {
+            await signInWithPopup(auth, provider);
+            window.location.href = "student-dashboard.html";
+        } catch (error) { alert("Google Login Error: " + error.message); }
+    };
+
+    window.simulateEmailLogin = async function() {
         const email = document.getElementById('loginEmail').value;
-        if (!email || !email.includes('@')) return;
-        loginUser(email);
-    }
+        const password = document.getElementById('loginPass').value;
+        if (!email || !password) { alert("Please fill in both fields."); return; }
 
-    // Core Login Logic
-    function loginUser(email) {
-        let name = email.split('@')[0];
-        name = name.charAt(0).toUpperCase() + name.slice(1);
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            window.location.href = "student-dashboard.html";
+        } catch (error) { alert("Login Error: " + error.message); }
+    };
 
-        let student = JSON.parse(localStorage.getItem('ifb_student'));
-        
-        // If no application exists, or email doesn't match, create a temporary session profile
-        if (!student || student.email !== email) {
-            let seq = parseInt(localStorage.getItem('ifb_sequence') || '0') + 1;
-            localStorage.setItem('ifb_sequence', seq);
-            const seqPadded = seq.toString().padStart(4, '0');
-            const uniqueNum = Math.floor(Math.random() * 900) + 100;
-            
-            student = {
-                name: name,
-                email: email,
-                admissionId: `202701${seqPadded}${uniqueNum}`
-            };
-            localStorage.setItem('ifb_student', JSON.stringify(student));
-        }
-        
-        localStorage.setItem('ifb_session', student.admissionId);
-        window.location.href = "student-dashboard.html";
-    }
-
-    // Legal Modals
     const legalTexts = {
         privacy: `<h2>Privacy Policy</h2><p>We collect essential information (Name, Email) solely to generate your Admission ID. We use local storage to keep you logged in. We comply with global data protection principles (GDPR). Your data is never sold.</p>`,
         terms: `<h2>Terms & Conditions</h2><p>IFB is independent and non-accredited. Applying does not guarantee admission; you must pass the Admission Examination. Cheating results in immediate disqualification.</p>`
     };
 
-    function openLegal(type) {
+    window.openLegal = function(type) {
         document.getElementById('legalContent').innerHTML = legalTexts[type];
         document.getElementById('legalModal').classList.add('active');
     }
