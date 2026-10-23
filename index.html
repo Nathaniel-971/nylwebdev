@@ -67,25 +67,31 @@
     .footer-col a:hover, .footer-col button:hover { color: var(--maroon); }
     .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
 
-    /* COOKIE BANNER */
-    .cookie-banner { position: fixed; bottom: 24px; left: 24px; right: 24px; max-width: 600px; background: var(--white); border: 1px solid var(--silver); padding: 24px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 9999; display: none; align-items: center; justify-content: space-between; gap: 24px; }
-    .cookie-banner.active { display: flex; }
-    .cookie-banner p { font-size: 13px; color: var(--gray); margin: 0; }
-    .cookie-btn { background: var(--maroon); color: var(--white); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    /* AUTH MODAL */
+    .auth-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; backdrop-filter: blur(5px); }
+    .auth-modal.active { display: flex; }
+    .auth-box { background: var(--white); border-radius: 20px; padding: 40px; max-width: 400px; width: 100%; position: relative; text-align: center; }
+    .close-auth { position: absolute; top: 16px; right: 16px; background: none; border: none; cursor: pointer; color: var(--gray); }
+    .auth-box h2 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+    .auth-box p { font-size: 14px; color: var(--gray); margin-bottom: 24px; }
+    
+    .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; background: var(--white); border: 1.5px solid var(--silver); border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; margin-bottom: 20px; transition: 0.2s; }
+    .btn-google:hover { background: #FAFAFA; border-color: var(--black); }
+    .btn-google img { width: 20px; height: 20px; }
+    
+    .divider { display: flex; align-items: center; text-align: center; margin: 20px 0; color: var(--gray); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--silver); }
+    .divider::before { margin-right: 10px; }
+    .divider::after { margin-left: 10px; }
 
-    /* MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
-    .modal-overlay.active { display: flex; }
-    .modal-content { background: var(--white); border-radius: 16px; padding: 40px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; position: relative; }
-    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; }
-    .modal-content h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; }
-    .modal-content p { font-size: 14px; color: var(--gray); margin-bottom: 16px; line-height: 1.7; }
+    .auth-input { width: 100%; padding: 14px; border: 1.5px solid var(--silver); border-radius: 10px; font-size: 14px; margin-bottom: 12px; outline: none; }
+    .auth-input:focus { border-color: var(--maroon); }
+    .btn-auth-submit { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 8px; }
 
     @media (max-width: 768px) {
         .course-grid { grid-template-columns: 1fr; }
         .hero-buttons { flex-direction: column; }
         .footer-grid { flex-direction: column; }
-        .cookie-banner { flex-direction: column; text-align: center; }
     }
 </style>
 </head>
@@ -98,7 +104,7 @@
                 <div class="brand-text"><h1>Institute of Board</h1></div>
             </a>
             <div class="nav-right">
-                <button class="btn-login" onclick="promptLogin()">Login</button>
+                <button class="btn-login" onclick="openAuthModal()">Login</button>
                 <a href="admission.html" class="nav-cta">Apply Now</a>
             </div>
         </div>
@@ -164,16 +170,31 @@
         </div>
     </footer>
 
-    <!-- COOKIE BANNER -->
-    <div class="cookie-banner" id="cookieBanner">
-        <p>We use essential cookies to ensure you get the best experience. By continuing, you agree to our <button onclick="openModal('privacy')" style="color: var(--maroon); font-weight: 700; background: none; border: none; cursor: pointer;">Privacy Policy</button>.</p>
-        <button class="cookie-btn" onclick="acceptCookies()">Accept & Close</button>
+    <!-- AUTH MODAL -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-box">
+            <button class="close-auth" onclick="closeAuthModal()"><i data-lucide="x"></i></button>
+            <div style="font-size: 40px; font-weight: 900; color: var(--maroon); margin-bottom: 16px;">∆</div>
+            <h2>Student Login</h2>
+            <p>Sign in to access your dashboard and examination materials.</p>
+            
+            <button class="btn-google" onclick="simulateGoogleLogin()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                Continue with Google
+            </button>
+            
+            <div class="divider">or with email</div>
+            
+            <input type="email" class="auth-input" placeholder="Email Address" id="loginEmail">
+            <input type="password" class="auth-input" placeholder="Password" id="loginPass">
+            <button class="btn-auth-submit" onclick="simulateEmailLogin()">Sign In</button>
+        </div>
     </div>
 
-    <!-- MODAL (Privacy & Terms) -->
-    <div class="modal-overlay" id="legalModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()"><i data-lucide="x"></i></button>
+    <!-- LEGAL MODAL -->
+    <div class="auth-modal" id="legalModal">
+        <div class="auth-box" style="text-align: left; max-width: 600px;">
+            <button class="close-auth" onclick="closeModal()"><i data-lucide="x"></i></button>
             <div id="modalContent"></div>
         </div>
     </div>
@@ -181,52 +202,56 @@
 <script>
     lucide.createIcons();
 
-    // COOKIE LOGIC
-    if (!localStorage.getItem('ifb_cookies')) {
-        document.getElementById('cookieBanner').classList.add('active');
-    }
-    function acceptCookies() {
-        localStorage.setItem('ifb_cookies', 'true');
-        document.getElementById('cookieBanner').classList.remove('active');
+    // AUTH LOGIC
+    function openAuthModal() { document.getElementById('authModal').classList.add('active'); }
+    function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); }
+
+    function simulateGoogleLogin() {
+        const mockEmail = "student@gmail.com";
+        const mockName = "Google Student";
+        loginUser(mockEmail, mockName, "google");
     }
 
-    // LOGIN PROMPT
-    function promptLogin() {
-        const id = prompt("Enter your 13-digit Admission ID:");
-        if (id && id.length === 13 && id.startsWith('202701')) {
-            localStorage.setItem('ifb_session', id);
-            window.location.href = "student-dashboard.html";
-        } else if (id) {
-            alert("Invalid ID. Must be 13 digits starting with 202701.");
+    function simulateEmailLogin() {
+        const email = document.getElementById('loginEmail').value;
+        if (!email) { alert("Please enter an email."); return; }
+        const name = email.split('@')[0];
+        loginUser(email, name, "email");
+    }
+
+    function loginUser(email, name, provider) {
+        // Check if a student record exists, otherwise create a temporary one
+        let student = JSON.parse(localStorage.getItem('ifb_student'));
+        if (!student || student.email !== email) {
+            // Generate a placeholder ID for this session
+            let seq = parseInt(localStorage.getItem('ifb_sequence') || '0') + 1;
+            localStorage.setItem('ifb_sequence', seq);
+            const seqPadded = seq.toString().padStart(4, '0');
+            const uniqueNum = Math.floor(Math.random() * 900) + 100;
+            student = {
+                name: name,
+                email: email,
+                admissionId: `202701${seqPadded}${uniqueNum}`,
+                provider: provider
+            };
+            localStorage.setItem('ifb_student', JSON.stringify(student));
         }
+        
+        localStorage.setItem('ifb_session', student.admissionId);
+        window.location.href = "student-dashboard.html";
     }
 
-    // MODAL LOGIC
+    // LEGAL MODAL
     const legalTexts = {
-        privacy: `
-            <h2>Privacy Policy</h2>
-            <p><strong>Last updated: January 2027</strong></p>
-            <p>1. <strong>Data Collection:</strong> The Institute of Board collects essential information (Name, Email, Phone) solely to generate your Admission ID and manage your examination process.</p>
-            <p>2. <strong>Cookies:</strong> We use local storage to keep you logged in. No tracking cookies are used.</p>
-            <p>3. <strong>International Compliance:</strong> We comply with global data protection principles (GDPR). Your data is stored securely and never sold.</p>
-            <p>4. <strong>Data Deletion:</strong> Contact n1nathaniel971@gmail.com to request data deletion.</p>
-        `,
-        terms: `
-            <h2>Terms & Conditions</h2>
-            <p><strong>Last updated: January 2027</strong></p>
-            <p>1. <strong>Independent Institution:</strong> IFB is independent and non-accredited. We are not affiliated with DHET, Umalusi, or public universities.</p>
-            <p>2. <strong>Admission:</strong> Applying does not guarantee admission. You must pass the Admission Examination. Applications close 10 January 2027.</p>
-            <p>3. <strong>Conduct:</strong> Cheating during exams results in immediate disqualification.</p>
-        `
+        privacy: `<h2>Privacy Policy</h2><p><strong>Last updated: January 2027</strong></p><p>1. <strong>Data Collection:</strong> The Institute of Board collects essential information (Name, Email) solely to generate your Admission ID and manage your examination process.</p><p>2. <strong>Cookies:</strong> We use local storage to keep you logged in. No tracking cookies are used.</p><p>3. <strong>Compliance:</strong> We comply with global data protection principles (GDPR). Your data is stored securely and never sold.</p>`,
+        terms: `<h2>Terms & Conditions</h2><p><strong>Last updated: January 2027</strong></p><p>1. <strong>Independent Institution:</strong> IFB is independent and non-accredited. We are not affiliated with DHET, Umalusi, or public universities.</p><p>2. <strong>Admission:</strong> Applying does not guarantee admission. You must pass the Admission Examination.</p><p>3. <strong>Conduct:</strong> Cheating during exams results in immediate disqualification.</p>`
     };
 
     function openModal(type) {
         document.getElementById('modalContent').innerHTML = legalTexts[type];
         document.getElementById('legalModal').classList.add('active');
     }
-    function closeModal() {
-        document.getElementById('legalModal').classList.remove('active');
-    }
+    function closeModal() { document.getElementById('legalModal').classList.remove('active'); }
 </script>
 </body>
 </html>
