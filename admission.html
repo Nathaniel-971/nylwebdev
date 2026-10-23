@@ -10,26 +10,39 @@
     :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
-    .container { width: 100%; max-width: 600px; }
+    .container { width: 100%; max-width: 700px; }
     .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
     .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
+    
+    /* TABS */
+    .tabs { display: flex; gap: 4px; padding: 4px; background: #FAFAFA; border-radius: 12px; margin-bottom: 32px; border: 1px solid var(--silver); }
+    .tab { flex: 1; padding: 12px; border: none; background: transparent; border-radius: 8px; font-size: 15px; font-weight: 700; color: var(--gray); cursor: pointer; transition: 0.2s; }
+    .tab.active { background: var(--maroon); color: var(--white); box-shadow: 0 4px 10px rgba(122,31,43,0.2); }
+
     .header { text-align: center; margin-bottom: 32px; }
     .header .logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
     .header h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
     .header p { font-size: 14px; color: var(--gray); }
-    .warning { background: #FFF5F6; border: 1px solid var(--maroon); color: var(--maroon); padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 24px; }
+    
     .form-group { margin-bottom: 20px; }
     label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    input, select { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; }
+    input, select { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; background: var(--white); }
     input:focus, select:focus { border-color: var(--maroon); }
     
-    .module-box { display: none; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; padding: 16px; margin-top: 12px; }
-    .module-box.active { display: block; }
-    .module-title { font-size: 12px; font-weight: 800; color: var(--maroon); text-transform: uppercase; margin-bottom: 12px; }
-    .checkbox-label { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; margin-bottom: 12px; cursor: pointer; color: var(--black); }
-    .checkbox-label input { width: 18px; height: 18px; accent-color: var(--maroon); cursor: pointer; }
-    
-    .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; }
+    /* COURSE CAROUSEL */
+    .course-carousel { display: flex; gap: 16px; overflow-x: auto; padding: 10px 0 20px; scrollbar-width: none; }
+    .course-carousel::-webkit-scrollbar { display: none; }
+    .course-select-card { 
+        flex: 0 0 240px; border: 2px solid var(--silver); border-radius: 12px; padding: 20px; 
+        cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; position: relative;
+    }
+    .course-select-card:hover { border-color: var(--maroon); }
+    .course-select-card.selected { border-color: var(--maroon); background: #FFF5F6; }
+    .course-select-card.selected::after { content: "✓"; position: absolute; top: 12px; right: 12px; background: var(--maroon); color: var(--white); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
+    .course-select-card h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
+    .course-select-card p { font-size: 13px; color: var(--gray); }
+
+    .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; margin-top: 10px; }
     .btn:hover { background: var(--maroon-hover); }
     .btn:disabled { opacity: 0.7; cursor: not-allowed; }
     
@@ -37,112 +50,153 @@
     .id-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; margin: 20px 0; }
     .id-box .label { font-size: 11px; text-transform: uppercase; color: var(--gray); font-weight: 700; }
     .id-box .value { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--black); }
+
+    /* INLINE ERROR */
+    .error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+
+    @media (max-width: 768px) { .form-card { padding: 24px; } }
 </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="nav-back"><i data-lucide="arrow-left"></i> Back to Home</a>
     
-    <div class="form-card" id="formCard">
-        <div class="header">
-            <div class="logo">∆</div>
-            <h1>2027 Application</h1>
-            <p>Register to receive your unique 13-digit Student ID.</p>
-        </div>
-        <div class="warning">Applications Close: 13 January 2027</div>
+    <div class="form-card">
         
-        <form id="admissionForm">
-            <div class="form-group"><label>Full Legal Name</label><input type="text" id="fullName" required placeholder="e.g. Nathaniel Nyl"></div>
-            <div class="form-group"><label>Email Address</label><input type="email" id="email" required placeholder="you@example.com"></div>
-            <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" required placeholder="+27 XX XXX XXXX"></div>
-            <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('apply')">Apply</button>
+            <button class="tab" onclick="switchTab('login')">Login</button>
+        </div>
+
+        <!-- APPLY TAB -->
+        <div id="applyTab">
+            <div class="header">
+                <div class="logo">∆</div>
+                <h1>2027 Application</h1>
+                <p>Register to receive your unique 13-digit Student ID.</p>
+            </div>
             
-            <div class="form-group" style="margin-top: 32px; border-top: 1px solid var(--silver); padding-top: 24px;">
-                <label>Select Your Course (1 Year)</label>
-                <select id="courseSelect" required>
-                    <option value="" disabled selected>Choose a course...</option>
-                    <option value="IFB-S Mathematics">IFB-S: Mathematics</option>
-                    <option value="IFB AQ-B Front-End">IFB AQ-B: Front-End Web Development</option>
-                </select>
-            </div>
+            <div class="error-msg" id="applyError"></div>
 
-            <div class="module-box" id="mathModules">
-                <div class="module-title">Mathematics Core Modules</div>
-                <label class="checkbox-label"><input type="checkbox" value="Algebra" class="math-mod" checked> Algebra & Equations</label>
-                <label class="checkbox-label"><input type="checkbox" value="Calculus" class="math-mod" checked> Differential & Integral Calculus</label>
-                <label class="checkbox-label"><input type="checkbox" value="Geometry" class="math-mod" checked> Analytical & Euclidean Geometry</label>
-                <label class="checkbox-label"><input type="checkbox" value="Probability" class="math-mod" checked> Probability & Statistics</label>
-            </div>
+            <form id="admissionForm" autocomplete="off">
+                <div class="form-group"><label>Full Legal Name</label><input type="text" id="fullName" required placeholder="e.g. Nathaniel Nyl" autocomplete="off"></div>
+                <div class="form-group"><label>Email Address</label><input type="email" id="email" required placeholder="you@example.com" autocomplete="off"></div>
+                <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" required placeholder="+27 XX XXX XXXX" autocomplete="off"></div>
+                <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required autocomplete="off"></div>
+                
+                <div class="form-group" style="margin-top: 24px;">
+                    <label>Select Courses (Tap to select)</label>
+                    <div class="course-carousel">
+                        <div class="course-select-card" data-course="IFB-S Mathematics" onclick="toggleCourse(this)">
+                            <h4>IFB-S: Mathematics</h4>
+                            <p>Advanced Mathematics Track</p>
+                        </div>
+                        <div class="course-select-card" data-course="IFB AQ-B Front-End" onclick="toggleCourse(this)">
+                            <h4>IFB AQ-B: Front-End</h4>
+                            <p>Web Development Track</p>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="module-box" id="webModules">
-                <div class="module-title">Web Development Core Modules</div>
-                <label class="checkbox-label"><input type="checkbox" value="HTML/CSS" class="web-mod" checked> HTML5 & CSS3 Foundations</label>
-                <label class="checkbox-label"><input type="checkbox" value="JavaScript" class="web-mod" checked> JavaScript & DOM</label>
-                <label class="checkbox-label"><input type="checkbox" value="React" class="web-mod" checked> React & State Management</label>
-                <label class="checkbox-label"><input type="checkbox" value="Deployment" class="web-mod" checked> Git, GitHub & Deployment</label>
-            </div>
-
-            <button type="submit" class="btn" id="submitBtn" style="margin-top: 24px;">Submit Application</button>
-        </form>
-    </div>
-
-    <div class="form-card" id="successState">
-        <div style="font-size: 48px; font-weight: 900; color: var(--maroon);">∆</div>
-        <h2>Application Successful</h2>
-        <p style="font-size: 14px; color: var(--gray); margin-top: 8px;">Save your Student ID.</p>
-        
-        <div class="id-box">
-            <div class="label">13-Digit Student ID</div>
-            <div class="value" id="displayId">2701000000001</div>
+                <button type="submit" class="btn" id="submitBtn">Submit Application</button>
+            </form>
         </div>
 
-        <a href="index.html" class="btn" style="display: block; text-decoration: none;">Go to Login</a>
+        <!-- LOGIN TAB -->
+        <div id="loginTab" style="display: none;">
+            <div class="header">
+                <div class="logo">∆</div>
+                <h1>Student Login</h1>
+                <p>Sign in to access your dashboard.</p>
+            </div>
+            
+            <div class="error-msg" id="loginError"></div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" required placeholder="you@example.com" autocomplete="off"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPass" required placeholder="••••••••" autocomplete="new-password"></div>
+                <button type="submit" class="btn" id="loginBtn">Sign In</button>
+            </form>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div id="successState">
+            <div style="font-size: 48px; font-weight: 900; color: var(--maroon);">∆</div>
+            <h2>Application Successful</h2>
+            <p style="font-size: 14px; color: var(--gray); margin-top: 8px;">Save your Student ID.</p>
+            <div class="id-box">
+                <div class="label">13-Digit Student ID</div>
+                <div class="value" id="displayId">2701000000001</div>
+            </div>
+            <a href="index.html" class="btn" style="display: block; text-decoration: none; text-align: center;">Go to Login</a>
+        </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
-    const courseSelect = document.getElementById('courseSelect');
-    const mathModules = document.getElementById('mathModules');
-    const webModules = document.getElementById('webModules');
+    let selectedCourses = [];
 
-    courseSelect.addEventListener('change', (e) => {
-        mathModules.classList.remove('active');
-        webModules.classList.remove('active');
-        if (e.target.value === 'IFB-S Mathematics') mathModules.classList.add('active');
-        else if (e.target.value === 'IFB AQ-B Front-End') webModules.classList.add('active');
-    });
+    // TAB SWITCHING
+    window.switchTab = function(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('#applyError, #loginError').forEach(e => e.style.display = 'none');
+        
+        if(tab === 'apply') {
+            document.querySelector('.tab:nth-child(1)').classList.add('active');
+            document.getElementById('applyTab').style.display = 'block';
+            document.getElementById('loginTab').style.display = 'none';
+        } else {
+            document.querySelector('.tab:nth-child(2)').classList.add('active');
+            document.getElementById('applyTab').style.display = 'none';
+            document.getElementById('loginTab').style.display = 'block';
+        }
+    }
 
+    // COURSE CAROUSEL SELECTION
+    window.toggleCourse = function(el) {
+        const course = el.dataset.course;
+        if (selectedCourses.includes(course)) {
+            selectedCourses = selectedCourses.filter(c => c !== course);
+            el.classList.remove('selected');
+        } else {
+            selectedCourses.push(course);
+            el.classList.add('selected');
+        }
+    }
+
+    // SUBMIT APPLICATION
     document.getElementById('admissionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
+        const errorBox = document.getElementById('applyError');
+        errorBox.style.display = 'none';
+
+        if (selectedCourses.length === 0) {
+            errorBox.innerText = "Please select at least one course.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
         btn.innerText = "Processing...";
         btn.disabled = true;
 
         const name = document.getElementById('fullName').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
-        const dobValue = document.getElementById('dob').value; // YYYY-MM-DD
-        const course = courseSelect.value;
+        const dobValue = document.getElementById('dob').value;
         
-        let selectedModules = [];
-        if (course === 'IFB-S Mathematics') {
-            document.querySelectorAll('.math-mod:checked').forEach(cb => selectedModules.push(cb.value));
-        } else {
-            document.querySelectorAll('.web-mod:checked').forEach(cb => selectedModules.push(cb.value));
-        }
-        
-        // FORMAT STUDENT ID: 2701 + YYMMDD + 001 (13 digits total)
-        // e.g. 2005-10-26 -> 051026 -> 2701051026001
-        const dobClean = dobValue.replace(/-/g, ''); // YYYYMMDD
-        const yy = dobClean.substring(2, 4); // YY
-        const mmdd = dobClean.substring(4, 8); // MMDD
+        // FORMAT STUDENT ID: 2701 + YYMMDD + 001
+        const dobClean = dobValue.replace(/-/g, ''); 
+        const yy = dobClean.substring(2, 4); 
+        const mmdd = dobClean.substring(4, 8); 
         const studentId = `2701${yy}${mmdd}001`; 
 
         const tempPassword = "IFB2027!" + Math.floor(Math.random() * 10000);
@@ -152,24 +206,47 @@
             const user = userCredential.user;
 
             await setDoc(doc(db, "users", user.uid), {
-                name: name, email: email, phone: phone, dob: dobValue, studentId: studentId, course: course, modules: selectedModules, status: "Applicant", createdAt: new Date()
+                name: name, email: email, phone: phone, dob: dobValue, studentId: studentId, courses: selectedCourses, status: "Applicant", createdAt: new Date()
             });
 
-            document.getElementById('formCard').style.display = 'none';
+            document.getElementById('applyTab').style.display = 'none';
+            document.querySelector('.tabs').style.display = 'none';
             document.getElementById('displayId').innerText = studentId;
             document.getElementById('successState').style.display = 'block';
 
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
-                alert("An account with this email already exists. Redirecting you to the login page.");
-                window.location.href = "index.html";
+                errorBox.innerText = "An account with this email already exists. Please switch to the Login tab.";
             } else {
-                alert("Registration Error: " + error.message);
-                btn.innerText = "Submit Application";
-                btn.disabled = false;
+                errorBox.innerText = "Error: " + error.message;
             }
+            errorBox.style.display = 'block';
+            btn.innerText = "Submit Application";
+            btn.disabled = false;
         }
     });
+
+    // LOGIN
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('loginBtn');
+        const errorBox = document.getElementById('loginError');
+        errorBox.style.display = 'none';
+        
+        btn.innerText = "Signing In...";
+        btn.disabled = true;
+
+        try {
+            await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
+            window.location.href = "student-dashboard.html";
+        } catch (error) {
+            errorBox.innerText = "Invalid email or password.";
+            errorBox.style.display = 'block';
+            btn.innerText = "Sign In";
+            btn.disabled = false;
+        }
+    });
+
     lucide.createIcons();
 </script>
 </body>
