@@ -7,12 +7,21 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --transition: all 0.3s ease; }
+    :root { 
+        --white: #FFFFFF; --black: #111111; --gray: #666666; 
+        --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620;
+        --transition: all 0.3s ease;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); opacity: 0; animation: fadeIn 0.4s ease forwards; }
+    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; overflow-x: hidden; opacity: 0; animation: fadeIn 0.4s ease forwards; }
     @keyframes fadeIn { to { opacity: 1; } }
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
+
+    /* LOADING SCREEN */
+    #loader { position: fixed; inset: 0; background: var(--white); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
+    .loader-logo { font-size: 100px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.7; } }
 
     /* HEADER */
     .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 80px; }
@@ -21,86 +30,88 @@
     .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
     .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
     
-    .nav-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
-    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
-    .nav-cta:hover { background: var(--maroon-hover); }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+    .btn-login:hover { border-color: var(--black); }
+    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); }
+    .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
     
-    .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; flex-shrink: 0; }
+    .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; }
     .menu-btn span { display: block; width: 100%; height: 2px; background: var(--black); transition: var(--transition); }
+    
+    /* PROFILE GRID AVATAR */
+    .nav-profile { display: none; align-items: center; gap: 12px; cursor: pointer; }
+    .profile-grid-mini { width: 40px; height: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-radius: 8px; overflow: hidden; border: 1px solid var(--silver); }
+    .profile-grid-mini div { border-radius: 1px; }
 
-    /* OCR MENU */
-    .mobile-menu { position: fixed; inset: 0; background: var(--black); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: 0.4s ease; overflow-y: auto; }
-    .mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
-    .menu-header { display: flex; justify-content: flex-end; padding: 24px; }
-    .close-btn { background: transparent; border: none; color: var(--white); cursor: pointer; padding: 8px; }
-    .close-btn i { width: 32px; height: 32px; }
-    .menu-content { padding: 0 32px 32px; flex-grow: 1; }
-    .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .menu-link { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; font-size: 20px; font-weight: 500; color: var(--silver); cursor: pointer; }
-    .menu-link:hover { color: var(--white); }
-    .menu-link i { transition: 0.3s; }
-    .menu-item.active .menu-link i { transform: rotate(90deg); color: var(--white); }
-    .submenu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: rgba(255,255,255,0.03); border-radius: 8px; }
-    .submenu a { display: block; padding: 16px 24px; font-size: 16px; color: var(--gray); }
-    .submenu a:hover { color: var(--white); padding-left: 32px; }
-    .menu-footer { padding: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
-    .btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; }
-
-    /* HERO */
-    .hero { padding: 100px 24px; text-align: center; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--maroon); margin-bottom: 24px; }
-    .hero h1 { font-size: clamp(40px, 8vw, 80px); font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px; }
+    /* HERO (With Background Image) */
+    .hero { padding: 140px 24px; text-align: center; position: relative; background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.95)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1920&auto=format&fit=crop') center/cover; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--maroon); margin-bottom: 24px; background: var(--white); }
+    .hero h1 { font-size: clamp(44px, 6vw, 80px); font-weight: 900; line-height: 1.05; letter-spacing: -2.5px; margin-bottom: 24px; }
     .hero h1 span { color: var(--maroon); }
-    .hero p { font-size: 18px; color: var(--gray); max-width: 600px; margin: 0 auto 40px; }
+    .hero p { font-size: 18px; color: var(--gray); max-width: 600px; margin: 0 auto 40px; background: var(--white); padding: 8px 16px; border-radius: 8px; display: inline-block;}
     .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; max-width: 300px; }
+    .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
     .btn-primary { background: var(--maroon); color: var(--white); border: 2px solid var(--maroon); }
+    .btn-primary:hover { background: var(--maroon-hover); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(122,31,43,0.2); }
     .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
+    .btn-outline:hover { border-color: var(--black); transform: translateY(-3px); }
 
     /* FOOTER */
     .footer { background: #FAFAFA; padding: 64px 24px 40px; border-top: 1px solid var(--silver); }
     .footer-grid { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 32px; }
-    .footer-brand { flex: 1; min-width: 250px; }
     .footer-brand h2 { font-size: 20px; font-weight: 900; margin-bottom: 16px; }
     .footer-brand p { font-size: 13px; color: var(--gray); }
     .footer-links { display: flex; gap: 48px; flex-wrap: wrap; }
     .footer-col h4 { font-size: 14px; font-weight: 800; margin-bottom: 16px; }
     .footer-col ul { display: flex; flex-direction: column; gap: 12px; }
-    .footer-col a, .footer-col button { font-size: 14px; color: var(--gray); background: none; border: none; cursor: pointer; text-align: left; padding: 0; }
+    .footer-col a, .footer-col button { font-size: 14px; color: var(--gray); background: none; border: none; cursor: pointer; text-align: left; }
     .footer-col a:hover, .footer-col button:hover { color: var(--maroon); }
     .footer-bottom { max-width: 1300px; margin: 48px auto 0; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
 
-    /* MODALS (Notice, Auth, Legal) */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
+    /* MODALS */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
     .modal-overlay.active { display: flex; }
-    .modal-content { background: var(--white); border-radius: 24px; padding: 40px 24px; max-width: 440px; width: 100%; position: relative; }
-    .modal-content.legal { max-width: 600px; max-height: 80vh; overflow-y: auto; }
-    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; }
+    .modal-content { background: var(--white); border-radius: 24px; padding: 40px 24px; max-width: 440px; width: 100%; position: relative; animation: popUp 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    @keyframes popUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-content.legal { max-width: 600px; max-height: 80vh; overflow-y: auto; text-align: left; }
+    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
     
     .modal-logo { font-size: 40px; font-weight: 900; color: var(--maroon); text-align: center; margin-bottom: 16px; }
     .modal-title { font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px; }
     .modal-subtitle { font-size: 14px; color: var(--gray); text-align: center; margin-bottom: 32px; }
-    
-    .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px; border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; background: var(--white); margin-bottom: 16px; }
+    .btn-google:hover { background: #FAFAFA; }
     .divider { display: flex; align-items: center; text-align: center; margin: 24px 0; color: var(--gray); font-size: 13px; }
     .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--silver); }
     .divider::before { margin-right: 16px; } .divider::after { margin-left: 16px; }
     .input-group { margin-bottom: 16px; }
     .input-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
     .input-group input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; }
+    .input-group input:focus { border-color: var(--maroon); }
     .btn-submit { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
 
-    /* NOTICE POPUP SPECIFIC */
-    .notice-box { border-top: 6px solid var(--maroon); padding-top: 32px; }
-    .notice-box h2 { font-size: 22px; font-weight: 900; margin-bottom: 16px; color: var(--maroon); }
-    .notice-box p { font-size: 15px; color: var(--black); margin-bottom: 16px; line-height: 1.6; }
-    .notice-box .disclaimer { font-size: 12px; color: var(--gray); background: #FAFAFA; padding: 12px; border-radius: 8px; border: 1px solid var(--silver); }
-    .btn-understand { width: 100%; padding: 16px; background: var(--black); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 24px; }
+    /* WHITE MOBILE MENU (No Black) */
+    .mobile-menu { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: 0.4s ease; overflow-y: auto; }
+    .mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
+    .menu-header { display: flex; justify-content: flex-end; padding: 24px; border-bottom: 1px solid var(--silver); }
+    .close-btn { background: transparent; border: none; color: var(--black); cursor: pointer; padding: 8px; }
+    .close-btn i { width: 32px; height: 32px; }
+    .menu-content { padding: 0 32px 32px; flex-grow: 1; }
+    .menu-item { border-bottom: 1px solid var(--silver); }
+    .menu-link { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; font-size: 20px; font-weight: 600; color: var(--black); cursor: pointer; }
+    .menu-link i { transition: 0.3s; }
+    .menu-item.active .menu-link i { transform: rotate(90deg); color: var(--maroon); }
+    .submenu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: #FAFAFA; border-radius: 8px; }
+    .submenu a { display: block; padding: 16px 24px; font-size: 16px; color: var(--gray); font-weight: 500; }
+    .submenu a:hover { color: var(--maroon); padding-left: 32px; }
+    .menu-footer { padding: 32px; border-top: 1px solid var(--silver); }
+    .btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; }
 
     /* MOBILE FIXES */
     @media (max-width: 768px) {
         .nav-container { padding: 0 16px; }
-        .brand-text h1 { font-size: 18px; }
+        .btn-login { display: none; } /* Hide login button on mobile, use menu */
         .hero-buttons { flex-direction: column; align-items: center; gap: 12px; }
         .footer-grid { flex-direction: column; gap: 24px; }
         .footer-links { flex-direction: column; gap: 24px; }
@@ -110,7 +121,9 @@
 </head>
 <body>
 
-    <!-- HEADER (No Login Button) -->
+    <div id="loader"><div class="loader-logo">∆</div></div>
+
+    <!-- HEADER -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="brand">
@@ -118,13 +131,21 @@
                 <div class="brand-text"><h1>Institute of Board</h1></div>
             </a>
             <div class="nav-right">
-                <a href="admission.html" class="nav-cta">Apply Now</a>
+                <button class="btn-login" id="headerLoginBtn" onclick="document.getElementById('authModal').classList.add('active')">Sign In</button>
+                <a href="admission.html" class="nav-cta" id="headerApplyBtn">Apply Now</a>
+                
+                <!-- Profile shows after login -->
+                <div class="nav-profile" id="headerProfile" onclick="window.location.href='student-dashboard.html'">
+                    <div class="profile-grid-mini" id="navGridIcon"></div>
+                    <span style="font-weight: 700; font-size: 14px;">Dashboard</span>
+                </div>
+                
                 <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
             </div>
         </div>
     </header>
 
-    <!-- OCR MENU (Login is here) -->
+    <!-- WHITE MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="menu-header"><button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button></div>
         <div class="menu-content">
@@ -132,8 +153,8 @@
                 <li class="menu-item">
                     <div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div>
                     <div class="submenu"><div class="submenu-inner">
-                        <a href="#" onclick="openAuthModal()">Login / Portal</a>
                         <a href="student-dashboard.html">Dashboard</a>
+                        <a href="documents.html">Public Documents</a>
                     </div></div>
                 </li>
                 <li class="menu-item">
@@ -148,13 +169,6 @@
                     <div class="submenu"><div class="submenu-inner">
                         <a href="ifb-s-ae-mathematics.html">IFB-S Mathematics</a>
                         <a href="ifb-aq-b-web.html">IFB AQ-B Web</a>
-                    </div></div>
-                </li>
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">Assessments <i data-lucide="chevron-right"></i></div>
-                    <div class="submenu"><div class="submenu-inner">
-                        <a href="practice-paper-math.html">Practice Paper</a>
-                        <a href="answer-book.html">Answer Book</a>
                     </div></div>
                 </li>
             </ul>
@@ -192,6 +206,7 @@
                     <ul>
                         <li><button onclick="openLegal('privacy')">Privacy Policy</button></li>
                         <li><button onclick="openLegal('terms')">Terms & Conditions</button></li>
+                        <li><button onclick="openLegal('agreement')">Student Agreement</button></li>
                     </ul>
                 </div>
             </div>
@@ -201,27 +216,21 @@
         </div>
     </footer>
 
-    <!-- 1. NOTICE MODAL (Shows on load) -->
-    <div class="modal-overlay active" id="noticeModal">
-        <div class="modal-content notice-box">
-            <h2>Important Notice</h2>
-            <p><strong>Applications for the 2027 academic year close on 10 January 2027.</strong> Late applications will not be considered.</p>
-            <div class="disclaimer">
-                The Institute of Board is an independent, non-accredited educational institution. We are not registered with the Department of Higher Education and Training (DHET) or Umalusi.
-            </div>
-            <button class="btn-understand" onclick="dismissNotice()">I Understand</button>
-        </div>
-    </div>
-
-    <!-- 2. AUTH MODAL -->
+    <!-- AUTH MODAL -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-content">
             <button class="close-modal" onclick="document.getElementById('authModal').classList.remove('active')"><i data-lucide="x"></i></button>
             <div class="modal-logo">∆</div>
-            <div class="modal-title">Student Portal</div>
+            <div class="modal-title">Student Login</div>
             <div class="modal-subtitle">Sign in to access your dashboard.</div>
-            <button class="btn-google" onclick="googleLogin()">Continue with Google</button>
+            
+            <button class="btn-google" onclick="googleLogin()">
+                <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+                Continue with Google
+            </button>
+            
             <div class="divider">or sign in with email</div>
+            
             <form onsubmit="event.preventDefault(); emailLogin();">
                 <div class="input-group"><label>Email Address</label><input type="email" id="loginEmail" required placeholder="you@example.com"></div>
                 <div class="input-group"><label>Password</label><input type="password" id="loginPass" required placeholder="••••••••"></div>
@@ -230,7 +239,7 @@
         </div>
     </div>
 
-    <!-- 3. LEGAL MODAL -->
+    <!-- LEGAL MODAL -->
     <div class="modal-overlay" id="legalModal">
         <div class="modal-content legal">
             <button class="close-modal" onclick="document.getElementById('legalModal').classList.remove('active')"><i data-lucide="x"></i></button>
@@ -241,27 +250,37 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const provider = new GoogleAuthProvider();
-    
-    // Auto Sign-in redirect
-    onAuthStateChanged(auth, (user) => { if (user) { window.location.href = "student-dashboard.html"; } });
+    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app); const provider = new GoogleAuthProvider();
 
-    // Notice Popup Logic
-    window.dismissNotice = function() {
-        document.getElementById('noticeModal').classList.remove('active');
-    }
+    // Check Login Status
+    onAuthStateChanged(auth, async (user) => {
+        document.getElementById('loader').style.opacity = '0';
+        setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
-    // Auth Logic
-    window.openAuthModal = function() {
-        document.getElementById('authModal').classList.add('active');
-        // Close the OCR menu if it's open
-        document.getElementById('mobileMenu').classList.remove('active');
-    }
-    window.googleLogin = async function() { try { await signInWithPopup(auth, provider); } catch (e) { alert(e.message); } };
-    window.emailLogin = async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); } catch (e) { alert(e.message); } };
-    
-    // OCR Menu Logic
+        if (user) {
+            // User is signed in
+            document.getElementById('headerLoginBtn').style.display = 'none';
+            document.getElementById('headerApplyBtn').style.display = 'none';
+            document.getElementById('headerProfile').style.display = 'flex';
+            
+            // Get their student ID to build the grid
+            const docSnap = await getDoc(doc(db, "users", user.uid));
+            if(docSnap.exists()){
+                const id = docSnap.data().studentId || "123456";
+                const c = document.getElementById('navGridIcon'); c.innerHTML = '';
+                const colors = ['#7A1F2B', '#C7CBD1', '#111111', '#FAFAFA', '#E2E8F0'];
+                for (let i = 0; i < 9; i++) { const div = document.createElement('div'); div.style.backgroundColor = colors[id.charCodeAt(i % id.length) % colors.length]; c.appendChild(div); }
+            }
+        }
+    });
+
+    window.googleLogin = async function() { try { await signInWithPopup(auth, provider); window.location.reload(); } catch (e) { alert(e.message); } };
+    window.emailLogin = async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); window.location.reload(); } catch (e) { alert(e.message); } };
+
+    // Menu Logic
     const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
     menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
     closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
@@ -272,13 +291,14 @@
         sub.style.maxHeight = sub.style.maxHeight ? null : sub.scrollHeight + "px";
     }
 
-    // Legal Modal Logic
-    const legalTexts = { 
-        privacy: `<h2>Privacy Policy</h2><p>We collect essential information solely to generate your Admission ID. We comply with global data protection principles.</p>`, 
-        terms: `<h2>Terms & Conditions</h2><p>IFB is independent and non-accredited. Applying does not guarantee admission.</p>` 
+    // Legal Modals
+    const legalTexts = {
+        privacy: `<h2>Privacy Policy</h2><p>Last updated: January 2027</p><p>The Institute of Board (IFB) collects essential information (Name, Email, Date of Birth) solely to generate your Student ID, manage your application, and provide access to our academic materials.</p><p>We use Firebase Authentication and Firestore for secure data storage. We do not sell your data to third parties. We comply with global data protection regulations (GDPR) principles.</p>`,
+        terms: `<h2>Terms & Conditions</h2><p>Last updated: January 2027</p><p>1. <strong>Independent Institution:</strong> IFB is an independent, non-accredited educational institution. We are not affiliated with DHET, Umalusi, or any public university.</p><p>2. <strong>Admission:</strong> Submitting an application does not guarantee admission. Candidates must write and pass the Admission Examination. Applications close on 10 January 2027.</p><p>3. <strong>Conduct:</strong> Any form of academic dishonesty or cheating will result in immediate disqualification.</p>`,
+        agreement: `<h2>Student Agreement</h2><p>By registering, you agree to abide by the rules and regulations of the Institute of Board. You acknowledge that IFB certificates are not NQF-registered qualifications and are awarded based on internal assessment only.</p>`
     };
     window.openLegal = function(type) { document.getElementById('legalContent').innerHTML = legalTexts[type]; document.getElementById('legalModal').classList.add('active'); }
-    
+
     lucide.createIcons();
 </script>
 </body>
