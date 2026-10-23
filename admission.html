@@ -7,10 +7,10 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; }
+    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
-    .container { width: 100%; max-width: 500px; }
+    .container { width: 100%; max-width: 600px; }
     .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
     .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
     .header { text-align: center; margin-bottom: 32px; }
@@ -18,12 +18,23 @@
     .header h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
     .header p { font-size: 14px; color: var(--gray); }
     .warning { background: #FFF5F6; border: 1px solid var(--maroon); color: var(--maroon); padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 24px; }
+    
     .form-group { margin-bottom: 20px; }
     label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; }
-    input:focus { border-color: var(--maroon); }
-    .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; }
+    input, select { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; }
+    input:focus, select:focus { border-color: var(--maroon); }
+    
+    /* Module Selection Box */
+    .module-box { display: none; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; padding: 16px; margin-top: 12px; }
+    .module-box.active { display: block; }
+    .module-title { font-size: 12px; font-weight: 800; color: var(--maroon); text-transform: uppercase; margin-bottom: 12px; }
+    .checkbox-label { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; margin-bottom: 12px; cursor: pointer; color: var(--black); }
+    .checkbox-label input { width: 18px; height: 18px; accent-color: var(--maroon); cursor: pointer; }
+    
+    .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; }
     .btn:hover { background: var(--maroon-hover); }
+    .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    
     #successState { display: none; text-align: center; }
     .id-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; margin: 20px 0; }
     .id-box .label { font-size: 11px; text-transform: uppercase; color: var(--gray); font-weight: 700; }
@@ -47,7 +58,35 @@
             <div class="form-group"><label>Email Address</label><input type="email" id="email" required placeholder="you@example.com"></div>
             <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" required placeholder="+27 XX XXX XXXX"></div>
             <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
-            <button type="submit" class="btn" id="submitBtn">Submit Application</button>
+            
+            <!-- Course Selection -->
+            <div class="form-group" style="margin-top: 32px; border-top: 1px solid var(--silver); padding-top: 24px;">
+                <label>Select Your Course (1 Year)</label>
+                <select id="courseSelect" required>
+                    <option value="" disabled selected>Choose a course...</option>
+                    <option value="IFB-S Mathematics">IFB-S: Mathematics</option>
+                    <option value="IFB AQ-B Front-End">IFB AQ-B: Front-End Web Development</option>
+                </select>
+            </div>
+
+            <!-- Dynamic Modules -->
+            <div class="module-box" id="mathModules">
+                <div class="module-title">Mathematics Core Modules</div>
+                <label class="checkbox-label"><input type="checkbox" value="Algebra" class="math-mod" checked> Algebra & Equations</label>
+                <label class="checkbox-label"><input type="checkbox" value="Calculus" class="math-mod" checked> Differential & Integral Calculus</label>
+                <label class="checkbox-label"><input type="checkbox" value="Geometry" class="math-mod" checked> Analytical & Euclidean Geometry</label>
+                <label class="checkbox-label"><input type="checkbox" value="Probability" class="math-mod" checked> Probability & Statistics</label>
+            </div>
+
+            <div class="module-box" id="webModules">
+                <div class="module-title">Web Development Core Modules</div>
+                <label class="checkbox-label"><input type="checkbox" value="HTML/CSS" class="web-mod" checked> HTML5 & CSS3 Foundations</label>
+                <label class="checkbox-label"><input type="checkbox" value="JavaScript" class="web-mod" checked> JavaScript & DOM</label>
+                <label class="checkbox-label"><input type="checkbox" value="React" class="web-mod" checked> React & State Management</label>
+                <label class="checkbox-label"><input type="checkbox" value="Deployment" class="web-mod" checked> Git, GitHub & Deployment</label>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn" style="margin-top: 24px;">Submit Application</button>
         </form>
     </div>
 
@@ -67,12 +106,29 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
+    // Handle Course Selection UI
+    const courseSelect = document.getElementById('courseSelect');
+    const mathModules = document.getElementById('mathModules');
+    const webModules = document.getElementById('webModules');
+
+    courseSelect.addEventListener('change', (e) => {
+        mathModules.classList.remove('active');
+        webModules.classList.remove('active');
+        
+        if (e.target.value === 'IFB-S Mathematics') {
+            mathModules.classList.add('active');
+        } else if (e.target.value === 'IFB AQ-B Front-End') {
+            webModules.classList.add('active');
+        }
+    });
+
+    // Handle Form Submission
     document.getElementById('admissionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -84,44 +140,50 @@
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
         const dob = document.getElementById('dob').value;
+        const course = courseSelect.value;
+        
+        // Get selected modules
+        let selectedModules = [];
+        if (course === 'IFB-S Mathematics') {
+            document.querySelectorAll('.math-mod:checked').forEach(cb => selectedModules.push(cb.value));
+        } else {
+            document.querySelectorAll('.web-mod:checked').forEach(cb => selectedModules.push(cb.value));
+        }
         
         const tempPassword = "IFB2027!" + Math.floor(Math.random() * 10000);
 
         try {
-            // 1. Attempt to Create Auth User
+            // Create Firebase Auth User
             const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
             const user = userCredential.user;
 
-            // 2. Generate 13-digit ID
+            // Generate 13-digit ID
             const timestampStr = Date.now().toString().slice(-6);
             const randomDigit = Math.floor(Math.random() * 900) + 100;
             const studentId = `202701${timestampStr}${randomDigit}`;
 
-            // 3. Save to Firestore
+            // Save to Firestore
             await setDoc(doc(db, "users", user.uid), {
-                name: name, email: email, phone: phone, dob: dob, studentId: studentId, curriculum: "Not Selected", status: "Applicant", createdAt: new Date()
+                name: name, 
+                email: email, 
+                phone: phone, 
+                dob: dob, 
+                studentId: studentId, 
+                course: course,
+                modules: selectedModules,
+                status: "Applicant", 
+                createdAt: new Date()
             });
 
-            // 4. Show Success
+            // Show Success Screen
             document.getElementById('formCard').style.display = 'none';
             document.getElementById('displayId').innerText = studentId;
             document.getElementById('successState').style.display = 'block';
 
         } catch (error) {
-            // If account already exists, sign them in and redirect
             if (error.code === 'auth/email-already-in-use') {
-                try {
-                    // We can't know their real password, so we attempt to sign in with a generic one if they used this flow previously.
-                    // If this fails, we redirect them to the login page with a message.
-                    // In a real app with a dedicated backend, you would use an API to check if they are an applicant.
-                    
-                    alert("An account with this email already exists. Redirecting you to the login page.");
-                    window.location.href = "index.html";
-                } catch (signInError) {
-                    alert("Error: " + signInError.message);
-                    btn.innerText = "Submit Application";
-                    btn.disabled = false;
-                }
+                alert("An account with this email already exists. Redirecting you to the login page.");
+                window.location.href = "index.html";
             } else {
                 alert("Registration Error: " + error.message);
                 btn.innerText = "Submit Application";
@@ -129,6 +191,7 @@
             }
         }
     });
+    
     lucide.createIcons();
 </script>
 </body>
