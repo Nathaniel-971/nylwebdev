@@ -43,20 +43,18 @@
     .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
     .btn-outline:hover { border-color: var(--black); }
 
-    /* COURSES SECTION */
+    /* COURSES */
     .section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
     .section-header { text-align: center; margin-bottom: 64px; }
     .section-header h2 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 16px; }
-    
     .course-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-    .course-card { border: 1px solid var(--silver); border-radius: 20px; padding: 40px; transition: var(--transition); }
-    .course-card:hover { border-color: var(--maroon); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .course-card { border: 1px solid var(--silver); border-radius: 20px; padding: 40px; }
     .course-card i { width: 48px; height: 48px; color: var(--maroon); margin-bottom: 24px; }
     .course-card h3 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
     .course-card .duration { font-size: 13px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; display: block; }
     .course-card p { font-size: 15px; color: var(--gray); }
 
-    /* FOOTER & LEGAL */
+    /* FOOTER */
     .footer { background: var(--white); padding: 64px 24px 40px; border-top: 1px solid var(--silver); }
     .footer-grid { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 32px; margin-bottom: 48px; }
     .footer-brand { max-width: 300px; }
@@ -65,8 +63,8 @@
     .footer-links { display: flex; gap: 48px; }
     .footer-col h4 { font-size: 14px; font-weight: 800; margin-bottom: 16px; }
     .footer-col ul { display: flex; flex-direction: column; gap: 12px; }
-    .footer-col a { font-size: 14px; color: var(--gray); }
-    .footer-col a:hover { color: var(--maroon); }
+    .footer-col a, .footer-col button { font-size: 14px; color: var(--gray); background: none; border: none; cursor: pointer; text-align: left; padding: 0; }
+    .footer-col a:hover, .footer-col button:hover { color: var(--maroon); }
     .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
 
     /* COOKIE BANNER */
@@ -74,6 +72,14 @@
     .cookie-banner.active { display: flex; }
     .cookie-banner p { font-size: 13px; color: var(--gray); margin: 0; }
     .cookie-btn { background: var(--maroon); color: var(--white); border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: var(--white); border-radius: 16px; padding: 40px; max-width: 600px; width: 100%; max-height: 80vh; overflow-y: auto; position: relative; }
+    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; }
+    .modal-content h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; }
+    .modal-content p { font-size: 14px; color: var(--gray); margin-bottom: 16px; line-height: 1.7; }
 
     @media (max-width: 768px) {
         .course-grid { grid-template-columns: 1fr; }
@@ -140,16 +146,15 @@
                 <div class="footer-col">
                     <h4>Institution</h4>
                     <ul>
-                        <li><a href="courses-ifb.html">Prospectus</a></li>
+                        <li><a href="documents.html">Prospectus</a></li>
                         <li><a href="documents.html">Documents</a></li>
-                        <li><a href="fund-ifb.html">Sponsor Us</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="privacy.html">Privacy Policy</a></li>
-                        <li><a href="terms.html">Terms & Conditions</a></li>
+                        <li><button onclick="openModal('privacy')">Privacy Policy</button></li>
+                        <li><button onclick="openModal('terms')">Terms & Conditions</button></li>
                     </ul>
                 </div>
             </div>
@@ -161,8 +166,16 @@
 
     <!-- COOKIE BANNER -->
     <div class="cookie-banner" id="cookieBanner">
-        <p>We use essential cookies to ensure you get the best experience on our platform. By continuing, you agree to our <a href="privacy.html" style="color: var(--maroon); font-weight: 600;">Privacy Policy</a>.</p>
+        <p>We use essential cookies to ensure you get the best experience. By continuing, you agree to our <button onclick="openModal('privacy')" style="color: var(--maroon); font-weight: 700; background: none; border: none; cursor: pointer;">Privacy Policy</button>.</p>
         <button class="cookie-btn" onclick="acceptCookies()">Accept & Close</button>
+    </div>
+
+    <!-- MODAL (Privacy & Terms) -->
+    <div class="modal-overlay" id="legalModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()"><i data-lucide="x"></i></button>
+            <div id="modalContent"></div>
+        </div>
     </div>
 
 <script>
@@ -186,6 +199,33 @@
         } else if (id) {
             alert("Invalid ID. Must be 13 digits starting with 202701.");
         }
+    }
+
+    // MODAL LOGIC
+    const legalTexts = {
+        privacy: `
+            <h2>Privacy Policy</h2>
+            <p><strong>Last updated: January 2027</strong></p>
+            <p>1. <strong>Data Collection:</strong> The Institute of Board collects essential information (Name, Email, Phone) solely to generate your Admission ID and manage your examination process.</p>
+            <p>2. <strong>Cookies:</strong> We use local storage to keep you logged in. No tracking cookies are used.</p>
+            <p>3. <strong>International Compliance:</strong> We comply with global data protection principles (GDPR). Your data is stored securely and never sold.</p>
+            <p>4. <strong>Data Deletion:</strong> Contact n1nathaniel971@gmail.com to request data deletion.</p>
+        `,
+        terms: `
+            <h2>Terms & Conditions</h2>
+            <p><strong>Last updated: January 2027</strong></p>
+            <p>1. <strong>Independent Institution:</strong> IFB is independent and non-accredited. We are not affiliated with DHET, Umalusi, or public universities.</p>
+            <p>2. <strong>Admission:</strong> Applying does not guarantee admission. You must pass the Admission Examination. Applications close 10 January 2027.</p>
+            <p>3. <strong>Conduct:</strong> Cheating during exams results in immediate disqualification.</p>
+        `
+    };
+
+    function openModal(type) {
+        document.getElementById('modalContent').innerHTML = legalTexts[type];
+        document.getElementById('legalModal').classList.add('active');
+    }
+    function closeModal() {
+        document.getElementById('legalModal').classList.remove('active');
     }
 </script>
 </body>
