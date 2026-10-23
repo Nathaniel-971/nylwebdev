@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Institute of Board | Elite Technical Education</title>
-<meta name="description" content="IFB is an elite, fee-free, non-accredited institution offering advanced Mathematics and Front-End Web Development.">
+<title>Institute of Board | Academic Excellence</title>
+<meta name="description" content="IFB is an elite, fee-free academic institution offering advanced Mathematics and Front-End Web Development.">
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -23,10 +23,11 @@
         --bg: #F8FAFC; 
         --white: #FFFFFF; 
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        --shadow-lg: 0 20px 40px -5px rgba(0, 0, 0, 0.08), 0 10px 20px -5px rgba(0, 0, 0, 0.04);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     html { scroll-behavior: smooth; }
 
     body { 
@@ -41,10 +42,30 @@
     ul { list-style: none; }
 
     /* =========================================
+       LOADING SCREEN
+       ========================================= */
+    #loader {
+        position: fixed; inset: 0; background: var(--white); z-index: 9999;
+        display: flex; justify-content: center; align-items: center;
+        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; }
+    .loader-logo { 
+        font-size: 140px; font-weight: 900; color: var(--maroon); line-height: 1; 
+        animation: pulseLogo 1.5s infinite ease-in-out; 
+    }
+    @keyframes pulseLogo { 
+        0%, 100% { transform: scale(1); opacity: 1; text-shadow: 0 0 20px rgba(122,31,43,0.1); } 
+        50% { transform: scale(0.92); opacity: 0.7; text-shadow: 0 0 40px rgba(122,31,43,0.3); } 
+    }
+
+    /* =========================================
        2. TOP ANNOUNCEMENT BAR
        ========================================= */
     .top-bar {
-        background: var(--maroon);
+        background: linear-gradient(90deg, var(--maroon), var(--maroon-glow), var(--maroon));
+        background-size: 200% auto;
+        animation: gradientShift 4s linear infinite;
         color: var(--white);
         text-align: center;
         padding: 10px 16px;
@@ -54,6 +75,7 @@
         position: relative;
         z-index: 1001;
     }
+    @keyframes gradientShift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
     .top-bar span { display: inline-flex; align-items: center; gap: 8px; }
     .top-bar i { width: 16px; height: 16px; }
 
@@ -61,401 +83,166 @@
        3. NAVIGATION
        ========================================= */
     .navbar {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        position: sticky; top: 0; z-index: 1000;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border-bottom: 1px solid var(--silver);
         height: 80px;
         transition: var(--transition);
     }
-
     .nav-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 24px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        height: 100%;
+        max-width: 1400px; margin: 0 auto; padding: 0 24px;
+        display: flex; justify-content: space-between; align-items: center; height: 100%;
     }
-
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        cursor: pointer;
-    }
-
-    .brand-logo {
-        font-size: 40px;
-        font-weight: 900;
-        color: var(--maroon);
-        line-height: 0.8;
-        transition: var(--transition);
-    }
+    .brand { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+    .brand-logo { font-size: 40px; font-weight: 900; color: var(--maroon); line-height: 0.8; transition: var(--transition); }
     .brand:hover .brand-logo { transform: scale(1.05) rotate(-5deg); }
+    .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.1; }
+    .brand-text span { font-size: 10px; font-weight: 700; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 1.5px; }
 
-    .brand-text {
-        display: flex;
-        flex-direction: column;
-    }
-    .brand-text h1 {
-        font-size: 20px;
-        font-weight: 900;
-        letter-spacing: -0.5px;
-        color: var(--ink);
-        line-height: 1.1;
-    }
-    .brand-text span {
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--silver-dark);
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
-
-    .nav-links a {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--ink-light);
-        padding: 10px 16px;
-        border-radius: 8px;
-        transition: var(--transition);
-    }
+    .nav-links { display: flex; gap: 8px; align-items: center; }
+    .nav-links a { font-size: 14px; font-weight: 600; color: var(--ink-light); padding: 10px 16px; border-radius: 8px; transition: var(--transition); }
     .nav-links a:hover { background: var(--bg); color: var(--maroon); }
-
-    .nav-cta {
-        background: var(--maroon);
-        color: var(--white) !important;
-        padding: 12px 24px !important;
-        border-radius: 10px !important;
+    .nav-cta { 
+        background: var(--maroon); color: var(--white) !important; 
+        padding: 12px 24px !important; border-radius: 100px !important; 
+        display: flex; align-items: center; gap: 8px;
     }
     .nav-cta:hover { background: var(--maroon-hover) !important; box-shadow: 0 4px 12px rgba(122,31,43,0.3); transform: translateY(-1px); }
 
     /* =========================================
-       4. HERO SECTION
+       4. HERO SECTION (E-COMMERCE STYLE)
        ========================================= */
     .hero {
-        position: relative;
-        padding: 100px 24px;
-        background: var(--ink);
-        color: var(--white);
-        text-align: center;
-        overflow: hidden;
+        position: relative; padding: 120px 24px;
+        background: var(--ink); color: var(--white);
+        text-align: center; overflow: hidden;
     }
-
-    /* Huge Background Watermark */
     .hero::before {
-        content: "∆";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 800px;
-        font-weight: 900;
-        color: rgba(255, 255, 255, 0.02);
-        line-height: 1;
-        pointer-events: none;
-        z-index: 0;
+        content: "∆"; position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%); font-size: 900px;
+        font-weight: 900; color: rgba(255, 255, 255, 0.015);
+        line-height: 1; pointer-events: none; z-index: 0;
     }
-
-    /* Geometric Background Grid */
     .hero-bg-grid {
-        position: absolute;
-        inset: 0;
-        background-image: 
-            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-        background-size: 40px 40px;
-        z-index: 0;
+        position: absolute; inset: 0;
+        background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 40px 40px; z-index: 0;
     }
-
-    .hero-content {
-        position: relative;
-        z-index: 1;
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
+    .hero-content { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; }
     .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(122, 31, 43, 0.2);
-        border: 1px solid var(--maroon-glow);
-        color: #FFC0C8;
-        padding: 8px 16px;
-        border-radius: 100px;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 24px;
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(122, 31, 43, 0.2); border: 1px solid var(--maroon-glow);
+        color: #FFC0C8; padding: 8px 16px; border-radius: 100px;
+        font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px;
     }
-
-    .hero h2 {
-        font-size: clamp(40px, 6vw, 72px);
-        font-weight: 900;
-        line-height: 1.05;
-        letter-spacing: -2px;
-        margin-bottom: 24px;
-    }
+    .hero h2 { font-size: clamp(40px, 6vw, 76px); font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px; }
     .hero h2 span { color: var(--gold); }
-
-    .hero p {
-        font-size: 18px;
-        color: var(--silver);
-        max-width: 600px;
-        margin: 0 auto 40px;
-        line-height: 1.6;
-    }
-
-    .hero-buttons {
-        display: flex;
-        gap: 16px;
-        justify-content: center;
-    }
-
-    .btn-lg {
-        padding: 16px 32px;
-        font-size: 16px;
-        font-weight: 700;
-        border-radius: 12px;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        transition: var(--transition);
-    }
+    .hero p { font-size: 18px; color: var(--silver); max-width: 650px; margin: 0 auto 48px; line-height: 1.6; }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; }
+    .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
     .btn-lg i { width: 20px; height: 20px; }
-
-    .btn-primary {
-        background: var(--maroon);
-        color: var(--white);
-        border: none;
-    }
+    .btn-primary { background: var(--maroon); color: var(--white); border: none; }
     .btn-primary:hover { background: var(--maroon-hover); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(122,31,43,0.4); }
-
-    .btn-outline {
-        background: transparent;
-        color: var(--white);
-        border: 2px solid rgba(255,255,255,0.2);
-    }
+    .btn-outline { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.2); }
     .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.05); transform: translateY(-2px); }
 
     /* =========================================
-       5. MARQUEE
+       5. FEATURED PROSPECTUS (THE KEY DOCUMENT)
        ========================================= */
-    .marquee-wrapper {
-        background: var(--white);
-        border-bottom: 1px solid var(--silver);
-        padding: 16px 0;
-        overflow: hidden;
-        display: flex;
+    .featured-section { padding: 80px 24px 40px; max-width: 1200px; margin: 0 auto; }
+    .featured-card {
+        background: var(--white); border-radius: 24px; padding: 48px;
+        display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 48px; align-items: center;
+        box-shadow: var(--shadow-lg); border: 1px solid var(--silver); position: relative; overflow: hidden;
     }
+    .featured-card::before {
+        content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+        background: linear-gradient(90deg, var(--maroon), var(--gold)); z-index: 1;
+    }
+    .fc-content h3 { font-size: 14px; font-weight: 800; color: var(--maroon); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .fc-content h2 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 20px; line-height: 1.1; }
+    .fc-content p { font-size: 16px; color: #64748B; margin-bottom: 32px; line-height: 1.7; max-width: 90%; }
+    
+    .fc-actions { display: flex; gap: 16px; }
+    .btn-featured { padding: 16px 32px; font-size: 15px; font-weight: 700; border-radius: 12px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
+    .btn-fc-primary { background: var(--ink); color: var(--white); }
+    .btn-fc-primary:hover { background: #000; transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
+    .btn-fc-outline { background: var(--bg); color: var(--ink); border: 1px solid var(--silver); }
+    .btn-fc-outline:hover { background: var(--silver); }
 
-    .marquee {
-        display: flex;
-        white-space: nowrap;
-        animation: scroll 30s linear infinite;
+    .fc-image {
+        background: var(--bg); border-radius: 20px; padding: 40px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        border: 2px dashed var(--silver-dark); position: relative;
     }
-
-    .marquee span {
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 13px;
-        font-weight: 700;
-        color: var(--silver-dark);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        padding: 0 24px;
-    }
-    .marquee span::before {
-        content: "∆";
-        color: var(--maroon);
-        font-size: 16px;
-    }
-
-    @keyframes scroll {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-    }
+    .fc-image i { width: 80px; height: 80px; color: var(--maroon); margin-bottom: 20px; opacity: 0.8; }
+    .fc-image span { font-size: 13px; font-weight: 700; color: var(--silver-dark); text-transform: uppercase; letter-spacing: 1px; }
 
     /* =========================================
-       6. DYNAMIC DOCUMENT/COURSE GRID
+       6. DYNAMIC GRID (COURSES/DOCS)
        ========================================= */
-    .section {
-        padding: 100px 24px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
+    .section { padding: 40px 24px 80px; max-width: 1200px; margin: 0 auto; }
+    .section-header { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--silver); padding-bottom: 20px; }
+    .section-header h2 { font-size: 32px; font-weight: 900; letter-spacing: -1px; }
+    .section-header p { font-size: 15px; color: var(--silver-dark); font-weight: 500; }
 
-    .section-header {
-        text-align: center;
-        max-width: 700px;
-        margin: 0 auto 64px;
-    }
-
-    .section-header h2 {
-        font-size: 36px;
-        font-weight: 900;
-        letter-spacing: -1px;
-        margin-bottom: 16px;
-    }
-    .section-header p {
-        font-size: 16px;
-        color: #64748B;
-    }
-
-    .dynamic-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 24px;
-    }
-
+    .dynamic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
     .course-card {
-        background: var(--white);
-        border: 1px solid var(--silver);
-        border-radius: 20px;
-        padding: 32px;
-        display: flex;
-        flex-direction: column;
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
+        background: var(--white); border: 1px solid var(--silver); border-radius: 20px;
+        padding: 32px; display: flex; flex-direction: column; transition: var(--transition);
     }
-
-    .course-card::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; height: 4px;
-        background: linear-gradient(90deg, var(--maroon), var(--gold));
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.4s ease;
-    }
-
-    .course-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-        border-color: var(--maroon-glow);
-    }
-    .course-card:hover::before { transform: scaleX(1); }
-
-    .cc-icon {
-        width: 56px; height: 56px;
-        border-radius: 16px;
-        background: rgba(122,31,43,0.08);
-        color: var(--maroon);
-        display: flex; align-items: center; justify-content: center;
-        margin-bottom: 24px;
-    }
+    .course-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--maroon); }
+    .cc-icon { width: 56px; height: 56px; border-radius: 16px; background: rgba(122,31,43,0.08); color: var(--maroon); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
     .cc-icon i { width: 28px; height: 28px; }
-
     .course-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
     .course-card .cc-type { font-size: 12px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
     .course-card p { font-size: 14px; color: #64748B; margin-bottom: 24px; flex-grow: 1; }
-
-    .cc-actions {
-        display: flex;
-        gap: 12px;
-    }
-    .cc-actions a {
-        flex: 1;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: 12px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 700;
-        transition: var(--transition);
-    }
+    .cc-actions { display: flex; gap: 12px; }
+    .cc-actions a { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; transition: var(--transition); }
     .cc-actions .btn-view { background: var(--bg); color: var(--ink); border: 1px solid var(--silver); }
     .cc-actions .btn-view:hover { background: var(--silver); }
     .cc-actions .btn-down { background: var(--maroon); color: var(--white); }
     .cc-actions .btn-down:hover { background: var(--maroon-hover); }
 
     /* =========================================
-       7. INSTITUTIONAL PILLARS
+       7. MEGA FOOTER
        ========================================= */
-    .pillars { background: var(--white); border-top: 1px solid var(--silver); border-bottom: 1px solid var(--silver); }
-    .pillar-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 40px;
-    }
-    .pillar { text-align: center; padding: 24px; }
-    .pillar i { width: 48px; height: 48px; color: var(--maroon); margin-bottom: 20px; }
-    .pillar h4 { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
-    .pillar p { font-size: 14px; color: #64748B; }
-
-    /* =========================================
-       8. MEGA FOOTER
-       ========================================= */
-    .footer {
-        background: var(--ink);
-        color: var(--white);
-        padding: 80px 24px 40px;
-        border-top: 4px solid var(--maroon);
-    }
-
-    .footer-grid {
-        max-width: 1200px;
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr;
-        gap: 48px;
-        margin-bottom: 64px;
-    }
-
+    .footer { background: var(--ink); color: var(--white); padding: 80px 24px 40px; border-top: 4px solid var(--maroon); }
+    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 64px; }
     .footer-brand h2 { font-size: 28px; font-weight: 900; color: var(--white); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
     .footer-brand h2 span { color: var(--maroon-glow); }
     .footer-brand p { font-size: 14px; color: var(--silver-dark); line-height: 1.8; max-width: 300px; }
-
     .footer-col h4 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; color: var(--white); }
     .footer-col ul { display: flex; flex-direction: column; gap: 12px; }
     .footer-col a { font-size: 14px; color: var(--silver-dark); transition: var(--transition); }
     .footer-col a:hover { color: var(--gold); padding-left: 4px; }
-
-    .footer-bottom {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding-top: 32px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 13px;
-        color: var(--silver-dark);
-    }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--silver-dark); }
 
     /* =========================================
-       9. RESPONSIVE
+       8. RESPONSIVE
        ========================================= */
-    @media (max-width: 900px) {
-        .hero h2 { font-size: 48px; }
-        .footer-grid { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 1024px) {
+        .featured-card { grid-template-columns: 1fr; padding: 32px; }
+        .fc-image { display: none; } /* Hide visual on smaller screens to save space */
     }
     @media (max-width: 768px) {
         .nav-links { display: none; }
         .hero-buttons { flex-direction: column; }
+        .fc-actions { flex-direction: column; }
         .footer-grid { grid-template-columns: 1fr; gap: 32px; }
         .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        .section-header { flex-direction: column; align-items: flex-start; gap: 8px; }
     }
 </style>
 </head>
 <body>
+
+    <!-- LOADING SCREEN -->
+    <div id="loader">
+        <div class="loader-logo">∆</div>
+    </div>
 
     <!-- TOP ANNOUNCEMENT BAR -->
     <div class="top-bar">
@@ -469,14 +256,14 @@
                 <div class="brand-logo">∆</div>
                 <div class="brand-text">
                     <h1>Institute of Board</h1>
-                    <span>Elite Technical Education</span>
+                    <span>Academic Excellence</span>
                 </div>
             </a>
             <div class="nav-links">
-                <a href="#courses">Our Programs</a>
-                <a href="#pillars">Why IFB</a>
+                <a href="#programs">Our Programs</a>
                 <a href="documents.html">Documents</a>
-                <a href="admission.html" class="nav-cta">Apply Now</a>
+                <a href="#pillars">Why IFB</a>
+                <a href="admission.html" class="nav-cta">Apply Now <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i></a>
             </div>
         </div>
     </nav>
@@ -488,76 +275,53 @@
             <div class="hero-badge">
                 <i data-lucide="award"></i> 100% Fee-Free Institution
             </div>
-            <h2>Master the skills that <span>build the future.</span></h2>
-            <p>IFB is an elite, non-accredited institution offering rigorous, university-level training in Mathematics and Front-End Web Development. No fees. Just pure execution.</p>
+            <h2>Master the disciplines that <span>build the future.</span></h2>
+            <p>The Institute of Board is an elite, non-accredited academic institution offering rigorous, university-level training in Mathematics and Front-End Web Development.</p>
             <div class="hero-buttons">
                 <a href="admission.html" class="btn-lg btn-primary">
                     Start Application <i data-lucide="arrow-right"></i>
                 </a>
                 <a href="documents.html" class="btn-lg btn-outline">
-                    View Documents <i data-lucide="file-text"></i>
+                    View All Documents <i data-lucide="file-text"></i>
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- MARQUEE -->
-    <div class="marquee-wrapper">
-        <div class="marquee">
-            <span>Advanced Mathematics</span>
-            <span>Front-End Engineering</span>
-            <span>Non-Accredited Excellence</span>
-            <span>No Formula Sheets</span>
-            <span>2027 Academic Year</span>
-            <span>Advanced Mathematics</span>
-            <span>Front-End Engineering</span>
-            <span>Non-Accredited Excellence</span>
-            <span>No Formula Sheets</span>
-            <span>2027 Academic Year</span>
+    <!-- FEATURED PROSPECTUS DOCUMENT -->
+    <section class="featured-section">
+        <div class="featured-card">
+            <div class="fc-content">
+                <h3><i data-lucide="star"></i> Key Institution Document</h3>
+                <h2>The Official IFB Prospectus</h2>
+                <p>Before applying, you must read the official prospectus. Understand our non-accredited legal status, our zero-tolerance examination rules, the curriculum structure, and what it truly means to be a student at the Institute of Board.</p>
+                <div class="fc-actions">
+                    <a href="courses-ifb.html" target="_blank" class="btn-featured btn-fc-primary">
+                        Read Prospectus <i data-lucide="book-open"></i>
+                    </a>
+                    <a href="courses-ifb.html" download class="btn-featured btn-fc-outline">
+                        Download PDF <i data-lucide="download"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="fc-image">
+                <i data-lucide="file-text"></i>
+                <span>PDF Format</span>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- DYNAMIC DOCUMENTS/COURSES SECTION -->
-    <section class="section" id="courses">
+    <!-- DYNAMIC PROGRAMS GRID -->
+    <section class="section" id="programs">
         <div class="section-header">
-            <h2>Academic Programs & Documents</h2>
-            <p>Download the official curriculum guidelines for our 2027 tracks.</p>
+            <div>
+                <h2>Academic Programs</h2>
+                <p>Download the curriculum guidelines for our 2027 tracks.</p>
+            </div>
         </div>
         
         <!-- This is where the JavaScript injects the cards -->
         <div class="dynamic-grid" id="documentGrid"></div>
-    </section>
-
-    <!-- PILLARS SECTION -->
-    <section class="pillars" id="pillars">
-        <div class="section">
-            <div class="section-header">
-                <h2>The IFB Standard</h2>
-                <p>We operate differently. We don't waste time on bureaucratic fluff.</p>
-            </div>
-            <div class="pillar-grid">
-                <div class="pillar">
-                    <i data-lucide="shield-off"></i>
-                    <h4>Non-Accredited</h4>
-                    <p>We are not bound by slow government syllabuses. We teach modern, industry-standard tech directly.</p>
-                </div>
-                <div class="pillar">
-                    <i data-lucide="zap"></i>
-                    <h4>Brutal Rigor</h4>
-                    <p>No information sheets in our exams. You must derive formulas from first principles to pass.</p>
-                </div>
-                <div class="pillar">
-                    <i data-lucide="heart-handshake"></i>
-                    <h4>Fee-Free</h4>
-                    <p>Education should not be gatekept by wealth. Every accepted applicant studies entirely for free.</p>
-                </div>
-                <div class="pillar">
-                    <i data-lucide="code"></i>
-                    <h4>Project-Based</h4>
-                    <p>You aren't here to memorize. You are here to build, deploy, and execute real systems.</p>
-                </div>
-            </div>
-        </div>
     </section>
 
     <!-- MEGA FOOTER -->
@@ -565,7 +329,7 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <h2><span>∆</span> IFB</h2>
-                <p>The Institute of Board is dedicated to providing elite, rigorous, and fee-free technical education to the next generation of engineers and mathematicians.</p>
+                <p>The Institute of Board is dedicated to providing elite, rigorous, and fee-free education to the next generation of engineers and mathematicians.</p>
             </div>
             
             <div class="footer-col">
@@ -598,22 +362,28 @@
 
         <div class="footer-bottom">
             <p>&copy; 2026—2027 Institute of Board. All rights reserved.</p>
-            <p style="color: var(--gold); font-weight: 600;">Non-accredited skills development institution. Not registered with DHET or Umalusi.</p>
+            <p style="color: var(--gold); font-weight: 600;">Non-accredited institution. Not registered with DHET or Umalusi.</p>
         </div>
     </footer>
 
     <!-- =========================================
-         JAVASCRIPT - AUTO-GENERATE CARDS
+         JAVASCRIPT - LOADER & AUTO-GENERATE
          ========================================= -->
     <script>
+        // 1. HIDE LOADING SCREEN
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hidden');
+            }, 600); // 600ms delay
+        });
+
+        // 2. INITIALIZE ICONS
         lucide.createIcons();
 
         // ==========================================
-        // ✨ ADD NEW DOCUMENTS HERE ✨
-        // Whenever you create a new page, just add a new object to this array.
-        // The website will automatically build the card, icon, and buttons for you!
+        // 3. AUTO-GENERATE DYNAMIC CARDS
         // ==========================================
-        const dynamicDocuments = [
+        const dynamicPrograms = [
             {
                 title: "IFB-S: Mathematics",
                 type: "Advanced 4-Paper Track",
@@ -629,11 +399,11 @@
                 url: "curriculum-web.html"
             },
             {
-                title: "Institution Prospectus",
-                type: "General Document",
-                description: "Learn about the Institute of Board, our non-accredited status, and our strict operational rules.",
-                icon: "book-open",
-                url: "courses-ifb.html"
+                title: "Examination Guidelines",
+                type: "Assessment Rules",
+                description: "The strict rules, cognitive weightings, and the 'No Formula Sheet' policy for all Admission Examinations.",
+                icon: "shield-check",
+                url: "guidelines.html"
             },
             {
                 title: "Sponsor the Institute",
@@ -644,10 +414,9 @@
             }
         ];
 
-        // Render Function
         const grid = document.getElementById('documentGrid');
         
-        dynamicDocuments.forEach(doc => {
+        dynamicPrograms.forEach(doc => {
             const cardHTML = `
                 <div class="course-card">
                     <div class="cc-icon"><i data-lucide="${doc.icon}"></i></div>
