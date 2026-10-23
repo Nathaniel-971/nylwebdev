@@ -33,7 +33,7 @@
     .nav-right { display: flex; align-items: center; gap: 16px; }
     .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); }
     .btn-login:hover { border-color: var(--black); }
-    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); }
+    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
     .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
     
     .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; }
@@ -45,7 +45,7 @@
     .profile-grid-mini div { border-radius: 1px; }
 
     /* HERO (With Background Image) */
-    .hero { padding: 140px 24px; text-align: center; position: relative; background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.95)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1920&auto=format&fit=crop') center/cover; }
+    .hero { padding: 120px 24px; text-align: center; position: relative; background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.95)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1920&auto=format&fit=crop') center/cover; }
     .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--maroon); margin-bottom: 24px; background: var(--white); }
     .hero h1 { font-size: clamp(44px, 6vw, 80px); font-weight: 900; line-height: 1.05; letter-spacing: -2.5px; margin-bottom: 24px; }
     .hero h1 span { color: var(--maroon); }
@@ -91,7 +91,7 @@
     .input-group input:focus { border-color: var(--maroon); }
     .btn-submit { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
 
-    /* WHITE MOBILE MENU (No Black) */
+    /* WHITE MOBILE MENU */
     .mobile-menu { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: 0.4s ease; overflow-y: auto; }
     .mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
     .menu-header { display: flex; justify-content: flex-end; padding: 24px; border-bottom: 1px solid var(--silver); }
@@ -108,11 +108,21 @@
     .menu-footer { padding: 32px; border-top: 1px solid var(--silver); }
     .btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; }
 
-    /* MOBILE FIXES */
+    /* MOBILE FIXES (Spacing & Sizes) */
     @media (max-width: 768px) {
         .nav-container { padding: 0 16px; }
-        .btn-login { display: none; } /* Hide login button on mobile, use menu */
+        .brand-text h1 { font-size: 16px; } /* Smaller brand text */
+        .brand-logo { font-size: 28px; }
+        .nav-cta { padding: 8px 14px; font-size: 13px; } /* Smaller button */
+        .btn-login { display: none; } 
+        
+        .hero { padding: 60px 20px; } /* Much less top/bottom padding */
+        .hero-badge { margin-bottom: 16px; font-size: 11px; }
+        .hero h1 { margin-bottom: 16px; letter-spacing: -1.5px; }
+        .hero p { margin-bottom: 24px; font-size: 16px; }
         .hero-buttons { flex-direction: column; align-items: center; gap: 12px; }
+        .btn-lg { width: 100%; padding: 14px 24px; justify-content: center; }
+
         .footer-grid { flex-direction: column; gap: 24px; }
         .footer-links { flex-direction: column; gap: 24px; }
         .modal-content { padding: 32px 20px; }
@@ -134,7 +144,6 @@
                 <button class="btn-login" id="headerLoginBtn" onclick="document.getElementById('authModal').classList.add('active')">Sign In</button>
                 <a href="admission.html" class="nav-cta" id="headerApplyBtn">Apply Now</a>
                 
-                <!-- Profile shows after login -->
                 <div class="nav-profile" id="headerProfile" onclick="window.location.href='student-dashboard.html'">
                     <div class="profile-grid-mini" id="navGridIcon"></div>
                     <span style="font-weight: 700; font-size: 14px;">Dashboard</span>
@@ -255,18 +264,15 @@
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app); const provider = new GoogleAuthProvider();
 
-    // Check Login Status
     onAuthStateChanged(auth, async (user) => {
         document.getElementById('loader').style.opacity = '0';
         setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
         if (user) {
-            // User is signed in
             document.getElementById('headerLoginBtn').style.display = 'none';
             document.getElementById('headerApplyBtn').style.display = 'none';
             document.getElementById('headerProfile').style.display = 'flex';
             
-            // Get their student ID to build the grid
             const docSnap = await getDoc(doc(db, "users", user.uid));
             if(docSnap.exists()){
                 const id = docSnap.data().studentId || "123456";
@@ -280,7 +286,6 @@
     window.googleLogin = async function() { try { await signInWithPopup(auth, provider); window.location.reload(); } catch (e) { alert(e.message); } };
     window.emailLogin = async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); window.location.reload(); } catch (e) { alert(e.message); } };
 
-    // Menu Logic
     const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
     menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
     closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
@@ -291,7 +296,6 @@
         sub.style.maxHeight = sub.style.maxHeight ? null : sub.scrollHeight + "px";
     }
 
-    // Legal Modals
     const legalTexts = {
         privacy: `<h2>Privacy Policy</h2><p>Last updated: January 2027</p><p>The Institute of Board (IFB) collects essential information (Name, Email, Date of Birth) solely to generate your Student ID, manage your application, and provide access to our academic materials.</p><p>We use Firebase Authentication and Firestore for secure data storage. We do not sell your data to third parties. We comply with global data protection regulations (GDPR) principles.</p>`,
         terms: `<h2>Terms & Conditions</h2><p>Last updated: January 2027</p><p>1. <strong>Independent Institution:</strong> IFB is an independent, non-accredited educational institution. We are not affiliated with DHET, Umalusi, or any public university.</p><p>2. <strong>Admission:</strong> Submitting an application does not guarantee admission. Candidates must write and pass the Admission Examination. Applications close on 10 January 2027.</p><p>3. <strong>Conduct:</strong> Any form of academic dishonesty or cheating will result in immediate disqualification.</p>`,
