@@ -9,46 +9,40 @@
 <style>
     :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); opacity: 0; animation: fadeIn 0.4s ease forwards; }
+    body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); opacity: 0; animation: fadeIn 0.4s ease forwards; padding-bottom: 60px; }
     @keyframes fadeIn { to { opacity: 1; } }
     
     .header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; position: sticky; top: 0; z-index: 100; }
     .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
     .brand-logo { font-size: 32px; color: var(--maroon); }
-    .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); transition: 0.2s; }
-    .btn-back:hover { border-color: var(--black); }
 
     .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 320px 1fr; gap: 32px; align-items: start; }
     
     /* SIDEBAR */
     .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; position: sticky; top: 100px; text-align: center; }
-    
-    /* 2-DIGIT PROFILE BADGE */
     .profile-badge-large { 
         width: 90px; height: 90px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
         border-radius: 50%; border: 3px solid var(--maroon); background: var(--white); 
         font-size: 32px; font-weight: 900; color: var(--maroon);
     }
-    
     .sidebar h2 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
     .sidebar p { font-size: 13px; color: var(--gray); margin-bottom: 24px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
     .detail-row { margin-bottom: 16px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
     .detail-row .label { font-size: 11px; font-weight: 800; color: var(--gray); }
     .detail-row .value { font-size: 18px; font-weight: 700; font-family: monospace; }
-    .btn-action { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; margin-bottom: 12px; }
-    .btn-action:hover { background: var(--maroon-hover); }
-
+    .disclaimer-box { background: #FFF5F6; border: 1px solid var(--maroon); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--maroon); font-weight: 600; text-align: left; margin-top: 16px; }
+    
     /* MAIN CONTENT */
     .main-content { display: flex; flex-direction: column; gap: 24px; }
     .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; }
     .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; }
     
-    /* EDIT PROFILE FORM */
+    /* FORMS */
     .edit-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-size: 13px; font-weight: 700; color: var(--gray); }
-    .form-group input { padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; background: var(--white); }
-    .form-group input:focus { border-color: var(--maroon); }
+    .form-group input, .form-group select { padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; background: var(--white); }
+    .form-group input:focus, .form-group select:focus { border-color: var(--maroon); }
     .form-group input:disabled { background: #FAFAFA; color: var(--gray); cursor: not-allowed; }
     .btn-save { padding: 12px 24px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: auto; }
     .btn-save:hover { background: var(--maroon-hover); }
@@ -61,6 +55,16 @@
     .btn-doc:hover { border-color: var(--black); }
     .btn-doc.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
 
+    /* DANGER ZONE & BOTTOM ACTIONS */
+    .danger-card { border-color: #FECACA; background: #FEF2F2; }
+    .danger-card h3 { color: #B91C1C; border-bottom-color: #FECACA; }
+    .btn-danger { padding: 12px 24px; background: #DC2626; color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn-danger:hover { background: #B91C1C; }
+    
+    .bottom-actions { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; margin-bottom: 64px; }
+    .btn-signout { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; background: var(--white); border: 2px solid var(--silver); color: var(--black); border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn-signout:hover { border-color: var(--black); background: #FAFAFA; }
+
     @media (max-width: 900px) { .container { grid-template-columns: 1fr; } .sidebar { position: static; } }
     @media (max-width: 600px) { .edit-form { grid-template-columns: 1fr; } .doc-item { flex-direction: column; align-items: flex-start; } .btn-doc { width: 100%; justify-content: center; } }
 </style>
@@ -69,7 +73,6 @@
 
     <header class="header">
         <a href="index.html" class="brand"><div class="brand-logo">∆</div> Student Portal</a>
-        <div class="nav-right"><a href="index.html" class="btn-back" onclick="signOutUser()"><i data-lucide="log-out"></i> Sign Out</a></div>
     </header>
 
     <div class="container">
@@ -79,14 +82,18 @@
             <p>Applicant Profile</p>
             <div class="detail-row"><div class="label">Student ID</div><div class="value" id="userStudentId">-</div></div>
             <div class="detail-row"><div class="label">Status</div><div class="value" style="color: #15803d; font-family: 'Inter', sans-serif;">Applicant</div></div>
-            <a href="admission-slip.html" class="btn-action"><i data-lucide="printer"></i> Download Admission Slip</a>
+            
+            <div class="disclaimer-box">
+                <i data-lucide="shield-alert" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;"></i>
+                Non-Accredited Institution. Not affiliated with DHET, Umalusi, or any public university.
+            </div>
         </div>
 
         <div class="main-content">
             
-            <!-- EDIT INFO -->
+            <!-- PROFILE INFO -->
             <div class="card">
-                <h3>Edit Personal Information</h3>
+                <h3>Profile Information</h3>
                 <form id="editForm" autocomplete="off">
                     <div class="edit-form">
                         <div class="form-group">
@@ -102,6 +109,10 @@
                             <input type="date" id="editDob" disabled>
                         </div>
                         <div class="form-group">
+                            <label>Country</label>
+                            <input type="text" id="editCountry" disabled>
+                        </div>
+                        <div class="form-group">
                             <label>Email (Read-only)</label>
                             <input type="email" id="editEmail" disabled>
                         </div>
@@ -110,7 +121,7 @@
                 </form>
             </div>
 
-            <!-- SECURITY / ACCOUNT -->
+            <!-- SECURITY -->
             <div class="card">
                 <h3>Account Security</h3>
                 <form id="securityForm" autocomplete="off">
@@ -147,20 +158,29 @@
                     <div class="doc-item"><div class="doc-info"><h5>IFB-AE-S Mathematics Guidelines</h5></div><a href="guidelines-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                     <div class="doc-item"><div class="doc-info"><h5>IFB-AE-W Web Dev Guidelines</h5></div><a href="guidelines-web.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
                 </div>
-
-                <div class="category">
-                    <h4 style="font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 12px;">Practice Papers</h4>
-                    <div class="doc-item"><div class="doc-info"><h5>Practice Question Paper</h5></div><a href="practice-paper-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
-                    <div class="doc-item"><div class="doc-info"><h5>Practice Answer Book</h5></div><a href="answer-book.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
-                </div>
             </div>
+
+            <!-- DANGER ZONE -->
+            <div class="card danger-card">
+                <h3>Danger Zone</h3>
+                <p style="font-size: 14px; color: #B91C1C; margin-bottom: 16px;">Once you deregister, your account and all associated data will be permanently deleted.</p>
+                <button class="btn-danger" onclick="deleteAccount()">Deregister & Delete Account</button>
+            </div>
+
+            <!-- BOTTOM ACTIONS (SIGN OUT) -->
+            <div class="bottom-actions">
+                <button class="btn-signout" onclick="signOutUser()">
+                    <i data-lucide="log-out"></i> Sign Out of Account
+                </button>
+            </div>
+
         </div>
     </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut, updateEmail, updatePassword, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
@@ -174,29 +194,28 @@
             currentData = docSnap.data();
             
             // Populate UI
-            document.getElementById('userName').innerText = currentData.name;
-            document.getElementById('userStudentId').innerText = currentData.studentId;
+            document.getElementById('userName').innerText = currentData.name || "Applicant";
+            document.getElementById('userStudentId').innerText = currentData.studentId || "---";
             
-            // Generate 2-digit badge
-            const badgeText = currentData.studentId.slice(-2);
-            document.getElementById('profileBadge').innerText = badgeText;
+            // 2-digit badge
+            if (currentData.studentId) {
+                document.getElementById('profileBadge').innerText = currentData.studentId.slice(-2);
+            }
             
-            // Populate Edit Form
+            // Pre-fill Form
             document.getElementById('editName').value = currentData.name || "";
             document.getElementById('editPhone').value = currentData.phone || "";
             document.getElementById('editDob').value = currentData.dob || "";
+            document.getElementById('editCountry').value = currentData.country || "";
             document.getElementById('editEmail').value = currentData.email || user.email;
-            
-            // Populate Security Form
             document.getElementById('updateEmail').value = user.email || "";
         }
     });
 
-    // Handle Edit Profile Form Submit
+    // Save Profile
     document.getElementById('editForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!auth.currentUser) return;
-        
         const btn = e.target.querySelector('button');
         btn.innerText = "Saving...";
         
@@ -208,55 +227,67 @@
             alert("Profile updated successfully!");
             window.location.reload();
         } catch (error) {
-            alert("Error updating profile: " + error.message);
+            alert("Error: " + error.message);
             btn.innerText = "Save Changes";
         }
     });
 
-    // Handle Security Form Submit (Email & Password)
+    // Update Security
     document.getElementById('securityForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!auth.currentUser) return;
-
         const newEmail = document.getElementById('updateEmail').value;
         const newPass = document.getElementById('updatePass').value;
         const confirmPass = document.getElementById('updatePassConfirm').value;
         const btn = document.getElementById('saveSecurityBtn');
 
-        if (newPass && newPass !== confirmPass) {
-            alert("Passwords do not match.");
-            return;
-        }
+        if (newPass && newPass !== confirmPass) { alert("Passwords do not match."); return; }
 
-        btn.innerText = "Updating...";
-        btn.disabled = true;
-
+        btn.innerText = "Updating..."; btn.disabled = true;
         try {
-            // Update Email in Firebase Auth
             if (auth.currentUser.email !== newEmail) {
                 await updateEmail(auth.currentUser, newEmail);
                 await updateDoc(doc(db, "users", auth.currentUser.uid), { email: newEmail });
             }
-
-            // Update Password in Firebase Auth
             if (newPass) {
                 await updatePassword(auth.currentUser, newPass);
             }
-
-            alert("Account details updated successfully! Please sign in again.");
+            alert("Account details updated! Please sign in again.");
             await signOut(auth);
             window.location.href = "index.html";
-
         } catch (error) {
             if (error.code === 'auth/requires-recent-login') {
-                alert("For security reasons, you must sign out and log back in before changing your email or password.");
+                alert("For security, you must sign out and log back in before changing your email or password.");
             } else {
-                alert("Error updating account: " + error.message);
+                alert("Error: " + error.message);
             }
-            btn.innerText = "Update Account";
-            btn.disabled = false;
+            btn.innerText = "Update Account"; btn.disabled = false;
         }
     });
+
+    // Delete Account
+    window.deleteAccount = async function() {
+        if (!auth.currentUser) return;
+        const confirm = prompt("Type 'DELETE' to permanently deregister your account:");
+        if (confirm !== 'DELETE') return;
+
+        try {
+            const uid = auth.currentUser.uid;
+            // 1. Delete Firestore Document
+            await deleteDoc(doc(db, "users", uid));
+            // 2. Delete Auth User
+            await deleteUser(auth.currentUser);
+            
+            alert("Your account has been permanently deleted.");
+            window.location.href = "index.html";
+        } catch (error) {
+            if (error.code === 'auth/requires-recent-login') {
+                alert("Please sign out and sign back in before deleting your account.");
+            } else {
+                alert("Error deleting account: " + error.message);
+            }
+        }
+    };
 
     window.signOutUser = async function() { await signOut(auth); window.location.href = "index.html"; };
     lucide.createIcons();
