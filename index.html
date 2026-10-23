@@ -7,13 +7,9 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    :root { 
-        --white: #FFFFFF; --black: #111111; --gray: #666666; 
-        --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620;
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --transition: all 0.3s ease; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; opacity: 0; animation: fadeIn 0.5s ease forwards; }
+    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); opacity: 0; animation: fadeIn 0.4s ease forwards; }
     @keyframes fadeIn { to { opacity: 1; } }
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
@@ -24,12 +20,33 @@
     .brand { display: flex; align-items: center; gap: 12px; }
     .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
     .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
-    
     .nav-right { display: flex; align-items: center; gap: 16px; }
+    
     .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); }
     .btn-login:hover { border-color: var(--black); }
     .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); }
     .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
+    
+    .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; }
+    .menu-btn span { display: block; width: 100%; height: 2px; background: var(--black); transition: var(--transition); }
+
+    /* OCR MENU */
+    .mobile-menu { position: fixed; inset: 0; background: var(--black); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: 0.4s ease; overflow-y: auto; }
+    .mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
+    .menu-header { display: flex; justify-content: flex-end; padding: 24px; }
+    .close-btn { background: transparent; border: none; color: var(--white); cursor: pointer; padding: 8px; }
+    .close-btn i { width: 32px; height: 32px; }
+    .menu-content { padding: 0 32px 32px; flex-grow: 1; }
+    .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .menu-link { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; font-size: 20px; font-weight: 500; color: var(--silver); cursor: pointer; }
+    .menu-link:hover { color: var(--white); }
+    .menu-link i { transition: 0.3s; }
+    .menu-item.active .menu-link i { transform: rotate(90deg); color: var(--white); }
+    .submenu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: rgba(255,255,255,0.03); border-radius: 8px; }
+    .submenu a { display: block; padding: 16px 24px; font-size: 16px; color: var(--gray); }
+    .submenu a:hover { color: var(--white); padding-left: 32px; }
+    .menu-footer { padding: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; }
 
     /* HERO */
     .hero { padding: 140px 24px; text-align: center; }
@@ -56,14 +73,13 @@
     .footer-col a:hover, .footer-col button:hover { color: var(--maroon); }
     .footer-bottom { max-width: 1300px; margin: 48px auto 0; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
 
-    /* MODALS */
+    /* MODAL */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
     .modal-overlay.active { display: flex; }
     .modal-content { background: var(--white); border-radius: 24px; padding: 40px; max-width: 440px; width: 100%; position: relative; animation: popUp 0.3s ease; }
     @keyframes popUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .modal-content.legal { max-width: 600px; max-height: 80vh; overflow-y: auto; }
     .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
-    
     .modal-logo { font-size: 40px; font-weight: 900; color: var(--maroon); text-align: center; margin-bottom: 16px; }
     .modal-title { font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px; }
     .modal-subtitle { font-size: 14px; color: var(--gray); text-align: center; margin-bottom: 32px; }
@@ -89,9 +105,47 @@
             <div class="nav-right">
                 <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
                 <a href="admission.html" class="nav-cta">Apply Now</a>
+                <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
             </div>
         </div>
     </header>
+
+    <!-- OCR FULLSCREEN MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="menu-header"><button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button></div>
+        <div class="menu-content">
+            <ul class="menu-list">
+                <li class="menu-item">
+                    <div class="menu-link" onclick="toggleSubmenu(this)">Admissions <i data-lucide="chevron-right"></i></div>
+                    <div class="submenu"><div class="submenu-inner">
+                        <a href="admission.html">Apply Now</a>
+                        <a href="ae-timetable.html">AE Examination Timetable</a>
+                    </div></div>
+                </li>
+                <li class="menu-item">
+                    <div class="menu-link" onclick="toggleSubmenu(this)">Academics <i data-lucide="chevron-right"></i></div>
+                    <div class="submenu"><div class="submenu-inner">
+                        <a href="ifb-s-ae-mathematics.html">IFB-S: Mathematics Framework</a>
+                        <a href="ifb-aq-b-web.html">IFB AQ-B: Web Framework</a>
+                    </div></div>
+                </li>
+                <li class="menu-item">
+                    <div class="menu-link" onclick="toggleSubmenu(this)">Assessments <i data-lucide="chevron-right"></i></div>
+                    <div class="submenu"><div class="submenu-inner">
+                        <a href="practice-paper-math.html">Math Practice Paper</a>
+                        <a href="answer-book.html">Practice Answer Book</a>
+                    </div></div>
+                </li>
+                <li class="menu-item">
+                    <div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div>
+                    <div class="submenu"><div class="submenu-inner">
+                        <a href="student-dashboard.html">Student Dashboard</a>
+                    </div></div>
+                </li>
+            </ul>
+        </div>
+        <div class="menu-footer"><a href="admission.html" class="btn-menu-apply">Apply Now</a></div>
+    </div>
 
     <section class="hero">
         <div class="hero-badge"><i data-lucide="clock"></i> Applications Close: 10 January 2027</div>
@@ -168,42 +222,43 @@
     import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
-        authDomain: "nyldevcourses.firebaseapp.com",
-        projectId: "nyldevcourses",
-        storageBucket: "nyldevcourses.firebasestorage.app",
-        messagingSenderId: "16687006873",
-        appId: "1:16687006873:web:b7d66ad1024ccd92722408"
+        apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // Auto-Sign In Check
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            window.location.href = "student-dashboard.html";
-        }
+        if (user) { window.location.href = "student-dashboard.html"; }
     });
 
-    window.googleLogin = async function() {
-        try { await signInWithPopup(auth, provider); } catch (error) { alert(error.message); }
-    };
-
+    window.googleLogin = async function() { try { await signInWithPopup(auth, provider); } catch (e) { alert(e.message); } };
     window.emailLogin = async function() {
         const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPass').value;
-        try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { alert(error.message); }
+        const pass = document.getElementById('loginPass').value;
+        try { await signInWithEmailAndPassword(auth, email, pass); } catch (e) { alert(e.message); }
     };
+
+    // MENU LOGIC
+    const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
+    closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
+    
+    window.toggleSubmenu = function(element) {
+        const parent = element.parentElement, sub = parent.querySelector('.submenu');
+        document.querySelectorAll('.menu-item').forEach(item => {
+            if (item !== parent) { item.classList.remove('active'); item.querySelector('.submenu').style.maxHeight = null; }
+        });
+        parent.classList.toggle('active');
+        sub.style.maxHeight = sub.style.maxHeight ? null : sub.scrollHeight + "px";
+    }
 
     lucide.createIcons();
-
     const legalTexts = {
-        privacy: `<h2>Privacy Policy</h2><p>We collect essential information solely to generate your Admission ID. We use secure authentication and comply with global data protection principles.</p>`,
-        terms: `<h2>Terms & Conditions</h2><p>IFB is independent and non-accredited. Applying does not guarantee admission; you must pass the Admission Examination.</p>`
+        privacy: `<h2>Privacy Policy</h2><p>We collect essential information solely to generate your Admission ID. We comply with global data protection principles.</p>`,
+        terms: `<h2>Terms & Conditions</h2><p>IFB is independent and non-accredited. Applying does not guarantee admission.</p>`
     };
-
     window.openLegal = function(type) {
         document.getElementById('legalContent').innerHTML = legalTexts[type];
         document.getElementById('legalModal').classList.add('active');
