@@ -18,13 +18,11 @@
     .header h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
     .header p { font-size: 14px; color: var(--gray); }
     .warning { background: #FFF5F6; border: 1px solid var(--maroon); color: var(--maroon); padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 24px; }
-    
     .form-group { margin-bottom: 20px; }
     label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
     input, select { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; }
     input:focus, select:focus { border-color: var(--maroon); }
     
-    /* Module Selection Box */
     .module-box { display: none; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; padding: 16px; margin-top: 12px; }
     .module-box.active { display: block; }
     .module-title { font-size: 12px; font-weight: 800; color: var(--maroon); text-transform: uppercase; margin-bottom: 12px; }
@@ -59,7 +57,6 @@
             <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" required placeholder="+27 XX XXX XXXX"></div>
             <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
             
-            <!-- Course Selection -->
             <div class="form-group" style="margin-top: 32px; border-top: 1px solid var(--silver); padding-top: 24px;">
                 <label>Select Your Course (1 Year)</label>
                 <select id="courseSelect" required>
@@ -69,7 +66,6 @@
                 </select>
             </div>
 
-            <!-- Dynamic Modules -->
             <div class="module-box" id="mathModules">
                 <div class="module-title">Mathematics Core Modules</div>
                 <label class="checkbox-label"><input type="checkbox" value="Algebra" class="math-mod" checked> Algebra & Equations</label>
@@ -97,7 +93,7 @@
         
         <div class="id-box">
             <div class="label">13-Digit Student ID</div>
-            <div class="value" id="displayId">2027010000000</div>
+            <div class="value" id="displayId">2701000000001</div>
         </div>
 
         <a href="index.html" class="btn" style="display: block; text-decoration: none;">Go to Login</a>
@@ -112,7 +108,6 @@
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
-    // Handle Course Selection UI
     const courseSelect = document.getElementById('courseSelect');
     const mathModules = document.getElementById('mathModules');
     const webModules = document.getElementById('webModules');
@@ -120,18 +115,12 @@
     courseSelect.addEventListener('change', (e) => {
         mathModules.classList.remove('active');
         webModules.classList.remove('active');
-        
-        if (e.target.value === 'IFB-S Mathematics') {
-            mathModules.classList.add('active');
-        } else if (e.target.value === 'IFB AQ-B Front-End') {
-            webModules.classList.add('active');
-        }
+        if (e.target.value === 'IFB-S Mathematics') mathModules.classList.add('active');
+        else if (e.target.value === 'IFB AQ-B Front-End') webModules.classList.add('active');
     });
 
-    // Handle Form Submission
     document.getElementById('admissionForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
         const btn = document.getElementById('submitBtn');
         btn.innerText = "Processing...";
         btn.disabled = true;
@@ -139,10 +128,9 @@
         const name = document.getElementById('fullName').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
-        const dob = document.getElementById('dob').value;
+        const dobValue = document.getElementById('dob').value; // YYYY-MM-DD
         const course = courseSelect.value;
         
-        // Get selected modules
         let selectedModules = [];
         if (course === 'IFB-S Mathematics') {
             document.querySelectorAll('.math-mod:checked').forEach(cb => selectedModules.push(cb.value));
@@ -150,32 +138,23 @@
             document.querySelectorAll('.web-mod:checked').forEach(cb => selectedModules.push(cb.value));
         }
         
+        // FORMAT STUDENT ID: 2701 + YYMMDD + 001 (13 digits total)
+        // e.g. 2005-10-26 -> 051026 -> 2701051026001
+        const dobClean = dobValue.replace(/-/g, ''); // YYYYMMDD
+        const yy = dobClean.substring(2, 4); // YY
+        const mmdd = dobClean.substring(4, 8); // MMDD
+        const studentId = `2701${yy}${mmdd}001`; 
+
         const tempPassword = "IFB2027!" + Math.floor(Math.random() * 10000);
 
         try {
-            // Create Firebase Auth User
             const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
             const user = userCredential.user;
 
-            // Generate 13-digit ID
-            const timestampStr = Date.now().toString().slice(-6);
-            const randomDigit = Math.floor(Math.random() * 900) + 100;
-            const studentId = `202701${timestampStr}${randomDigit}`;
-
-            // Save to Firestore
             await setDoc(doc(db, "users", user.uid), {
-                name: name, 
-                email: email, 
-                phone: phone, 
-                dob: dob, 
-                studentId: studentId, 
-                course: course,
-                modules: selectedModules,
-                status: "Applicant", 
-                createdAt: new Date()
+                name: name, email: email, phone: phone, dob: dobValue, studentId: studentId, course: course, modules: selectedModules, status: "Applicant", createdAt: new Date()
             });
 
-            // Show Success Screen
             document.getElementById('formCard').style.display = 'none';
             document.getElementById('displayId').innerText = studentId;
             document.getElementById('successState').style.display = 'block';
@@ -191,7 +170,6 @@
             }
         }
     });
-    
     lucide.createIcons();
 </script>
 </body>
