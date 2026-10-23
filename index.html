@@ -32,19 +32,23 @@
     
     .nav-right { display: flex; align-items: center; gap: 12px; }
     
-    /* BUTTON CONFLICT RESOLVED */
+    /* BUTTONS */
     .nav-logged-out { display: flex; align-items: center; gap: 8px; }
     .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--black); white-space: nowrap; }
     .btn-login:hover { border-color: var(--black); background: #FAFAFA; }
     .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
     .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
+    /* LOGGED IN ROUNDED GRID ICON */
     .nav-logged-in { display: none; align-items: center; gap: 12px; }
-    .btn-dashboard { background: transparent; border: 1.5px solid var(--maroon); color: var(--maroon); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-    .btn-dashboard:hover { background: var(--maroon); color: var(--white); }
-    
-    .profile-grid-mini { width: 44px; height: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; border-radius: 12px; overflow: hidden; border: 2px solid var(--silver); background: var(--white); cursor: pointer; }
-    .profile-grid-mini div { border-radius: 2px; }
+    .profile-grid-mini { 
+        width: 46px; height: 46px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; 
+        border-radius: 50%; /* Makes it perfectly round */
+        overflow: hidden; border: 2px solid var(--silver); background: var(--white); cursor: pointer; 
+        transition: transform 0.2s;
+    }
+    .profile-grid-mini:hover { transform: scale(1.05); border-color: var(--maroon); }
+    .profile-grid-mini div { border-radius: 1px; }
 
     /* MENU BUTTON */
     .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; z-index: 2001; }
@@ -85,24 +89,15 @@
     .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
     .btn-outline:hover { border-color: var(--black); }
 
-    /* CAROUSEL (FIXED SCROLL) */
+    /* CAROUSEL */
     .courses-section { padding: 80px 0; background: #FAFAFA; border-top: 1px solid var(--silver); overflow: hidden; }
     .section-header { text-align: center; margin-bottom: 48px; padding: 0 24px; }
     .section-header h2 { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
     
-    /* Hide scrollbar but keep functionality */
-    .carousel-wrapper { 
-        display: flex; gap: 24px; padding: 10px 24px 30px; 
-        overflow-x: auto; scroll-snap-type: x mandatory; 
-        scrollbar-width: none; -ms-overflow-style: none;
-        scroll-behavior: smooth;
-    }
+    .carousel-wrapper { display: flex; gap: 24px; padding: 10px 24px 30px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; }
     .carousel-wrapper::-webkit-scrollbar { display: none; }
     
-    .course-card { 
-        flex: 0 0 340px; scroll-snap-align: center; background: var(--white); border: 1px solid var(--silver); 
-        border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; 
-    }
+    .course-card { flex: 0 0 340px; scroll-snap-align: center; background: var(--white); border: 1px solid var(--silver); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
     .course-image { width: 100%; height: 160px; object-fit: cover; border-bottom: 1px solid var(--silver); }
     .course-content { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
     .course-content h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
@@ -145,23 +140,18 @@
     .input-group input:focus { border-color: var(--maroon); }
     .btn-submit { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
 
-    /* MOBILE FIXES */
+    /* MOBILE */
     @media (max-width: 768px) {
         .nav-container { padding: 0 16px; }
         .brand-text h1 { font-size: 16px; }
         .brand-logo { font-size: 28px; }
-        
-        /* Make buttons smaller to fit */
         .btn-login { padding: 8px 12px; font-size: 13px; }
         .nav-cta { padding: 8px 12px; font-size: 13px; }
-        .btn-dashboard { padding: 8px 12px; font-size: 13px; }
-        
         .hero { padding: 80px 20px; }
         .hero h1 { margin-bottom: 16px; }
         .hero p { margin-bottom: 24px; font-size: 16px; }
         .hero-buttons { flex-direction: column; gap: 12px; }
         .btn-lg { width: 100%; justify-content: center; padding: 14px; }
-        
         .course-card { flex: 0 0 280px; }
         .footer-grid { flex-direction: column; gap: 24px; }
         .footer-links { flex-direction: column; gap: 24px; }
@@ -173,7 +163,6 @@
 
     <div id="loader"><div class="loader-logo">∆</div></div>
 
-    <!-- HEADER -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="brand">
@@ -182,16 +171,14 @@
             </a>
             <div class="nav-right">
                 
-                <!-- LOGGED OUT BUTTONS -->
                 <div class="nav-logged-out" id="navLoggedOut">
                     <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
                     <a href="admission.html" class="nav-cta">Apply</a>
                 </div>
 
-                <!-- LOGGED IN BUTTONS -->
+                <!-- LOGGED IN: ROUNDED GRID ICON ONLY -->
                 <div class="nav-logged-in" id="navLoggedIn">
-                    <a href="student-dashboard.html" class="btn-dashboard">Dashboard</a>
-                    <div class="profile-grid-mini" id="navGridIcon" onclick="window.location.href='student-dashboard.html'"></div>
+                    <div class="profile-grid-mini" id="navGridIcon" onclick="window.location.href='student-dashboard.html'" title="Dashboard"></div>
                 </div>
                 
                 <button class="menu-btn" id="menuBtn">
@@ -203,11 +190,8 @@
         </div>
     </header>
 
-    <!-- FULLSCREEN MENU -->
     <div class="mobile-menu" id="mobileMenu">
-        <div class="menu-header">
-            <button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button>
-        </div>
+        <div class="menu-header"><button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button></div>
         <div class="menu-content">
             <ul class="menu-list">
                 <li class="menu-item">
@@ -229,7 +213,6 @@
         <div class="menu-footer"><a href="admission.html" class="btn-menu-apply">Apply Now</a></div>
     </div>
 
-    <!-- HERO -->
     <section class="hero">
         <div class="hero-carousel" id="heroCarousel">
             <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1920&auto=format&fit=crop');"></div>
@@ -249,7 +232,6 @@
         </div>
     </section>
 
-    <!-- COURSE CAROUSEL -->
     <section class="courses-section">
         <div class="section-header">
             <h2>Our Programs</h2>
@@ -257,7 +239,6 @@
         </div>
         
         <div class="carousel-wrapper" id="courseCarousel">
-            <!-- Duplicated items for seamless looping -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -294,7 +275,6 @@
                 </div>
             </div>
             
-            <!-- Copy 2 -->
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -312,18 +292,6 @@
                 <div class="course-content">
                     <h3>IFB AQ-B: Front-End</h3>
                     <p>Master HTML, CSS, JavaScript, React, and modern UI/UX. Build real projects.</p>
-                    <div class="course-actions">
-                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
-                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop" alt="Coding" class="course-image">
-                <div class="course-content">
-                    <h3>Advanced Full Stack</h3>
-                    <p>Go beyond the front-end. Master Node.js, Express, and database integration.</p>
                     <div class="course-actions">
                         <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
                         <a href="admission.html" class="btn-course-apply">Apply Now</a>
@@ -362,7 +330,6 @@
         </div>
     </footer>
 
-    <!-- MODALS -->
     <div class="modal-overlay" id="noticeModal">
         <div class="modal-content">
             <div class="modal-title" style="color: var(--maroon);">Important Notice</div>
@@ -419,20 +386,18 @@
     const googleProvider = new GoogleAuthProvider();
     const githubProvider = new GithubAuthProvider();
 
-    // CHECK LOGIN STATE & SWAP BUTTONS
     onAuthStateChanged(auth, async (user) => {
         document.getElementById('loader').style.opacity = '0';
         setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
         if (user) {
-            // Logged In: Hide Login/Apply, Show Dashboard/Profile
+            // Logged In: Hide Login/Apply, Show Grid Icon
             document.getElementById('navLoggedOut').style.display = 'none';
             document.getElementById('navLoggedIn').style.display = 'flex';
             
-            // Fetch Student ID to build the grid icon
             const docSnap = await getDoc(doc(db, "users", user.uid));
             if(docSnap.exists()){
-                const id = docSnap.data().studentId || "1234567890123";
+                const id = docSnap.data().studentId || "27011026001"; // Fallback
                 const c = document.getElementById('navGridIcon'); 
                 c.innerHTML = '';
                 const colors = ['#7A1F2B', '#C7CBD1', '#111111', '#FAFAFA', '#E2E8F0'];
@@ -444,21 +409,18 @@
                 }
             }
         } else {
-            // Logged Out: Show Login/Apply, Hide Dashboard/Profile
+            // Logged Out: Show Login/Apply, Hide Grid Icon
             document.getElementById('navLoggedOut').style.display = 'flex';
             document.getElementById('navLoggedIn').style.display = 'none';
             
-            // Show Notice Modal
             document.getElementById('noticeModal').classList.add('active');
         }
     });
 
-    // AUTH FUNCTIONS
     window.googleLogin = async function() { try { await signInWithPopup(auth, googleProvider); window.location.reload(); } catch (e) { alert(e.message); } };
     window.githubLogin = async function() { try { await signInWithPopup(auth, githubProvider); window.location.reload(); } catch (e) { alert(e.message); } };
     window.emailLogin = async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); window.location.reload(); } catch (e) { alert(e.message); } };
 
-    // MENU LOGIC
     const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
     menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
     closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
@@ -470,7 +432,6 @@
         sub.style.maxHeight = sub.style.maxHeight ? null : sub.scrollHeight + "px";
     }
 
-    // HERO CAROUSEL
     let currentSlide = 0;
     const slides = document.querySelectorAll('.hero-slide');
     setInterval(() => {
@@ -479,47 +440,28 @@
         slides[currentSlide].classList.add('active');
     }, 5000);
 
-    // SCROLLABLE & AUTO-SCROLLING COURSE CAROUSEL
     const carousel = document.getElementById('courseCarousel');
     let isInteracting = false;
     let scrollAmount = 0;
-    let autoScrollInterval;
-
     function startAutoScroll() {
-        autoScrollInterval = setInterval(() => {
+        setInterval(() => {
             if (!isInteracting) {
                 scrollAmount += 1;
-                // If we reach the end, reset to start
-                if (scrollAmount >= carousel.scrollWidth / 2) {
-                    scrollAmount = 0;
-                }
+                if (scrollAmount >= carousel.scrollWidth / 2) scrollAmount = 0;
                 carousel.scrollLeft = scrollAmount;
             }
-        }, 20); // Speed of auto-scroll (lower is faster)
+        }, 20);
     }
-
-    // Pause auto-scroll on hover or touch
     carousel.addEventListener('mouseenter', () => { isInteracting = true; });
     carousel.addEventListener('mouseleave', () => { isInteracting = false; scrollAmount = carousel.scrollLeft; });
     carousel.addEventListener('touchstart', () => { isInteracting = true; });
-    carousel.addEventListener('touchend', () => { 
-        setTimeout(() => { 
-            isInteracting = false; 
-            scrollAmount = carousel.scrollLeft; 
-        }, 1500); 
-    });
-
-    // Update scrollAmount if user manually scrolls
-    carousel.addEventListener('scroll', () => {
-        if (isInteracting) scrollAmount = carousel.scrollLeft;
-    });
-
+    carousel.addEventListener('touchend', () => { setTimeout(() => { isInteracting = false; scrollAmount = carousel.scrollLeft; }, 1500); });
+    carousel.addEventListener('scroll', () => { if (isInteracting) scrollAmount = carousel.scrollLeft; });
     startAutoScroll();
 
-    // LEGAL MODALS
     const legalTexts = {
-        privacy: `<h2>Privacy Policy</h2><p>Last updated: January 2027</p><p>The Institute of Board collects essential information (Name, Email, Date of Birth) solely to generate your Student ID. We use Firebase for secure storage and comply with GDPR.</p>`,
-        terms: `<h2>Terms & Conditions</h2><p>Last updated: January 2027</p><p>1. IFB is an independent, non-accredited institution. We are not affiliated with DHET or Umalusi.</p><p>2. Admission is conditional on passing the Admission Examination. Applications close 13 January 2027.</p>`
+        privacy: `<h2>Privacy Policy</h2><p>We collect essential information (Name, Email, Date of Birth) solely to generate your Student ID. We use Firebase for secure storage and comply with GDPR.</p>`,
+        terms: `<h2>Terms & Conditions</h2><p>1. IFB is an independent, non-accredited institution. We are not affiliated with DHET or Umalusi.</p><p>2. Admission is conditional on passing the Admission Examination. Applications close 13 January 2027.</p>`
     };
     window.openLegal = function(type) { document.getElementById('legalContent').innerHTML = legalTexts[type]; document.getElementById('legalModal').classList.add('active'); }
 
