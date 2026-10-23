@@ -18,7 +18,6 @@
 
     .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 320px 1fr; gap: 32px; align-items: start; }
     
-    /* SIDEBAR */
     .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; position: sticky; top: 100px; text-align: center; }
     .profile-badge-large { 
         width: 90px; height: 90px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
@@ -32,12 +31,10 @@
     .detail-row .value { font-size: 18px; font-weight: 700; font-family: monospace; }
     .disclaimer-box { background: #FFF5F6; border: 1px solid var(--maroon); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--maroon); font-weight: 600; text-align: left; margin-top: 16px; }
     
-    /* MAIN CONTENT */
     .main-content { display: flex; flex-direction: column; gap: 24px; }
     .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; }
     .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; }
     
-    /* FORMS */
     .edit-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-size: 13px; font-weight: 700; color: var(--gray); }
@@ -47,7 +44,6 @@
     .btn-save { padding: 12px 24px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: auto; }
     .btn-save:hover { background: var(--maroon-hover); }
 
-    /* DOCUMENTS */
     .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--silver); border-radius: 8px; margin-bottom: 12px; gap: 16px; }
     .doc-info h5 { font-size: 16px; font-weight: 700; }
     .doc-info p { font-size: 13px; color: var(--gray); }
@@ -55,18 +51,15 @@
     .btn-doc:hover { border-color: var(--black); }
     .btn-doc.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
 
-    /* INLINE ALERTS */
     .inline-alert { display: none; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-bottom: 16px; }
     .inline-alert.success { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
     .inline-alert.error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
 
-    /* DANGER ZONE */
     .danger-card { border-color: #FECACA; background: #FEF2F2; }
     .danger-card h3 { color: #B91C1C; border-bottom-color: #FECACA; }
     .btn-danger { padding: 12px 24px; background: #DC2626; color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
     .btn-danger:hover { background: #B91C1C; }
     
-    /* BOTTOM ACTIONS */
     .bottom-actions { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; margin-bottom: 64px; }
     .btn-signout { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; background: var(--white); border: 2px solid var(--silver); color: var(--black); border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
     .btn-signout:hover { border-color: var(--black); background: #FAFAFA; }
@@ -97,7 +90,6 @@
 
         <div class="main-content">
             
-            <!-- PROFILE INFO -->
             <div class="card">
                 <h3>Profile Information</h3>
                 <div class="inline-alert success" id="profileSuccess">Profile updated successfully!</div>
@@ -130,7 +122,6 @@
                 </form>
             </div>
 
-            <!-- SECURITY -->
             <div class="card">
                 <h3>Account Security</h3>
                 <div class="inline-alert success" id="securitySuccess">Account updated! Please sign in again.</div>
@@ -144,18 +135,17 @@
                         </div>
                         <div class="form-group">
                             <label>New Password</label>
-                            <input type="password" id="updatePass" placeholder="Leave blank to keep current" autocomplete="new-password">
+                            <input type="password" id="updatePass" autocomplete="new-password">
                         </div>
                         <div class="form-group">
                             <label>Confirm New Password</label>
-                            <input type="password" id="updatePassConfirm" placeholder="Confirm new password" autocomplete="new-password">
+                            <input type="password" id="updatePassConfirm" autocomplete="new-password">
                         </div>
                     </div>
                     <button type="submit" class="btn-save" id="saveSecurityBtn">Update Account</button>
                 </form>
             </div>
 
-            <!-- DOCUMENTS -->
             <div class="card">
                 <h3>Gated Materials (Enrolled Students Only)</h3>
                 <div class="category" style="margin-bottom: 24px;">
@@ -171,14 +161,12 @@
                 </div>
             </div>
 
-            <!-- DANGER ZONE -->
             <div class="card danger-card">
                 <h3>Danger Zone</h3>
                 <p style="font-size: 14px; color: #B91C1C; margin-bottom: 16px;">Once you deregister, your account and all associated data will be permanently deleted.</p>
                 <button class="btn-danger" onclick="deleteAccount()">Deregister & Delete Account</button>
             </div>
 
-            <!-- BOTTOM ACTIONS (SIGN OUT) -->
             <div class="bottom-actions">
                 <button class="btn-signout" onclick="signOutUser()">
                     <i data-lucide="log-out"></i> Sign Out of Account
@@ -220,7 +208,6 @@
         }
     });
 
-    // Save Profile
     document.getElementById('editForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!auth.currentUser) return;
@@ -245,7 +232,6 @@
         }
     });
 
-    // Update Security
     document.getElementById('securityForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         if (!auth.currentUser) return;
@@ -288,11 +274,8 @@
         }
     });
 
-    // Delete Account
     window.deleteAccount = async function() {
         if (!auth.currentUser) return;
-        
-        // Using a simple confirm dialog (cannot easily style native confirm, but it's the safest for deletions)
         if (!confirm("Are you absolutely sure you want to permanently delete your account? This action cannot be undone.")) return;
 
         try {
