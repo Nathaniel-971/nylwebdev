@@ -10,118 +10,59 @@
     :root { 
         --white: #FFFFFF; --black: #111111; --gray: #666666; 
         --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620;
-        --transition: all 0.3s ease;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; }
+    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; opacity: 0; animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
 
     /* HEADER */
-    .header { position: sticky; top: 0; z-index: 1000; background: var(--white); border-bottom: 1px solid var(--silver); height: 80px; }
+    .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 80px; }
     .nav-container { max-width: 1300px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
     .brand { display: flex; align-items: center; gap: 12px; }
     .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
-    .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: var(--black); }
+    .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
     
     .nav-right { display: flex; align-items: center; gap: 16px; }
-    
-    /* Grid Icon Button */
-    .btn-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; border: 1.5px solid var(--silver); background: transparent; cursor: pointer; transition: var(--transition); }
-    .btn-icon:hover { border-color: var(--black); background: #FAFAFA; }
-    .btn-icon i { width: 20px; height: 20px; color: var(--black); }
-
-    /* Hamburger Button */
-    .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; z-index: 2001; }
-    .menu-btn span { display: block; width: 100%; height: 2px; background: var(--black); transition: var(--transition); }
-
-    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; }
-    .nav-cta:hover { background: var(--maroon-hover); }
-
-    /* =========================================
-       OCR-STYLE FULLSCREEN MENU
-       ========================================= */
-    .mobile-menu { position: fixed; inset: 0; background: var(--black); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, visibility 0.4s; overflow-y: auto; }
-    .mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
-    
-    .menu-header { display: flex; justify-content: flex-end; padding: 24px; }
-    .close-btn { background: transparent; border: none; color: var(--white); cursor: pointer; padding: 8px; }
-    .close-btn i { width: 32px; height: 32px; }
-    
-    .menu-content { padding: 0 32px 32px; flex-grow: 1; }
-    .menu-list { display: flex; flex-direction: column; }
-    .menu-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .menu-item:last-child { border-bottom: none; }
-    
-    .menu-link { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; font-size: 20px; font-weight: 500; color: var(--silver); cursor: pointer; transition: var(--transition); }
-    .menu-link:hover { color: var(--white); }
-    .menu-link i { width: 20px; height: 20px; transition: var(--transition); }
-    .menu-item.active .menu-link { color: var(--white); }
-    .menu-item.active .menu-link i { transform: rotate(90deg); color: var(--white); }
-    
-    .submenu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: rgba(255,255,255,0.03); border-radius: 8px; }
-    .submenu-inner { padding: 8px 0; }
-    .submenu a { display: block; padding: 16px 24px; font-size: 16px; color: var(--gray); transition: var(--transition); }
-    .submenu a:hover { color: var(--white); padding-left: 32px; }
-    
-    .menu-footer { padding: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
-    .btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; text-align: center; }
+    .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+    .btn-login:hover { border-color: var(--black); }
+    .nav-cta { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); }
+    .nav-cta:hover { background: var(--maroon-hover); transform: translateY(-2px); }
 
     /* HERO */
-    .hero { padding: 100px 24px; text-align: center; border-bottom: 1px solid var(--silver); background: #FAFAFA; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--maroon); margin-bottom: 24px; background: var(--white); }
+    .hero { padding: 140px 24px; text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--maroon); margin-bottom: 24px; }
     .hero h1 { font-size: clamp(44px, 6vw, 80px); font-weight: 900; line-height: 1.05; letter-spacing: -2.5px; margin-bottom: 24px; }
     .hero h1 span { color: var(--maroon); }
     .hero p { font-size: 18px; color: var(--gray); max-width: 600px; margin: 0 auto 40px; }
     .hero-buttons { display: flex; gap: 16px; justify-content: center; }
     .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 100px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
     .btn-primary { background: var(--maroon); color: var(--white); border: 2px solid var(--maroon); }
-    .btn-primary:hover { background: var(--maroon-hover); }
+    .btn-primary:hover { background: var(--maroon-hover); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(122,31,43,0.2); }
     .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
-    .btn-outline:hover { border-color: var(--black); }
-
-    /* MISSION & VISION */
-    .mission-section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
-    .mv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-    .mv-card { border: 1px solid var(--silver); border-radius: 20px; padding: 48px; background: var(--white); }
-    .mv-card i { width: 48px; height: 48px; color: var(--maroon); margin-bottom: 24px; }
-    .mv-card h2 { font-size: 28px; font-weight: 900; margin-bottom: 16px; }
-    .mv-card p { font-size: 16px; color: var(--gray); line-height: 1.8; }
-
-    /* DOCUMENTS / RESOURCES */
-    .doc-section { padding: 100px 24px; background: #FAFAFA; border-top: 1px solid var(--silver); border-bottom: 1px solid var(--silver); }
-    .doc-container { max-width: 1000px; margin: 0 auto; }
-    .doc-header { text-align: center; margin-bottom: 64px; }
-    .doc-header h2 { font-size: 36px; font-weight: 900; margin-bottom: 16px; }
-    
-    .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .doc-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; display: flex; align-items: flex-start; gap: 20px; transition: 0.2s; }
-    .doc-card:hover { border-color: var(--maroon); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-    .doc-card i { width: 32px; height: 32px; color: var(--maroon); flex-shrink: 0; }
-    .doc-text h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
-    .doc-text p { font-size: 14px; color: var(--gray); margin-bottom: 16px; }
-    .btn-doc { display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; background: var(--white); border: 1.5px solid var(--silver); border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
-    .btn-doc:hover { border-color: var(--black); }
+    .btn-outline:hover { border-color: var(--black); transform: translateY(-3px); }
 
     /* FOOTER */
-    .footer { background: var(--white); padding: 64px 24px 40px; }
-    .footer-grid { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 32px; margin-bottom: 48px; }
-    .footer-brand { max-width: 300px; }
+    .footer { background: #FAFAFA; padding: 64px 24px 40px; border-top: 1px solid var(--silver); }
+    .footer-grid { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 32px; }
     .footer-brand h2 { font-size: 20px; font-weight: 900; margin-bottom: 16px; }
     .footer-brand p { font-size: 13px; color: var(--gray); }
     .footer-links { display: flex; gap: 48px; }
     .footer-col h4 { font-size: 14px; font-weight: 800; margin-bottom: 16px; }
     .footer-col ul { display: flex; flex-direction: column; gap: 12px; }
-    .footer-col a, .footer-col button { font-size: 14px; color: var(--gray); background: none; border: none; cursor: pointer; text-align: left; padding: 0; }
+    .footer-col a, .footer-col button { font-size: 14px; color: var(--gray); background: none; border: none; cursor: pointer; }
     .footer-col a:hover, .footer-col button:hover { color: var(--maroon); }
-    .footer-bottom { max-width: 1200px; margin: 0 auto; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
+    .footer-bottom { max-width: 1300px; margin: 48px auto 0; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
 
-    /* AUTH MODAL & LEGAL MODAL */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
+    /* MODALS */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
     .modal-overlay.active { display: flex; }
-    .modal-content { background: var(--white); border-radius: 24px; padding: 40px; max-width: 440px; width: 100%; position: relative; }
-    .modal-content.legal { max-width: 600px; max-height: 80vh; overflow-y: auto; text-align: left; }
-    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; }
+    .modal-content { background: var(--white); border-radius: 24px; padding: 40px; max-width: 440px; width: 100%; position: relative; animation: popUp 0.3s ease; }
+    @keyframes popUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-content.legal { max-width: 600px; max-height: 80vh; overflow-y: auto; }
+    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
     
     .modal-logo { font-size: 40px; font-weight: 900; color: var(--maroon); text-align: center; margin-bottom: 16px; }
     .modal-title { font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px; }
@@ -135,18 +76,10 @@
     .input-group input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; }
     .input-group input:focus { border-color: var(--maroon); }
     .btn-submit { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
-
-    @media (max-width: 768px) { 
-        .mv-grid { grid-template-columns: 1fr; } 
-        .doc-grid { grid-template-columns: 1fr; }
-        .hero-buttons { flex-direction: column; } 
-        .footer-grid { flex-direction: column; } 
-    }
 </style>
 </head>
 <body>
 
-    <!-- HEADER -->
     <header class="header">
         <div class="nav-container">
             <a href="index.html" class="brand">
@@ -154,103 +87,12 @@
                 <div class="brand-text"><h1>Institute of Board</h1></div>
             </a>
             <div class="nav-right">
-                <!-- Grid Profile Icon -->
-                <button class="btn-icon" onclick="document.getElementById('authModal').classList.add('active')" title="Student Portal">
-                    <i data-lucide="layout-dashboard"></i>
-                </button>
+                <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
                 <a href="admission.html" class="nav-cta">Apply Now</a>
-                <!-- Hamburger Menu Button -->
-                <button class="menu-btn" id="menuBtn">
-                    <span></span><span></span><span></span>
-                </button>
             </div>
         </div>
     </header>
 
-    <!-- FULLSCREEN OCR-STYLE MENU -->
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="menu-header">
-            <button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button>
-        </div>
-        
-        <div class="menu-content">
-            <ul class="menu-list">
-                
-                <!-- Accordion 1: Admissions -->
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Admissions <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="admission.html">Apply Now</a>
-                            <a href="documents.html">Entry Requirements</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Accordion 2: Academics -->
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Academics <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="curriculum-ifb.html">IFB-S: Mathematics</a>
-                            <a href="curriculum-web.html">IFB AQ-B: Web Development</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Accordion 3: Resources -->
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Resources <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="student-dashboard.html">Practice Assessments</a>
-                            <a href="student-dashboard.html">Academic Frameworks</a>
-                            <a href="student-dashboard.html">Examination Timetables</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Accordion 4: Students -->
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Students <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="student-dashboard.html">Student Portal</a>
-                            <a href="student-dashboard.html">My Admission Slip</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Accordion 5: Institution -->
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">
-                        Institution <i data-lucide="chevron-right"></i>
-                    </div>
-                    <div class="submenu">
-                        <div class="submenu-inner">
-                            <a href="courses-ifb.html">Prospectus</a>
-                            <a href="fund-ifb.html">Sponsor IFB</a>
-                        </div>
-                    </div>
-                </li>
-
-            </ul>
-        </div>
-        
-        <div class="menu-footer">
-            <a href="admission.html" class="btn-menu-apply">Apply Now</a>
-        </div>
-    </div>
-
-    <!-- HERO -->
     <section class="hero">
         <div class="hero-badge"><i data-lucide="clock"></i> Applications Close: 10 January 2027</div>
         <h1>Master the disciplines<br>that <span>build the future.</span></h1>
@@ -261,55 +103,6 @@
         </div>
     </section>
 
-    <!-- MISSION & VISION -->
-    <section class="mission-section">
-        <div class="mv-grid">
-            <div class="mv-card">
-                <i data-lucide="target"></i>
-                <h2>Our Mission</h2>
-                <p>To provide uncompromising, elite-level technical and mathematical education to any individual who demonstrates the aptitude and drive to succeed, completely free of financial barriers or bureaucratic constraints.</p>
-            </div>
-            <div class="mv-card">
-                <i data-lucide="eye"></i>
-                <h2>Our Vision</h2>
-                <p>To become a globally recognized benchmark for independent, industry-aligned education, proving that rigorous academic standards and practical execution can exist outside of traditional accreditation systems.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- DOCUMENTS / RESOURCES -->
-    <section class="doc-section">
-        <div class="doc-container">
-            <div class="doc-header">
-                <h2>Academic Resources</h2>
-                <p>Access official documents and study materials (requires portal login).</p>
-            </div>
-            
-            <div class="doc-grid">
-                <!-- Renamed from Mock Papers -->
-                <div class="doc-card">
-                    <i data-lucide="clipboard-list"></i>
-                    <div class="doc-text">
-                        <h3>Practice Assessments</h3>
-                        <p>Sample papers and answer booklets designed to mirror the exact standard of the Admission Examination.</p>
-                        <button class="btn-doc" onclick="window.location.href='student-dashboard.html'">Access in Portal <i data-lucide="arrow-right"></i></button>
-                    </div>
-                </div>
-
-                <!-- Renamed from Guidelines -->
-                <div class="doc-card">
-                    <i data-lucide="book-open"></i>
-                    <div class="doc-text">
-                        <h3>Academic Frameworks</h3>
-                        <p>Detailed examination guidelines, rules, cognitive weightings, and grading structures for all tracks.</p>
-                        <button class="btn-doc" onclick="window.location.href='student-dashboard.html'">Access in Portal <i data-lucide="arrow-right"></i></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-grid">
             <div class="footer-brand">
@@ -346,11 +139,9 @@
             <div class="modal-logo">∆</div>
             <div class="modal-title">Student Portal</div>
             <div class="modal-subtitle">Sign in to access your dashboard.</div>
-
-            <button class="btn-google" onclick="simulateGoogleLogin()">Continue with Google</button>
+            <button class="btn-google" onclick="googleLogin()">Continue with Google</button>
             <div class="divider">or sign in with email</div>
-
-            <form onsubmit="event.preventDefault(); simulateEmailLogin();">
+            <form onsubmit="event.preventDefault(); emailLogin();">
                 <div class="input-group">
                     <label>Email Address</label>
                     <input type="email" id="loginEmail" required placeholder="you@example.com">
@@ -373,40 +164,8 @@
     </div>
 
 <script type="module">
-    lucide.createIcons();
-
-    // MENU LOGIC
-    const menuBtn = document.getElementById('menuBtn');
-    const closeMenu = document.getElementById('closeMenu');
-    const mobileMenu = document.getElementById('mobileMenu');
-
-    menuBtn.addEventListener('click', () => { mobileMenu.classList.add('active'); });
-    closeMenu.addEventListener('click', () => { mobileMenu.classList.remove('active'); });
-
-    window.toggleSubmenu = function(element) {
-        const parentItem = element.parentElement;
-        const submenu = parentItem.querySelector('.submenu');
-        
-        // Close all other submenus
-        document.querySelectorAll('.menu-item').forEach(item => {
-            if (item !== parentItem) {
-                item.classList.remove('active');
-                item.querySelector('.submenu').style.maxHeight = null;
-            }
-        });
-
-        // Toggle current
-        parentItem.classList.toggle('active');
-        if (submenu.style.maxHeight) {
-            submenu.style.maxHeight = null;
-        } else {
-            submenu.style.maxHeight = submenu.scrollHeight + "px";
-        }
-    }
-
-    // FIREBASE AUTH
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU",
@@ -421,28 +180,28 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    window.simulateGoogleLogin = async function() {
-        try {
-            await signInWithPopup(auth, provider);
+    // Auto-Sign In Check
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
             window.location.href = "student-dashboard.html";
-        } catch (error) { alert("Google Login Error: " + error.message); }
+        }
+    });
+
+    window.googleLogin = async function() {
+        try { await signInWithPopup(auth, provider); } catch (error) { alert(error.message); }
     };
 
-    window.simulateEmailLogin = async function() {
+    window.emailLogin = async function() {
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPass').value;
-        if (!email || !password) { alert("Please fill in both fields."); return; }
-
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            window.location.href = "student-dashboard.html";
-        } catch (error) { alert("Login Error: " + error.message); }
+        try { await signInWithEmailAndPassword(auth, email, password); } catch (error) { alert(error.message); }
     };
 
-    // LEGAL LOGIC
+    lucide.createIcons();
+
     const legalTexts = {
-        privacy: `<h2>Privacy Policy</h2><p>We collect essential information (Name, Email) solely to generate your Admission ID. We use local storage to keep you logged in. We comply with global data protection principles (GDPR). Your data is never sold.</p>`,
-        terms: `<h2>Terms & Conditions</h2><p>IFB is independent and non-accredited. Applying does not guarantee admission; you must pass the Admission Examination. Cheating results in immediate disqualification.</p>`
+        privacy: `<h2>Privacy Policy</h2><p>We collect essential information solely to generate your Admission ID. We use secure authentication and comply with global data protection principles.</p>`,
+        terms: `<h2>Terms & Conditions</h2><p>IFB is independent and non-accredited. Applying does not guarantee admission; you must pass the Admission Examination.</p>`
     };
 
     window.openLegal = function(type) {
