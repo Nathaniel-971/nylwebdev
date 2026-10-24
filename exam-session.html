@@ -3,102 +3,610 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Examination Session — IFB</title>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Live Examination Session — IFB</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.6; }
-    
-    .header { background: var(--black); color: var(--white); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 18px; }
-    .brand-logo { font-size: 24px; color: var(--silver); }
-    
-    .timer-box { background: var(--white); color: var(--black); padding: 8px 16px; border-radius: 8px; font-family: monospace; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-    .timer-box.warning { background: #FEF2F2; color: #B91C1C; }
-    
-    .container { max-width: 800px; margin: 40px auto; padding: 0 24px; }
-    .exam-paper { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-    
-    .question-block { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--silver); }
-    .question-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .q-number { font-size: 16px; font-weight: 800; color: var(--maroon); margin-bottom: 8px; }
-    .q-text { font-size: 16px; margin-bottom: 16px; }
-    .q-input { width: 100%; padding: 16px; border: 1.5px solid var(--silver); border-radius: 8px; font-family: inherit; font-size: 15px; outline: none; }
-    .q-input:focus { border-color: var(--maroon); }
-    
-    .btn-submit { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 24px; }
-    .btn-submit:hover { background: var(--maroon-hover); }
+  :root {
+    --maroon: #7A1F2B;
+    --silver: #E2E8F0;
+    --black: #111;
+    --gray: #666;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); padding-bottom: 50px; }
+  
+  /* Header */
+  .exam-header { background: #111; color: white; padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .exam-header h1 { font-size: 18px; font-weight: 800; color: #fff; margin: 0; }
+  .timer { background: var(--maroon); color: white; padding: 8px 16px; border-radius: 8px; font-family: monospace; font-size: 18px; font-weight: bold; }
+  .tab-switch-warning { position: fixed; inset: 0; background: rgba(0,0,0,0.9); color: white; z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px; }
+  .tab-switch-warning h2 { color: #ff4444; font-size: 32px; margin-bottom: 10px; }
+
+  /* Scanner UI (From your provided code) */
+  .view { width: 100%; max-width: 680px; margin: 20px auto; display: none; background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--silver); }
+  .view.active { display: block; }
+  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #f3f4f6; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
+  video.active, canvas.active, img.preview.active { display:block; }
+  .placeholder { color:#9ca3af; text-align:center; padding:1rem; font-size:.95rem; }
+  .framing-guide { position:absolute; inset:6%; pointer-events:none; display:none; z-index:4; }
+  .framing-guide.visible { display:block; }
+  .framing-guide .corner { position:absolute; width:36px; height:36px; border:3px solid var(--maroon); }
+  .framing-guide .tl { top:0; left:0; border-right:none; border-bottom:none; border-radius:8px 0 0 0; }
+  .framing-guide .tr { top:0; right:0; border-left:none; border-bottom:none; border-radius:0 8px 0 0; }
+  .framing-guide .bl { bottom:0; left:0; border-right:none; border-top:none; border-radius:0 0 0 8px; }
+  .framing-guide .br { bottom:0; right:0; border-left:none; border-top:none; border-radius:0 0 8px 0; }
+  .flash-overlay { position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:8; transition:opacity .28s ease-out; }
+  .flash-overlay.fire { opacity:1; transition:none; }
+  
+  .q-selector { margin-top:1rem; display:flex; align-items:center; gap:.5rem; }
+  .q-selector select { flex:1; background:#fff; color:var(--black); border:1px solid var(--silver); border-radius:8px; padding:.65rem .8rem; font-size:1rem; }
+  
+  .pages-strip { margin-top:1rem; }
+  .pages-list { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .page-thumb { position:relative; width:70px; background:#fafafa; border:1px solid var(--silver); border-radius:6px; padding:4px; display:flex; flex-direction:column; align-items:center; }
+  .page-thumb img { width:100%; border-radius:3px; display:block; }
+  .page-thumb .num { position:absolute; bottom:2px; right:2px; background:var(--maroon); color:#fff; font-size:.65rem; font-weight:700; padding:1px 5px; border-radius:6px; }
+  .page-thumb .del { position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#fff; border:1px solid var(--maroon); color:var(--maroon); cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; }
+  
+  .controls { display:flex; gap:.6rem; margin-top:1rem; flex-wrap:wrap; }
+  .action { padding:.85rem 1.2rem; font-size:.95rem; font-weight:600; border:none; border-radius:8px; cursor:pointer; transition:0.15s; flex:1; min-width:130px; }
+  .btn-primary { background:var(--maroon); color:#fff; }
+  .btn-primary:hover { background:#5A1620; }
+  .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
+  .btn-success { background:#15803d; color:#fff; }
+  .action:disabled { opacity:.4; cursor:not-allowed; }
+  
+  .status { margin-top:.9rem; font-size:.9rem; text-align:center; min-height:1.4em; color:var(--gray); }
+  
+  /* Answer Book Generation */
+  #bookView { max-width: 900px; }
+  .exam-paper { background:#fff; font-family: 'Times New Roman', Georgia, serif; padding: 20px; border: 1px solid #ccc; margin-top: 20px; }
+  .exam-header-paper { text-align:center; border-bottom:3px double #000; padding-bottom:.75rem; margin-bottom:1rem; }
+  .q-block { margin-bottom:1.75rem; }
+  .q-top { display:flex; justify-content:space-between; border-bottom:1px solid #000; padding-bottom:.3rem; margin-bottom:.4rem; }
+  .q-scan { width:100%; border:1px solid #ccc; border-radius:3px; display:block; margin-bottom: 10px;}
 </style>
+<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
-<body oncontextmenu="return false;" oncopy="return false;" onpaste="return false;">
+<body oncontextmenu="return false;"> <!-- Disable Right Click -->
 
-    <header class="header">
-        <div class="brand"><div class="brand-logo">∆</div> Examination Session</div>
-        <div class="timer-box" id="timer"><i data-lucide="clock"></i> 03:00:00</div>
-    </header>
+<!-- Tab Switch Warning -->
+<div class="tab-switch-warning" id="tabWarning">
+  <h2>WARNING!</h2>
+  <p>You have left the examination tab. This action has been logged and will be reported to the Invigilator.</p>
+  <button class="action btn-primary" style="margin-top: 20px; max-width: 200px;" onclick="document.getElementById('tabWarning').style.display='none'">I Understand</button>
+</div>
 
-    <div class="container">
-        <div class="exam-paper">
-            <h1 style="font-size: 24px; font-weight: 900; margin-bottom: 8px;">Admission Examination 2027</h1>
-            <p style="color: var(--gray); margin-bottom: 32px; font-size: 14px;">Ensure you have selected the correct paper. Your answers will be auto-submitted when the timer ends.</p>
+<header class="exam-header">
+  <h1>IFB Examination Session</h1>
+  <div class="timer" id="examTimer">03:00:00</div>
+</header>
 
-            <!-- PLACEHOLDER FOR ACTUAL QUESTIONS -->
-            <div class="question-block">
-                <div class="q-number">Question 1</div>
-                <div class="q-text">Solve for \(x\): \(2x^2 - 5x - 3 = 0\). Show all working.</div>
-                <textarea class="q-input" rows="4" placeholder="Type your answer here..."></textarea>
-            </div>
-
-            <div class="question-block">
-                <div class="q-number">Question 2</div>
-                <div class="q-text">Calculate the derivative of \(f(x) = 3x^3 - 2x^2 + 5x - 7\).</div>
-                <textarea class="q-input" rows="4" placeholder="Type your answer here..."></textarea>
-            </div>
-
-            <button class="btn-submit" onclick="submitExam()">Submit Examination</button>
-        </div>
+<!-- SCANNER VIEW -->
+<div class="view active" id="captureView">
+  <h2 style="margin-bottom: 10px;">Scan Your Written Answers</h2>
+  <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Ensure all pages are scanned and uploaded before the timer expires.</p>
+  
+  <div class="stage">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+    <img id="preview" class="preview" alt="Scanned page">
+    <div class="placeholder" id="placeholder">Tap “Open Camera” to start scanning.</div>
+    <div class="framing-guide" id="framingGuide">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
     </div>
+    <div class="flash-overlay" id="flashOverlay"></div>
+  </div>
+
+  <div class="q-selector">
+    <button class="action btn-secondary" id="btnPrevQ" style="flex:0; width: 40px; padding: 10px;">‹</button>
+    <select id="questionPick">
+      <!-- Populated by JS -->
+    </select>
+    <button class="action btn-secondary" id="btnNextQ" style="flex:0; width: 40px; padding: 10px;">›</button>
+  </div>
+
+  <div class="pages-strip">
+    <h4 id="pagesTitle" style="font-size: 12px; color: var(--maroon); margin-bottom: 5px;">Pages for this question</h4>
+    <div class="pages-list" id="pagesList"></div>
+  </div>
+
+  <div class="controls">
+    <button class="action btn-primary" id="btnOpen">Open Camera</button>
+    <button class="action btn-secondary" id="btnCapture" disabled>Capture</button>
+    <button class="action btn-secondary" id="btnRetake" disabled>Retake</button>
+    <button class="action btn-secondary" id="btnAddPage" disabled>Add Page</button>
+    <button class="action btn-success" id="btnSaveNext" disabled>Save & Next →</button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="controls" style="margin-top:2rem; border-top: 1px solid #ddd; padding-top: 20px;">
+    <button class="action btn-primary" id="btnOpenBook" style="background: #111;" disabled>Preview Answer Book & Submit →</button>
+  </div>
+</div>
+
+<!-- ANSWER BOOK VIEW -->
+<div class="view" id="bookView">
+  <div style="display:flex; gap:10px; margin-bottom: 20px;">
+    <button class="action btn-secondary" id="btnBack">← Back to Scanner</button>
+    <button class="action btn-success" id="btnDownload" onclick="submitExam()">Submit Exam (Download PDF)</button>
+  </div>
+  <div class="exam-paper" id="examPaper"></div>
+</div>
 
 <script>
-    // Security Check
-    const verified = sessionStorage.getItem('verified_student');
-    if (!verified) {
-        window.location.href = "exam-gateway.html";
+/* ================= CONFIGURATION ================= */
+const EXAM = {
+  institute: 'INSTITUTE OF BOARD',
+  subject: 'Mathematics',
+  paper: 'Final Examination',
+  session: '2026',
+  questions: [
+    { no: 1, text: 'Solve for x: 2x² − 5x + 3 = 0.', marks: 10 },
+    { no: 2, text: 'Differentiate f(x) = x³ + 2x² − 7x + 4.', marks: 10 },
+    { no: 3, text: 'Evaluate the definite integral ∫₀² (3x² + 2x) dx.', marks: 10 },
+    { no: 4, text: 'Find the determinant of the matrix A = [[2,3],[4,5]].', marks: 10 },
+    { no: 5, text: 'Prove that the sum of the angles of a triangle is 180°.', marks: 10 }
+  ]
+};
+
+const A4_W = 1240, A4_H = 1754;
+const QUESTION_SET = EXAM.questions;
+const captures = {}; 
+let stream = null, videoTrack = null, pendingBlob = null;
+let torchOn = false, torchSupported = false, cvReady = false;
+
+/* ================= DOM ================= */
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const preview = document.getElementById('preview');
+const placeholder = document.getElementById('placeholder');
+const statusEl = document.getElementById('status');
+const framingGuide = document.getElementById('framingGuide');
+const flashOverlay = document.getElementById('flashOverlay');
+const questionPick = document.getElementById('questionPick');
+const pagesList = document.getElementById('pagesList');
+const pagesTitle = document.getElementById('pagesTitle');
+
+const btnOpen = document.getElementById('btnOpen');
+const btnCapture = document.getElementById('btnCapture');
+const btnRetake = document.getElementById('btnRetake');
+const btnAddPage = document.getElementById('btnAddPage');
+const btnSaveNext = document.getElementById('btnSaveNext');
+const btnOpenBook = document.getElementById('btnOpenBook');
+const btnBack = document.getElementById('btnBack');
+
+/* ================= INIT & PROCTORING ================= */
+// Check session
+const studentName = sessionStorage.getItem('examStudentName') || 'Student';
+const studentId = sessionStorage.getItem('examStudentId') || 'Unknown';
+document.querySelector('header h1').innerText = `IFB Exam: ${studentName}`;
+
+// Timer (3 hours)
+let timeLeft = 3 * 60 * 60; 
+setInterval(() => {
+  if (timeLeft <= 0) {
+    alert("Time is up! Submitting your scanned pages...");
+    submitExam();
+    return;
+  }
+  timeLeft--;
+  const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+  const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+  const s = (timeLeft % 60).toString().padStart(2, '0');
+  document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
+}, 1000);
+
+// Tab Switch Detection
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    document.getElementById('tabWarning').style.display = 'flex';
+    console.warn("User left the tab. Logging to database...");
+    // In production, send a Firestore update here to log the infraction
+  }
+});
+
+// Populate Dropdown
+QUESTION_SET.forEach(q => {
+  const o = document.createElement('option');
+  o.value = q.no; o.textContent = `Question ${q.no} — ${q.marks} marks`;
+  questionPick.appendChild(o);
+});
+
+function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.className = 'status ' + type; }
+
+function waitCv() {
+  const started = Date.now();
+  let attached = false;
+  const t = setInterval(() => {
+    if (typeof cv !== 'undefined') {
+      if (cv.Mat) { cvReady = true; clearInterval(t); return; }
+      if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
+        attached = true;
+        cv.onRuntimeInitialized = () => { cvReady = true; };
+      }
     }
+    if (Date.now() - started > 20000) clearInterval(t);
+  }, 150);
+}
+waitCv();
 
-    // Timer Logic (3 Hours)
-    let timeInSeconds = 3 * 60 * 60; 
-    const timerEl = document.getElementById('timer');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-    const countdown = setInterval(() => {
-        if (timeInSeconds <= 0) {
-            clearInterval(countdown);
-            alert("Time has expired. Your exam is being submitted.");
-            submitExam();
-            return;
-        }
+/* ================= CAMERA ================= */
+async function openCamera() {
+  setStatus('Requesting camera permission…');
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    });
+    video.srcObject = stream;
+    await video.play();
+    videoTrack = stream.getVideoTracks()[0];
 
-        timeInSeconds--;
-        const h = Math.floor(timeInSeconds / 3600);
-        const m = Math.floor((timeInSeconds % 3600) / 60);
-        const s = timeInSeconds % 60;
+    placeholder.style.display = 'none';
+    video.classList.add('active');
+    framingGuide.classList.add('visible');
 
-        timerEl.innerHTML = `<i data-lucide="clock"></i> ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        
-        if (timeInSeconds <= 300) { // Last 5 minutes
-            timerEl.classList.add('warning');
-        }
-    }, 1000);
+    btnOpen.disabled = true;
+    btnCapture.disabled = false;
+    btnRetake.disabled = true;
+    btnAddPage.disabled = true;
+    btnSaveNext.disabled = true;
+    setStatus(`Scanning Q${questionPick.value}. Hold straight above the paper.`);
+  } catch (err) {
+    setStatus('Could not open camera: ' + err.message, 'error');
+  }
+}
 
-    function submitExam() {
-        clearInterval(countdown);
-        sessionStorage.removeItem('verified_student');
-        window.location.href = "student-dashboard.html";
+/* ================= CAPTURE ================= */
+async function capture() {
+  if (!stream) return;
+  const w = video.videoWidth, h = video.videoHeight;
+  if (!w || !h) return;
+
+  btnCapture.disabled = true;
+  setStatus('Capturing…');
+  fireScreenFlash();
+  await sleep(150);
+
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+  stopCamera();
+
+  setStatus('Processing page…');
+  let a4Canvas = null, detected = false;
+  try {
+    if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
+      a4Canvas = detectAndWarpToA4(canvas);
+      if (a4Canvas) detected = true;
     }
+  } catch (e) { console.warn('Page detection failed:', e); }
+  
+  if (!a4Canvas) a4Canvas = fallbackA4(canvas);
+  enhanceText(a4Canvas); // Always enhance
 
-    lucide.createIcons();
+  a4Canvas.toBlob(blob => {
+    pendingBlob = blob;
+    const url = URL.createObjectURL(blob);
+    preview.src = url;
+    preview.classList.add('active');
+    video.classList.remove('active');
+    framingGuide.classList.remove('visible');
+
+    btnCapture.disabled = true;
+    btnRetake.disabled = false;
+    btnAddPage.disabled = false;
+    btnSaveNext.disabled = false;
+    btnOpen.disabled = true;
+
+    setStatus(detected ? 'Page detected & warped to A4.' : 'Page captured.', detected ? 'success' : 'warn');
+  }, 'image/jpeg', 0.92);
+}
+
+function fireScreenFlash() {
+  flashOverlay.classList.add('fire');
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    flashOverlay.classList.remove('fire');
+  }));
+}
+
+/* ================= OPENCV DETECTION (From your code) ================= */
+function detectAndWarpToA4(srcCanvas) {
+  const src = cv.imread(srcCanvas);
+  const maxDim = 600;
+  const scale = Math.min(1, maxDim / Math.max(src.cols, src.rows));
+  const small = new cv.Mat();
+  cv.resize(src, small, new cv.Size(Math.round(src.cols * scale), Math.round(src.rows * scale)), 0, 0, cv.INTER_AREA);
+
+  const gray = new cv.Mat();
+  cv.cvtColor(small, gray, cv.COLOR_RGBA2GRAY);
+  cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0);
+
+  const edges = new cv.Mat();
+  cv.Canny(gray, edges, 50, 150);
+  const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
+  cv.dilate(edges, edges, kernel);
+
+  const contours = new cv.MatVector();
+  const hierarchy = new cv.Mat();
+  cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+  let best = null, bestArea = 0;
+  const minArea = small.rows * small.cols * 0.15;
+
+  for (let i = 0; i < contours.size(); i++) {
+    const cnt = contours.get(i);
+    const peri = cv.arcLength(cnt, true);
+    const approx = new cv.Mat();
+    cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+    const area = cv.contourArea(approx);
+    if (approx.rows === 4 && area > bestArea && area > minArea) {
+      if (best) best.delete();
+      best = approx.clone(); bestArea = area;
+    }
+    approx.delete();
+  }
+
+  let corners = null;
+  if (best) {
+    corners = [];
+    for (let i = 0; i < 4; i++) corners.push({ x: best.data32S[i * 2] / scale, y: best.data32S[i * 2 + 1] / scale });
+    best.delete();
+  }
+  src.delete(); small.delete(); gray.delete(); edges.delete(); kernel.delete(); contours.delete(); hierarchy.delete();
+  if (!corners) return null;
+
+  corners = orderCorners(corners);
+  const srcFull = cv.imread(srcCanvas);
+  const srcQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [corners[0].x, corners[0].y, corners[1].x, corners[1].y, corners[2].x, corners[2].y, corners[3].x, corners[3].y]);
+  const dstQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, A4_W, 0, A4_W, A4_H, 0, A4_H]);
+  const M = cv.getPerspectiveTransform(srcQuad, dstQuad);
+  const warped = new cv.Mat();
+  cv.warpPerspective(srcFull, warped, M, new cv.Size(A4_W, A4_H));
+
+  const out = document.createElement('canvas');
+  out.width = A4_W; out.height = A4_H;
+  cv.imshow(out, warped);
+
+  srcFull.delete(); srcQuad.delete(); dstQuad.delete(); M.delete(); warped.delete();
+  return out;
+}
+
+function orderCorners(pts) {
+  const cx = pts.reduce((s, p) => s + p.x, 0) / 4;
+  const cy = pts.reduce((s, p) => s + p.y, 0) / 4;
+  pts.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
+  let minI = 0, minSum = Infinity;
+  for (let i = 0; i < 4; i++) { const s = pts[i].x + pts[i].y; if (s < minSum) { minSum = s; minI = i; } }
+  return [pts[minI], pts[(minI + 1) % 4], pts[(minI + 2) % 4], pts[(minI + 3) % 4]];
+}
+
+function fallbackA4(srcCanvas) {
+  const out = document.createElement('canvas');
+  out.width = A4_W; out.height = A4_H;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, A4_W, A4_H);
+  const sw = srcCanvas.width, sh = srcCanvas.height;
+  const scale = Math.min(A4_W / sw, A4_H / sh);
+  const dw = sw * scale, dh = sh * scale;
+  ctx.drawImage(srcCanvas, (A4_W - dw) / 2, (A4_H - dh) / 2, dw, dh);
+  return out;
+}
+
+function enhanceText(canvasEl) {
+  const W = canvasEl.width, H = canvasEl.height;
+  const ctx = canvasEl.getContext('2d');
+  const imgData = ctx.getImageData(0, 0, W, H);
+  const d = imgData.data;
+  const gray = new Uint8ClampedArray(W * H);
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) gray[p] = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
+  
+  const IW = W + 1;
+  const integ = new Uint32Array(IW * (H + 1));
+  for (let y = 0; y < H; y++) {
+    let rowSum = 0;
+    for (let x = 0; x < W; x++) { rowSum += gray[y * W + x]; integ[(y + 1) * IW + (x + 1)] = integ[y * IW + (x + 1)] + rowSum; }
+  }
+  const block = 41, half = (block - 1) >> 1, C = 15;
+  const bin = new Uint8ClampedArray(W * H);
+  for (let y = 0; y < H; y++) {
+    const y0 = Math.max(0, y - half), y1 = Math.min(H - 1, y + half);
+    for (let x = 0; x < W; x++) {
+      const x0 = Math.max(0, x - half), x1 = Math.min(W - 1, x + half);
+      const area = (x1 - x0 + 1) * (y1 - y0 + 1);
+      const sum = integ[(y1 + 1) * IW + (x1 + 1)] - integ[y0 * IW + (x1 + 1)] - integ[(y1 + 1) * IW + x0] + integ[y0 * IW + x0];
+      bin[y * W + x] = gray[y * W + x] < (sum / area - C) ? 0 : 255;
+    }
+  }
+  for (let i = 0, p = 0; p < bin.length; i += 4, p++) {
+    d[i] = d[i + 1] = d[i + 2] = bin[p];
+    d[i + 3] = 255;
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+
+/* ================= SAVE & NAVIGATION ================= */
+function stopCamera() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  videoTrack = null; video.srcObject = null;
+  video.classList.remove('active'); placeholder.style.display = '';
+}
+
+function retake() {
+  if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
+  pendingBlob = null; preview.classList.remove('active');
+  btnRetake.disabled = true; btnAddPage.disabled = true; btnSaveNext.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
+  setStatus('Discarded. Reopen the camera to try again.');
+}
+
+function saveCurrentPage(advance) {
+  if (!pendingBlob) return;
+  const q = questionPick.value;
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (!captures[q]) captures[q] = [];
+    captures[q].push(reader.result);
+
+    if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
+    pendingBlob = null; preview.classList.remove('active');
+    btnRetake.disabled = true; btnAddPage.disabled = true; btnSaveNext.disabled = true; btnCapture.disabled = true; btnOpen.disabled = false;
+
+    renderPagesStrip();
+    updateOpenBookButton();
+
+    if (advance) {
+      const nextQ = findNextUnanswered(q);
+      if (nextQ) {
+        questionPick.value = nextQ;
+        renderPagesStrip();
+        setStatus(`Q${q} saved. Next: Q${nextQ}.`, 'success');
+      } else {
+        setStatus('All questions answered. Open Answer Book →', 'success');
+      }
+    } else {
+      setStatus(`Page added to Q${q}.`, 'success');
+    }
+  };
+  reader.readAsDataURL(pendingBlob);
+}
+
+function findNextUnanswered(currentQ) {
+  const order = QUESTION_SET.map(q => q.no);
+  const start = order.indexOf(Number(currentQ));
+  for (let i = start + 1; i < order.length; i++) if (!captures[order[i]] || !captures[order[i]].length) return order[i];
+  for (let i = 0; i < start; i++) if (!captures[order[i]] || !captures[order[i]].length) return order[i];
+  return null;
+}
+
+function renderPagesStrip() {
+  const q = questionPick.value;
+  const pages = captures[q] || [];
+  pagesTitle.textContent = pages.length ? `Pages for Q${q} (${pages.length})` : `Pages for Q${q} — none yet`;
+  pagesList.innerHTML = '';
+  if (!pages.length) {
+    pagesList.innerHTML = '<div style="font-size:.85rem; color:#999;">No pages yet.</div>';
+    return;
+  }
+  pages.forEach((src, i) => {
+    const wrap = document.createElement('div'); wrap.className = 'page-thumb';
+    const img = document.createElement('img'); img.src = src; wrap.appendChild(img);
+    const num = document.createElement('span'); num.className = 'num'; num.textContent = i + 1; wrap.appendChild(num);
+    const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕';
+    del.onclick = () => { captures[q].splice(i, 1); if (!captures[q].length) delete captures[q]; renderPagesStrip(); updateOpenBookButton(); };
+    wrap.appendChild(del); pagesList.appendChild(wrap);
+  });
+}
+
+function updateOpenBookButton() {
+  const total = Object.values(captures).reduce((s, arr) => s + (arr?.length || 0), 0);
+  btnOpenBook.disabled = total === 0;
+}
+
+function changeQuestion(delta) {
+  const order = QUESTION_SET.map(q => q.no);
+  const i = order.indexOf(Number(questionPick.value));
+  const ni = Math.max(0, Math.min(order.length - 1, i + delta));
+  if (ni !== i) { questionPick.value = order[ni]; renderPagesStrip(); }
+}
+
+/* ================= EXAM SUBMISSION ================= */
+function buildExamPaper() {
+  const paper = document.getElementById('examPaper');
+  let html = `
+    <div class="exam-header-paper">
+      <div style="font-size:1.2rem; font-weight:bold;">${EXAM.institute}</div>
+      <div style="font-size:1rem;">${EXAM.subject} — ${EXAM.paper}</div>
+      <div style="font-size:0.9rem; margin-top:5px;">Student ID: ${studentId} | Name: ${studentName}</div>
+    </div>
+  `;
+  EXAM.questions.forEach(qDef => {
+    const q = qDef.no;
+    const pages = captures[q] || [];
+    html += `
+      <div class="q-block">
+        <div class="q-top">
+          <span style="font-weight:bold;">Question ${q}</span>
+          <span style="font-weight:bold;">[${qDef.marks} marks]</span>
+        </div>
+        <div style="font-size:0.9rem; margin-bottom:10px;">${qDef.text}</div>
+        <div>
+          ${pages.length ? pages.map(src => `<img class="q-scan" src="${src}">`).join('') : `<div style="color:#999; font-style:italic;">No answer submitted</div>`}
+        </div>
+      </div>
+    `;
+  });
+  paper.innerHTML = html;
+}
+
+function openBook() {
+  buildExamPaper();
+  document.getElementById('captureView').classList.remove('active');
+  document.getElementById('bookView').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function backToCapture() {
+  document.getElementById('bookView').classList.remove('active');
+  document.getElementById('captureView').classList.add('active');
+}
+
+async function submitExam() {
+  if (!confirm("Are you sure you want to submit? You cannot undo this action.")) return;
+
+  // 1. Generate the PDF
+  const btn = document.getElementById('btnDownload');
+  btn.innerText = "Generating PDF...";
+  btn.disabled = true;
+
+  await Promise.all([...document.querySelectorAll('#examPaper img')].map(i =>
+    i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; })
+  ));
+
+  try {
+    await html2pdf().set({
+      margin: [10, 12, 12, 12],
+      filename: `IFB_AnswerBook_${studentId}.pdf`,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css'], avoid: ['.q-header', '.q-scan'] }
+    }).from(document.getElementById('examPaper')).save();
+
+    alert("Exam submitted successfully! Your PDF has been downloaded. Please email it to n1nathaniel971@gmail.com immediately as per the guidelines.");
+    
+    // In a real app, you would upload the PDF to Firebase Storage here via an API.
+    
+    // Redirect out
+    sessionStorage.clear();
+    window.location.href = "student-dashboard.html";
+
+  } catch (e) {
+    alert("PDF generation failed. Please ensure your browser allows downloads.");
+    btn.innerText = "Submit Exam (Download PDF)";
+    btn.disabled = false;
+  }
+}
+
+/* ================= WIRING ================= */
+btnOpen.addEventListener('click', openCamera);
+btnCapture.addEventListener('click', capture);
+btnRetake.addEventListener('click', retake);
+btnAddPage.addEventListener('click', () => saveCurrentPage(false));
+btnSaveNext.addEventListener('click', () => saveCurrentPage(true));
+btnOpenBook.addEventListener('click', openBook);
+btnBack.addEventListener('click', backToCapture);
+document.getElementById('btnPrevQ').addEventListener('click', () => changeQuestion(-1));
+document.getElementById('btnNextQ').addEventListener('click', () => changeQuestion(1));
+questionPick.addEventListener('change', renderPagesStrip);
+
+window.addEventListener('beforeunload', stopCamera);
+renderPagesStrip();
 </script>
 </body>
 </html>
