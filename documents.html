@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Public Documents — IFB</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.6; padding-bottom: 60px; }
+    
+    /* HEADER */
+    .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 80px; }
+    .nav-container { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+    .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
+    .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+    .nav-right { display: flex; align-items: center; gap: 16px; }
+    .btn-home { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; color: var(--black); transition: 0.2s; }
+    .btn-home:hover { border-color: var(--black); background: #FAFAFA; }
+    .btn-login { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; text-decoration: none; transition: 0.2s; }
+    .btn-login:hover { background: var(--maroon-hover); transform: translateY(-2px); }
+
+    /* PAGE CONTENT */
+    .container { max-width: 900px; margin: 60px auto; padding: 0 24px; }
+    .page-header { text-align: center; margin-bottom: 56px; }
+    .page-header h1 { font-size: 40px; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 16px; }
+    .page-header p { font-size: 18px; color: var(--gray); max-width: 600px; margin: 0 auto; }
+
+    /* PORTAL LOGIN BANNER */
+    .portal-banner { 
+        background: var(--white); border: 2px solid var(--maroon); border-radius: 20px; 
+        padding: 40px; text-align: center; margin-bottom: 56px; box-shadow: 0 10px 30px rgba(122,31,43,0.05);
+    }
+    .portal-banner h2 { font-size: 24px; font-weight: 900; color: var(--maroon); margin-bottom: 12px; }
+    .portal-banner p { font-size: 15px; color: var(--gray); margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .btn-portal { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 32px; background: var(--maroon); color: var(--white); border-radius: 10px; font-size: 16px; font-weight: 700; text-decoration: none; transition: 0.2s; }
+    .btn-portal:hover { background: var(--maroon-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(122,31,43,0.2); }
+
+    /* DOCUMENT LIST */
+    .section-title { font-size: 20px; font-weight: 900; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    .section-title i { color: var(--maroon); }
+    
+    .doc-grid { display: flex; flex-direction: column; gap: 16px; }
+    .doc-item { 
+        display: flex; justify-content: space-between; align-items: center; padding: 24px; 
+        background: var(--white); border: 1px solid var(--silver); border-radius: 16px; gap: 20px; 
+        transition: 0.2s;
+    }
+    .doc-item:hover { border-color: var(--maroon); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+    
+    .doc-info { display: flex; align-items: center; gap: 20px; }
+    .doc-icon { 
+        width: 56px; height: 56px; border-radius: 12px; background: #FAFAFA; 
+        border: 1px solid var(--silver); color: var(--maroon); 
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .doc-icon i { width: 24px; height: 24px; }
+    
+    .doc-text h4 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .doc-text p { font-size: 14px; color: var(--gray); line-height: 1.5; }
+    
+    .actions { display: flex; gap: 10px; flex-shrink: 0; }
+    .btn-doc { 
+        display: flex; align-items: center; gap: 6px; padding: 10px 16px; 
+        border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; 
+        transition: 0.2s; border: 1.5px solid var(--silver); color: var(--black); 
+        background: var(--white);
+    }
+    .btn-doc:hover { border-color: var(--black); background: #FAFAFA; }
+    .btn-doc.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
+    .btn-doc.primary:hover { background: var(--maroon-hover); }
+
+    /* FOOTER */
+    .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--silver); margin-top: 64px; font-size: 13px; color: var(--gray); }
+    .footer strong { color: var(--maroon); }
+
+    @media (max-width: 768px) {
+        .doc-item { flex-direction: column; align-items: flex-start; }
+        .actions { width: 100%; margin-top: 16px; }
+        .btn-doc { flex: 1; justify-content: center; }
+        .page-header h1 { font-size: 32px; }
+    }
+</style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <div class="brand-logo">∆</div>
+                <div class="brand-text"><h1>Institute of Board</h1></div>
+            </a>
+            <div class="nav-right">
+                <a href="index.html" class="btn-home"><i data-lucide="arrow-left"></i> Home</a>
+                <a href="admission.html" class="btn-login">Student Login</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Public Documents</h1>
+            <p>Access the official IFB prospectus, general rules, and examination timetables. For private study materials, please log into the Student Portal.</p>
+        </div>
+
+        <!-- PORTAL BANNER -->
+        <div class="portal-banner">
+            <h2>Are you an enrolled applicant?</h2>
+            <p>Log into your student dashboard to access your unique Student ID, Barcode, specific course guidelines, practice assessments, and exam portal.</p>
+            <a href="admission.html" class="btn-portal">
+                <i data-lucide="log-in"></i> Access Student Portal
+            </a>
+        </div>
+
+        <!-- PUBLIC DOCUMENTS -->
+        <div class="section-title"><i data-lucide="file-text"></i> Institution Documents</div>
+        
+        <div class="doc-grid">
+            
+            <!-- Prospectus -->
+            <div class="doc-item">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="book-open"></i></div>
+                    <div class="doc-text">
+                        <h4>Institution Prospectus</h4>
+                        <p>The complete guide to the Institute of Board, including our legal non-accredited status, mission, and curriculum philosophy.</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a href="courses-ifb.html" class="btn-doc">View</a>
+                    <a href="courses-ifb.html" download class="btn-doc primary"><i data-lucide="download"></i> Download</a>
+                </div>
+            </div>
+
+            <!-- General Rules -->
+            <div class="doc-item">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="shield-check"></i></div>
+                    <div class="doc-text">
+                        <h4>General Institution Rules & Policies</h4>
+                        <p>Public rules regarding academic conduct, privacy policy, terms of service, and the non-accredited disclaimer.</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a href="guidelines-general.html" class="btn-doc">View</a>
+                    <a href="guidelines-general.html" download class="btn-doc primary"><i data-lucide="download"></i> Download</a>
+                </div>
+            </div>
+
+            <!-- AE Timetable -->
+            <div class="doc-item">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="calendar"></i></div>
+                    <div class="doc-text">
+                        <h4>AE Examination Timetable 2027</h4>
+                        <p>The official schedule of Admission Examination (AE) dates for the 2027 academic year.</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a href="ae-timetable.html" class="btn-doc">View</a>
+                    <a href="ae-timetable.html" download class="btn-doc primary"><i data-lucide="download"></i> Download</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        The Institute of Board is an independent, <strong>non-accredited</strong> educational institution.<br>
+        Not registered with the Department of Higher Education and Training (DHET) or Umalusi.
+    </div>
+
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>
