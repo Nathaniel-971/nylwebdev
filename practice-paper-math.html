@@ -2,252 +2,264 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>National Senior Certificate - Cover Page</title>
+<title>Mathematics P1 - IFB Exam</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
   @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 11pt; line-height: 1.5; color: #111; background: #F8FAFC; }
   
-  body { 
-    font-family: Arial, Helvetica, sans-serif; 
-    background: #f0f0f0; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    min-height: 100vh; 
-  }
-
   /* A4 PAGE SETUP */
-  .page { 
-    width: 210mm; 
-    height: 297mm; 
-    background: white; 
-    position: relative; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
-    border: 6px solid #000; /* Thick outer black border */
-    padding: 20mm 18mm;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  @media print { 
-    body { background: white; } 
-    .page { margin: 0; box-shadow: none; page-break-after: always; border: 6px solid #000; } 
-  }
-
-  /* SILVER WATERMARK */
-  .watermark { 
-    position: absolute; 
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%) rotate(-45deg); 
-    font-size: 110px; 
-    font-weight: 900; 
-    color: rgba(192, 192, 192, 0.25); /* Silver color with transparency */
-    white-space: nowrap; 
-    pointer-events: none; 
-    z-index: 0;
-    letter-spacing: 5px;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-  }
-
-  .content-wrapper {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  /* HEADER SECTION */
-  .header { 
-    display: flex; 
-    align-items: center; 
-    gap: 20px; 
-    margin-bottom: 50px;
-    padding-bottom: 10px;
-  }
+  .page { width: 210mm; height: 297mm; padding: 15mm 18mm 26mm 18mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; border-top: 4px solid #7A1F2B; }
+  @media print { body { background: white; } .page { margin: 0; box-shadow: none; page-break-after: always; border-top: none; } }
   
-  .header img {
-    width: 130px;
-    height: auto;
-  }
+  /* WATERMARK & SECURITY */
+  .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-30deg); font-size: 96pt; font-weight: 900; color: rgba(122,31,43,0.03); letter-spacing: 18px; pointer-events: none; z-index: 0; white-space: nowrap; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
+  
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; }
+  
+  /* HEADERS & FOOTERS */
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; position: relative; z-index: 2; height: 34px; flex-shrink: 0; border-bottom: 2px solid #7A1F2B; padding-bottom: 10px; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-subject { font-weight: 700; font-size: 12pt; letter-spacing: 0.5px; white-space: nowrap; color: #7A1F2B; }
+  .header-barcode { display: inline-block; vertical-align: middle; }
+  .header-barcode svg { display: block; }
+  .header-box { display: flex; align-items: center; gap: 14px; background: white; height: 30px; }
+  .header-code { font-weight: 700; font-size: 10.5pt; letter-spacing: 0.5px; color: #7A1F2B; }
+  .header-divider { width: 1.6px; height: 18px; background: #7A1F2B; }
+  .header-page { font-weight: 700; font-size: 11.5pt; min-width: 18px; text-align: center; color: #7A1F2B; }
+  
+  .footer { position: absolute; bottom: 10mm; left: 18mm; right: 18mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; border-top: 1px solid #E2E8F0; padding-top: 10px; }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 42px; height: 42px; }
+  .footer-qr svg { display: block; width: 42px; height: 42px; }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.15; }
+  .footer-brand .name { font-size: 8pt; font-weight: 800; color: #7A1F2B; letter-spacing: 1px; }
+  .footer-brand .tag { font-size: 7pt; font-weight: 400; color: #666; letter-spacing: 0.4px; }
+  .footer-right { font-size: 9pt; color: #666; font-style: italic; }
+  
+  /* EXAM CONTENT STYLING */
+  .question-header { margin: 10px 0 20px 0; }
+  .question-header h2 { font-size: 14pt; font-weight: 800; color: #111; letter-spacing: 1px; }
+  
+  .question-text { margin-bottom: 16px; text-align: left; font-size: 11pt; line-height: 1.6; }
+  
+  .sub-questions { display: flex; flex-direction: column; gap: 16px; margin-top: 10px; margin-bottom: 30px; }
+  .question-item { display: flex; align-items: flex-start; gap: 14px; page-break-inside: avoid; }
+  .question-number { font-weight: 700; font-size: 11pt; width: 50px; flex-shrink: 0; color: #111; }
+  .question-content { flex: 1; min-width: 0; font-size: 11pt; line-height: 1.6; }
+  .marks { font-weight: 700; font-size: 11pt; width: 40px; flex-shrink: 0; text-align: right; color: #111; }
+  
+  /* Nested Sub-questions (e.g. 1.1.1) */
+  .nested-questions { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; margin-left: 20px; }
+  .nested-item { display: flex; align-items: flex-start; gap: 14px; page-break-inside: avoid; }
+  .nested-item .question-number { width: 60px; }
 
-  .header-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-  }
-
-  .header-text .title { 
-    font-size: 34px; 
-    font-weight: 400; 
-    margin-bottom: 5px;
-  }
-
-  .header-text .subtitle { 
-    font-size: 14px; 
-    font-weight: 400; 
-    color: #111;
-  }
-
-  .header-text .country { 
-    font-size: 16px; 
-    font-weight: 800; 
-    margin-top: 2px;
-  }
-
-  /* CENTER BOXES */
-  .national-box { 
-    background: #000000; 
-    border: 3px solid #0000CD; /* Blue border */
-    border-radius: 10px; 
-    padding: 15px 30px; 
-    text-align: center; 
-    margin: 0 auto 40px auto;
-    width: 70%;
-  }
-
-  .national-box h1 { 
-    color: #ffffff; 
-    font-size: 22px; 
-    font-weight: 700; 
-    letter-spacing: 2px;
-    line-height: 1.3;
-  }
-
-  .grade-box { 
-    background: #e6ffe6; /* Light green */
-    border: 3px solid #0000CD; 
-    border-radius: 8px; 
-    padding: 8px 40px; 
-    text-align: center; 
-    margin: 0 auto 50px auto;
-    width: max-content;
-  }
-
-  .grade-box h2 { 
-    color: #000; 
-    font-size: 22px; 
-    font-weight: 700; 
-    letter-spacing: 1px;
-  }
-
-  .subject-box { 
-    background: #ffffcc; /* Yellow */
-    border: 4px dashed #0000CD; /* Blue dashed border */
-    border-radius: 12px; 
-    padding: 30px 20px; 
-    text-align: center; 
-    margin: 0 auto 40px auto;
-    width: 90%;
-  }
-
-  .subject-box h3 { 
-    font-size: 18px; 
-    font-weight: 700; 
-    margin-bottom: 20px;
-    color: #000;
-  }
-
-  .subject-box h4 { 
-    font-size: 18px; 
-    font-weight: 700; 
-    margin-bottom: 20px;
-    color: #000;
-  }
-
-  .subject-box p { 
-    font-size: 18px; 
-    font-weight: 700; 
-    color: #000;
-  }
-
-  /* BOTTOM TEXT */
-  .marks {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 80px;
-  }
-
-  .pages-text {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 700;
-    margin-top: auto;
-    margin-bottom: 30px;
-  }
-
-  /* FOOTER */
-  .footer { 
-    display: flex; 
-    justify-content: space-between; 
-    font-size: 12px; 
-    font-weight: 400;
-    position: absolute;
-    bottom: 20mm;
-    left: 18mm;
-    right: 18mm;
-  }
-
+  .total-marks { text-align: right; font-weight: 800; margin-top: 20px; font-size: 12pt; color: #7A1F2B; border-top: 2px solid #7A1F2B; padding-top: 10px; }
+  
+  /* MathJax centering for display equations */
+  .math-display { text-align: center; margin: 15px 0; font-size: 12pt; }
+  
 </style>
 </head>
 <body>
 
+<!-- ==================== EXAM PAGE ==================== -->
 <div class="page">
-  <!-- Silver Watermark -->
-  <div class="watermark">SILVER WATERMARK</div>
-
+  <div class="security-pattern"></div>
+  <div class="watermark">IFB 2027</div>
   <div class="content-wrapper">
     
-    <!-- Header with Logo -->
+    <!-- HEADER -->
     <div class="header">
-      <!-- Using the official SA Coat of Arms SVG from Wikimedia -->
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Coat_of_arms_of_South_Africa.svg/200px-Coat_of_arms_of_South_Africa.svg.png" alt="South Africa Coat of Arms">
-      <div class="header-text">
-        <div class="title">basic education</div>
-        <div class="subtitle">Department:</div>
-        <div class="subtitle">Basic Education</div>
-        <div class="country">REPUBLIC OF SOUTH AFRICA</div>
+      <div class="header-left">
+        <span class="header-subject">MATHEMATICS P1</span>
+        <span class="header-barcode"><svg class="barcode-header" data-barcode="IFB-2027-MATH-P1" data-bc-width="1.2" data-bc-height="22" data-bc-display="false"></svg></span>
+      </div>
+      <div class="header-box">
+        <span class="header-code">IFB-2027-MATH-P1</span>
+        <span class="header-divider"></span>
+        <span class="header-page">3</span>
       </div>
     </div>
 
-    <!-- National Senior Certificate Box -->
-    <div class="national-box">
-      <h1>NATIONAL<br>SENIOR CERTIFICATE</h1>
+    <!-- CONTENT -->
+    <div class="question-header">
+      <h2>QUESTION 1</h2>
     </div>
 
-    <!-- Grade 12 Box -->
-    <div class="grade-box">
-      <h2>GRADE 12</h2>
+    <!-- 1.1 -->
+    <div class="question-item" style="margin-bottom: 0;">
+      <div class="question-number">1.1</div>
+      <div class="question-content">
+        The function \(q\) is defined as
+        <div class="math-display">
+          \(q(x) = \sqrt{x - \sqrt{x - \sqrt{x - \dots}}}\) &nbsp;&nbsp;&nbsp; with \(x > 0\) and \(f(x) > 0\)
+        </div>
+      </div>
     </div>
 
-    <!-- Subject Box -->
-    <div class="subject-box">
-      <h3>ENGLISH HOME LANGUAGE P3</h3>
-      <h4>NOVEMBER 2017</h4>
-      <p>MARKING GUIDELINES</p>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">1.1.1</div>
+        <div class="question-content">
+          Show that \(q(x) = \dfrac{\sqrt{4x + 1} - 1}{2}\).
+        </div>
+        <div class="marks">(4)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">1.1.2</div>
+        <div class="question-content">
+          Hence, solve for \(x\) if \([q(x)]^2 + q(x) = 12\).
+        </div>
+        <div class="marks">(4)</div>
+      </div>
     </div>
 
-    <!-- Marks -->
-    <div class="marks">
-      MARKS: 100
+    <!-- 1.2 -->
+    <div class="question-item" style="margin-top: 24px; margin-bottom: 0;">
+      <div class="question-number">1.2</div>
+      <div class="question-content">
+        Solve for \(x\):
+      </div>
     </div>
 
-    <!-- Page Count -->
-    <div class="pages-text">
-      These marking guidelines consist of 9 pages.
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">1.2.1</div>
+        <div class="question-content">
+          \((x^2 - 2x + 5)^{x^2 - 7x + 12} = 1\)
+        </div>
+        <div class="marks">(5)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">1.2.2</div>
+        <div class="question-content">
+          \(\left(x - \dfrac{8}{x}\right)^2 + 2\left(x - \dfrac{8}{x}\right) - 15 = 0\)
+        </div>
+        <div class="marks">(4)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">1.2.3</div>
+        <div class="question-content">
+          \(4^x - 3 \cdot 2^{x + \sqrt{x}} = 4 \cdot 2^{2\sqrt{x}}\)
+        </div>
+        <div class="marks">(5)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">1.2.4</div>
+        <div class="question-content">
+          \(\dfrac{x - 1}{x + 3} \geq \dfrac{x}{x - 2}\)
+        </div>
+        <div class="marks">(4)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">1.2.5</div>
+        <div class="question-content">
+          \(2^{x + 1} - \dfrac{1}{\sqrt{8}} = 2^x\)
+        </div>
+        <div class="marks">(2)</div>
+      </div>
     </div>
 
-  </div>
+    <!-- 1.3 -->
+    <div class="question-item" style="margin-top: 24px;">
+      <div class="question-number">1.3</div>
+      <div class="question-content">
+        Given that \(9^a - 4 \cdot 6^a + 4^{a+1} = 0\), solve for \(a\) and leave your answer in the form \(\log_p r\) where \(p \in \mathbb{Q}\), \(r \in \mathbb{Q}\), \(p > 0\), \(r > 0\).
+      </div>
+      <div class="marks">(4)</div>
+    </div>
 
-  <!-- Footer -->
-  <div class="footer">
-    <div>Copyright reserved</div>
-    <div>Please turn over</div>
+    <!-- 1.4 -->
+    <div class="question-item" style="margin-top: 24px; margin-bottom: 0;">
+      <div class="question-number">1.4</div>
+      <div class="question-content">
+        Consider the following two equations:
+        <div class="math-display" style="margin: 10px 0;">
+          (1): \(2^x \cdot 8^y = \dfrac{1}{4}\) <br><br>
+          (2): \(\log_5(x + y) - \log_5(x - y) = 1\)
+        </div>
+        If it is further given that \(\log_a\left(\dfrac{b}{c}\right) = \log_a b - \log_a c\) where \(a > 0\), \(b > 0\), \(c > 0\), solve for \(x\) and \(y\) simultaneously.
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="total-marks">
+      TOTAL FOR QUESTION 1: 38
+    </div>
+
+    <!-- Note: The paper is 100 marks, so you would add Question 2 and Question 3 below here. -->
+    <div style="margin-top: 50px; font-style: italic; color: #666; text-align: center; font-size: 10pt;">
+      [Continue with Question 2: Calculus and Question 3: Functions to reach 100 Marks]
+    </div>
+
   </div>
   
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
 </div>
 
+<script>
+(function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-header").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "IFB-2027-MATH-P1", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.2"),
+          height: parseInt(el.dataset.bcHeight || "22", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: 12, textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://ifb.dev");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+  window.addEventListener("load", function () {
+    makeBarcodes(); makeQRCodes();
+  });
+})();
+</script>
 </body>
 </html>
