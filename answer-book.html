@@ -17,7 +17,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { 
     width: 100%; 
-    /* Ensures colors and backgrounds are printed/downloaded deeply */
+    /* Ensures backgrounds and colors print/download deeply */
     -webkit-print-color-adjust: exact; 
     print-color-adjust: exact; 
   }
@@ -78,7 +78,7 @@
     display: flex; 
     flex-direction: column; 
     flex: 1;
-    padding-bottom: 30mm; /* Protection against footer overlap */
+    padding-bottom: 30mm; /* Strict protection against footer overlap */
   }
   
   /* EXAM HEADERS */
@@ -148,19 +148,20 @@
   /* Barcode & Sequence Layout */
   .top-right-container {
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
+    align-items: flex-end;
     gap: 10px;
   }
 
   .candidate-barcode-box {
     border: 2px dashed #000;
     padding: 10px;
-    width: 150px;
+    width: 200px; /* Wider barcode label */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 80px;
+    height: 70px;
   }
   .candidate-barcode-box .label {
     font-size: 9pt;
@@ -170,21 +171,20 @@
   
   .sequence-circle-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 60px;
+    gap: 10px;
+    margin-right: 10px;
   }
   .sequence-circle {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border: 2px solid #000;
     border-radius: 50%;
   }
   .sequence-text {
-    font-size: 8pt;
-    text-align: center;
-    margin-top: 5px;
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: left;
     line-height: 1.1;
   }
 
@@ -192,12 +192,12 @@
   .answer-book-title {
     border: 2px solid #7A1F2B;
     border-radius: 10px;
-    padding: 15px;
+    padding: 12px;
     text-align: center;
     font-size: 22pt;
     font-weight: bold;
     font-style: italic;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     width: 60%;
     background-color: #FFF5F6;
   }
@@ -227,22 +227,18 @@
     color: #7A1F2B;
   }
   
-  /* Simple Input Style (No blocks inside blocks) */
-  .input-container {
+  /* True Block Input Style */
+  .block-container {
     display: flex;
-    gap: 5px;
-    align-items: flex-end;
   }
-  .input-box {
-    width: 25px;
+  .block {
+    width: 22px;
     height: 25px;
-    border-bottom: 2px solid #000;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 12pt;
+    border: 1px solid #000;
+    border-right: none;
+  }
+  .block:last-child {
+    border-right: 1px solid #000;
   }
   .input-line {
     border-bottom: 2px solid #000;
@@ -307,8 +303,8 @@
   .writing-area {
     flex: 1;
     border-right: 2px solid #000;
-    background-image: linear-gradient(to bottom, transparent 34px, #ccc 34px);
-    background-size: 100% 35px;
+    /* Creates clean horizontal lines without messy backgrounds */
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 34px, #000 34px, #000 35px);
   }
   
   .marks-area {
@@ -359,7 +355,7 @@
         </div>
         <div class="sequence-circle-container">
           <div class="sequence-circle"></div>
-          <div class="sequence-text">Sequence<br>No.</div>
+          <div class="sequence-text">Sequence<br>Number</div>
         </div>
       </div>
     </div>
@@ -369,18 +365,18 @@
       <span>IFB</span> Answer Book
     </div>
 
-    <!-- Form Fields using simple input boxes (No blocks inside blocks) -->
+    <!-- Form Fields using connected blocks -->
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Student ID</label>
-        <div class="input-container">
-          <div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
         </div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Security Code</label>
-        <div class="input-container">
-          <div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
         </div>
       </div>
     </div>
@@ -388,8 +384,8 @@
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Date</label>
-        <div class="input-container">
-          <div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
         </div>
       </div>
       <div class="form-box" style="flex: 1;">
@@ -405,8 +401,8 @@
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Subject Code</label>
-        <div class="input-container">
-          <div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
         </div>
       </div>
       <div class="form-box" style="flex: 1;">
@@ -429,7 +425,7 @@
       </div>
     </div>
 
-    <!-- Marking Grids: Exactly 12 Rows -->
+    <!-- Marking Grids: Exactly 12 Rows, Removed Question Column -->
     <table class="marking-table">
       <thead>
         <tr>
@@ -438,15 +434,15 @@
           <th colspan="2">RE-MARK/RE-CHECK</th>
         </tr>
         <tr>
-          <th style="width: 10%;">Marks</th>
+          <th style="width: 20%;">Marks</th>
           <th style="width: 30%;">Marker's Code & Initials</th>
           <th style="width: 10%;">Marks</th>
-          <th style="width: 10%;">SM</th>
-          <th style="width: 10%;">DCM</th>
-          <th style="width: 10%;">CM</th>
-          <th style="width: 10%;">IM</th>
+          <th style="width: 8%;">DS</th>
+          <th style="width: 8%;">Ge</th>
+          <th style="width: 8%;">GP</th>
+          <th style="width: 8%;">Cl</th>
           <th style="width: 10%;">Marks</th>
-          <th style="width: 10%;">Initials</th>
+          <th style="width: 15%;">Initials</th>
         </tr>
       </thead>
       <tbody>
