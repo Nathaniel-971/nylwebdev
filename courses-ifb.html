@@ -2,278 +2,315 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Course Prospectus — IFB</title>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>IFB Prospectus 2027</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.6; padding-bottom: 60px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
-    @keyframes fadeIn { to { opacity: 1; } }
-    a { text-decoration: none; color: inherit; }
-
-    /* HEADER */
-    .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 80px; }
-    .nav-container { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
-    .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .btn-home { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; color: var(--black); transition: 0.2s; }
-    .btn-home:hover { border-color: var(--black); background: #FAFAFA; }
-    .btn-apply { background: var(--silver); color: var(--black) !important; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: 0.2s; }
-    .btn-apply:hover { background: #cbd5e1; transform: translateY(-2px); }
-
-    /* HERO */
-    .hero { padding: 80px 24px 60px; text-align: center; background: var(--white); border-bottom: 1px solid var(--silver); }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 24px; background: var(--white); color: var(--maroon); }
-    .hero h1 { font-size: clamp(32px, 4vw, 52px); font-weight: 900; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 20px; }
-    .hero h1 span { color: var(--maroon); }
-    .hero p { font-size: 17px; max-width: 720px; margin: 0 auto; color: var(--gray); font-weight: 500; }
-
-    /* NOTICE */
-    .notice-bar { max-width: 1000px; margin: 32px auto 0; padding: 16px 24px; background: #FFF5F6; border: 1px solid var(--maroon); border-left: 4px solid var(--maroon); border-radius: 8px; font-size: 14px; color: var(--maroon); font-weight: 600; display: flex; align-items: flex-start; gap: 12px; }
-    .notice-bar i { flex-shrink: 0; margin-top: 2px; }
-
-    /* MAIN */
-    .container { max-width: 1000px; margin: 40px auto; padding: 0 24px; }
-    .section-title { font-size: 22px; font-weight: 900; margin: 48px 0 20px; display: flex; align-items: center; gap: 10px; }
-    .section-title i { color: var(--maroon); width: 24px; height: 24px; }
-    .lead-text { font-size: 16px; color: var(--gray); max-width: 800px; margin-bottom: 24px; line-height: 1.8; }
-    .lead-text strong { color: var(--black); }
-
-    /* COURSE CARD */
-    .course-block { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; overflow: hidden; margin-bottom: 32px; transition: 0.2s; }
-    .course-block:hover { border-color: var(--maroon); box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
-    .course-banner { padding: 40px 32px; background: linear-gradient(135deg, #FFF5F6 0%, #FAFAFA 100%); border-bottom: 1px solid var(--silver); position: relative; }
-    .course-code { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--maroon); background: var(--white); border: 1px solid var(--maroon); padding: 4px 12px; border-radius: 100px; margin-bottom: 16px; }
-    .course-banner h2 { font-size: 28px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
-    .course-banner p { font-size: 16px; color: var(--gray); max-width: 600px; }
-    .course-body { padding: 32px; }
-    .course-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--silver); }
-    .meta-item .meta-label { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); margin-bottom: 4px; }
-    .meta-item .meta-value { font-size: 16px; font-weight: 800; }
-    .meta-item .meta-value.maroon { color: var(--maroon); }
-    .course-detail h4 { font-size: 15px; font-weight: 800; margin: 20px 0 10px; color: var(--maroon); text-transform: uppercase; letter-spacing: 0.5px; font-size: 12px; }
-    .course-detail ul { list-style: none; padding: 0; }
-    .course-detail ul li { padding: 8px 0 8px 24px; position: relative; font-size: 14px; color: var(--gray); border-bottom: 1px dashed var(--silver); }
-    .course-detail ul li:last-child { border-bottom: none; }
-    .course-detail ul li::before { content: '∆'; position: absolute; left: 0; color: var(--maroon); font-weight: 900; font-size: 14px; }
-    .course-detail ul li strong { color: var(--black); }
-
-    /* REQUIREMENTS */
-    .req-box { background: #FAFAFA; border: 1px dashed var(--silver); border-radius: 12px; padding: 20px 24px; margin-top: 24px; }
-    .req-box h4 { font-size: 14px; font-weight: 800; margin-bottom: 8px; color: var(--black); display: flex; align-items: center; gap: 6px; }
-    .req-box h4 i { width: 16px; height: 16px; color: var(--maroon); }
-    .req-box p { font-size: 13px; color: var(--gray); }
-
-    /* FEATURES GRID */
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 16px; }
-    .feature { background: var(--white); border: 1px solid var(--silver); border-radius: 14px; padding: 24px; }
-    .feature i { width: 28px; height: 28px; color: var(--maroon); margin-bottom: 12px; }
-    .feature h4 { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
-    .feature p { font-size: 13px; color: var(--gray); line-height: 1.6; }
-
-    /* CTA */
-    .cta-box { background: var(--white); border: 2px solid var(--maroon); border-radius: 20px; padding: 48px 32px; text-align: center; margin-top: 64px; }
-    .cta-box h2 { font-size: 28px; font-weight: 900; margin-bottom: 12px; }
-    .cta-box p { font-size: 16px; color: var(--gray); max-width: 520px; margin: 0 auto 28px; }
-    .btn-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--silver); color: var(--black); border: 1px solid #cbd5e1; padding: 16px 36px; border-radius: 10px; font-size: 16px; font-weight: 700; transition: 0.2s; }
-    .btn-cta:hover { background: #cbd5e1; transform: translateY(-2px); }
-
-    /* FOOTER */
-    .footer { max-width: 1100px; margin: 80px auto 0; padding: 40px 24px 0; border-top: 1px solid var(--silver); text-align: center; font-size: 13px; color: var(--gray); }
-    .footer strong { color: var(--maroon); }
-
-    @media (max-width: 768px) {
-        .nav-container { padding: 0 16px; }
-        .brand-text h1 { font-size: 16px; }
-        .brand-logo { font-size: 28px; }
-        .btn-home, .btn-apply { padding: 8px 12px; font-size: 13px; }
-        .hero { padding: 60px 20px 40px; }
-        .course-banner, .course-body { padding: 24px; }
-        .course-banner h2 { font-size: 22px; }
-        .cta-box { padding: 32px 20px; }
-        .btn-cta { width: 100%; justify-content: center; }
-    }
+@page { size: A4; margin: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-height: 1.55; color: #000; background: #F8FAFC; }
+:root { --maroon: #7A1F2B; --silver: #E2E8F0; --bg: #F8FAFC; --dark: #333; --white: #FFF; }
+.page { width: 210mm; height: 297mm; padding: 15mm 20mm 40mm 20mm; margin: 15px auto; position: relative; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; }
+@media print { body { background: #fff; } .page { margin: 0; box-shadow: none; } }
+.security-pattern { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(122,31,43,.02) 0, rgba(122,31,43,.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(122,31,43,.02) 0, rgba(122,31,43,.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 400px; height: 400px; opacity: .03; pointer-events: none; z-index: 0; }
+.content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; border-bottom: 1px solid var(--silver); padding-bottom: 5px; }
+.header-left { width: 30%; text-align: left; font-weight: bold; color: var(--maroon); }
+.header-center { width: 40%; text-align: center; }
+.header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+.header-center .confidential { font-style: italic; font-weight: bold; color: var(--maroon); }
+.header-right { width: 30%; text-align: right; font-weight: bold; color: var(--maroon); }
+.footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; }
+.footer-left { display: flex; align-items: center; gap: 10px; }
+.footer-qr { display: inline-block; width: 35px; height: 35px; }
+.footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+.footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+.footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
+.footer-brand .tag { font-size: 7pt; color: var(--dark); }
+.footer-right { color: var(--dark); font-style: italic; }
+.cover-page { padding: 20mm; display: flex; flex-direction: column; }
+.cover-header { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; text-align: center; }
+.ifb-logo-svg { width: 100px; height: 100px; margin-bottom: 20px; }
+.cover-header-text .title { font-size: 36px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: var(--maroon); letter-spacing: -.5px; line-height: 1; }
+.cover-header-text .sub { font-size: 14pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold; margin-bottom: 10px; }
+.cover-header-text .dept { font-size: 11pt; font-family: Arial, sans-serif; font-weight: bold; color: #555; }
+.title-box { border: 3px solid var(--maroon); border-radius: 10px; padding: 20px; text-align: center; margin: 80px auto 60px auto; width: 80%; background: #FFF5F6; }
+.title-box h1 { font-size: 26pt; font-weight: bold; color: #111; margin-bottom: 10px; }
+.title-box h2 { font-size: 16pt; font-weight: bold; color: var(--maroon); }
+.cover-meta { margin-top: auto; text-align: center; font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; }
+.doc-title { font-size: 14pt; font-weight: bold; color: var(--maroon); text-align: center; margin-bottom: 12px; font-family: Arial, sans-serif; border-bottom: 2px solid var(--maroon); padding-bottom: 5px; flex-shrink: 0; }
+.content h2 { color: var(--maroon); font-family: Arial, sans-serif; font-size: 12pt; margin: 12px 0 6px; }
+.content p { margin-bottom: 6px; text-align: justify; }
+.content ul { margin-left: 18px; margin-bottom: 8px; }
+.content li { margin-bottom: 4px; }
+.warning-box { background: #FFF5F6; border-left: 4px solid var(--maroon); padding: 10px 14px; margin: 10px 0; font-size: 10pt; }
+.doc-table { width: 100%; border-collapse: collapse; font-size: 9.5pt; font-family: Arial, sans-serif; margin: 8px 0 12px; }
+.doc-table th, .doc-table td { border: 1px solid var(--dark); padding: 5px 8px; text-align: left; vertical-align: top; }
+.doc-table th { background: var(--maroon); color: var(--white); font-weight: bold; text-align: center; font-size: 9pt; }
+.doc-table tbody tr:nth-child(even) { background: var(--bg); }
+.doc-table td.center { text-align: center; font-weight: bold; }
+.meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 10px 0 12px; }
+.meta-box { border: 1px solid var(--maroon); border-radius: 6px; padding: 8px; text-align: center; background: #FFF5F6; }
+.meta-box .lbl { font-size: 8pt; color: var(--dark); text-transform: uppercase; font-family: Arial, sans-serif; letter-spacing: .5px; }
+.meta-box .val { font-size: 13pt; font-weight: bold; color: var(--maroon); font-family: Arial, sans-serif; }
 </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="nav-container">
-            <a href="index.html" class="brand">
-                <div class="brand-logo">∆</div>
-                <div class="brand-text"><h1>Institute of Board</h1></div>
-            </a>
-            <div class="nav-right">
-                <a href="index.html" class="btn-home"><i data-lucide="arrow-left"></i> Home</a>
-                <a href="admission.html" class="btn-apply">Apply Now</a>
-            </div>
-        </div>
-    </header>
-
-    <section class="hero">
-        <div class="hero-badge"><i data-lucide="graduation-cap" style="width:14px;height:14px;"></i> 2027 Course Prospectus</div>
-        <h1>Programs that <span>build the future.</span></h1>
-        <p>IFB offers two rigorous, university-level technical tracks. Both are <strong>100% fee-free</strong> and both are gated by the Admission Examination. We do not enrol everyone — we enrol those who pass.</p>
-    </section>
-
-    <div class="notice-bar">
-        <i data-lucide="shield-alert" style="width:18px;height:18px;"></i>
-        <div>The Institute of Board is an independent, <strong>non-accredited</strong> educational institution. We are not registered with DHET or Umalusi. Our certificates are internal awards, not government qualifications.</div>
+<!-- COVER -->
+<div class="page cover-page">
+  <div class="security-pattern"></div>
+  <div class="cover-header">
+    <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/>
+      <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/>
+      <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/>
+    </svg>
+    <div class="cover-header-text">
+      <div class="title">Institute of Board</div>
+      <div class="sub">Department:<br>Academic Assessment</div>
+      <div class="dept">NON-ACCREDITED ACADEMIC INSTITUTION</div>
     </div>
-
-    <div class="container">
-
-        <!-- COURSE 1: MATHEMATICS -->
-        <div class="course-block">
-            <div class="course-banner">
-                <span class="course-code">IFB-S · MATHEMATICS</span>
-                <h2>IFB-S Mathematics</h2>
-                <p>Not standard high school math. A brutal, university-level 4-paper curriculum that assumes Matric Math already in hand — and then pushes far beyond it.</p>
-            </div>
-            <div class="course-body">
-                <div class="course-meta">
-                    <div class="meta-item">
-                        <div class="meta-label">Duration</div>
-                        <div class="meta-value">1 Academic Year</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Assessment</div>
-                        <div class="meta-value maroon">4 Papers · 600 Marks</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Formula Sheets</div>
-                        <div class="meta-value maroon">None Provided</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Tuition</div>
-                        <div class="meta-value maroon">R0 · Fee-Free</div>
-                    </div>
-                </div>
-
-                <div class="course-detail">
-                    <h4>Curriculum Pillars</h4>
-                    <ul>
-                        <li><strong>Algebra</strong> — quartic polynomials, complex numbers, matrices, Cramer's Rule</li>
-                        <li><strong>Functions</strong> — composite, inverse, transformations, logarithms</li>
-                        <li><strong>Sequences & Series</strong> — arithmetic, geometric, sum to infinity, sigma notation</li>
-                        <li><strong>Differential Calculus</strong> — first principles, product/quotient/chain rules, implicit differentiation, optimisation</li>
-                        <li><strong>Integral Calculus</strong> — substitution, parts, partial fractions, volumes of revolution</li>
-                        <li><strong>Trigonometry</strong> — compound/double angle identities, 2D/3D sine & cosine rules</li>
-                        <li><strong>Euclidean Geometry</strong> — circle theorems, tangents, proportionality</li>
-                        <li><strong>Analytical Geometry</strong> — lines, circles, vectors, dot & cross product</li>
-                        <li><strong>Finance</strong> — annuities, sinking funds, effective interest rates</li>
-                        <li><strong>Probability & Statistics</strong> — Bayes' Theorem, regression, correlation</li>
-                    </ul>
-                </div>
-
-                <div class="req-box">
-                    <h4><i data-lucide="alert-circle"></i> Entry Requirement</h4>
-                    <p>You must pass the <strong>IFB-S Mathematics Admission Examination (AE)</strong> on <strong>13 January 2027</strong>. Assumes prior mastery of Matric-level mathematics.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- COURSE 2: WEB DEV -->
-        <div class="course-block">
-            <div class="course-banner">
-                <span class="course-code">IFB AQ-B · WEB DEVELOPMENT</span>
-                <h2>Front-End Web Development</h2>
-                <p>A practical, project-based track covering everything from the first HTML tag to a deployed, production-grade React application.</p>
-            </div>
-            <div class="course-body">
-                <div class="course-meta">
-                    <div class="meta-item">
-                        <div class="meta-label">Duration</div>
-                        <div class="meta-value">1 Academic Year</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Assessment</div>
-                        <div class="meta-value maroon">Continuous + Final</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Format</div>
-                        <div class="meta-value">Project-Based</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">Tuition</div>
-                        <div class="meta-value maroon">R0 · Fee-Free</div>
-                    </div>
-                </div>
-
-                <div class="course-detail">
-                    <h4>Curriculum Modules</h4>
-                    <ul>
-                        <li><strong>HTML</strong> — semantic markup, accessibility, document structure</li>
-                        <li><strong>CSS</strong> — flexbox, grid, responsive design, animations</li>
-                        <li><strong>JavaScript</strong> — ES6+, DOM manipulation, async/await, fetch API</li>
-                        <li><strong>React</strong> — components, hooks, state management, routing</li>
-                        <li><strong>UI/UX</strong> — design systems, wireframing, user research basics</li>
-                        <li><strong>Git & Version Control</strong> — branching, merging, pull requests</li>
-                        <li><strong>Deployment</strong> — Vercel, Netlify, CI/CD fundamentals</li>
-                        <li><strong>Portfolio Project</strong> — ship a real, public-facing application</li>
-                    </ul>
-                </div>
-
-                <div class="req-box">
-                    <h4><i data-lucide="alert-circle"></i> Entry Requirement</h4>
-                    <p>You must pass the <strong>IFB AQ-B Web Aptitude Assessment (AE-W)</strong> on <strong>18 January 2027</strong>. Tests logic, file-path reasoning, basic numeracy, and problem solving — not prior coding experience.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- HOW ADMISSION WORKS -->
-        <h2 class="section-title"><i data-lucide="door-open"></i> The Admission Examination (AE)</h2>
-        <p class="lead-text">IFB does not accept everyone. Every applicant — regardless of track — must sit and pass the <strong>Admission Examination</strong>. There is no exception, no interview, no portfolio bypass. The AE is the gate.</p>
-
-        <div class="features">
-            <div class="feature">
-                <i data-lucide="fingerprint"></i>
-                <h4>13-Digit Student ID</h4>
-                <p>Generated at application time, derived from your date of birth. This is your identity inside IFB — your name never appears on your answer script.</p>
-            </div>
-            <div class="feature">
-                <i data-lucide="key-round"></i>
-                <h4>6-Digit Security Code</h4>
-                <p>A second credential, required to enter the Exam Gateway. Used to authenticate you at the start of every examination session.</p>
-            </div>
-            <div class="feature">
-                <i data-lucide="barcode"></i>
-                <h4>Anonymous Barcode Marking</h4>
-                <p>Every script is stamped with your Student ID barcode only. Markers never see a name. This is designed to eliminate bias in grading.</p>
-            </div>
-            <div class="feature">
-                <i data-lucide="bot"></i>
-                <h4>AI Moderation</h4>
-                <p>Scripts are processed by the IFB AI Examination Board. Any script flagged for irregularity is locked and escalated to the Chief Examiner for human review.</p>
-            </div>
-        </div>
-
-        <!-- FINANCIAL MODEL -->
-        <h2 class="section-title"><i data-lucide="heart-handshake"></i> The Financial Model</h2>
-        <p class="lead-text">IFB charges <strong>zero tuition</strong>. No application fee, no exam fee, no graduation fee. The institution is funded entirely by sponsors and donors. If you are admitted, your education is free.</p>
-        <p class="lead-text">If you would like to sponsor the institution and help keep the doors open, visit the <a href="fund-ifb.html" style="color:var(--maroon);font-weight:700;">Fund IFB</a> page.</p>
-
-        <!-- CTA -->
-        <div class="cta-box">
-            <h2>Ready to Apply?</h2>
-            <p>Applications close on <strong>13 January 2027</strong>. Spaces are limited and admission is strictly conditional on passing the AE.</p>
-            <a href="admission.html" class="btn-cta"><i data-lucide="arrow-right"></i> Start Your Application</a>
-        </div>
-
+  </div>
+  <div class="title-box">
+    <h1>INSTITUTION PROSPECTUS</h1>
+    <h2>2027 ACADEMIC YEAR</h2>
+  </div>
+  <div class="cover-meta">
+    <p>Two Tracks · 100% Fee-Free</p>
+    <p>IFB-S Mathematics · IFB AQ-B Web Development</p>
+    <p style="margin-top:15px;font-size:10pt;font-weight:normal;">Applications close 13 January 2027</p>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/courses-ifb.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
+    <div class="footer-right">Copyright reserved</div>
+  </div>
+</div>
 
-    <footer class="footer">
-        The Institute of Board is an independent, <strong>non-accredited</strong> educational institution.<br>
-        Not registered with the Department of Higher Education and Training (DHET) or Umalusi.<br><br>
-        Contact: n1nathaniel971@gmail.com &nbsp;·&nbsp; +27 60 958 3089
-    </footer>
+<!-- OVERVIEW -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">IFB Prospectus 2027</div>
+      <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-right">2027</div>
+    </div>
+    <div class="doc-title">ACADEMIC ROADMAP</div>
+    <div class="content">
+      <p>The Institute of Board is an <strong>independent, non-accredited academic institution</strong>. We offer two rigorous, university-level technical tracks, both <strong>100% fee-free</strong>. Admission to either track is strictly conditional on passing the Admission Examination (AE).</p>
+
+      <h2>Programme Overview</h2>
+      <table class="doc-table">
+        <thead><tr><th>Track</th><th>Code</th><th>Focus</th><th>Assessment</th><th>Duration</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mathematics</strong></td><td class="center">IFB-S</td><td>Pure &amp; Applied Mathematics</td><td>4 papers / 600 marks</td><td class="center">1 year</td></tr>
+          <tr><td><strong>Front-End Web Development</strong></td><td class="center">IFB AQ-B</td><td>Modern web stack &amp; projects</td><td>Continuous + Capstone</td><td class="center">1 year</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Mathematics Curriculum Pillars</h2>
+      <table class="doc-table">
+        <thead><tr><th>Pillar</th><th>Weeks</th><th>Marks</th></tr></thead>
+        <tbody>
+          <tr><td>Algebra</td><td class="center">1–6</td><td class="center">100</td></tr>
+          <tr><td>Functions</td><td class="center">7–11</td><td class="center">100</td></tr>
+          <tr><td>Sequences &amp; Series</td><td class="center">12–13</td><td class="center">50</td></tr>
+          <tr><td>Differential Calculus</td><td class="center">14–20</td><td class="center">150</td></tr>
+          <tr><td>Integral Calculus</td><td class="center">21–26</td><td class="center">150</td></tr>
+          <tr><td>Trigonometry</td><td class="center">27–28</td><td class="center">100</td></tr>
+          <tr><td>Euclidean Geometry</td><td class="center">29–31</td><td class="center">100</td></tr>
+          <tr><td>Analytical Geometry</td><td class="center">32–33</td><td class="center">100</td></tr>
+          <tr><td>Finance</td><td class="center">34–35</td><td class="center">100</td></tr>
+          <tr><td>Probability</td><td class="center">36–37</td><td class="center">50</td></tr>
+          <tr><td>Statistics</td><td class="center">38–40</td><td class="center">50</td></tr>
+          <tr style="background:#E2E8F0;font-weight:bold;"><td style="text-align:right;">TOTAL</td><td class="center">40 weeks</td><td class="center">600</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/courses-ifb.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- MATHEMATICS -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">IFB Prospectus 2027</div>
+      <div class="header-center"><span class="page-num">3</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-right">2027</div>
+    </div>
+    <div class="doc-title">IFB-S MATHEMATICS</div>
+    <div class="content">
+      <div class="meta-grid">
+        <div class="meta-box"><div class="lbl">Duration</div><div class="val">1 Year</div></div>
+        <div class="meta-box"><div class="lbl">Papers</div><div class="val">4</div></div>
+        <div class="meta-box"><div class="lbl">Total Marks</div><div class="val">600</div></div>
+        <div class="meta-box"><div class="lbl">Tuition</div><div class="val">R0</div></div>
+      </div>
+
+      <p>A brutal, university-level 4-paper curriculum that assumes Matric Math is already mastered — then pushes far beyond it. No formula sheets. No shortcuts. Pure derivation from first principles.</p>
+
+      <h2>Curriculum Pillars</h2>
+      <ul>
+        <li><strong>Algebra</strong> — quartic polynomials, complex numbers, matrices, Cramer's Rule</li>
+        <li><strong>Functions</strong> — composite, inverse, transformations, logarithms</li>
+        <li><strong>Sequences &amp; Series</strong> — arithmetic, geometric, sum to infinity, sigma notation</li>
+        <li><strong>Differential Calculus</strong> — first principles, product/quotient/chain rules, implicit differentiation, optimisation</li>
+        <li><strong>Integral Calculus</strong> — substitution, parts, partial fractions, volumes of revolution</li>
+        <li><strong>Trigonometry</strong> — compound/double angle identities, 2D/3D sine &amp; cosine rules</li>
+        <li><strong>Euclidean Geometry</strong> — circle theorems, tangents, proportionality</li>
+        <li><strong>Analytical Geometry</strong> — lines, circles, vectors, dot &amp; cross product</li>
+        <li><strong>Finance</strong> — annuities, sinking funds, effective interest rates</li>
+        <li><strong>Probability &amp; Statistics</strong> — Bayes' Theorem, regression, correlation</li>
+      </ul>
+
+      <div class="warning-box"><strong>Entry Requirement:</strong> You must pass the IFB-S Mathematics Admission Examination (AE) on <strong>13 January 2027</strong>. Assumes prior mastery of Matric-level mathematics.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/courses-ifb.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- WEB DEV -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">IFB Prospectus 2027</div>
+      <div class="header-center"><span class="page-num">4</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-right">2027</div>
+    </div>
+    <div class="doc-title">IFB AQ-B FRONT-END WEB DEVELOPMENT</div>
+    <div class="content">
+      <div class="meta-grid">
+        <div class="meta-box"><div class="lbl">Duration</div><div class="val">1 Year</div></div>
+        <div class="meta-box"><div class="lbl">Format</div><div class="val">Project</div></div>
+        <div class="meta-box"><div class="lbl">Assessment</div><div class="val">Continuous</div></div>
+        <div class="meta-box"><div class="lbl">Tuition</div><div class="val">R0</div></div>
+      </div>
+
+      <p>A practical, project-based track covering everything from your first HTML tag to a deployed, production-grade React application. Focuses on modern industry tools and standards.</p>
+
+      <h2>Curriculum Modules</h2>
+      <ul>
+        <li><strong>HTML</strong> — semantic markup, accessibility, document structure</li>
+        <li><strong>CSS</strong> — flexbox, grid, responsive design, animations</li>
+        <li><strong>JavaScript</strong> — ES6+, DOM manipulation, async/await, fetch API</li>
+        <li><strong>React</strong> — components, hooks, state management, routing</li>
+        <li><strong>UI/UX</strong> — design systems, wireframing, user research basics</li>
+        <li><strong>Git &amp; Version Control</strong> — branching, merging, pull requests</li>
+        <li><strong>Deployment</strong> — Vercel, Netlify, CI/CD fundamentals</li>
+        <li><strong>Portfolio Project</strong> — ship a real, public-facing application</li>
+      </ul>
+
+      <div class="warning-box"><strong>Entry Requirement:</strong> You must pass the IFB AQ-B Web Aptitude Assessment (AE-W) on <strong>18 January 2027</strong>. Tests logic, file-path reasoning, basic numeracy, and problem solving — not prior coding experience.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/courses-ifb.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ADMISSION -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">IFB Prospectus 2027</div>
+      <div class="header-center"><span class="page-num">5</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-right">2027</div>
+    </div>
+    <div class="doc-title">THE ADMISSION EXAMINATION (AE)</div>
+    <div class="content">
+      <p>IFB does not accept everyone. Every applicant — regardless of track — must sit and pass the <strong>Admission Examination</strong>. There is no exception, no interview, no portfolio bypass. The AE is the gate.</p>
+
+      <h2>AE Dates 2027</h2>
+      <table class="doc-table">
+        <thead><tr><th>Exam</th><th>Date</th><th>Duration</th><th>Marks</th></tr></thead>
+        <tbody>
+          <tr><td>IFB-S Mathematics (AE-S)</td><td>13 January 2027</td><td class="center">2 h</td><td class="center">100</td></tr>
+          <tr><td>IFB AQ-B Web Dev (AE-W)</td><td>18 January 2027</td><td class="center">1 h</td><td class="center">50</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Credentials Generated at Application</h2>
+      <ul>
+        <li><strong>13-Digit Student ID</strong> — derived from date of birth. Your permanent IFB identity.</li>
+        <li><strong>6-Digit Security Code</strong> — required to enter the Exam Gateway.</li>
+        <li><strong>Anonymous Barcode</strong> — your scripts carry only this barcode, never your name.</li>
+      </ul>
+
+      <h2>Financial Model</h2>
+      <p>IFB charges <strong>zero tuition</strong>, <strong>zero application fees</strong>, <strong>zero exam fees</strong>, and <strong>zero graduation fees</strong>. The institution is funded entirely by sponsors and donors. If you are admitted, your education is free.</p>
+
+      <h2>How to Apply</h2>
+      <ul>
+        <li>Visit <strong>admission.html</strong> on the IFB portal.</li>
+        <li>Submit your details and select your course(s).</li>
+        <li>Receive your Student ID and Security Code instantly.</li>
+        <li>Sit the AE on your scheduled date.</li>
+        <li>Pass the AE and you are enrolled.</li>
+      </ul>
+
+      <div class="warning-box"><strong>Applications close:</strong> 13 January 2027. Spaces are limited and admission is strictly conditional on passing the AE.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/courses-ifb.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END</div>
+  </div>
+</div>
 
 <script>
-    lucide.createIcons();
+(function () {
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/courses-ifb.html");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  var tries = 0;
+  (function attempt() {
+    tries++;
+    var okQ = typeof qrcode === "function";
+    if (okQ) makeQRCodes();
+    if (!okQ && tries < 40) setTimeout(attempt, 150);
+  })();
+  window.addEventListener("load", makeQRCodes);
+})();
 </script>
 </body>
 </html>
