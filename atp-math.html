@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IFB ATP 2027 - Mathematics</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { 
+    width: 100%; 
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact; 
+  }
+  body { 
+    font-family: 'Times New Roman', Times, serif; 
+    font-size: 11.5pt; 
+    line-height: 1.6; 
+    color: #000; 
+    background: #F8FAFC; 
+  }
+  
+  /* A4 PAGE SETUP */
+  .page { 
+    width: 210mm; 
+    height: 297mm; 
+    padding: 15mm 20mm 0 20mm; 
+    margin: 15px auto; 
+    position: relative; 
+    background: white; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    page-break-after: always; 
+  }
+  
+  @media print { 
+    body { background: white; } 
+    .page { margin: 0; box-shadow: none; } 
+  }
+  
+  /* SECURITY PATTERN */
+  .security-pattern { 
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background-image: repeating-linear-gradient(45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px); 
+    pointer-events: none; 
+    z-index: 0; 
+  }
+
+  /* WATERMARK */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  /* CONTENT WRAPPER */
+  .content-wrapper { 
+    position: relative; 
+    z-index: 1; 
+    display: flex; 
+    flex-direction: column; 
+    flex: 1;
+    padding-bottom: 35mm; /* Strict protection against footer overlap */
+  }
+  
+  /* EXAM HEADERS */
+  .header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 20px; 
+    font-size: 10.5pt; 
+    font-family: Arial, sans-serif;
+    flex-shrink: 0;
+  }
+  .header-left { width: 30%; text-align: left; font-weight: bold; color: #000; }
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: #7A1F2B; }
+  .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
+
+  /* FOOTER */
+  .footer { 
+    position: absolute; 
+    bottom: 10mm; 
+    left: 20mm; 
+    right: 20mm; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    z-index: 2; 
+    font-size: 10pt; 
+    font-family: Arial, sans-serif;
+    height: 15mm;
+  }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 35px; height: 35px; }
+  .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #7A1F2B; }
+  .footer-brand .tag { font-size: 7pt; color: #000; }
+  .footer-right { color: #000; font-style: italic;}
+
+  .bottom-barcode {
+    position: absolute;
+    bottom: 10mm;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .bottom-barcode svg {
+    display: block;
+  }
+
+  /* ========================================= */
+  /* PAGE 1: COVER SPECIFIC                    */
+  /* ========================================= */
+  .cover-page {
+    padding: 20mm; 
+  }
+  
+  .cover-header { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; text-align: center; }
+  
+  .ifb-logo-svg { width: 100px; height: 100px; margin-bottom: 20px; }
+  
+  .cover-header-text .title { font-size: 36px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px; line-height: 1;}
+  .cover-header-text .sub { font-size: 14pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold; margin-bottom: 10px;}
+  .cover-header-text .dept { font-size: 11pt; font-family: Arial, sans-serif; font-weight: bold; color: #555;}
+  
+  .atp-title-box {
+    border: 3px solid #7A1F2B;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    margin: 50px auto;
+    width: 80%;
+    background: #FFF5F6;
+  }
+  .atp-title-box h1 { font-size: 28pt; font-weight: bold; color: #111; margin-bottom: 10px;}
+  .atp-title-box h2 { font-size: 20pt; font-weight: bold; color: #7A1F2B;}
+
+  .cover-meta {
+    margin-top: auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    font-weight: bold;
+  }
+
+  /* ========================================= */
+  /* INNER PAGES CONTENT                       */
+  /* ========================================= */
+  .doc-title { 
+    font-size: 18pt; 
+    font-weight: bold; 
+    color: #7A1F2B; 
+    text-align: center; 
+    margin-bottom: 20px; 
+    font-family: Arial, sans-serif;
+    border-bottom: 2px solid #7A1F2B;
+    padding-bottom: 10px;
+  }
+
+  .intro-text {
+    font-size: 11pt;
+    text-align: justify;
+    margin-bottom: 20px;
+  }
+
+  /* Tables */
+  .atp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+    font-family: Arial, sans-serif;
+    margin-bottom: 20px;
+  }
+  .atp-table th, .atp-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    vertical-align: top;
+  }
+  .atp-table th {
+    background-color: #7A1F2B;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+  }
+  .atp-table td.week-col { width: 15%; text-align: center; font-weight: bold; }
+  .atp-table td.topic-col { width: 35%; font-weight: bold; }
+  .atp-table td.content-col { width: 50%; }
+
+  .section-header {
+    font-size: 13pt;
+    font-weight: bold;
+    color: #7A1F2B;
+    margin: 20px 0 10px 0;
+    font-family: Arial, sans-serif;
+    text-transform: uppercase;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
+<div class="page cover-page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper" style="padding-bottom: 0;">
+    
+    <div class="cover-header">
+      <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+      </svg>
+      
+      <div class="cover-header-text">
+        <div class="title">Institute of Board</div>
+        <div class="sub">Department:<br>Academic Assessment</div>
+        <div class="dept">NON-ACCREDITED ACADEMIC INSTITUTION</div>
+      </div>
+    </div>
+
+    <div class="atp-title-box">
+      <h1>ANNUAL TEACHING PLAN</h1>
+      <h2>AE-S MATHEMATICS 2027</h2>
+    </div>
+
+    <div class="cover-meta">
+      <p>Curriculum: Algebra, Functions & Calculus</p>
+      <p>Total Assessment Marks: 600</p>
+      <p>Academic Year: 2027</p>
+    </div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Copyright reserved</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: OVERVIEW ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">AE-S Mathematics</div>
+      <div class="header-center">
+        <span class="page-num">2</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title">CURRICULUM OVERVIEW</div>
+
+    <div class="intro-text">
+      <p>The IFB <strong>AE-S Mathematics</strong> curriculum is designed as a rigorous, university-level bridging course. It does not conform to standard national curricula; rather, it is structured to eliminate rote learning and force students to master abstract, logical, and computational thinking.</p>
+      <br>
+      <p>The curriculum is strictly divided into three pillars:</p>
+      <ul style="margin-left: 20px; margin-bottom: 15px;">
+        <li><strong>Pure Algebra:</strong> Focuses on complex simultaneous equations, advanced manipulation of surds, exponents, and strict inequalities.</li>
+        <li><strong>Functions:</strong> Involves deep analysis of parabolic, cubic, exponential, and logarithmic graphs, including transformation and inverse functions.</li>
+        <li><strong>Calculus:</strong> Covers first principles, advanced differentiation, optimization, and rates of change without the use of a formula sheet.</li>
+      </ul>
+      <br>
+      <p><strong>Assessment Structure:</strong> The course features four rigorous examination papers (Paper 1, 2, 3, and 4) totaling <strong>600 Marks</strong>. No formula sheets are provided; students must derive or memorize all necessary mathematical identities.</p>
+    </div>
+
+    <div class="section-header">Academic Calendar Structure</div>
+    <table class="atp-table">
+      <tr>
+        <th style="width: 25%;">Term</th>
+        <th style="width: 75%;">Core Focus Area</th>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">Term 1</td>
+        <td>Advanced Algebraic Manipulation & Functions</td>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">Term 2</td>
+        <td>Differential Calculus & Analytical Geometry</td>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">Term 3</td>
+        <td>Advanced Series, Financial Math & Trigonometry</td>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">Term 4</td>
+        <td>Mock Examinations & Final Revision</td>
+      </tr>
+    </table>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ATP-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 3: TERM 1 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">AE-S Mathematics</div>
+      <div class="header-center">
+        <span class="page-num">3</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title">TERM 1: ALGEBRA & FUNCTIONS</div>
+
+    <table class="atp-table">
+      <tr>
+        <th>Week</th>
+        <th>Topic</th>
+        <th>Content & Sub-topics</th>
+      </tr>
+      <tr>
+        <td class="week-col">1 - 2</td>
+        <td class="topic-col">Advanced Exponents & Surds</td>
+        <td class="content-col">Solving equations with fractional exponents. Simplifying nested radicals. Rationalizing complex denominators.</td>
+      </tr>
+      <tr>
+        <td class="week-col">3 - 4</td>
+        <td class="topic-col">Complex Algebra</td>
+        <td class="content-col">Simultaneous equations involving quadratics and cubics. Rational inequalities (e.g., \(\frac{x-1}{x+3} \geq \frac{x}{x-2}\)).</td>
+      </tr>
+      <tr>
+        <td class="week-col">5 - 6</td>
+        <td class="topic-col">Nature of Roots</td>
+        <td class="content-col">Using the discriminant (\(\Delta\)) for quadratics and cubic derivatives. Determining values of \(k\) for equal, real, or non-real roots.</td>
+      </tr>
+      <tr>
+        <td class="week-col">7 - 8</td>
+        <td class="topic-col">Parabolic & Cubic Functions</td>
+        <td class="content-col">Finding turning points, points of inflection, intercepts, and sketching without a calculator. Maximum distance between two graphs.</td>
+      </tr>
+      <tr>
+        <td class="week-col">9 - 10</td>
+        <td class="topic-col">Exponential & Log Functions</td>
+        <td class="content-col">Graphing \(y=a^x\) and \(y=\log_a x\). Determining inverses. Transformations and asymptotes. Logarithms without a calculator.</td>
+      </tr>
+      <tr>
+        <td class="week-col">11</td>
+        <td class="topic-col" style="background: #fdf5f6; color:#7A1F2B;">Term 1 Assessment</td>
+        <td class="content-col"><strong>AE-S Paper 1:</strong> Algebra, Sequences, and Functions (150 Marks).</td>
+      </tr>
+    </table>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ATP-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 4: TERM 2 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">AE-S Mathematics</div>
+      <div class="header-center">
+        <span class="page-num">4</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title">TERM 2: DIFFERENTIAL CALCULUS</div>
+
+    <table class="atp-table">
+      <tr>
+        <th>Week</th>
+        <th>Topic</th>
+        <th>Content & Sub-topics</th>
+      </tr>
+      <tr>
+        <td class="week-col">1 - 2</td>
+        <td class="topic-col">First Principles</td>
+        <td class="content-col">Deriving the derivative using \(f'(x) = \lim_{h \to 0} \frac{f(x+h)-f(x)}{h}\). Application to quadratics and cubics.</td>
+      </tr>
+      <tr>
+        <td class="week-col">3 - 4</td>
+        <td class="topic-col">Derivative Rules</td>
+        <td class="content-col">Power rule for polynomials, fractional exponents, and surds. Product rule and basic chain rule.</td>
+      </tr>
+      <tr>
+        <td class="week-col">5 - 6</td>
+        <td class="topic-col">Tangents & Normals</td>
+        <td class="content-col">Finding the equation of the tangent line (\(y - y_1 = m(x - x_1)\)) and the normal line to a curve at a given point.</td>
+      </tr>
+      <tr>
+        <td class="week-col">7 - 8</td>
+        <td class="topic-col">Cubic Graphs & Calculus</td>
+        <td class="content-col">Using \(f'(x)=0\) to find stationary points. Using \(f''(x)\) to determine the nature of stationary points (max, min, inflection).</td>
+      </tr>
+      <tr>
+        <td class="week-col">9 - 10</td>
+        <td class="topic-col">Optimization & Rates</td>
+        <td class="content-col">Real-world application problems: maximizing volume of boxes, minimizing surface area, and calculating velocity/acceleration.</td>
+      </tr>
+      <tr>
+        <td class="week-col">11</td>
+        <td class="topic-col" style="background: #fdf5f6; color:#7A1F2B;">Term 2 Assessment</td>
+        <td class="content-col"><strong>AE-S Paper 2:</strong> Analytical Geometry & Calculus (150 Marks).</td>
+      </tr>
+    </table>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ATP-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 5: TERM 3 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">AE-S Mathematics</div>
+      <div class="header-center">
+        <span class="page-num">5</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title">TERM 3: SERIES, FINANCE & TRIG</div>
+
+    <table class="atp-table">
+      <tr>
+        <th>Week</th>
+        <th>Topic</th>
+        <th>Content & Sub-topics</th>
+      </tr>
+      <tr>
+        <td class="week-col">1 - 2</td>
+        <td class="topic-col">Sequences & Series</td>
+        <td class="content-col">Arithmetic and Geometric sequences. Sum to infinity. Sigma notation. Quadratic number patterns and second differences.</td>
+      </tr>
+      <tr>
+        <td class="week-col">3 - 4</td>
+        <td class="topic-col">Financial Mathematics</td>
+        <td class="content-col">Compound interest, depreciation (straight-line and reducing balance), nominal vs effective interest rates, and annuities.</td>
+      </tr>
+      <tr>
+        <td class="week-col">5 - 6</td>
+        <td class="topic-col">Trigonometry Basics</td>
+        <td class="content-col">Reduction formulas, special angles, and solving basic trigonometric equations without a calculator.</td>
+      </tr>
+      <tr>
+        <td class="week-col">7 - 8</td>
+        <td class="topic-col">Trig Identities & Equations</td>
+        <td class="content-col">Proving complex identities. General solutions for sine, cosine, and tangent. Compound and double angle formulas.</td>
+      </tr>
+      <tr>
+        <td class="week-col">9 - 10</td>
+        <td class="topic-col">2D & 3D Trigonometry</td>
+        <td class="content-col">Sine rule, Cosine rule, and Area rule. Solving non-right-angled triangles in real-world 3D scenarios.</td>
+      </tr>
+      <tr>
+        <td class="week-col">11</td>
+        <td class="topic-col" style="background: #fdf5f6; color:#7A1F2B;">Term 3 Assessment</td>
+        <td class="content-col"><strong>AE-S Paper 3:</strong> Sequences, Finance & Trigonometry (150 Marks).</td>
+      </tr>
+    </table>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ATP-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 6: TERM 4 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">AE-S Mathematics</div>
+      <div class="header-center">
+        <span class="page-num">6</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title">TERM 4: MOCK EXAMS & REVISION</div>
+
+    <table class="atp-table">
+      <tr>
+        <th>Week</th>
+        <th>Topic</th>
+        <th>Content & Sub-topics</th>
+      </tr>
+      <tr>
+        <td class="week-col">1 - 2</td>
+        <td class="topic-col">Intensive Revision</td>
+        <td class="content-col">Reviewing high-risk topics: First principles, cubic graph sketching, and rational inequalities.</td>
+      </tr>
+      <tr>
+        <td class="week-col">3 - 4</td>
+        <td class="topic-col">Mock Exams</td>
+        <td class="content-col">Full simulation of the 4-paper IFB examination structure under strict timed conditions.</td>
+      </tr>
+      <tr>
+        <td class="week-col">5</td>
+        <td class="topic-col">Paper Analysis</td>
+        <td class="content-col">Reviewing mock exam scripts. Identifying execution errors. Final remediation of algebraic weaknesses.</td>
+      </tr>
+      <tr>
+        <td class="week-col">6 - 7</td>
+        <td class="topic-col" style="background: #fdf5f6; color:#7A1F2B;">Final Examinations</td>
+        <td class="content-col"><strong>AE-S Paper 4:</strong> Final Comprehensive Exam (150 Marks).</td>
+      </tr>
+    </table>
+
+    <div class="section-header" style="margin-top: 30px;">Final Examination Structure</div>
+    <table class="atp-table">
+      <tr>
+        <th>Paper</th>
+        <th>Duration</th>
+        <th>Total Marks</th>
+        <th>Content</th>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">Paper 1</td>
+        <td style="text-align: center;">2 Hours</td>
+        <td style="text-align: center;">150</td>
+        <td>Pure Algebra & Functions</td>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">Paper 2</td>
+        <td style="text-align: center;">2 Hours</td>
+        <td style="text-align: center;">150</td>
+        <td>Differential Calculus & Analytical Geometry</td>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">Paper 3</td>
+        <td style="text-align: center;">2 Hours</td>
+        <td style="text-align: center;">150</td>
+        <td>Sequences, Finance & Trigonometry</td>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">Paper 4</td>
+        <td style="text-align: center;">2 Hours</td>
+        <td style="text-align: center;">150</td>
+        <td>Comprehensive Mixed Application</td>
+      </tr>
+      <tr>
+        <td colspan="2" style="text-align: right; font-weight: bold;">TOTAL:</td>
+        <td style="text-align: center; font-weight: bold;">600</td>
+        <td></td>
+      </tr>
+    </table>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ATP-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<script>
+(function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-footer").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "IFB-ATP-MATH-2027", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: 12, textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/atp-math.html");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+  
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
+  });
+})();
+</script>
+</body>
+</html>
