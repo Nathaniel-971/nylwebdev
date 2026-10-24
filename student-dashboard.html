@@ -48,6 +48,16 @@
     .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; display: flex; align-items: center; gap: 8px; }
     .card h3 i { color: var(--maroon); }
     
+    /* QUICK LINKS */
+    .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .link-card { 
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; 
+        padding: 24px; border: 1px solid var(--silver); border-radius: 16px; text-decoration: none; 
+        color: var(--black); font-weight: 700; transition: 0.2s; background: #FAFAFA;
+    }
+    .link-card:hover { border-color: var(--maroon); background: #FFF5F6; transform: translateY(-2px); }
+    .link-card i { width: 28px; height: 28px; color: var(--maroon); }
+
     /* FORMS */
     .edit-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
@@ -58,15 +68,19 @@
     .btn-save { padding: 12px 24px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: auto; }
     .btn-save:hover { background: var(--maroon-hover); }
 
-    /* QUICK LINKS */
-    .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .link-card { 
-        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; 
-        padding: 24px; border: 1px solid var(--silver); border-radius: 16px; text-decoration: none; 
-        color: var(--black); font-weight: 700; transition: 0.2s; background: #FAFAFA;
+    /* COURSE SELECTION LIST */
+    .course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .course-item { 
+        display: flex; align-items: flex-start; gap: 16px; padding: 16px; 
+        border: 1.5px solid var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; 
     }
-    .link-card:hover { border-color: var(--maroon); background: #FFF5F6; transform: translateY(-2px); }
-    .link-card i { width: 28px; height: 28px; color: var(--maroon); }
+    .course-item:hover { border-color: var(--maroon); background: #FAFAFA; }
+    .course-item.selected { border-color: var(--maroon); background: #FFF5F6; }
+    .course-item input[type="checkbox"] { 
+        width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; margin-top: 2px; flex-shrink: 0;
+    }
+    .course-content h4 { font-size: 15px; font-weight: 800; margin-bottom: 4px; color: var(--black); }
+    .course-content p { font-size: 13px; color: var(--gray); }
 
     /* INLINE ALERTS */
     .inline-alert { display: none; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-bottom: 16px; }
@@ -133,6 +147,33 @@
                     <i data-lucide="monitor-play" style="color: var(--maroon);"></i>
                     <span style="color: var(--maroon);">Enter Exam Portal</span>
                 </a>
+            </div>
+
+            <!-- ACADEMIC TRACKS -->
+            <div class="card">
+                <h3><i data-lucide="book-open"></i> Academic Tracks</h3>
+                <div class="inline-alert success" id="courseSuccess">Courses updated successfully!</div>
+                <div class="inline-alert error" id="courseError">Error updating courses.</div>
+                
+                <form id="courseForm" autocomplete="off">
+                    <div class="course-list">
+                        <label class="course-item" id="itemMath">
+                            <input type="checkbox" id="chkMath" value="Mathematics" onchange="updateCourseUI()">
+                            <div class="course-content">
+                                <h4>Mathematics</h4>
+                                <p>Advanced Mathematics Track</p>
+                            </div>
+                        </label>
+                        <label class="course-item" id="itemWeb">
+                            <input type="checkbox" id="chkWeb" value="Front-end Web Development" onchange="updateCourseUI()">
+                            <div class="course-content">
+                                <h4>Front-end Web Development</h4>
+                                <p>Web Development Track</p>
+                            </div>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-save" id="saveCoursesBtn">Update Tracks</button>
+                </form>
             </div>
 
             <!-- PROFILE INFO -->
@@ -218,20 +259,38 @@
 
     onAuthStateChanged(auth, async (user) => {
         if (!user) { window.location.href = "index.html"; return; }
-        const docSnap = await getDoc(doc(db, "users", user.uid));
+        
+        const userDocRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userDocRef);
+        
         if (docSnap.exists()) {
             currentData = docSnap.data();
             
+            // Auto-migration for Security Code
+            if (!currentData.securityCode) {
+                const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                currentData.securityCode = newCode;
+                try { await updateDoc(userDocRef, { securityCode: newCode }); } catch (e) { console.error(e); }
+            }
+
+            // Populate UI
             document.getElementById('userName').innerText = currentData.name || "Applicant";
             document.getElementById('userStudentId').innerText = currentData.studentId || "---";
-            document.getElementById('userSecurityCode').innerText = currentData.securityCode || "------";
+            document.getElementById('userSecurityCode').innerText = currentData.securityCode;
             
             if (currentData.studentId) {
                 document.getElementById('profileBadge').innerText = currentData.studentId.slice(-2);
-                // Generate Barcode
                 JsBarcode("#barcodeSvg", currentData.studentId, { format: "CODE128", width: 2, height: 60, displayValue: false, margin: 0 });
             }
             
+            // Populate Courses
+            if (currentData.courses && currentData.courses.length > 0) {
+                if (currentData.courses.includes("Mathematics")) document.getElementById('chkMath').checked = true;
+                if (currentData.courses.includes("Front-end Web Development")) document.getElementById('chkWeb').checked = true;
+                updateCourseUI();
+            }
+
+            // Populate Profile Form
             document.getElementById('editName').value = currentData.name || "";
             document.getElementById('editPhone').value = currentData.phone || "";
             document.getElementById('editDob').value = currentData.dob || "";
@@ -240,6 +299,46 @@
         }
     });
 
+    // UI Highlight for Courses
+    window.updateCourseUI = function() {
+        document.getElementById('itemMath').classList.toggle('selected', document.getElementById('chkMath').checked);
+        document.getElementById('itemWeb').classList.toggle('selected', document.getElementById('chkWeb').checked);
+    }
+
+    // Submit Course Updates
+    document.getElementById('courseForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('saveCoursesBtn');
+        const successMsg = document.getElementById('courseSuccess');
+        const errorMsg = document.getElementById('courseError');
+        
+        successMsg.style.display = 'none';
+        errorMsg.style.display = 'none';
+
+        const selected = [];
+        if (document.getElementById('chkMath').checked) selected.push("Mathematics");
+        if (document.getElementById('chkWeb').checked) selected.push("Front-end Web Development");
+
+        if (selected.length === 0) {
+            errorMsg.innerText = "You must select at least one course.";
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        btn.innerText = "Updating..."; btn.disabled = true;
+
+        try {
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { courses: selected });
+            successMsg.style.display = 'block';
+            setTimeout(() => successMsg.style.display = 'none', 3000);
+        } catch (error) {
+            errorMsg.innerText = "Error: " + error.message;
+            errorMsg.style.display = 'block';
+        }
+        btn.innerText = "Update Tracks"; btn.disabled = false;
+    });
+
+    // Submit Profile Updates
     document.getElementById('editForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = e.target.querySelector('button');
@@ -262,6 +361,7 @@
         }
     });
 
+    // Submit Security Updates
     document.getElementById('securityForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const newEmail = document.getElementById('updateEmail').value;
@@ -303,6 +403,7 @@
         }
     });
 
+    // Delete Account
     window.deleteAccount = async function() {
         if (!auth.currentUser) return;
         if (!confirm("Are you absolutely sure you want to permanently delete your account?")) return;
