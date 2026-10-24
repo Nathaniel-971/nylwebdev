@@ -52,6 +52,19 @@
     pointer-events: none; 
     z-index: 0; 
   }
+
+  /* WATERMARK */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    opacity: 0.05;
+    pointer-events: none;
+    z-index: 0;
+  }
   
   /* CONTENT WRAPPER */
   .content-wrapper { 
@@ -63,7 +76,7 @@
     padding-bottom: 30mm; 
   }
   
-  /* EXAM HEADERS (Black & White, NO LINE) */
+  /* EXAM HEADERS */
   .header { 
     display: flex; 
     justify-content: space-between; 
@@ -78,6 +91,21 @@
   .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
   .header-center .confidential { font-style: italic; font-weight: bold; color: #000; }
   .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
+
+  /* LEFT SPINE TEXT */
+  .spine-text {
+    position: absolute;
+    left: 5mm;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    color: #999;
+    font-size: 10pt;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-family: Arial, sans-serif;
+    z-index: 2;
+  }
 
   /* FOOTER */
   .footer { 
@@ -123,21 +151,37 @@
   }
   
   .cover-brand { display: flex; align-items: center; gap: 15px;}
-  .ifb-logo-svg { width: 80px; height: 80px; }
+  .ifb-logo-svg { width: 80px; height: 80px; z-index: 1; }
   .cover-header-text .title { font-size: 28px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px; line-height: 1;}
   .cover-header-text .sub { font-size: 11pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
   
   .candidate-barcode-box {
     border: 2px dashed #000;
-    padding: 15px;
+    padding: 10px;
     width: 35%;
-    text-align: center;
-    font-size: 10pt;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 80px;
+  }
+  .candidate-barcode-box .circle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8pt;
+    text-align: center;
+    line-height: 1.1;
+  }
+  .candidate-barcode-box .label {
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: center;
   }
 
   .answer-book-title {
@@ -152,7 +196,7 @@
     width: 60%;
   }
 
-  /* Form Grids */
+  /* Form Grids & Blocks */
   .form-row {
     display: flex;
     gap: 15px;
@@ -160,42 +204,34 @@
   }
   .form-box {
     border: 2px solid #000;
-    padding: 5px;
+    padding: 5px 8px;
     display: flex;
     flex-direction: column;
     flex: 1;
+    justify-content: center;
   }
   .form-box label {
     font-size: 9pt;
     font-weight: bold;
-    margin-bottom: 2px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
   }
-  .form-box .input-space {
-    height: 20px;
-    border-bottom: 1px solid #ccc;
-  }
-
-  /* Curriculum Tick Boxes */
-  .curriculum-box {
-    border: 2px solid #7A1F2B;
-    padding: 15px;
-    margin-bottom: 20px;
+  
+  /* Block Input Style */
+  .block-container {
     display: flex;
-    align-items: center;
-    justify-content: space-around;
-    font-weight: bold;
+    gap: 2px;
   }
-  .curriculum-box label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    font-size: 12pt;
-  }
-  .curriculum-box input[type="checkbox"] {
+  .block {
     width: 20px;
+    height: 25px;
+    border: 1px solid #000;
+    background-color: #f8f8f8;
+  }
+  .input-line {
+    border-bottom: 1px solid #ccc;
     height: 20px;
-    accent-color: #7A1F2B;
+    width: 100%;
   }
 
   /* Marking Grid Table */
@@ -216,9 +252,8 @@
     font-size: 8.5pt;
   }
   .marking-table td {
-    height: 22px;
+    height: 24px;
   }
-  .marking-table .text-left { text-align: left; padding-left: 8px; }
 
   /* ========================================= */
   /* PAGE 2: INSTRUCTIONS                      */
@@ -244,13 +279,6 @@
   /* ========================================= */
   /* PAGE 3+: ANSWER SPACE                     */
   /* ========================================= */
-  .answer-space-title {
-    font-size: 12pt;
-    font-weight: bold;
-    margin-bottom: 10px;
-    font-style: italic;
-  }
-  
   .lines-container {
     display: flex;
     flex-direction: column;
@@ -267,9 +295,8 @@
   }
   .line-writing-area {
     flex: 1;
-    height: 35px; /* Height of each line */
+    height: 35px;
     border-right: 1px solid #000;
-    /* Optional: faint dotted line inside to guide writing */
     background-image: linear-gradient(to bottom, transparent 34px, #ccc 34px);
   }
   .line-marks-area {
@@ -288,6 +315,12 @@
 <!-- ==================== PAGE 1: COVER PAGE ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
   <div class="content-wrapper">
     
     <!-- Header with IFB Branding & Barcode Box -->
@@ -304,7 +337,8 @@
         </div>
       </div>
       <div class="candidate-barcode-box">
-        Candidate Barcode Label
+        <div class="circle">Write</div>
+        <div class="label">Student Barcode Label</div>
       </div>
     </div>
 
@@ -313,104 +347,108 @@
       IFB Answer Book
     </div>
 
-    <!-- Form Fields -->
+    <!-- Form Fields using Blocks -->
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
-        <label>CENTRE NUMBER</label>
-        <div class="input-space"></div>
-      </div>
-      <div class="form-box" style="flex: 3;">
-        <label>EXAMINATION NUMBER</label>
-        <div class="input-space"></div>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-box" style="flex: 2;">
-        <label>DATE</label>
-        <div class="input-space"></div>
+        <label>Student ID</label>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        </div>
       </div>
       <div class="form-box" style="flex: 1;">
-        <label>BOOK NUMBER</label>
-        <div class="input-space"></div>
-      </div>
-      <div class="form-box" style="flex: 1;">
-        <label>OF</label>
-        <div class="input-space"></div>
-      </div>
-      <div class="form-box" style="flex: 1;">
-        <label>BOOKS</label>
-        <div class="input-space"></div>
+        <label>Security Code</label>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        </div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
-        <label>SUBJECT CODE</label>
-        <div class="input-space"></div>
+        <label>Date</label>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        </div>
       </div>
       <div class="form-box" style="flex: 1;">
-        <label>PAPER NUMBER</label>
-        <div class="input-space" style="text-align: center; font-weight: bold; font-size: 14pt;">1</div>
+        <label>Book Number</label>
+        <div class="input-line" style="text-align: center; font-weight: bold;">1</div>
+      </div>
+      <div class="form-box" style="flex: 1;">
+        <label>Of</label>
+        <div class="input-line" style="text-align: center; font-weight: bold;">1</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-box" style="flex: 2;">
+        <label>Subject Code</label>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        </div>
+      </div>
+      <div class="form-box" style="flex: 1;">
+        <label>Paper Number</label>
+        <div class="input-line" style="text-align: center; font-weight: bold;">AE</div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 1;">
-        <label>SUBJECT NAME</label>
-        <div class="input-space" style="height: 30px;"></div>
+        <label>Subject Name</label>
+        <div class="input-line" style="height: 30px;"></div>
       </div>
     </div>
 
-    <!-- Curriculum Tick Boxes -->
-    <div class="curriculum-box">
-      <span>TICK YOUR CURRICULUM:</span>
-      <label><input type="checkbox" name="curr_math" value="math"> AE-S Mathematics</label>
-      <label><input type="checkbox" name="curr_web" value="web"> AE-W Web Development</label>
+    <div class="form-row" style="margin-bottom: 20px;">
+      <div class="form-box" style="flex: 1; padding: 10px;">
+        <label style="margin-bottom: 2px;">Curriculum:</label>
+        <div class="input-line" style="height: 25px;"></div>
+      </div>
     </div>
 
-    <!-- Marking Grids -->
+    <!-- Marking Grids: Exactly 12 Rows -->
     <table class="marking-table">
       <thead>
         <tr>
-          <th colspan="3">MARKER</th>
+          <th colspan="2">MARKER</th>
           <th colspan="5">MODERATOR'S INITIALS IN RELEVANT BLOCK</th>
-          <th colspan="3">RE-MARK/RE-CHECK</th>
+          <th colspan="2">RE-MARK/RE-CHECK</th>
         </tr>
         <tr>
-          <th>Question</th>
-          <th>Marks</th>
-          <th>Marker's Code & Initials</th>
-          <th>Marks</th>
-          <th>SM</th>
-          <th>DCM</th>
-          <th>CM</th>
-          <th>IM</th>
-          <th>Question</th>
-          <th>Marks</th>
-          <th>Initials</th>
+          <th style="width: 10%;">Marks</th>
+          <th style="width: 30%;">Marker's Code & Initials</th>
+          <th style="width: 10%;">Marks</th>
+          <th style="width: 10%;">SM</th>
+          <th style="width: 10%;">DCM</th>
+          <th style="width: 10%;">CM</th>
+          <th style="width: 10%;">IM</th>
+          <th style="width: 10%;">Marks</th>
+          <th style="width: 10%;">Initials</th>
         </tr>
       </thead>
       <tbody>
-        <!-- Generating 15 rows -->
-        <script>
-          for(let i=1; i<=15; i++) {
-            document.write(`
-              <tr>
-                <td>${i}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${i}</td><td></td><td></td>
-              </tr>
-            `);
-          }
-        </script>
-        <!-- Empty Rows for Total -->
+        <!-- Generating exactly 12 rows -->
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <!-- Totals -->
         <tr>
-          <td></td><td></td><td></td>
-          <td colspan="5" style="text-align: right; font-weight: bold; padding-right: 10px;">TOTAL:</td>
-          <td colspan="3"></td>
+          <td colspan="2" style="text-align: right; font-weight: bold; padding-right: 10px;">TOTAL:</td>
+          <td colspan="7"></td>
         </tr>
         <tr>
-          <td colspan="3" style="text-align: left; padding-left: 10px; font-weight: bold;">CONTROLLED AND CERTIFIED CORRECT (SURNAME AND INITIALS OF EA)</td>
-          <td colspan="8"></td>
+          <td colspan="2" style="text-align: left; padding-left: 10px; font-weight: bold; font-size: 8pt;">CONTROLLED AND CERTIFIED CORRECT</td>
+          <td colspan="7"></td>
         </tr>
       </tbody>
     </table>
@@ -419,7 +457,7 @@
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Copyright reserved</div>
@@ -429,6 +467,13 @@
 <!-- ==================== PAGE 2: INSTRUCTIONS ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <div class="spine-text">Do not write in spine</div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
   <div class="content-wrapper">
     
     <div class="header">
@@ -445,28 +490,22 @@
     </div>
 
     <ol class="instructions-list">
-      <li>Write your examination number and centre number clearly in the spaces provided and attach your examination number sticker in the space provided.</li>
+      <li>Write your Student ID and Security Code clearly in the spaces provided and attach your barcode sticker in the space provided.</li>
       <li>Remember that your own name (or the name of your school) may not appear anywhere on or in this answer book.</li>
       <li>Answer ALL questions in the spaces provided.</li>
       <li>No pages may be torn from this answer book.</li>
       <li>Read the instructions printed on your timetable carefully as well as any other instructions which may be given in each examination paper.</li>
       <li>Candidates may not retain an answer book or remove it from the examination room. Answer books must be returned to the Invigilator at the end of the examination session.</li>
       <li>Answers must be written in black/blue ink as distinctly as possible. Do not write in the margins.</li>
-      <li>Indicate the questions you have answered by drawing a circle around the relevant numbers on the front cover of the answer book where marks are to be recorded.</li>
       <li>Rule off through any work/rough work that must not be marked.</li>
-      <li>In the event that you use the additional space provided:
-        <div style="margin-left: 20px; margin-top: 5px;">
-          10.1 Write down the number of the question.<br>
-          10.2 Leave a line and rule off after your answer.
-        </div>
-      </li>
+      <li>In the event that you use the additional space provided, write down the number of the question, leave a line, and rule off after your answer.</li>
     </ol>
     
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
@@ -477,99 +516,63 @@
   </div>
 </div>
 
-<!-- ==================== PAGE 3: ANSWER SPACE ==================== -->
-<div class="page">
-  <div class="security-pattern"></div>
-  <div class="content-wrapper">
-    
-    <div class="header">
-      <div class="header-left">IFB Answer Book</div>
-      <div class="header-center">
-        <span class="page-num">3</span>
-        <span class="confidential">IFB / Confidential</span>
-      </div>
-      <div class="header-right">2027</div>
-    </div>
-
-    <div class="answer-space-title">
-      Answer Space / Additional Space
-    </div>
-
-    <div class="lines-container">
-      <script>
-        // Generate 20 blank lined rows
-        for(let i=0; i<20; i++) {
-          document.write(`
-            <div class="line-row">
-              <div class="line-writing-area"></div>
-              <div class="line-marks-area"></div>
+<!-- ==================== PAGES 3-25: ANSWER SPACE ==================== -->
+<script>
+  // Generate 23 pages of answer space (Pages 3 to 25)
+  for (let i = 3; i <= 25; i++) {
+    document.write(`
+      <div class="page">
+        <div class="security-pattern"></div>
+        <div class="spine-text">Do not write in spine</div>
+        <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+        </svg>
+        
+        <div class="content-wrapper">
+          
+          <div class="header">
+            <div class="header-left">IFB Answer Book</div>
+            <div class="header-center">
+              <span class="page-num">${i}</span>
+              <span class="confidential">IFB / Confidential</span>
             </div>
-          `);
-        }
-      </script>
-    </div>
+            <div class="header-right">2027</div>
+          </div>
 
-  </div>
-  
-  <div class="footer">
-    <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/"></span>
-      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-    </div>
-    <div class="footer-right">Please turn over</div>
-  </div>
-  
-  <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
-  </div>
-</div>
-
-<!-- ==================== PAGE 4: ANSWER SPACE ==================== -->
-<div class="page">
-  <div class="security-pattern"></div>
-  <div class="content-wrapper">
+          <div class="lines-container">
+    `);
     
-    <div class="header">
-      <div class="header-left">IFB Answer Book</div>
-      <div class="header-center">
-        <span class="page-num">4</span>
-        <span class="confidential">IFB / Confidential</span>
+    // Generate 20 blank lined rows for each page
+    for(let j=0; j<20; j++) {
+      document.write(`
+        <div class="line-row">
+          <div class="line-writing-area"></div>
+          <div class="line-marks-area"></div>
+        </div>
+      `);
+    }
+
+    document.write(`
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-left">
+            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+            <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+          </div>
+          <div class="footer-right">${i === 25 ? 'END' : 'Please turn over'}</div>
+        </div>
+        
+        <div class="bottom-barcode">
+          <svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+        </div>
       </div>
-      <div class="header-right">2027</div>
-    </div>
-
-    <div class="answer-space-title">
-      Answer Space / Additional Space
-    </div>
-
-    <div class="lines-container">
-      <script>
-        // Generate 20 blank lined rows
-        for(let i=0; i<20; i++) {
-          document.write(`
-            <div class="line-row">
-              <div class="line-writing-area"></div>
-              <div class="line-marks-area"></div>
-            </div>
-          `);
-        }
-      </script>
-    </div>
-
-  </div>
-  
-  <div class="footer">
-    <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/"></span>
-      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-    </div>
-    <div class="footer-right">END</div>
-  </div>
-  
-  <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
-  </div>
-</div>
+    `);
+  }
+</script>
 
 <script>
 (function () {
@@ -593,7 +596,7 @@
     document.querySelectorAll(".footer-qr").forEach(function (el) {
       try {
         var qr = qrcode(0, "M");
-        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/answer-book.html");
         qr.make();
         el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
       } catch (e) { console.warn(e); }
