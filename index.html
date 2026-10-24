@@ -7,598 +7,511 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    :root { 
-        --white: #FFFFFF; --black: #111111; --gray: #666666; 
-        --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620;
-        --transition: all 0.3s ease;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; overflow-x: hidden; opacity: 0; animation: fadeIn 0.4s ease forwards; }
-    @keyframes fadeIn { to { opacity: 1; } }
-    a { text-decoration: none; color: inherit; }
-    ul { list-style: none; }
+:root { --white:#FFF; --black:#111; --gray:#666; --silver:#E2E8F0; --maroon:#7A1F2B; --maroon-hover:#5A1620; --success:#15803D; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Inter',sans-serif; background:var(--white); color:var(--black); line-height:1.6; overflow-x:hidden; opacity:0; animation:fadeIn .4s ease forwards; }
+@keyframes fadeIn { to { opacity:1; } }
+a { text-decoration:none; color:inherit; }
+ul { list-style:none; }
 
-    #loader { position: fixed; inset: 0; background: var(--white); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
-    .loader-logo { font-size: 100px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.7; } }
+#loader { position:fixed; inset:0; background:var(--white); z-index:9999; display:flex; justify-content:center; align-items:center; transition:opacity .5s ease; }
+.loader-logo { font-size:100px; font-weight:900; color:var(--maroon); animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(.9); opacity:.7; } }
 
-    /* TOP NOTICE */
-    .top-notice-bar {
-        background: var(--silver); color: var(--black); text-align: center;
-        padding: 10px 16px; font-size: 13px; font-weight: 700;
-        letter-spacing: 0.5px; border-bottom: 1px solid #d1d5db;
-    }
-    .top-notice-bar span { color: var(--maroon); }
-    .top-notice-bar a { text-decoration: underline; }
+.top-notice-bar { background:var(--silver); color:var(--black); text-align:center; padding:10px 16px; font-size:13px; font-weight:700; letter-spacing:.5px; border-bottom:1px solid #d1d5db; }
+.top-notice-bar span { color:var(--maroon); }
+.top-notice-bar a { text-decoration:underline; }
 
-    /* HEADER */
-    .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 80px; }
-    .nav-container { max-width: 1300px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
-    .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .nav-logged-out { display: flex; align-items: center; gap: 8px; }
-    .btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: var(--transition); color: var(--black); white-space: nowrap; }
-    .btn-login:hover { border-color: var(--black); background: #FAFAFA; }
-    .nav-cta { background: var(--silver); color: var(--black) !important; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: var(--transition); white-space: nowrap; }
-    .nav-cta:hover { background: #cbd5e1; transform: translateY(-2px); }
-    .nav-logged-in { display: none; align-items: center; }
-    .profile-badge { 
-        width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-        border-radius: 50%; border: 2px solid var(--maroon); background: var(--white); 
-        cursor: pointer; transition: transform 0.2s; font-size: 16px; font-weight: 900; color: var(--maroon);
-    }
-    .profile-badge:hover { transform: scale(1.05); background: #FFF5F6; }
-    .profile-badge i { width: 20px; height: 20px; }
+.header { position:sticky; top:0; z-index:1000; background:rgba(255,255,255,.95); backdrop-filter:blur(10px); border-bottom:1px solid var(--silver); height:80px; }
+.nav-container { max-width:1300px; margin:0 auto; padding:0 24px; display:flex; justify-content:space-between; align-items:center; height:100%; }
+.brand { display:flex; align-items:center; gap:12px; }
+.brand-logo { font-size:36px; font-weight:900; color:var(--maroon); line-height:.8; }
+.brand-text h1 { font-size:20px; font-weight:900; letter-spacing:-.5px; }
+.nav-right { display:flex; align-items:center; gap:12px; }
+.nav-logged-out { display:flex; align-items:center; gap:8px; }
+.nav-logged-in { display:none; align-items:center; gap:8px; }
+.btn-login { background:transparent; border:1.5px solid var(--silver); padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; transition:.3s; color:var(--black); white-space:nowrap; }
+.btn-login:hover { border-color:var(--black); background:#FAFAFA; }
+.nav-cta { background:var(--silver); color:var(--black); border:1px solid #cbd5e1; padding:10px 20px; border-radius:8px; font-size:14px; font-weight:700; transition:.3s; white-space:nowrap; }
+.nav-cta:hover { background:#cbd5e1; transform:translateY(-2px); }
+.nav-cta.maroon { background:var(--maroon); color:var(--white); border-color:var(--maroon); }
+.nav-cta.maroon:hover { background:var(--maroon-hover); }
+.profile-badge { width:44px; height:44px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:2px solid var(--maroon); background:var(--white); cursor:pointer; transition:transform .2s; font-size:16px; font-weight:900; color:var(--maroon); }
+.profile-badge:hover { transform:scale(1.05); background:#FFF5F6; }
 
-    .menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; z-index: 2001; }
-    .menu-btn span { display: block; width: 100%; height: 2px; background: var(--black); transition: var(--transition); }
+.menu-btn { display:flex; flex-direction:column; justify-content:space-around; width:30px; height:24px; background:transparent; border:none; cursor:pointer; z-index:2001; }
+.menu-btn span { display:block; width:100%; height:2px; background:var(--black); transition:.3s; }
 
-    /* MOBILE MENU */
-    .mobile-menu { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: 0.4s ease; overflow-y: auto; }
-    .mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
-    .menu-header { display: flex; justify-content: flex-end; padding: 24px; border-bottom: 1px solid var(--silver); }
-    .close-btn { background: transparent; border: none; color: var(--black); cursor: pointer; padding: 8px; }
-    .close-btn i { width: 32px; height: 32px; }
-    .menu-content { padding: 0 32px 32px; flex-grow: 1; }
-    .menu-item { border-bottom: 1px solid var(--silver); }
-    .menu-link { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; font-size: 20px; font-weight: 600; color: var(--black); cursor: pointer; }
-    .menu-link i { transition: 0.3s; }
-    .menu-item.active .menu-link i { transform: rotate(90deg); color: var(--maroon); }
-    .submenu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; background: #FAFAFA; border-radius: 8px; }
-    .submenu a { display: block; padding: 16px 24px; font-size: 16px; color: var(--gray); font-weight: 500; }
-    .submenu a:hover { color: var(--maroon); padding-left: 32px; }
-    .menu-footer { padding: 32px; border-top: 1px solid var(--silver); }
-    .btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--silver); color: var(--black); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; border: 1px solid #cbd5e1; }
+.mobile-menu { position:fixed; inset:0; background:var(--white); z-index:2000; display:flex; flex-direction:column; transform:translateX(100%); opacity:0; visibility:hidden; transition:.4s ease; overflow-y:auto; }
+.mobile-menu.active { transform:translateX(0); opacity:1; visibility:visible; }
+.menu-header { display:flex; justify-content:flex-end; padding:24px; border-bottom:1px solid var(--silver); }
+.close-btn { background:transparent; border:none; cursor:pointer; padding:8px; }
+.close-btn i { width:32px; height:32px; }
+.menu-content { padding:0 32px 32px; flex-grow:1; }
+.menu-item { border-bottom:1px solid var(--silver); }
+.menu-link { display:flex; justify-content:space-between; align-items:center; padding:24px 0; font-size:20px; font-weight:600; cursor:pointer; }
+.menu-link i { transition:.3s; }
+.menu-item.active .menu-link i { transform:rotate(90deg); color:var(--maroon); }
+.submenu { max-height:0; overflow:hidden; transition:max-height .4s ease-out; background:#FAFAFA; border-radius:8px; }
+.submenu a { display:block; padding:16px 24px; font-size:16px; color:var(--gray); font-weight:500; }
+.submenu a:hover { color:var(--maroon); padding-left:32px; }
+.menu-footer { padding:32px; border-top:1px solid var(--silver); }
+.btn-menu-apply { display:flex; justify-content:center; align-items:center; width:100%; background:var(--maroon); color:var(--white); padding:16px; border-radius:8px; font-size:16px; font-weight:700; border:1px solid var(--maroon); }
 
-    /* HERO */
-    .hero { position: relative; padding: 120px 24px 100px; text-align: center; overflow: hidden; background: var(--white); border-bottom: 1px solid var(--silver); }
-    .hero-carousel { position: absolute; inset: 0; z-index: 0; }
-    .hero-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1s ease-in-out, transform 10s linear; transform: scale(1.05); }
-    .hero-slide.active { opacity: 1; transform: scale(1); }
-    .hero-overlay { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(8px); z-index: 1; }
-    .hero-content { position: relative; z-index: 2; color: var(--black); max-width: 900px; margin: 0 auto; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 24px; background: var(--white); color: var(--maroon); }
-    .hero h1 { font-size: clamp(40px, 5vw, 64px); font-weight: 900; line-height: 1.1; letter-spacing: -2px; margin-bottom: 24px; }
-    .hero h1 span { color: var(--maroon); }
-    .hero p { font-size: 18px; max-width: 700px; margin: 0 auto 40px; color: var(--gray); font-weight: 500; }
-    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-    .btn-lg { padding: 16px 36px; font-size: 16px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 10px; transition: var(--transition); }
-    .btn-primary { background: var(--silver); color: var(--black); border: 1px solid #cbd5e1; }
-    .btn-primary:hover { background: #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .btn-outline { background: var(--white); color: var(--black); border: 2px solid var(--silver); }
-    .btn-outline:hover { border-color: var(--black); }
-    .hero-logged-in { display: none; }
+/* STATUS BANNER */
+.status-banner { display:none; background:linear-gradient(135deg,#FFF5F6 0%,#FFF 100%); border-bottom:1px solid var(--maroon); padding:14px 24px; text-align:center; }
+.status-banner-inner { max-width:1300px; margin:0 auto; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; font-size:14px; }
+.status-banner strong { color:var(--maroon); font-weight:900; }
+.status-banner .status-pill { display:inline-block; padding:3px 10px; border-radius:100px; font-size:11px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; }
+.status-pill.applicant { background:#FFF5F6; color:var(--maroon); border:1px solid var(--maroon); }
+.status-pill.enrolled { background:#F0FDF4; color:var(--success); border:1px solid var(--success); }
+.status-banner a { color:var(--maroon); font-weight:800; text-decoration:underline; }
 
-    /* STATS */
-    .stats-bar { max-width: 900px; margin: 48px auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    .stat-item { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 20px 12px; text-align: center; }
-    .stat-item .stat-val { font-size: 24px; font-weight: 900; color: var(--maroon); letter-spacing: -0.5px; }
-    .stat-item .stat-label { font-size: 11px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+/* HERO */
+.hero { position:relative; padding:100px 24px 80px; text-align:center; overflow:hidden; background:var(--white); border-bottom:1px solid var(--silver); }
+.hero-carousel { position:absolute; inset:0; z-index:0; }
+.hero-slide { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 1s ease-in-out, transform 10s linear; transform:scale(1.05); }
+.hero-slide.active { opacity:1; transform:scale(1); }
+.hero-overlay { position:absolute; inset:0; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); z-index:1; }
+.hero-content { position:relative; z-index:2; color:var(--black); max-width:900px; margin:0 auto; }
+.hero-badge { display:inline-flex; align-items:center; gap:8px; border:1px solid var(--silver); padding:8px 16px; border-radius:100px; font-size:12px; font-weight:800; text-transform:uppercase; margin-bottom:24px; background:var(--white); color:var(--maroon); }
+.hero h1 { font-size:clamp(36px,5vw,58px); font-weight:900; line-height:1.1; letter-spacing:-2px; margin-bottom:24px; }
+.hero h1 span { color:var(--maroon); }
+.hero p { font-size:18px; max-width:700px; margin:0 auto 40px; color:var(--gray); font-weight:500; }
+.hero-buttons { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.btn-lg { padding:16px 36px; font-size:16px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:10px; transition:.3s; }
+.btn-primary { background:var(--maroon); color:var(--white); border:1px solid var(--maroon); }
+.btn-primary:hover { background:var(--maroon-hover); }
+.btn-outline { background:var(--white); color:var(--black); border:2px solid var(--silver); }
+.btn-outline:hover { border-color:var(--black); }
+.hero-logged-in { display:none; }
 
-    /* HOW IT WORKS */
-    .how-section { padding: 80px 24px; background: var(--white); border-bottom: 1px solid var(--silver); }
-    .section-container { max-width: 1100px; margin: 0 auto; }
-    .section-header { text-align: center; margin-bottom: 48px; }
-    .section-header h2 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; }
-    .section-header p { font-size: 16px; color: var(--gray); max-width: 600px; margin: 0 auto; }
-    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .step-card { background: #FAFAFA; border: 1px solid var(--silver); border-radius: 16px; padding: 32px; position: relative; transition: 0.2s; }
-    .step-card:hover { border-color: var(--maroon); background: #FFF5F6; transform: translateY(-4px); }
-    .step-num { width: 48px; height: 48px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 20px; margin-bottom: 20px; }
-    .step-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
-    .step-card p { font-size: 14px; color: var(--gray); line-height: 1.6; }
+.stats-bar { max-width:900px; margin:48px auto 0; display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+.stat-item { background:var(--white); border:1px solid var(--silver); border-radius:12px; padding:20px 12px; text-align:center; }
+.stat-item .stat-val { font-size:24px; font-weight:900; color:var(--maroon); letter-spacing:-.5px; }
+.stat-item .stat-label { font-size:11px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.5px; margin-top:4px; }
 
-    /* ADMISSION DATES */
-    .admissions-section { padding: 80px 24px; background: #FAFAFA; border-bottom: 1px solid var(--silver); }
-    .exam-grid { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
-    .exam-card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 30px; flex: 1; min-width: 280px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
-    .exam-card:hover { border-color: var(--maroon); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-    .exam-info { text-align: left; }
-    .exam-info h3 { font-size: 20px; font-weight: 800; margin-bottom: 4px; color: var(--black); }
-    .exam-info p { font-size: 14px; color: var(--gray); font-weight: 600; }
-    .exam-date { background: var(--white); border: 2px solid var(--maroon); color: var(--maroon); padding: 12px 20px; border-radius: 8px; text-align: center; }
-    .exam-date span { display: block; font-size: 20px; font-weight: 900; }
-    .exam-date small { font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
-    .timetable-link { text-align: center; margin-top: 32px; }
-    .timetable-link a { color: var(--maroon); font-weight: 700; font-size: 15px; display: inline-flex; align-items: center; gap: 6px; }
-    .timetable-link a:hover { text-decoration: underline; }
+/* SECTIONS */
+.section { padding:80px 24px; border-bottom:1px solid var(--silver); }
+.section.alt { background:#FAFAFA; }
+.section-container { max-width:1100px; margin:0 auto; }
+.section-header { text-align:center; margin-bottom:48px; }
+.section-header h2 { font-size:32px; font-weight:900; letter-spacing:-1px; margin-bottom:12px; }
+.section-header p { font-size:16px; color:var(--gray); max-width:600px; margin:0 auto; }
 
-    /* COURSES */
-    .courses-section { padding: 80px 24px; background: var(--white); border-bottom: 1px solid var(--silver); }
-    .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; max-width: 1000px; margin: 0 auto; }
-    .course-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; }
-    .course-card:hover { border-color: var(--maroon); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-    .course-image { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--silver); }
-    .course-content { padding: 28px; display: flex; flex-direction: column; flex-grow: 1; }
-    .course-code { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--maroon); background: #FFF5F6; border: 1px solid var(--maroon); padding: 4px 10px; border-radius: 100px; margin-bottom: 12px; align-self: flex-start; }
-    .course-content h3 { font-size: 22px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.5px; }
-    .course-content p { font-size: 14px; color: var(--gray); margin-bottom: 24px; flex-grow: 1; line-height: 1.6; }
-    .course-actions { display: flex; flex-direction: column; gap: 10px; }
-    .btn-course-apply { background: var(--silver); color: var(--black); border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; transition: 0.2s; }
-    .btn-course-apply:hover { background: #cbd5e1; }
-    .btn-course-view { background: var(--white); color: var(--black); border: 1.5px solid var(--silver); padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; transition: 0.2s; }
-    .btn-course-view:hover { border-color: var(--black); }
+.steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.step-card { background:#FAFAFA; border:1px solid var(--silver); border-radius:16px; padding:32px; transition:.2s; }
+.step-card:hover { border-color:var(--maroon); background:#FFF5F6; transform:translateY(-4px); }
+.step-num { width:48px; height:48px; border-radius:50%; background:var(--maroon); color:var(--white); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:20px; margin-bottom:20px; }
+.step-card h3 { font-size:18px; font-weight:800; margin-bottom:8px; }
+.step-card p { font-size:14px; color:var(--gray); }
 
-    /* WHY IFB */
-    .why-section { padding: 80px 24px; background: #FAFAFA; border-bottom: 1px solid var(--silver); }
-    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
-    .why-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 28px; transition: 0.2s; }
-    .why-card:hover { border-color: var(--maroon); }
-    .why-card i { width: 32px; height: 32px; color: var(--maroon); margin-bottom: 16px; }
-    .why-card h4 { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
-    .why-card p { font-size: 14px; color: var(--gray); line-height: 1.7; }
+.exam-grid { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; max-width:900px; margin:0 auto; }
+.exam-card { background:var(--white); border:1px solid var(--silver); border-radius:12px; padding:30px; flex:1; min-width:280px; display:flex; justify-content:space-between; align-items:center; transition:.3s; }
+.exam-card:hover { border-color:var(--maroon); }
+.exam-card.highlight { border-color:var(--maroon); background:#FFF5F6; }
+.exam-info h3 { font-size:20px; font-weight:800; margin-bottom:4px; }
+.exam-info p { font-size:14px; color:var(--gray); font-weight:600; }
+.exam-date { background:var(--white); border:2px solid var(--maroon); color:var(--maroon); padding:12px 20px; border-radius:8px; text-align:center; }
+.exam-date span { display:block; font-size:20px; font-weight:900; }
+.exam-date small { font-size:11px; text-transform:uppercase; font-weight:700; letter-spacing:1px; }
 
-    /* CTA */
-    .final-cta { padding: 80px 24px; background: var(--white); }
-    .cta-inner { max-width: 900px; margin: 0 auto; border: 2px solid var(--maroon); border-radius: 20px; padding: 60px 40px; text-align: center; background: linear-gradient(135deg, #FFF5F6 0%, #FFFFFF 100%); }
-    .cta-inner h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 900; letter-spacing: -1px; margin-bottom: 16px; }
-    .cta-inner p { font-size: 17px; color: var(--gray); max-width: 500px; margin: 0 auto 32px; }
-    .btn-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--silver); color: var(--black); border: 1px solid #cbd5e1; padding: 18px 40px; border-radius: 10px; font-size: 16px; font-weight: 700; transition: 0.2s; }
-    .btn-cta:hover { background: #cbd5e1; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+.courses-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:24px; max-width:1000px; margin:0 auto; }
+.course-card { background:var(--white); border:1px solid var(--silver); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; transition:.3s; }
+.course-card:hover { border-color:var(--maroon); }
+.course-image { width:100%; height:180px; object-fit:cover; border-bottom:1px solid var(--silver); }
+.course-content { padding:28px; display:flex; flex-direction:column; flex-grow:1; }
+.course-code { display:inline-block; font-size:11px; font-weight:800; letter-spacing:1px; color:var(--maroon); background:#FFF5F6; border:1px solid var(--maroon); padding:4px 10px; border-radius:100px; margin-bottom:12px; align-self:flex-start; }
+.course-content h3 { font-size:22px; font-weight:900; margin-bottom:8px; letter-spacing:-.5px; }
+.course-content p { font-size:14px; color:var(--gray); margin-bottom:24px; flex-grow:1; }
+.course-actions { display:flex; flex-direction:column; gap:10px; }
+.btn-course-apply { background:var(--silver); color:var(--black); border:1px solid #cbd5e1; padding:12px; border-radius:8px; font-weight:700; font-size:14px; text-align:center; transition:.2s; }
+.btn-course-apply:hover { background:#cbd5e1; }
+.btn-course-view { background:var(--white); color:var(--black); border:1.5px solid var(--silver); padding:12px; border-radius:8px; font-weight:700; font-size:14px; text-align:center; transition:.2s; }
+.btn-course-view:hover { border-color:var(--black); }
 
-    /* FOOTER */
-    .footer { background: #FAFAFA; padding: 64px 24px 40px; border-top: 1px solid var(--silver); }
-    .footer-grid { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
-    .footer-brand h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-    .footer-brand p { font-size: 13px; color: var(--gray); margin-bottom: 8px; }
-    .footer-col h4 { font-size: 13px; font-weight: 800; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--maroon); }
-    .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
-    .footer-col a, .footer-col button { font-size: 14px; color: var(--gray); background: none; border: none; cursor: pointer; text-align: left; padding: 0; font-family: inherit; }
-    .footer-col a:hover, .footer-col button:hover { color: var(--maroon); }
-    .footer-bottom { max-width: 1300px; margin: 48px auto 0; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
+.why-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
+.why-card { background:var(--white); border:1px solid var(--silver); border-radius:16px; padding:28px; transition:.2s; }
+.why-card:hover { border-color:var(--maroon); }
+.why-card i { width:32px; height:32px; color:var(--maroon); margin-bottom:16px; }
+.why-card h4 { font-size:17px; font-weight:800; margin-bottom:8px; }
+.why-card p { font-size:14px; color:var(--gray); line-height:1.7; }
 
-    /* MODALS */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
-    .modal-overlay.active { display: flex; }
-    .modal-content { background: var(--white); border-radius: 16px; padding: 40px 24px; max-width: 440px; width: 100%; position: relative; animation: popUp 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-    @keyframes popUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .modal-content.legal { max-width: 600px; max-height: 80vh; overflow-y: auto; text-align: left; }
-    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
-    .modal-logo { font-size: 40px; font-weight: 900; color: var(--maroon); text-align: center; margin-bottom: 16px; }
-    .modal-title { font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px; }
-    .modal-subtitle { font-size: 14px; color: var(--gray); text-align: center; margin-bottom: 32px; }
-    .auth-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-    .btn-auth { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; background: var(--white); transition: 0.2s; font-family: inherit; }
-    .btn-auth:hover { background: #FAFAFA; border-color: var(--black); }
-    .divider { display: flex; align-items: center; text-align: center; margin: 16px 0; color: var(--gray); font-size: 13px; }
-    .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid var(--silver); }
-    .divider::before { margin-right: 16px; } .divider::after { margin-left: 16px; }
-    .input-group { margin-bottom: 16px; }
-    .input-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    .input-group input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 8px; outline: none; font-family: inherit; }
-    .input-group input:focus { border-color: var(--maroon); }
-    .btn-submit { width: 100%; padding: 14px; background: var(--silver); color: var(--black); border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit; }
-    .btn-submit:hover { background: #cbd5e1; }
+.cta-inner { max-width:900px; margin:0 auto; border:2px solid var(--maroon); border-radius:20px; padding:60px 40px; text-align:center; background:linear-gradient(135deg,#FFF5F6 0%,#FFFFFF 100%); }
+.cta-inner h2 { font-size:clamp(28px,4vw,40px); font-weight:900; letter-spacing:-1px; margin-bottom:16px; }
+.cta-inner p { font-size:17px; color:var(--gray); max-width:500px; margin:0 auto 32px; }
+.btn-cta { display:inline-flex; align-items:center; gap:10px; background:var(--maroon); color:var(--white); border:none; padding:18px 40px; border-radius:10px; font-size:16px; font-weight:700; transition:.2s; cursor:pointer; }
+.btn-cta:hover { background:var(--maroon-hover); transform:translateY(-2px); }
 
-    @media (max-width: 900px) {
-        .footer-grid { grid-template-columns: 1fr 1fr; }
-        .stats-bar { grid-template-columns: repeat(2, 1fr); }
-        .steps-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 768px) {
-        .nav-container { padding: 0 16px; }
-        .brand-text h1 { font-size: 16px; }
-        .brand-logo { font-size: 28px; }
-        .btn-login { padding: 8px 12px; font-size: 13px; }
-        .nav-cta { padding: 8px 12px; font-size: 13px; }
-        .hero { padding: 70px 20px 60px; }
-        .hero h1 { margin-bottom: 16px; }
-        .hero p { margin-bottom: 24px; font-size: 16px; }
-        .hero-buttons { flex-direction: column; gap: 12px; }
-        .btn-lg { width: 100%; justify-content: center; padding: 14px; }
-        .exam-grid { flex-direction: column; }
-        .course-card { min-width: 0; }
-        .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-        .footer-links { flex-direction: column; gap: 24px; }
-        .modal-content { padding: 32px 20px; }
-        .cta-inner { padding: 40px 24px; }
-        .btn-cta { width: 100%; justify-content: center; }
-    }
+.footer { background:#FAFAFA; padding:64px 24px 40px; border-top:1px solid var(--silver); }
+.footer-grid { max-width:1300px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; }
+.footer-brand h2 { font-size:24px; font-weight:900; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.footer-brand p { font-size:13px; color:var(--gray); margin-bottom:8px; }
+.footer-col h4 { font-size:13px; font-weight:800; margin-bottom:16px; text-transform:uppercase; letter-spacing:.5px; color:var(--maroon); }
+.footer-col ul { display:flex; flex-direction:column; gap:10px; }
+.footer-col a, .footer-col button { font-size:14px; color:var(--gray); background:none; border:none; cursor:pointer; text-align:left; padding:0; font-family:inherit; }
+.footer-col a:hover, .footer-col button:hover { color:var(--maroon); }
+.footer-bottom { max-width:1300px; margin:48px auto 0; padding-top:24px; border-top:1px solid var(--silver); text-align:center; font-size:12px; color:var(--gray); }
+
+@media (max-width:900px) {
+    .footer-grid { grid-template-columns:1fr 1fr; }
+    .stats-bar { grid-template-columns:repeat(2,1fr); }
+    .steps-grid { grid-template-columns:1fr; }
+}
+@media (max-width:768px) {
+    .nav-container { padding:0 16px; }
+    .brand-text h1 { font-size:16px; }
+    .brand-logo { font-size:28px; }
+    .btn-login, .nav-cta { padding:8px 12px; font-size:13px; }
+    .hero { padding:70px 20px 60px; }
+    .hero-buttons { flex-direction:column; }
+    .btn-lg { width:100%; justify-content:center; padding:14px; }
+    .exam-grid { flex-direction:column; }
+    .footer-grid { grid-template-columns:1fr; gap:32px; }
+}
 </style>
 </head>
 <body>
 
-    <div id="loader"><div class="loader-logo">∆</div></div>
+<div id="loader"><div class="loader-logo">∆</div></div>
 
-    <div class="top-notice-bar">
-        <i data-lucide="bell" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; margin-right: 5px;"></i>
-        2027 Applications Close: <span>13 January 2027</span> — <a href="ae-timetable.html">View AE Timetable</a>
+<div class="top-notice-bar" id="topNotice">
+    <i data-lucide="bell" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:5px;"></i>
+    2027 Applications Close: <span>13 January 2027</span> — <a href="ae-timetable.html">View AE Timetable</a>
+</div>
+
+<!-- STATUS BANNER (logged-in only) -->
+<div class="status-banner" id="statusBanner">
+    <div class="status-banner-inner">
+        <span>Signed in as <strong id="bannerName">—</strong></span>
+        <span class="status-pill applicant" id="bannerStatus">Applicant</span>
+        <span id="bannerAction">→ <a href="resources.html">Prepare for your AE</a></span>
     </div>
+</div>
 
-    <header class="header">
-        <div class="nav-container">
-            <a href="index.html" class="brand">
-                <div class="brand-logo">∆</div>
-                <div class="brand-text"><h1>Institute of Board</h1></div>
-            </a>
-            <div class="nav-right">
-                <div class="nav-logged-out" id="navLoggedOut">
-                    <a href="documents.html" class="btn-login">Documents</a>
-                    <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
-                    <a href="admission.html" class="nav-cta">Apply</a>
-                </div>
-                <div class="nav-logged-in" id="navLoggedIn">
-                    <a href="resources.html" class="btn-login">Resources</a>
-                    <div class="profile-badge" id="navProfileBadge" onclick="window.location.href='student-dashboard.html'" title="Dashboard"></div>
-                </div>
-                <button class="menu-btn" id="menuBtn" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
+<header class="header">
+    <div class="nav-container">
+        <a href="index.html" class="brand">
+            <div class="brand-logo">∆</div>
+            <div class="brand-text"><h1>Institute of Board</h1></div>
+        </a>
+        <div class="nav-right">
+            <div class="nav-logged-out" id="navLoggedOut">
+                <a href="documents.html" class="btn-login">Documents</a>
+                <button class="btn-login" onclick="window.location.href='admission.html'">Login</button>
+                <a href="admission.html" class="nav-cta">Apply</a>
             </div>
+            <div class="nav-logged-in" id="navLoggedIn">
+                <a href="documents.html" class="btn-login">Docs</a>
+                <a href="resources.html" class="btn-login">Resources</a>
+                <a href="exam-gateway.html" class="nav-cta maroon">Exam</a>
+                <div class="profile-badge" id="navProfileBadge" onclick="window.location.href='student-dashboard.html'" title="Dashboard">00</div>
+            </div>
+            <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
         </div>
-    </header>
-
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="menu-header">
-            <button class="close-btn" id="closeMenu" aria-label="Close"><i data-lucide="x"></i></button>
-        </div>
-        <div class="menu-content">
-            <ul class="menu-list">
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div>
-                    <div class="submenu"><div class="submenu-inner">
-                        <a href="student-dashboard.html">Dashboard</a>
-                        <a href="resources.html">Study Resources</a>
-                        <a href="exam-gateway.html">Exam Gateway</a>
-                    </div></div>
-                </li>
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">Admissions <i data-lucide="chevron-right"></i></div>
-                    <div class="submenu"><div class="submenu-inner">
-                        <a href="admission.html">Apply Now</a>
-                        <a href="ae-timetable.html">AE Timetable</a>
-                        <a href="courses-ifb.html">Course Prospectus</a>
-                    </div></div>
-                </li>
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">Public Info <i data-lucide="chevron-right"></i></div>
-                    <div class="submenu"><div class="submenu-inner">
-                        <a href="documents.html">All Documents</a>
-                        <a href="guidelines-general.html">General Rules</a>
-                        <a href="guidelines-exam.html">Exam Protocol</a>
-                    </div></div>
-                </li>
-                <li class="menu-item">
-                    <div class="menu-link" onclick="toggleSubmenu(this)">Institution <i data-lucide="chevron-right"></i></div>
-                    <div class="submenu"><div class="submenu-inner">
-                        <a href="fund-ifb.html">Sponsor Us</a>
-                        <a href="documents.html">Prospectus</a>
-                    </div></div>
-                </li>
-            </ul>
-        </div>
-        <div class="menu-footer"><a href="admission.html" class="btn-menu-apply">Apply Now</a></div>
     </div>
+</header>
 
-    <section class="hero">
-        <div class="hero-carousel" id="heroCarousel">
-            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1920&auto=format&fit=crop');"></div>
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1920&auto=format&fit=crop');"></div>
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1920&auto=format&fit=crop');"></div>
-        </div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <div class="hero-badge"><i data-lucide="award" style="width: 14px; height: 14px;"></i> Non-Accredited Excellence</div>
-            <h1>Master the disciplines<br>that <span>build the future.</span></h1>
-            <p>The Institute of Board is an independent academic institution. We offer rigorous, university-level training in Mathematics and Web Development, completely free of charge.</p>
-            <div class="hero-buttons hero-logged-out" id="heroLoggedOut">
-                <a href="admission.html" class="btn-lg btn-primary">Apply for Admission</a>
-                <a href="documents.html" class="btn-lg btn-outline">View Documents</a>
-            </div>
-            <div class="hero-buttons hero-logged-in" id="heroLoggedIn">
-                <a href="student-dashboard.html" class="btn-lg btn-primary">Go to My Dashboard</a>
-                <a href="resources.html" class="btn-lg btn-outline">Study Resources</a>
-            </div>
-            <div class="stats-bar">
-                <div class="stat-item"><div class="stat-val">2</div><div class="stat-label">Tracks</div></div>
-                <div class="stat-item"><div class="stat-val">600</div><div class="stat-label">Marks</div></div>
-                <div class="stat-item"><div class="stat-val">R0</div><div class="stat-label">Tuition</div></div>
-                <div class="stat-item"><div class="stat-val">1</div><div class="stat-label">Entrance Exam</div></div>
-            </div>
-        </div>
-    </section>
+<div class="mobile-menu" id="mobileMenu">
+    <div class="menu-header"><button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button></div>
+    <div class="menu-content">
+        <ul class="menu-list">
+            <li class="menu-item">
+                <div class="menu-link" onclick="toggleSubmenu(this)">Public <i data-lucide="chevron-right"></i></div>
+                <div class="submenu"><div class="submenu-inner">
+                    <a href="documents.html">Public Documents</a>
+                    <a href="ae-timetable.html">AE Timetable</a>
+                    <a href="courses-ifb.html">Prospectus</a>
+                </div></div>
+            </li>
+            <li class="menu-item">
+                <div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div>
+                <div class="submenu"><div class="submenu-inner">
+                    <a href="student-dashboard.html">Dashboard</a>
+                    <a href="resources.html">Study Resources</a>
+                    <a href="exam-gateway.html">Exam Gateway</a>
+                </div></div>
+            </li>
+            <li class="menu-item">
+                <div class="menu-link" onclick="toggleSubmenu(this)">Admissions <i data-lucide="chevron-right"></i></div>
+                <div class="submenu"><div class="submenu-inner">
+                    <a href="admission.html">Apply Now</a>
+                    <a href="courses-ifb.html">Course Details</a>
+                </div></div>
+            </li>
+            <li class="menu-item">
+                <div class="menu-link" onclick="toggleSubmenu(this)">Institution <i data-lucide="chevron-right"></i></div>
+                <div class="submenu"><div class="submenu-inner">
+                    <a href="fund-ifb.html">Sponsor Us</a>
+                    <a href="guidelines-general.html">Rules</a>
+                </div></div>
+            </li>
+        </ul>
+    </div>
+    <div class="menu-footer"><a href="admission.html" class="btn-menu-apply">Apply Now</a></div>
+</div>
 
-    <section class="how-section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2>How IFB Works</h2>
-                <p>Three steps from applicant to enrolled student. No bureaucracy, no fees, no shortcuts.</p>
-            </div>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-num">1</div>
-                    <h3>Apply</h3>
-                    <p>Register on the application portal. Get your 13-digit Student ID and 6-digit Security Code instantly.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-num">2</div>
-                    <h3>Write the AE</h3>
-                    <p>Sit the Admission Examination on your scheduled date. Math on 13 January, Web Dev on 18 January 2027.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-num">3</div>
-                    <h3>Get Enrolled</h3>
-                    <p>Pass the AE and you're in. Your dashboard unlocks — study resources, exam gateway, and full portal access.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<section class="hero">
+    <div class="hero-carousel" id="heroCarousel">
+        <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1920&auto=format&fit=crop');"></div>
+        <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1920&auto=format&fit=crop');"></div>
+        <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1920&auto=format&fit=crop');"></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="hero-badge"><i data-lucide="award" style="width:14px;height:14px;"></i> Non-Accredited Excellence</div>
+        <h1 id="heroTitle">Master the disciplines<br>that <span>build the future.</span></h1>
+        <p id="heroSubtitle">The Institute of Board is an independent academic institution. We offer rigorous, university-level training in Mathematics and Web Development, completely free of charge.</p>
 
-    <section class="admissions-section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2>2027 Admission Examinations</h2>
-                <p>Two sittings. Both mandatory. Zero exceptions.</p>
-            </div>
-            <div class="exam-grid">
-                <div class="exam-card">
-                    <div class="exam-info">
-                        <h3>Mathematics</h3>
-                        <p>IFB-S · AE-S MATH</p>
-                    </div>
-                    <div class="exam-date">
-                        <span>13 Jan</span>
-                        <small>2027</small>
-                    </div>
-                </div>
-                <div class="exam-card">
-                    <div class="exam-info">
-                        <h3>Web Development</h3>
-                        <p>IFB AQ-B · AE-W WEB</p>
-                    </div>
-                    <div class="exam-date">
-                        <span>18 Jan</span>
-                        <small>2027</small>
-                    </div>
-                </div>
-            </div>
-            <div class="timetable-link">
-                <a href="ae-timetable.html">View full timetable & exam protocol →</a>
-            </div>
+        <div class="hero-buttons hero-logged-out" id="heroLoggedOut">
+            <a href="admission.html" class="btn-lg btn-primary">Apply for Admission</a>
+            <a href="documents.html" class="btn-lg btn-outline">View Documents</a>
         </div>
-    </section>
 
-    <section class="courses-section" id="coursesSection">
-        <div class="section-container">
-            <div class="section-header">
-                <h2>Our Programs</h2>
-                <p>Two rigorous tracks. University-level content. Both completely free.</p>
+        <div class="hero-buttons hero-logged-in" id="heroLoggedIn">
+            <a href="student-dashboard.html" class="btn-lg btn-primary">Go to Dashboard</a>
+            <a href="resources.html" class="btn-lg btn-outline">Study Resources</a>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item"><div class="stat-val">2</div><div class="stat-label">Tracks</div></div>
+            <div class="stat-item"><div class="stat-val">600</div><div class="stat-label">Marks</div></div>
+            <div class="stat-item"><div class="stat-val">R0</div><div class="stat-label">Tuition</div></div>
+            <div class="stat-item"><div class="stat-val">1</div><div class="stat-label">Entrance Exam</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>How IFB Works</h2>
+            <p>Three steps from applicant to enrolled student. No bureaucracy, no fees, no shortcuts.</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">1</div>
+                <h3>Apply</h3>
+                <p>Register on the application portal. Get your 13-digit Student ID and 6-digit Security Code instantly.</p>
             </div>
-            <div class="courses-grid">
-                <div class="course-card">
-                    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
-                    <div class="course-content">
-                        <span class="course-code">IFB-S · MATHEMATICS</span>
-                        <h3>IFB-S Mathematics</h3>
-                        <p>A brutal, university-level 4-paper curriculum (600 marks). Algebra, Calculus, Trigonometry, Geometry, Finance, Probability. No formula sheets. Ever.</p>
-                        <div class="course-actions">
-                            <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
-                            <a href="admission.html" class="btn-course-apply">Apply Now</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="course-card">
-                    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
-                    <div class="course-content">
-                        <span class="course-code">IFB AQ-B · WEB DEV</span>
-                        <h3>Front-End Web Development</h3>
-                        <p>Practical, project-based track covering HTML, CSS, JavaScript, React, UI/UX, and deployment. Ship a real production app.</p>
-                        <div class="course-actions">
-                            <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
-                            <a href="admission.html" class="btn-course-apply">Apply Now</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="step-card">
+                <div class="step-num">2</div>
+                <h3>Write the AE</h3>
+                <p>Sit the Admission Examination. Math on 13 January, Web Dev on 18 January 2027.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-num">3</div>
+                <h3>Get Enrolled</h3>
+                <p>Pass the AE and you're in. Dashboard unlocks — study resources, exam gateway, full portal access.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="why-section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2>Why IFB</h2>
-                <p>We deliberately chose a harder path. Here's why it matters.</p>
+<section class="section alt">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>2027 Admission Examinations</h2>
+            <p>Two sittings. Both mandatory. Zero exceptions.</p>
+        </div>
+        <div class="exam-grid" id="examGrid">
+            <div class="exam-card" data-exam="math">
+                <div class="exam-info">
+                    <h3>Mathematics</h3>
+                    <p>IFB-S · AE-S MATH</p>
+                </div>
+                <div class="exam-date"><span>13 Jan</span><small>2027</small></div>
             </div>
-            <div class="why-grid">
-                <div class="why-card">
-                    <i data-lucide="shield-check"></i>
-                    <h4>Independent</h4>
-                    <p>No DHET, no Umalusi, no bureaucracy. We move fast and teach modern, industry-standard skills.</p>
+            <div class="exam-card" data-exam="web">
+                <div class="exam-info">
+                    <h3>Web Development</h3>
+                    <p>IFB AQ-B · AE-W WEB</p>
                 </div>
-                <div class="why-card">
-                    <i data-lucide="heart-handshake"></i>
-                    <h4>100% Fee-Free</h4>
-                    <p>Zero tuition, zero exam fees, zero hidden costs. Funded entirely by sponsors and donors.</p>
+                <div class="exam-date"><span>18 Jan</span><small>2027</small></div>
+            </div>
+        </div>
+        <div style="text-align:center;margin-top:32px;">
+            <a href="ae-timetable.html" style="color:var(--maroon);font-weight:700;font-size:15px;">View full timetable & exam protocol →</a>
+        </div>
+    </div>
+</section>
+
+<section class="section" id="coursesSection">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Our Programs</h2>
+            <p>Two rigorous tracks. University-level content. Both completely free.</p>
+        </div>
+        <div class="courses-grid">
+            <div class="course-card">
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
+                <div class="course-content">
+                    <span class="course-code">IFB-S · MATHEMATICS</span>
+                    <h3>IFB-S Mathematics</h3>
+                    <p>A brutal, university-level 4-paper curriculum (600 marks). Algebra, Calculus, Trigonometry, Geometry, Finance, Probability. No formula sheets. Ever.</p>
+                    <div class="course-actions">
+                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
+                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
+                    </div>
                 </div>
-                <div class="why-card">
-                    <i data-lucide="fingerprint"></i>
-                    <h4>Anonymous Marking</h4>
-                    <p>Your name never appears on your script. Only your Student ID barcode. Zero bias in grading.</p>
-                </div>
-                <div class="why-card">
-                    <i data-lucide="zap"></i>
-                    <h4>Rigorous</h4>
-                    <p>The AE is a real filter. We don't admit everyone — we admit those who prove they can do the work.</p>
+            </div>
+            <div class="course-card">
+                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
+                <div class="course-content">
+                    <span class="course-code">IFB AQ-B · WEB DEV</span>
+                    <h3>Front-End Web Development</h3>
+                    <p>Practical, project-based track covering HTML, CSS, JavaScript, React, UI/UX, and deployment. Ship a real production app.</p>
+                    <div class="course-actions">
+                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
+                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="final-cta">
+<section class="section alt">
+    <div class="section-container">
+        <div class="section-header">
+            <h2>Why IFB</h2>
+            <p>We deliberately chose a harder path. Here's why it matters.</p>
+        </div>
+        <div class="why-grid">
+            <div class="why-card"><i data-lucide="shield-check"></i><h4>Independent</h4><p>No DHET, no Umalusi, no bureaucracy. We move fast and teach modern skills.</p></div>
+            <div class="why-card"><i data-lucide="heart-handshake"></i><h4>100% Fee-Free</h4><p>Zero tuition, zero exam fees, zero hidden costs. Funded by sponsors and donors.</p></div>
+            <div class="why-card"><i data-lucide="fingerprint"></i><h4>Anonymous Marking</h4><p>Your name never appears on your script. Only your Student ID barcode.</p></div>
+            <div class="why-card"><i data-lucide="zap"></i><h4>Rigorous</h4><p>The AE is a real filter. We admit those who prove they can do the work.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-container">
         <div class="cta-inner">
-            <h2>Applications close 13 January 2027</h2>
-            <p>Spaces are limited. Admission is strictly conditional on passing the AE. Start your application now.</p>
-            <a href="admission.html" class="btn-cta"><i data-lucide="arrow-right"></i> Start Your Application</a>
-        </div>
-    </section>
-
-    <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <h2><span style="color:var(--maroon); font-size: 28px;">∆</span> IFB</h2>
-                <p>Independent, non-accredited. Not affiliated with DHET or Umalusi.</p>
-                <p style="margin-top: 12px; font-weight: 700;">Contact:<br>+27 60 958 3089<br>n1nathaniel971@gmail.com</p>
-            </div>
-            <div class="footer-col">
-                <h4>Students</h4>
-                <ul>
-                    <li><a href="admission.html">Apply</a></li>
-                    <li><a href="student-dashboard.html">Dashboard</a></li>
-                    <li><a href="resources.html">Resources</a></li>
-                    <li><a href="exam-gateway.html">Exam Gateway</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Institution</h4>
-                <ul>
-                    <li><a href="documents.html">Public Documents</a></li>
-                    <li><a href="courses-ifb.html">Prospectus</a></li>
-                    <li><a href="ae-timetable.html">AE Timetable</a></li>
-                    <li><a href="fund-ifb.html">Sponsor Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Legal</h4>
-                <ul>
-                    <li><button onclick="openLegal('privacy')">Privacy Policy</button></li>
-                    <li><button onclick="openLegal('terms')">Terms & Conditions</button></li>
-                    <li><a href="guidelines-general.html">General Rules</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2026—2027 Institute of Board. All rights reserved.
-        </div>
-    </footer>
-
-    <div class="modal-overlay" id="authModal">
-        <div class="modal-content">
-            <button class="close-modal" onclick="document.getElementById('authModal').classList.remove('active')"><i data-lucide="x"></i></button>
-            <div class="modal-logo">∆</div>
-            <div class="modal-title">Student Login</div>
-            <div class="modal-subtitle">Sign in to access your dashboard.</div>
-            <div class="auth-buttons">
-                <button class="btn-auth" onclick="googleLogin()">
-                    <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
-                    Continue with Google
-                </button>
-                <button class="btn-auth" onclick="githubLogin()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    Continue with GitHub
-                </button>
-            </div>
-            <div class="divider">or sign in with email</div>
-            <form onsubmit="event.preventDefault(); emailLogin();">
-                <div class="input-group"><label>Email Address</label><input type="email" id="loginEmail" required autocomplete="off"></div>
-                <div class="input-group"><label>Password</label><input type="password" id="loginPass" required autocomplete="new-password"></div>
-                <button type="submit" class="btn-submit">Sign In</button>
-            </form>
+            <h2 id="ctaTitle">Applications close 13 January 2027</h2>
+            <p id="ctaText">Spaces are limited. Admission is strictly conditional on passing the AE.</p>
+            <a href="admission.html" class="btn-cta" id="ctaButton"><i data-lucide="arrow-right"></i> Start Your Application</a>
         </div>
     </div>
+</section>
 
-    <div class="modal-overlay" id="legalModal">
-        <div class="modal-content legal">
-            <button class="close-modal" onclick="document.getElementById('legalModal').classList.remove('active')"><i data-lucide="x"></i></button>
-            <div id="legalContent"></div>
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <h2><span style="color:var(--maroon);font-size:28px;">∆</span> IFB</h2>
+            <p>Independent, non-accredited. Not affiliated with DHET or Umalusi.</p>
+            <p style="margin-top:12px;font-weight:700;">+27 60 958 3089<br>n1nathaniel971@gmail.com</p>
         </div>
+        <div class="footer-col"><h4>Public</h4><ul>
+            <li><a href="documents.html">Public Documents</a></li>
+            <li><a href="ae-timetable.html">AE Timetable</a></li>
+            <li><a href="courses-ifb.html">Prospectus</a></li>
+        </ul></div>
+        <div class="footer-col"><h4>Students</h4><ul>
+            <li><a href="admission.html">Apply</a></li>
+            <li><a href="student-dashboard.html">Dashboard</a></li>
+            <li><a href="resources.html">Resources</a></li>
+            <li><a href="exam-gateway.html">Exam Gateway</a></li>
+        </ul></div>
+        <div class="footer-col"><h4>Institution</h4><ul>
+            <li><a href="guidelines-general.html">Rules & Policies</a></li>
+            <li><a href="guidelines-exam.html">Exam Protocol</a></li>
+            <li><a href="fund-ifb.html">Sponsor Us</a></li>
+        </ul></div>
     </div>
+    <div class="footer-bottom">&copy; 2026—2027 Institute of Board. All rights reserved.</div>
+</footer>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-    const app = initializeApp(firebaseConfig); 
-    const auth = getAuth(app); 
-    const db = getFirestore(app); 
-    const googleProvider = new GoogleAuthProvider();
-    const githubProvider = new GithubAuthProvider();
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    onAuthStateChanged(auth, async (user) => {
-        document.getElementById('loader').style.opacity = '0';
-        setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
+onAuthStateChanged(auth, async (user) => {
+    document.getElementById('loader').style.opacity = '0';
+    setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
-        const badge = document.getElementById('navProfileBadge');
+    if (user) {
+        document.getElementById('navLoggedOut').style.display = 'none';
+        document.getElementById('navLoggedIn').style.display = 'flex';
+        document.getElementById('heroLoggedOut').style.display = 'none';
+        document.getElementById('heroLoggedIn').style.display = 'flex';
 
-        if (user) {
-            document.getElementById('navLoggedOut').style.display = 'none';
-            document.getElementById('navLoggedIn').style.display = 'flex';
-            document.getElementById('heroLoggedOut').style.display = 'none';
-            document.getElementById('heroLoggedIn').style.display = 'flex';
-            // NOTE: coursesSection is NOT hidden anymore — logged-in users may want to revisit
-            try {
-                const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (docSnap.exists() && docSnap.data().studentId) {
-                    badge.innerText = docSnap.data().studentId.slice(-2);
+        try {
+            const docSnap = await getDoc(doc(db, "users", user.uid));
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const isEnrolled = (data.status === "Enrolled" || data.status === "Student");
+                const studentId = data.studentId || "00";
+                document.getElementById('navProfileBadge').innerText = studentId.slice(-2);
+
+                // Status banner
+                document.getElementById('statusBanner').style.display = 'block';
+                document.getElementById('bannerName').innerText = data.name || "Student";
+                const pill = document.getElementById('bannerStatus');
+                pill.innerText = isEnrolled ? "Enrolled" : "Applicant";
+                pill.className = "status-pill " + (isEnrolled ? "enrolled" : "applicant");
+                document.getElementById('bannerAction').innerHTML = isEnrolled
+                    ? '→ <a href="resources.html">Review your study resources</a>'
+                    : '→ <a href="resources.html">Prepare for your AE</a> · <a href="exam-gateway.html">Enter Exam</a>';
+
+                // Hero copy
+                if (isEnrolled) {
+                    document.getElementById('heroTitle').innerHTML = `Welcome back,<br><span>${(data.name || "Student").split(' ')[0]}.</span>`;
+                    document.getElementById('heroSubtitle').innerText = "You're enrolled. Access your study materials, review guidelines, and prepare for your final assessments.";
                 } else {
-                    badge.innerHTML = '<i data-lucide="user"></i>';
+                    document.getElementById('heroTitle').innerHTML = `Welcome, Applicant.<br><span>Your AE awaits.</span>`;
+                    document.getElementById('heroSubtitle').innerText = "You're registered. Download the Answer Book template, practise with mock papers, and sit the Admission Examination on your scheduled date.";
                 }
-            } catch (e) {
-                badge.innerHTML = '<i data-lucide="user"></i>';
+
+                // CTA at bottom
+                document.getElementById('ctaTitle').innerText = isEnrolled ? "Continue your studies" : "You're not enrolled yet";
+                document.getElementById('ctaText').innerText = isEnrolled
+                    ? "Access study resources and prepare for your final assessments."
+                    : "Pass the AE to unlock full enrollment. Download the Answer Book, practice, and enter the Exam Gateway.";
+                document.getElementById('ctaButton').href = "resources.html";
+                document.getElementById('ctaButton').innerHTML = '<i data-lucide="arrow-right"></i> ' + (isEnrolled ? "Open Resources" : "Prepare for AE");
             }
-        } else {
-            document.getElementById('navLoggedOut').style.display = 'flex';
-            document.getElementById('navLoggedIn').style.display = 'none';
-            document.getElementById('heroLoggedOut').style.display = 'flex';
-            document.getElementById('heroLoggedIn').style.display = 'none';
-            badge.innerHTML = '<i data-lucide="user"></i>';
+        } catch (e) {
+            document.getElementById('navProfileBadge').innerHTML = '<i data-lucide="user"></i>';
         }
-        lucide.createIcons();
-    });
-
-    window.googleLogin = async function() { try { await signInWithPopup(auth, googleProvider); window.location.reload(); } catch (e) { console.error(e.message); } };
-    window.githubLogin = async function() { try { await signInWithPopup(auth, githubProvider); window.location.reload(); } catch (e) { console.error(e.message); } };
-    window.emailLogin = async function() { try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value); window.location.reload(); } catch (e) { console.error(e.message); } };
-
-    const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
-    menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
-    closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
-    
-    window.toggleSubmenu = function(element) {
-        const parent = element.parentElement, sub = parent.querySelector('.submenu');
-        document.querySelectorAll('.menu-item').forEach(item => { if (item !== parent) { item.classList.remove('active'); item.querySelector('.submenu').style.maxHeight = null; } });
-        parent.classList.toggle('active');
-        sub.style.maxHeight = sub.style.maxHeight ? null : sub.scrollHeight + "px";
+    } else {
+        document.getElementById('navLoggedOut').style.display = 'flex';
+        document.getElementById('navLoggedIn').style.display = 'none';
+        document.getElementById('heroLoggedOut').style.display = 'flex';
+        document.getElementById('heroLoggedIn').style.display = 'none';
+        document.getElementById('statusBanner').style.display = 'none';
     }
-
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.hero-slide');
-    setInterval(() => {
-        slides[currentSlide].classList.remove('active');
-        currentSlide = (currentSlide + 1) % slides.length;
-        slides[currentSlide].classList.add('active');
-    }, 5000);
-
-    const legalTexts = {
-        privacy: `<h2 style="color:var(--maroon);margin-bottom:16px;">Privacy Policy</h2><p style="font-size:14px;line-height:1.7;color:var(--gray);margin-bottom:12px;">We collect essential information (Name, Email, Date of Birth) solely to generate your Student ID and operate your student account. We use Firebase for secure storage and comply with GDPR.</p><p style="font-size:14px;line-height:1.7;color:var(--gray);">For the full policy, see <a href="guidelines-general.html" style="color:var(--maroon);font-weight:700;">General Rules & Policies</a>.</p>`,
-        terms: `<h2 style="color:var(--maroon);margin-bottom:16px;">Terms & Conditions</h2><p style="font-size:14px;line-height:1.7;color:var(--gray);margin-bottom:12px;">1. IFB is an independent, non-accredited institution. We are not affiliated with DHET or Umalusi.</p><p style="font-size:14px;line-height:1.7;color:var(--gray);margin-bottom:12px;">2. Admission is strictly conditional on passing the Admission Examination.</p><p style="font-size:14px;line-height:1.7;color:var(--gray);">For full terms, see <a href="guidelines-general.html" style="color:var(--maroon);font-weight:700;">General Rules & Policies</a>.</p>`
-    };
-    window.openLegal = function(type) { document.getElementById('legalContent').innerHTML = legalTexts[type]; document.getElementById('legalModal').classList.add('active'); }
-
     lucide.createIcons();
+});
+
+// Mobile menu
+const menuBtn = document.getElementById('menuBtn'), closeMenu = document.getElementById('closeMenu'), mobileMenu = document.getElementById('mobileMenu');
+menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
+closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
+window.toggleSubmenu = function(element) {
+    const parent = element.parentElement, sub = parent.querySelector('.submenu');
+    document.querySelectorAll('.menu-item').forEach(item => { if (item !== parent) { item.classList.remove('active'); item.querySelector('.submenu').style.maxHeight = null; } });
+    parent.classList.toggle('active');
+    sub.style.maxHeight = sub.style.maxHeight ? null : sub.scrollHeight + "px";
+}
+
+// Hero carousel
+let currentSlide = 0;
+const slides = document.querySelectorAll('.hero-slide');
+setInterval(() => {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+}, 5000);
+
+lucide.createIcons();
 </script>
 </body>
 </html>
