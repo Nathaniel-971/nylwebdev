@@ -36,27 +36,16 @@
     --ifb-white: #FFFFFF;
   }
 
-  /* A4 PAGE SETUP */
-  .page { 
-    width: 210mm; 
-    height: 297mm; 
-    /* Strict 35mm bottom padding reserves space for the footer */
-    padding: 15mm 15mm 35mm 15mm; 
-    margin: 15px auto; 
-    position: relative; 
-    background: white; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-    overflow: hidden; 
-    display: flex; 
-    flex-direction: column; 
-    page-break-after: always; 
+  /* SCREEN PREVIEW SETUP */
+  .document-wrapper {
+    width: 210mm;
+    margin: 15px auto;
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    padding: 15mm 15mm 35mm 15mm; /* Screen preview margin */
   }
-  
-  @media print { 
-    body { background: white; } 
-    .page { margin: 0; box-shadow: none; } 
-  }
-  
+
   /* SECURITY PATTERN */
   .security-pattern { 
     position: absolute; 
@@ -85,10 +74,9 @@
     z-index: 1; 
     display: flex; 
     flex-direction: column; 
-    height: 100%; 
   }
   
-  /* EXAM HEADERS */
+  /* EXAM HEADERS (For Screen Preview) */
   .header { 
     display: flex; 
     justify-content: space-between; 
@@ -96,7 +84,6 @@
     margin-bottom: 15px; 
     font-size: 10.5pt; 
     font-family: Arial, sans-serif;
-    flex-shrink: 0;
     border-bottom: 1px solid var(--ifb-silver);
     padding-bottom: 5px;
   }
@@ -106,7 +93,7 @@
   .header-center .confidential { font-style: italic; font-weight: bold; color: var(--ifb-maroon); }
   .header-right { width: 30%; text-align: right; font-weight: bold; color: var(--ifb-maroon); }
 
-  /* FOOTER */
+  /* FOOTER (For Screen Preview) */
   .footer { 
     position: absolute; 
     bottom: 10mm; 
@@ -119,6 +106,8 @@
     font-size: 10pt; 
     font-family: Arial, sans-serif;
     height: 15mm;
+    border-top: 1px solid var(--ifb-silver);
+    padding-top: 5px;
   }
   .footer-left { display: flex; align-items: center; gap: 10px; }
   .footer-qr { display: inline-block; width: 35px; height: 35px; }
@@ -133,9 +122,10 @@
   /* ========================================= */
   .cover-page {
     padding: 20mm; 
+    text-align: center;
   }
   
-  .cover-header { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; text-align: center; }
+  .cover-header { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; }
   
   .ifb-logo-svg { width: 100px; height: 100px; margin-bottom: 20px; }
   
@@ -156,7 +146,7 @@
   .atp-title-box h2 { font-size: 20pt; font-weight: bold; color: var(--ifb-maroon);}
 
   .cover-meta {
-    margin-top: auto;
+    margin-top: 100px;
     text-align: center;
     font-family: Arial, sans-serif;
     font-size: 12pt;
@@ -250,40 +240,81 @@
     line-height: 1.5;
   }
 
+  /* ========================================= */
+  /* PRINT MEDIA QUERIES (THE MAGIC)           */
+  /* ========================================= */
+  @media print {
+    body { background: white; }
+    .document-wrapper { margin: 0; box-shadow: none; width: 100%; padding: 0; }
+    
+    /* Make the header and footer fixed so they repeat on every page */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 15mm;
+      right: 15mm;
+      background: white;
+      z-index: 1000;
+    }
+    
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 15mm;
+      right: 15mm;
+      background: white;
+      z-index: 1000;
+      border-top: 1px solid var(--ifb-silver); /* Ensures footer is visually distinct */
+    }
+
+    /* Push the content down so it doesn't overlap the fixed header */
+    /* Push the content up so it doesn't overlap the fixed footer */
+    .content-wrapper {
+      padding-top: 20mm;
+      padding-bottom: 25mm;
+    }
+
+    /* Force page breaks for the cover page */
+    .cover-page {
+      page-break-after: always;
+      height: 297mm; /* Full A4 height for cover */
+      padding: 20mm;
+      box-sizing: border-box;
+    }
+
+    /* Hide the screen-preview page number on the cover */
+    .cover-page .header { display: none; }
+  }
 </style>
 </head>
 <body>
 
 <!-- ==================== PAGE 1: COVER PAGE ==================== -->
-<div class="page cover-page">
+<div class="document-wrapper cover-page">
   <div class="security-pattern"></div>
-  <div class="content-wrapper" style="padding-bottom: 0;">
+  <div class="cover-header">
+    <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+        <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+        <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+    </svg>
     
-    <div class="cover-header">
-      <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-      </svg>
-      
-      <div class="cover-header-text">
-        <div class="title">Institute of Board</div>
-        <div class="sub">Department:<br>Academic Assessment</div>
-        <div class="dept">NON-ACCREDITED ACADEMIC INSTITUTION</div>
-      </div>
+    <div class="cover-header-text">
+      <div class="title">Institute of Board</div>
+      <div class="sub">Department:<br>Academic Assessment</div>
+      <div class="dept">NON-ACCREDITED ACADEMIC INSTITUTION</div>
     </div>
+  </div>
 
-    <div class="atp-title-box">
-      <h1>ANNUAL TEACHING PLAN</h1>
-      <h2>IFB-S MATHEMATICS 2027</h2>
-    </div>
+  <div class="atp-title-box">
+    <h1>ANNUAL TEACHING PLAN</h1>
+    <h2>IFB-S MATHEMATICS 2027</h2>
+  </div>
 
-    <div class="cover-meta">
-      <p>Curriculum: Pure & Applied Mathematics</p>
-      <p>Total Assessment Marks: 600</p>
-      <p>Academic Year: 2027</p>
-    </div>
-
+  <div class="cover-meta">
+    <p>Curriculum: Pure & Applied Mathematics</p>
+    <p>Total Assessment Marks: 600</p>
+    <p>Academic Year: 2027</p>
   </div>
   
   <div class="footer">
@@ -295,8 +326,8 @@
   </div>
 </div>
 
-<!-- ==================== PAGE 2: THE CONTINUOUS TABLE (PART 1) ==================== -->
-<div class="page">
+<!-- ==================== MAIN CONTENT: ONE CONTINUOUS TABLE ==================== -->
+<div class="document-wrapper">
   <div class="security-pattern"></div>
   <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
@@ -398,7 +429,7 @@
         </tr>
         <!-- ALGEBRA MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Algebra: 100
           </td>
         </tr>
@@ -461,7 +492,7 @@
         </tr>
         <!-- FUNCTIONS MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Functions: 100
           </td>
         </tr>
@@ -490,56 +521,11 @@
         </tr>
         <!-- SEQUENCES MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Sequences & Series: 50
           </td>
         </tr>
-      </tbody>
-    </table>
 
-  </div>
-  
-  <div class="footer">
-    <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
-      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-    </div>
-    <div class="footer-right">Please turn over</div>
-  </div>
-</div>
-
-<!-- ==================== PAGE 3: THE CONTINUOUS TABLE (PART 2) ==================== -->
-<div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-  </svg>
-  
-  <div class="content-wrapper">
-    
-    <div class="header">
-      <div class="header-left">IFB-S Mathematics</div>
-      <div class="header-center">
-        <span class="page-num">3</span>
-        <span class="confidential">IFB / Confidential</span>
-      </div>
-      <div class="header-right">2027</div>
-    </div>
-
-    <div class="doc-title">ELABORATION OF CONTENT (CONT.)</div>
-
-    <table class="atp-table">
-      <thead>
-        <tr>
-          <th>Week</th>
-          <th>Topic</th>
-          <th>Elaboration of Content</th>
-          <th>Assess</th>
-        </tr>
-      </thead>
-      <tbody>
         <!-- DIFFERENTIAL CALCULUS BLOCK -->
         <tr>
           <td class="week-col">14</td>
@@ -616,7 +602,7 @@
         </tr>
         <!-- DIFF CALC MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Differential Calculus: 150
           </td>
         </tr>
@@ -688,56 +674,11 @@
         </tr>
         <!-- INT CALC MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Integral Calculus: 150
           </td>
         </tr>
-      </tbody>
-    </table>
 
-  </div>
-  
-  <div class="footer">
-    <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
-      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-    </div>
-    <div class="footer-right">Please turn over</div>
-  </div>
-</div>
-
-<!-- ==================== PAGE 4: THE CONTINUOUS TABLE (PART 3) ==================== -->
-<div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-  </svg>
-  
-  <div class="content-wrapper">
-    
-    <div class="header">
-      <div class="header-left">IFB-S Mathematics</div>
-      <div class="header-center">
-        <span class="page-num">4</span>
-        <span class="confidential">IFB / Confidential</span>
-      </div>
-      <div class="header-right">2027</div>
-    </div>
-
-    <div class="doc-title">ELABORATION OF CONTENT (CONT.)</div>
-
-    <table class="atp-table">
-      <thead>
-        <tr>
-          <th>Week</th>
-          <th>Topic</th>
-          <th>Elaboration of Content</th>
-          <th>Assess</th>
-        </tr>
-      </thead>
-      <tbody>
         <!-- TRIGONOMETRY BLOCK -->
         <tr>
           <td class="week-col">27</td>
@@ -763,7 +704,7 @@
         </tr>
         <!-- TRIG MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Trigonometry: 100
           </td>
         </tr>
@@ -804,7 +745,7 @@
         </tr>
         <!-- EUCLIDEAN MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Euclidean Geometry: 100
           </td>
         </tr>
@@ -835,7 +776,7 @@
         </tr>
         <!-- ANALYTICAL MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Analytical Geometry: 100
           </td>
         </tr>
@@ -866,7 +807,7 @@
         </tr>
         <!-- FINANCE MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Finance: 100
           </td>
         </tr>
@@ -897,7 +838,7 @@
         </tr>
         <!-- PROB MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Probability: 50
           </td>
         </tr>
@@ -937,7 +878,7 @@
         </tr>
         <!-- STATS MARK ALLOCATION -->
         <tr>
-          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon);">
+          <td colspan="4" style="text-align: right; font-weight: bold; font-size: 9pt; background-color: var(--ifb-silver); color: var(--ifb-maroon); padding-right: 15px;">
             Total Assessment Marks for Statistics: 50
           </td>
         </tr>
@@ -952,7 +893,7 @@
       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/atp-math.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
-    <div class="footer-right">END</div>
+    <div class="footer-right">Please turn over</div>
   </div>
 </div>
 
