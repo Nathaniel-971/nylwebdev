@@ -19,8 +19,8 @@
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 11pt; line-height: 1.5; color: #111; background: #F8FAFC; }
   
   /* A4 PAGE SETUP */
-  .page { width: 210mm; height: 297mm; padding: 15mm 18mm 26mm 18mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; border-top: 4px solid #7A1F2B; }
-  @media print { body { background: white; } .page { margin: 0; box-shadow: none; page-break-after: always; border-top: none; } }
+  .page { width: 210mm; height: 297mm; padding: 15mm 18mm 26mm 18mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; border-top: 4px solid #7A1F2B; page-break-after: always; }
+  @media print { body { background: white; } .page { margin: 0; box-shadow: none; border-top: none; } }
   
   /* WATERMARK & SECURITY */
   .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-30deg); font-size: 96pt; font-weight: 900; color: rgba(122,31,43,0.03); letter-spacing: 18px; pointer-events: none; z-index: 0; white-space: nowrap; font-family: 'Segoe UI', Tahoma, sans-serif; }
@@ -48,6 +48,33 @@
   .footer-brand .tag { font-size: 7pt; font-weight: 400; color: #666; letter-spacing: 0.4px; }
   .footer-right { font-size: 9pt; color: #666; font-style: italic; }
   
+  /* COVER PAGE */
+  .cover-brand { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; margin-bottom: 20px; text-align: center; }
+  .cover-logo { width: 120px; height: 120px; background: #7A1F2B; color: white; font-size: 70px; font-weight: 900; display: grid; place-items: center; border-radius: 20px; margin-bottom: 20px; font-family: 'Courier New', monospace; }
+  .cover-brand-text .brand { font-size: 28pt; font-weight: 800; color: #7A1F2B; letter-spacing: 1.5px; line-height: 1; }
+  .cover-brand-text .sub { font-size: 11pt; color: #111; font-weight: 700; letter-spacing: 3px; margin-top: 6px; }
+  .cover-brand-text .tagline { font-size: 9pt; color: #666; font-style: italic; margin-top: 10px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  
+  .cover-subject-box { background: #FFF5F6; border: 3px solid #7A1F2B; padding: 24px 20px; text-align: center; margin: 40px auto 0 auto; max-width: 80%; border-radius: 10px; }
+  .cover-subject-box .subject { font-weight: 800; font-size: 24pt; letter-spacing: 2px; line-height: 1.2; color: #7A1F2B; }
+  .cover-subject-box .subline { font-weight: 700; font-size: 12pt; letter-spacing: 2px; margin-top: 10px; color: #111; }
+  
+  .cover-meta { display: flex; justify-content: space-between; margin-top: 50px; font-size: 10.5pt; padding: 0 10px; }
+  .cover-meta .left { text-align: left; }
+  .cover-meta .right { text-align: right; }
+  .cover-meta .label { font-weight: 700; font-size: 10pt; letter-spacing: 0.4px; color: #7A1F2B; }
+  .cover-meta .barcode-block { margin: 6px 0 2px 0; }
+  .cover-meta .code-id { font-family: 'Courier New', monospace; font-size: 17pt; font-weight: 700; letter-spacing: 3px; }
+  .cover-meta .right .row { margin-bottom: 8px; }
+  .cover-meta .right .row strong { display: inline-block; min-width: 60px; }
+
+  /* INSTRUCTIONS */
+  .instructions { margin-top: 14px; flex: 1; }
+  .instructions h2 { font-size: 14pt; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: center; color: #7A1F2B; border-bottom: 2px solid #E2E8F0; padding-bottom: 6px;}
+  .instructions .subtitle { font-size: 11pt; font-style: italic; margin-bottom: 20px; text-align: center; color: #666; }
+  .instructions ol { margin-left: 22px; }
+  .instructions li { margin-bottom: 10px; text-align: justify; font-size: 11pt; }
+  
   /* EXAM CONTENT STYLING */
   .question-header { margin: 10px 0 20px 0; }
   .question-header h2 { font-size: 14pt; font-weight: 800; color: #111; letter-spacing: 1px; }
@@ -60,42 +87,132 @@
   .question-content { flex: 1; min-width: 0; font-size: 11pt; line-height: 1.6; }
   .marks { font-weight: 700; font-size: 11pt; width: 40px; flex-shrink: 0; text-align: right; color: #111; }
   
-  /* Nested Sub-questions (e.g. 1.1.1) */
+  /* Nested Sub-questions */
   .nested-questions { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; margin-left: 20px; }
   .nested-item { display: flex; align-items: flex-start; gap: 14px; page-break-inside: avoid; }
   .nested-item .question-number { width: 60px; }
 
   .total-marks { text-align: right; font-weight: 800; margin-top: 20px; font-size: 12pt; color: #7A1F2B; border-top: 2px solid #7A1F2B; padding-top: 10px; }
   
-  /* MathJax centering for display equations */
   .math-display { text-align: center; margin: 15px 0; font-size: 12pt; }
+
+  /* FORMULA SHEET */
+  .info-title { text-align: center; font-weight: 800; font-size: 16pt; letter-spacing: 2px; margin: 20px 0 40px 0; text-transform: uppercase; color: #111; }
+  .formula-grid { display: flex; flex-direction: column; gap: 30px; font-size: 12pt; }
+  .formula-row { display: flex; justify-content: space-around; align-items: center; }
+  .formula-box { text-align: center; }
   
 </style>
 </head>
 <body>
 
-<!-- ==================== EXAM PAGE ==================== -->
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="watermark">IFB 2027</div>
   <div class="content-wrapper">
     
-    <!-- HEADER -->
+    <div class="cover-brand">
+      <div class="cover-logo">∆</div>
+      <div class="cover-brand-text">
+        <div class="brand">INSTITUTE OF BOARD</div>
+        <div class="sub">OFFICIAL EXAMINATION</div>
+        <div class="tagline">Rigorous, university-level training. Non-accredited academic institution.</div>
+      </div>
+    </div>
+    
+    <div class="cover-subject-box">
+      <div class="subject">MATHEMATICS P1</div>
+      <div class="subline">NOVEMBER 2027</div>
+    </div>
+    
+    <div class="cover-meta">
+      <div class="left">
+        <div class="label">EXAM ID</div>
+        <div class="barcode-block"><svg class="barcode-cover" data-barcode="IFB-2027-MATH-P1" data-bc-width="2.4" data-bc-height="52" data-bc-display="false"></svg></div>
+        <div class="code-id">MATH-P1-50</div>
+      </div>
+      <div class="right">
+        <div class="row"><strong>MARKS:</strong> 50</div>
+        <div class="row"><strong>TIME:</strong> 1.5 Hours</div>
+        <div class="row"><strong>PAGES:</strong> 5</div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: INSTRUCTIONS ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="watermark">IFB 2027</div>
+  <div class="content-wrapper">
+    
     <div class="header">
       <div class="header-left">
         <span class="header-subject">MATHEMATICS P1</span>
         <span class="header-barcode"><svg class="barcode-header" data-barcode="IFB-2027-MATH-P1" data-bc-width="1.2" data-bc-height="22" data-bc-display="false"></svg></span>
       </div>
       <div class="header-box">
-        <span class="header-code">IFB-2027-MATH-P1</span>
+        <span class="header-code">MATH-P1-50</span>
+        <span class="header-divider"></span>
+        <span class="header-page">2</span>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <h2>INSTRUCTIONS AND INFORMATION</h2>
+      <div class="subtitle">Read the following instructions carefully before answering the questions.</div>
+      <ol>
+        <li>This question paper consists of <strong>5</strong> pages, including this instructions page and an information sheet.</li>
+        <li>Answer <strong>ALL</strong> the questions.</li>
+        <li>Clearly show ALL calculations, diagrams, graphs, et cetera, which you have used in determining your answers.</li>
+        <li>Answers only will NOT necessarily be awarded full marks.</li>
+        <li>You may use an approved scientific calculator (non-programmable and non-graphical), unless stated otherwise.</li>
+        <li>If necessary, round off answers to TWO decimal places, unless stated otherwise.</li>
+        <li>Diagrams are NOT necessarily drawn to scale.</li>
+        <li>An information sheet with formulae is included at the end of the question paper.</li>
+        <li>Write neatly and legibly.</li>
+      </ol>
+    </div>
+    
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 3: QUESTIONS (Q1) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="watermark">IFB 2027</div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">
+        <span class="header-subject">MATHEMATICS P1</span>
+        <span class="header-barcode"><svg class="barcode-header" data-barcode="IFB-2027-MATH-P1" data-bc-width="1.2" data-bc-height="22" data-bc-display="false"></svg></span>
+      </div>
+      <div class="header-box">
+        <span class="header-code">MATH-P1-50</span>
         <span class="header-divider"></span>
         <span class="header-page">3</span>
       </div>
     </div>
 
-    <!-- CONTENT -->
     <div class="question-header">
-      <h2>QUESTION 1</h2>
+      <h2>QUESTION 1 (ALGEBRA)</h2>
     </div>
 
     <!-- 1.1 -->
@@ -195,18 +312,8 @@
       <div class="marks">(6)</div>
     </div>
 
-    <div class="total-marks">
-      TOTAL FOR QUESTION 1: 38
-    </div>
-
-    <!-- Note: The paper is 100 marks, so you would add Question 2 and Question 3 below here. -->
-    <div style="margin-top: 50px; font-style: italic; color: #666; text-align: center; font-size: 10pt;">
-      [Continue with Question 2: Calculus and Question 3: Functions to reach 100 Marks]
-    </div>
-
   </div>
   
-  <!-- FOOTER -->
   <div class="footer">
     <div class="footer-left">
       <span class="footer-qr" data-qr="https://ifb.dev"></span>
@@ -216,11 +323,175 @@
   </div>
 </div>
 
+<!-- ==================== PAGE 4: QUESTIONS (Q2) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="watermark">IFB 2027</div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">
+        <span class="header-subject">MATHEMATICS P1</span>
+        <span class="header-barcode"><svg class="barcode-header" data-barcode="IFB-2027-MATH-P1" data-bc-width="1.2" data-bc-height="22" data-bc-display="false"></svg></span>
+      </div>
+      <div class="header-box">
+        <span class="header-code">MATH-P1-50</span>
+        <span class="header-divider"></span>
+        <span class="header-page">4</span>
+      </div>
+    </div>
+
+    <div class="question-header">
+      <h2>QUESTION 2 (FUNCTIONS & CALCULUS)</h2>
+    </div>
+
+    <!-- 2.1 -->
+    <div class="question-item" style="margin-bottom: 0;">
+      <div class="question-number">2.1</div>
+      <div class="question-content">
+        In the Cartesian plane, the coordinates of points \(A\) and \(B\) are \((-2, 5)\) and \((4, -3)\) respectively.
+      </div>
+    </div>
+
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">2.1.1</div>
+        <div class="question-content">
+          Calculate the length of the line segment \(AB\). Leave your answer in simplest surd form.
+        </div>
+        <div class="marks">(2)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">2.1.2</div>
+        <div class="question-content">
+          Determine the gradient of the line passing through \(A\) and \(B\).
+        </div>
+        <div class="marks">(2)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">2.1.3</div>
+        <div class="question-content">
+          Hence, determine the equation of the straight line \(AB\) in the form \(y = mx + c\).
+        </div>
+        <div class="marks">(2)</div>
+      </div>
+    </div>
+
+    <!-- 2.2 -->
+    <div class="question-item" style="margin-top: 34px;">
+      <div class="question-number">2.2</div>
+      <div class="question-content">
+        Given: \(f(x) = x^2 - 4x\)
+      </div>
+    </div>
+    
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">2.2.1</div>
+        <div class="question-content">
+          Determine \(f'(x)\) from first principles.
+        </div>
+        <div class="marks">(5)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">2.2.2</div>
+        <div class="question-content">
+          Hence, calculate the gradient of the tangent to the curve at \(x = 3\).
+        </div>
+        <div class="marks">(1)</div>
+      </div>
+    </div>
+
+    <div class="total-marks">
+      TOTAL: 50
+    </div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 5: INFORMATION SHEET ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="watermark">IFB 2027</div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">
+        <span class="header-subject">MATHEMATICS P1</span>
+        <span class="header-barcode"><svg class="barcode-header" data-barcode="IFB-2027-MATH-P1" data-bc-width="1.2" data-bc-height="22" data-bc-display="false"></svg></span>
+      </div>
+      <div class="header-box">
+        <span class="header-code">MATH-P1-50</span>
+        <span class="header-divider"></span>
+        <span class="header-page">5</span>
+      </div>
+    </div>
+
+    <div class="info-title">INFORMATION SHEET</div>
+
+    <div class="formula-grid">
+      
+      <!-- Algebra -->
+      <div class="formula-row">
+        <div class="formula-box">
+          \(x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)
+        </div>
+      </div>
+
+      <!-- Analytical Geometry -->
+      <div class="formula-row">
+        <div class="formula-box">
+          \(d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}\)
+        </div>
+        <div class="formula-box">
+          \(M\left(\dfrac{x_1 + x_2}{2} ; \dfrac{y_1 + y_2}{2}\right)\)
+        </div>
+      </div>
+
+      <div class="formula-row">
+        <div class="formula-box">
+          \(y = mx + c\)
+        </div>
+        <div class="formula-box">
+          \(y - y_1 = m(x - x_1)\)
+        </div>
+        <div class="formula-box">
+          \(m = \dfrac{y_2 - y_1}{x_2 - x_1}\)
+        </div>
+      </div>
+
+      <!-- Calculus -->
+      <div class="formula-row" style="margin-top: 20px;">
+        <div class="formula-box">
+          \(f'(x) = \lim_{h \to 0} \dfrac{f(x + h) - f(x)}{h}\)
+        </div>
+      </div>
+
+    </div>
+    
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END</div>
+  </div>
+</div>
+
 <script>
 (function () {
   function makeBarcodes() {
     if (typeof JsBarcode !== "function") return;
-    document.querySelectorAll(".barcode-header").forEach(function (el) {
+    document.querySelectorAll(".barcode-cover, .barcode-header").forEach(function (el) {
       try {
         JsBarcode(el, el.dataset.barcode || "IFB-2027-MATH-P1", {
           format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.2"),
