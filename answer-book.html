@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IFB Answer Book 2027</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; }
+  body { 
+    font-family: Arial, sans-serif; 
+    font-size: 11.5pt; 
+    line-height: 1.6; 
+    color: #000; 
+    background: #F8FAFC; 
+  }
+  
+  /* A4 PAGE SETUP */
+  .page { 
+    width: 210mm; 
+    height: 297mm; 
+    padding: 15mm 20mm 0 20mm; 
+    margin: 15px auto; 
+    position: relative; 
+    background: white; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    page-break-after: always; 
+  }
+  
+  @media print { 
+    body { background: white; } 
+    .page { margin: 0; box-shadow: none; } 
+  }
+  
+  /* SECURITY PATTERN */
+  .security-pattern { 
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); 
+    pointer-events: none; 
+    z-index: 0; 
+  }
+  
+  /* CONTENT WRAPPER */
+  .content-wrapper { 
+    position: relative; 
+    z-index: 1; 
+    display: flex; 
+    flex-direction: column; 
+    flex: 1;
+    padding-bottom: 30mm; 
+  }
+  
+  /* EXAM HEADERS (Black & White, NO LINE) */
+  .header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 20px; 
+    font-size: 10.5pt; 
+    font-family: Arial, sans-serif;
+    flex-shrink: 0;
+  }
+  .header-left { width: 30%; text-align: left; font-weight: bold; color: #000; }
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: #000; }
+  .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
+
+  /* FOOTER */
+  .footer { 
+    position: absolute; 
+    bottom: 10mm; 
+    left: 20mm; 
+    right: 20mm; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    z-index: 2; 
+    font-size: 10pt; 
+    font-family: Arial, sans-serif;
+    height: 15mm;
+  }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 35px; height: 35px; }
+  .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .tag { font-size: 7pt; color: #000; }
+  .footer-right { color: #000; font-style: italic;}
+
+  .bottom-barcode {
+    position: absolute;
+    bottom: 10mm;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .bottom-barcode svg {
+    display: block;
+  }
+
+  /* ========================================= */
+  /* PAGE 1: COVER SPECIFIC                    */
+  /* ========================================= */
+  .cover-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  
+  .cover-brand { display: flex; align-items: center; gap: 15px;}
+  .ifb-logo-svg { width: 80px; height: 80px; }
+  .cover-header-text .title { font-size: 28px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px; line-height: 1;}
+  .cover-header-text .sub { font-size: 11pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
+  
+  .candidate-barcode-box {
+    border: 2px dashed #000;
+    padding: 15px;
+    width: 35%;
+    text-align: center;
+    font-size: 10pt;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+  }
+
+  .answer-book-title {
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    font-size: 22pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 30px;
+    width: 60%;
+  }
+
+  /* Form Grids */
+  .form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  .form-box {
+    border: 2px solid #000;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  .form-box label {
+    font-size: 9pt;
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+  .form-box .input-space {
+    height: 20px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  /* Curriculum Tick Boxes */
+  .curriculum-box {
+    border: 2px solid #7A1F2B;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    font-weight: bold;
+  }
+  .curriculum-box label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 12pt;
+  }
+  .curriculum-box input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #7A1F2B;
+  }
+
+  /* Marking Grid Table */
+  .marking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9.5pt;
+    margin-bottom: 20px;
+  }
+  .marking-table th, .marking-table td {
+    border: 1.5px solid #000;
+    padding: 4px;
+    text-align: center;
+  }
+  .marking-table th {
+    background-color: #eee;
+    font-weight: bold;
+    font-size: 8.5pt;
+  }
+  .marking-table td {
+    height: 22px;
+  }
+  .marking-table .text-left { text-align: left; padding-left: 8px; }
+
+  /* ========================================= */
+  /* PAGE 2: INSTRUCTIONS                      */
+  /* ========================================= */
+  .instructions-header {
+    background-color: #222;
+    color: white;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 12pt;
+    margin-bottom: 20px;
+  }
+  .instructions-list {
+    margin-left: 25px;
+    font-size: 11pt;
+    line-height: 1.8;
+  }
+  .instructions-list li {
+    margin-bottom: 15px;
+    padding-left: 10px;
+  }
+
+  /* ========================================= */
+  /* PAGE 3+: ANSWER SPACE                     */
+  /* ========================================= */
+  .answer-space-title {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+  
+  .lines-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .line-row {
+    display: flex;
+    border: 1px solid #000;
+    border-bottom: none;
+  }
+  .line-row:last-child {
+    border-bottom: 1px solid #000;
+  }
+  .line-writing-area {
+    flex: 1;
+    height: 35px; /* Height of each line */
+    border-right: 1px solid #000;
+    /* Optional: faint dotted line inside to guide writing */
+    background-image: linear-gradient(to bottom, transparent 34px, #ccc 34px);
+  }
+  .line-marks-area {
+    width: 60px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10pt;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <!-- Header with IFB Branding & Barcode Box -->
+    <div class="cover-header-container">
+      <div class="cover-brand">
+        <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+            <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+        </svg>
+        <div class="cover-header-text">
+          <div class="title">Institute of Board</div>
+          <div class="sub">Department:<br>Academic Assessment<br>NON-ACCREDITED ACADEMIC INSTITUTION</div>
+        </div>
+      </div>
+      <div class="candidate-barcode-box">
+        Candidate Barcode Label
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="answer-book-title">
+      IFB Answer Book
+    </div>
+
+    <!-- Form Fields -->
+    <div class="form-row">
+      <div class="form-box" style="flex: 2;">
+        <label>CENTRE NUMBER</label>
+        <div class="input-space"></div>
+      </div>
+      <div class="form-box" style="flex: 3;">
+        <label>EXAMINATION NUMBER</label>
+        <div class="input-space"></div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-box" style="flex: 2;">
+        <label>DATE</label>
+        <div class="input-space"></div>
+      </div>
+      <div class="form-box" style="flex: 1;">
+        <label>BOOK NUMBER</label>
+        <div class="input-space"></div>
+      </div>
+      <div class="form-box" style="flex: 1;">
+        <label>OF</label>
+        <div class="input-space"></div>
+      </div>
+      <div class="form-box" style="flex: 1;">
+        <label>BOOKS</label>
+        <div class="input-space"></div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-box" style="flex: 2;">
+        <label>SUBJECT CODE</label>
+        <div class="input-space"></div>
+      </div>
+      <div class="form-box" style="flex: 1;">
+        <label>PAPER NUMBER</label>
+        <div class="input-space" style="text-align: center; font-weight: bold; font-size: 14pt;">1</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-box" style="flex: 1;">
+        <label>SUBJECT NAME</label>
+        <div class="input-space" style="height: 30px;"></div>
+      </div>
+    </div>
+
+    <!-- Curriculum Tick Boxes -->
+    <div class="curriculum-box">
+      <span>TICK YOUR CURRICULUM:</span>
+      <label><input type="checkbox" name="curr_math" value="math"> AE-S Mathematics</label>
+      <label><input type="checkbox" name="curr_web" value="web"> AE-W Web Development</label>
+    </div>
+
+    <!-- Marking Grids -->
+    <table class="marking-table">
+      <thead>
+        <tr>
+          <th colspan="3">MARKER</th>
+          <th colspan="5">MODERATOR'S INITIALS IN RELEVANT BLOCK</th>
+          <th colspan="3">RE-MARK/RE-CHECK</th>
+        </tr>
+        <tr>
+          <th>Question</th>
+          <th>Marks</th>
+          <th>Marker's Code & Initials</th>
+          <th>Marks</th>
+          <th>SM</th>
+          <th>DCM</th>
+          <th>CM</th>
+          <th>IM</th>
+          <th>Question</th>
+          <th>Marks</th>
+          <th>Initials</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Generating 15 rows -->
+        <script>
+          for(let i=1; i<=15; i++) {
+            document.write(`
+              <tr>
+                <td>${i}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${i}</td><td></td><td></td>
+              </tr>
+            `);
+          }
+        </script>
+        <!-- Empty Rows for Total -->
+        <tr>
+          <td></td><td></td><td></td>
+          <td colspan="5" style="text-align: right; font-weight: bold; padding-right: 10px;">TOTAL:</td>
+          <td colspan="3"></td>
+        </tr>
+        <tr>
+          <td colspan="3" style="text-align: left; padding-left: 10px; font-weight: bold;">CONTROLLED AND CERTIFIED CORRECT (SURNAME AND INITIALS OF EA)</td>
+          <td colspan="8"></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Copyright reserved</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: INSTRUCTIONS ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">IFB Answer Book</div>
+      <div class="header-center">
+        <span class="page-num">2</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="instructions-header">
+      FOLLOW THESE INSTRUCTIONS CAREFULLY
+    </div>
+
+    <ol class="instructions-list">
+      <li>Write your examination number and centre number clearly in the spaces provided and attach your examination number sticker in the space provided.</li>
+      <li>Remember that your own name (or the name of your school) may not appear anywhere on or in this answer book.</li>
+      <li>Answer ALL questions in the spaces provided.</li>
+      <li>No pages may be torn from this answer book.</li>
+      <li>Read the instructions printed on your timetable carefully as well as any other instructions which may be given in each examination paper.</li>
+      <li>Candidates may not retain an answer book or remove it from the examination room. Answer books must be returned to the Invigilator at the end of the examination session.</li>
+      <li>Answers must be written in black/blue ink as distinctly as possible. Do not write in the margins.</li>
+      <li>Indicate the questions you have answered by drawing a circle around the relevant numbers on the front cover of the answer book where marks are to be recorded.</li>
+      <li>Rule off through any work/rough work that must not be marked.</li>
+      <li>In the event that you use the additional space provided:
+        <div style="margin-left: 20px; margin-top: 5px;">
+          10.1 Write down the number of the question.<br>
+          10.2 Leave a line and rule off after your answer.
+        </div>
+      </li>
+    </ol>
+    
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 3: ANSWER SPACE ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">IFB Answer Book</div>
+      <div class="header-center">
+        <span class="page-num">3</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="answer-space-title">
+      Answer Space / Additional Space
+    </div>
+
+    <div class="lines-container">
+      <script>
+        // Generate 20 blank lined rows
+        for(let i=0; i<20; i++) {
+          document.write(`
+            <div class="line-row">
+              <div class="line-writing-area"></div>
+              <div class="line-marks-area"></div>
+            </div>
+          `);
+        }
+      </script>
+    </div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 4: ANSWER SPACE ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">IFB Answer Book</div>
+      <div class="header-center">
+        <span class="page-num">4</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="answer-space-title">
+      Answer Space / Additional Space
+    </div>
+
+    <div class="lines-container">
+      <script>
+        // Generate 20 blank lined rows
+        for(let i=0; i<20; i++) {
+          document.write(`
+            <div class="line-row">
+              <div class="line-writing-area"></div>
+              <div class="line-marks-area"></div>
+            </div>
+          `);
+        }
+      </script>
+    </div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<script>
+(function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-footer").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "IFB-ANS-2027", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: 12, textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+  
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
+  });
+})();
+</script>
+</body>
+</html>
