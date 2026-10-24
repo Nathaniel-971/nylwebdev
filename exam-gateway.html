@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Gateway — IFB</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
+    .container { width: 100%; max-width: 400px; }
+    .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); text-align: center; }
+    
+    .logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
+    h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+    p { font-size: 14px; color: var(--gray); margin-bottom: 32px; }
+    
+    .form-group { margin-bottom: 20px; text-align: left; }
+    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    input { 
+        width: 100%; padding: 14px; font-size: 18px; font-family: monospace; text-align: center; 
+        border: 1.5px solid var(--silver); border-radius: 10px; outline: none; letter-spacing: 2px; 
+    }
+    input:focus { border-color: var(--maroon); }
+    
+    .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; margin-top: 10px; }
+    .btn:hover { background: var(--maroon-hover); }
+    
+    .error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+    
+    .back-link { display: block; margin-top: 24px; font-size: 13px; color: var(--gray); text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="form-card">
+        <div class="logo">∆</div>
+        <h1>Exam Gateway</h1>
+        <p>Enter your Student ID and Security Code to access your assessment.</p>
+        
+        <div class="error-msg" id="gateError"></div>
+        
+        <form id="gateForm">
+            <div class="form-group">
+                <label>Student ID</label>
+                <input type="text" id="gateStudentId" maxlength="13" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label>Security Code (6 Digits)</label>
+                <input type="password" id="gateSecurityCode" maxlength="6" required autocomplete="off">
+            </div>
+            <button type="submit" class="btn" id="gateBtn">Verify & Enter</button>
+        </form>
+        
+        <a href="student-dashboard.html" class="back-link">← Back to Dashboard</a>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+    const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+
+    document.getElementById('gateForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('gateBtn');
+        const errorBox = document.getElementById('gateError');
+        errorBox.style.display = 'none';
+        
+        const studentId = document.getElementById('gateStudentId').value.trim();
+        const securityCode = document.getElementById('gateSecurityCode').value.trim();
+
+        btn.innerText = "Verifying..."; btn.disabled = true;
+
+        try {
+            const q = query(collection(db, "users"), where("studentId", "==", studentId), where("securityCode", "==", securityCode));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                // Save verification to session storage for the actual exam page
+                sessionStorage.setItem('verified_student', studentId);
+                window.location.href = "exam-session.html";
+            } else {
+                errorBox.innerText = "Invalid Student ID or Security Code.";
+                errorBox.style.display = 'block';
+                btn.innerText = "Verify & Enter"; btn.disabled = false;
+            }
+        } catch (error) {
+            errorBox.innerText = "Error verifying: " + error.message;
+            errorBox.style.display = 'block';
+            btn.innerText = "Verify & Enter"; btn.disabled = false;
+        }
+    });
+
+    lucide.createIcons();
+</script>
+</body>
+</html>
