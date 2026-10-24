@@ -48,8 +48,6 @@
     .select-option:hover { background: #FAFAFA; }
     .select-option.selected { background: #FFF5F6; color: var(--maroon); font-weight: 700; }
 
-    .country-note { font-size: 12px; color: var(--gray); margin-top: 8px; line-height: 1.5; }
-
     /* PHONE INPUT WITH CODE */
     .phone-group { display: flex; gap: 8px; }
     .phone-code { 
@@ -77,7 +75,7 @@
     .btn:disabled { opacity: 0.7; cursor: not-allowed; }
     
     #successState { display: none; text-align: center; }
-    .id-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; margin: 20px 0; }
+    .id-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; margin: 15px 0; }
     .id-box .label { font-size: 11px; text-transform: uppercase; color: var(--gray); font-weight: 700; }
     .id-box .value { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--black); margin-top: 4px; }
 
@@ -182,17 +180,23 @@
         </div>
 
         <div id="successState">
-            <div style="font-size: 48px; font-weight: 900; color: var(--maroon);">∆</div>
+            <div style="font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 10px;">∆</div>
             <h2>Application Successful</h2>
-            <p style="font-size: 14px; color: var(--gray); margin-top: 8px;">Save your credentials securely.</p>
+            <p style="font-size: 14px; color: var(--gray); margin-bottom: 20px;">CRITICAL: Take a screenshot of these credentials right now. You will need them to log in.</p>
+            
             <div class="id-box">
                 <div class="label">13-Digit Student ID</div>
-                <div class="value" id="displayId">2701000000001</div>
+                <div class="value" id="displayId">2701051026001</div>
             </div>
             <div class="id-box" style="border-color: var(--black);">
                 <div class="label">6-Digit Security Code (For Exams)</div>
-                <div class="value" id="displaySecurityCode">000000</div>
+                <div class="value" id="displaySecurityCode">123456</div>
             </div>
+            <div class="id-box" style="border-color: var(--maroon); background: #FFF5F6;">
+                <div class="label">Temporary Password</div>
+                <div class="value" id="displayPassword">IFB2027!1234</div>
+            </div>
+            
             <a href="index.html" class="btn" style="display: block; text-decoration: none; text-align: center;">Go to Login</a>
         </div>
     </div>
@@ -276,16 +280,19 @@
         const phoneNumber = document.getElementById('phone').value;
         const fullPhone = `${selectedPhoneCode} ${phoneNumber}`;
         
-        const dobClean = dobValue.replace(/-/g, ''); 
-        const yy = dobClean.substring(2, 4); 
-        const mmdd = dobClean.substring(4, 8); 
+        // Generate 13-digit ID based on the dossier spec: 2701 + YY + MM + DD + XXX
+        const dobClean = dobValue.replace(/-/g, ''); // e.g., 20051026
+        const yy = dobClean.substring(2, 4); // 05
+        const mm = dobClean.substring(4, 6); // 10
+        const dd = dobClean.substring(6, 8); // 26
         const random3 = Math.floor(100 + Math.random() * 900);
-        const studentId = `2701${yy}${mmdd}${random3}`; 
+        const studentId = `2701${yy}${mm}${dd}${random3}`; 
         
         // Generate 6-digit security code
         const securityCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-        const tempPassword = "IFB2027!" + Math.floor(Math.random() * 10000);
+        // Generate a Temporary Password so the user can actually log in
+        const tempPassword = "IFB2027!" + Math.floor(1000 + Math.random() * 9000);
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
@@ -302,6 +309,7 @@
             document.querySelector('.tabs').style.display = 'none';
             document.getElementById('displayId').innerText = studentId;
             document.getElementById('displaySecurityCode').innerText = securityCode;
+            document.getElementById('displayPassword').innerText = tempPassword;
             document.getElementById('successState').style.display = 'block';
 
         } catch (error) {
