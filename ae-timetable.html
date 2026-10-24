@@ -2,248 +2,237 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AE Timetable 2027 — IFB</title>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>IFB AE Timetable 2027</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.6; padding-bottom: 60px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
-    @keyframes fadeIn { to { opacity: 1; } }
-    a { text-decoration: none; color: inherit; }
+@page { size: A4; margin: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.6; color: #000; background: #F8FAFC; }
+:root { --maroon: #7A1F2B; --silver: #E2E8F0; --bg: #F8FAFC; --dark: #333; --white: #FFF; }
 
-    /* HEADER */
-    .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 80px; }
-    .nav-container { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
-    .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .btn-home { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; color: var(--black); transition: 0.2s; }
-    .btn-home:hover { border-color: var(--black); background: #FAFAFA; }
-    .btn-apply { background: var(--silver); color: var(--black) !important; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: 0.2s; }
-    .btn-apply:hover { background: #cbd5e1; transform: translateY(-2px); }
+.page { width: 210mm; height: 297mm; padding: 15mm 20mm 40mm 20mm; margin: 15px auto; position: relative; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; }
+@media print { body { background: #fff; } .page { margin: 0; box-shadow: none; } }
 
-    /* HERO */
-    .hero { padding: 80px 24px 60px; text-align: center; background: var(--white); border-bottom: 1px solid var(--silver); }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 24px; background: var(--white); color: var(--maroon); }
-    .hero h1 { font-size: clamp(32px, 4vw, 52px); font-weight: 900; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 20px; }
-    .hero h1 span { color: var(--maroon); }
-    .hero p { font-size: 17px; max-width: 700px; margin: 0 auto; color: var(--gray); font-weight: 500; }
+.security-pattern { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(122,31,43,.02) 0, rgba(122,31,43,.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(122,31,43,.02) 0, rgba(122,31,43,.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 400px; height: 400px; opacity: .03; pointer-events: none; z-index: 0; }
+.content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
 
-    /* NOTICE */
-    .notice-bar { max-width: 1000px; margin: 32px auto 0; padding: 16px 24px; background: #FFF5F6; border: 1px solid var(--maroon); border-left: 4px solid var(--maroon); border-radius: 8px; font-size: 14px; color: var(--maroon); font-weight: 600; display: flex; align-items: flex-start; gap: 12px; }
-    .notice-bar i { flex-shrink: 0; margin-top: 2px; }
+.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; border-bottom: 1px solid var(--silver); padding-bottom: 5px; }
+.header-left { width: 30%; text-align: left; font-weight: bold; color: var(--maroon); }
+.header-center { width: 40%; text-align: center; }
+.header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+.header-center .confidential { font-style: italic; font-weight: bold; color: var(--maroon); }
+.header-right { width: 30%; text-align: right; font-weight: bold; color: var(--maroon); }
 
-    /* MAIN */
-    .container { max-width: 1000px; margin: 40px auto; padding: 0 24px; }
-    .section-title { font-size: 22px; font-weight: 900; margin: 48px 0 20px; display: flex; align-items: center; gap: 10px; }
-    .section-title i { color: var(--maroon); width: 24px; height: 24px; }
+.footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; }
+.footer-left { display: flex; align-items: center; gap: 10px; }
+.footer-qr { display: inline-block; width: 35px; height: 35px; }
+.footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+.footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+.footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
+.footer-brand .tag { font-size: 7pt; color: var(--dark); }
+.footer-right { color: var(--dark); font-style: italic; }
 
-    /* TIMETABLE TABLE */
-    .tt-wrapper { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-    .tt-table { width: 100%; border-collapse: collapse; font-size: 15px; }
-    .tt-table thead { background: var(--maroon); color: var(--white); }
-    .tt-table th { padding: 16px 20px; text-align: left; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .tt-table td { padding: 20px; border-bottom: 1px solid var(--silver); vertical-align: top; }
-    .tt-table tr:last-child td { border-bottom: none; }
-    .tt-table tr:hover td { background: #FAFAFA; }
-    .tt-date { font-weight: 900; font-size: 18px; color: var(--maroon); white-space: nowrap; }
-    .tt-date small { display: block; font-size: 12px; font-weight: 700; color: var(--gray); margin-top: 2px; letter-spacing: 1px; }
-    .tt-subject { font-weight: 800; font-size: 16px; }
-    .tt-code { display: inline-block; font-size: 11px; font-weight: 800; background: #FFF5F6; color: var(--maroon); padding: 2px 8px; border-radius: 4px; margin-top: 4px; letter-spacing: 0.5px; }
-    .tt-meta { color: var(--gray); font-size: 14px; }
-    .tt-meta strong { color: var(--black); }
+.cover-page { padding: 20mm; display: flex; flex-direction: column; }
+.cover-header { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; text-align: center; }
+.ifb-logo-svg { width: 100px; height: 100px; margin-bottom: 20px; }
+.cover-header-text .title { font-size: 36px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: var(--maroon); letter-spacing: -.5px; line-height: 1; }
+.cover-header-text .sub { font-size: 14pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold; margin-bottom: 10px; }
+.cover-header-text .dept { font-size: 11pt; font-family: Arial, sans-serif; font-weight: bold; color: #555; }
+.title-box { border: 3px solid var(--maroon); border-radius: 10px; padding: 20px; text-align: center; margin: 80px auto 60px auto; width: 80%; background: #FFF5F6; }
+.title-box h1 { font-size: 26pt; font-weight: bold; color: #111; margin-bottom: 10px; }
+.title-box h2 { font-size: 18pt; font-weight: bold; color: var(--maroon); }
+.cover-meta { margin-top: auto; text-align: center; font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; }
 
-    /* INFO CARDS */
-    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 16px; }
-    .info-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 28px; transition: 0.2s; }
-    .info-card:hover { border-color: var(--maroon); box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
-    .info-card i { width: 32px; height: 32px; color: var(--maroon); margin-bottom: 16px; }
-    .info-card h4 { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
-    .info-card p { font-size: 14px; color: var(--gray); line-height: 1.7; }
+.doc-title { font-size: 15pt; font-weight: bold; color: var(--maroon); text-align: center; margin-bottom: 15px; font-family: Arial, sans-serif; border-bottom: 2px solid var(--maroon); padding-bottom: 5px; flex-shrink: 0; }
 
-    /* STEPS */
-    .steps { display: flex; flex-direction: column; gap: 0; margin-top: 16px; }
-    .step { display: flex; gap: 20px; padding: 24px 0; border-bottom: 1px solid var(--silver); }
-    .step:last-child { border-bottom: none; }
-    .step-num { width: 44px; height: 44px; flex-shrink: 0; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; }
-    .step-body h4 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
-    .step-body p { font-size: 14px; color: var(--gray); }
+.notice-box { background: #FFF5F6; border-left: 4px solid var(--maroon); padding: 12px 16px; margin: 10px 0 15px; font-size: 10.5pt; }
 
-    /* CTA */
-    .cta-box { background: var(--white); border: 2px solid var(--maroon); border-radius: 20px; padding: 48px 32px; text-align: center; margin-top: 64px; }
-    .cta-box h2 { font-size: 28px; font-weight: 900; margin-bottom: 12px; }
-    .cta-box p { font-size: 16px; color: var(--gray); max-width: 500px; margin: 0 auto 28px; }
-    .btn-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--silver); color: var(--black); border: 1px solid #cbd5e1; padding: 16px 36px; border-radius: 10px; font-size: 16px; font-weight: 700; transition: 0.2s; }
-    .btn-cta:hover { background: #cbd5e1; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+.tt-table { width: 100%; border-collapse: collapse; font-size: 10pt; font-family: Arial, sans-serif; margin-bottom: 15px; }
+.tt-table th, .tt-table td { border: 1px solid var(--dark); padding: 8px 10px; vertical-align: top; }
+.tt-table th { background: var(--maroon); color: var(--white); font-weight: bold; text-align: center; font-size: 9.5pt; }
+.tt-table tbody tr:nth-child(even) { background: var(--bg); }
+.tt-table .date-cell { font-weight: bold; color: var(--maroon); font-size: 11pt; }
+.tt-table .date-cell small { display: block; font-size: 8pt; color: var(--dark); font-weight: normal; margin-top: 2px; letter-spacing: .5px; }
+.tt-table .subject-cell { font-weight: bold; }
+.tt-table .code-cell { font-family: monospace; font-weight: bold; }
 
-    /* FOOTER */
-    .footer { max-width: 1100px; margin: 80px auto 0; padding: 40px 24px 0; border-top: 1px solid var(--silver); text-align: center; font-size: 13px; color: var(--gray); }
-    .footer strong { color: var(--maroon); }
+.steps-list { list-style: none; margin: 10px 0; padding: 0; }
+.steps-list li { padding: 8px 0 8px 32px; position: relative; border-bottom: 1px solid var(--silver); font-size: 10.5pt; line-height: 1.5; }
+.steps-list li:last-child { border-bottom: none; }
+.steps-list li::before { content: counter(step); counter-increment: step; position: absolute; left: 0; top: 8px; width: 22px; height: 22px; background: var(--maroon); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: Arial, sans-serif; font-weight: bold; font-size: 9pt; }
+.steps-list { counter-reset: step; }
 
-    @media (max-width: 768px) {
-        .nav-container { padding: 0 16px; }
-        .brand-text h1 { font-size: 16px; }
-        .brand-logo { font-size: 28px; }
-        .btn-home, .btn-apply { padding: 8px 12px; font-size: 13px; }
-        .hero { padding: 60px 20px 40px; }
-        .tt-table th, .tt-table td { padding: 12px 14px; font-size: 13px; }
-        .tt-date { font-size: 15px; }
-        .cta-box { padding: 32px 20px; }
-        .btn-cta { width: 100%; justify-content: center; }
-    }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+.info-box { background: var(--bg); border: 1px solid var(--silver); border-radius: 6px; padding: 10px 12px; }
+.info-box h4 { font-family: Arial, sans-serif; font-size: 10pt; color: var(--maroon); margin-bottom: 4px; }
+.info-box p { font-size: 9.5pt; line-height: 1.5; }
 </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="nav-container">
-            <a href="index.html" class="brand">
-                <div class="brand-logo">∆</div>
-                <div class="brand-text"><h1>Institute of Board</h1></div>
-            </a>
-            <div class="nav-right">
-                <a href="index.html" class="btn-home"><i data-lucide="arrow-left"></i> Home</a>
-                <a href="admission.html" class="btn-apply">Apply Now</a>
-            </div>
-        </div>
-    </header>
+<!-- COVER -->
+<div class="page cover-page">
+  <div class="security-pattern"></div>
+  <div class="cover-header">
+    <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/>
+      <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/>
+      <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/>
+    </svg>
+    <div class="cover-header-text">
+      <div class="title">Institute of Board</div>
+      <div class="sub">Department:<br>Admissions &amp; Assessment</div>
+      <div class="dept">NON-ACCREDITED ACADEMIC INSTITUTION</div>
+    </div>
+  </div>
+  <div class="title-box">
+    <h1>AE TIMETABLE</h1>
+    <h2>2027 ADMISSIONS EXAMINATION</h2>
+  </div>
+  <div class="cover-meta">
+    <p>Official Schedule</p>
+    <p>Mathematics · 13 January 2027</p>
+    <p>Web Development · 18 January 2027</p>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ae-timetable.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Copyright reserved</div>
+  </div>
+</div>
 
-    <section class="hero">
-        <div class="hero-badge"><i data-lucide="calendar" style="width:14px;height:14px;"></i> Admissions Examination 2027</div>
-        <h1>AE Timetable <span>2027</span></h1>
-        <p>The official schedule of Admission Examination (AE) dates for the 2027 academic year. Passing the AE is the only route to admission at IFB.</p>
-    </section>
+<!-- TIMETABLE -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">AE Timetable 2027</div>
+      <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-right">2027</div>
+    </div>
+    <div class="doc-title">OFFICIAL EXAMINATION SCHEDULE</div>
+    <div class="notice-box">
+      <strong>Non-Accredited Notice:</strong> IFB is an independent, non-accredited institution. The AE is an internal entry assessment, not a government examination. Passing the AE is the only route to admission.
+    </div>
+    <table class="tt-table">
+      <thead>
+        <tr>
+          <th style="width:18%;">Date</th>
+          <th style="width:32%;">Subject</th>
+          <th style="width:25%;">Paper Code</th>
+          <th style="width:25%;">Duration / Marks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="date-cell">13 Jan 2027<small>WEDNESDAY</small></td>
+          <td class="subject-cell">Mathematics<br><span style="font-weight:normal;font-size:9pt;color:#333;">IFB-S Entrance Assessment</span></td>
+          <td class="code-cell">AE-S MATH<br><span style="font-weight:normal;font-size:9pt;">X01-MATH-2027</span></td>
+          <td>2 hours<br><strong>100 marks</strong></td>
+        </tr>
+        <tr>
+          <td class="date-cell">18 Jan 2027<small>MONDAY</small></td>
+          <td class="subject-cell">Front-End Web Development<br><span style="font-weight:normal;font-size:9pt;color:#333;">IFB AQ-B Aptitude Assessment</span></td>
+          <td class="code-cell">AE-W WEB<br><span style="font-weight:normal;font-size:9pt;">X01-AEW-2027</span></td>
+          <td>1 hour<br><strong>50 marks</strong></td>
+        </tr>
+      </tbody>
+    </table>
 
-    <div class="notice-bar">
-        <i data-lucide="shield-alert" style="width:18px;height:18px;"></i>
-        <div>The Institute of Board is an independent, <strong>non-accredited</strong> educational institution. We are not registered with DHET or Umalusi. The AE is an internal entry assessment, not a government examination.</div>
+    <div style="margin-top:20px;">
+      <h3 style="font-family:Arial,sans-serif;font-size:12pt;color:var(--maroon);margin-bottom:8px;">Global Start Protocol</h3>
+      <p style="font-size:10.5pt;line-height:1.6;">Because IFB operates internationally, all papers unlock simultaneously at the <strong>global start time (UTC)</strong>. Students in different time zones write at the same absolute moment to prevent question-paper sharing. Check your local equivalent time carefully. Late entries are not permitted.</p>
     </div>
 
-    <div class="container">
+    <div class="info-grid" style="margin-top:20px;">
+      <div class="info-box">
+        <h4>What to Bring</h4>
+        <p>Your 13-digit Student ID, 6-digit Security Code, printed Question Paper, printed Answer Book, black/blue pens, and a non-programmable scientific calculator (Math only).</p>
+      </div>
+      <div class="info-box">
+        <h4>What NOT to Bring</h4>
+        <p>No graphing calculators, no formula sheets, no phones (except as scanner), no name-writing on scripts. Only your Student ID barcode may appear on your work.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ae-timetable.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
 
-        <!-- TIMETABLE -->
-        <h2 class="section-title"><i data-lucide="table"></i> Examination Dates</h2>
-        <div class="tt-wrapper">
-            <table class="tt-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Subject</th>
-                        <th>Paper / Code</th>
-                        <th>Duration</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="tt-date">13 Jan 2027
-                                <small>WEDNESDAY</small>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="tt-subject">Mathematics</div>
-                            <div class="tt-meta">IFB-S Entrance Assessment</div>
-                            <span class="tt-code">AE-S MATH</span>
-                        </td>
-                        <td><span class="tt-meta"><strong>X01-MATH-2027</strong></span></td>
-                        <td><span class="tt-meta"><strong>2 hours</strong><br>100 marks</span></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="tt-date">18 Jan 2027
-                                <small>MONDAY</small>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="tt-subject">Front-End Web Development</div>
-                            <div class="tt-meta">IFB AQ-B Aptitude Assessment</div>
-                            <span class="tt-code">AE-W WEB</span>
-                        </td>
-                        <td><span class="tt-meta"><strong>X01-AEW-2027</strong></span></td>
-                        <td><span class="tt-meta"><strong>1 hour</strong><br>50 marks</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<!-- PROTOCOL -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">AE Timetable 2027</div>
+      <div class="header-center"><span class="page-num">3</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-right">2027</div>
+    </div>
+    <div class="doc-title">HOW THE ADMISSION EXAMINATION WORKS</div>
+    <ol class="steps-list">
+      <li><strong>Register:</strong> Submit your details on admission.html. On submission, the system generates your <strong>13-digit Student ID</strong> and <strong>6-digit Security Code</strong>. Screenshot both — you need them to enter the exam.</li>
+      <li><strong>Log in to Exam Gateway:</strong> On your scheduled date, visit exam-gateway.html and enter your Student ID + Security Code. The secure timer starts the moment you enter — no late entries.</li>
+      <li><strong>Write &amp; Scan:</strong> Download the Question Paper and Answer Book. Write by hand, then photograph each page using the in-portal scanner. Uploads happen automatically.</li>
+      <li><strong>Anonymous Marking:</strong> Your name never appears on the script. Only your Student ID barcode is used. Scripts are AI-moderated, and any flagged script goes to the Chief Examiner.</li>
+    </ol>
 
-        <!-- HOW THE AE WORKS -->
-        <h2 class="section-title"><i data-lucide="route"></i> How the Admission Examination Works</h2>
-        <div class="steps">
-            <div class="step">
-                <div class="step-num">1</div>
-                <div class="step-body">
-                    <h4>Register on the Application Portal</h4>
-                    <p>Submit your details via <a href="admission.html" style="color:var(--maroon);font-weight:700;">admission.html</a>. On submission, the system instantly generates your <strong>13-digit Student ID</strong> and <strong>6-digit Security Code</strong>. Screenshot these — you will need them to enter the exam.</p>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <div class="step-body">
-                    <h4>Log in to the Exam Gateway</h4>
-                    <p>On your scheduled date, visit <a href="exam-gateway.html" style="color:var(--maroon);font-weight:700;">exam-gateway.html</a> and enter your Student ID + Security Code. The secure timer starts the moment you enter — no late entries.</p>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <div class="step-body">
-                    <h4>Write & Scan Your Answers</h4>
-                    <p>Download and print the Question Paper and the Answer Book. Write your answers by hand, then photograph each page using the in-portal scanner. Your answers upload automatically.</p>
-                </div>
-            </div>
-            <div class="step">
-                <div class="step-num">4</div>
-                <div class="step-body">
-                    <h4>Anonymous Marking</h4>
-                    <p>Your name never appears on the script. Only your Student ID barcode is used. Scripts are AI-moderated and any flagged script is sent to the Chief Examiner for human review.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- PREPARATION -->
-        <h2 class="section-title"><i data-lucide="book-open-check"></i> Prepare for the AE</h2>
-        <div class="info-grid">
-            <div class="info-card">
-                <i data-lucide="file-text"></i>
-                <h4>Practice Papers</h4>
-                <p>Review the sample question papers to understand the format and difficulty level of the AE.</p>
-            </div>
-            <div class="info-card">
-                <i data-lucide="clipboard-list"></i>
-                <h4>Exam Guidelines</h4>
-                <p>Read the official examination guidelines covering conduct, scanning protocols, and AI moderation rules.</p>
-            </div>
-            <div class="info-card">
-                <i data-lucide="calculator"></i>
-                <h4>No Formula Sheets</h4>
-                <p>IFB-S Mathematics provides no formula sheet. All identities, theorems and formulas must be memorised or derived from first principles.</p>
-            </div>
-            <div class="info-card">
-                <i data-lucide="globe"></i>
-                <h4>Global Start Time</h4>
-                <p>Because IFB operates internationally, papers unlock simultaneously at the global start time (UTC). Check your local time zone carefully.</p>
-            </div>
-        </div>
-
-        <!-- CTA -->
-        <div class="cta-box">
-            <h2>Ready to Apply?</h2>
-            <p>Applications close on <strong>13 January 2027</strong>. Secure your spot in the AE and take the first step into IFB.</p>
-            <a href="admission.html" class="btn-cta"><i data-lucide="arrow-right"></i> Start Your Application</a>
-        </div>
-
+    <div style="margin-top:24px;padding:14px;background:#FFF5F6;border-left:4px solid var(--maroon);font-size:10.5pt;">
+      <strong>CRITICAL:</strong> You must upload your scanned pages within <strong>1 hour</strong> of the session ending. The portal locks after this window. Failure to upload results in an invalid script.
     </div>
 
-    <footer class="footer">
-        The Institute of Board is an independent, <strong>non-accredited</strong> educational institution.<br>
-        Not registered with the Department of Higher Education and Training (DHET) or Umalusi.<br><br>
-        Contact: n1nathaniel971@gmail.com &nbsp;·&nbsp; +27 60 958 3089
-    </footer>
+    <div style="margin-top:20px;">
+      <h3 style="font-family:Arial,sans-serif;font-size:12pt;color:var(--maroon);margin-bottom:8px;">Preparation Checklist</h3>
+      <ul style="margin-left:18px;font-size:10.5pt;line-height:1.7;">
+        <li>Read the practice papers (see Resources → Mock Papers).</li>
+        <li>Review the official subject guidelines for paper structure and rubric.</li>
+        <li>Test your camera and internet connection the day before.</li>
+        <li>Print the Answer Book template and have spare ink on hand.</li>
+        <li>Memorise your Student ID and Security Code.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ae-timetable.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END</div>
+  </div>
+</div>
 
 <script>
-    lucide.createIcons();
+(function () {
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/ae-timetable.html");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  var tries = 0;
+  (function attempt() {
+    tries++;
+    var okQ = typeof qrcode === "function";
+    if (okQ) makeQRCodes();
+    if (!okQ && tries < 40) setTimeout(attempt, 150);
+  })();
+  window.addEventListener("load", makeQRCodes);
+})();
 </script>
 </body>
 </html>
