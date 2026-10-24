@@ -28,7 +28,7 @@
   .page { 
     width: 210mm; 
     height: 297mm; 
-    padding: 15mm 20mm 25mm 20mm; 
+    padding: 15mm 20mm 30mm 20mm; /* Extra bottom padding for barcode */
     margin: 15px auto; 
     position: relative; 
     background: white; 
@@ -97,6 +97,18 @@
   .footer-brand .tag { font-size: 7pt; color: #000; }
   .footer-right { color: #000; font-style: italic;}
 
+  /* MIDDLE BARCODE FOOTER */
+  .bottom-barcode {
+    position: absolute;
+    bottom: 10mm;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .bottom-barcode svg {
+    display: block;
+  }
+
   /* ========================================= */
   /* COVER PAGE SPECIFIC                       */
   /* ========================================= */
@@ -155,11 +167,26 @@
     font-size: 13pt;
     font-weight: bold;
     margin-left: 10px;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
     font-family: Arial, sans-serif;
     color: #111;
   }
   .cover-marks div { margin-bottom: 10px; }
+  
+  /* Cover Barcode Section */
+  .cover-barcode-section {
+    margin-left: 10px;
+    font-family: Arial, sans-serif;
+    color: #111;
+  }
+  .cover-barcode-section .code-x01 {
+    font-size: 18pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .cover-barcode-section svg {
+    display: block;
+  }
 
   .cover-bottom-text {
     text-align: center;
@@ -287,6 +314,12 @@
       <div>TIME: 2 hours</div>
     </div>
 
+    <!-- Added X01 and Barcode -->
+    <div class="cover-barcode-section">
+      <div class="code-x01">X01</div>
+      <svg class="barcode-cover" data-barcode="X01-MATH-2027" data-bc-width="2.4" data-bc-height="50" data-bc-display="false"></svg>
+    </div>
+
     <div class="cover-bottom-text">
       This question paper consists of 5 pages, 1 information sheet and<br>an answer book of 23 pages.
     </div>
@@ -295,7 +328,7 @@
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
@@ -336,14 +369,18 @@
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
 </div>
 
-<!-- ==================== PAGE 3: QUESTION 1 (Pure Algebra) ==================== -->
+<!-- ==================== PAGE 3: QUESTION 1 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
@@ -364,34 +401,18 @@
     <div class="question-item">
       <div class="question-number">1.1</div>
       <div class="question-content">
-        The function \(q\) is defined as
+        Solve for \(x\):
         <div class="math-display">
-          \(q(x) = \sqrt{x - \sqrt{x - \sqrt{x - \dots}}}\) &nbsp;&nbsp;&nbsp; with \(x > 0\) and \(q(x) > 0\)
+          \(2^{2x+1} - 5 \cdot 2^x + 2 = 0\)
         </div>
       </div>
-    </div>
-
-    <div class="nested-questions">
-      <div class="nested-item">
-        <div class="question-number">1.1.1</div>
-        <div class="question-content">
-          Show that \(q(x) = \dfrac{\sqrt{4x + 1} - 1}{2}\).
-        </div>
-        <div class="marks">(4)</div>
-      </div>
-      <div class="nested-item">
-        <div class="question-number">1.1.2</div>
-        <div class="question-content">
-          Hence, determine the value of \(x\) if \([q(x)]^2 + q(x) = 12\).
-        </div>
-        <div class="marks">(4)</div>
-      </div>
+      <div class="marks">(4)</div>
     </div>
 
     <div class="question-item" style="margin-top: 20px;">
       <div class="question-number">1.2</div>
       <div class="question-content">
-        Solve the following equations:
+        Solve for \(x\):
       </div>
     </div>
 
@@ -422,7 +443,7 @@
         <div class="question-content">
           \(\dfrac{x - 1}{x + 3} \geq \dfrac{x}{x - 2}\)
         </div>
-        <div class="marks">(4)</div>
+        <div class="marks">(5)</div>
       </div>
       <div class="nested-item">
         <div class="question-number">1.2.5</div>
@@ -436,41 +457,32 @@
     <div class="question-item" style="margin-top: 20px;">
       <div class="question-number">1.3</div>
       <div class="question-content">
-        Two numbers have a product of 27. The second number is the square of the first number. It is also given that the sum of the two numbers is less than 20. Calculate the values of the first and second numbers.
-      </div>
-      <div class="marks">(5)</div>
-    </div>
-
-    <div class="question-item" style="margin-top: 20px;">
-      <div class="question-number">1.4</div>
-      <div class="question-content">
-        Determine the value(s) of \(k\) for which the quadratic equation \(kx^2 + (k+2)x + 1 = 0\) has equal roots.
+        Solve for \(x\):
+        <div class="math-display">
+          \(\sqrt{2x + 5} - x = 1\)
+        </div>
       </div>
       <div class="marks">(4)</div>
     </div>
 
-    <div class="question-item" style="margin-top: 20px;">
-      <div class="question-number">1.5</div>
-      <div class="question-content">
-        Given the cubic equation \(x^3 - 3x^2 - 9x + 5 = 0\). Determine the value(s) of \(k\) for which the equation \(x^3 - 3x^2 - 9x + 5 = k\) has three distinct real roots.
-      </div>
-      <div class="marks">(5)</div>
-    </div>
-
-    <div class="total-marks">[45]</div>
+    <div class="total-marks">[32]</div>
 
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
 </div>
 
-<!-- ==================== PAGE 4: QUESTION 2 (Functions) ==================== -->
+<!-- ==================== PAGE 4: QUESTION 2 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
@@ -488,8 +500,26 @@
       <h2>QUESTION 2</h2>
     </div>
 
+    <!-- Nature of Roots moved here -->
     <div class="question-item">
       <div class="question-number">2.1</div>
+      <div class="question-content">
+        Determine the value(s) of \(k\) for which the quadratic equation \(kx^2 + (k+2)x + 1 = 0\) has equal roots.
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.2</div>
+      <div class="question-content">
+        Given the cubic equation \(x^3 - 3x^2 - 9x + 5 = 0\). Determine the value(s) of \(k\) for which the equation \(x^3 - 3x^2 - 9x + 5 = k\) has three distinct real roots.
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <!-- Parabola Diagram -->
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.3</div>
       <div class="question-content">
         The sketch below shows the functions \(f(x) = -x^2 + 4x + 5\) and \(g(x) = x^2 - 4x - 5\). The points of intersection are \(A\) and \(B\).
         
@@ -499,36 +529,49 @@
 
     <div class="nested-questions">
       <div class="nested-item">
-        <div class="question-number">2.1.1</div>
+        <div class="question-number">2.3.1</div>
         <div class="question-content">Determine the coordinates of the turning point of \(f\).</div>
         <div class="marks">(4)</div>
       </div>
       <div class="nested-item">
-        <div class="question-number">2.1.2</div>
+        <div class="question-number">2.3.2</div>
         <div class="question-content">Calculate the coordinates of the points of intersection \(A\) and \(B\).</div>
         <div class="marks">(5)</div>
       </div>
       <div class="nested-item">
-        <div class="question-number">2.1.3</div>
+        <div class="question-number">2.3.3</div>
         <div class="question-content">Determine the maximum vertical distance between the graphs of \(f\) and \(g\).</div>
         <div class="marks">(6)</div>
       </div>
     </div>
+    
+    <!-- Word problem moved here -->
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.4</div>
+      <div class="question-content">
+        Two numbers have a product of 27. The second number is the square of the first number. It is also given that the sum of the two numbers is less than 20. Calculate the values of the first and second numbers.
+      </div>
+      <div class="marks">(5)</div>
+    </div>
 
-    <div class="total-marks">[15]</div>
+    <div class="total-marks">[29]</div>
 
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
 </div>
 
-<!-- ==================== PAGE 5: QUESTION 3 (Calculus & Applications) ==================== -->
+<!-- ==================== PAGE 5: QUESTION 3 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
@@ -608,10 +651,14 @@
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
@@ -662,21 +709,40 @@
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">END</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
 <script>
 (function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "X01-MATH-2027", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: 12, textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  
   function makeQRCodes() {
     if (typeof qrcode !== "function") return;
     document.querySelectorAll(".footer-qr").forEach(function (el) {
       try {
         var qr = qrcode(0, "M");
-        qr.addData(el.dataset.qr || "https://ifb.dev");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/practice-paper-math.html");
         qr.make();
         el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
       } catch (e) { console.warn(e); }
@@ -689,9 +755,11 @@
     var tries = 0;
     (function attempt() {
       tries++;
+      var okB = typeof JsBarcode === "function";
       var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
       if (okQ) makeQRCodes();
-      if (!okQ && tries < 40) setTimeout(attempt, 150);
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
     })();
     
     // --- Q2 Diagram: Quadratic & Negative Quadratic ---
@@ -743,6 +811,10 @@
         html += `</svg>`;
         svg2.innerHTML = html;
     }
+  });
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
   });
 })();
 </script>
