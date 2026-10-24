@@ -48,18 +48,29 @@
     .select-option:hover { background: #FAFAFA; }
     .select-option.selected { background: #FFF5F6; color: var(--maroon); font-weight: 700; }
 
-    /* COURSE CAROUSEL */
-    .course-carousel { display: flex; gap: 16px; overflow-x: auto; padding: 10px 0 20px; scrollbar-width: none; }
-    .course-carousel::-webkit-scrollbar { display: none; }
-    .course-select-card { 
-        flex: 0 0 240px; border: 2px solid var(--silver); border-radius: 12px; padding: 20px; 
-        cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; position: relative;
+    .country-note { font-size: 12px; color: var(--gray); margin-top: 8px; line-height: 1.5; }
+
+    /* PHONE INPUT WITH CODE */
+    .phone-group { display: flex; gap: 8px; }
+    .phone-code { 
+        width: 90px; text-align: center; padding: 14px 8px; border: 1.5px solid var(--silver); 
+        border-radius: 10px; background: #FAFAFA; font-weight: 700; color: var(--gray); font-family: monospace;
     }
-    .course-select-card:hover { border-color: var(--maroon); }
-    .course-select-card.selected { border-color: var(--maroon); background: #FFF5F6; }
-    .course-select-card.selected::after { content: "✓"; position: absolute; top: 12px; right: 12px; background: var(--maroon); color: var(--white); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
-    .course-select-card h4 { font-size: 16px; font-weight: 800; margin-bottom: 8px; }
-    .course-select-card p { font-size: 13px; color: var(--gray); }
+    .phone-input { flex: 1; }
+
+    /* VERTICAL COURSE LIST WITH CHECKBOXES */
+    .course-list { display: flex; flex-direction: column; gap: 12px; }
+    .course-item { 
+        display: flex; align-items: flex-start; gap: 16px; padding: 20px; 
+        border: 1.5px solid var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; 
+    }
+    .course-item:hover { border-color: var(--maroon); background: #FAFAFA; }
+    .course-item.selected { border-color: var(--maroon); background: #FFF5F6; }
+    .course-item input[type="checkbox"] { 
+        width: 22px; height: 22px; accent-color: var(--maroon); cursor: pointer; margin-top: 2px; flex-shrink: 0;
+    }
+    .course-content h4 { font-size: 16px; font-weight: 800; margin-bottom: 4px; color: var(--black); }
+    .course-content p { font-size: 13px; color: var(--gray); }
 
     .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; margin-top: 10px; }
     .btn:hover { background: var(--maroon-hover); }
@@ -110,34 +121,48 @@
                             <i data-lucide="chevron-down" style="width:16px; height:16px; color:var(--gray);"></i>
                         </div>
                         <div class="select-options" id="countryOptions">
-                            <div class="select-option" data-value="South Africa" onclick="selectCountry(this)">🇿🇦 South Africa</div>
-                            <div class="select-option" data-value="United States" onclick="selectCountry(this)">🇺🇸 United States</div>
-                            <div class="select-option" data-value="United Kingdom" onclick="selectCountry(this)">🇬🇧 United Kingdom</div>
-                            <div class="select-option" data-value="Nigeria" onclick="selectCountry(this)">🇳🇬 Nigeria</div>
-                            <div class="select-option" data-value="Kenya" onclick="selectCountry(this)">🇰🇪 Kenya</div>
-                            <div class="select-option" data-value="India" onclick="selectCountry(this)">🇮🇳 India</div>
-                            <div class="select-option" data-value="Australia" onclick="selectCountry(this)">🇦🇺 Australia</div>
-                            <div class="select-option" data-value="Other" onclick="selectCountry(this)">🌍 Other / International</div>
+                            <div class="select-option" data-value="South Africa" data-code="+27" onclick="selectCountry(this)">🇿🇦 South Africa</div>
+                            <div class="select-option" data-value="United States" data-code="+1" onclick="selectCountry(this)">🇺🇸 United States</div>
+                            <div class="select-option" data-value="United Kingdom" data-code="+44" onclick="selectCountry(this)">🇬🇧 United Kingdom</div>
+                            <div class="select-option" data-value="Nigeria" data-code="+234" onclick="selectCountry(this)">🇳🇬 Nigeria</div>
+                            <div class="select-option" data-value="Kenya" data-code="+254" onclick="selectCountry(this)">🇰🇪 Kenya</div>
+                            <div class="select-option" data-value="India" data-code="+91" onclick="selectCountry(this)">🇮🇳 India</div>
+                            <div class="select-option" data-value="Australia" data-code="+61" onclick="selectCountry(this)">🇦🇺 Australia</div>
+                            <div class="select-option" data-value="Other" data-code="+" onclick="selectCountry(this)">🌍 Other / Global</div>
                         </div>
                     </div>
+                    <div class="country-note">Courses are optimized for employment in SA, US, UK, and globally remote.</div>
                 </div>
 
                 <div class="row">
                     <div class="form-group"><label>Email Address</label><input type="email" id="email" required autocomplete="off"></div>
-                    <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" required autocomplete="off"></div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="phone-group">
+                            <div class="phone-code" id="phoneCode">+27</div>
+                            <input type="tel" id="phone" class="phone-input" required autocomplete="off">
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group" style="margin-top: 24px;">
-                    <label>Select Courses (Tap to select one or both)</label>
-                    <div class="course-carousel">
-                        <div class="course-select-card" data-course="Mathematics" onclick="toggleCourse(this)">
-                            <h4>Mathematics</h4>
-                            <p>Advanced Mathematics Track</p>
-                        </div>
-                        <div class="course-select-card" data-course="Front-end Web Development" onclick="toggleCourse(this)">
-                            <h4>Front-end Web Development</h4>
-                            <p>Web Development Track</p>
-                        </div>
+                <!-- VERTICAL COURSE LIST -->
+                <div class="form-group" style="margin-top: 32px;">
+                    <label>Select Courses (Tick to select one or both)</label>
+                    <div class="course-list">
+                        <label class="course-item" id="courseMath">
+                            <input type="checkbox" value="Mathematics" onchange="toggleCourse(this)">
+                            <div class="course-content">
+                                <h4>Mathematics</h4>
+                                <p>Advanced Mathematics Track (Algebra, Calculus, Matrices)</p>
+                            </div>
+                        </label>
+                        <label class="course-item" id="courseWeb">
+                            <input type="checkbox" value="Front-end Web Development" onchange="toggleCourse(this)">
+                            <div class="course-content">
+                                <h4>Front-end Web Development</h4>
+                                <p>Master HTML, CSS, JavaScript, React, and UI/UX</p>
+                            </div>
+                        </label>
                     </div>
                 </div>
 
@@ -186,6 +211,7 @@
 
     let selectedCourses = [];
     let selectedCountry = "";
+    let selectedPhoneCode = "+27"; // Default
 
     window.toggleCountryDropdown = function() {
         document.getElementById('countryOptions').classList.toggle('active');
@@ -194,8 +220,11 @@
 
     window.selectCountry = function(el) {
         selectedCountry = el.dataset.value;
+        selectedPhoneCode = el.dataset.code;
+        
         document.getElementById('selectedCountryText').innerText = el.innerText;
         document.getElementById('selectedCountryText').style.color = 'var(--black)';
+        document.getElementById('phoneCode').innerText = selectedPhoneCode;
         
         document.querySelectorAll('.select-option').forEach(o => o.classList.remove('selected'));
         el.classList.add('selected');
@@ -224,14 +253,16 @@
         }
     }
 
-    window.toggleCourse = function(el) {
-        const course = el.dataset.course;
-        if (selectedCourses.includes(course)) {
-            selectedCourses = selectedCourses.filter(c => c !== course);
-            el.classList.remove('selected');
-        } else {
+    window.toggleCourse = function(checkbox) {
+        const course = checkbox.value;
+        const parent = checkbox.closest('.course-item');
+        
+        if (checkbox.checked) {
             selectedCourses.push(course);
-            el.classList.add('selected');
+            parent.classList.add('selected');
+        } else {
+            selectedCourses = selectedCourses.filter(c => c !== course);
+            parent.classList.remove('selected');
         }
     }
 
@@ -242,7 +273,7 @@
         errorBox.style.display = 'none';
 
         if (selectedCourses.length === 0) {
-            errorBox.innerText = "Please select at least one course.";
+            errorBox.innerText = "Please tick at least one course.";
             errorBox.style.display = 'block';
             return;
         }
@@ -258,7 +289,10 @@
         const name = document.getElementById('fullName').value;
         const dobValue = document.getElementById('dob').value;
         const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
+        const phoneNumber = document.getElementById('phone').value;
+        
+        // Combine Phone Code and Number
+        const fullPhone = `${selectedPhoneCode} ${phoneNumber}`;
         
         const dobClean = dobValue.replace(/-/g, ''); 
         const yy = dobClean.substring(2, 4); 
@@ -272,12 +306,13 @@
             const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
             const user = userCredential.user;
 
+            // Small delay for auth token
             await new Promise(resolve => setTimeout(resolve, 500));
 
             await setDoc(doc(db, "users", user.uid), {
                 name: name, 
                 email: email, 
-                phone: phone, 
+                phone: fullPhone, 
                 dob: dobValue, 
                 country: selectedCountry, 
                 studentId: studentId, 
