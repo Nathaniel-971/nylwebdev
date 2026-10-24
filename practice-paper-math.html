@@ -2,102 +2,293 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Document Template — IFB</title>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>IFB Document Template</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); padding: 40px 24px; }
-    
-    /* TOP BAR (Hidden when printing) */
-    .no-print { max-width: 210mm; margin: 0 auto 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .btn-back { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--gray); font-weight: 600; }
-    .btn-print { background: var(--maroon); color: var(--white); padding: 12px 24px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
-    .btn-print:hover { background: var(--maroon-hover); }
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 11pt; line-height: 1.5; color: #111; background: #F8FAFC; }
+  
+  /* A4 PAGE SETUP */
+  .page { width: 210mm; height: 297mm; padding: 15mm 18mm 26mm 18mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; border-top: 4px solid #7A1F2B; }
+  @media print { body { background: white; } .page { margin: 0; box-shadow: none; page-break-after: always; border-top: none; } }
+  
+  /* WATERMARK & SECURITY */
+  .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-30deg); font-size: 96pt; font-weight: 900; color: rgba(122,31,43,0.03); letter-spacing: 18px; pointer-events: none; z-index: 0; white-space: nowrap; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
+  
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; }
+  
+  /* HEADERS & FOOTERS */
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; z-index: 2; height: 34px; flex-shrink: 0; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-subject { font-weight: 700; font-size: 11pt; letter-spacing: 0.5px; white-space: nowrap; color: #7A1F2B; }
+  .header-barcode { display: inline-block; vertical-align: middle; }
+  .header-barcode svg { display: block; }
+  .header-box { border: 2px solid #7A1F2B; padding: 4px 12px; display: flex; align-items: center; gap: 14px; background: white; height: 30px; border-radius: 4px; }
+  .header-code { font-weight: 700; font-size: 10.5pt; letter-spacing: 0.5px; color: #7A1F2B; }
+  .header-divider { width: 1.6px; height: 18px; background: #7A1F2B; }
+  .header-page { font-weight: 700; font-size: 11.5pt; min-width: 18px; text-align: center; color: #7A1F2B; }
+  
+  .footer { position: absolute; bottom: 10mm; left: 18mm; right: 18mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; border-top: 1px solid #E2E8F0; padding-top: 10px; }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 42px; height: 42px; }
+  .footer-qr svg { display: block; width: 42px; height: 42px; }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.15; }
+  .footer-brand .name { font-size: 8pt; font-weight: 800; color: #7A1F2B; letter-spacing: 1px; }
+  .footer-brand .tag { font-size: 7pt; font-weight: 400; color: #666; letter-spacing: 0.4px; }
+  .footer-right { font-size: 9pt; color: #666; font-style: italic; }
+  
+  /* COVER PAGE */
+  .cover-brand { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; margin-bottom: 20px; text-align: center; }
+  .cover-logo { width: 120px; height: 120px; background: #7A1F2B; color: white; font-size: 70px; font-weight: 900; display: grid; place-items: center; border-radius: 20px; margin-bottom: 20px; font-family: 'Courier New', monospace; }
+  .cover-brand-text .brand { font-size: 28pt; font-weight: 800; color: #7A1F2B; letter-spacing: 1.5px; line-height: 1; }
+  .cover-brand-text .sub { font-size: 11pt; color: #111; font-weight: 700; letter-spacing: 3px; margin-top: 6px; }
+  .cover-brand-text .tagline { font-size: 9pt; color: #666; font-style: italic; margin-top: 10px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  
+  .cover-subject-box { background: #FFF5F6; border: 3px solid #7A1F2B; padding: 24px 20px; text-align: center; margin: 40px auto 0 auto; max-width: 80%; border-radius: 10px; }
+  .cover-subject-box .subject { font-weight: 800; font-size: 24pt; letter-spacing: 2px; line-height: 1.2; color: #7A1F2B; }
+  .cover-subject-box .subline { font-weight: 700; font-size: 12pt; letter-spacing: 2px; margin-top: 10px; color: #111; }
+  
+  .cover-meta { display: flex; justify-content: space-between; margin-top: 50px; font-size: 10.5pt; padding: 0 10px; }
+  .cover-meta .left { text-align: left; }
+  .cover-meta .right { text-align: right; }
+  .cover-meta .label { font-weight: 700; font-size: 10pt; letter-spacing: 0.4px; color: #7A1F2B; }
+  .cover-meta .barcode-block { margin: 6px 0 2px 0; }
+  .cover-meta .code-id { font-family: 'Courier New', monospace; font-size: 17pt; font-weight: 700; letter-spacing: 3px; }
+  .cover-meta .right .row { margin-bottom: 8px; }
+  .cover-meta .right .row strong { display: inline-block; min-width: 60px; }
 
-    /* A4 PAGE SETUP */
-    .a4-page { 
-        background: var(--white); width: 100%; max-width: 210mm; min-height: 297mm; 
-        margin: 0 auto; padding: 25mm 20mm; border: 1px solid var(--silver); 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; 
-    }
-    
-    /* HEADER */
-    .doc-header { text-align: center; border-bottom: 2px solid var(--maroon); padding-bottom: 20px; margin-bottom: 32px; }
-    .doc-logo { font-size: 40px; font-weight: 900; color: var(--maroon); margin-bottom: 8px; }
-    .doc-header h1 { font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--black); margin-bottom: 4px; }
-    .doc-header p { font-size: 13px; font-weight: 700; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
-
-    /* CONTENT AREA */
-    .content { font-size: 15px; line-height: 1.8; color: var(--black); }
-    .content h2 { font-size: 18px; font-weight: 800; margin: 24px 0 12px; color: var(--maroon); border-bottom: 1px solid var(--silver); padding-bottom: 4px; }
-    .content p { margin-bottom: 16px; }
-    .content ul { margin-left: 24px; margin-bottom: 16px; }
-    .content li { margin-bottom: 8px; }
-    
-    /* FOOTER */
-    .doc-footer { 
-        position: absolute; bottom: 20mm; left: 20mm; right: 20mm; 
-        display: flex; justify-content: space-between; align-items: center;
-        border-top: 1px solid var(--silver); padding-top: 12px;
-        font-size: 11px; color: var(--gray); font-weight: 600; text-transform: uppercase;
-    }
-
-    /* PRINT STYLES */
-    @media print {
-        body { background: #fff; padding: 0; }
-        .no-print { display: none !important; }
-        .a4-page { border: none; box-shadow: none; padding: 0; margin: 0; min-height: 100vh; }
-        .doc-footer { position: fixed; bottom: 10mm; }
-    }
+  /* CONTENT STYLING */
+  .instructions { margin-top: 14px; flex: 1; }
+  .instructions h2 { font-size: 12pt; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; text-align: left; color: #7A1F2B; border-bottom: 1px solid #E2E8F0; padding-bottom: 6px;}
+  .instructions .subtitle { font-size: 10pt; font-style: italic; margin-bottom: 14px; text-align: left; color: #666; }
+  .instructions ol { margin-left: 22px; }
+  .instructions li { margin-bottom: 6px; text-align: justify; font-size: 10.5pt; }
+  
+  .question-header { margin: 10px 0 12px 0; }
+  .question-header h2 { font-size: 13pt; font-weight: 700; color: #7A1F2B; }
+  .question-text { margin-bottom: 12px; text-align: justify; font-size: 11pt; line-height: 1.55; }
+  .sub-questions { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+  .question-item { display: flex; align-items: flex-start; gap: 14px; page-break-inside: avoid; }
+  .question-number { font-weight: 700; font-size: 11pt; width: 62px; flex-shrink: 0; color: #7A1F2B; }
+  .question-content { flex: 1; min-width: 0; font-size: 11pt; line-height: 1.55; }
+  .marks { font-weight: 700; font-size: 11pt; width: 40px; flex-shrink: 0; text-align: right; }
+  .total-marks { text-align: right; font-weight: 700; margin-top: 16px; font-size: 12pt; color: #7A1F2B; border-top: 1px solid #E2E8F0; padding-top: 8px; }
+  
+  /* INFO SHEET HEADER */
+  .info-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 6px 0; border-bottom: 2px solid #7A1F2B; }
+  .info-header-left { display: flex; align-items: center; gap: 14px; }
+  .info-header-subject { font-weight: 800; font-size: 12pt; letter-spacing: 1px; color: #7A1F2B; }
+  .info-header-barcode { display: inline-block; }
+  .info-header-barcode svg { display: block; }
+  .info-header-right { font-family: 'Courier New', monospace; font-weight: 800; font-size: 13pt; letter-spacing: 1.5px; padding: 2px 12px; border: 2px solid #7A1F2B; color: #7A1F2B; border-radius: 4px;}
+  .info-title { text-align: center; font-weight: 800; font-size: 13.5pt; letter-spacing: 2.5px; margin: 16px 0 18px 0; text-transform: uppercase; color: #111; }
+  
+  .formula-sheet { font-family: 'Cambria Math', 'Times New Roman', serif; font-size: 11pt; line-height: 1.85; }
+  .formula-row { display: flex; justify-content: space-between; margin-bottom: 10px; gap: 16px; align-items: center; }
+  .formula-row.single > div { width: 100%; }
+  .formula-row.two > div { width: 48%; }
+  .formula-row.three > div { width: 31%; }
+  .formula-row.four > div { width: 23%; }
 </style>
 </head>
 <body>
 
-    <!-- UI Controls (Not Printed) -->
-    <div class="no-print">
-        <a href="resources.html" class="btn-back"><i data-lucide="arrow-left"></i> Back to Resources</a>
-        <button class="btn-print" onclick="window.print()"><i data-lucide="printer"></i> Save as PDF</button>
+<!-- ==================== COVER PAGE ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="watermark">IFB 2027</div>
+  <div class="content-wrapper">
+    
+    <div class="cover-brand">
+      <div class="cover-logo">∆</div>
+      <div class="cover-brand-text">
+        <div class="brand">INSTITUTE OF BOARD</div>
+        <div class="sub">OFFICIAL DOCUMENT</div>
+        <div class="tagline">Rigorous, university-level training. Non-accredited academic institution.</div>
+      </div>
+    </div>
+    
+    <div class="cover-subject-box">
+      <!-- CHANGE THIS TO THE DOCUMENT TITLE -->
+      <div class="subject">DOCUMENT TITLE</div>
+      <div class="subline">2027 ACADEMIC YEAR</div>
+    </div>
+    
+    <div class="cover-meta">
+      <div class="left">
+        <div class="label">DOCUMENT ID</div>
+        <div class="barcode-block"><svg class="barcode-cover" data-barcode="IFB-2027-DOC" data-bc-width="2.4" data-bc-height="52" data-bc-display="false"></svg></div>
+        <div class="code-id">IFB-2027-DOC</div>
+      </div>
+      <div class="right">
+        <div class="row"><strong>TYPE:</strong> Official</div>
+        <div class="row"><strong>PAGES:</strong> 1 of 1</div>
+        <div class="row">Non-Accredited</div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== CONTENT PAGE (Duplicate this block for multiple pages) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="watermark">IFB 2027</div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">
+        <span class="header-subject">DOCUMENT TITLE</span>
+        <span class="header-barcode"><svg class="barcode-header" data-barcode="IFB-2027-DOC" data-bc-width="1.2" data-bc-height="22" data-bc-display="false"></svg></span>
+      </div>
+      <div class="header-box">
+        <span class="header-code">IFB-2027-DOC</span>
+        <span class="header-divider"></span>
+        <span class="header-page">2</span>
+      </div>
     </div>
 
-    <!-- The A4 Document -->
-    <div class="a4-page">
-        
-        <div class="doc-header">
-            <div class="doc-logo">∆</div>
-            <!-- CHANGE THIS TITLE TO MATCH THE DOCUMENT -->
-            <h1>Practice Question Paper: Mathematics</h1>
-            <p>Institute of Board · 2027 Academic Year</p>
-        </div>
-
-        <div class="content">
-            <!-- ADD YOUR CONTENT HERE -->
-            <h2>Instructions</h2>
-            <p>1. Answer all questions in the provided answer book.</p>
-            <p>2. Show all calculations and working clearly.</p>
-            <p>3. Calculators are permitted unless stated otherwise.</p>
-            <p>4. This paper consists of 150 marks.</p>
-
-            <h2>Question 1</h2>
-            <p>Solve for x: <strong>2x² - 5x - 3 = 0</strong></p>
-            <p><em>(4 marks)</em></p>
-
-            <h2>Question 2</h2>
-            <p>Calculate the derivative of <strong>f(x) = 3x³ - 2x² + 5x - 7</strong></p>
-            <p><em>(3 marks)</em></p>
-        </div>
-
-        <div class="doc-footer">
-            <span>Non-Accredited Institution</span>
-            <span>Page 1</span>
-        </div>
-
+    <div class="instructions">
+      <h2>INSTRUCTIONS AND INFORMATION</h2>
+      <div class="subtitle">Read the following instructions carefully before proceeding.</div>
+      <ol>
+        <li>This document contains important information regarding your curriculum.</li>
+        <li>Please read all sections carefully and retain this document for your records.</li>
+        <li>Ensure all calculations or written answers are clearly shown.</li>
+        <li>Non-programmable calculators may be used where applicable.</li>
+        <li>Round off answers to TWO decimal places, unless stated otherwise.</li>
+        <li>Write neatly and legibly.</li>
+      </ol>
     </div>
+
+    <!-- CONTENT STARTS HERE -->
+    <div class="question-header"><h2>SECTION 1: DOCUMENT CONTENT</h2></div>
+    <div class="question-text">
+      You can replace this text with the actual content of your document. The layout automatically handles spacing and margins to ensure it prints perfectly on an A4 page.
+    </div>
+
+    <div class="sub-questions">
+      <div class="question-item">
+        <div class="question-number">1.1</div>
+        <div class="question-content">This is a placeholder for a sub-question or a specific point of information.</div>
+        <div class="marks">(5)</div>
+      </div>
+      <div class="question-item">
+        <div class="question-number">1.2</div>
+        <div class="question-content">If you are including mathematical equations, you can use MathJax: $E = mc^2$ or display blocks: $$\int_0^\infty e^{-x} dx = 1$$</div>
+        <div class="marks">(10)</div>
+      </div>
+    </div>
+    <div class="total-marks">TOTAL: 15</div>
+    <!-- CONTENT ENDS HERE -->
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== INFORMATION SHEET (Optional - Remove if not needed) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="watermark">IFB 2027</div>
+  <div class="content-wrapper">
+    
+    <div class="info-header">
+      <div class="info-header-left">
+        <span class="info-header-subject">DOCUMENT TITLE</span>
+        <span class="info-header-barcode"><svg class="barcode-header" data-barcode="IFB-2027-DOC" data-bc-width="1.4" data-bc-height="26" data-bc-display="false"></svg></span>
+      </div>
+      <div class="info-header-right">IFB-2027-DOC</div>
+    </div>
+    
+    <div class="info-title">INFORMATION SHEET</div>
+    
+    <div class="formula-sheet">
+      <div class="formula-row single"><div>$x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</div></div>
+      <div class="formula-row two">
+        <div>$A = P(1 + ni)$</div>
+        <div>$A = P(1 - i)^n$</div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb.dev"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END</div>
+  </div>
+</div>
 
 <script>
-    lucide.createIcons();
+(function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-cover, .barcode-header").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "IFB-2027-DOC", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "2"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: 12, textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://ifb.dev");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+  window.addEventListener("load", function () {
+    makeBarcodes(); makeQRCodes();
+  });
+})();
 </script>
 </body>
 </html>
