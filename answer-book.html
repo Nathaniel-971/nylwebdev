@@ -15,7 +15,12 @@
 <style>
   @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; }
+  html, body { 
+    width: 100%; 
+    /* Ensures colors and backgrounds are printed/downloaded deeply */
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact; 
+  }
   body { 
     font-family: Arial, sans-serif; 
     font-size: 11.5pt; 
@@ -73,7 +78,7 @@
     display: flex; 
     flex-direction: column; 
     flex: 1;
-    padding-bottom: 30mm; 
+    padding-bottom: 30mm; /* Protection against footer overlap */
   }
   
   /* EXAM HEADERS */
@@ -89,23 +94,8 @@
   .header-left { width: 30%; text-align: left; font-weight: bold; color: #000; }
   .header-center { width: 40%; text-align: center; }
   .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
-  .header-center .confidential { font-style: italic; font-weight: bold; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: #7A1F2B; }
   .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
-
-  /* LEFT SPINE TEXT */
-  .spine-text {
-    position: absolute;
-    left: 5mm;
-    top: 50%;
-    transform: translateY(-50%) rotate(-90deg);
-    color: #999;
-    font-size: 10pt;
-    letter-spacing: 2px;
-    white-space: nowrap;
-    text-transform: uppercase;
-    font-family: Arial, sans-serif;
-    z-index: 2;
-  }
 
   /* FOOTER */
   .footer { 
@@ -125,7 +115,7 @@
   .footer-qr { display: inline-block; width: 35px; height: 35px; }
   .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
   .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
-  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #7A1F2B; }
   .footer-brand .tag { font-size: 7pt; color: #000; }
   .footer-right { color: #000; font-style: italic;}
 
@@ -155,52 +145,71 @@
   .cover-header-text .title { font-size: 28px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px; line-height: 1;}
   .cover-header-text .sub { font-size: 11pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
   
+  /* Barcode & Sequence Layout */
+  .top-right-container {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+  }
+
   .candidate-barcode-box {
     border: 2px dashed #000;
     padding: 10px;
-    width: 35%;
+    width: 150px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 80px;
   }
-  .candidate-barcode-box .circle {
-    width: 40px;
-    height: 40px;
-    border: 2px solid #000;
-    border-radius: 50%;
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 8pt;
-    text-align: center;
-    line-height: 1.1;
-  }
   .candidate-barcode-box .label {
     font-size: 9pt;
     font-weight: bold;
     text-align: center;
   }
-
-  .answer-book-title {
+  
+  .sequence-circle-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+  }
+  .sequence-circle {
+    width: 50px;
+    height: 50px;
     border: 2px solid #000;
+    border-radius: 50%;
+  }
+  .sequence-text {
+    font-size: 8pt;
+    text-align: center;
+    margin-top: 5px;
+    line-height: 1.1;
+  }
+
+  /* Title */
+  .answer-book-title {
+    border: 2px solid #7A1F2B;
     border-radius: 10px;
     padding: 15px;
     text-align: center;
     font-size: 22pt;
     font-weight: bold;
     font-style: italic;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     width: 60%;
+    background-color: #FFF5F6;
+  }
+  .answer-book-title span {
+    color: #7A1F2B;
   }
 
-  /* Form Grids & Blocks */
+  /* Form Grids & Inputs */
   .form-row {
     display: flex;
     gap: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
   }
   .form-box {
     border: 2px solid #000;
@@ -215,22 +224,29 @@
     font-weight: bold;
     margin-bottom: 5px;
     text-transform: uppercase;
+    color: #7A1F2B;
   }
   
-  /* Block Input Style */
-  .block-container {
+  /* Simple Input Style (No blocks inside blocks) */
+  .input-container {
     display: flex;
-    gap: 2px;
+    gap: 5px;
+    align-items: flex-end;
   }
-  .block {
-    width: 20px;
+  .input-box {
+    width: 25px;
     height: 25px;
-    border: 1px solid #000;
-    background-color: #f8f8f8;
+    border-bottom: 2px solid #000;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12pt;
   }
   .input-line {
-    border-bottom: 1px solid #ccc;
-    height: 20px;
+    border-bottom: 2px solid #000;
+    height: 25px;
     width: 100%;
   }
 
@@ -239,7 +255,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 9.5pt;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
   .marking-table th, .marking-table td {
     border: 1.5px solid #000;
@@ -247,12 +263,12 @@
     text-align: center;
   }
   .marking-table th {
-    background-color: #eee;
+    background-color: #f0f0f0;
     font-weight: bold;
     font-size: 8.5pt;
   }
   .marking-table td {
-    height: 24px;
+    height: 22px;
   }
 
   /* ========================================= */
@@ -279,33 +295,33 @@
   /* ========================================= */
   /* PAGE 3+: ANSWER SPACE                     */
   /* ========================================= */
-  .lines-container {
+  .classic-answer-page {
+    border: 2px solid #000;
+    flex: 1;
     display: flex;
-    flex-direction: column;
     width: 100%;
     margin-bottom: 20px;
+    position: relative;
   }
-  .line-row {
-    display: flex;
-    border: 1px solid #000;
-    border-bottom: none;
-  }
-  .line-row:last-child {
-    border-bottom: 1px solid #000;
-  }
-  .line-writing-area {
+  
+  .writing-area {
     flex: 1;
-    height: 35px;
-    border-right: 1px solid #000;
+    border-right: 2px solid #000;
     background-image: linear-gradient(to bottom, transparent 34px, #ccc 34px);
+    background-size: 100% 35px;
   }
-  .line-marks-area {
+  
+  .marks-area {
     width: 60px;
-    text-align: center;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    padding-top: 10px;
     font-size: 10pt;
+    font-weight: bold;
+    color: #666;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
   }
 
 </style>
@@ -323,7 +339,7 @@
   
   <div class="content-wrapper">
     
-    <!-- Header with IFB Branding & Barcode Box -->
+    <!-- Header with IFB Branding, Barcode Box & Sequence Circle -->
     <div class="cover-header-container">
       <div class="cover-brand">
         <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -333,32 +349,38 @@
         </svg>
         <div class="cover-header-text">
           <div class="title">Institute of Board</div>
-          <div class="sub">Department:<br>Academic Assessment<br>NON-ACCREDITED ACADEMIC INSTITUTION</div>
+          <div class="sub">Department:<br>Examination Board<br>NON-ACCREDITED ACADEMIC INSTITUTION</div>
         </div>
       </div>
-      <div class="candidate-barcode-box">
-        <div class="circle">Write</div>
-        <div class="label">Student Barcode Label</div>
+      
+      <div class="top-right-container">
+        <div class="candidate-barcode-box">
+          <div class="label">Candidate Barcode Label<br>(Paste Here)</div>
+        </div>
+        <div class="sequence-circle-container">
+          <div class="sequence-circle"></div>
+          <div class="sequence-text">Sequence<br>No.</div>
+        </div>
       </div>
     </div>
 
     <!-- Title -->
     <div class="answer-book-title">
-      IFB Answer Book
+      <span>IFB</span> Answer Book
     </div>
 
-    <!-- Form Fields using Blocks -->
+    <!-- Form Fields using simple input boxes (No blocks inside blocks) -->
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Student ID</label>
-        <div class="block-container">
-          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        <div class="input-container">
+          <div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div>
         </div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Security Code</label>
-        <div class="block-container">
-          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        <div class="input-container">
+          <div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div>
         </div>
       </div>
     </div>
@@ -366,30 +388,30 @@
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Date</label>
-        <div class="block-container">
-          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        <div class="input-container">
+          <div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div>
         </div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Book Number</label>
-        <div class="input-line" style="text-align: center; font-weight: bold;">1</div>
+        <div class="input-line" style="text-align: center; font-weight: bold; font-size: 14pt;">1</div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Of</label>
-        <div class="input-line" style="text-align: center; font-weight: bold;">1</div>
+        <div class="input-line" style="text-align: center; font-weight: bold; font-size: 14pt;">1</div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Subject Code</label>
-        <div class="block-container">
-          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        <div class="input-container">
+          <div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div><div class="input-box"></div>
         </div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Paper Number</label>
-        <div class="input-line" style="text-align: center; font-weight: bold;">AE</div>
+        <div class="input-line" style="text-align: center; font-weight: bold; font-size: 14pt;">AE</div>
       </div>
     </div>
 
@@ -400,7 +422,7 @@
       </div>
     </div>
 
-    <div class="form-row" style="margin-bottom: 20px;">
+    <div class="form-row" style="margin-bottom: 15px;">
       <div class="form-box" style="flex: 1; padding: 10px;">
         <label style="margin-bottom: 2px;">Curriculum:</label>
         <div class="input-line" style="height: 25px;"></div>
@@ -467,7 +489,6 @@
 <!-- ==================== PAGE 2: INSTRUCTIONS ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
-  <div class="spine-text">Do not write in spine</div>
   <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
     <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
@@ -523,7 +544,6 @@
     document.write(`
       <div class="page">
         <div class="security-pattern"></div>
-        <div class="spine-text">Do not write in spine</div>
         <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
           <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
@@ -541,21 +561,11 @@
             <div class="header-right">2027</div>
           </div>
 
-          <div class="lines-container">
-    `);
-    
-    // Generate 20 blank lined rows for each page
-    for(let j=0; j<20; j++) {
-      document.write(`
-        <div class="line-row">
-          <div class="line-writing-area"></div>
-          <div class="line-marks-area"></div>
-        </div>
-      `);
-    }
-
-    document.write(`
+          <div class="classic-answer-page">
+            <div class="writing-area"></div>
+            <div class="marks-area">Marks</div>
           </div>
+          
         </div>
         
         <div class="footer">
