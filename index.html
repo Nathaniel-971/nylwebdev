@@ -83,6 +83,18 @@
 
     .hero-logged-in { display: none; }
 
+    /* ADMISSION EXAMS BANNER */
+    .admissions-banner { background: #FFF5F6; border-top: 1px solid var(--silver); border-bottom: 1px solid var(--silver); padding: 60px 24px; text-align: center; }
+    .admissions-banner h2 { font-size: 28px; font-weight: 900; color: var(--maroon); margin-bottom: 30px; }
+    .exam-grid { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+    .exam-card { background: var(--white); border: 2px solid var(--silver); border-radius: 12px; padding: 24px; flex: 1; min-width: 280px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+    .exam-card:hover { border-color: var(--maroon); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+    .exam-info h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .exam-info p { font-size: 14px; color: var(--gray); font-weight: 600; }
+    .exam-date { background: var(--maroon); color: white; padding: 12px 20px; border-radius: 8px; text-align: center; }
+    .exam-date span { display: block; font-size: 20px; font-weight: 900; }
+    .exam-date small { font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+
     .courses-section { padding: 80px 0; background: #FAFAFA; border-top: 1px solid var(--silver); overflow: hidden; }
     .section-header { text-align: center; margin-bottom: 48px; padding: 0 24px; }
     .section-header h2 { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
@@ -146,6 +158,7 @@
         .footer-grid { flex-direction: column; gap: 24px; }
         .footer-links { flex-direction: column; gap: 24px; }
         .modal-content { padding: 32px 20px; }
+        .exam-grid { flex-direction: column; }
     }
 </style>
 </head>
@@ -189,6 +202,7 @@
                     <div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div>
                     <div class="submenu"><div class="submenu-inner">
                         <a href="student-dashboard.html">Dashboard</a>
+                        <a href="resources.html">Academic Resources</a>
                         <a href="documents.html">Public Documents</a>
                     </div></div>
                 </li>
@@ -233,13 +247,39 @@
             
             <div class="hero-buttons hero-logged-out" id="heroLoggedOut">
                 <a href="admission.html" class="btn-lg btn-primary">Apply for Admission</a>
-                <a href="documents.html" class="btn-lg btn-outline">Check Documents</a>
+                <a href="resources.html" class="btn-lg btn-outline">Check Resources</a>
             </div>
 
             <div class="hero-buttons hero-logged-in" id="heroLoggedIn">
-                <a href="student-dashboard.html" class="btn-lg btn-primary">View My Courses</a>
-                <a href="ae-timetable.html" class="btn-lg btn-outline">Check Timetable</a>
-                <a href="documents.html" class="btn-lg btn-outline">View Resources</a>
+                <a href="student-dashboard.html" class="btn-lg btn-primary">Go to Dashboard</a>
+                <a href="exam-scanner.html" class="btn-lg btn-outline">Launch Exam Scanner</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: ADMISSION EXAMINATIONS BANNER -->
+    <section class="admissions-banner">
+        <h2>2027 Admission Examinations</h2>
+        <div class="exam-grid">
+            <div class="exam-card">
+                <div class="exam-info">
+                    <h3>Mathematics</h3>
+                    <p>IFB-AE Examination</p>
+                </div>
+                <div class="exam-date">
+                    <span>13 Jan</span>
+                    <small>2027</small>
+                </div>
+            </div>
+            <div class="exam-card">
+                <div class="exam-info">
+                    <h3>Web Development</h3>
+                    <p>IFB-AE Examination</p>
+                </div>
+                <div class="exam-date">
+                    <span>18 Jan</span>
+                    <small>2027</small>
+                </div>
             </div>
         </div>
     </section>
@@ -251,30 +291,6 @@
         </div>
         
         <div class="carousel-wrapper" id="courseCarousel">
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
-                <div class="course-content">
-                    <h3>Mathematics</h3>
-                    <p>Advanced university-level mathematics. Covers Algebra, Calculus, Matrices, and Geometry.</p>
-                    <div class="course-actions">
-                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
-                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=600&auto=format&fit=crop" alt="Web Development" class="course-image">
-                <div class="course-content">
-                    <h3>Front-end Web Development</h3>
-                    <p>Master HTML, CSS, JavaScript, React, and modern UI/UX. Build real projects.</p>
-                    <div class="course-actions">
-                        <a href="courses-ifb.html" class="btn-course-view">View Prospectus</a>
-                        <a href="admission.html" class="btn-course-apply">Apply Now</a>
-                    </div>
-                </div>
-            </div>
-
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
@@ -312,7 +328,8 @@
                 <div class="footer-col">
                     <h4>Institution</h4>
                     <ul>
-                        <li><a href="documents.html">Prospectus</a></li>
+                        <li><a href="documents.html">Public Documents</a></li>
+                        <li><a href="resources.html">Student Resources</a></li>
                         <li><a href="fund-ifb.html">Sponsor Us</a></li>
                     </ul>
                 </div>
