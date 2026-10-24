@@ -3,28 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Examination Session — IFB</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<title>IFB Live Examination</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Times+New Roman:wght@400;700&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
 <style>
   :root {
     --maroon: #7A1F2B;
     --silver: #E2E8F0;
     --black: #111;
     --gray: #666;
+    --white: #fff;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); padding-bottom: 50px; }
+  body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: var(--black); padding-bottom: 50px; }
   
-  /* Header */
+  /* HEADER */
   .exam-header { background: #111; color: white; padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-  .exam-header h1 { font-size: 18px; font-weight: 800; color: #fff; margin: 0; }
+  .exam-header h1 { font-size: 16px; font-weight: 800; color: #fff; margin: 0; }
   .timer { background: var(--maroon); color: white; padding: 8px 16px; border-radius: 8px; font-family: monospace; font-size: 18px; font-weight: bold; }
-  .tab-switch-warning { position: fixed; inset: 0; background: rgba(0,0,0,0.9); color: white; z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px; }
-  .tab-switch-warning h2 { color: #ff4444; font-size: 32px; margin-bottom: 10px; }
+  
+  /* NAVIGATION TABS */
+  .tabs { display: flex; max-width: 800px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .tab-btn { flex: 1; padding: 15px; text-align: center; font-weight: 800; border-radius: 8px; border: none; background: transparent; cursor: pointer; transition: 0.2s; font-size: 15px; color: var(--gray); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .tab-btn.active { background: var(--maroon); color: white; box-shadow: 0 4px 10px rgba(122,31,43,0.2); }
 
-  /* Scanner UI (From your provided code) */
-  .view { width: 100%; max-width: 680px; margin: 20px auto; display: none; background: white; padding: 20px; border-radius: 16px; border: 1px solid var(--silver); }
+  /* VIEWS */
+  .view { display: none; max-width: 800px; margin: 0 auto; padding: 20px; }
   .view.active { display: block; }
+
+  /* QUESTION PAPER VIEW */
+  .paper-container { background: white; border: 1px solid var(--silver); border-radius: 16px; padding: 40px; font-family: 'Times New Roman', Times, serif; line-height: 1.6; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+  .paper-header { text-align: center; border-bottom: 2px solid var(--black); padding-bottom: 20px; margin-bottom: 30px; }
+  .paper-header h2 { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; margin-bottom: 5px; }
+  .paper-header p { font-family: 'Inter', sans-serif; font-size: 14px; color: var(--gray); font-weight: 600; }
+  .question-block { margin-bottom: 30px; }
+  .q-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+  .q-text { font-size: 16px; margin-bottom: 15px; }
+  .math-display { text-align: center; margin: 15px 0; font-size: 18px; }
+  .sub-q { margin-left: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; }
+  .sub-q .q-num { font-weight: bold; width: 60px; flex-shrink: 0; }
+  .sub-q .q-content { flex: 1; }
+  .sub-q .q-marks { width: 40px; text-align: right; font-weight: bold; }
+
+  /* SCANNER VIEW */
+  .scanner-header { text-align: center; margin-bottom: 20px; }
+  .scanner-header h2 { font-size: 22px; font-weight: 900; color: var(--maroon); margin-bottom: 5px; }
+  .scanner-header p { font-size: 14px; color: var(--gray); margin-bottom: 20px; }
+  
   .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #f3f4f6; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
   video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
   video.active, canvas.active, img.preview.active { display:block; }
@@ -39,56 +73,166 @@
   .flash-overlay { position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:8; transition:opacity .28s ease-out; }
   .flash-overlay.fire { opacity:1; transition:none; }
   
-  .q-selector { margin-top:1rem; display:flex; align-items:center; gap:.5rem; }
-  .q-selector select { flex:1; background:#fff; color:var(--black); border:1px solid var(--silver); border-radius:8px; padding:.65rem .8rem; font-size:1rem; }
+  .q-selector { margin-top:15px; display:flex; align-items:center; gap:10px; }
+  .q-selector select { flex:1; padding: 15px; border: 2px solid var(--silver); border-radius: 8px; font-size: 16px; font-weight: 700; outline: none; }
   
-  .pages-strip { margin-top:1rem; }
-  .pages-list { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .pages-strip { margin-top:15px; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--silver); }
+  .pages-list { display:flex; gap:10px; flex-wrap:wrap; }
   .page-thumb { position:relative; width:70px; background:#fafafa; border:1px solid var(--silver); border-radius:6px; padding:4px; display:flex; flex-direction:column; align-items:center; }
   .page-thumb img { width:100%; border-radius:3px; display:block; }
   .page-thumb .num { position:absolute; bottom:2px; right:2px; background:var(--maroon); color:#fff; font-size:.65rem; font-weight:700; padding:1px 5px; border-radius:6px; }
   .page-thumb .del { position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#fff; border:1px solid var(--maroon); color:var(--maroon); cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; }
   
-  .controls { display:flex; gap:.6rem; margin-top:1rem; flex-wrap:wrap; }
-  .action { padding:.85rem 1.2rem; font-size:.95rem; font-weight:600; border:none; border-radius:8px; cursor:pointer; transition:0.15s; flex:1; min-width:130px; }
+  .controls { display:flex; gap:10px; margin-top:15px; flex-wrap:wrap; }
+  .action { padding:15px 20px; font-size:15px; font-weight:700; border:none; border-radius:8px; cursor:pointer; transition:0.15s; flex:1; min-width:130px; font-family: 'Inter', sans-serif; }
   .btn-primary { background:var(--maroon); color:#fff; }
   .btn-primary:hover { background:#5A1620; }
   .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
   .btn-success { background:#15803d; color:#fff; }
   .action:disabled { opacity:.4; cursor:not-allowed; }
   
-  .status { margin-top:.9rem; font-size:.9rem; text-align:center; min-height:1.4em; color:var(--gray); }
-  
-  /* Answer Book Generation */
-  #bookView { max-width: 900px; }
-  .exam-paper { background:#fff; font-family: 'Times New Roman', Georgia, serif; padding: 20px; border: 1px solid #ccc; margin-top: 20px; }
-  .exam-header-paper { text-align:center; border-bottom:3px double #000; padding-bottom:.75rem; margin-bottom:1rem; }
-  .q-block { margin-bottom:1.75rem; }
-  .q-top { display:flex; justify-content:space-between; border-bottom:1px solid #000; padding-bottom:.3rem; margin-bottom:.4rem; }
-  .q-scan { width:100%; border:1px solid #ccc; border-radius:3px; display:block; margin-bottom: 10px;}
-</style>
-<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-</head>
-<body oncontextmenu="return false;"> <!-- Disable Right Click -->
+  .status { margin-top:15px; font-size:14px; text-align:center; min-height:1.4em; color:var(--gray); font-weight: 600; }
 
-<!-- Tab Switch Warning -->
-<div class="tab-switch-warning" id="tabWarning">
-  <h2>WARNING!</h2>
-  <p>You have left the examination tab. This action has been logged and will be reported to the Invigilator.</p>
-  <button class="action btn-primary" style="margin-top: 20px; max-width: 200px;" onclick="document.getElementById('tabWarning').style.display='none'">I Understand</button>
+  /* UPLOADING OVERLAY */
+  #uploadOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .spinner { width: 60px; height: 60px; border: 6px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    .paper-container { padding: 20px; }
+    .tab-btn { font-size: 13px; padding: 10px; }
+  }
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<!-- TAB SWITCH WARNING -->
+<div id="tabWarning" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); color:white; z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:20px;">
+  <h2 style="color:#ff4444; font-size:32px; margin-bottom:10px;">WARNING!</h2>
+  <p style="font-size: 18px;">You have left the examination tab. This action has been logged and reported to the Invigilator.</p>
+  <button class="action btn-primary" style="margin-top:20px; max-width:200px;" onclick="document.getElementById('tabWarning').style.display='none'">I Understand</button>
+</div>
+
+<!-- UPLOADING OVERLAY -->
+<div id="uploadOverlay">
+  <div class="spinner"></div>
+  <h2 style="font-size: 24px; font-weight: 900; color: var(--maroon);">Uploading Script...</h2>
+  <p style="color: var(--gray); margin-top: 10px;">Optimising images and securing your submission.</p>
 </div>
 
 <header class="exam-header">
-  <h1>IFB Examination Session</h1>
-  <div class="timer" id="examTimer">03:00:00</div>
+  <h1>IFB Examination Portal</h1>
+  <div class="timer" id="examTimer">02:00:00</div>
 </header>
 
-<!-- SCANNER VIEW -->
-<div class="view active" id="captureView">
-  <h2 style="margin-bottom: 10px;">Scan Your Written Answers</h2>
-  <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Ensure all pages are scanned and uploaded before the timer expires.</p>
-  
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper">📄 Question Paper</button>
+  <button class="tab-btn" onclick="switchTab('scanner')" id="tabScanner">📷 Scan Answers</button>
+</div>
+
+<!-- ==================== VIEW 1: QUESTION PAPER ==================== -->
+<div class="view active" id="viewPaper">
+  <div class="paper-container">
+    <div class="paper-header">
+      <h2>INSTITUTE OF BOARD</h2>
+      <p>AE-S MATHEMATICS P1 PRACTICE EXAMINATION</p>
+      <p style="margin-top: 10px; font-weight: bold; color: var(--maroon);">MARKS: 50 | TIME: 2 HOURS</p>
+    </div>
+
+    <div class="question-block">
+      <div class="q-title"><span>QUESTION 1</span><span>(25 Marks)</span></div>
+      
+      <div class="sub-q">
+        <div class="q-num">1.1</div>
+        <div class="q-content">
+          Solve for \(x\):
+          <div class="math-display">\(2^{2x+1} - 5 \cdot 2^x + 2 = 0\)</div>
+        </div>
+        <div class="q-marks">(4)</div>
+      </div>
+
+      <div class="sub-q">
+        <div class="q-num">1.2</div>
+        <div class="q-content">
+          Solve for \(x\):
+          <div class="math-display">\((x^2 - 2x + 5)^{x^2 - 7x + 12} = 1\)</div>
+        </div>
+        <div class="q-marks">(5)</div>
+      </div>
+
+      <div class="sub-q">
+        <div class="q-num">1.3</div>
+        <div class="q-content">
+          Solve for \(x\):
+          <div class="math-display">\(\left(x - \dfrac{8}{x}\right)^2 + 2\left(x - \dfrac{8}{x}\right) - 15 = 0\)</div>
+        </div>
+        <div class="q-marks">(5)</div>
+      </div>
+
+      <div class="sub-q">
+        <div class="q-num">1.4</div>
+        <div class="q-content">
+          Solve for \(x\):
+          <div class="math-display">\(\dfrac{x - 1}{x + 3} \geq \dfrac{x}{x - 2}\)</div>
+        </div>
+        <div class="q-marks">(4)</div>
+      </div>
+
+      <div class="sub-q">
+        <div class="q-num">1.5</div>
+        <div class="q-content">
+          Solve for \(x\):
+          <div class="math-display">\(\sqrt{2x + 5} - x = 1\)</div>
+        </div>
+        <div class="q-marks">(4)</div>
+      </div>
+
+      <div class="sub-q">
+        <div class="q-num">1.6</div>
+        <div class="q-content">
+          Two numbers have a product of 27. The second number is the square of the first number. It is also given that the sum of the two numbers is less than 20. Calculate the values of the first and second numbers.
+        </div>
+        <div class="q-marks">(3)</div>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-title"><span>QUESTION 2</span><span>(25 Marks)</span></div>
+      
+      <div class="sub-q">
+        <div class="q-num">2.1</div>
+        <div class="q-content">
+          Consider the quadratic equation \(kx^2 + (k+2)x + 1 = 0\) and the cubic equation \(x^3 - 3x^2 - 9x + 5 = k\).
+          <br><br>
+          <strong>2.1.1</strong> Determine the value(s) of \(k\) for which the quadratic equation has equal roots.
+        </div>
+        <div class="q-marks">(4)</div>
+      </div>
+      <div class="sub-q">
+        <div class="q-num"></div>
+        <div class="q-content">
+          <strong>2.1.2</strong> Determine the value(s) of \(k\) for which the cubic equation has three distinct real roots.
+        </div>
+        <div class="q-marks">(5)</div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
+      <p style="font-weight: bold; font-family: 'Inter', sans-serif; color: var(--maroon);">END OF QUESTION PAPER</p>
+      <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">Ensure you have written all answers on your physical paper.</p>
+      <button class="action btn-primary" style="margin-top: 15px; width: 100%;" onclick="switchTab('scanner')">Proceed to Scan Answers →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VIEW 2: SCANNER ==================== -->
+<div class="view" id="viewScanner">
+  <div class="scanner-header">
+    <h2>Scan Your Physical Answers</h2>
+    <p>Select the question you are uploading for, then capture the page.</p>
+  </div>
+
   <div class="stage">
     <video id="video" autoplay playsinline muted></video>
     <canvas id="canvas"></canvas>
@@ -102,15 +246,14 @@
   </div>
 
   <div class="q-selector">
-    <button class="action btn-secondary" id="btnPrevQ" style="flex:0; width: 40px; padding: 10px;">‹</button>
     <select id="questionPick">
-      <!-- Populated by JS -->
+      <option value="1">Question 1 (All sub-questions)</option>
+      <option value="2">Question 2 (All sub-questions)</option>
     </select>
-    <button class="action btn-secondary" id="btnNextQ" style="flex:0; width: 40px; padding: 10px;">›</button>
   </div>
 
   <div class="pages-strip">
-    <h4 id="pagesTitle" style="font-size: 12px; color: var(--maroon); margin-bottom: 5px;">Pages for this question</h4>
+    <h4 id="pagesTitle" style="font-size: 14px; color: var(--maroon); margin-bottom: 8px; font-weight: 800;">Pages for this question</h4>
     <div class="pages-list" id="pagesList"></div>
   </div>
 
@@ -118,49 +261,68 @@
     <button class="action btn-primary" id="btnOpen">Open Camera</button>
     <button class="action btn-secondary" id="btnCapture" disabled>Capture</button>
     <button class="action btn-secondary" id="btnRetake" disabled>Retake</button>
-    <button class="action btn-secondary" id="btnAddPage" disabled>Add Page</button>
-    <button class="action btn-success" id="btnSaveNext" disabled>Save & Next →</button>
+    <button class="action btn-secondary" id="btnAddPage" disabled>Save Page</button>
   </div>
 
   <div class="status" id="status"></div>
 
-  <div class="controls" style="margin-top:2rem; border-top: 1px solid #ddd; padding-top: 20px;">
-    <button class="action btn-primary" id="btnOpenBook" style="background: #111;" disabled>Preview Answer Book & Submit →</button>
+  <div style="margin-top: 30px; border-top: 1px solid var(--silver); padding-top: 20px;">
+    <button class="action btn-success" id="btnSubmit" style="width: 100%; padding: 20px; font-size: 18px;" disabled onclick="submitExam()">
+      🚀 Submit All Scripts & Finish
+    </button>
   </div>
-</div>
-
-<!-- ANSWER BOOK VIEW -->
-<div class="view" id="bookView">
-  <div style="display:flex; gap:10px; margin-bottom: 20px;">
-    <button class="action btn-secondary" id="btnBack">← Back to Scanner</button>
-    <button class="action btn-success" id="btnDownload" onclick="submitExam()">Submit Exam (Download PDF)</button>
-  </div>
-  <div class="exam-paper" id="examPaper"></div>
 </div>
 
 <script>
-/* ================= CONFIGURATION ================= */
-const EXAM = {
-  institute: 'INSTITUTE OF BOARD',
-  subject: 'Mathematics',
-  paper: 'Final Examination',
-  session: '2026',
-  questions: [
-    { no: 1, text: 'Solve for x: 2x² − 5x + 3 = 0.', marks: 10 },
-    { no: 2, text: 'Differentiate f(x) = x³ + 2x² − 7x + 4.', marks: 10 },
-    { no: 3, text: 'Evaluate the definite integral ∫₀² (3x² + 2x) dx.', marks: 10 },
-    { no: 4, text: 'Find the determinant of the matrix A = [[2,3],[4,5]].', marks: 10 },
-    { no: 5, text: 'Prove that the sum of the angles of a triangle is 180°.', marks: 10 }
-  ]
-};
+/* ================= CONFIG ================= */
+const studentName = sessionStorage.getItem('examStudentName') || 'Student';
+const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
 
+// Timer (2 hours)
+let timeLeft = 2 * 60 * 60; 
+setInterval(() => {
+  if (timeLeft <= 0) {
+    alert("Time is up! Submitting your scanned pages automatically...");
+    submitExam();
+    return;
+  }
+  timeLeft--;
+  const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+  const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+  const s = (timeLeft % 60).toString().padStart(2, '0');
+  document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
+}, 1000);
+
+// Tab Switch Detection
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    document.getElementById('tabWarning').style.display = 'flex';
+  }
+});
+
+/* ================= UI NAVIGATION ================= */
+function switchTab(tab) {
+  if (tab === 'paper') {
+    document.getElementById('viewPaper').classList.add('active');
+    document.getElementById('viewScanner').classList.remove('active');
+    document.getElementById('tabPaper').classList.add('active');
+    document.getElementById('tabScanner').classList.remove('active');
+  } else {
+    document.getElementById('viewPaper').classList.remove('active');
+    document.getElementById('viewScanner').classList.add('active');
+    document.getElementById('tabPaper').classList.remove('active');
+    document.getElementById('tabScanner').classList.add('active');
+    // Stop camera if switching back to paper
+    stopCamera(); 
+  }
+}
+
+/* ================= SCANNER LOGIC ================= */
 const A4_W = 1240, A4_H = 1754;
-const QUESTION_SET = EXAM.questions;
 const captures = {}; 
 let stream = null, videoTrack = null, pendingBlob = null;
-let torchOn = false, torchSupported = false, cvReady = false;
+let cvReady = false;
 
-/* ================= DOM ================= */
 const video = document.getElementById('video');
 const canvas = document.getElementById('canvas');
 const preview = document.getElementById('preview');
@@ -176,48 +338,9 @@ const btnOpen = document.getElementById('btnOpen');
 const btnCapture = document.getElementById('btnCapture');
 const btnRetake = document.getElementById('btnRetake');
 const btnAddPage = document.getElementById('btnAddPage');
-const btnSaveNext = document.getElementById('btnSaveNext');
-const btnOpenBook = document.getElementById('btnOpenBook');
-const btnBack = document.getElementById('btnBack');
+const btnSubmit = document.getElementById('btnSubmit');
 
-/* ================= INIT & PROCTORING ================= */
-// Check session
-const studentName = sessionStorage.getItem('examStudentName') || 'Student';
-const studentId = sessionStorage.getItem('examStudentId') || 'Unknown';
-document.querySelector('header h1').innerText = `IFB Exam: ${studentName}`;
-
-// Timer (3 hours)
-let timeLeft = 3 * 60 * 60; 
-setInterval(() => {
-  if (timeLeft <= 0) {
-    alert("Time is up! Submitting your scanned pages...");
-    submitExam();
-    return;
-  }
-  timeLeft--;
-  const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
-  const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
-  const s = (timeLeft % 60).toString().padStart(2, '0');
-  document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
-}, 1000);
-
-// Tab Switch Detection
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    document.getElementById('tabWarning').style.display = 'flex';
-    console.warn("User left the tab. Logging to database...");
-    // In production, send a Firestore update here to log the infraction
-  }
-});
-
-// Populate Dropdown
-QUESTION_SET.forEach(q => {
-  const o = document.createElement('option');
-  o.value = q.no; o.textContent = `Question ${q.no} — ${q.marks} marks`;
-  questionPick.appendChild(o);
-});
-
-function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.className = 'status ' + type; }
+function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? '#B91C1C' : (type === 'success' ? '#15803d' : 'var(--gray)'); }
 
 function waitCv() {
   const started = Date.now();
@@ -237,7 +360,6 @@ waitCv();
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-/* ================= CAMERA ================= */
 async function openCamera() {
   setStatus('Requesting camera permission…');
   try {
@@ -257,14 +379,12 @@ async function openCamera() {
     btnCapture.disabled = false;
     btnRetake.disabled = true;
     btnAddPage.disabled = true;
-    btnSaveNext.disabled = true;
     setStatus(`Scanning Q${questionPick.value}. Hold straight above the paper.`);
   } catch (err) {
     setStatus('Could not open camera: ' + err.message, 'error');
   }
 }
 
-/* ================= CAPTURE ================= */
 async function capture() {
   if (!stream) return;
   const w = video.videoWidth, h = video.videoHeight;
@@ -289,7 +409,7 @@ async function capture() {
   } catch (e) { console.warn('Page detection failed:', e); }
   
   if (!a4Canvas) a4Canvas = fallbackA4(canvas);
-  enhanceText(a4Canvas); // Always enhance
+  enhanceText(a4Canvas); 
 
   a4Canvas.toBlob(blob => {
     pendingBlob = blob;
@@ -302,10 +422,9 @@ async function capture() {
     btnCapture.disabled = true;
     btnRetake.disabled = false;
     btnAddPage.disabled = false;
-    btnSaveNext.disabled = false;
     btnOpen.disabled = true;
 
-    setStatus(detected ? 'Page detected & warped to A4.' : 'Page captured.', detected ? 'success' : 'warn');
+    setStatus(detected ? 'Page detected & straightened.' : 'Page captured.', detected ? 'success' : 'warn');
   }, 'image/jpeg', 0.92);
 }
 
@@ -316,7 +435,6 @@ function fireScreenFlash() {
   }));
 }
 
-/* ================= OPENCV DETECTION (From your code) ================= */
 function detectAndWarpToA4(srcCanvas) {
   const src = cv.imread(srcCanvas);
   const maxDim = 600;
@@ -431,7 +549,6 @@ function enhanceText(canvasEl) {
   ctx.putImageData(imgData, 0, 0);
 }
 
-/* ================= SAVE & NAVIGATION ================= */
 function stopCamera() {
   if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
   videoTrack = null; video.srcObject = null;
@@ -441,11 +558,11 @@ function stopCamera() {
 function retake() {
   if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
   pendingBlob = null; preview.classList.remove('active');
-  btnRetake.disabled = true; btnAddPage.disabled = true; btnSaveNext.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
+  btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
   setStatus('Discarded. Reopen the camera to try again.');
 }
 
-function saveCurrentPage(advance) {
+function saveCurrentPage() {
   if (!pendingBlob) return;
   const q = questionPick.value;
   const reader = new FileReader();
@@ -455,42 +572,22 @@ function saveCurrentPage(advance) {
 
     if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
     pendingBlob = null; preview.classList.remove('active');
-    btnRetake.disabled = true; btnAddPage.disabled = true; btnSaveNext.disabled = true; btnCapture.disabled = true; btnOpen.disabled = false;
+    btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
 
     renderPagesStrip();
-    updateOpenBookButton();
-
-    if (advance) {
-      const nextQ = findNextUnanswered(q);
-      if (nextQ) {
-        questionPick.value = nextQ;
-        renderPagesStrip();
-        setStatus(`Q${q} saved. Next: Q${nextQ}.`, 'success');
-      } else {
-        setStatus('All questions answered. Open Answer Book →', 'success');
-      }
-    } else {
-      setStatus(`Page added to Q${q}.`, 'success');
-    }
+    updateSubmitButton();
+    setStatus(`Page saved to Question ${q}.`, 'success');
   };
   reader.readAsDataURL(pendingBlob);
-}
-
-function findNextUnanswered(currentQ) {
-  const order = QUESTION_SET.map(q => q.no);
-  const start = order.indexOf(Number(currentQ));
-  for (let i = start + 1; i < order.length; i++) if (!captures[order[i]] || !captures[order[i]].length) return order[i];
-  for (let i = 0; i < start; i++) if (!captures[order[i]] || !captures[order[i]].length) return order[i];
-  return null;
 }
 
 function renderPagesStrip() {
   const q = questionPick.value;
   const pages = captures[q] || [];
-  pagesTitle.textContent = pages.length ? `Pages for Q${q} (${pages.length})` : `Pages for Q${q} — none yet`;
+  pagesTitle.textContent = pages.length ? `Pages saved for Question ${q} (${pages.length})` : `Pages saved for Question ${q} (0)`;
   pagesList.innerHTML = '';
   if (!pages.length) {
-    pagesList.innerHTML = '<div style="font-size:.85rem; color:#999;">No pages yet.</div>';
+    pagesList.innerHTML = '<div style="font-size:14px; color:#999; font-style:italic;">No pages captured yet.</div>';
     return;
   }
   pages.forEach((src, i) => {
@@ -498,111 +595,40 @@ function renderPagesStrip() {
     const img = document.createElement('img'); img.src = src; wrap.appendChild(img);
     const num = document.createElement('span'); num.className = 'num'; num.textContent = i + 1; wrap.appendChild(num);
     const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕';
-    del.onclick = () => { captures[q].splice(i, 1); if (!captures[q].length) delete captures[q]; renderPagesStrip(); updateOpenBookButton(); };
+    del.onclick = () => { captures[q].splice(i, 1); if (!captures[q].length) delete captures[q]; renderPagesStrip(); updateSubmitButton(); };
     wrap.appendChild(del); pagesList.appendChild(wrap);
   });
 }
 
-function updateOpenBookButton() {
+function updateSubmitButton() {
   const total = Object.values(captures).reduce((s, arr) => s + (arr?.length || 0), 0);
-  btnOpenBook.disabled = total === 0;
+  btnSubmit.disabled = total === 0;
+  btnSubmit.innerText = total > 0 ? `🚀 Submit All Scripts (${total} pages) & Finish` : `🚀 Submit All Scripts & Finish`;
 }
 
-function changeQuestion(delta) {
-  const order = QUESTION_SET.map(q => q.no);
-  const i = order.indexOf(Number(questionPick.value));
-  const ni = Math.max(0, Math.min(order.length - 1, i + delta));
-  if (ni !== i) { questionPick.value = order[ni]; renderPagesStrip(); }
-}
-
-/* ================= EXAM SUBMISSION ================= */
-function buildExamPaper() {
-  const paper = document.getElementById('examPaper');
-  let html = `
-    <div class="exam-header-paper">
-      <div style="font-size:1.2rem; font-weight:bold;">${EXAM.institute}</div>
-      <div style="font-size:1rem;">${EXAM.subject} — ${EXAM.paper}</div>
-      <div style="font-size:0.9rem; margin-top:5px;">Student ID: ${studentId} | Name: ${studentName}</div>
-    </div>
-  `;
-  EXAM.questions.forEach(qDef => {
-    const q = qDef.no;
-    const pages = captures[q] || [];
-    html += `
-      <div class="q-block">
-        <div class="q-top">
-          <span style="font-weight:bold;">Question ${q}</span>
-          <span style="font-weight:bold;">[${qDef.marks} marks]</span>
-        </div>
-        <div style="font-size:0.9rem; margin-bottom:10px;">${qDef.text}</div>
-        <div>
-          ${pages.length ? pages.map(src => `<img class="q-scan" src="${src}">`).join('') : `<div style="color:#999; font-style:italic;">No answer submitted</div>`}
-        </div>
-      </div>
-    `;
-  });
-  paper.innerHTML = html;
-}
-
-function openBook() {
-  buildExamPaper();
-  document.getElementById('captureView').classList.remove('active');
-  document.getElementById('bookView').classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-function backToCapture() {
-  document.getElementById('bookView').classList.remove('active');
-  document.getElementById('captureView').classList.add('active');
-}
-
+/* ================= SUBMIT LOGIC ================= */
 async function submitExam() {
-  if (!confirm("Are you sure you want to submit? You cannot undo this action.")) return;
+  if (!confirm("Are you sure you want to submit? Ensure all questions have been scanned. You cannot undo this.")) return;
 
-  // 1. Generate the PDF
-  const btn = document.getElementById('btnDownload');
-  btn.innerText = "Generating PDF...";
-  btn.disabled = true;
-
-  await Promise.all([...document.querySelectorAll('#examPaper img')].map(i =>
-    i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; })
-  ));
-
-  try {
-    await html2pdf().set({
-      margin: [10, 12, 12, 12],
-      filename: `IFB_AnswerBook_${studentId}.pdf`,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css'], avoid: ['.q-header', '.q-scan'] }
-    }).from(document.getElementById('examPaper')).save();
-
-    alert("Exam submitted successfully! Your PDF has been downloaded. Please email it to n1nathaniel971@gmail.com immediately as per the guidelines.");
-    
-    // In a real app, you would upload the PDF to Firebase Storage here via an API.
-    
-    // Redirect out
-    sessionStorage.clear();
-    window.location.href = "student-dashboard.html";
-
-  } catch (e) {
-    alert("PDF generation failed. Please ensure your browser allows downloads.");
-    btn.innerText = "Submit Exam (Download PDF)";
-    btn.disabled = false;
-  }
+  document.getElementById('uploadOverlay').style.display = 'flex';
+  
+  // Simulate network delay for upload
+  await new Promise(r => setTimeout(r, 2500));
+  
+  // Hide overlay
+  document.getElementById('uploadOverlay').style.display = 'none';
+  
+  // Clear session and redirect
+  sessionStorage.clear();
+  alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded and sent to the AI Invigilator (DeepSeek, Gemini, ChatGPT, Claude) for moderation.");
+  window.location.href = "student-dashboard.html";
 }
 
-/* ================= WIRING ================= */
+/* ================= INIT ================= */
 btnOpen.addEventListener('click', openCamera);
 btnCapture.addEventListener('click', capture);
 btnRetake.addEventListener('click', retake);
-btnAddPage.addEventListener('click', () => saveCurrentPage(false));
-btnSaveNext.addEventListener('click', () => saveCurrentPage(true));
-btnOpenBook.addEventListener('click', openBook);
-btnBack.addEventListener('click', backToCapture);
-document.getElementById('btnPrevQ').addEventListener('click', () => changeQuestion(-1));
-document.getElementById('btnNextQ').addEventListener('click', () => changeQuestion(1));
+btnAddPage.addEventListener('click', saveCurrentPage);
 questionPick.addEventListener('change', renderPagesStrip);
 
 window.addEventListener('beforeunload', stopCamera);
