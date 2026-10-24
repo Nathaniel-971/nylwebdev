@@ -9,79 +9,74 @@
 <style>
     :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.6; padding-bottom: 60px; }
-    
-    /* HEADER */
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.6; padding-bottom: 60px; opacity: 0; animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    a { text-decoration: none; color: inherit; }
+
     .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 80px; }
     .nav-container { max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
-    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+    .brand { display: flex; align-items: center; gap: 12px; }
     .brand-logo { font-size: 36px; font-weight: 900; color: var(--maroon); line-height: 0.8; }
     .brand-text h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
-    .nav-right { display: flex; align-items: center; gap: 16px; }
-    .btn-home { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; text-decoration: none; color: var(--black); transition: 0.2s; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .btn-home { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; color: var(--black); transition: 0.2s; }
     .btn-home:hover { border-color: var(--black); background: #FAFAFA; }
-    .btn-login { background: var(--maroon); color: var(--white) !important; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; text-decoration: none; transition: 0.2s; }
-    .btn-login:hover { background: var(--maroon-hover); transform: translateY(-2px); }
+    .btn-portal { background: var(--silver); color: var(--black) !important; border: 1px solid #cbd5e1; padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 700; transition: 0.2s; }
+    .btn-portal:hover { background: #cbd5e1; transform: translateY(-2px); }
 
-    /* PAGE CONTENT */
     .container { max-width: 900px; margin: 60px auto; padding: 0 24px; }
     .page-header { text-align: center; margin-bottom: 56px; }
+    .page-header .badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; background: var(--white); color: var(--maroon); }
     .page-header h1 { font-size: 40px; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 16px; }
-    .page-header p { font-size: 18px; color: var(--gray); max-width: 600px; margin: 0 auto; }
+    .page-header p { font-size: 17px; color: var(--gray); max-width: 640px; margin: 0 auto; }
 
-    /* PORTAL LOGIN BANNER */
-    .portal-banner { 
-        background: var(--white); border: 2px solid var(--maroon); border-radius: 20px; 
-        padding: 40px; text-align: center; margin-bottom: 56px; box-shadow: 0 10px 30px rgba(122,31,43,0.05);
-    }
-    .portal-banner h2 { font-size: 24px; font-weight: 900; color: var(--maroon); margin-bottom: 12px; }
-    .portal-banner p { font-size: 15px; color: var(--gray); margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; }
-    .btn-portal { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 32px; background: var(--maroon); color: var(--white); border-radius: 10px; font-size: 16px; font-weight: 700; text-decoration: none; transition: 0.2s; }
-    .btn-portal:hover { background: var(--maroon-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(122,31,43,0.2); }
+    .notice-bar { max-width: 900px; margin: 0 auto 32px; padding: 16px 24px; background: #FFF5F6; border: 1px solid var(--maroon); border-left: 4px solid var(--maroon); border-radius: 8px; font-size: 14px; color: var(--maroon); font-weight: 600; display: flex; align-items: flex-start; gap: 12px; }
+    .notice-bar i { flex-shrink: 0; margin-top: 2px; }
 
-    /* DOCUMENT LIST */
-    .section-title { font-size: 20px; font-weight: 900; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
-    .section-title i { color: var(--maroon); }
+    .portal-banner { background: var(--white); border: 2px solid var(--silver); border-radius: 16px; padding: 32px; margin-bottom: 48px; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+    .portal-banner h2 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+    .portal-banner p { font-size: 14px; color: var(--gray); }
+    .btn-banner { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: var(--maroon); color: var(--white); border-radius: 8px; font-weight: 700; font-size: 14px; white-space: nowrap; transition: 0.2s; }
+    .btn-banner:hover { background: var(--maroon-hover); }
+
+    .section-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .section-title i { color: var(--maroon); width: 20px; height: 20px; }
+    .section-subtitle { font-size: 14px; color: var(--gray); margin-bottom: 20px; padding-left: 30px; }
     
-    .doc-grid { display: flex; flex-direction: column; gap: 16px; }
+    .doc-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
     .doc-item { 
-        display: flex; justify-content: space-between; align-items: center; padding: 24px; 
-        background: var(--white); border: 1px solid var(--silver); border-radius: 16px; gap: 20px; 
+        display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; 
+        background: var(--white); border: 1px solid var(--silver); border-radius: 12px; gap: 20px; 
         transition: 0.2s;
     }
     .doc-item:hover { border-color: var(--maroon); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
     
-    .doc-info { display: flex; align-items: center; gap: 20px; }
-    .doc-icon { 
-        width: 56px; height: 56px; border-radius: 12px; background: #FAFAFA; 
-        border: 1px solid var(--silver); color: var(--maroon); 
-        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .doc-icon i { width: 24px; height: 24px; }
+    .doc-info { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+    .doc-icon { width: 44px; height: 44px; border-radius: 10px; background: #FAFAFA; border: 1px solid var(--silver); color: var(--maroon); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .doc-icon i { width: 20px; height: 20px; }
+    .doc-text h4 { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+    .doc-text p { font-size: 13px; color: var(--gray); line-height: 1.5; }
     
-    .doc-text h4 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
-    .doc-text p { font-size: 14px; color: var(--gray); line-height: 1.5; }
-    
-    .actions { display: flex; gap: 10px; flex-shrink: 0; }
-    .btn-doc { 
-        display: flex; align-items: center; gap: 6px; padding: 10px 16px; 
-        border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; 
-        transition: 0.2s; border: 1.5px solid var(--silver); color: var(--black); 
-        background: var(--white);
-    }
+    .actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn-doc { display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; color: var(--black); background: var(--white); border: 1.5px solid var(--silver); transition: 0.2s; cursor: pointer; font-family: inherit; }
     .btn-doc:hover { border-color: var(--black); background: #FAFAFA; }
     .btn-doc.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
     .btn-doc.primary:hover { background: var(--maroon-hover); }
 
-    /* FOOTER */
     .footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--silver); margin-top: 64px; font-size: 13px; color: var(--gray); }
     .footer strong { color: var(--maroon); }
 
     @media (max-width: 768px) {
+        .nav-container { padding: 0 16px; }
+        .brand-text h1 { font-size: 16px; }
+        .brand-logo { font-size: 28px; }
+        .btn-home, .btn-portal { padding: 8px 12px; font-size: 13px; }
         .doc-item { flex-direction: column; align-items: flex-start; }
-        .actions { width: 100%; margin-top: 16px; }
+        .actions { width: 100%; margin-top: 12px; }
         .btn-doc { flex: 1; justify-content: center; }
-        .page-header h1 { font-size: 32px; }
+        .page-header h1 { font-size: 30px; }
+        .portal-banner { flex-direction: column; align-items: flex-start; text-align: left; }
+        .btn-banner { width: 100%; justify-content: center; }
     }
 </style>
 </head>
@@ -95,82 +90,116 @@
             </a>
             <div class="nav-right">
                 <a href="index.html" class="btn-home"><i data-lucide="arrow-left"></i> Home</a>
-                <a href="admission.html" class="btn-login">Student Login</a>
+                <a href="admission.html" class="btn-portal">Student Portal</a>
             </div>
         </div>
     </header>
 
     <div class="container">
         <div class="page-header">
+            <div class="badge"><i data-lucide="book-open" style="width:14px;height:14px;"></i> Public Access</div>
             <h1>Public Documents</h1>
-            <p>Access the official IFB prospectus, general rules, and examination timetables. For private study materials, please log into the Student Portal.</p>
+            <p>Official IFB prospectus, general rules, examination timetable, and exam protocol. No login required.</p>
         </div>
 
-        <!-- PORTAL BANNER -->
+        <div class="notice-bar">
+            <i data-lucide="info" style="width:18px;height:18px;"></i>
+            <div>Looking for <strong>study materials</strong> (practice papers, answer books, ATPs)? Those live in the <strong>Student Resources</strong> area and require login.</div>
+        </div>
+
         <div class="portal-banner">
-            <h2>Are you an enrolled applicant?</h2>
-            <p>Log into your student dashboard to access your unique Student ID, Barcode, specific course guidelines, practice assessments, and exam portal.</p>
-            <a href="admission.html" class="btn-portal">
-                <i data-lucide="log-in"></i> Access Student Portal
-            </a>
+            <div>
+                <h2>Are you an enrolled student?</h2>
+                <p>Sign in to access practice papers, answer books, subject guidelines and annual teaching plans.</p>
+            </div>
+            <a href="resources.html" class="btn-banner"><i data-lucide="log-in"></i> Student Resources</a>
         </div>
 
-        <!-- PUBLIC DOCUMENTS -->
-        <div class="section-title"><i data-lucide="file-text"></i> Institution Documents</div>
-        
+        <h2 class="section-title"><i data-lucide="building-2"></i> Institution</h2>
+        <p class="section-subtitle">General information about the Institute of Board.</p>
         <div class="doc-grid">
-            
-            <!-- Prospectus -->
             <div class="doc-item">
                 <div class="doc-info">
                     <div class="doc-icon"><i data-lucide="book-open"></i></div>
                     <div class="doc-text">
-                        <h4>Institution Prospectus</h4>
-                        <p>The complete guide to the Institute of Board, including our legal non-accredited status, mission, and curriculum philosophy.</p>
+                        <h4>Institution Prospectus 2027</h4>
+                        <p>Full guide to IFB — non-accredited status, mission, curriculum philosophy, and both academic tracks.</p>
                     </div>
                 </div>
                 <div class="actions">
                     <a href="courses-ifb.html" class="btn-doc">View</a>
-                    <a href="courses-ifb.html" download class="btn-doc primary"><i data-lucide="download"></i> Download</a>
+                    <a href="courses-ifb.html" class="btn-doc primary"><i data-lucide="external-link"></i> Open</a>
                 </div>
             </div>
-
-            <!-- General Rules -->
             <div class="doc-item">
                 <div class="doc-info">
                     <div class="doc-icon"><i data-lucide="shield-check"></i></div>
                     <div class="doc-text">
-                        <h4>General Institution Rules & Policies</h4>
-                        <p>Public rules regarding academic conduct, privacy policy, terms of service, and the non-accredited disclaimer.</p>
+                        <h4>General Rules & Policies</h4>
+                        <p>Institution-wide rules, code of conduct, privacy policy, and terms of service.</p>
                     </div>
                 </div>
                 <div class="actions">
                     <a href="guidelines-general.html" class="btn-doc">View</a>
-                    <a href="guidelines-general.html" download class="btn-doc primary"><i data-lucide="download"></i> Download</a>
+                    <a href="guidelines-general.html" class="btn-doc primary"><i data-lucide="external-link"></i> Open</a>
                 </div>
             </div>
+        </div>
 
-            <!-- AE Timetable -->
+        <h2 class="section-title"><i data-lucide="calendar"></i> Admissions & Examinations</h2>
+        <p class="section-subtitle">Public schedule and protocol for the Admission Examination (AE).</p>
+        <div class="doc-grid">
             <div class="doc-item">
                 <div class="doc-info">
-                    <div class="doc-icon"><i data-lucide="calendar"></i></div>
+                    <div class="doc-icon"><i data-lucide="calendar-days"></i></div>
                     <div class="doc-text">
                         <h4>AE Examination Timetable 2027</h4>
-                        <p>The official schedule of Admission Examination (AE) dates for the 2027 academic year.</p>
+                        <p>Official schedule of Admission Examination dates for Mathematics and Web Development.</p>
                     </div>
                 </div>
                 <div class="actions">
                     <a href="ae-timetable.html" class="btn-doc">View</a>
-                    <a href="ae-timetable.html" download class="btn-doc primary"><i data-lucide="download"></i> Download</a>
+                    <a href="ae-timetable.html" class="btn-doc primary"><i data-lucide="external-link"></i> Open</a>
                 </div>
             </div>
+            <div class="doc-item">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="file-check"></i></div>
+                    <div class="doc-text">
+                        <h4>Examination Protocol</h4>
+                        <p>Public rules for conduct, global start time, AI moderation, and scanning protocol during an exam session.</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a href="guidelines-exam.html" class="btn-doc">View</a>
+                    <a href="guidelines-exam.html" class="btn-doc primary"><i data-lucide="external-link"></i> Open</a>
+                </div>
+            </div>
+        </div>
 
+        <h2 class="section-title"><i data-lucide="users"></i> Sponsorship</h2>
+        <p class="section-subtitle">IFB is 100% fee-free. We rely entirely on sponsors and donors.</p>
+        <div class="doc-grid">
+            <div class="doc-item">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="heart-handshake"></i></div>
+                    <div class="doc-text">
+                        <h4>Fund IFB</h4>
+                        <p>Learn how to sponsor the institution and keep the doors open for the next generation.</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <a href="fund-ifb.html" class="btn-doc">View</a>
+                    <a href="fund-ifb.html" class="btn-doc primary"><i data-lucide="external-link"></i> Open</a>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="footer">
         The Institute of Board is an independent, <strong>non-accredited</strong> educational institution.<br>
-        Not registered with the Department of Higher Education and Training (DHET) or Umalusi.
+        Not registered with the Department of Higher Education and Training (DHET) or Umalusi.<br><br>
+        Contact: n1nathaniel971@gmail.com &nbsp;·&nbsp; +27 60 958 3089
     </div>
 
 <script>
