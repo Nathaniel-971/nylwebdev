@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AE-S 2027/IFB - Web Development</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; }
+  body { 
+    font-family: 'Times New Roman', Times, serif; 
+    font-size: 11.5pt; 
+    line-height: 1.6; 
+    color: #000; 
+    background: #F8FAFC; 
+  }
+  
+  /* A4 PAGE SETUP */
+  .page { 
+    width: 210mm; 
+    height: 297mm; 
+    padding: 15mm 20mm 0 20mm; 
+    margin: 15px auto; 
+    position: relative; 
+    background: white; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    page-break-after: always; 
+  }
+  
+  @media print { 
+    body { background: white; } 
+    .page { margin: 0; box-shadow: none; } 
+  }
+  
+  /* SECURITY PATTERN */
+  .security-pattern { 
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); 
+    pointer-events: none; 
+    z-index: 0; 
+  }
+  
+  /* CONTENT WRAPPER - Padding bottom prevents footer overlap */
+  .content-wrapper { 
+    position: relative; 
+    z-index: 1; 
+    display: flex; 
+    flex-direction: column; 
+    flex: 1;
+    padding-bottom: 30mm; 
+  }
+  
+  /* EXAM HEADERS (Black & White, NO LINE) */
+  .header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 30px; 
+    font-size: 10.5pt; 
+    font-family: Arial, sans-serif;
+    flex-shrink: 0;
+  }
+  .header-left { width: 30%; text-align: left; font-weight: bold; color: #000; }
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: #000; }
+  .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
+
+  /* FOOTER - Anchored to the bottom */
+  .footer { 
+    position: absolute; 
+    bottom: 10mm; 
+    left: 20mm; 
+    right: 20mm; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    z-index: 2; 
+    font-size: 10pt; 
+    font-family: Arial, sans-serif;
+    height: 15mm;
+  }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 35px; height: 35px; }
+  .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .tag { font-size: 7pt; color: #000; }
+  .footer-right { color: #000; font-style: italic;}
+
+  /* MIDDLE BARCODE FOOTER */
+  .bottom-barcode {
+    position: absolute;
+    bottom: 10mm;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .bottom-barcode svg {
+    display: block;
+  }
+
+  /* ========================================= */
+  /* COVER PAGE SPECIFIC                       */
+  /* ========================================= */
+  .cover-page {
+    padding: 15mm 20mm 20mm 20mm; 
+  }
+  
+  .cover-confidential { text-align: center; font-style: italic; font-size: 12pt; margin-bottom: 30px; color: #111;}
+  
+  .cover-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; margin-left: 10px;}
+  .ifb-logo-svg { width: 80px; height: 80px; }
+  
+  .cover-header-text .title { font-size: 32px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px;}
+  .cover-header-text .sub { font-size: 12pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
+  .cover-header-text .country { font-size: 10pt; font-family: Arial, sans-serif; margin-top: 5px; color: #555;}
+  
+  /* Black box with Maroon border */
+  .cover-black-box {
+    background: #111;
+    color: white;
+    border-radius: 10px;
+    padding: 15px 30px;
+    text-align: center;
+    width: 80%;
+    margin: 0 auto 40px auto;
+    border: 3px solid #7A1F2B;
+  }
+  .cover-black-box h1 { font-size: 22pt; font-weight: normal; line-height: 1.3; letter-spacing: 1px; }
+  
+  /* Grey box with Maroon border */
+  .cover-grey-box {
+    background: #f8f8f8;
+    border: 3px solid #7A1F2B;
+    border-radius: 8px;
+    padding: 8px 40px;
+    text-align: center;
+    width: max-content;
+    margin: 0 auto 50px auto;
+  }
+  .cover-grey-box h2 { font-size: 20pt; font-weight: normal; letter-spacing: 1px; color: #111;}
+
+  /* Dashed box with Maroon border and light tint */
+  .cover-dashed-box {
+    border: 4px dashed #7A1F2B;
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    width: 85%;
+    margin: 0 auto 40px auto;
+    background: #FFF5F6; 
+  }
+  .cover-dashed-box h3 { font-size: 18pt; font-weight: bold; margin-bottom: 10px; color: #111;}
+  .cover-dashed-box h4 { font-size: 16pt; font-weight: bold; margin-bottom: 0; color: #111;}
+
+  .cover-marks {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-bottom: 40px;
+    font-family: Arial, sans-serif;
+    color: #111;
+  }
+  .cover-marks div { margin-bottom: 10px; }
+  
+  /* Cover Barcode Section */
+  .cover-barcode-section {
+    margin-left: 10px;
+    font-family: Arial, sans-serif;
+    color: #111;
+  }
+  .cover-barcode-section .code-x01 {
+    font-size: 18pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .cover-barcode-section svg {
+    display: block;
+  }
+
+  .cover-bottom-text {
+    text-align: center;
+    font-size: 11pt;
+    font-weight: bold;
+    margin-top: auto;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: #111;
+  }
+
+  /* Cover Page Footer Colors */
+  .cover-page .footer-brand .name { color: #7A1F2B; }
+  .cover-page .footer-brand .tag { color: #7A1F2B; }
+  .cover-page .footer-right { color: #7A1F2B; }
+  .cover-page .footer-left { color: #7A1F2B; }
+
+  /* INSTRUCTIONS & QUESTIONS (Black & White) */
+  .instructions h2 { font-size: 14pt; font-weight: bold; margin-bottom: 20px; font-family: Arial, sans-serif; color: #000;}
+  .instructions p { margin-bottom: 15px; font-size: 11pt; }
+  .instructions ol { margin-left: 20px; font-family: Arial, sans-serif; font-size: 11pt;}
+  .instructions li { margin-bottom: 12px; padding-left: 10px; }
+  
+  .question-header { margin: 25px 0 15px 0; page-break-inside: avoid; flex-shrink: 0; }
+  .question-header h2 { font-size: 13pt; font-weight: bold; font-family: Arial, sans-serif; color: #000;}
+  
+  .sub-questions { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+  .question-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; }
+  .question-number { font-weight: bold; width: 50px; flex-shrink: 0; font-family: Arial, sans-serif; font-size: 11pt; color: #000;}
+  .question-content { flex: 1; min-width: 0; font-size: 11.5pt; }
+  .marks { font-weight: bold; width: 40px; flex-shrink: 0; text-align: right; font-family: Arial, sans-serif; font-size: 11pt;}
+  
+  .nested-questions { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; margin-left: 30px; page-break-inside: avoid; }
+  .nested-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; }
+  .nested-item .question-number { width: 60px; }
+
+  .total-marks { text-align: right; font-weight: bold; margin-top: 10px; font-size: 12pt; font-family: Arial, sans-serif; page-break-inside: avoid; color: #000;}
+  
+  .math-display { text-align: center; margin: 15px 0; font-size: 12pt; }
+
+  /* CODE SNIPPET STYLING */
+  pre {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10pt;
+    overflow-x: auto;
+    margin: 10px 0;
+    color: #333;
+  }
+  code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f4f4f4;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 10pt;
+  }
+
+  /* ========================================= */
+  /* FORMULA SHEET (Web Reference Sheet)       */
+  /* ========================================= */
+  .info-title { text-align: center; font-weight: bold; font-size: 16pt; letter-spacing: 1px; margin: 10px 0 40px 0; font-family: Arial, sans-serif; color: #000;}
+  
+  .formula-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    font-size: 11pt;
+    margin-top: 20px;
+  }
+
+  .formula-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .formula-item {
+    width: 48%;
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
+<div class="page cover-page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper" style="padding-bottom: 0;">
+    
+    <div class="cover-confidential">AE-S / IFB / Confidential</div>
+    
+    <div class="cover-header">
+      <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+      </svg>
+      
+      <div class="cover-header-text">
+        <div class="title">Institute of Board</div>
+        <div class="sub">Department:<br>Academic Assessment</div>
+        <div class="country">NON-ACCREDITED ACADEMIC INSTITUTION</div>
+      </div>
+    </div>
+
+    <div class="cover-black-box">
+      <h1>PRACTICE EXAMINATION</h1>
+    </div>
+
+    <div class="cover-grey-box">
+      <h2>2027</h2>
+    </div>
+
+    <div class="cover-dashed-box">
+      <h3>WEB DEVELOPMENT</h3>
+      <h4>FRONT-END ENGINEERING</h4>
+    </div>
+
+    <div class="cover-marks">
+      <div>MARKS: 100</div>
+      <div>TIME: 2 hours</div>
+    </div>
+
+    <div class="cover-barcode-section">
+      <div class="code-x01">X01</div>
+      <svg class="barcode-cover" data-barcode="X01-WEB-2027" data-bc-width="2.4" data-bc-height="50" data-bc-display="false"></svg>
+    </div>
+
+    <div class="cover-bottom-text">
+      This question paper consists of 6 pages, 1 information sheet and<br>an answer book of 23 pages.
+    </div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-web.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: INSTRUCTIONS ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">Web Development</div>
+      <div class="header-center">
+        <span class="page-num">2</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="instructions">
+      <h2>INSTRUCTIONS AND INFORMATION</h2>
+      <p>Read the following instructions and information carefully before answering the questions.</p>
+      <ol>
+        <li>This question paper consists of 4 questions.</li>
+        <li>Answer ALL the questions in the SPECIAL ANSWER BOOK provided.</li>
+        <li>For coding questions, ensure your syntax is correct and properly indented.</li>
+        <li>Answers only will NOT necessarily be awarded full marks; you must explain your logic where required.</li>
+        <li>You may use a basic text editor mindset (no auto-complete or external resources).</li>
+        <li>An information sheet with common syntax references is included at the end of the question paper.</li>
+        <li>Write neatly and legibly.</li>
+      </ol>
+    </div>
+    
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-web.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-WEB-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 3: QUESTION 1 (HTML & CSS) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">Web Development</div>
+      <div class="header-center">
+        <span class="page-num">3</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header">
+      <h2>QUESTION 1</h2>
+    </div>
+
+    <div class="question-item">
+      <div class="question-number">1.1</div>
+      <div class="question-content">
+        What is the primary purpose of the <code>&lt;!DOCTYPE html&gt;</code> declaration in an HTML document?
+      </div>
+      <div class="marks">(2)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">1.2</div>
+      <div class="question-content">
+        Explain the difference between using an <code>id</code> attribute and a <code>class</code> attribute in HTML.
+      </div>
+      <div class="marks">(3)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">1.3</div>
+      <div class="question-content">
+        Write the CSS required to perfectly center a <code>div</code> both horizontally and vertically within the viewport using Flexbox. Assume the <code>div</code> is a direct child of the <code>body</code>.
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">1.4</div>
+      <div class="question-content">
+        When designing a layout, why might you choose CSS Grid over Flexbox? Provide a brief example of a layout where Grid is the better choice.
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">1.5</div>
+      <div class="question-content">
+        Write a CSS media query that changes the background color of the <code>body</code> to <code>#111</code> and the text color to <code>#fff</code> for screens smaller than 768px.
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">1.6</div>
+      <div class="question-content">
+        Explain the concept of CSS Specificity. Calculate the specificity weight of the following selector:
+        <pre>#header .nav-list li a:hover</pre>
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="total-marks">[25]</div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-web.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-WEB-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 4: QUESTION 2 (JavaScript) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">Web Development</div>
+      <div class="header-center">
+        <span class="page-num">4</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header">
+      <h2>QUESTION 2</h2>
+    </div>
+
+    <div class="question-item">
+      <div class="question-number">2.1</div>
+      <div class="question-content">
+        What is the difference between the <code>==</code> and <code>===</code> operators in JavaScript?
+      </div>
+      <div class="marks">(2)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.2</div>
+      <div class="question-content">
+        Given the array <code>const nums = [1, 2, 3, 4];</code>, write a one-liner using the <code>.map()</code> method to create a new array where every number is doubled.
+      </div>
+      <div class="marks">(3)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.3</div>
+      <div class="question-content">
+        Write JavaScript code to select all elements with the class <code>btn</code> and add a click event listener to each that logs "Clicked!" to the console.
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.4</div>
+      <div class="question-content">
+        Explain the concept of a "Closure" in JavaScript. Provide a simple code snippet demonstrating a closure.
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.5</div>
+      <div class="question-content">
+        Explain how <code>async/await</code> works in JavaScript. Write a basic <code>try...catch</code> block that uses <code>await</code> to fetch data from an API URL.
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.6</div>
+      <div class="question-content">
+        Explain the concept of "Event Delegation." Why is it particularly useful when dealing with dynamically added elements?
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="total-marks">[25]</div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-web.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-WEB-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 5: QUESTION 3 (React Basics) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">Web Development</div>
+      <div class="header-center">
+        <span class="page-num">5</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header">
+      <h2>QUESTION 3</h2>
+    </div>
+
+    <div class="question-item">
+      <div class="question-number">3.1</div>
+      <div class="question-content">
+        What is JSX in the context of React?
+      </div>
+      <div class="marks">(2)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.2</div>
+      <div class="question-content">
+        Explain the difference between "State" and "Props" in a React component.
+      </div>
+      <div class="marks">(3)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.3</div>
+      <div class="question-content">
+        Explain the purpose of the dependency array in the <code>useEffect</code> hook. What happens if you provide an empty array <code>[]</code>?
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.4</div>
+      <div class="question-content">
+        Write a simple React functional component named <code>Message</code> that takes a prop called <code>isValid</code>. If <code>isValid</code> is false, it should render a <code>&lt;p&gt;</code> tag with the text "Error: Invalid input". If true, render "Success".
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.5</div>
+      <div class="question-content">
+        What is "Prop Drilling" and how does the React Context API solve this problem? Use a brief scenario in your explanation.
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.6</div>
+      <div class="question-content">
+        Explain the three main phases of the React component lifecycle (Mounting, Updating, Unmounting) and mention one lifecycle method or hook associated with each phase.
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="total-marks">[25]</div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-web.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-WEB-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 6: QUESTION 4 (UI/UX & Performance) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">Web Development</div>
+      <div class="header-center">
+        <span class="page-num">6</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header">
+      <h2>QUESTION 4</h2>
+    </div>
+
+    <div class="question-item">
+      <div class="question-number">4.1</div>
+      <div class="question-content">
+        What is the fundamental difference between UI (User Interface) and UX (User Experience)?
+      </div>
+      <div class="marks">(2)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">4.2</div>
+      <div class="question-content">
+        Why is color contrast important for web accessibility (WCAG standards)? Give an example of a bad color contrast choice.
+      </div>
+      <div class="marks">(3)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">4.3</div>
+      <div class="question-content">
+        Name two specific techniques a front-end developer can use to optimize the loading speed of images on a website.
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">4.4</div>
+      <div class="question-content">
+        How does using Semantic HTML tags (like <code>&lt;article&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;header&gt;</code>) benefit both Search Engine Optimization (SEO) and screen reader accessibility?
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">4.5</div>
+      <div class="question-content">
+        Explain the "Mobile-First" design approach. Why is it generally recommended over designing for desktop first?
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">4.6</div>
+      <div class="question-content">
+        You have a <code>div</code> with a fixed <code>width: 500px;</code>. It is causing horizontal scrolling (overflowing) on mobile devices. Write the CSS properties required to fix this issue, ensuring the padding does not increase the overall width. (Hint: use <code>max-width</code> and <code>box-sizing</code>).
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="total-marks">[25]</div>
+
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-web.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-WEB-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 7: INFORMATION SHEET (Reference) ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">Web Development</div>
+      <div class="header-center">
+        <span class="page-num">7</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="info-title">INFORMATION SHEET</div>
+
+    <div class="formula-layout">
+      
+      <div class="formula-row">
+        <div class="formula-item">
+          <strong>HTML Structure</strong>
+          <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Title&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;header&gt;&lt;/header&gt;
+    &lt;main&gt;&lt;/main&gt;
+    &lt;footer&gt;&lt;/footer&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+        </div>
+        <div class="formula-item">
+          <strong>CSS Flexbox Basics</strong>
+          <pre>.container {
+  display: flex;
+  justify-content: center; /* horizontal */
+  align-items: center;     /* vertical */
+  flex-direction: row;     /* or column */
+}</pre>
+        </div>
+      </div>
+
+      <div class="formula-row" style="margin-top: 20px;">
+        <div class="formula-item">
+          <strong>JavaScript Array Methods</strong>
+          <pre>arr.map(x =&gt; x * 2)      // Returns new array
+arr.filter(x =&gt; x &gt; 5)   // Returns new array
+arr.reduce((a,b) =&gt; a+b) // Returns single value</pre>
+        </div>
+        <div class="formula-item">
+          <strong>React Component Example</strong>
+          <pre>function Welcome(props) {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Hello, {props.name}&lt;/h1&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+        Clicked {count} times
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</pre>
+        </div>
+      </div>
+
+    </div>
+    
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-web.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END</div>
+  </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="X01-WEB-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<script>
+(function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "X01-WEB-2027", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: 12, textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/practice-paper-web.html");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+  
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
+  });
+})();
+</script>
+</body>
+</html>
