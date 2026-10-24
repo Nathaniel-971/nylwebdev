@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Academic Resources — IFB</title>
 <script src="https://unpkg.com/lucide@latest"></script>
+<!-- Libraries for PDF Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
     :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
@@ -52,6 +56,11 @@
     .btn-doc.primary:hover { background: var(--maroon-hover); }
 
     /* LOADING STATE */
+    .btn-doc.loading { opacity: 0.8; cursor: wait; pointer-events: none; }
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* GLOBAL LOADER */
     #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
     .loader-logo { font-size: 80px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.7; } }
@@ -89,9 +98,8 @@
                 </div>
                 <div class="actions">
                     <a href="practice-paper-math.html" target="_blank" class="btn-doc">View</a>
-                    <!-- Changed to trigger native print dialog for perfect PDF saving -->
-                    <button onclick="printPDF('practice-paper-math.html')" class="btn-doc primary">
-                        <i data-lucide="printer"></i> Save as PDF
+                    <button onclick="downloadPDF('practice-paper-math.html', 'IFB_Math_Practice_Paper.pdf', this)" class="btn-doc primary">
+                        <i data-lucide="download"></i> Download PDF
                     </button>
                 </div>
             </div>
@@ -102,8 +110,8 @@
                 </div>
                 <div class="actions">
                     <a href="practice-paper-web.html" target="_blank" class="btn-doc">View</a>
-                    <button onclick="printPDF('practice-paper-web.html')" class="btn-doc primary">
-                        <i data-lucide="printer"></i> Save as PDF
+                    <button onclick="downloadPDF('practice-paper-web.html', 'IFB_Web_Practice_Paper.pdf', this)" class="btn-doc primary">
+                        <i data-lucide="download"></i> Download PDF
                     </button>
                 </div>
             </div>
@@ -119,8 +127,8 @@
                 </div>
                 <div class="actions">
                     <a href="answer-book.html" target="_blank" class="btn-doc">View</a>
-                    <button onclick="printPDF('answer-book.html')" class="btn-doc primary">
-                        <i data-lucide="printer"></i> Save as PDF
+                    <button onclick="downloadPDF('answer-book.html', 'IFB_Answer_Book.pdf', this)" class="btn-doc primary">
+                        <i data-lucide="download"></i> Download PDF
                     </button>
                 </div>
             </div>
@@ -136,8 +144,8 @@
                 </div>
                 <div class="actions">
                     <a href="guidelines-math.html" target="_blank" class="btn-doc">View</a>
-                    <button onclick="printPDF('guidelines-math.html')" class="btn-doc primary">
-                        <i data-lucide="printer"></i> Save as PDF
+                    <button onclick="downloadPDF('guidelines-math.html', 'IFB_Math_Guidelines.pdf', this)" class="btn-doc primary">
+                        <i data-lucide="download"></i> Download PDF
                     </button>
                 </div>
             </div>
@@ -148,8 +156,8 @@
                 </div>
                 <div class="actions">
                     <a href="guidelines-web.html" target="_blank" class="btn-doc">View</a>
-                    <button onclick="printPDF('guidelines-web.html')" class="btn-doc primary">
-                        <i data-lucide="printer"></i> Save as PDF
+                    <button onclick="downloadPDF('guidelines-web.html', 'IFB_Web_Guidelines.pdf', this)" class="btn-doc primary">
+                        <i data-lucide="download"></i> Download PDF
                     </button>
                 </div>
             </div>
@@ -165,8 +173,8 @@
                 </div>
                 <div class="actions">
                     <a href="atp-math.html" target="_blank" class="btn-doc">View</a>
-                    <button onclick="printPDF('atp-math.html')" class="btn-doc primary">
-                        <i data-lucide="printer"></i> Save as PDF
+                    <button onclick="downloadPDF('atp-math.html', 'IFB_Math_ATP_2027.pdf', this)" class="btn-doc primary">
+                        <i data-lucide="download"></i> Download PDF
                     </button>
                 </div>
             </div>
@@ -177,8 +185,8 @@
                 </div>
                 <div class="actions">
                     <a href="atp-web.html" target="_blank" class="btn-doc">View</a>
-                    <button onclick="printPDF('atp-web.html')" class="btn-doc primary">
-                        <i data-lucide="printer"></i> Save as PDF
+                    <button onclick="downloadPDF('atp-web.html', 'IFB_Web_ATP_2027.pdf', this)" class="btn-doc primary">
+                        <i data-lucide="download"></i> Download PDF
                     </button>
                 </div>
             </div>
@@ -206,22 +214,101 @@
     lucide.createIcons();
 </script>
 
-<!-- PRINT TO PDF LOGIC -->
+<!-- AUTOMATIC PDF DOWNLOAD LOGIC -->
 <script>
-    function printPDF(url) {
-        // Open the document in a new tab
-        const printWindow = window.open(url, '_blank');
-        
-        if (printWindow) {
-            // Wait for the page to load completely (including MathJax and SVGs)
-            printWindow.onload = function() {
-                // Give an extra 2 seconds for MathJax to render the equations
-                setTimeout(() => {
-                    printWindow.print();
-                }, 2000);
-            };
-        } else {
-            alert("Please allow pop-ups for this site to save the document as a PDF.");
+    async function downloadPDF(url, filename, btnElement) {
+        // 1. Update button UI to show loading
+        const originalHTML = btnElement.innerHTML;
+        btnElement.innerHTML = '<i data-lucide="loader" class="spin"></i> Generating...';
+        btnElement.classList.add('loading');
+        lucide.createIcons();
+
+        try {
+            // 2. Create a hidden iframe to load the page safely off-screen
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.width = '210mm';
+            iframe.style.height = '297mm';
+            iframe.style.left = '-9999px';
+            iframe.src = url;
+            document.body.appendChild(iframe);
+
+            // 3. Wait for the iframe to fully load
+            await new Promise((resolve) => {
+                iframe.onload = resolve;
+            });
+
+            const iframeDoc = iframe.contentWindow.document;
+
+            // 4. Wait for MathJax to finish rendering the math formulas (Max wait 5 seconds)
+            await new Promise((resolve) => {
+                let checks = 0;
+                const interval = setInterval(() => {
+                    checks++;
+                    if (iframe.contentWindow.MathJax && iframe.contentWindow.MathJax.startup) {
+                        iframe.contentWindow.MathJax.startup.promise.then(() => {
+                            clearInterval(interval);
+                            resolve();
+                        });
+                    } else if (checks > 10) {
+                        clearInterval(interval);
+                        resolve(); // Fallback if MathJax isn't found
+                    }
+                }, 500);
+            });
+
+            // 5. Extra buffer for images/fonts to settle
+            await new Promise(r => setTimeout(r, 500));
+
+            // 6. Find all A4 page containers
+            const pages = iframeDoc.querySelectorAll('.page');
+            if (pages.length === 0) throw new Error("No .page elements found in the document.");
+
+            // 7. Initialize jsPDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            // 8. Loop through each page, take a snapshot, and add it to the PDF
+            for (let i = 0; i < pages.length; i++) {
+                const pageElement = pages[i];
+                
+                // Render the HTML element to a Canvas
+                const canvas = await html2canvas(pageElement, {
+                    scale: 2, // High resolution
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    logging: false
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+                // Add a new page for every page after the first
+                if (i > 0) {
+                    pdf.addPage();
+                }
+
+                // Add the image to fit the exact A4 dimensions
+                pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+            }
+
+            // 9. Automatically trigger the download
+            pdf.save(filename);
+
+            // 10. Cleanup iframe
+            document.body.removeChild(iframe);
+
+        } catch (error) {
+            console.error('PDF Generation Error:', error);
+            alert('There was an error generating the PDF. Please check your connection or try the View button and print manually.');
+        } finally {
+            // Restore button state
+            btnElement.innerHTML = originalHTML;
+            btnElement.classList.remove('loading');
+            lucide.createIcons();
         }
     }
 </script>
