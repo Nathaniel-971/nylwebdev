@@ -5,36 +5,50 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard — IFB</title>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
+    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); opacity: 0; animation: fadeIn 0.4s ease forwards; padding-bottom: 60px; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); opacity: 0; animation: fadeIn 0.4s ease forwards; padding-bottom: 60px; }
     @keyframes fadeIn { to { opacity: 1; } }
     
     .header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; position: sticky; top: 0; z-index: 100; }
     .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
     .brand-logo { font-size: 32px; color: var(--maroon); }
+    .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); transition: 0.2s; }
+    .btn-back:hover { border-color: var(--black); }
 
-    .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 320px 1fr; gap: 32px; align-items: start; }
+    .container { max-width: 1100px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 340px 1fr; gap: 32px; align-items: start; }
     
-    .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; position: sticky; top: 100px; text-align: center; }
+    /* SIDEBAR */
+    .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+    
     .profile-badge-large { 
         width: 90px; height: 90px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
         border-radius: 50%; border: 3px solid var(--maroon); background: var(--white); 
         font-size: 32px; font-weight: 900; color: var(--maroon);
     }
     .sidebar h2 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
-    .sidebar p { font-size: 13px; color: var(--gray); margin-bottom: 24px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
-    .detail-row { margin-bottom: 16px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
-    .detail-row .label { font-size: 11px; font-weight: 800; color: var(--gray); }
-    .detail-row .value { font-size: 18px; font-weight: 700; font-family: monospace; }
-    .disclaimer-box { background: #FFF5F6; border: 1px solid var(--maroon); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--maroon); font-weight: 600; text-align: left; margin-top: 16px; }
+    .sidebar .status { font-size: 13px; color: #15803d; font-weight: 700; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
     
+    .id-card { background: #FAFAFA; border: 1px solid var(--silver); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .id-card .label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; }
+    .id-card .value { font-size: 18px; font-weight: 800; font-family: monospace; }
+    
+    .barcode-wrap { background: var(--white); border: 1px dashed var(--silver); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+    .barcode-wrap svg { width: 100%; height: 60px; }
+    .barcode-text { font-family: monospace; font-size: 12px; letter-spacing: 4px; color: var(--gray); margin-top: 8px; }
+    
+    .disclaimer-box { background: #FFF5F6; border: 1px solid var(--maroon); padding: 12px; border-radius: 8px; font-size: 12px; color: var(--maroon); font-weight: 600; text-align: left; }
+
+    /* MAIN CONTENT */
     .main-content { display: flex; flex-direction: column; gap: 24px; }
-    .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; }
-    .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; }
+    .card { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+    .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .card h3 i { color: var(--maroon); }
     
+    /* FORMS */
     .edit-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-size: 13px; font-weight: 700; color: var(--gray); }
@@ -44,17 +58,22 @@
     .btn-save { padding: 12px 24px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; width: auto; }
     .btn-save:hover { background: var(--maroon-hover); }
 
-    .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--silver); border-radius: 8px; margin-bottom: 12px; gap: 16px; }
-    .doc-info h5 { font-size: 16px; font-weight: 700; }
-    .doc-info p { font-size: 13px; color: var(--gray); }
-    .btn-doc { background: var(--white); border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; text-decoration: none; color: var(--black); white-space: nowrap; transition: 0.2s; }
-    .btn-doc:hover { border-color: var(--black); }
-    .btn-doc.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
+    /* QUICK LINKS */
+    .quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .link-card { 
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; 
+        padding: 24px; border: 1px solid var(--silver); border-radius: 16px; text-decoration: none; 
+        color: var(--black); font-weight: 700; transition: 0.2s; background: #FAFAFA;
+    }
+    .link-card:hover { border-color: var(--maroon); background: #FFF5F6; transform: translateY(-2px); }
+    .link-card i { width: 28px; height: 28px; color: var(--maroon); }
 
+    /* INLINE ALERTS */
     .inline-alert { display: none; padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; margin-bottom: 16px; }
     .inline-alert.success { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
     .inline-alert.error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
 
+    /* DANGER ZONE */
     .danger-card { border-color: #FECACA; background: #FEF2F2; }
     .danger-card h3 { color: #B91C1C; border-bottom-color: #FECACA; }
     .btn-danger { padding: 12px 24px; background: #DC2626; color: var(--white); border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; }
@@ -65,33 +84,60 @@
     .btn-signout:hover { border-color: var(--black); background: #FAFAFA; }
 
     @media (max-width: 900px) { .container { grid-template-columns: 1fr; } .sidebar { position: static; } }
-    @media (max-width: 600px) { .edit-form { grid-template-columns: 1fr; } .doc-item { flex-direction: column; align-items: flex-start; } .btn-doc { width: 100%; justify-content: center; } }
+    @media (max-width: 600px) { .edit-form, .quick-links { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
     <header class="header">
         <a href="index.html" class="brand"><div class="brand-logo">∆</div> Student Portal</a>
+        <a href="index.html" class="btn-back"><i data-lucide="arrow-left"></i> Home</a>
     </header>
 
     <div class="container">
         <div class="sidebar">
             <div class="profile-badge-large" id="profileBadge">00</div>
             <h2 id="userName">Loading...</h2>
-            <p>Applicant Profile</p>
-            <div class="detail-row"><div class="label">Student ID</div><div class="value" id="userStudentId">-</div></div>
-            <div class="detail-row"><div class="label">Status</div><div class="value" style="color: #15803d; font-family: 'Inter', sans-serif;">Applicant</div></div>
+            <div class="status">Applicant</div>
+            
+            <div class="id-card">
+                <div class="label">Student ID</div>
+                <div class="value" id="userStudentId">-</div>
+            </div>
+            
+            <div class="id-card" style="border-color: var(--maroon); background: #FFF5F6;">
+                <div class="label" style="color: var(--maroon);">Exam Security Code</div>
+                <div class="value" style="color: var(--maroon);" id="userSecurityCode">-</div>
+            </div>
+
+            <div class="barcode-wrap">
+                <svg id="barcodeSvg"></svg>
+                <div class="barcode-text">Student Unique Identifier</div>
+            </div>
             
             <div class="disclaimer-box">
                 <i data-lucide="shield-alert" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 4px;"></i>
-                Non-Accredited Institution. Not affiliated with DHET, Umalusi, or any public university.
+                Non-Accredited Institution. Answer scripts must ONLY contain your Student ID and Barcode (No names).
             </div>
         </div>
 
         <div class="main-content">
             
+            <!-- QUICK LINKS -->
+            <div class="quick-links">
+                <a href="resources.html" class="link-card">
+                    <i data-lucide="folder-open"></i>
+                    <span>Resources & Documents</span>
+                </a>
+                <a href="exam-gateway.html" class="link-card" style="border-color: var(--maroon); background: #FFF5F6;">
+                    <i data-lucide="monitor-play" style="color: var(--maroon);"></i>
+                    <span style="color: var(--maroon);">Enter Exam Portal</span>
+                </a>
+            </div>
+
+            <!-- PROFILE INFO -->
             <div class="card">
-                <h3>Profile Information</h3>
+                <h3><i data-lucide="user"></i> Profile Information</h3>
                 <div class="inline-alert success" id="profileSuccess">Profile updated successfully!</div>
                 <div class="inline-alert error" id="profileError">Error updating profile.</div>
                 
@@ -106,24 +152,21 @@
                             <input type="tel" id="editPhone" required autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label>Date of Birth</label>
+                            <label>Date of Birth (Locked)</label>
                             <input type="date" id="editDob" disabled>
                         </div>
                         <div class="form-group">
-                            <label>Country</label>
+                            <label>Country (Locked)</label>
                             <input type="text" id="editCountry" disabled>
-                        </div>
-                        <div class="form-group">
-                            <label>Email (Read-only)</label>
-                            <input type="email" id="editEmail" disabled>
                         </div>
                     </div>
                     <button type="submit" class="btn-save">Save Changes</button>
                 </form>
             </div>
 
+            <!-- ACCOUNT SECURITY -->
             <div class="card">
-                <h3>Account Security</h3>
+                <h3><i data-lucide="lock"></i> Account Security</h3>
                 <div class="inline-alert success" id="securitySuccess">Account updated! Please sign in again.</div>
                 <div class="inline-alert error" id="securityError">Error updating account.</div>
 
@@ -146,27 +189,14 @@
                 </form>
             </div>
 
-            <div class="card">
-                <h3>Gated Materials (Enrolled Students Only)</h3>
-                <div class="category" style="margin-bottom: 24px;">
-                    <h4 style="font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 12px;">Annual Teaching Plan (ATP 2027)</h4>
-                    <div class="doc-item"><div class="doc-info"><h5>ATP 2027: Mathematics</h5></div><a href="atp-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
-                    <div class="doc-item"><div class="doc-info"><h5>ATP 2027: Web Development</h5></div><a href="atp-web.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
-                </div>
-
-                <div class="category">
-                    <h4 style="font-size: 14px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 12px;">Examination Guidelines 2027</h4>
-                    <div class="doc-item"><div class="doc-info"><h5>IFB-AE-S Mathematics Guidelines</h5></div><a href="guidelines-math.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
-                    <div class="doc-item"><div class="doc-info"><h5>IFB-AE-W Web Dev Guidelines</h5></div><a href="guidelines-web.html" class="btn-doc primary"><i data-lucide="eye"></i> View</a></div>
-                </div>
-            </div>
-
+            <!-- DANGER ZONE -->
             <div class="card danger-card">
-                <h3>Danger Zone</h3>
+                <h3><i data-lucide="alert-triangle"></i> Danger Zone</h3>
                 <p style="font-size: 14px; color: #B91C1C; margin-bottom: 16px;">Once you deregister, your account and all associated data will be permanently deleted.</p>
                 <button class="btn-danger" onclick="deleteAccount()">Deregister & Delete Account</button>
             </div>
 
+            <!-- SIGN OUT -->
             <div class="bottom-actions">
                 <button class="btn-signout" onclick="signOutUser()">
                     <i data-lucide="log-out"></i> Sign Out of Account
@@ -194,26 +224,26 @@
             
             document.getElementById('userName').innerText = currentData.name || "Applicant";
             document.getElementById('userStudentId').innerText = currentData.studentId || "---";
+            document.getElementById('userSecurityCode').innerText = currentData.securityCode || "------";
             
             if (currentData.studentId) {
                 document.getElementById('profileBadge').innerText = currentData.studentId.slice(-2);
+                // Generate Barcode
+                JsBarcode("#barcodeSvg", currentData.studentId, { format: "CODE128", width: 2, height: 60, displayValue: false, margin: 0 });
             }
             
             document.getElementById('editName').value = currentData.name || "";
             document.getElementById('editPhone').value = currentData.phone || "";
             document.getElementById('editDob').value = currentData.dob || "";
             document.getElementById('editCountry').value = currentData.country || "";
-            document.getElementById('editEmail').value = currentData.email || user.email;
             document.getElementById('updateEmail').value = user.email || "";
         }
     });
 
     document.getElementById('editForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!auth.currentUser) return;
         const btn = e.target.querySelector('button');
         btn.innerText = "Saving...";
-        
         document.getElementById('profileSuccess').style.display = 'none';
         document.getElementById('profileError').style.display = 'none';
 
@@ -234,7 +264,6 @@
 
     document.getElementById('securityForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!auth.currentUser) return;
         const newEmail = document.getElementById('updateEmail').value;
         const newPass = document.getElementById('updatePass').value;
         const confirmPass = document.getElementById('updatePassConfirm').value;
@@ -276,19 +305,14 @@
 
     window.deleteAccount = async function() {
         if (!auth.currentUser) return;
-        if (!confirm("Are you absolutely sure you want to permanently delete your account? This action cannot be undone.")) return;
+        if (!confirm("Are you absolutely sure you want to permanently delete your account?")) return;
 
         try {
-            const uid = auth.currentUser.uid;
-            await deleteDoc(doc(db, "users", uid));
+            await deleteDoc(doc(db, "users", auth.currentUser.uid));
             await deleteUser(auth.currentUser);
             window.location.href = "index.html";
         } catch (error) {
-            if (error.code === 'auth/requires-recent-login') {
-                alert("Please sign out and sign back in before deleting your account.");
-            } else {
-                alert("Error deleting account: " + error.message);
-            }
+            alert("Please sign out and sign back in before deleting your account.");
         }
     };
 
