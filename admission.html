@@ -58,7 +58,7 @@
     }
     .phone-input { flex: 1; }
 
-    /* VERTICAL COURSE LIST WITH CHECKBOXES */
+    /* VERTICAL COURSE LIST */
     .course-list { display: flex; flex-direction: column; gap: 12px; }
     .course-item { 
         display: flex; align-items: flex-start; gap: 16px; padding: 20px; 
@@ -79,7 +79,7 @@
     #successState { display: none; text-align: center; }
     .id-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; margin: 20px 0; }
     .id-box .label { font-size: 11px; text-transform: uppercase; color: var(--gray); font-weight: 700; }
-    .id-box .value { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--black); }
+    .id-box .value { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--black); margin-top: 4px; }
 
     .error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
 
@@ -91,18 +91,16 @@
     <a href="index.html" class="nav-back"><i data-lucide="arrow-left"></i> Back to Home</a>
     
     <div class="form-card">
-        
         <div class="tabs">
             <button class="tab active" onclick="switchTab('apply')">Apply</button>
             <button class="tab" onclick="switchTab('login')">Login</button>
         </div>
 
-        <!-- APPLY TAB -->
         <div id="applyTab">
             <div class="header">
                 <div class="logo">∆</div>
                 <h1>2027 Application</h1>
-                <p>Register to receive your unique 13-digit Student ID.</p>
+                <p>Register to receive your unique Student ID and Security Code.</p>
             </div>
             
             <div class="error-msg" id="applyError"></div>
@@ -127,11 +125,9 @@
                             <div class="select-option" data-value="Nigeria" data-code="+234" onclick="selectCountry(this)">🇳🇬 Nigeria</div>
                             <div class="select-option" data-value="Kenya" data-code="+254" onclick="selectCountry(this)">🇰🇪 Kenya</div>
                             <div class="select-option" data-value="India" data-code="+91" onclick="selectCountry(this)">🇮🇳 India</div>
-                            <div class="select-option" data-value="Australia" data-code="+61" onclick="selectCountry(this)">🇦🇺 Australia</div>
                             <div class="select-option" data-value="Other" data-code="+" onclick="selectCountry(this)">🌍 Other / Global</div>
                         </div>
                     </div>
-                    <div class="country-note">Courses are optimized for employment in SA, US, UK, and globally remote.</div>
                 </div>
 
                 <div class="row">
@@ -145,7 +141,6 @@
                     </div>
                 </div>
                 
-                <!-- VERTICAL COURSE LIST -->
                 <div class="form-group" style="margin-top: 32px;">
                     <label>Select Courses (Tick to select one or both)</label>
                     <div class="course-list">
@@ -153,14 +148,14 @@
                             <input type="checkbox" value="Mathematics" onchange="toggleCourse(this)">
                             <div class="course-content">
                                 <h4>Mathematics</h4>
-                                <p>Advanced Mathematics Track (Algebra, Calculus, Matrices)</p>
+                                <p>Advanced Mathematics Track</p>
                             </div>
                         </label>
                         <label class="course-item" id="courseWeb">
                             <input type="checkbox" value="Front-end Web Development" onchange="toggleCourse(this)">
                             <div class="course-content">
                                 <h4>Front-end Web Development</h4>
-                                <p>Master HTML, CSS, JavaScript, React, and UI/UX</p>
+                                <p>Web Development Track</p>
                             </div>
                         </label>
                     </div>
@@ -170,7 +165,6 @@
             </form>
         </div>
 
-        <!-- LOGIN TAB -->
         <div id="loginTab" style="display: none;">
             <div class="header">
                 <div class="logo">∆</div>
@@ -187,14 +181,17 @@
             </form>
         </div>
 
-        <!-- SUCCESS STATE -->
         <div id="successState">
             <div style="font-size: 48px; font-weight: 900; color: var(--maroon);">∆</div>
             <h2>Application Successful</h2>
-            <p style="font-size: 14px; color: var(--gray); margin-top: 8px;">Save your Student ID.</p>
+            <p style="font-size: 14px; color: var(--gray); margin-top: 8px;">Save your credentials securely.</p>
             <div class="id-box">
                 <div class="label">13-Digit Student ID</div>
                 <div class="value" id="displayId">2701000000001</div>
+            </div>
+            <div class="id-box" style="border-color: var(--black);">
+                <div class="label">6-Digit Security Code (For Exams)</div>
+                <div class="value" id="displaySecurityCode">000000</div>
             </div>
             <a href="index.html" class="btn" style="display: block; text-decoration: none; text-align: center;">Go to Login</a>
         </div>
@@ -211,7 +208,7 @@
 
     let selectedCourses = [];
     let selectedCountry = "";
-    let selectedPhoneCode = "+27"; // Default
+    let selectedPhoneCode = "+27";
 
     window.toggleCountryDropdown = function() {
         document.getElementById('countryOptions').classList.toggle('active');
@@ -221,11 +218,9 @@
     window.selectCountry = function(el) {
         selectedCountry = el.dataset.value;
         selectedPhoneCode = el.dataset.code;
-        
         document.getElementById('selectedCountryText').innerText = el.innerText;
         document.getElementById('selectedCountryText').style.color = 'var(--black)';
         document.getElementById('phoneCode').innerText = selectedPhoneCode;
-        
         document.querySelectorAll('.select-option').forEach(o => o.classList.remove('selected'));
         el.classList.add('selected');
         toggleCountryDropdown();
@@ -241,7 +236,6 @@
     window.switchTab = function(tab) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('#applyError, #loginError').forEach(e => e.style.display = 'none');
-        
         if(tab === 'apply') {
             document.querySelector('.tab:nth-child(1)').classList.add('active');
             document.getElementById('applyTab').style.display = 'block';
@@ -256,7 +250,6 @@
     window.toggleCourse = function(checkbox) {
         const course = checkbox.value;
         const parent = checkbox.closest('.course-item');
-        
         if (checkbox.checked) {
             selectedCourses.push(course);
             parent.classList.add('selected');
@@ -272,26 +265,15 @@
         const errorBox = document.getElementById('applyError');
         errorBox.style.display = 'none';
 
-        if (selectedCourses.length === 0) {
-            errorBox.innerText = "Please tick at least one course.";
-            errorBox.style.display = 'block';
-            return;
-        }
-        if (!selectedCountry) {
-            errorBox.innerText = "Please select your country.";
-            errorBox.style.display = 'block';
-            return;
-        }
+        if (selectedCourses.length === 0) { errorBox.innerText = "Please tick at least one course."; errorBox.style.display = 'block'; return; }
+        if (!selectedCountry) { errorBox.innerText = "Please select your country."; errorBox.style.display = 'block'; return; }
 
-        btn.innerText = "Processing...";
-        btn.disabled = true;
+        btn.innerText = "Processing..."; btn.disabled = true;
 
         const name = document.getElementById('fullName').value;
         const dobValue = document.getElementById('dob').value;
         const email = document.getElementById('email').value;
         const phoneNumber = document.getElementById('phone').value;
-        
-        // Combine Phone Code and Number
         const fullPhone = `${selectedPhoneCode} ${phoneNumber}`;
         
         const dobClean = dobValue.replace(/-/g, ''); 
@@ -299,6 +281,9 @@
         const mmdd = dobClean.substring(4, 8); 
         const random3 = Math.floor(100 + Math.random() * 900);
         const studentId = `2701${yy}${mmdd}${random3}`; 
+        
+        // Generate 6-digit security code
+        const securityCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         const tempPassword = "IFB2027!" + Math.floor(Math.random() * 10000);
 
@@ -306,39 +291,24 @@
             const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
             const user = userCredential.user;
 
-            // Small delay for auth token
             await new Promise(resolve => setTimeout(resolve, 500));
 
             await setDoc(doc(db, "users", user.uid), {
-                name: name, 
-                email: email, 
-                phone: fullPhone, 
-                dob: dobValue, 
-                country: selectedCountry, 
-                studentId: studentId, 
-                courses: selectedCourses, 
-                status: "Applicant", 
-                createdAt: new Date()
+                name: name, email: email, phone: fullPhone, dob: dobValue, country: selectedCountry, 
+                studentId: studentId, securityCode: securityCode, courses: selectedCourses, status: "Applicant", createdAt: new Date()
             });
 
             document.getElementById('applyTab').style.display = 'none';
             document.querySelector('.tabs').style.display = 'none';
             document.getElementById('displayId').innerText = studentId;
+            document.getElementById('displaySecurityCode').innerText = securityCode;
             document.getElementById('successState').style.display = 'block';
 
         } catch (error) {
-            console.error("Firebase Error: ", error); 
-            
-            if (error.code === 'auth/email-already-in-use') {
-                errorBox.innerText = "An account with this email already exists. Please switch to the Login tab.";
-            } else if (error.code === 'permission-denied') {
-                errorBox.innerText = "Firebase Permission Denied. Check your Firestore Rules.";
-            } else {
-                errorBox.innerText = "Error: " + error.message;
-            }
+            if (error.code === 'auth/email-already-in-use') { errorBox.innerText = "An account with this email already exists."; }
+            else { errorBox.innerText = "Error: " + error.message; }
             errorBox.style.display = 'block';
-            btn.innerText = "Submit Application";
-            btn.disabled = false;
+            btn.innerText = "Submit Application"; btn.disabled = false;
         }
     });
 
@@ -347,18 +317,14 @@
         const btn = document.getElementById('loginBtn');
         const errorBox = document.getElementById('loginError');
         errorBox.style.display = 'none';
-        
-        btn.innerText = "Signing In...";
-        btn.disabled = true;
+        btn.innerText = "Signing In..."; btn.disabled = true;
 
         try {
             await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
             window.location.href = "student-dashboard.html";
         } catch (error) {
-            errorBox.innerText = "Invalid email or password.";
-            errorBox.style.display = 'block';
-            btn.innerText = "Sign In";
-            btn.disabled = false;
+            errorBox.innerText = "Invalid email or password."; errorBox.style.display = 'block';
+            btn.innerText = "Sign In"; btn.disabled = false;
         }
     });
 
