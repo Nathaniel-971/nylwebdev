@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examination Session — IFB</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.6; }
+    
+    .header { background: var(--black); color: var(--white); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 18px; }
+    .brand-logo { font-size: 24px; color: var(--silver); }
+    
+    .timer-box { background: var(--white); color: var(--black); padding: 8px 16px; border-radius: 8px; font-family: monospace; font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .timer-box.warning { background: #FEF2F2; color: #B91C1C; }
+    
+    .container { max-width: 800px; margin: 40px auto; padding: 0 24px; }
+    .exam-paper { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+    
+    .question-block { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--silver); }
+    .question-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .q-number { font-size: 16px; font-weight: 800; color: var(--maroon); margin-bottom: 8px; }
+    .q-text { font-size: 16px; margin-bottom: 16px; }
+    .q-input { width: 100%; padding: 16px; border: 1.5px solid var(--silver); border-radius: 8px; font-family: inherit; font-size: 15px; outline: none; }
+    .q-input:focus { border-color: var(--maroon); }
+    
+    .btn-submit { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 24px; }
+    .btn-submit:hover { background: var(--maroon-hover); }
+</style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onpaste="return false;">
+
+    <header class="header">
+        <div class="brand"><div class="brand-logo">∆</div> Examination Session</div>
+        <div class="timer-box" id="timer"><i data-lucide="clock"></i> 03:00:00</div>
+    </header>
+
+    <div class="container">
+        <div class="exam-paper">
+            <h1 style="font-size: 24px; font-weight: 900; margin-bottom: 8px;">Admission Examination 2027</h1>
+            <p style="color: var(--gray); margin-bottom: 32px; font-size: 14px;">Ensure you have selected the correct paper. Your answers will be auto-submitted when the timer ends.</p>
+
+            <!-- PLACEHOLDER FOR ACTUAL QUESTIONS -->
+            <div class="question-block">
+                <div class="q-number">Question 1</div>
+                <div class="q-text">Solve for \(x\): \(2x^2 - 5x - 3 = 0\). Show all working.</div>
+                <textarea class="q-input" rows="4" placeholder="Type your answer here..."></textarea>
+            </div>
+
+            <div class="question-block">
+                <div class="q-number">Question 2</div>
+                <div class="q-text">Calculate the derivative of \(f(x) = 3x^3 - 2x^2 + 5x - 7\).</div>
+                <textarea class="q-input" rows="4" placeholder="Type your answer here..."></textarea>
+            </div>
+
+            <button class="btn-submit" onclick="submitExam()">Submit Examination</button>
+        </div>
+    </div>
+
+<script>
+    // Security Check
+    const verified = sessionStorage.getItem('verified_student');
+    if (!verified) {
+        window.location.href = "exam-gateway.html";
+    }
+
+    // Timer Logic (3 Hours)
+    let timeInSeconds = 3 * 60 * 60; 
+    const timerEl = document.getElementById('timer');
+
+    const countdown = setInterval(() => {
+        if (timeInSeconds <= 0) {
+            clearInterval(countdown);
+            alert("Time has expired. Your exam is being submitted.");
+            submitExam();
+            return;
+        }
+
+        timeInSeconds--;
+        const h = Math.floor(timeInSeconds / 3600);
+        const m = Math.floor((timeInSeconds % 3600) / 60);
+        const s = timeInSeconds % 60;
+
+        timerEl.innerHTML = `<i data-lucide="clock"></i> ${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        
+        if (timeInSeconds <= 300) { // Last 5 minutes
+            timerEl.classList.add('warning');
+        }
+    }, 1000);
+
+    function submitExam() {
+        clearInterval(countdown);
+        sessionStorage.removeItem('verified_student');
+        window.location.href = "student-dashboard.html";
+    }
+
+    lucide.createIcons();
+</script>
+</body>
+</html>
