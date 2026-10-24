@@ -4,59 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exam Gateway — IFB</title>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
-    .container { width: 100%; max-width: 400px; }
-    .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); text-align: center; }
-    
+    :root { --maroon: #7A1F2B; --silver: #E2E8F0; --black: #111; --gray: #666; --white: #fff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #FAFAFA; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 40px; max-width: 440px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
     .logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
     h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
-    p { font-size: 14px; color: var(--gray); margin-bottom: 32px; }
-    
-    .form-group { margin-bottom: 20px; text-align: left; }
+    p.sub { font-size: 14px; color: var(--gray); margin-bottom: 32px; }
+    .input-group { text-align: left; margin-bottom: 20px; }
     label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    input { 
-        width: 100%; padding: 14px; font-size: 18px; font-family: monospace; text-align: center; 
-        border: 1.5px solid var(--silver); border-radius: 10px; outline: none; letter-spacing: 2px; 
-    }
+    input { width: 100%; padding: 14px; font-size: 16px; border: 1.5px solid var(--silver); border-radius: 8px; outline: none; font-family: monospace; }
     input:focus { border-color: var(--maroon); }
-    
-    .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; margin-top: 10px; }
-    .btn:hover { background: var(--maroon-hover); }
-    
-    .error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
-    
-    .back-link { display: block; margin-top: 24px; font-size: 13px; color: var(--gray); text-decoration: none; font-weight: 600; }
+    .btn { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn:hover { background: #5A1620; }
+    .error { color: #B91C1C; font-size: 14px; margin-top: 15px; display: none; background: #FEF2F2; padding: 10px; border-radius: 6px; }
 </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="form-card">
-        <div class="logo">∆</div>
-        <h1>Exam Gateway</h1>
-        <p>Enter your Student ID and Security Code to access your assessment.</p>
-        
-        <div class="error-msg" id="gateError"></div>
-        
-        <form id="gateForm">
-            <div class="form-group">
-                <label>Student ID</label>
-                <input type="text" id="gateStudentId" maxlength="13" required autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label>Security Code (6 Digits)</label>
-                <input type="password" id="gateSecurityCode" maxlength="6" required autocomplete="off">
-            </div>
-            <button type="submit" class="btn" id="gateBtn">Verify & Enter</button>
-        </form>
-        
-        <a href="student-dashboard.html" class="back-link">← Back to Dashboard</a>
+<div class="card">
+    <div class="logo">∆</div>
+    <h1>Examination Gateway</h1>
+    <p class="sub">Enter the credentials printed on your Admission Slip to access the live exam.</p>
+    
+    <div class="input-group">
+        <label>13-Digit Student ID</label>
+        <input type="text" id="studentId" placeholder="e.g., 2701051026001" maxlength="13">
     </div>
+    <div class="input-group">
+        <label>6-Digit Security Code</label>
+        <input type="password" id="securityCode" placeholder="e.g., A7X2B9" maxlength="6">
+    </div>
+    <button class="btn" onclick="verifyAndEnter()">Enter Examination Session</button>
+    <div class="error" id="errorBox"></div>
 </div>
 
 <script type="module">
@@ -64,40 +46,43 @@
     import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-    const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig); 
+    const db = getFirestore(app);
 
-    document.getElementById('gateForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('gateBtn');
-        const errorBox = document.getElementById('gateError');
-        errorBox.style.display = 'none';
-        
-        const studentId = document.getElementById('gateStudentId').value.trim();
-        const securityCode = document.getElementById('gateSecurityCode').value.trim();
+    window.verifyAndEnter = async function() {
+        const id = document.getElementById('studentId').value.trim();
+        const code = document.getElementById('securityCode').value.trim();
+        const errorBox = document.getElementById('errorBox');
 
-        btn.innerText = "Verifying..."; btn.disabled = true;
+        if(!id || !code) {
+            errorBox.innerText = "Please enter both fields.";
+            errorBox.style.display = 'block';
+            return;
+        }
 
         try {
-            const q = query(collection(db, "users"), where("studentId", "==", studentId), where("securityCode", "==", securityCode));
+            const q = query(collection(db, "users"), where("studentId", "==", id), where("securityCode", "==", code));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                // Save verification to session storage for the actual exam page
-                sessionStorage.setItem('verified_student', studentId);
+                // Success! Save to session storage so the exam session page can read it
+                const studentData = querySnapshot.docs[0].data();
+                sessionStorage.setItem("examStudentId", id);
+                sessionStorage.setItem("examStudentName", studentData.name);
+                sessionStorage.setItem("examStudentCourses", JSON.stringify(studentData.courses));
+                
+                // Redirect to the actual exam
                 window.location.href = "exam-session.html";
             } else {
-                errorBox.innerText = "Invalid Student ID or Security Code.";
+                errorBox.innerText = "Invalid Student ID or Security Code. Please check your Admission Slip.";
                 errorBox.style.display = 'block';
-                btn.innerText = "Verify & Enter"; btn.disabled = false;
             }
         } catch (error) {
-            errorBox.innerText = "Error verifying: " + error.message;
+            console.error(error);
+            errorBox.innerText = "Database error. Please contact the invigilator.";
             errorBox.style.display = 'block';
-            btn.innerText = "Verify & Enter"; btn.disabled = false;
         }
-    });
-
-    lucide.createIcons();
+    }
 </script>
 </body>
 </html>
