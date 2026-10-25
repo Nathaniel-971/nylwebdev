@@ -9,61 +9,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --bg: #F8FAFC; }
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; overflow-x: clip; }
 .header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; position: sticky; top: 0; z-index: 100; }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
 .brand-logo { font-size: 32px; color: var(--maroon); }
 .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); }
-.container { width: 100%; max-width: 1148px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 360px 1fr; gap: 32px; align-items: start; box-sizing: border-box; }
+.container { width: 100%; max-width: 1148px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 380px 1fr; gap: 32px; align-items: start; box-sizing: border-box; }
 
 /* SIDEBAR & FLIP CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
+.id-card-container { perspective: 1000px; width: 100%; height: 240px; margin-bottom: 24px; cursor: pointer; user-select: none; outline: none; }
+.id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
+.id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
+.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
+.id-card-front { padding: 24px; text-align: left; }
+.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 24px; align-items: center; justify-content: center; }
 
-.id-card-container {
-    perspective: 1000px;
-    width: 100%;
-    height: 220px;
-    margin-bottom: 24px;
-    cursor: pointer;
-}
-.id-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-    transform-style: preserve-3d;
-}
-.id-card-container.flipped .id-card-inner {
-    transform: rotateY(180deg);
-}
-.id-card-front, .id-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    border: 1px solid var(--silver);
-}
-.id-card-front {
-    background: linear-gradient(135deg, #FFF 0%, #FAFAFA 100%);
-    padding: 24px;
-    text-align: left;
-}
-.id-card-back {
-    background: var(--maroon);
-    color: var(--white);
-    transform: rotateY(180deg);
-    padding: 24px;
-    align-items: center;
-    justify-content: center;
-}
+/* Watermark */
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
+.card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
 
-/* Card Styles */
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .card-logo { font-size: 28px; font-weight: 900; color: var(--maroon); }
 .card-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
@@ -75,6 +41,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 .barcode-wrap svg { width: 100%; height: 50px; }
 .card-back-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; }
 .card-sec-code { font-family: monospace; font-size: 18px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; }
+.pack-seq { font-size: 12px; font-weight: 700; color: var(--white); margin-top: 12px; }
 
 .flip-hint { font-size: 12px; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
@@ -90,9 +57,13 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 .link-card.locked { opacity: 0.6; cursor: not-allowed; }
 .link-card.locked:hover { transform: none; border-color: var(--silver); background: #FAFAFA; }
 
-.loader-box { display: none; text-align: center; padding: 40px; }
-.spinner { width: 40px; height: 40px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
+/* ADMIN PANEL */
+.admin-panel { border: 2px solid #111; background: #111; color: #fff; }
+.admin-panel h3 { color: #fff; border-bottom-color: rgba(255,255,255,0.2); }
+.admin-panel h3 i { color: #fff; }
+.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: var(--maroon); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; }
+.admin-btn.outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.3); }
 
 @media (max-width: 900px) { .container { grid-template-columns: 1fr; padding: 0 16px; } .sidebar { position: static; } }
 </style>
@@ -105,43 +76,56 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 
 <div class="container">
     <div class="sidebar">
-        <div class="loader-box" id="loader" style="display:block;">
-            <div class="spinner"></div>
-            <p style="font-size:13px; color:var(--gray);">Initializing account...</p>
+        <div class="loader-box" id="loader" style="display:block; text-align:center; padding:40px;">
+            <div class="spinner" style="width:40px;height:40px;border:4px solid #eee;border-top-color:#7A1F2B;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;"></div>
+            <p style="font-size:13px; color:var(--gray);">Initializing...</p>
         </div>
         
         <div id="profileData" style="display:none;">
-            <!-- FLIP CARD CONTAINER -->
             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                 <div class="id-card-inner">
                     <!-- FRONT -->
                     <div class="id-card-front">
-                        <div class="card-header">
-                            <div class="card-logo">∆</div>
-                            <div class="card-type">Student ID</div>
+                        <div class="watermark">∆</div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="card-logo">∆</div>
+                                <div class="card-type">Student ID</div>
+                            </div>
+                            <div class="card-name" id="userName">Loading...</div>
+                            <div class="card-role" id="userStatus">Applicant</div>
+                            <div class="card-id" id="userStudentId">-</div>
                         </div>
-                        <div class="card-name" id="userName">Loading...</div>
-                        <div class="card-role" id="userStatus">Applicant</div>
-                        <div class="card-id" id="userStudentId">-</div>
                     </div>
                     <!-- BACK -->
                     <div class="id-card-back">
-                        <div class="barcode-wrap">
-                            <svg id="barcodeSvg"></svg>
+                        <div class="card-content" style="align-items:center; justify-content:center;">
+                            <div class="barcode-wrap"><svg id="barcodeSvg"></svg></div>
+                            <div class="card-back-text">Security Code</div>
+                            <div class="card-sec-code" id="userSecurityCode">-</div>
+                            <div class="pack-seq">Pack Seq: <span id="userPackSeq">00/12</span></div>
                         </div>
-                        <div class="card-back-text">Security Code</div>
-                        <div class="card-sec-code" id="userSecurityCode">-</div>
                     </div>
                 </div>
             </div>
             <div class="flip-hint"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap to flip</div>
+            <a href="admissions-letter.html" target="_blank" class="btn-back" style="width:100%; justify-content:center; margin-top:16px;">View Admissions Letter</a>
         </div>
     </div>
 
     <div class="main-content">
+        <!-- ADMIN SECTION -->
+        <div class="card admin-panel" id="adminPanel" style="display:none;">
+            <h3><i data-lucide="shield-alert"></i> Admin Control</h3>
+            <div class="admin-grid">
+                <a href="admissions-list-2027.html" target="_blank" class="admin-btn"><i data-lucide="file-text"></i> Admissions List 2027</a>
+                <a href="exam-gateway.html" class="admin-btn outline"><i data-lucide="monitor-play"></i> Force Enter Exam</a>
+            </div>
+        </div>
+
         <div class="card">
             <h3><i data-lucide="monitor-play"></i> Entrance Examination</h3>
-            <p style="font-size:14px; color:var(--gray); margin-bottom:24px;">You must write 1 paper per course. The exam is locked until the official date.</p>
+            <p style="font-size:14px; color:var(--gray); margin-bottom:24px;" id="examStatusText">You must write 1 paper per course. The exam portal is locked until the official date.</p>
             <div class="grid-links">
                 <a href="#" id="examGatewayLink" class="link-card locked">
                     <i data-lucide="lock"></i>
@@ -157,22 +141,25 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 
         <div class="card">
             <h3><i data-lucide="settings"></i> Account Settings</h3>
-            <p style="font-size:14px; color:var(--gray); margin-bottom:16px;">Need to change your courses or view the prospectus?</p>
-            <a href="courses-ifb.html" class="btn-back" style="display:inline-flex;">View Prospectus</a>
-            <a href="guidelines-general.html" class="btn-back" style="display:inline-flex;">View Rules</a>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button onclick="toggleCourseChange()" class="btn-back" style="background:var(--maroon); color:#fff; border-color:var(--maroon);" id="changeCourseBtn">Change Courses</button>
+                <button onclick="deregister()" class="btn-back" style="color:#B91C1C; border-color:#FECACA;" id="deregisterBtn">Deregister</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+let currentUserData = null;
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
@@ -182,22 +169,31 @@ onAuthStateChanged(auth, async (user) => {
 
     if (docSnap.exists()) {
         let data = docSnap.data();
+        currentUserData = data;
 
-        if (data.status === "Incomplete" || !data.studentId) {
+        // Check if admin
+        if (user.email === "n1nathaniel971@gmail.com") {
+            document.getElementById('adminPanel').style.display = 'block';
+        }
+
+        // Generate IDs if missing (simulate sequence logic)
+        if (!data.studentId) {
             const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
             const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
             const random3 = Math.floor(100 + Math.random()*900);
             const studentId = `2701${yy}${mm}${dd}${random3}`;
             const securityCode = Math.random().toString(36).substring(2,8).toUpperCase();
+            const packSeq = Math.floor(Math.random() * 12) + 1; // Random 1-12 for now
 
             await updateDoc(docRef, {
                 studentId: studentId,
                 securityCode: securityCode,
+                packSeq: packSeq,
                 status: "Applicant"
             });
-            
             data.studentId = studentId;
             data.securityCode = securityCode;
+            data.packSeq = packSeq;
             data.status = "Applicant";
         }
 
@@ -207,21 +203,47 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('userStatus').innerText = data.status;
         document.getElementById('userStudentId').innerText = data.studentId;
         document.getElementById('userSecurityCode').innerText = data.securityCode;
+        document.getElementById('userPackSeq').innerText = `${data.packSeq.toString().padStart(2, '0')}/12`;
         
-        // This barcode is what the Answer Book fetches
         JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
 
+        // Lock Exam Portal
         const now = new Date();
         const examDate = new Date("2027-01-13T00:00:00Z");
-        if (now >= examDate) {
+        if (now >= examDate || user.email === "n1nathaniel971@gmail.com") {
             const link = document.getElementById('examGatewayLink');
             link.classList.remove('locked');
             link.href = "exam-gateway.html";
             link.innerHTML = '<i data-lucide="monitor-play"></i><span>Enter Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--maroon);">Active</span>';
+            document.getElementById('examStatusText').innerText = "The exam portal is now open. Good luck.";
             lucide.createIcons();
+            
+            // Lock course change and deregistration
+            document.getElementById('changeCourseBtn').disabled = true;
+            document.getElementById('changeCourseBtn').style.opacity = '0.5';
+            document.getElementById('deregisterBtn').disabled = true;
+            document.getElementById('deregisterBtn').style.opacity = '0.5';
         }
     }
 });
+
+window.toggleCourseChange = function() {
+    // In a real app, this would open a modal to select courses
+    alert("Course change functionality would open here. Locked after exam date.");
+};
+
+window.deregister = async function() {
+    if(confirm("Are you sure you want to deregister? This will free up your Student ID sequence for a new applicant.")) {
+        try {
+            await deleteDoc(doc(db, "users", auth.currentUser.uid));
+            await deleteUser(auth.currentUser);
+            window.location.href = "index.html";
+        } catch (e) {
+            alert("Please log out and log back in before deleting.");
+        }
+    }
+};
+
 lucide.createIcons();
 </script>
 </body>
