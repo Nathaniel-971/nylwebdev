@@ -46,14 +46,14 @@ html, body {
     gap: 32px; align-items: start; box-sizing: border-box; 
 }
 
-/* SIDEBAR & BANK CARD */
+/* SIDEBAR & ID CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
 
-/* Standard Bank Card Ratio: 1.586 */
+/* Fixed height to ensure nothing is clipped */
 .id-card-container { 
     perspective: 1000px; 
     width: 100%; 
-    aspect-ratio: 1.586; /* Bank Card proportion */
+    height: 260px; /* Guaranteed height */
     margin-bottom: 24px; 
     cursor: pointer; 
     user-select: none; 
@@ -73,22 +73,23 @@ html, body {
 .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
 .card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
 
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.card-logo { font-size: 24px; font-weight: 900; color: var(--maroon); }
-.card-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.card-logo { font-size: 22px; font-weight: 900; color: var(--maroon); }
+.card-type { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
 .card-name { font-size: 18px; font-weight: 900; margin-bottom: 2px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
 .card-role { font-size: 9px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px;}
 .card-id { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: auto;}
 
-.barcode-wrap-front { background: #fff; border-radius: 4px; width: 100%; height: 50px; margin-top: 4px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 2px; }
+/* Barcode container */
+.barcode-wrap-front { background: #fff; border-radius: 4px; width: 100%; height: 50px; margin-top: 6px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 2px; }
 .barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
-.card-instructions { font-size: 8px; color: var(--gray); margin-top: 6px; line-height: 1.2;}
+.card-instructions { font-size: 7.5px; color: var(--gray); margin-top: 6px; line-height: 1.3; text-align: center; }
 
 .card-back-text { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 6px;}
 .card-sec-code { font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; margin-top: 2px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 8px;}
 .btn-reset { background: none; border: none; cursor: pointer; color: #fff; opacity: 0.7; display: flex; align-items: center;}
 .btn-reset:hover { opacity: 1; }
-.qr-wrap { background: #fff; padding: 6px; border-radius: 8px; margin-bottom: 6px; width: 90px; height: 90px; display: flex; justify-content: center; align-items: center; }
+.qr-wrap { background: #fff; padding: 6px; border-radius: 8px; margin-bottom: 6px; width: 100px; height: 100px; display: flex; justify-content: center; align-items: center; }
 .qr-wrap svg { width: 100%; height: 100%; display: block; }
 
 .flip-hint { font-size: 12px; color: var(--gray); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -176,7 +177,7 @@ input:checked + .slider:before { transform: translateX(26px); }
         <div id="profileData" style="display:none;">
             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                 <div class="id-card-inner">
-                    <!-- FRONT (Bank Card Style) -->
+                    <!-- FRONT -->
                     <div class="id-card-front">
                         <div class="watermark">∆</div>
                         <div class="card-content">
@@ -191,10 +192,10 @@ input:checked + .slider:before { transform: translateX(26px); }
                             <div class="barcode-wrap-front">
                                 <svg id="barcodeSvg"></svg>
                             </div>
-                            <div class="card-instructions">This card remains the property of IFB. Must be presented for all examinations.</div>
+                            <div class="card-instructions">Property of IFB. Present for all exams. Non-transferable.</div>
                         </div>
                     </div>
-                    <!-- BACK (QR Code & Security) -->
+                    <!-- BACK -->
                     <div class="id-card-back">
                         <div class="card-content" style="align-items:center; justify-content:center;">
                             <div class="qr-wrap" id="qrCodeContainer"></div>
@@ -261,7 +262,13 @@ input:checked + .slider:before { transform: translateX(26px); }
             <!-- Exam Portal -->
             <div class="card">
                 <h3><i data-lucide="monitor-play"></i> Entrance Examination</h3>
-                <p style="font-size:14px; color:var(--gray); margin-bottom:24px;" id="examStatusText">Checking exam portal status...</p>
+                <p style="font-size:14px; color:var(--gray); margin-bottom:16px;" id="examStatusText">Checking exam portal status...</p>
+                
+                <div style="background: #FFF5F6; border: 1px solid var(--maroon); border-radius: 8px; padding: 16px; margin-bottom: 24px;" id="verificationNotice">
+                    <h4 style="font-size: 14px; font-weight: 800; color: var(--maroon); margin-bottom: 4px;"><i data-lucide="shield-check" style="width:16px; height:16px; vertical-align:middle; margin-right:4px;"></i> Identity Verification Required</h4>
+                    <p style="font-size: 13px; color: var(--black);">You will need to verify your Student ID, Security Code, and identity inside the portal before you can start writing.</p>
+                </div>
+
                 <div class="grid-links">
                     <a href="#" id="examGatewayLink" class="link-card locked">
                         <i data-lucide="lock"></i>
@@ -372,7 +379,7 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('userSecurityCode').textContent = data.securityCode;
         document.getElementById('updateEmail').value = user.email;
 
-        // Generate Assets after slight delay
+        // Generate Assets
         setTimeout(() => {
             generateAssets(data.studentId, data.name, data.securityCode);
         }, 150);
@@ -405,7 +412,6 @@ onAuthStateChanged(auth, async (user) => {
 
 function generateAssets(id, name, code) {
     try {
-        // Strictly Black Barcode
         JsBarcode("#barcodeSvg", id, { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0, lineColor: "#000000" });
     } catch(e) { console.error("Barcode error", e); }
     
@@ -455,17 +461,27 @@ function updatePortalStatusText() {
 function updateExamPortalUI() {
     const link = document.getElementById('examGatewayLink');
     const statusText = document.getElementById('examStatusText');
+    const notice = document.getElementById('verificationNotice');
     
-    if (isPortalOpen) {
+    // If portal is open OR user is admin, unlock the link
+    if (isPortalOpen || isAdmin) {
         link.classList.remove('locked');
         link.href = "exam-gateway.html";
         link.innerHTML = '<i data-lucide="monitor-play"></i><span>Enter Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--maroon);">Active</span>';
-        statusText.textContent = "The exam portal is now open. Good luck.";
+        
+        if(isAdmin) {
+            statusText.textContent = "Admin Override: Portal is always accessible to you.";
+            notice.style.display = 'none'; // Hide verification notice for admin
+        } else {
+            statusText.textContent = "The exam portal is now open. You must verify your identity.";
+            notice.style.display = 'block';
+        }
     } else {
         link.classList.add('locked');
         link.href = "#";
         link.innerHTML = `<i data-lucide="lock"></i><span>Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--gray);">Locked by Admin</span>`;
         statusText.textContent = "The exam portal is currently locked. Please wait for the administrator to open it.";
+        notice.style.display = 'none';
     }
     lucide.createIcons();
 }
