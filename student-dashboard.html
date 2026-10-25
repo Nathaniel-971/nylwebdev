@@ -10,15 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root { 
-    --white: #FFF; 
-    --black: #111; 
-    --gray: #64748B; 
-    --silver: #E2E8F0; 
-    --maroon: #7A1F2B; 
-    --maroon-hover: #5A1620; 
-    --bg: #F8FAFC; 
-    --sidebar-bg: #1E293B;
-    --sidebar-hover: #334155;
+    --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0; 
+    --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; 
+    --sidebar-bg: #1E293B; --sidebar-hover: #334155;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { 
@@ -31,7 +25,7 @@ html, body {
 .sidebar { width: 260px; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; transition: 0.3s; }
 .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-/* SIDEBAR */
+/* SIDEBAR (Desktop) */
 .sidebar-logo { padding: 24px; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 .sidebar-logo span { color: var(--white); font-size: 28px; background: var(--maroon); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
 .sidebar-nav { padding: 24px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
@@ -61,7 +55,7 @@ html, body {
 .dashboard-header h1 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
 .dashboard-header p { font-size: 14px; color: var(--gray); }
 
-/* GRID LAYOUT */
+/* GRID LAYOUT (Desktop) */
 .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
 
 /* CARDS */
@@ -160,29 +154,59 @@ input:checked + .slider:before { transform: translateX(22px); }
 .spinner { width: 40px; height: 40px; border: 3px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-    .dashboard-grid { grid-template-columns: 1fr; }
-    .id-section { flex-direction: column; align-items: center; }
-    .credentials-col { width: 100%; }
-}
+/* ========================================= */
+/* MOBILE OPTIMISATION                       */
+/* ========================================= */
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-between; padding: 12px; }
-    .sidebar-nav { flex-direction: row; padding: 0; gap: 4px; }
-    .sidebar-footer { padding: 0; border-top: none; }
-    .topbar { padding: 0 16px; }
+    
+    /* Sidebar becomes bottom nav */
+    .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.1); order: 2; }
+    .sidebar-logo, .sidebar-footer { display: none; }
+    .sidebar-nav { flex-direction: row; padding: 0; gap: 0; width: 100%; justify-content: space-around; }
+    .nav-item { flex-direction: column; gap: 4px; font-size: 10px; padding: 8px 12px; border-radius: 4px; }
+    .nav-item.active { border-left: none; background: var(--sidebar-hover); }
+    .nav-item i { width: 20px; height: 20px; }
+    
+    /* Main wrapper takes remaining space */
+    .main-wrapper { order: 1; height: calc(100vh - 60px); }
+    
+    /* Top bar adjustments */
+    .topbar { padding: 0 16px; height: 64px; }
     .search-bar { display: none; }
-    .dashboard-content { padding: 16px; }
+    .profile-menu { border-left: none; padding-left: 0; }
+    .profile-info { display: none; }
+    .admin-toggle-btn { display: flex; }
+    
+    /* Dashboard content padding */
+    .dashboard-content { padding: 16px; gap: 16px; }
+    
+    /* Grid collapses to single column */
+    .dashboard-grid { grid-template-columns: 1fr; }
+    
+    /* Cards fill width */
+    .card { padding: 16px; }
+    
+    /* ID section stacks vertically */
+    .id-section { flex-direction: column; align-items: center; gap: 16px; }
+    .id-card-container { width: 100%; max-width: 320px; }
+    .credentials-col { width: 100%; }
+    
+    /* Settings grid stacks */
     .settings-grid { grid-template-columns: 1fr; }
-    .id-card-container { max-width: 100%; }
+    
+    /* Admin grid stacks */
+    .admin-grid { grid-template-columns: 1fr; }
+    
+    /* Modal adjustments */
+    .modal-content { padding: 24px; max-width: 100%; }
 }
 </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (Desktop) / BOTTOM NAV (Mobile) -->
     <aside class="sidebar">
         <div class="sidebar-logo">
             <span>∆</span> IFB Portal
@@ -190,7 +214,7 @@ input:checked + .slider:before { transform: translateX(22px); }
         <nav class="sidebar-nav">
             <a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
             <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
-            <a href="#" class="nav-item" onclick="document.getElementById('examGatewayLink').click()"><i data-lucide="monitor-play"></i> Exam Portal</a>
+            <a href="#" class="nav-item" onclick="document.getElementById('examGatewayLink').click()"><i data-lucide="monitor-play"></i> Exam</a>
             <a href="#settings" class="nav-item"><i data-lucide="settings"></i> Settings</a>
         </nav>
         <div class="sidebar-footer">
@@ -209,7 +233,7 @@ input:checked + .slider:before { transform: translateX(22px); }
             
             <div class="topbar-right">
                 <button class="admin-toggle-btn" id="adminToggleBtn" onclick="toggleAdminView()">
-                    <i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Admin View
+                    <i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Admin
                 </button>
                 <div class="profile-menu">
                     <div class="profile-info">
@@ -526,7 +550,7 @@ onAuthStateChanged(auth, async (user) => {
             showAdminView = true;
             document.getElementById('adminDashboard').classList.remove('hidden');
             document.getElementById('studentDashboard').classList.add('hidden');
-            document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Student View';
+            document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Student';
         }
         
         updateExamPortalUI();
@@ -540,11 +564,11 @@ window.toggleAdminView = function() {
     if (showAdminView) {
         document.getElementById('adminDashboard').classList.remove('hidden');
         document.getElementById('studentDashboard').classList.add('hidden');
-        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Student View';
+        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Student';
     } else {
         document.getElementById('adminDashboard').classList.add('hidden');
         document.getElementById('studentDashboard').classList.remove('hidden');
-        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Admin View';
+        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Admin';
     }
     lucide.createIcons();
 };
