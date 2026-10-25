@@ -9,7 +9,17 @@
 <style>
 :root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
+body { 
+    font-family: 'Inter', sans-serif; 
+    background: var(--bg); 
+    color: var(--black); 
+    min-height: 100dvh; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    padding: 24px 16px; 
+    overflow-x: clip;
+}
 .container { width: 100%; max-width: 600px; }
 .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
 .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
@@ -128,7 +138,6 @@ window.googleApply = async function() {
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
         
-        // Save to Firestore WITHOUT generating the Student ID yet
         await setDoc(doc(db, "users", result.user.uid), {
             name: name,
             email: result.user.email,
