@@ -9,16 +9,11 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --bg: #F8FAFC; }
+:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --success: #15803D; }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { 
-    width: 100%; 
-    max-width: 100vw; 
-    overflow-x: hidden; /* Prevents sideways scrolling */
-    font-family: 'Inter', sans-serif; 
-    background: var(--bg); 
-    color: var(--black); 
-    padding-bottom: 60px; 
+    width: 100%; max-width: 100vw; overflow-x: hidden; 
+    font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; 
 }
 
 /* HEADER */
@@ -27,18 +22,8 @@ html, body {
 .brand-logo { font-size: 32px; color: var(--maroon); }
 .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); }
 
-/* CENTRAL LAYOUT (No Sideways Scroll) */
-.container { 
-    width: 100%; 
-    max-width: 1148px; 
-    margin: 40px auto; 
-    padding: 0 24px; 
-    display: grid; 
-    grid-template-columns: 380px 1fr; 
-    gap: 32px; 
-    align-items: start; 
-    box-sizing: border-box; 
-}
+/* CENTRAL LAYOUT */
+.container { width: 100%; max-width: 1148px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 380px 1fr; gap: 32px; align-items: start; box-sizing: border-box; }
 
 /* SIDEBAR & FLIP CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
@@ -49,7 +34,7 @@ html, body {
 .id-card-front { padding: 24px; text-align: left; }
 .id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 24px; align-items: center; justify-content: center; }
 
-/* Watermark */
+/* Watermark & Content */
 .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
 .card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
 
@@ -74,7 +59,7 @@ html, body {
 .flip-hint { font-size: 12px; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
 /* MAIN CONTENT */
-.main-content { display: flex; flex-direction: column; gap: 24px; min-width: 0; /* Prevents grid blowout */ }
+.main-content { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
 .card { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; }
 .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .card h3 i { color: var(--maroon); }
@@ -92,6 +77,21 @@ html, body {
 .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: var(--maroon); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; border: none; cursor: pointer; font-family: inherit;}
 .admin-btn.outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.3); }
+
+/* MODAL FOR COURSE CHANGE */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
+.modal-overlay.active { display: flex; }
+.modal-content { background: var(--white); border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.1); }
+.close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
+.modal-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+.modal-subtitle { font-size: 14px; color: var(--gray); margin-bottom: 24px; }
+.course-option { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1.5px solid var(--silver); border-radius: 10px; margin-bottom: 12px; cursor: pointer; }
+.course-option:hover { border-color: var(--maroon); background: #FAFAFA; }
+.course-option.selected { border-color: var(--maroon); background: #FFF5F6; }
+.course-option input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; }
+.course-option label { font-size: 15px; font-weight: 700; cursor: pointer; flex: 1; }
+.btn-save-courses { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; font-family: inherit;}
+.btn-save-courses:hover { background: var(--maroon-hover); }
 
 .loader-box { display: none; text-align: center; padding: 40px; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
@@ -121,7 +121,7 @@ html, body {
         <div id="profileData" style="display:none;">
             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                 <div class="id-card-inner">
-                    <!-- FRONT (Barcode here) -->
+                    <!-- FRONT (Barcode) -->
                     <div class="id-card-front">
                         <div class="watermark">∆</div>
                         <div class="card-content">
@@ -162,7 +162,7 @@ html, body {
     <!-- MAIN CONTENT -->
     <div class="main-content">
         
-        <!-- ADMIN PANEL (Only visible to n1nathaniel971@gmail.com) -->
+        <!-- ADMIN PANEL -->
         <div class="card admin-panel" id="adminPanel" style="display:none;">
             <h3><i data-lucide="shield-alert"></i> Admin Control</h3>
             <div class="admin-grid">
@@ -189,11 +189,33 @@ html, body {
 
         <div class="card">
             <h3><i data-lucide="settings"></i> Account Settings</h3>
-            <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                <button onclick="toggleCourseChange()" class="btn-back" style="background:var(--maroon); color:#fff; border-color:var(--maroon);" id="changeCourseBtn">Change Courses</button>
+            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom: 16px;">
+                <button onclick="openCourseModal()" class="btn-back" style="background:var(--maroon); color:#fff; border-color:var(--maroon);" id="changeCourseBtn">Change Courses</button>
                 <button onclick="deregister()" class="btn-back" style="color:#B91C1C; border-color:#FECACA;" id="deregisterBtn">Deregister</button>
             </div>
+            <p style="font-size: 13px; color: var(--gray);">Current Courses: <span id="currentCoursesDisplay" style="font-weight: 700; color: var(--black);">Loading...</span></p>
         </div>
+    </div>
+</div>
+
+<!-- COURSE MODAL -->
+<div class="modal-overlay" id="courseModal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="document.getElementById('courseModal').classList.remove('active')"><i data-lucide="x"></i></button>
+        <div class="modal-title">Update Courses</div>
+        <div class="modal-subtitle">Select the tracks you want to study. This updates your Admissions Letter.</div>
+        
+        <label class="course-option" id="optMath">
+            <input type="checkbox" value="Mathematics" id="chkMath">
+            <label for="chkMath">Mathematics (IFB-S)</label>
+        </label>
+        
+        <label class="course-option" id="optWeb">
+            <input type="checkbox" value="Front-end Web Development" id="chkWeb">
+            <label for="chkWeb">Web Development (IFB AQ-B)</label>
+        </label>
+
+        <button class="btn-save-courses" id="saveCoursesBtn" onclick="saveCourses()">Save Changes</button>
     </div>
 </div>
 
@@ -235,12 +257,7 @@ onAuthStateChanged(auth, async (user) => {
             const securityCode = Math.random().toString(36).substring(2,8).toUpperCase();
             const packSeq = Math.floor(Math.random() * 12) + 1;
 
-            await updateDoc(docRef, {
-                studentId: studentId,
-                securityCode: securityCode,
-                packSeq: packSeq,
-                status: "Applicant"
-            });
+            await updateDoc(docRef, { studentId, securityCode, packSeq, status: "Applicant" });
             data.studentId = studentId;
             data.securityCode = securityCode;
             data.packSeq = packSeq;
@@ -248,31 +265,34 @@ onAuthStateChanged(auth, async (user) => {
             currentUserData = data;
         }
 
-        // 3. Populate UI safely (XSS Protection via textContent)
+        // 3. Populate UI
         document.getElementById('loader').style.display = 'none';
         document.getElementById('profileData').style.display = 'block';
         
-        document.getElementById('userName').textContent = data.name; // Safe
-        document.getElementById('userStatus').textContent = data.status; // Safe
-        document.getElementById('userStudentId').textContent = data.studentId; // Safe
-        document.getElementById('userSecurityCode').textContent = data.securityCode; // Safe
-        document.getElementById('userPackSeq').textContent = `${data.packSeq.toString().padStart(2, '0')}/12`; // Safe
+        document.getElementById('userName').textContent = data.name;
+        document.getElementById('userStatus').textContent = data.status;
+        document.getElementById('userStudentId').textContent = data.studentId;
+        document.getElementById('userSecurityCode').textContent = data.securityCode;
+        document.getElementById('userPackSeq').textContent = `${data.packSeq.toString().padStart(2, '0')}/12`;
+        
+        // Display current courses
+        const coursesText = (data.courses || []).map(c => c === "Mathematics" ? "Math" : "Web Dev").join(" & ") || "None";
+        document.getElementById('currentCoursesDisplay').textContent = coursesText;
 
-        // 4. Generate Barcode (Front)
+        // 4. Generate Barcode & QR
         try {
             JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 45, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
         } catch (e) { console.warn(e); }
 
-        // 5. Generate QR Code (Back) - Contains full student info
         try {
-            const qrPayload = `ID: ${data.studentId}\nName: ${data.name}\nStatus: ${data.status}\nPack: ${data.packSeq}/12`;
+            const qrPayload = `ID: ${data.studentId}\nName: ${data.name}\nStatus: ${data.status}\nPack: ${data.packSeq}/12\nCode: ${data.securityCode}`;
             const qr = qrcode(0, 'M');
             qr.addData(qrPayload);
             qr.make();
             document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
         } catch (e) { console.warn(e); }
 
-        // 6. Check Exam Lock (Jan 13, 2027)
+        // 5. Check Exam Lock
         const now = new Date();
         const examDate = new Date("2027-01-13T00:00:00Z");
         if (now >= examDate || user.email === "n1nathaniel971@gmail.com") {
@@ -283,7 +303,6 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('examStatusText').textContent = "The exam portal is now open. Good luck.";
             lucide.createIcons();
             
-            // Lock course change and deregistration for regular students
             if (user.email !== "n1nathaniel971@gmail.com") {
                 document.getElementById('changeCourseBtn').disabled = true;
                 document.getElementById('changeCourseBtn').style.opacity = '0.5';
@@ -294,9 +313,78 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// 7. Reset Security Code Function
+// OPEN MODAL & PRE-FILL CHECKBOXES
+window.openCourseModal = function() {
+    const modal = document.getElementById('courseModal');
+    const chkMath = document.getElementById('chkMath');
+    const chkWeb = document.getElementById('chkWeb');
+    const optMath = document.getElementById('optMath');
+    const optWeb = document.getElementById('optWeb');
+
+    // Reset states
+    chkMath.checked = false;
+    chkWeb.checked = false;
+    optMath.classList.remove('selected');
+    optWeb.classList.remove('selected');
+
+    // Pre-fill based on current DB data
+    const courses = currentUserData.courses || [];
+    if (courses.includes("Mathematics")) { chkMath.checked = true; optMath.classList.add('selected'); }
+    if (courses.includes("Front-end Web Development")) { chkWeb.checked = true; optWeb.classList.add('selected'); }
+
+    modal.classList.add('active');
+};
+
+// ADD SELECTED STYLING TO CHECKBOXES
+document.getElementById('chkMath').addEventListener('change', (e) => {
+    document.getElementById('optMath').classList.toggle('selected', e.target.checked);
+});
+document.getElementById('chkWeb').addEventListener('change', (e) => {
+    document.getElementById('optWeb').classList.toggle('selected', e.target.checked);
+});
+
+// SAVE COURSES
+window.saveCourses = async function() {
+    const btn = document.getElementById('saveCoursesBtn');
+    const chkMath = document.getElementById('chkMath');
+    const chkWeb = document.getElementById('chkWeb');
+    
+    const newCourses = [];
+    if (chkMath.checked) newCourses.push("Mathematics");
+    if (chkWeb.checked) newCourses.push("Front-end Web Development");
+
+    if (newCourses.length === 0) {
+        alert("You must select at least one course.");
+        return;
+    }
+
+    btn.textContent = "Saving...";
+    btn.disabled = true;
+
+    try {
+        await updateDoc(doc(db, "users", currentUserId), { courses: newCourses });
+        
+        // Update local state
+        currentUserData.courses = newCourses;
+        
+        // Update display
+        const coursesText = newCourses.map(c => c === "Mathematics" ? "Math" : "Web Dev").join(" & ");
+        document.getElementById('currentCoursesDisplay').textContent = coursesText;
+        
+        // Close modal
+        document.getElementById('courseModal').classList.remove('active');
+        
+    } catch (e) {
+        alert("Error saving courses: " + e.message);
+    } finally {
+        btn.textContent = "Save Changes";
+        btn.disabled = false;
+    }
+};
+
+// OTHER ACTIONS
 window.resetSecurityCode = async function(e) {
-    e.stopPropagation(); // Stop the card from flipping back
+    e.stopPropagation(); 
     if(!confirm("Are you sure you want to reset your security code? You will need the new one to log into the exam portal.")) return;
     
     try {
@@ -304,10 +392,8 @@ window.resetSecurityCode = async function(e) {
         await updateDoc(doc(db, "users", currentUserId), { securityCode: newCode });
         currentUserData.securityCode = newCode;
         
-        // Update UI
         document.getElementById('userSecurityCode').textContent = newCode;
         
-        // Update QR code payload
         const qrPayload = `ID: ${currentUserData.studentId}\nName: ${currentUserData.name}\nStatus: ${currentUserData.status}\nPack: ${currentUserData.packSeq}/12\nCode: ${newCode}`;
         const qr = qrcode(0, 'M');
         qr.addData(qrPayload);
@@ -320,11 +406,7 @@ window.resetSecurityCode = async function(e) {
 };
 
 window.setupExamPortal = function() {
-    alert("Admin Setup functionality will open here. You can upload papers and manage the exam.");
-};
-
-window.toggleCourseChange = function() {
-    alert("Course change functionality would open here. Locked after exam date.");
+    alert("Admin Setup: This will open the interface to upload exam papers and manage the live session.");
 };
 
 window.deregister = async function() {
