@@ -2,24 +2,47 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Dashboard — IFB</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --bg: #F8FAFC; }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; overflow-x: clip; }
+html, body { 
+    width: 100%; 
+    max-width: 100vw; 
+    overflow-x: hidden; /* Prevents sideways scrolling */
+    font-family: 'Inter', sans-serif; 
+    background: var(--bg); 
+    color: var(--black); 
+    padding-bottom: 60px; 
+}
+
+/* HEADER */
 .header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; position: sticky; top: 0; z-index: 100; }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
 .brand-logo { font-size: 32px; color: var(--maroon); }
 .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); }
-.container { width: 100%; max-width: 1148px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 380px 1fr; gap: 32px; align-items: start; box-sizing: border-box; }
+
+/* CENTRAL LAYOUT (No Sideways Scroll) */
+.container { 
+    width: 100%; 
+    max-width: 1148px; 
+    margin: 40px auto; 
+    padding: 0 24px; 
+    display: grid; 
+    grid-template-columns: 380px 1fr; 
+    gap: 32px; 
+    align-items: start; 
+    box-sizing: border-box; 
+}
 
 /* SIDEBAR & FLIP CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
-.id-card-container { perspective: 1000px; width: 100%; height: 240px; margin-bottom: 24px; cursor: pointer; user-select: none; outline: none; }
+.id-card-container { perspective: 1000px; width: 100%; height: 260px; margin-bottom: 24px; cursor: pointer; user-select: none; outline: none; }
 .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
 .id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
 .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
@@ -28,25 +51,30 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 
 /* Watermark */
 .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
-.card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
+.card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
 
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .card-logo { font-size: 28px; font-weight: 900; color: var(--maroon); }
 .card-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
 .card-name { font-size: 20px; font-weight: 900; margin-bottom: 4px; color: var(--black); }
 .card-role { font-size: 11px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: auto;}
-.card-id { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--black); letter-spacing: 1px; }
+.card-id { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px;}
 
-.barcode-wrap { background: var(--white); border-radius: 8px; padding: 10px; width: 100%; margin-bottom: 12px; }
-.barcode-wrap svg { width: 100%; height: 50px; }
-.card-back-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; }
-.card-sec-code { font-family: monospace; font-size: 18px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; }
+.barcode-wrap-front { background: var(--white); border-radius: 4px; padding: 4px; width: 100%; margin-top: auto; }
+.barcode-wrap-front svg { width: 100%; height: 45px; }
+
+.card-back-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 10px;}
+.card-sec-code { font-family: monospace; font-size: 18px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 10px;}
+.btn-reset { background: none; border: none; cursor: pointer; color: #fff; opacity: 0.7; display: flex; align-items: center;}
+.btn-reset:hover { opacity: 1; }
 .pack-seq { font-size: 12px; font-weight: 700; color: var(--white); margin-top: 12px; }
+.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 10px; width: 100px; height: 100px; }
+.qr-wrap svg { width: 100%; height: 100%; }
 
 .flip-hint { font-size: 12px; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
 /* MAIN CONTENT */
-.main-content { display: flex; flex-direction: column; gap: 24px; }
+.main-content { display: flex; flex-direction: column; gap: 24px; min-width: 0; /* Prevents grid blowout */ }
 .card { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; }
 .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; display: flex; align-items: center; gap: 8px; }
 .card h3 i { color: var(--maroon); }
@@ -62,10 +90,18 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 .admin-panel h3 { color: #fff; border-bottom-color: rgba(255,255,255,0.2); }
 .admin-panel h3 i { color: #fff; }
 .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: var(--maroon); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; }
+.admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: var(--maroon); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; border: none; cursor: pointer; font-family: inherit;}
 .admin-btn.outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.3); }
 
-@media (max-width: 900px) { .container { grid-template-columns: 1fr; padding: 0 16px; } .sidebar { position: static; } }
+.loader-box { display: none; text-align: center; padding: 40px; }
+.spinner { width: 40px; height: 40px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+@media (max-width: 900px) { 
+    .container { grid-template-columns: 1fr; padding: 0 16px; } 
+    .sidebar { position: static; } 
+    .grid-links, .admin-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -75,16 +111,17 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 </header>
 
 <div class="container">
+    <!-- SIDEBAR -->
     <div class="sidebar">
-        <div class="loader-box" id="loader" style="display:block; text-align:center; padding:40px;">
-            <div class="spinner" style="width:40px;height:40px;border:4px solid #eee;border-top-color:#7A1F2B;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;"></div>
+        <div class="loader-box" id="loader" style="display:block;">
+            <div class="spinner"></div>
             <p style="font-size:13px; color:var(--gray);">Initializing...</p>
         </div>
         
         <div id="profileData" style="display:none;">
             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                 <div class="id-card-inner">
-                    <!-- FRONT -->
+                    <!-- FRONT (Barcode here) -->
                     <div class="id-card-front">
                         <div class="watermark">∆</div>
                         <div class="card-content">
@@ -92,18 +129,27 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
                                 <div class="card-logo">∆</div>
                                 <div class="card-type">Student ID</div>
                             </div>
-                            <div class="card-name" id="userName">Loading...</div>
-                            <div class="card-role" id="userStatus">Applicant</div>
-                            <div class="card-id" id="userStudentId">-</div>
+                            <div class="card-name" id="userName"></div>
+                            <div class="card-role" id="userStatus"></div>
+                            <div class="card-id" id="userStudentId"></div>
+                            
+                            <div class="barcode-wrap-front">
+                                <svg id="barcodeSvg"></svg>
+                            </div>
                         </div>
                     </div>
-                    <!-- BACK -->
+                    <!-- BACK (QR Code & Security) -->
                     <div class="id-card-back">
                         <div class="card-content" style="align-items:center; justify-content:center;">
-                            <div class="barcode-wrap"><svg id="barcodeSvg"></svg></div>
+                            <div class="qr-wrap" id="qrCodeContainer"></div>
                             <div class="card-back-text">Security Code</div>
-                            <div class="card-sec-code" id="userSecurityCode">-</div>
-                            <div class="pack-seq">Pack Seq: <span id="userPackSeq">00/12</span></div>
+                            <div class="card-sec-code">
+                                <span id="userSecurityCode"></span>
+                                <button class="btn-reset" onclick="resetSecurityCode(event)" title="Reset Code">
+                                    <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i>
+                                </button>
+                            </div>
+                            <div class="pack-seq">Pack Seq: <span id="userPackSeq"></span></div>
                         </div>
                     </div>
                 </div>
@@ -113,13 +159,15 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
         </div>
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="main-content">
-        <!-- ADMIN SECTION -->
+        
+        <!-- ADMIN PANEL (Only visible to n1nathaniel971@gmail.com) -->
         <div class="card admin-panel" id="adminPanel" style="display:none;">
             <h3><i data-lucide="shield-alert"></i> Admin Control</h3>
             <div class="admin-grid">
-                <a href="admissions-list-2027.html" target="_blank" class="admin-btn"><i data-lucide="file-text"></i> Admissions List 2027</a>
-                <a href="exam-gateway.html" class="admin-btn outline"><i data-lucide="monitor-play"></i> Force Enter Exam</a>
+                <a href="admissions-list-2027.html" target="_blank" class="admin-btn"><i data-lucide="users"></i> Admissions List 2027</a>
+                <button onclick="setupExamPortal()" class="admin-btn outline"><i data-lucide="settings"></i> Setup Exam Portal</button>
             </div>
         </div>
 
@@ -129,8 +177,8 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
             <div class="grid-links">
                 <a href="#" id="examGatewayLink" class="link-card locked">
                     <i data-lucide="lock"></i>
-                    <span>Exam Portal (Locked)</span>
-                    <span style="font-size:12px; font-weight:normal; color:var(--gray);">Opens 13 Jan 2027</span>
+                    <span>Exam Portal</span>
+                    <span style="font-size:12px; font-weight:normal; color:var(--gray);">Locked</span>
                 </a>
                 <a href="resources.html" class="link-card">
                     <i data-lucide="folder-open"></i>
@@ -160,9 +208,11 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUserData = null;
+let currentUserId = null;
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
+    currentUserId = user.uid;
     
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
@@ -171,19 +221,19 @@ onAuthStateChanged(auth, async (user) => {
         let data = docSnap.data();
         currentUserData = data;
 
-        // Check if admin
+        // 1. Admin Check
         if (user.email === "n1nathaniel971@gmail.com") {
             document.getElementById('adminPanel').style.display = 'block';
         }
 
-        // Generate IDs if missing (simulate sequence logic)
+        // 2. Generate IDs if missing
         if (!data.studentId) {
             const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
             const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
             const random3 = Math.floor(100 + Math.random()*900);
             const studentId = `2701${yy}${mm}${dd}${random3}`;
             const securityCode = Math.random().toString(36).substring(2,8).toUpperCase();
-            const packSeq = Math.floor(Math.random() * 12) + 1; // Random 1-12 for now
+            const packSeq = Math.floor(Math.random() * 12) + 1;
 
             await updateDoc(docRef, {
                 studentId: studentId,
@@ -195,19 +245,34 @@ onAuthStateChanged(auth, async (user) => {
             data.securityCode = securityCode;
             data.packSeq = packSeq;
             data.status = "Applicant";
+            currentUserData = data;
         }
 
+        // 3. Populate UI safely (XSS Protection via textContent)
         document.getElementById('loader').style.display = 'none';
         document.getElementById('profileData').style.display = 'block';
-        document.getElementById('userName').innerText = data.name;
-        document.getElementById('userStatus').innerText = data.status;
-        document.getElementById('userStudentId').innerText = data.studentId;
-        document.getElementById('userSecurityCode').innerText = data.securityCode;
-        document.getElementById('userPackSeq').innerText = `${data.packSeq.toString().padStart(2, '0')}/12`;
         
-        JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
+        document.getElementById('userName').textContent = data.name; // Safe
+        document.getElementById('userStatus').textContent = data.status; // Safe
+        document.getElementById('userStudentId').textContent = data.studentId; // Safe
+        document.getElementById('userSecurityCode').textContent = data.securityCode; // Safe
+        document.getElementById('userPackSeq').textContent = `${data.packSeq.toString().padStart(2, '0')}/12`; // Safe
 
-        // Lock Exam Portal
+        // 4. Generate Barcode (Front)
+        try {
+            JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 45, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
+        } catch (e) { console.warn(e); }
+
+        // 5. Generate QR Code (Back) - Contains full student info
+        try {
+            const qrPayload = `ID: ${data.studentId}\nName: ${data.name}\nStatus: ${data.status}\nPack: ${data.packSeq}/12`;
+            const qr = qrcode(0, 'M');
+            qr.addData(qrPayload);
+            qr.make();
+            document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
+        } catch (e) { console.warn(e); }
+
+        // 6. Check Exam Lock (Jan 13, 2027)
         const now = new Date();
         const examDate = new Date("2027-01-13T00:00:00Z");
         if (now >= examDate || user.email === "n1nathaniel971@gmail.com") {
@@ -215,27 +280,57 @@ onAuthStateChanged(auth, async (user) => {
             link.classList.remove('locked');
             link.href = "exam-gateway.html";
             link.innerHTML = '<i data-lucide="monitor-play"></i><span>Enter Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--maroon);">Active</span>';
-            document.getElementById('examStatusText').innerText = "The exam portal is now open. Good luck.";
+            document.getElementById('examStatusText').textContent = "The exam portal is now open. Good luck.";
             lucide.createIcons();
             
-            // Lock course change and deregistration
-            document.getElementById('changeCourseBtn').disabled = true;
-            document.getElementById('changeCourseBtn').style.opacity = '0.5';
-            document.getElementById('deregisterBtn').disabled = true;
-            document.getElementById('deregisterBtn').style.opacity = '0.5';
+            // Lock course change and deregistration for regular students
+            if (user.email !== "n1nathaniel971@gmail.com") {
+                document.getElementById('changeCourseBtn').disabled = true;
+                document.getElementById('changeCourseBtn').style.opacity = '0.5';
+                document.getElementById('deregisterBtn').disabled = true;
+                document.getElementById('deregisterBtn').style.opacity = '0.5';
+            }
         }
     }
 });
 
+// 7. Reset Security Code Function
+window.resetSecurityCode = async function(e) {
+    e.stopPropagation(); // Stop the card from flipping back
+    if(!confirm("Are you sure you want to reset your security code? You will need the new one to log into the exam portal.")) return;
+    
+    try {
+        const newCode = Math.random().toString(36).substring(2,8).toUpperCase();
+        await updateDoc(doc(db, "users", currentUserId), { securityCode: newCode });
+        currentUserData.securityCode = newCode;
+        
+        // Update UI
+        document.getElementById('userSecurityCode').textContent = newCode;
+        
+        // Update QR code payload
+        const qrPayload = `ID: ${currentUserData.studentId}\nName: ${currentUserData.name}\nStatus: ${currentUserData.status}\nPack: ${currentUserData.packSeq}/12\nCode: ${newCode}`;
+        const qr = qrcode(0, 'M');
+        qr.addData(qrPayload);
+        qr.make();
+        document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
+        
+    } catch (err) {
+        alert("Error resetting code: " + err.message);
+    }
+};
+
+window.setupExamPortal = function() {
+    alert("Admin Setup functionality will open here. You can upload papers and manage the exam.");
+};
+
 window.toggleCourseChange = function() {
-    // In a real app, this would open a modal to select courses
     alert("Course change functionality would open here. Locked after exam date.");
 };
 
 window.deregister = async function() {
     if(confirm("Are you sure you want to deregister? This will free up your Student ID sequence for a new applicant.")) {
         try {
-            await deleteDoc(doc(db, "users", auth.currentUser.uid));
+            await deleteDoc(doc(db, "users", currentUserId));
             await deleteUser(auth.currentUser);
             window.location.href = "index.html";
         } catch (e) {
