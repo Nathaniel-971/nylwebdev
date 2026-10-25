@@ -3,74 +3,361 @@
 <head>
 <meta charset="UTF-8">
 <title>IFB Answer Book 2027</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
-@page { size: A4; margin: 0; }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-body { font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; color: #000; background: #F8FAFC; }
-.page { width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; }
-@media print { body { background: white; } .page { margin: 0; box-shadow: none; } }
-.security-pattern { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
-.content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 35mm; }
-.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; font-size: 10.5pt; flex-shrink: 0; }
-.header-left { width: 30%; text-align: left; font-weight: bold; }
-.header-center { width: 40%; text-align: center; }
-.header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; }
-.header-center .confidential { font-style: italic; font-weight: bold; color: #7A1F2B; }
-.header-right { width: 30%; text-align: right; font-weight: bold; }
-.footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; height: 15mm; }
-.footer-left { display: flex; align-items: center; gap: 10px; }
-.footer-qr { display: inline-block; width: 35px; height: 35px; }
-.footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
-.footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
-.footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #7A1F2B; }
-.footer-brand .tag { font-size: 7pt; color: #333; }
-.footer-right { color: #333; font-style: italic; }
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { 
+    width: 100%; 
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact; 
+  }
+  body { 
+    font-family: Arial, sans-serif; 
+    font-size: 11.5pt; 
+    line-height: 1.6; 
+    color: #000; 
+    background: #F8FAFC; 
+  }
+  
+  /* A4 PAGE SETUP */
+  .page { 
+    width: 210mm; 
+    height: 297mm; 
+    padding: 15mm 20mm 0 20mm; 
+    margin: 15px auto; 
+    position: relative; 
+    background: white; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    page-break-after: always; 
+  }
+  
+  @media print { 
+    body { background: white; } 
+    .page { margin: 0; box-shadow: none; } 
+  }
+  
+  /* SECURITY PATTERN */
+  .security-pattern { 
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background-image: repeating-linear-gradient(45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px); 
+    pointer-events: none; 
+    z-index: 0; 
+  }
 
-.cover-header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-.cover-brand { display: flex; align-items: center; gap: 15px; width: 60%; }
-.ifb-logo-svg { width: 80px; height: 80px; }
-.cover-header-text .title { font-size: 28px; font-weight: 900; margin-bottom: 5px; color: #7A1F2B; line-height: 1; }
-.cover-header-text .sub { font-size: 11pt; font-weight: bold; }
+  /* WATERMARK */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  /* CONTENT WRAPPER */
+  .content-wrapper { 
+    position: relative; 
+    z-index: 1; 
+    display: flex; 
+    flex-direction: column; 
+    flex: 1;
+    padding-bottom: 35mm; 
+  }
+  
+  /* EXAM HEADERS */
+  .header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 20px; 
+    font-size: 10.5pt; 
+    font-family: Arial, sans-serif;
+    flex-shrink: 0;
+    border-bottom: 1px solid #7A1F2B;
+    padding-bottom: 5px;
+  }
+  .header-left { width: 30%; text-align: left; font-weight: bold; color: #7A1F2B; }
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: #7A1F2B; }
+  .header-right { width: 30%; text-align: right; font-weight: bold; color: #7A1F2B; }
 
-.top-right-container { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; width: 40%; }
-.barcode-box { border: 2px dashed #000; padding: 10px; width: 100%; max-width: 250px; min-height: 90px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.barcode-box .label { font-size: 9pt; font-weight: bold; text-align: center; margin-bottom: 4px; }
-.barcode-box svg { width: 100%; height: 40px; }
-.barcode-text { font-size: 8pt; font-family: monospace; letter-spacing: 1px; margin-top: 2px; }
+  /* FOOTER */
+  .footer { 
+    position: absolute; 
+    bottom: 10mm; 
+    left: 20mm; 
+    right: 20mm; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    z-index: 2; 
+    font-size: 10pt; 
+    font-family: Arial, sans-serif;
+    height: 15mm;
+  }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 35px; height: 35px; }
+  .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #7A1F2B; }
+  .footer-brand .tag { font-size: 7pt; color: #333; }
+  .footer-right { color: #333; font-style: italic;}
 
-.sequence-circle-container { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-.sequence-circle { width: 45px; height: 45px; border: 2px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14pt; }
-.sequence-text { font-size: 9pt; font-weight: bold; text-align: right; line-height: 1.1; }
+  .bottom-barcode {
+    position: absolute;
+    bottom: 10mm;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .bottom-barcode svg {
+    display: block;
+  }
 
-.answer-book-title { border: 2px solid #000; border-radius: 15px; padding: 12px; text-align: center; font-size: 22pt; font-weight: bold; font-style: italic; margin-bottom: 25px; width: 65%; background-color: #FFF5F6; }
+  /* ========================================= */
+  /* PAGE 1: COVER SPECIFIC                    */
+  /* ========================================= */
+  .cover-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  
+  .cover-brand { display: flex; align-items: center; gap: 15px; width: 60%;}
+  .ifb-logo-svg { width: 80px; height: 80px; z-index: 1; }
+  .cover-header-text .title { font-size: 28px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px; line-height: 1;}
+  .cover-header-text .sub { font-size: 11pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
+  
+  /* Top Right Box */
+  .top-right-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    width: 40%;
+  }
 
-.form-row { display: flex; gap: 15px; margin-bottom: 10px; }
-.form-box { border: 1.5px solid #000; padding: 5px 8px; display: flex; flex-direction: column; flex: 1; justify-content: center; min-height: 44px; }
-.form-box label { font-size: 9pt; font-weight: bold; margin-bottom: 4px; text-transform: uppercase; }
-.form-box .value { font-size: 12pt; font-weight: bold; font-family: monospace; min-height: 18px; padding-top: 2px; letter-spacing: 1px; }
-.block-container { display: flex; gap: 0; }
-.block { width: 22px; height: 25px; border: 1.5px solid #000; border-right: none; }
-.block:last-child { border-right: 1.5px solid #000; }
+  .candidate-barcode-box {
+    border: 2px dashed #7A1F2B;
+    padding: 15px;
+    width: 100%;
+    max-width: 250px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: right;
+    background-color: #FFF5F6;
+  }
+  .candidate-barcode-box .label {
+    font-size: 10pt;
+    font-weight: bold;
+    text-align: center;
+    color: #7A1F2B;
+  }
+  
+  .sequence-circle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sequence-circle {
+    width: 45px;
+    height: 45px;
+    border: 2px solid #7A1F2B;
+    border-radius: 50%;
+    background-color: #FFF5F6;
+  }
+  .sequence-text {
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: right;
+    line-height: 1.1;
+    color: #7A1F2B;
+  }
 
-.marking-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: auto; }
-.marking-table th, .marking-table td { border: 1.5px solid #000; padding: 4px; text-align: center; }
-.marking-table th { background-color: #f0f0f0; font-weight: bold; font-size: 8.5pt; }
-.marking-table td { height: 22px; }
-.marking-table .text-left { text-align: left; padding-left: 10px; }
-.total-row td { height: 30px; font-weight: bold; }
+  /* Title Box */
+  .answer-book-title {
+    border: 2px solid #7A1F2B;
+    border-radius: 15px;
+    padding: 12px;
+    text-align: center;
+    font-size: 22pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-bottom: 25px;
+    width: 65%;
+    background-color: #FFF5F6;
+    color: #7A1F2B;
+  }
+  
+  /* Form Grids & Inputs */
+  .form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+  }
+  .form-box {
+    border: 1.5px solid #7A1F2B;
+    padding: 5px 8px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+  }
+  .form-box label {
+    font-size: 9pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    color: #7A1F2B;
+  }
+  
+  /* True Block Input Style */
+  .block-container {
+    display: flex;
+    gap: 0;
+  }
+  .block {
+    width: 22px;
+    height: 25px;
+    border: 1.5px solid #7A1F2B;
+    border-right: none;
+    background-color: transparent;
+  }
+  .block:last-child {
+    border-right: 1.5px solid #7A1F2B;
+  }
+  
+  .input-line {
+    border-bottom: 1.5px solid #7A1F2B;
+    height: 25px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    padding-left: 5px;
+    padding-bottom: 2px;
+    font-weight: bold;
+    font-size: 12pt;
+  }
 
-.instructions-header { background-color: #222; color: white; padding: 10px 20px; font-weight: bold; font-size: 12pt; margin-bottom: 20px; }
-.instructions-list { margin-left: 25px; font-size: 11pt; line-height: 1.8; }
-.instructions-list li { margin-bottom: 15px; padding-left: 10px; }
+  /* Marking Grid Table */
+  .marking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-top: auto;
+  }
+  .marking-table th, .marking-table td {
+    border: 1.5px solid #7A1F2B;
+    padding: 4px;
+    text-align: center;
+  }
+  .marking-table th {
+    background-color: #7A1F2B;
+    color: white;
+    font-weight: bold;
+    font-size: 8.5pt;
+  }
+  .marking-table td {
+    height: 22px;
+  }
+  .marking-table .text-left {
+    text-align: left;
+    padding-left: 10px;
+  }
+  .total-row td {
+    height: 30px;
+    font-weight: bold;
+    background-color: #E2E8F0;
+    color: #7A1F2B;
+  }
 
-.answer-page { border: 1.5px solid #000; flex: 1; display: flex; width: 100%; margin-bottom: 20px; }
-.left-margin { width: 40px; border-right: 1.5px solid #000; }
-.writing-area { flex: 1; border-right: 1.5px solid #000; background-image: repeating-linear-gradient(to bottom, transparent, transparent 34px, #111 34px, #111 36px); background-position: 0 1px; }
-.marks-area { width: 70px; display: flex; flex-direction: column; align-items: center; padding-top: 10px; }
-.marks-area .marks-title { font-size: 10pt; font-weight: bold; font-style: italic; border-bottom: 1.5px solid #000; width: 100%; text-align: center; padding-bottom: 5px; margin-bottom: 10px; }
+  /* ========================================= */
+  /* PAGE 2: INSTRUCTIONS                      */
+  /* ========================================= */
+  .instructions-header {
+    background-color: #7A1F2B;
+    color: white;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 12pt;
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  .instructions-list {
+    margin-left: 25px;
+    font-size: 11pt;
+    line-height: 1.8;
+  }
+  .instructions-list li {
+    margin-bottom: 15px;
+    padding-left: 10px;
+  }
+
+  /* ========================================= */
+  /* PAGE 3+: ANSWER SPACE (DBE Style)         */
+  /* ========================================= */
+  .answer-page {
+    border: 1.5px solid #7A1F2B;
+    flex: 1;
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .left-margin {
+    width: 40px;
+    border-right: 1.5px solid #7A1F2B;
+    background-color: #FFF5F6;
+  }
+
+  .writing-area {
+    flex: 1;
+    border-right: 1.5px solid #7A1F2B;
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 34px, #7A1F2B 34px, #7A1F2B 36px);
+    background-position: 0 1px;
+  }
+  
+  .marks-area {
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    background-color: #FFF5F6;
+  }
+  .marks-area .marks-title {
+    font-size: 10pt;
+    font-weight: bold;
+    font-style: italic;
+    border-bottom: 1.5px solid #7A1F2B;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    color: #7A1F2B;
+  }
+
 </style>
 </head>
 <body>
@@ -78,61 +365,123 @@ body { font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; colo
 <!-- ==================== PAGE 1: COVER PAGE ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
   <div class="content-wrapper">
+    
+    <!-- Header with IFB Branding, Barcode Box & Sequence Circle -->
     <div class="cover-header-container">
       <div class="cover-brand">
-        <svg class="ifb-logo-svg" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
+        <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+            <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+        </svg>
         <div class="cover-header-text">
           <div class="title">Institute of Board</div>
-          <div class="sub">Department:<br>Examination Board</div>
+          <div class="sub">Department:<br>Examination Board<br>NON-ACCREDITED ACADEMIC INSTITUTION</div>
         </div>
       </div>
       
       <div class="top-right-container">
-        <div class="barcode-box">
+        <div class="candidate-barcode-box">
           <div class="label">Candidate Barcode Label<br>(Paste Here)</div>
-          <svg id="examBarcode"></svg>
-          <div class="barcode-text" id="barcodeString">---</div>
         </div>
         <div class="sequence-circle-container">
-          <div class="sequence-circle" id="seqCircle">--</div>
+          <div class="sequence-circle"></div>
           <div class="sequence-text">Sequence Number<br>(Pack of 12)</div>
         </div>
       </div>
     </div>
 
-    <div class="answer-book-title">IFB Answer Book</div>
+    <!-- Title -->
+    <div class="answer-book-title">
+      IFB Answer Book
+    </div>
 
+    <!-- Form Fields -->
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Student ID</label>
-        <div class="value" id="fillStudentId">_______________</div>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        </div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Security Code</label>
-        <div class="value" id="fillSecurityCode">______</div>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        </div>
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
-        <label>Subject Name</label>
-        <div class="value" style="border-bottom:1px solid #000;min-height:18px;">&nbsp;</div>
+        <label>Date</label>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        </div>
       </div>
       <div class="form-box" style="flex: 1;">
-        <label>Date</label>
-        <div class="value">____ / ____ / 2027</div>
+        <label>Book Number</label>
+        <div class="input-line"></div>
+      </div>
+      <div class="form-box" style="flex: 1;">
+        <label>Of</label>
+        <div class="input-line"></div>
       </div>
     </div>
 
-    <div style="background:#FFF5F6;border:1px dashed #7A1F2B;border-radius:6px;padding:8px 12px;margin:12px 0;font-size:9.5pt;color:#7A1F2B;">
-        <strong>⚠ Anti-Fraud Notice:</strong> This answer book carries a unique barcode tied to your Student ID. Do not share your barcode, Student ID, or session code with anyone.
+    <div class="form-row">
+      <div class="form-box" style="flex: 2;">
+        <label>Subject Code</label>
+        <div class="block-container">
+          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+        </div>
+      </div>
+      <div class="form-box" style="flex: 1;">
+        <label>Paper Number</label>
+        <div class="input-line" style="justify-content: center;"></div>
+      </div>
     </div>
 
+    <div class="form-row">
+      <div class="form-box" style="flex: 1;">
+        <label>Subject Name</label>
+        <div class="input-line"></div>
+      </div>
+    </div>
+
+    <div class="form-row" style="margin-bottom: 15px;">
+      <div class="form-box" style="flex: 1;">
+        <label>Curriculum:</label>
+        <div class="input-line"></div>
+      </div>
+    </div>
+
+    <!-- Marking Grids -->
     <table class="marking-table">
       <thead>
-        <tr><th colspan="2">MARKER</th><th colspan="5">MODERATOR</th><th colspan="2">RE-MARK</th></tr>
-        <tr><th style="width:15%;">Marks</th><th style="width:35%;">Marker Code</th><th style="width:10%;">Marks</th><th style="width:8%;">DS</th><th style="width:8%;">Ge</th><th style="width:8%;">GP</th><th style="width:8%;">Cl</th><th style="width:10%;">Marks</th><th style="width:15%;">Initials</th></tr>
+        <tr>
+          <th colspan="2">MARKER</th>
+          <th colspan="5">MODERATOR'S INITIALS IN RELEVANT BLOCK</th>
+          <th colspan="2">RE-MARK/RE-CHECK</th>
+        </tr>
+        <tr>
+          <th style="width: 15%;">Marks</th>
+          <th style="width: 35%;">Marker's Code & Initials</th>
+          <th style="width: 10%;">Marks</th>
+          <th style="width: 8%;">DS</th>
+          <th style="width: 8%;">Ge</th>
+          <th style="width: 8%;">GP</th>
+          <th style="width: 8%;">Cl</th>
+          <th style="width: 10%;">Marks</th>
+          <th style="width: 15%;">Initials</th>
+        </tr>
       </thead>
       <tbody>
         <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
@@ -140,11 +489,25 @@ body { font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; colo
         <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
         <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
         <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr class="total-row"><td colspan="2" class="text-left" style="text-align:right;padding-right:15px;">TOTAL:</td><td colspan="7"></td></tr>
-        <tr class="total-row"><td colspan="2" class="text-left" style="font-size:8pt;">CONTROLLED AND CERTIFIED CORRECT</td><td colspan="7"></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        
+        <tr class="total-row">
+          <td colspan="2" class="text-left" style="text-align: right; padding-right: 15px;">TOTAL:</td>
+          <td colspan="7"></td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="2" class="text-left" style="font-size: 8pt;">CONTROLLED AND CERTIFIED CORRECT</td>
+          <td colspan="7"></td>
+        </tr>
       </tbody>
     </table>
+
   </div>
+  
   <div class="footer">
     <div class="footer-left">
       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
@@ -157,22 +520,41 @@ body { font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; colo
 <!-- ==================== PAGE 2: INSTRUCTIONS ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+    <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+  </svg>
+  
   <div class="content-wrapper">
+    
     <div class="header">
-      <div class="header-left">IFB Answer Book</div>
-      <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-left">Answer Space</div>
+      <div class="header-center">
+        <span class="page-num">2</span>
+        <span class="confidential">IFB / Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
-    <div class="instructions-header">FOLLOW THESE INSTRUCTIONS CAREFULLY</div>
+
+    <div class="instructions-header">
+      FOLLOW THESE INSTRUCTIONS CAREFULLY
+    </div>
+
     <ol class="instructions-list">
-      <li>Write your Student ID and Security Code clearly in the spaces provided and attach your barcode sticker.</li>
+      <li>Write your Student ID and Security Code clearly in the spaces provided and attach your barcode sticker in the space provided.</li>
+      <li>Remember that your own name (or the name of your school) may not appear anywhere on or in this answer book.</li>
       <li>Answer ALL questions in the spaces provided.</li>
       <li>No pages may be torn from this answer book.</li>
-      <li>Write in black ink as distinctly as possible. <strong>We strongly recommend using a black pen for scanning.</strong></li>
-      <li>Rule off through any rough work that must not be marked.</li>
-      <li>You must upload your answers via the Exam Portal. <strong>The system requires you to scan the same page twice.</strong></li>
+      <li>Read the instructions printed on your timetable carefully as well as any other instructions which may be given in each examination paper.</li>
+      <li>Candidates may not retain an answer book or remove it from the examination room. Answer books must be returned to the Invigilator at the end of the examination session.</li>
+      <li>Answers must be written in black/blue ink as distinctly as possible. Do not write in the margins.</li>
+      <li>Rule off through any work/rough work that must not be marked.</li>
+      <li>In the event that you use the additional space provided, write down the number of the question, leave a line, and rule off after your answer.</li>
     </ol>
+    
   </div>
+  
   <div class="footer">
     <div class="footer-left">
       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
@@ -180,29 +562,56 @@ body { font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; colo
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
+  
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
 </div>
 
-<!-- ==================== PAGES 3-14: 12 ANSWER PAGES ==================== -->
+<!-- ==================== PAGES 3-25: ANSWER SPACE ==================== -->
 <script>
-  for (let i = 3; i <= 14; i++) {
+  // Generate 23 pages of answer space (Pages 3 to 25)
+  for (let i = 3; i <= 25; i++) {
     document.write(`
       <div class="page">
         <div class="security-pattern"></div>
+        <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+        </svg>
+        
         <div class="content-wrapper">
+          
           <div class="header">
-            <div class="header-left">IFB Answer Book</div>
-            <div class="header-center"><span class="page-num">${i}</span><span class="confidential">IFB / Confidential</span></div>
+            <div class="header-left">Answer Space</div>
+            <div class="header-center">
+              <span class="page-num">${i}</span>
+              <span class="confidential">IFB / Confidential</span>
+            </div>
             <div class="header-right">2027</div>
           </div>
+
           <div class="answer-page">
             <div class="left-margin"></div>
             <div class="writing-area"></div>
-            <div class="marks-area"><div class="marks-title">Marks</div></div>
+            <div class="marks-area">
+              <div class="marks-title">Marks</div>
+            </div>
           </div>
+          
         </div>
+        
         <div class="footer">
-          <div class="footer-left"><span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span><div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div></div>
-          <div class="footer-right">${i === 14 ? 'END' : 'Please turn over'}</div>
+          <div class="footer-left">
+            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+            <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+          </div>
+          <div class="footer-right">${i === 25 ? 'END' : 'Please turn over'}</div>
+        </div>
+        
+        <div class="bottom-barcode">
+          <svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
         </div>
       </div>
     `);
@@ -211,6 +620,21 @@ body { font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; colo
 
 <script>
 (function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-footer").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "IFB-ANS-2027", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: 12, textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  
   function makeQRCodes() {
     if (typeof qrcode !== "function") return;
     document.querySelectorAll(".footer-qr").forEach(function (el) {
@@ -222,31 +646,25 @@ body { font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; colo
       } catch (e) { console.warn(e); }
     });
   }
-  makeQRCodes();
-  window.addEventListener("load", makeQRCodes);
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+  
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
+  });
 })();
-
-// AUTO-FILL LOGIC
-document.addEventListener("DOMContentLoaded", () => {
-    const studentId = sessionStorage.getItem("examStudentId");
-    const secCode = sessionStorage.getItem("examSecurityCode"); // Assuming stored
-    const packSeq = sessionStorage.getItem("examPackSeq") || "07"; // Simulated fetch
-
-    if (studentId) {
-        document.getElementById('fillStudentId').innerText = studentId;
-        document.getElementById('fillSecurityCode').innerText = secCode || "A7X2B9";
-        document.getElementById('seqCircle').innerText = packSeq;
-        
-        const fullBarcode = `${studentId}-${secCode}`;
-        document.getElementById('barcodeString').innerText = fullBarcode;
-
-        try {
-            JsBarcode("#examBarcode", fullBarcode, {
-                format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0
-            });
-        } catch (e) { console.warn(e); }
-    }
-});
 </script>
 </body>
 </html>
