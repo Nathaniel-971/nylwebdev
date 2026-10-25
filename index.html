@@ -3,319 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Institute of Board | Rigorous & Free</title>
+<title>Institute of Board | Non-Accredited Education</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--white:#FFF;--black:#111;--gray:#666;--silver:#E2E8F0;--maroon:#7A1F2B;--maroon-hover:#5A1620;--success:#15803D;--bg:#F8FAFC;}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root {
+    --white: #FFF; 
+    --black: #111; 
+    --gray: #666; 
+    --silver: #E2E8F0; 
+    --maroon: #7A1F2B; 
+    --maroon-hover: #5A1620; 
+    --success: #15803D; 
+    --bg: #F8FAFC;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body {
     width: 100%;
     max-width: 100vw;
-    overflow-x: hidden; /* FIXES THE SCREEN WIDTH BUG */
-    font-family:'Inter',sans-serif;
-    background:var(--white);
-    color:var(--black);
-    line-height:1.6;
-    opacity:0;
-    animation:fadeIn .4s ease forwards;
+    overflow-x: hidden; /* Prevents screen width bugs */
+    font-family: 'Inter', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeIn .4s ease forwards;
 }
-@keyframes fadeIn{to{opacity:1;}}
-a{text-decoration:none;color:inherit;}
-ul{list-style:none;}
+@keyframes fadeIn { to { opacity: 1; } }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
 
 /* LOADER */
-#loader{position:fixed;inset:0;background:var(--white);z-index:99999;display:flex;justify-content:center;align-items:center;transition:opacity .5s ease;}
-.loader-logo{font-size:100px;font-weight:900;color:var(--maroon);animation:pulse 1.5s infinite;}
-@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(.9);opacity:.7;}}
+#loader { position: fixed; inset: 0; background: var(--white); z-index: 99999; display: flex; justify-content: center; align-items: center; transition: opacity .5s ease; }
+.loader-logo { font-size: 100px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.9); opacity: .7; } }
 
 /* ANNOUNCEMENT POPUP */
-.announcement{position:fixed;top:100px;right:24px;max-width:340px;background:var(--white);border:2px solid var(--maroon);border-radius:14px;padding:24px;z-index:9000;box-shadow:0 15px 40px rgba(0,0,0,.15);transform:translateX(450px);transition:transform .5s cubic-bezier(.175,.885,.32,1.275);}
-.announcement.active{transform:translateX(0);}
-.announcement h4{font-size:14px;font-weight:900;color:var(--maroon);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
-.announcement p{font-size:13px;color:var(--gray);margin-bottom:12px;line-height:1.5;}
-.announcement a{color:var(--maroon);font-weight:700;text-decoration:underline;font-size:13px;}
-.announcement .close-popup{position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;color:var(--gray);}
+.announcement { position: fixed; top: 100px; right: 24px; max-width: 340px; background: var(--white); border: 2px solid var(--maroon); border-radius: 14px; padding: 24px; z-index: 9000; box-shadow: 0 15px 40px rgba(0,0,0,.15); transform: translateX(450px); transition: transform .5s cubic-bezier(.175,.885,.32,1.275); }
+.announcement.active { transform: translateX(0); }
+.announcement h4 { font-size: 14px; font-weight: 900; color: var(--maroon); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px; }
+.announcement p { font-size: 13px; color: var(--gray); margin-bottom: 12px; line-height: 1.5; }
+.announcement a { color: var(--maroon); font-weight: 700; text-decoration: underline; font-size: 13px; }
+.announcement .close-popup { position: absolute; top: 10px; right: 10px; background: none; border: none; cursor: pointer; color: var(--gray); }
 
 /* TOP BAR */
-.top-notice-bar{background:var(--silver);text-align:center;padding:10px 16px;font-size:13px;font-weight:700;border-bottom:1px solid #d1d5db;}
-.top-notice-bar span{color:var(--maroon);}
-.top-notice-bar a{text-decoration:underline;}
+.top-notice-bar { background: var(--silver); text-align: center; padding: 10px 16px; font-size: 13px; font-weight: 700; border-bottom: 1px solid #d1d5db; }
+.top-notice-bar span { color: var(--maroon); }
+.top-notice-bar a { text-decoration: underline; }
 
 /* HEADER */
-.header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--silver);height:80px;}
-.nav-container{max-width:1300px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;height:100%;}
-.brand{display:flex;align-items:center;gap:12px;}
-.brand-logo{font-size:36px;font-weight:900;color:var(--maroon);line-height:.8;}
-.brand-text h1{font-size:20px;font-weight:900;letter-spacing:-.5px;}
-.nav-right{display:flex;align-items:center;gap:10px;}
-.nav-logged-out{display:flex;align-items:center;gap:8px;}
-.nav-logged-in{display:none;align-items:center;gap:8px;}
-.btn-login{background:transparent;border:1.5px solid var(--silver);padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;color:var(--black);white-space:nowrap;font-family:inherit;}
-.btn-login:hover{border-color:var(--black);background:#FAFAFA;}
-.nav-cta{background:var(--silver);color:var(--black);border:1px solid #cbd5e1;padding:9px 18px;border-radius:8px;font-size:14px;font-weight:700;white-space:nowrap;}
-.nav-cta:hover{background:#cbd5e1;}
-.nav-cta.maroon{background:var(--maroon);color:var(--white);border-color:var(--maroon);}
-.nav-cta.maroon:hover{background:var(--maroon-hover);}
-.profile-badge{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--maroon);background:var(--white);cursor:pointer;font-size:15px;font-weight:900;color:var(--maroon);}
-.profile-badge:hover{background:#FFF5F6;}
-.menu-btn{display:flex;flex-direction:column;justify-content:space-around;width:30px;height:24px;background:transparent;border:none;cursor:pointer;z-index:2001;}
-.menu-btn span{display:block;width:100%;height:2px;background:var(--black);}
+.header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 72px; }
+.nav-container { max-width: 1300px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-logo { font-size: 32px; font-weight: 900; color: var(--maroon); line-height: .8; }
+.brand-text h1 { font-size: 18px; font-weight: 900; letter-spacing: -.5px; }
+.menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; z-index: 2001; }
+.menu-btn span { display: block; width: 100%; height: 2px; background: var(--black); transition: 0.3s; }
 
-/* MOBILE MENU */
-.mobile-menu{position:fixed;inset:0;background:var(--white);z-index:2000;display:flex;flex-direction:column;transform:translateX(100%);opacity:0;visibility:hidden;transition:.4s ease;overflow-y:auto;}
-.mobile-menu.active{transform:translateX(0);opacity:1;visibility:visible;}
-.menu-header{display:flex;justify-content:flex-end;padding:24px;border-bottom:1px solid var(--silver);}
-.close-btn{background:transparent;border:none;cursor:pointer;padding:8px;}
-.close-btn i{width:32px;height:32px;}
-.menu-content{padding:0 32px 32px;flex-grow:1;}
-.menu-item{border-bottom:1px solid var(--silver);}
-.menu-link{display:flex;justify-content:space-between;align-items:center;padding:24px 0;font-size:20px;font-weight:600;cursor:pointer;}
-.menu-link i{transition:.3s;}
-.menu-item.active .menu-link i{transform:rotate(90deg);color:var(--maroon);}
-.submenu{max-height:0;overflow:hidden;transition:max-height .4s ease-out;background:#FAFAFA;border-radius:8px;}
-.submenu a{display:block;padding:16px 24px;font-size:16px;color:var(--gray);font-weight:500;}
-.submenu a:hover{color:var(--maroon);padding-left:32px;}
-.menu-footer{padding:32px;border-top:1px solid var(--silver);}
-.btn-menu-apply{display:flex;justify-content:center;align-items:center;width:100%;background:var(--maroon);color:var(--white);padding:16px;border-radius:8px;font-size:16px;font-weight:700;border:1px solid var(--maroon);}
+/* MEGA MENU (HAMBURGER DROPDOWN) */
+.mobile-menu { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: .4s ease; overflow-y: auto; }
+.mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
+.menu-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--silver); height: 72px; }
+.menu-header .brand-logo { font-size: 28px; }
+.close-btn { background: transparent; border: none; cursor: pointer; padding: 8px; }
+.close-btn i { width: 32px; height: 32px; }
+.menu-content { padding: 0 32px 32px; flex-grow: 1; }
+.menu-item { border-bottom: 1px solid var(--silver); }
+.menu-link { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; font-size: 18px; font-weight: 600; cursor: pointer; }
+.menu-link i { transition: .3s; width: 20px; height: 20px; }
+.menu-item.active .menu-link i { transform: rotate(90deg); color: var(--maroon); }
+.submenu { max-height: 0; overflow: hidden; transition: max-height .4s ease-out; background: #FAFAFA; border-radius: 8px; }
+.submenu a { display: block; padding: 14px 24px; font-size: 15px; color: var(--gray); font-weight: 500; }
+.submenu a:hover { color: var(--maroon); padding-left: 32px; }
+.menu-footer { padding: 24px 32px; border-top: 1px solid var(--silver); display: flex; flex-direction: column; gap: 12px; }
+
+/* AUTH BUTTONS & PROFILE */
+.btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; border: 1px solid var(--maroon); }
+.btn-menu-login { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--white); color: var(--black); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; border: 1.5px solid var(--silver); cursor: pointer; font-family: inherit; }
+.profile-nav-item { display: none; align-items: center; gap: 16px; padding: 16px; border: 1px solid var(--maroon); border-radius: 12px; background: #FFF5F6; cursor: pointer; text-decoration: none; color: var(--black); }
+.profile-nav-item .profile-badge { width: 44px; height: 44px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; }
+.profile-nav-item .profile-info h4 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+.profile-nav-item .profile-info p { font-size: 12px; color: var(--maroon); font-weight: 700; text-transform: uppercase; }
 
 /* STATUS BANNER */
-.status-banner{display:none;background:linear-gradient(135deg,#FFF5F6 0%,#FFF 100%);border-bottom:1px solid var(--maroon);padding:14px 24px;text-align:center;}
-.status-banner-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:14px;}
-.status-banner strong{color:var(--maroon);font-weight:900;}
-.status-banner .status-pill{display:inline-block;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;}
-.status-pill.applicant{background:#FFF5F6;color:var(--maroon);border:1px solid var(--maroon);}
-.status-pill.enrolled{background:#F0FDF4;color:var(--success);border:1px solid var(--success);}
-.status-banner a{color:var(--maroon);font-weight:800;text-decoration:underline;}
+.status-banner { display: none; background: linear-gradient(135deg, #FFF5F6 0%, #FFF 100%); border-bottom: 1px solid var(--maroon); padding: 14px 24px; text-align: center; }
+.status-banner-inner { max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; font-size: 14px; }
+.status-banner strong { color: var(--maroon); font-weight: 900; }
+.status-banner .status-pill { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+.status-pill.applicant { background: #FFF5F6; color: var(--maroon); border: 1px solid var(--maroon); }
+.status-pill.enrolled { background: #F0FDF4; color: var(--success); border: 1px solid var(--success); }
+.status-banner a { color: var(--maroon); font-weight: 800; text-decoration: underline; }
 
-/* ========================================= */
-/* NEW MAILCHIMP-STYLE HERO SECTION          */
-/* ========================================= */
-.hero-section {
-    background-color: var(--maroon);
-    color: var(--white);
-    padding: 80px 24px;
-    position: relative;
-    overflow: hidden; /* Keeps floating elements from breaking layout */
-}
-.hero-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-}
+/* HERO SECTION */
+.hero-section { background-color: var(--maroon); color: var(--white); padding: 80px 24px; position: relative; overflow: hidden; }
+.hero-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
 .hero-text { padding-right: 20px; }
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid rgba(255,255,255,0.3);
-    background: rgba(255,255,255,0.1);
-    padding: 8px 16px;
-    border-radius: 100px;
-    font-size: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-    color: var(--white);
-}
-.hero-text h1 {
-    font-size: clamp(40px, 5vw, 64px);
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -2px;
-    margin-bottom: 24px;
-}
-.hero-text p {
-    font-size: 18px;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 40px;
-    max-width: 500px;
-    font-weight: 500;
-}
-.hero-buttons {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-}
-.btn-hero {
-    padding: 16px 32px;
-    font-size: 16px;
-    font-weight: 700;
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: 0.2s;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-}
-.btn-hero.primary {
-    background: var(--white);
-    color: var(--maroon);
-}
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 24px; color: var(--white); }
+.hero-text h1 { font-size: clamp(40px, 5vw, 64px); font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px; }
+.hero-text p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 40px; max-width: 500px; font-weight: 500; }
+.hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn-hero { padding: 16px 32px; font-size: 16px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 10px; transition: 0.2s; border: none; cursor: pointer; font-family: inherit; }
+.btn-hero.primary { background: var(--white); color: var(--maroon); }
 .btn-hero.primary:hover { background: #FAFAFA; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-.btn-hero.outline {
-    background: transparent;
-    color: var(--white);
-    border: 2px solid rgba(255,255,255,0.3);
-}
+.btn-hero.outline { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.3); }
 .btn-hero.outline:hover { border-color: var(--white); }
 
-/* HERO VISUAL (Overlapping elements) */
-.hero-visual {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.hero-img-wrapper {
-    width: 100%;
-    max-width: 480px;
-    aspect-ratio: 1/1;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 8px solid rgba(255,255,255,0.1);
-    position: relative;
-    z-index: 2;
-}
-.hero-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.floating-card {
-    position: absolute;
-    background: var(--white);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    color: var(--black);
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    animation: float 6s ease-in-out infinite;
-}
-.floating-card .label {
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: var(--gray);
-    letter-spacing: 0.5px;
-}
-.floating-card .value {
-    font-size: 16px;
-    font-weight: 900;
-    color: var(--maroon);
-    font-family: monospace;
-}
+/* HERO VISUAL */
+.hero-visual { position: relative; display: flex; justify-content: center; align-items: center; }
+.hero-img-wrapper { width: 100%; max-width: 480px; aspect-ratio: 1/1; border-radius: 50%; overflow: hidden; border: 8px solid rgba(255,255,255,0.1); position: relative; z-index: 2; }
+.hero-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+.floating-card { position: absolute; background: var(--white); border-radius: 12px; padding: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); color: var(--black); z-index: 3; display: flex; flex-direction: column; gap: 4px; animation: float 6s ease-in-out infinite; }
+.floating-card .label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--gray); letter-spacing: 0.5px; }
+.floating-card .value { font-size: 16px; font-weight: 900; color: var(--maroon); font-family: monospace; }
 .card-1 { top: 10%; left: -5%; }
 .card-2 { bottom: 15%; right: -5%; animation-delay: -3s; }
 .card-3 { bottom: -5%; left: 10%; animation-delay: -1.5s; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-}
+/* SECTIONS */
+.section { padding: 80px 24px; border-bottom: 1px solid var(--silver); }
+.section.alt { background: #FAFAFA; }
+.section-container { max-width: 1100px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: 48px; }
+.section-header h2 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; }
+.section-header p { font-size: 16px; color: var(--gray); max-width: 600px; margin: 0 auto; }
 
-/* REST OF SECTIONS */
-.section{padding:80px 24px;border-bottom:1px solid var(--silver);}
-.section.alt{background:#FAFAFA;}
-.section-container{max-width:1100px;margin:0 auto;}
-.section-header{text-align:center;margin-bottom:48px;}
-.section-header h2{font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:12px;}
-.section-header p{font-size:16px;color:var(--gray);max-width:600px;margin:0 auto;}
-.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
-.step-card{background:#FAFAFA;border:1px solid var(--silver);border-radius:16px;padding:32px;transition:.2s;}
-.step-card:hover{border-color:var(--maroon);background:#FFF5F6;transform:translateY(-4px);}
-.step-num{width:48px;height:48px;border-radius:50%;background:var(--maroon);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;margin-bottom:20px;}
-.step-card h3{font-size:18px;font-weight:800;margin-bottom:8px;}
-.step-card p{font-size:14px;color:var(--gray);}
+/* WHY US / ABOUT */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.about-text h3 { font-size: 24px; font-weight: 900; margin-bottom: 16px; color: var(--maroon); }
+.about-text p { font-size: 16px; color: var(--gray); margin-bottom: 16px; line-height: 1.7; }
+.about-features { display: flex; flex-direction: column; gap: 20px; }
+.feature-item { display: flex; gap: 16px; align-items: flex-start; }
+.feature-item i { width: 24px; height: 24px; color: var(--maroon); flex-shrink: 0; margin-top: 2px; }
+.feature-item h4 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+.feature-item p { font-size: 14px; color: var(--gray); }
 
-.exam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;max-width:900px;margin:0 auto;}
-.exam-card{background:var(--white);border:1px solid var(--silver);border-radius:12px;padding:26px;display:flex;justify-content:space-between;align-items:center;transition:.3s;}
-.exam-card:hover{border-color:var(--maroon);}
-.exam-info h3{font-size:18px;font-weight:800;margin-bottom:4px;}
-.exam-info p{font-size:13px;color:var(--gray);font-weight:600;}
-.exam-date{background:var(--white);border:2px solid var(--maroon);color:var(--maroon);padding:10px 16px;border-radius:8px;text-align:center;flex-shrink:0;}
-.exam-date span{display:block;font-size:18px;font-weight:900;}
-.exam-date small{font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:1px;}
+/* COURSES */
+.courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; max-width: 1000px; margin: 0 auto; }
+.course-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: .3s; }
+.course-card:hover { border-color: var(--maroon); }
+.course-image { width: 100%; height: 180px; object-fit: cover; border-bottom: 1px solid var(--silver); }
+.course-content { padding: 28px; display: flex; flex-direction: column; flex-grow: 1; }
+.course-code { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--maroon); background: #FFF5F6; border: 1px solid var(--maroon); padding: 4px 10px; border-radius: 100px; margin-bottom: 12px; align-self: flex-start; }
+.course-content h3 { font-size: 22px; font-weight: 900; margin-bottom: 8px; letter-spacing: -.5px; }
+.course-content p { font-size: 14px; color: var(--gray); margin-bottom: 16px; flex-grow: 1; }
+.course-meta-info { font-size: 13px; color: var(--gray); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px dashed var(--silver); }
+.course-meta-info strong { color: var(--black); }
+.course-actions { display: flex; flex-direction: column; gap: 10px; }
+.btn-course-apply { background: var(--silver); color: var(--black); border: 1px solid #cbd5e1; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; }
+.btn-course-apply:hover { background: #cbd5e1; }
+.btn-course-view { background: var(--white); color: var(--black); border: 1.5px solid var(--silver); padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; }
+.btn-course-view:hover { border-color: var(--black); }
 
-.courses-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;max-width:1000px;margin:0 auto;}
-.course-card{background:var(--white);border:1px solid var(--silver);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.3s;}
-.course-card:hover{border-color:var(--maroon);}
-.course-image{width:100%;height:180px;object-fit:cover;border-bottom:1px solid var(--silver);}
-.course-content{padding:28px;display:flex;flex-direction:column;flex-grow:1;}
-.course-code{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1px;color:var(--maroon);background:#FFF5F6;border:1px solid var(--maroon);padding:4px 10px;border-radius:100px;margin-bottom:12px;align-self:flex-start;}
-.course-content h3{font-size:22px;font-weight:900;margin-bottom:8px;letter-spacing:-.5px;}
-.course-content p{font-size:14px;color:var(--gray);margin-bottom:24px;flex-grow:1;}
-.course-actions{display:flex;flex-direction:column;gap:10px;}
-.btn-course-apply{background:var(--silver);color:var(--black);border:1px solid #cbd5e1;padding:12px;border-radius:8px;font-weight:700;font-size:14px;text-align:center;}
-.btn-course-apply:hover{background:#cbd5e1;}
-.btn-course-view{background:var(--white);color:var(--black);border:1.5px solid var(--silver);padding:12px;border-radius:8px;font-weight:700;font-size:14px;text-align:center;}
-.btn-course-view:hover{border-color:var(--black);}
+/* DONATION SECTION */
+.donate-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 20px; padding: 48px; text-align: center; max-width: 800px; margin: 0 auto; }
+.donate-box h2 { font-size: 28px; font-weight: 900; margin-bottom: 16px; }
+.donate-box p { font-size: 16px; color: var(--gray); max-width: 500px; margin: 0 auto 32px; }
+.btn-donate { display: inline-flex; align-items: center; gap: 10px; background: var(--maroon); color: var(--white); padding: 16px 36px; border-radius: 12px; font-size: 16px; font-weight: 700; transition: 0.2s; }
+.btn-donate:hover { background: var(--maroon-hover); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(122,31,43,0.2); }
 
-.store-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
-.product-card{background:var(--white);border:1px solid var(--silver);border-radius:14px;overflow:hidden;transition:.3s;}
-.product-card:hover{border-color:var(--maroon);transform:translateY(-3px);box-shadow:0 10px 25px rgba(0,0,0,.06);}
-.product-img{height:140px;background:#FAFAFA;display:flex;align-items:center;justify-content:center;color:var(--maroon);font-size:52px;font-weight:900;border-bottom:1px solid var(--silver);}
-.product-body{padding:20px;}
-.product-body h4{font-size:15px;font-weight:800;margin-bottom:4px;}
-.product-body p{font-size:12px;color:var(--gray);margin-bottom:14px;line-height:1.5;}
-.product-price{font-size:20px;font-weight:900;color:var(--maroon);margin-bottom:12px;}
-.btn-buy{display:block;width:100%;padding:10px;background:var(--maroon);color:var(--white);border:none;border-radius:8px;font-size:13px;font-weight:700;text-align:center;cursor:pointer;font-family:inherit;}
-.btn-buy:hover{background:var(--maroon-hover);}
-
-.news-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
-.news-card{background:var(--white);border:1px solid var(--silver);border-radius:14px;padding:24px;transition:.2s;}
-.news-card:hover{border-color:var(--maroon);}
-.news-tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.5px;padding:3px 8px;border-radius:4px;background:#FFF5F6;color:var(--maroon);border:1px solid var(--maroon);margin-bottom:10px;text-transform:uppercase;}
-.news-card h4{font-size:16px;font-weight:800;margin-bottom:6px;}
-.news-card p{font-size:13px;color:var(--gray);line-height:1.6;}
-.news-date{font-size:11px;color:var(--gray);margin-top:12px;font-weight:600;}
-
-.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;}
-.why-card{background:var(--white);border:1px solid var(--silver);border-radius:16px;padding:28px;}
-.why-card:hover{border-color:var(--maroon);}
-.why-card i{width:32px;height:32px;color:var(--maroon);margin-bottom:16px;}
-.why-card h4{font-size:17px;font-weight:800;margin-bottom:8px;}
-.why-card p{font-size:14px;color:var(--gray);line-height:1.7;}
-
-.cta-inner{max-width:900px;margin:0 auto;border:2px solid var(--maroon);border-radius:20px;padding:60px 40px;text-align:center;background:linear-gradient(135deg,#FFF5F6 0%,#FFF 100%);}
-.cta-inner h2{font-size:clamp(28px,4vw,40px);font-weight:900;letter-spacing:-1px;margin-bottom:16px;}
-.cta-inner p{font-size:17px;color:var(--gray);max-width:500px;margin:0 auto 32px;}
-.btn-cta{display:inline-flex;align-items:center;gap:10px;background:var(--maroon);color:var(--white);border:none;padding:18px 40px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;}
-.btn-cta:hover{background:var(--maroon-hover);}
+/* CTA */
+.cta-inner { max-width: 900px; margin: 0 auto; border: 2px solid var(--maroon); border-radius: 20px; padding: 60px 40px; text-align: center; background: linear-gradient(135deg,#FFF5F6 0%,#FFF 100%); }
+.cta-inner h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 900; letter-spacing: -1px; margin-bottom: 16px; }
+.cta-inner p { font-size: 17px; color: var(--gray); max-width: 500px; margin: 0 auto 32px; }
+.btn-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--maroon); color: var(--white); border: none; padding: 18px 40px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn-cta:hover { background: var(--maroon-hover); }
 
 /* FOOTER */
-.footer{background:#FAFAFA;padding:64px 24px 40px;border-top:1px solid var(--silver);}
-.footer-grid{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;}
-.footer-brand h2{font-size:24px;font-weight:900;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-.footer-brand p{font-size:13px;color:var(--gray);margin-bottom:8px;}
-.footer-col h4{font-size:13px;font-weight:800;margin-bottom:16px;text-transform:uppercase;letter-spacing:.5px;color:var(--maroon);}
-.footer-col ul{display:flex;flex-direction:column;gap:10px;}
-.footer-col a,.footer-col button{font-size:14px;color:var(--gray);background:none;border:none;cursor:pointer;text-align:left;padding:0;font-family:inherit;}
-.footer-col a:hover,.footer-col button:hover{color:var(--maroon);}
-.footer-bottom{max-width:1300px;margin:48px auto 0;padding-top:24px;border-top:1px solid var(--silver);text-align:center;font-size:12px;color:var(--gray);}
+.footer { background: #FAFAFA; padding: 64px 24px 40px; border-top: 1px solid var(--silver); }
+.footer-grid { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
+.footer-brand h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.footer-brand p { font-size: 13px; color: var(--gray); margin-bottom: 8px; }
+.footer-col h4 { font-size: 13px; font-weight: 800; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .5px; color: var(--maroon); }
+.footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+.footer-col a, .footer-col button { font-size: 14px; color: var(--gray); background: none; border: none; cursor: pointer; text-align: left; padding: 0; font-family: inherit; }
+.footer-col a:hover, .footer-col button:hover { color: var(--maroon); }
+.footer-bottom { max-width: 1300px; margin: 48px auto 0; padding-top: 24px; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:10000;display:none;justify-content:center;align-items:center;padding:24px;}
-.modal-overlay.active{display:flex;}
-.modal-content{background:var(--white);border-radius:16px;padding:40px 24px;max-width:440px;width:100%;position:relative;box-shadow:0 20px 40px rgba(0,0,0,.1);}
-.close-modal{position:absolute;top:20px;right:20px;background:none;border:none;cursor:pointer;color:var(--gray);}
-.modal-logo{font-size:40px;font-weight:900;color:var(--maroon);text-align:center;margin-bottom:16px;}
-.modal-title{font-size:24px;font-weight:900;text-align:center;margin-bottom:8px;}
-.modal-subtitle{font-size:14px;color:var(--gray);text-align:center;margin-bottom:32px;}
-.auth-buttons{display:flex;flex-direction:column;gap:12px;}
-.btn-auth{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px;border:1.5px solid var(--silver);border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;background:var(--white);font-family:inherit;}
-.btn-auth:hover{background:#FAFAFA;border-color:var(--black);}
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
+.modal-overlay.active { display: flex; }
+.modal-content { background: var(--white); border-radius: 16px; padding: 40px 24px; max-width: 440px; width: 100%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.1); }
+.close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
+.modal-logo { font-size: 40px; font-weight: 900; color: var(--maroon); text-align: center; margin-bottom: 16px; }
+.modal-title { font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px; }
+.modal-subtitle { font-size: 14px; color: var(--gray); text-align: center; margin-bottom: 32px; }
+.auth-buttons { display: flex; flex-direction: column; gap: 12px; }
+.btn-auth { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 14px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; background: var(--white); font-family: inherit; }
+.btn-auth:hover { background: #FAFAFA; border-color: var(--black); }
 
 /* RESPONSIVE */
-@media(max-width:900px){
+@media (max-width: 900px) {
     .hero-container { grid-template-columns: 1fr; text-align: center; }
     .hero-text { padding-right: 0; }
     .hero-text p { margin: 0 auto 40px auto; }
@@ -324,19 +202,18 @@ ul{list-style:none;}
     .card-1 { left: 0; top: 0; }
     .card-2 { right: 0; bottom: 0; }
     .card-3 { display: none; }
-    .footer-grid{grid-template-columns:1fr 1fr;}
-    .steps-grid{grid-template-columns:1fr;}
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 32px; }
 }
-@media(max-width:768px){
-    .nav-container{padding:0 16px;}
-    .brand-text h1{font-size:16px;}
-    .brand-logo{font-size:28px;}
-    .btn-login,.nav-cta{padding:8px 12px;font-size:13px;}
-    .hero-section{padding:60px 20px;}
-    .hero-buttons{flex-direction:column;width:100%;}
-    .btn-hero{width:100%;justify-content:center;}
-    .footer-grid{grid-template-columns:1fr;gap:32px;}
-    .announcement{left:16px;right:16px;max-width:none;bottom:16px;top:auto;}
+@media (max-width: 768px) {
+    .nav-container { padding: 0 16px; }
+    .brand-text h1 { font-size: 16px; }
+    .hero-section { padding: 60px 20px; }
+    .hero-buttons { flex-direction: column; width: 100%; }
+    .btn-hero { width: 100%; justify-content: center; }
+    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    .announcement { left: 16px; right: 16px; max-width: none; bottom: 16px; top: auto; }
+    .donate-box { padding: 32px 20px; }
 }
 </style>
 </head>
@@ -357,7 +234,7 @@ ul{list-style:none;}
     2027 Applications Close: <span>13 January 2027</span> — <a href="ae-timetable.html">View AE Timetable</a>
 </div>
 
-<!-- LOGGED IN STATUS BANNER -->
+<!-- STATUS BANNER -->
 <div class="status-banner" id="statusBanner">
     <div class="status-banner-inner">
         <span>Signed in as <strong id="bannerName">—</strong></span>
@@ -366,79 +243,102 @@ ul{list-style:none;}
     </div>
 </div>
 
+<!-- CLEAN HEADER (Hamburger Only) -->
 <header class="header">
     <div class="nav-container">
         <a href="index.html" class="brand">
             <div class="brand-logo">∆</div>
             <div class="brand-text"><h1>Institute of Board</h1></div>
         </a>
-        <div class="nav-right">
-            <div class="nav-logged-out" id="navLoggedOut">
-                <a href="documents.html" class="btn-login">Documents</a>
-                <button class="btn-login" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
-                <a href="admission.html" class="nav-cta">Apply</a>
-            </div>
-            <div class="nav-logged-in" id="navLoggedIn">
-                <a href="documents.html" class="btn-login">Docs</a>
-                <a href="resources.html" class="btn-login">Resources</a>
-                <a href="exam-gateway.html" class="nav-cta maroon">Exam</a>
-                <div class="profile-badge" id="navProfileBadge" onclick="window.location.href='student-dashboard.html'">00</div>
-            </div>
-            <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
-        </div>
+        <button class="menu-btn" id="menuBtn" aria-label="Open Menu">
+            <span></span><span></span><span></span>
+        </button>
     </div>
 </header>
 
+<!-- DROPDOWN MENU -->
 <div class="mobile-menu" id="mobileMenu">
-    <div class="menu-header"><button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button></div>
+    <div class="menu-header">
+        <a href="index.html" class="brand">
+            <div class="brand-logo">∆</div>
+            <div class="brand-text"><h1>Institute of Board</h1></div>
+        </a>
+        <button class="close-btn" id="closeMenu"><i data-lucide="x"></i></button>
+    </div>
+    
     <div class="menu-content">
         <ul>
-            <li class="menu-item"><div class="menu-link" onclick="toggleSubmenu(this)">Public <i data-lucide="chevron-right"></i></div><div class="submenu"><a href="documents.html">Documents</a><a href="ae-timetable.html">AE Timetable</a><a href="courses-ifb.html">Prospectus</a></div></li>
-            <li class="menu-item"><div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div><div class="submenu"><a href="student-dashboard.html">Dashboard</a><a href="resources.html">Resources</a><a href="exam-gateway.html">Exam Gateway</a></div></li>
-            <li class="menu-item"><div class="menu-link" onclick="toggleSubmenu(this)">Admissions <i data-lucide="chevron-right"></i></div><div class="submenu"><a href="admission.html">Apply</a><a href="courses-ifb.html">Courses</a></div></li>
-            <li class="menu-item"><div class="menu-link" onclick="toggleSubmenu(this)">Store <i data-lucide="chevron-right"></i></div><div class="submenu"><a href="#store">Merch</a><a href="#store">Sponsor Tiers</a></div></li>
+            <li class="menu-item">
+                <div class="menu-link" onclick="toggleSubmenu(this)">Public <i data-lucide="chevron-right"></i></div>
+                <div class="submenu">
+                    <a href="documents.html">Documents</a>
+                    <a href="ae-timetable.html">AE Timetable</a>
+                    <a href="courses-ifb.html">Prospectus</a>
+                    <a href="guidelines-general.html">Rules</a>
+                </div>
+            </li>
+            <li class="menu-item">
+                <div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div>
+                <div class="submenu">
+                    <a href="student-dashboard.html">Dashboard</a>
+                    <a href="resources.html">Resources</a>
+                    <a href="exam-gateway.html">Exam Gateway</a>
+                </div>
+            </li>
+            <li class="menu-item">
+                <div class="menu-link" onclick="toggleSubmenu(this)">Admissions <i data-lucide="chevron-right"></i></div>
+                <div class="submenu">
+                    <a href="admission.html">Apply</a>
+                    <a href="courses-ifb.html">Courses</a>
+                </div>
+            </li>
+            <li class="menu-item">
+                <div class="menu-link" onclick="toggleSubmenu(this)">Support <i data-lucide="chevron-right"></i></div>
+                <div class="submenu">
+                    <a href="#donate">Sponsor Us</a>
+                    <a href="mailto:n1nathaniel971@gmail.com">Contact</a>
+                </div>
+            </li>
         </ul>
     </div>
-    <div class="menu-footer"><a href="admission.html" class="btn-menu-apply">Apply Now</a></div>
+
+    <div class="menu-footer" id="menuAuthArea">
+        <!-- Profile Circle / Login Buttons injected here -->
+        <a href="admission.html" class="btn-menu-apply">Apply Now</a>
+        <button class="btn-menu-login" onclick="document.getElementById('authModal').classList.add('active'); document.getElementById('mobileMenu').classList.remove('active');">Login</button>
+    </div>
 </div>
 
-<!-- NEW MODERN HERO SECTION -->
+<!-- HERO SECTION -->
 <section class="hero-section">
     <div class="hero-container">
         <div class="hero-text">
-            <div class="hero-badge"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Rigorous · Non-Accredited · Free Forever</div>
+            <div class="hero-badge"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Non-Accredited · 100% Fee-Free</div>
             <h1 id="heroTitle">Master the disciplines<br>that <span style="color:#E2E8F0">build the future.</span></h1>
-            <p id="heroSubtitle">The Institute of Board offers university-level training in Mathematics and Web Development. We are non-accredited by choice — that is exactly what allows us to remain 100% free.</p>
-            
+            <p id="heroSubtitle">The Institute of Board provides university-level training in Mathematics and Web Development. We are a fee-free institution. We are non-accredited by choice, allowing us to focus purely on modern, practical skills without bureaucracy.</p>
             <div class="hero-buttons hero-logged-out" id="heroLoggedOut">
                 <a href="admission.html" class="btn-hero primary">Apply for Admission</a>
                 <a href="documents.html" class="btn-hero outline">View Documents</a>
             </div>
-            
             <div class="hero-buttons hero-logged-in" id="heroLoggedIn" style="display:none;">
                 <a href="student-dashboard.html" class="btn-hero primary">Go to Dashboard</a>
                 <a href="resources.html" class="btn-hero outline">Study Resources</a>
             </div>
         </div>
-
-        <!-- Floating UI Cards Visual -->
         <div class="hero-visual">
             <div class="hero-img-wrapper">
                 <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop" alt="Students studying">
             </div>
-            
             <div class="floating-card card-1">
                 <span class="label">Exam Status</span>
                 <span class="value">AE-S-MATH</span>
                 <span style="font-size:11px; color:var(--success); font-weight:700;">✓ Scheduled: 13 Jan</span>
             </div>
-            
             <div class="floating-card card-2">
                 <span class="label">Student ID</span>
                 <span class="value">2701051026001</span>
-                <span style="font-size:11px; color:var(--gray);">12-Digit Secure Code Active</span>
+                <span style="font-size:11px; color:var(--gray);">Secure Code Active</span>
             </div>
-            
             <div class="floating-card card-3">
                 <span class="label">Tuition Balance</span>
                 <span class="value" style="color:var(--success);">R 0.00</span>
@@ -448,45 +348,64 @@ ul{list-style:none;}
     </div>
 </section>
 
+<!-- WHO WE ARE & WHY IT MATTERS (Replaced AE Grid) -->
 <section class="section">
     <div class="section-container">
-        <div class="section-header"><h2>How IFB Works</h2><p>Three steps from applicant to enrolled student.</p></div>
-        <div class="steps-grid">
-            <div class="step-card"><div class="step-num">1</div><h3>Apply</h3><p>Register with Google or GitHub. Get your 13-digit Student ID + 6-digit Security Code instantly.</p></div>
-            <div class="step-card"><div class="step-num">2</div><h3>Write the AE</h3><p>Sit the Admission Examination. Math on 13 Jan, Web Dev on 18 Jan 2027. 60% required to pass.</p></div>
-            <div class="step-card"><div class="step-num">3</div><h3>Get Enrolled</h3><p>Pass the AE and you're in. Full portal access, resources, and final exam sessions unlocked.</p></div>
+        <div class="about-grid">
+            <div class="about-text">
+                <h3>Why non-accredited?</h3>
+                <p>Traditional accreditation is slow, expensive, and often years behind modern industry standards. By choosing to operate independently, we bypass the bureaucratic overhead and keep our courses <strong>100% free</strong>.</p>
+                <p>You still get a university-level curriculum, rigorous assessments, and real-world skills. You just don't pay thousands in tuition for a government stamp that employers rarely look at anyway when you have a solid portfolio.</p>
+            </div>
+            <div class="about-features">
+                <div class="feature-item">
+                    <i data-lucide="banknote"></i>
+                    <div>
+                        <h4>Zero Cost</h4>
+                        <p>No tuition, no exam fees. Funded entirely by sponsors and donors.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="fingerprint"></i>
+                    <div>
+                        <h4>Anonymous Marking</h4>
+                        <p>Scripts are marked using only your Student ID barcode. Zero bias in grading.</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="zap"></i>
+                    <div>
+                        <h4>Practical Skills</h4>
+                        <p>We focus on modern, industry-standard tools rather than outdated textbooks.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<section class="section alt">
+<!-- COURSES SECTION -->
+<section class="section alt" id="coursesSection">
     <div class="section-container">
-        <div class="section-header"><h2>2027 Admission Examinations</h2><p>Two sittings. Both mandatory. 60% pass mark.</p></div>
-        <div class="exam-grid" id="examGrid">
-            <div class="exam-card" data-exam="math">
-                <div class="exam-info"><h3>Mathematics</h3><p>IFB-S · 4 Papers · 600 marks</p></div>
-                <div class="exam-date"><span>13 Jan</span><small>2027</small></div>
-            </div>
-            <div class="exam-card" data-exam="web">
-                <div class="exam-info"><h3>Web Development</h3><p>IFB AQ-B · 3 Papers</p></div>
-                <div class="exam-date"><span>18 Jan</span><small>2027</small></div>
-            </div>
+        <div class="section-header">
+            <h2>Our Programs</h2>
+            <p>Two tracks. University-level content. Both completely free.</p>
         </div>
-        <div style="text-align:center;margin-top:32px;"><a href="ae-timetable.html" style="color:var(--maroon);font-weight:700;">View full timetable & protocol →</a></div>
-    </div>
-</section>
-
-<section class="section" id="coursesSection">
-    <div class="section-container">
-        <div class="section-header"><h2>Our Programs</h2><p>Two rigorous tracks. University-level content. Both completely free.</p></div>
         <div class="courses-grid">
             <div class="course-card">
                 <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=600&auto=format&fit=crop" alt="Mathematics" class="course-image">
                 <div class="course-content">
                     <span class="course-code">IFB-S · MATHEMATICS</span>
                     <h3>IFB-S Mathematics</h3>
-                    <p>4-paper curriculum (600 marks). Algebra, Calculus, Trigonometry, Geometry, Finance, Probability. No formula sheets. 60% AE pass.</p>
-                    <div class="course-actions"><a href="courses-ifb.html" class="btn-course-view">Prospectus</a><a href="admission.html" class="btn-course-apply">Apply</a></div>
+                    <p>Advanced Algebra, Calculus, Trigonometry, Geometry, Finance, and Probability. No formula sheets provided.</p>
+                    <div class="course-meta-info">
+                        <strong>Final Course:</strong> 4 papers (600 marks)<br>
+                        <strong>Entrance Exam (AE):</strong> 1 paper (100 marks)
+                    </div>
+                    <div class="course-actions">
+                        <a href="courses-ifb.html" class="btn-course-view">Prospectus</a>
+                        <a href="admission.html" class="btn-course-apply">Apply</a>
+                    </div>
                 </div>
             </div>
             <div class="course-card">
@@ -494,92 +413,46 @@ ul{list-style:none;}
                 <div class="course-content">
                     <span class="course-code">IFB AQ-B · WEB DEV</span>
                     <h3>Front-End Web Development</h3>
-                    <p>3-paper project-based track. HTML, CSS, JS, React, UI/UX, deployment. Ship a real production app. 60% AE pass.</p>
-                    <div class="course-actions"><a href="courses-ifb.html" class="btn-course-view">Prospectus</a><a href="admission.html" class="btn-course-apply">Apply</a></div>
+                    <p>HTML, CSS, JavaScript, React, UI/UX, and deployment. Ship a real production app by the end of the year.</p>
+                    <div class="course-meta-info">
+                        <strong>Final Course:</strong> 3 papers<br>
+                        <strong>Entrance Exam (AE):</strong> 1 paper (100 marks)
+                    </div>
+                    <div class="course-actions">
+                        <a href="courses-ifb.html" class="btn-course-view">Prospectus</a>
+                        <a href="admission.html" class="btn-course-apply">Apply</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="section alt" id="store">
+<!-- DONATION SECTION -->
+<section class="section" id="donate">
     <div class="section-container">
-        <div class="section-header"><h2>IFB Store</h2><p>Tuition is free. Swag and premium materials support the institution.</p></div>
-        <div class="store-grid">
-            <div class="product-card">
-                <div class="product-img">∆</div>
-                <div class="product-body"><h4>IFB Hoodie</h4><p>Maroon embroidery on black. Premium cotton.</p><div class="product-price">R450</div><a href="mailto:n1nathaniel971@gmail.com?subject=IFB%20Hoodie%20Order" class="btn-buy">Order via Email</a></div>
-            </div>
-            <div class="product-card">
-                <div class="product-img">∆</div>
-                <div class="product-body"><h4>Printed Past Papers</h4><p>Full 2027 past papers bundle (Math + Web).</p><div class="product-price">R80</div><a href="mailto:n1nathaniel971@gmail.com?subject=Past%20Papers%20Bundle" class="btn-buy">Order via Email</a></div>
-            </div>
-            <div class="product-card">
-                <div class="product-img">∆</div>
-                <div class="product-body"><h4>Sponsor a Student</h4><p>Cover one student's full year of study.</p><div class="product-price">R1,200</div><a href="mailto:n1nathaniel971@gmail.com?subject=Sponsor%20a%20Student" class="btn-buy">Sponsor</a></div>
-            </div>
-            <div class="product-card">
-                <div class="product-img">∆</div>
-                <div class="product-body"><h4>Institutional Donation</h4><p>Any amount. Funds hosting, portals, students.</p><div class="product-price">Custom</div><a href="mailto:n1nathaniel971@gmail.com?subject=IFB%20Donation" class="btn-buy">Donate</a></div>
-            </div>
+        <div class="donate-box">
+            <h2>Sponsor the Institute</h2>
+            <p>IFB is a 100% fee-free institution. We rely entirely on the generosity of sponsors and donors to cover our operational costs, including hosting, domains, and examination portals.</p>
+            <a href="mailto:n1nathaniel971@gmail.com?subject=Sponsorship%20Inquiry%20for%20IFB" class="btn-donate">
+                <i data-lucide="mail"></i> Email Us to Donate
+            </a>
         </div>
     </div>
 </section>
 
-<section class="section">
-    <div class="section-container">
-        <div class="section-header"><h2>Latest Updates</h2><p>What's happening at IFB right now.</p></div>
-        <div class="news-grid">
-            <div class="news-card">
-                <span class="news-tag">Admissions</span>
-                <h4>2027 AE Dates Confirmed</h4>
-                <p>Mathematics AE on 13 Jan 2027. Web Dev AE on 18 Jan 2027. Applications close 13 Jan.</p>
-                <div class="news-date">Updated 2027</div>
-            </div>
-            <div class="news-card">
-                <span class="news-tag">Academic</span>
-                <h4>Academic Year Commences 18 Feb 2027</h4>
-                <p>Full academic year starts 18 Feb 2027 and concludes 4 Jan 2028. Both tracks run in parallel.</p>
-                <div class="news-date">Calendar Update</div>
-            </div>
-            <div class="news-card">
-                <span class="news-tag">Security</span>
-                <h4>Enhanced Exam Portal Security</h4>
-                <p>Unique per-paper session codes now required. Students only access papers they applied for.</p>
-                <div class="news-date">System Update</div>
-            </div>
-            <div class="news-card">
-                <span class="news-tag">Pass Mark</span>
-                <h4>AE Pass Mark Raised to 60%</h4>
-                <p>Reflecting IFB's commitment to rigorous standards. Final exam aggregate remains 50%.</p>
-                <div class="news-date">Policy Update</div>
-            </div>
-        </div>
-    </div>
-</section>
-
+<!-- CTA SECTION -->
 <section class="section alt">
-    <div class="section-container">
-        <div class="section-header"><h2>Why IFB</h2><p>We deliberately chose a harder path.</p></div>
-        <div class="why-grid">
-            <div class="why-card"><i data-lucide="shield-check"></i><h4>Independent</h4><p>No DHET, no Umalusi, no bureaucracy. Modern, industry-standard skills.</p></div>
-            <div class="why-card"><i data-lucide="heart-handshake"></i><h4>Free Forever</h4><p>Because we're non-accredited. No certification costs, no hidden charges. Ever.</p></div>
-            <div class="why-card"><i data-lucide="fingerprint"></i><h4>Anonymous Marking</h4><p>Only Student ID barcode on scripts. Zero bias in grading.</p></div>
-            <div class="why-card"><i data-lucide="zap"></i><h4>Rigorous</h4><p>The AE is a real filter. 60% pass mark. We admit those who prove they can do the work.</p></div>
-        </div>
-    </div>
-</section>
-
-<section class="section">
     <div class="section-container">
         <div class="cta-inner">
             <h2 id="ctaTitle">Applications close 13 January 2027</h2>
-            <p id="ctaText">Spaces limited. Admission strictly conditional on passing the AE at 60%.</p>
+            <p id="ctaText">Admission is strictly conditional on passing the Entrance Exam.</p>
             <a href="admission.html" class="btn-cta" id="ctaButton"><i data-lucide="arrow-right"></i> Start Your Application</a>
         </div>
     </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
     <div class="footer-grid">
         <div class="footer-brand">
@@ -599,9 +472,8 @@ ul{list-style:none;}
             <li><a href="resources.html">Resources</a></li>
             <li><a href="exam-gateway.html">Exam Gateway</a></li>
         </ul></div>
-        <div class="footer-col"><h4>Store</h4><ul>
-            <li><a href="#store">Merch</a></li>
-            <li><a href="fund-ifb.html">Sponsor Us</a></li>
+        <div class="footer-col"><h4>Support</h4><ul>
+            <li><a href="#donate">Sponsor Us</a></li>
             <li><a href="mailto:n1nathaniel971@gmail.com">Contact</a></li>
         </ul></div>
     </div>
@@ -645,9 +517,10 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById('loader').style.opacity = '0';
     setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
+    const menuAuthArea = document.getElementById('menuAuthArea');
+
     if (user) {
-        document.getElementById('navLoggedOut').style.display = 'none';
-        document.getElementById('navLoggedIn').style.display = 'flex';
+        // User is logged in
         document.getElementById('heroLoggedOut').style.display = 'none';
         document.getElementById('heroLoggedIn').style.display = 'flex';
 
@@ -657,8 +530,8 @@ onAuthStateChanged(auth, async (user) => {
                 const data = docSnap.data();
                 const isEnrolled = (data.status === "Enrolled" || data.status === "Student");
                 const studentId = data.studentId || "00";
-                document.getElementById('navProfileBadge').innerText = studentId.slice(-2);
-
+                
+                // Status Banner
                 document.getElementById('statusBanner').style.display = 'block';
                 document.getElementById('bannerName').innerText = data.name || "Student";
                 const pill = document.getElementById('bannerStatus');
@@ -668,6 +541,7 @@ onAuthStateChanged(auth, async (user) => {
                     ? '→ <a href="resources.html">Study resources</a>'
                     : '→ <a href="resources.html">Prepare for AE</a> · <a href="exam-gateway.html">Enter Exam</a>';
 
+                // Hero Text
                 if (isEnrolled) {
                     document.getElementById('heroTitle').innerHTML = `Welcome back,<br><span style="color:#E2E8F0">${(data.name || "Student").split(' ')[0]}.</span>`;
                     document.getElementById('heroSubtitle').innerText = "You're enrolled. Access study materials and prepare for final assessments.";
@@ -676,23 +550,40 @@ onAuthStateChanged(auth, async (user) => {
                     document.getElementById('heroSubtitle').innerText = "Download the Answer Book, practice with mock papers, and sit the AE on your scheduled date.";
                 }
 
+                // Bottom CTA
                 document.getElementById('ctaTitle').innerText = isEnrolled ? "Continue your studies" : "You're not enrolled yet";
-                document.getElementById('ctaText').innerText = isEnrolled ? "Access resources and prepare for final assessments." : "Pass the AE (60%) to unlock enrollment.";
+                document.getElementById('ctaText').innerText = isEnrolled ? "Access resources and prepare for final assessments." : "Pass the Entrance Exam to unlock enrollment.";
                 document.getElementById('ctaButton').href = "resources.html";
                 document.getElementById('ctaButton').innerHTML = '<i data-lucide="arrow-right"></i> ' + (isEnrolled ? "Open Resources" : "Prepare for AE");
+
+                // Replace menu footer with Profile Circle
+                menuAuthArea.innerHTML = `
+                    <a href="student-dashboard.html" class="profile-nav-item" style="display:flex;">
+                        <div class="profile-badge">${studentId.slice(-2)}</div>
+                        <div class="profile-info">
+                            <h4>${data.name || "Student"}</h4>
+                            <p>${isEnrolled ? "Enrolled Student" : "Applicant"}</p>
+                        </div>
+                    </a>
+                `;
             }
-        } catch (e) { document.getElementById('navProfileBadge').innerHTML = '<i data-lucide="user"></i>'; }
+        } catch (e) { console.error(e); }
     } else {
-        document.getElementById('navLoggedOut').style.display = 'flex';
-        document.getElementById('navLoggedIn').style.display = 'none';
+        // User is logged out
         document.getElementById('heroLoggedOut').style.display = 'flex';
         document.getElementById('heroLoggedIn').style.display = 'none';
         document.getElementById('statusBanner').style.display = 'none';
+        
+        // Keep default login buttons in menu
+        menuAuthArea.innerHTML = `
+            <a href="admission.html" class="btn-menu-apply">Apply Now</a>
+            <button class="btn-menu-login" onclick="document.getElementById('authModal').classList.add('active'); document.getElementById('mobileMenu').classList.remove('active');">Login</button>
+        `;
     }
     lucide.createIcons();
 });
 
-// Announcement popup
+// Announcement Popup
 if (!localStorage.getItem('ifb_announcement_dismissed')) {
     setTimeout(() => document.getElementById('announcementPopup').classList.add('active'), 2500);
 }
@@ -701,15 +592,24 @@ window.dismissAnnouncement = function(){
     localStorage.setItem('ifb_announcement_dismissed', '1');
 };
 
-// Mobile menu
+// Menu Toggle Logic
 const menuBtn=document.getElementById('menuBtn'),closeMenu=document.getElementById('closeMenu'),mobileMenu=document.getElementById('mobileMenu');
 menuBtn.addEventListener('click',()=>mobileMenu.classList.add('active'));
 closeMenu.addEventListener('click',()=>mobileMenu.classList.remove('active'));
+
+// Submenu Accordion Logic
 window.toggleSubmenu=function(el){
     const parent=el.parentElement,sub=parent.querySelector('.submenu');
-    document.querySelectorAll('.menu-item').forEach(item=>{if(item!==parent){item.classList.remove('active');item.querySelector('.submenu').style.maxHeight=null;}});
+    // Close other open menus
+    document.querySelectorAll('.menu-item').forEach(item=>{
+        if(item!==parent){
+            item.classList.remove('active');
+            item.querySelector('.submenu').style.maxHeight=null;
+        }
+    });
+    // Toggle current
     parent.classList.toggle('active');
-    sub.style.maxHeight=sub.style.maxHeight?null:sub.scrollHeight+"px";
+    sub.style.maxHeight = sub.style.maxHeight ? null : sub.scrollHeight + "px";
 };
 
 lucide.createIcons();
