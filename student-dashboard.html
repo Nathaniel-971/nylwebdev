@@ -42,43 +42,56 @@ html, body {
 /* CENTRAL LAYOUT */
 .container { 
     width: 100%; max-width: 1200px; margin: 40px auto; padding: 0 24px; 
-    display: grid; grid-template-columns: 440px 1fr; 
+    display: grid; grid-template-columns: 400px 1fr; 
     gap: 32px; align-items: start; box-sizing: border-box; 
 }
 
-/* SIDEBAR & FLIP CARD */
+/* SIDEBAR & BANK CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
-.id-card-container { perspective: 1000px; width: 100%; height: 280px; margin-bottom: 24px; cursor: pointer; user-select: none; outline: none; }
+
+/* Standard Bank Card Ratio: 1.586 */
+.id-card-container { 
+    perspective: 1000px; 
+    width: 100%; 
+    aspect-ratio: 1.586; /* Bank Card proportion */
+    margin-bottom: 24px; 
+    cursor: pointer; 
+    user-select: none; 
+    outline: none; 
+}
 .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
 .id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
-.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
-.id-card-front { padding: 24px; text-align: left; }
-.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 24px; align-items: center; justify-content: center; }
+.id-card-front, .id-card-back { 
+    position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+    border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); 
+}
+.id-card-front { padding: 20px; text-align: left; }
+.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 20px; align-items: center; justify-content: center; }
 
 /* Watermark */
-.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 140px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
 .card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
 
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.card-logo { font-size: 32px; font-weight: 900; color: var(--maroon); }
-.card-type { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
-.card-name { font-size: 22px; font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-role { font-size: 11px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: auto;}
-.card-id { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px;}
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.card-logo { font-size: 24px; font-weight: 900; color: var(--maroon); }
+.card-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.card-name { font-size: 18px; font-weight: 900; margin-bottom: 2px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+.card-role { font-size: 9px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px;}
+.card-id { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: auto;}
 
-/* Fixed Barcode Container */
-.barcode-wrap-front { background: #fff; border-radius: 4px; padding: 8px; width: 100%; height: 70px; margin-top: auto; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; }
+.barcode-wrap-front { background: #fff; border-radius: 4px; width: 100%; height: 50px; margin-top: 4px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 2px; }
 .barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
+.card-instructions { font-size: 8px; color: var(--gray); margin-top: 6px; line-height: 1.2;}
 
-/* Fixed QR Container */
-.card-back-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 10px;}
-.card-sec-code { font-family: monospace; font-size: 20px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 6px 16px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 10px;}
+.card-back-text { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 6px;}
+.card-sec-code { font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; margin-top: 2px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 8px;}
 .btn-reset { background: none; border: none; cursor: pointer; color: #fff; opacity: 0.7; display: flex; align-items: center;}
 .btn-reset:hover { opacity: 1; }
-.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 140px; height: 140px; display: flex; justify-content: center; align-items: center; }
+.qr-wrap { background: #fff; padding: 6px; border-radius: 8px; margin-bottom: 6px; width: 90px; height: 90px; display: flex; justify-content: center; align-items: center; }
 .qr-wrap svg { width: 100%; height: 100%; display: block; }
 
-.flip-hint { font-size: 13px; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.flip-hint { font-size: 12px; color: var(--gray); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
 /* MAIN CONTENT */
 .main-content { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
@@ -118,6 +131,16 @@ html, body {
 input:checked + .slider { background-color: var(--success); }
 input:checked + .slider:before { transform: translateX(26px); }
 
+/* SETTINGS UI */
+.settings-group { margin-bottom: 24px; }
+.settings-group h4 { font-size: 15px; font-weight: 800; margin-bottom: 12px; color: var(--maroon); }
+.settings-input { width: 100%; padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; margin-bottom: 12px; font-family: inherit; outline: none; }
+.settings-input:focus { border-color: var(--maroon); }
+.btn-settings { padding: 12px 24px; background: var(--maroon); color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; }
+.btn-settings:hover { background: var(--maroon-hover); }
+.btn-settings.danger { background: #B91C1C; }
+.btn-settings.danger:hover { background: #991B1B; }
+
 .loader-box { display: none; text-align: center; padding: 40px; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -129,6 +152,7 @@ input:checked + .slider:before { transform: translateX(26px); }
     .container { grid-template-columns: 1fr; padding: 0 16px; } 
     .sidebar { position: static; } 
     .grid-links { grid-template-columns: 1fr; }
+    .id-card-container { max-width: 380px; margin: 0 auto 24px auto; }
 }
 </style>
 </head>
@@ -152,13 +176,13 @@ input:checked + .slider:before { transform: translateX(26px); }
         <div id="profileData" style="display:none;">
             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                 <div class="id-card-inner">
-                    <!-- FRONT (Barcode) -->
+                    <!-- FRONT (Bank Card Style) -->
                     <div class="id-card-front">
                         <div class="watermark">∆</div>
                         <div class="card-content">
                             <div class="card-header">
-                                <div class="card-logo">∆</div>
-                                <div class="card-type">Student ID</div>
+                                <div class="card-logo">∆ IFB</div>
+                                <div class="card-type">Student Card</div>
                             </div>
                             <div class="card-name" id="userName"></div>
                             <div class="card-role" id="userStatus"></div>
@@ -167,6 +191,7 @@ input:checked + .slider:before { transform: translateX(26px); }
                             <div class="barcode-wrap-front">
                                 <svg id="barcodeSvg"></svg>
                             </div>
+                            <div class="card-instructions">This card remains the property of IFB. Must be presented for all examinations.</div>
                         </div>
                     </div>
                     <!-- BACK (QR Code & Security) -->
@@ -177,35 +202,35 @@ input:checked + .slider:before { transform: translateX(26px); }
                             <div class="card-sec-code">
                                 <span id="userSecurityCode"></span>
                                 <button class="btn-reset" onclick="resetSecurityCode(event)" title="Reset Code">
-                                    <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i>
+                                    <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flip-hint"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap card to flip</div>
-            <a href="admissions-letter.html" target="_blank" class="btn-back" style="width:100%; justify-content:center; margin-top:16px;">View Admissions Letter</a>
+            <div class="flip-hint"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap to flip</div>
+            <a href="admissions-letter.html" target="_blank" class="btn-back" style="width:100%; justify-content:center; margin-top:12px;">View Admissions Letter</a>
         </div>
     </div>
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
         
-        <!-- ADMIN TOGGLE BAR (Only visible to n1nathaniel971@gmail.com) -->
+        <!-- ADMIN TOGGLE BAR -->
         <div class="admin-toggle-bar" id="adminToggleBar">
             <span><i data-lucide="shield-alert" style="width:18px;height:18px;"></i> Admin Privileges Active</span>
             <button class="btn-toggle" id="toggleViewBtn" onclick="toggleAdminView()">Switch to Admin View</button>
         </div>
 
-        <!-- ADMIN DASHBOARD (Toggles visibility) -->
+        <!-- ADMIN DASHBOARD -->
         <div id="adminDashboard" class="hidden">
-            <div class="card admin-panel">
+            <div class="card admin-panel" style="display:block;">
                 <h3><i data-lucide="settings"></i> Exam Control Center</h3>
                 
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,0.1);">
                     <div>
-                        <div style="font-size:16px; font-weight:700;">Exam Portal Access</div>
+                        <div style="font-size:16px; font-weight:700;">Global Exam Portal Access</div>
                         <div style="font-size:13px; color:#aaa;" id="portalStatusText">Checking...</div>
                     </div>
                     <label class="switch">
@@ -214,7 +239,7 @@ input:checked + .slider:before { transform: translateX(26px); }
                     </label>
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
                     <a href="admissions-list-2027.html" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; padding:16px; background:#FFF; color:#111; border-radius:8px; text-decoration:none; font-weight:700;">
                         <i data-lucide="users"></i> Admissions List
                     </a>
@@ -222,11 +247,18 @@ input:checked + .slider:before { transform: translateX(26px); }
                         <i data-lucide="upload"></i> Upload Exam Paper
                     </button>
                 </div>
+
+                <h4 style="color:#fff; font-size:14px; margin-bottom:12px;">Admin Settings</h4>
+                <div style="background:rgba(255,255,255,0.05); padding:16px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
+                    <p style="font-size:13px; color:#ccc; margin-bottom:12px;">Manage the core system settings, database configurations, and trigger maintenance tasks.</p>
+                    <button class="btn-toggle" style="background:transparent; color:#fff; border:1px solid #fff; width:100%;" onclick="alert('Opening System Configurations...')">System Configuration</button>
+                </div>
             </div>
         </div>
 
         <!-- STUDENT DASHBOARD -->
         <div id="studentDashboard">
+            <!-- Exam Portal -->
             <div class="card">
                 <h3><i data-lucide="monitor-play"></i> Entrance Examination</h3>
                 <p style="font-size:14px; color:var(--gray); margin-bottom:24px;" id="examStatusText">Checking exam portal status...</p>
@@ -243,6 +275,7 @@ input:checked + .slider:before { transform: translateX(26px); }
                 </div>
             </div>
 
+            <!-- Courses -->
             <div class="card">
                 <h3><i data-lucide="book-open"></i> My Courses</h3>
                 <p style="font-size:14px; color:var(--gray); margin-bottom:16px;">Select the tracks you want to study. This updates your Admissions Letter automatically.</p>
@@ -262,9 +295,24 @@ input:checked + .slider:before { transform: translateX(26px); }
                         <i data-lucide="save"></i> Save Course Selection
                     </button>
                 </div>
+            </div>
 
-                <div style="margin-top:24px; padding-top:24px; border-top:1px dashed var(--silver);">
-                    <button onclick="deregister()" class="btn-back" style="color:#B91C1C; border-color:#FECACA; width:100%; justify-content:center;" id="deregisterBtn">Revoke Application & Deregister</button>
+            <!-- Student Settings -->
+            <div class="card">
+                <h3><i data-lucide="user-cog"></i> Account Settings</h3>
+                
+                <div class="settings-group">
+                    <h4>Update Credentials</h4>
+                    <p style="font-size:12px; color:var(--gray); margin-bottom:12px;">Note: Changing your email will require you to log in again.</p>
+                    <input type="email" id="updateEmail" class="settings-input" placeholder="New Email Address">
+                    <button class="btn-settings" onclick="updateStudentSettings()">Update Email</button>
+                </div>
+
+                <div class="settings-group" style="margin-top:24px; padding-top:24px; border-top:1px dashed var(--silver);">
+                    <h4>Danger Zone</h4>
+                    <button onclick="deregister()" class="btn-settings danger" style="width:100%; justify-content:center;" id="deregisterBtn">
+                        <i data-lucide="trash-2" style="vertical-align:middle; margin-right:6px;"></i> Revoke Application & Deregister
+                    </button>
                 </div>
             </div>
         </div>
@@ -274,7 +322,7 @@ input:checked + .slider:before { transform: translateX(26px); }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, deleteUser, updateEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
@@ -322,8 +370,9 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('userStatus').textContent = data.status;
         document.getElementById('userStudentId').textContent = data.studentId;
         document.getElementById('userSecurityCode').textContent = data.securityCode;
+        document.getElementById('updateEmail').value = user.email;
 
-        // Generate Assets after slight delay to ensure DOM is ready
+        // Generate Assets after slight delay
         setTimeout(() => {
             generateAssets(data.studentId, data.name, data.securityCode);
         }, 150);
@@ -345,7 +394,6 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById('adminToggleBar').style.display = 'flex';
             document.getElementById('portalMasterSwitch').checked = isPortalOpen;
             updatePortalStatusText();
-            // By default, admin sees student view, but can toggle
             document.getElementById('adminDashboard').classList.add('hidden');
             document.getElementById('studentDashboard').classList.remove('hidden');
             document.getElementById('toggleViewBtn').textContent = "Switch to Admin View";
@@ -357,14 +405,15 @@ onAuthStateChanged(auth, async (user) => {
 
 function generateAssets(id, name, code) {
     try {
-        JsBarcode("#barcodeSvg", id, { format: "CODE128", width: 2, height: 45, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
+        // Strictly Black Barcode
+        JsBarcode("#barcodeSvg", id, { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0, lineColor: "#000000" });
     } catch(e) { console.error("Barcode error", e); }
     
     try {
         const qr = qrcode(0, 'M');
         qr.addData(`ID: ${id}\nName: ${name}\nCode: ${code}`);
         qr.make();
-        document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+        document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
     } catch(e) { console.error("QR error", e); }
 }
 
@@ -389,7 +438,7 @@ window.toggleExamPortal = async function(checkbox) {
         await setDoc(doc(db, "config", "exam"), { isOpen: isChecked }, { merge: true });
         isPortalOpen = isChecked;
         updatePortalStatusText();
-        if(!showAdminView) updateExamPortalUI(); // Update if admin switches to student view later
+        if(!showAdminView) updateExamPortalUI(); 
     } catch (e) {
         alert("Error updating portal: " + e.message);
         checkbox.checked = !isChecked; 
@@ -456,6 +505,28 @@ window.saveCourses = async function() {
     } finally {
         btn.disabled = false;
         lucide.createIcons();
+    }
+};
+
+window.updateStudentSettings = async function() {
+    const newEmail = document.getElementById('updateEmail').value;
+    if (!newEmail || !newEmail.includes('@')) { alert("Please enter a valid email."); return; }
+    
+    const btn = event.target;
+    btn.innerText = "Updating..."; btn.disabled = true;
+
+    try {
+        if (auth.currentUser.email !== newEmail) {
+            await updateEmail(auth.currentUser, newEmail);
+            await updateDoc(doc(db, "users", currentUserId), { email: newEmail });
+            alert("Email updated successfully. You may need to log in again.");
+        } else {
+            alert("Email is already the same.");
+        }
+    } catch (e) {
+        alert("Error: " + e.message + "\nYou may need to log out and log back in to change email.");
+    } finally {
+        btn.innerText = "Update Email"; btn.disabled = false;
     }
 };
 
