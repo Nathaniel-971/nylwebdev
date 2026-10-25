@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AE-S 2027/IFB - Mathematics MEMO</title>
+<title>IFB Marking Memorandum 2027</title>
 <script>
   window.MathJax = {
     tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
@@ -15,10 +15,20 @@
 <style>
   @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
-  body { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.6; color: #000; background: #F8FAFC; }
+  html, body { 
+    width: 100%; 
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact; 
+  }
+  body { 
+    font-family: Arial, sans-serif; 
+    font-size: 11.5pt; 
+    line-height: 1.6; 
+    color: #000; 
+    background: #F8FAFC; 
+  }
   
-  /* A4 PAGE SETUP */
+  /* A4 PAGE SETUP - Strict padding matching Answer Book */
   .page { 
     width: 210mm; 
     height: 297mm; 
@@ -32,6 +42,7 @@
     flex-direction: column; 
     page-break-after: always; 
   }
+  
   @media print { 
     body { background: white; } 
     .page { margin: 0; box-shadow: none; } 
@@ -41,12 +52,25 @@
   .security-pattern { 
     position: absolute; 
     top: 0; left: 0; right: 0; bottom: 0; 
-    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); 
+    background-image: repeating-linear-gradient(45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px); 
     pointer-events: none; 
     z-index: 0; 
   }
+
+  /* WATERMARK */
+  .watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+  }
   
-  /* CONTENT WRAPPER - Strict 40mm padding prevents footer overlap */
+  /* CONTENT WRAPPER - 40mm bottom padding guarantees NO footer overlaps */
   .content-wrapper { 
     position: relative; 
     z-index: 1; 
@@ -61,7 +85,7 @@
     display: flex; 
     justify-content: space-between; 
     align-items: flex-start; 
-    margin-bottom: 30px; 
+    margin-bottom: 20px; 
     font-size: 10.5pt; 
     font-family: Arial, sans-serif;
     flex-shrink: 0;
@@ -69,10 +93,10 @@
   .header-left { width: 30%; text-align: left; font-weight: bold; color: #000; }
   .header-center { width: 40%; text-align: center; }
   .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
-  .header-center .confidential { font-style: italic; font-weight: bold; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: #7A1F2B; }
   .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
 
-  /* FOOTER */
+  /* FOOTER - Anchored to the bottom */
   .footer { 
     position: absolute; 
     bottom: 10mm; 
@@ -90,39 +114,104 @@
   .footer-qr { display: inline-block; width: 35px; height: 35px; }
   .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
   .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
-  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #7A1F2B; }
   .footer-brand .tag { font-size: 7pt; color: #000; }
   .footer-right { color: #000; font-style: italic;}
 
-  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; }
+  .bottom-barcode {
+    position: absolute;
+    bottom: 10mm;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
   .bottom-barcode svg { display: block; }
 
   /* ========================================= */
-  /* COVER PAGE SPECIFIC (Matches Question Paper) */
+  /* COVER PAGE SPECIFIC                       */
   /* ========================================= */
-  .cover-page { padding: 15mm 20mm 20mm 20mm; }
+  .cover-page {
+    padding: 15mm 20mm 20mm 20mm; 
+  }
+  
   .cover-confidential { text-align: center; font-style: italic; font-size: 12pt; margin-bottom: 30px; color: #111;}
+  
   .cover-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; margin-left: 10px;}
   .ifb-logo-svg { width: 80px; height: 80px; }
+  
   .cover-header-text .title { font-size: 32px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px;}
   .cover-header-text .sub { font-size: 12pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
   .cover-header-text .country { font-size: 10pt; font-family: Arial, sans-serif; margin-top: 5px; color: #555;}
   
-  .cover-black-box { background: #111; color: white; border-radius: 10px; padding: 15px 30px; text-align: center; width: 80%; margin: 0 auto 40px auto; border: 3px solid #7A1F2B; }
+  .cover-black-box {
+    background: #111;
+    color: white;
+    border-radius: 10px;
+    padding: 15px 30px;
+    text-align: center;
+    width: 80%;
+    margin: 0 auto 40px auto;
+    border: 3px solid #7A1F2B;
+  }
   .cover-black-box h1 { font-size: 22pt; font-weight: normal; line-height: 1.3; letter-spacing: 1px; }
-  .cover-grey-box { background: #f8f8f8; border: 3px solid #7A1F2B; border-radius: 8px; padding: 8px 40px; text-align: center; width: max-content; margin: 0 auto 50px auto; }
+  
+  .cover-grey-box {
+    background: #f8f8f8;
+    border: 3px solid #7A1F2B;
+    border-radius: 8px;
+    padding: 8px 40px;
+    text-align: center;
+    width: max-content;
+    margin: 0 auto 50px auto;
+  }
   .cover-grey-box h2 { font-size: 20pt; font-weight: normal; letter-spacing: 1px; color: #111;}
-  .cover-dashed-box { border: 4px dashed #7A1F2B; border-radius: 10px; padding: 30px 20px; text-align: center; width: 85%; margin: 0 auto 40px auto; background: #FFF5F6; }
+
+  .cover-dashed-box {
+    border: 4px dashed #7A1F2B;
+    border-radius: 10px;
+    padding: 30px 20px;
+    text-align: center;
+    width: 85%;
+    margin: 0 auto 40px auto;
+    background: #FFF5F6; 
+  }
   .cover-dashed-box h3 { font-size: 18pt; font-weight: bold; margin-bottom: 10px; color: #111;}
   .cover-dashed-box h4 { font-size: 16pt; font-weight: bold; margin-bottom: 0; color: #111;}
-  .cover-marks { font-size: 13pt; font-weight: bold; margin-left: 10px; margin-bottom: 40px; font-family: Arial, sans-serif; color: #111; }
+
+  .cover-marks {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-bottom: 40px;
+    font-family: Arial, sans-serif;
+    color: #111;
+  }
   .cover-marks div { margin-bottom: 10px; }
-  .cover-barcode-section { margin-left: 10px; font-family: Arial, sans-serif; color: #111; }
-  .cover-barcode-section .code-x01 { font-size: 18pt; font-weight: bold; margin-bottom: 5px; }
-  .cover-bottom-text { text-align: center; font-size: 11pt; font-weight: bold; margin-top: auto; margin-bottom: 20px; line-height: 1.5; color: #111; }
+  
+  .cover-barcode-section {
+    margin-left: 10px;
+    font-family: Arial, sans-serif;
+    color: #111;
+  }
+  .cover-barcode-section .code-x01 {
+    font-size: 18pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .cover-barcode-section svg { display: block; }
+
+  .cover-bottom-text {
+    text-align: center;
+    font-size: 11pt;
+    font-weight: bold;
+    margin-top: auto;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: #111;
+  }
 
   /* ========================================= */
-  /* MARKING MEMO BODY (Answer Book Spacing)   */
+  /* MEMO CONTENT STYLES                       */
   /* ========================================= */
   .q-header { font-size: 14pt; font-weight: bold; font-family: Arial, sans-serif; margin: 25px 0 15px 0; border-bottom: 2px solid #000; padding-bottom: 4px; color: #7A1F2B; page-break-after: avoid; }
   
@@ -144,7 +233,7 @@
   <div class="security-pattern"></div>
   <div class="content-wrapper" style="padding-bottom: 0;">
     
-    <div class="cover-confidential">AE-S / IFB / CONFIDENTIAL</div>
+    <div class="cover-confidential">AE-S / IFB / CONFIDENTIAL — MARKING MEMORANDUM</div>
     
     <div class="cover-header">
       <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -201,6 +290,7 @@
 <!-- ==================== PAGE 2: MARKING RULES & Q1 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     
     <div class="header">
@@ -276,6 +366,7 @@
 <!-- ==================== PAGE 3: Q1 Cont & Q2 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     
     <div class="header">
@@ -340,6 +431,7 @@
 <!-- ==================== PAGE 4: Q2 & Q3 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     
     <div class="header">
@@ -403,6 +495,7 @@
 <!-- ==================== PAGE 5: Q3 Cont & Q4 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     
     <div class="header">
@@ -465,6 +558,7 @@
 <!-- ==================== PAGE 6: Q4 Cont, Q5 & Q6 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     
     <div class="header">
@@ -532,6 +626,7 @@
 <!-- ==================== PAGE 7: Q6 Optimization ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
+  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     
     <div class="header">
