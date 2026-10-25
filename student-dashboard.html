@@ -10,21 +10,75 @@
 <style>
 :root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --bg: #F8FAFC; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; overflow-x: clip; }
 .header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; position: sticky; top: 0; z-index: 100; }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
 .brand-logo { font-size: 32px; color: var(--maroon); }
 .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); }
-.container { max-width: 1100px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 340px 1fr; gap: 32px; align-items: start; }
+.container { width: 100%; max-width: 1148px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 360px 1fr; gap: 32px; align-items: start; box-sizing: border-box; }
+
+/* SIDEBAR & FLIP CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
-.profile-badge-large { width: 90px; height: 90px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 3px solid var(--maroon); background: var(--white); font-size: 32px; font-weight: 900; color: var(--maroon); }
-.sidebar h2 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
-.sidebar .status { font-size: 13px; color: var(--maroon); font-weight: 700; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 1px; }
-.id-card { background: #FAFAFA; border: 1px solid var(--silver); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
-.id-card .label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; margin-bottom: 4px; }
-.id-card .value { font-size: 18px; font-weight: 800; font-family: monospace; }
-.barcode-wrap { background: var(--white); border: 1px dashed var(--silver); border-radius: 12px; padding: 16px; margin-bottom: 24px; }
-.barcode-wrap svg { width: 100%; height: 60px; }
+
+.id-card-container {
+    perspective: 1000px;
+    width: 100%;
+    height: 220px;
+    margin-bottom: 24px;
+    cursor: pointer;
+}
+.id-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transform-style: preserve-3d;
+}
+.id-card-container.flipped .id-card-inner {
+    transform: rotateY(180deg);
+}
+.id-card-front, .id-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid var(--silver);
+}
+.id-card-front {
+    background: linear-gradient(135deg, #FFF 0%, #FAFAFA 100%);
+    padding: 24px;
+    text-align: left;
+}
+.id-card-back {
+    background: var(--maroon);
+    color: var(--white);
+    transform: rotateY(180deg);
+    padding: 24px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Card Styles */
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.card-logo { font-size: 28px; font-weight: 900; color: var(--maroon); }
+.card-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.card-name { font-size: 20px; font-weight: 900; margin-bottom: 4px; color: var(--black); }
+.card-role { font-size: 11px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: auto;}
+.card-id { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--black); letter-spacing: 1px; }
+
+.barcode-wrap { background: var(--white); border-radius: 8px; padding: 10px; width: 100%; margin-bottom: 12px; }
+.barcode-wrap svg { width: 100%; height: 50px; }
+.card-back-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; }
+.card-sec-code { font-family: monospace; font-size: 18px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; }
+
+.flip-hint { font-size: 12px; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+/* MAIN CONTENT */
 .main-content { display: flex; flex-direction: column; gap: 24px; }
 .card { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; }
 .card h3 { font-size: 20px; font-weight: 800; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 12px; display: flex; align-items: center; gap: 8px; }
@@ -35,10 +89,12 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 .link-card i { width: 28px; height: 28px; color: var(--maroon); }
 .link-card.locked { opacity: 0.6; cursor: not-allowed; }
 .link-card.locked:hover { transform: none; border-color: var(--silver); background: #FAFAFA; }
+
 .loader-box { display: none; text-align: center; padding: 40px; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
-@media (max-width: 900px) { .container { grid-template-columns: 1fr; } .sidebar { position: static; } }
+
+@media (max-width: 900px) { .container { grid-template-columns: 1fr; padding: 0 16px; } .sidebar { position: static; } }
 </style>
 </head>
 <body>
@@ -48,18 +104,37 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 </header>
 
 <div class="container">
-    <div class="sidebar" id="sidebarContent">
+    <div class="sidebar">
         <div class="loader-box" id="loader" style="display:block;">
             <div class="spinner"></div>
             <p style="font-size:13px; color:var(--gray);">Initializing account...</p>
         </div>
+        
         <div id="profileData" style="display:none;">
-            <div class="profile-badge-large" id="profileBadge">??</div>
-            <h2 id="userName">Loading...</h2>
-            <div class="status" id="userStatus">Applicant</div>
-            <div class="id-card"><div class="label">Student ID</div><div class="value" id="userStudentId">-</div></div>
-            <div class="id-card" style="border-color: var(--maroon); background: #FFF5F6;"><div class="label" style="color: var(--maroon);">Security Code</div><div class="value" style="color: var(--maroon);" id="userSecurityCode">-</div></div>
-            <div class="barcode-wrap"><svg id="barcodeSvg"></svg></div>
+            <!-- FLIP CARD CONTAINER -->
+            <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
+                <div class="id-card-inner">
+                    <!-- FRONT -->
+                    <div class="id-card-front">
+                        <div class="card-header">
+                            <div class="card-logo">∆</div>
+                            <div class="card-type">Student ID</div>
+                        </div>
+                        <div class="card-name" id="userName">Loading...</div>
+                        <div class="card-role" id="userStatus">Applicant</div>
+                        <div class="card-id" id="userStudentId">-</div>
+                    </div>
+                    <!-- BACK -->
+                    <div class="id-card-back">
+                        <div class="barcode-wrap">
+                            <svg id="barcodeSvg"></svg>
+                        </div>
+                        <div class="card-back-text">Security Code</div>
+                        <div class="card-sec-code" id="userSecurityCode">-</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flip-hint"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap to flip</div>
         </div>
     </div>
 
@@ -108,7 +183,6 @@ onAuthStateChanged(auth, async (user) => {
     if (docSnap.exists()) {
         let data = docSnap.data();
 
-        // AUTO-GENERATE ID IF INCOMPLETE
         if (data.status === "Incomplete" || !data.studentId) {
             const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
             const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
@@ -122,23 +196,21 @@ onAuthStateChanged(auth, async (user) => {
                 status: "Applicant"
             });
             
-            // Refresh local data
             data.studentId = studentId;
             data.securityCode = securityCode;
             data.status = "Applicant";
         }
 
-        // Populate UI
         document.getElementById('loader').style.display = 'none';
         document.getElementById('profileData').style.display = 'block';
-        document.getElementById('profileBadge').innerText = data.studentId.slice(-2);
         document.getElementById('userName').innerText = data.name;
         document.getElementById('userStatus').innerText = data.status;
         document.getElementById('userStudentId').innerText = data.studentId;
         document.getElementById('userSecurityCode').innerText = data.securityCode;
-        JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 60, displayValue: false, margin: 0 });
+        
+        // This barcode is what the Answer Book fetches
+        JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
 
-        // Check Exam Lock (Jan 13, 2027)
         const now = new Date();
         const examDate = new Date("2027-01-13T00:00:00Z");
         if (now >= examDate) {
