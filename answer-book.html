@@ -80,7 +80,7 @@
     padding-bottom: 35mm; 
   }
   
-  /* EXAM HEADERS (Removed bottom border) */
+  /* EXAM HEADERS */
   .header { 
     display: flex; 
     justify-content: space-between; 
@@ -89,7 +89,6 @@
     font-size: 10.5pt; 
     font-family: Arial, sans-serif;
     flex-shrink: 0;
-    /* border-bottom removed */
     padding-bottom: 5px;
   }
   .header-left { width: 30%; text-align: left; font-weight: bold; color: #7A1F2B; }
@@ -98,7 +97,7 @@
   .header-center .confidential { font-style: italic; font-weight: bold; color: #7A1F2B; }
   .header-right { width: 30%; text-align: right; font-weight: bold; color: #7A1F2B; }
 
-  /* PAGE TITLE (New) */
+  /* PAGE TITLE (For Answer Pages only) */
   .page-title {
     font-size: 16pt;
     font-weight: bold;
@@ -197,6 +196,11 @@
     border: 2px solid #000;
     border-radius: 50%;
     background-color: #FFF5F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14pt;
   }
   .sequence-text {
     font-size: 9pt;
@@ -243,32 +247,19 @@
     color: #7A1F2B;
   }
   
-  /* True Block Input Style */
-  .block-container {
-    display: flex;
-    gap: 0;
-  }
-  .block {
-    width: 22px;
-    height: 25px;
-    border: 1.5px solid #000;
-    border-right: none;
-    background-color: transparent;
-  }
-  .block:last-child {
-    border-right: 1.5px solid #000;
-  }
-  
-  .input-line {
-    border-bottom: 1.5px solid #000;
-    height: 25px;
+  .input-field {
     width: 100%;
-    display: flex;
-    align-items: flex-end;
-    padding-left: 5px;
-    padding-bottom: 2px;
-    font-weight: bold;
+    border: none;
+    border-bottom: 1.5px solid #000;
+    font-family: monospace;
     font-size: 12pt;
+    font-weight: bold;
+    outline: none;
+    background: transparent;
+    padding: 4px 0;
+  }
+  .input-field:focus {
+    background-color: #FFF5F6;
   }
 
   /* Marking Grid Table */
@@ -324,9 +315,17 @@
     margin-bottom: 15px;
     padding-left: 10px;
   }
+  .verify-box {
+    background: #FFF5F6;
+    border: 1px solid #7A1F2B;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 10pt;
+  }
 
   /* ========================================= */
-  /* PAGE 3+: ANSWER SPACE (Blank for scanner) */
+  /* PAGE 3+: ANSWER SPACE (With bold lines)   */
   /* ========================================= */
   .answer-page {
     border: 1.5px solid #000;
@@ -346,7 +345,9 @@
     flex: 1;
     border-right: 1.5px solid #000;
     background-color: #FFF;
-    /* No horizontal lines */
+    /* Restored bold horizontal lines */
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 34px, #000 34px, #000 36px);
+    background-position: 0 1px;
   }
   
   .marks-area {
@@ -373,7 +374,7 @@
 </head>
 <body>
 
-<!-- ==================== PAGE 1: COVER PAGE ==================== -->
+<!-- ==================== PAGE 1: COVER PAGE (Auto-fills & Editable) ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -400,10 +401,11 @@
       
       <div class="top-right-container">
         <div class="candidate-barcode-box">
-          <div class="label">Candidate Barcode Label<br>(Paste Here)</div>
+          <div class="label">Candidate Barcode Label<br>(Auto-Generated)</div>
+          <svg id="coverBarcode" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
         </div>
         <div class="sequence-circle-container">
-          <div class="sequence-circle"></div>
+          <div class="sequence-circle" id="coverSequence">--</div>
           <div class="sequence-text">Sequence Number<br>(Pack of 12)</div>
         </div>
       </div>
@@ -414,63 +416,55 @@
       IFB Answer Book
     </div>
 
-    <!-- Form Fields -->
+    <!-- Form Fields (Editable Inputs) -->
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
-        <label>Student ID</label>
-        <div class="block-container">
-          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-        </div>
+        <label>Student ID (13 Digits)</label>
+        <input type="text" class="input-field" id="valStudentId" placeholder="Enter Student ID" maxlength="13">
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Security Code</label>
-        <div class="block-container">
-          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-        </div>
+        <input type="text" class="input-field" id="valSecurityCode" placeholder="Code" maxlength="6">
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Date</label>
-        <div class="block-container">
-          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-        </div>
+        <input type="date" class="input-field" id="valDate">
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Book Number</label>
-        <div class="input-line"></div>
+        <input type="text" class="input-field" id="valBookNum" placeholder="1">
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Of</label>
-        <div class="input-line"></div>
+        <input type="text" class="input-field" id="valTotalBooks" placeholder="12">
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Subject Code</label>
-        <div class="block-container">
-          <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-        </div>
+        <input type="text" class="input-field" id="valSubjectCode" placeholder="AE-S-MATH">
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Paper Number</label>
-        <div class="input-line" style="justify-content: center;"></div>
+        <input type="text" class="input-field" id="valPaperNum" placeholder="1" style="text-align: center;">
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 1;">
         <label>Subject Name</label>
-        <div class="input-line"></div>
+        <input type="text" class="input-field" id="valSubjectName" placeholder="Mathematics">
       </div>
     </div>
 
     <div class="form-row" style="margin-bottom: 15px;">
       <div class="form-box" style="flex: 1;">
         <label>Curriculum:</label>
-        <div class="input-line"></div>
+        <input type="text" class="input-field" id="valCurriculum" placeholder="IFB-S">
       </div>
     </div>
 
@@ -548,23 +542,23 @@
       <div class="header-right">2027</div>
     </div>
 
-    <div class="page-title">Answer Space</div>
-
     <div class="instructions-header">
-      FOLLOW THESE INSTRUCTIONS CAREFULLY
+      DIGITAL EXAMINATION INSTRUCTIONS
     </div>
 
     <ol class="instructions-list">
-      <li>Write your Student ID and Security Code clearly in the spaces provided and attach your barcode sticker in the space provided.</li>
-      <li>Remember that your own name (or the name of your school) may not appear anywhere on or in this answer book.</li>
-      <li>Answer ALL questions in the spaces provided.</li>
-      <li>No pages may be torn from this answer book.</li>
-      <li>Read the instructions printed on your timetable carefully as well as any other instructions which may be given in each examination paper.</li>
-      <li>Candidates may not retain an answer book or remove it from the examination room. Answer books must be returned to the Invigilator at the end of the examination session.</li>
-      <li>Answers must be written in black/blue ink as distinctly as possible. Do not write in the margins.</li>
-      <li>Rule off through any work/rough work that must not be marked.</li>
-      <li>In the event that you use the additional space provided, write down the number of the question, leave a line, and rule off after your answer.</li>
+      <li><strong>Verify your details:</strong> Your Student ID, Security Code, and Exam details are auto-filled on the cover page. Please check them.</li>
+      <li><strong>Correction:</strong> If any information is incorrect, you may edit the text fields on the cover page to correct them before scanning.</li>
+      <li>This is a digital answer book. Do not attempt to tear pages. You will scan and upload each page individually.</li>
+      <li>Answer ALL questions in the "Answer Space" provided on the following pages.</li>
+      <li>Write clearly using a black pen. <strong>The system requires you to scan the same page twice to ensure legibility.</strong></li>
+      <li>Rule off through any rough work that must not be marked.</li>
+      <li>You must upload your scanned pages via the Exam Portal before the session ends.</li>
     </ol>
+
+    <div class="verify-box">
+      <strong>System Check:</strong> Ensure your camera is focused and lighting is adequate before scanning. If the auto-fill fails to populate your ID, you MUST manually type it in before submitting your script.
+    </div>
     
   </div>
   
@@ -680,6 +674,31 @@
     makeQRCodes();
   });
 })();
+
+// AUTO-FILL LOGIC (Simulated from sessionStorage)
+document.addEventListener("DOMContentLoaded", () => {
+    const studentId = sessionStorage.getItem("examStudentId") || "";
+    const secCode = sessionStorage.getItem("examSecurityCode") || "";
+    const examCode = sessionStorage.getItem("examCode") || "";
+    const packSeq = sessionStorage.getItem("examPackSeq") || "01"; 
+
+    if (studentId) {
+        document.getElementById('valStudentId').value = studentId;
+        document.getElementById('valSecurityCode').value = secCode;
+        document.getElementById('coverSequence').innerText = packSeq;
+        document.getElementById('valSubjectCode').value = examCode;
+        
+        // Simulate date
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('valDate').value = today;
+
+        try {
+            JsBarcode("#coverBarcode", `${studentId}-${secCode}`, {
+                format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0
+            });
+        } catch (e) { console.warn(e); }
+    }
+});
 </script>
 </body>
 </html>
