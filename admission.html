@@ -2,341 +2,161 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Application — IFB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Apply — IFB</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-    :root { --white: #FFFFFF; --black: #111111; --gray: #666666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; }
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
-    .container { width: 100%; max-width: 600px; }
-    .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
-    .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
-    
-    .tabs { display: flex; gap: 4px; padding: 4px; background: #FAFAFA; border-radius: 12px; margin-bottom: 32px; border: 1px solid var(--silver); }
-    .tab { flex: 1; padding: 12px; border: none; background: transparent; border-radius: 8px; font-size: 15px; font-weight: 700; color: var(--gray); cursor: pointer; transition: 0.2s; }
-    .tab.active { background: var(--maroon); color: var(--white); box-shadow: 0 4px 10px rgba(122,31,43,0.2); }
-
-    .header { text-align: center; margin-bottom: 32px; }
-    .header .logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
-    .header h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
-    .header p { font-size: 14px; color: var(--gray); }
-    
-    .form-group { margin-bottom: 20px; }
-    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; background: var(--white); }
-    input:focus { border-color: var(--maroon); }
-    
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-    /* CUSTOM COUNTRY DROPDOWN */
-    .custom-select { position: relative; user-select: none; }
-    .select-trigger { 
-        width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); 
-        border-radius: 10px; background: var(--white); cursor: pointer; display: flex; justify-content: space-between; align-items: center; 
-    }
-    .select-trigger span { color: var(--gray); }
-    .select-trigger.active { border-color: var(--maroon); }
-    .select-options { 
-        position: absolute; top: 100%; left: 0; right: 0; background: var(--white); 
-        border: 1px solid var(--silver); border-radius: 10px; margin-top: 8px; 
-        max-height: 200px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
-    }
-    .select-options.active { display: block; }
-    .select-option { padding: 12px 16px; cursor: pointer; font-size: 15px; display: flex; align-items: center; gap: 10px; }
-    .select-option:hover { background: #FAFAFA; }
-    .select-option.selected { background: #FFF5F6; color: var(--maroon); font-weight: 700; }
-
-    /* PHONE INPUT WITH CODE */
-    .phone-group { display: flex; gap: 8px; }
-    .phone-code { 
-        width: 90px; text-align: center; padding: 14px 8px; border: 1.5px solid var(--silver); 
-        border-radius: 10px; background: #FAFAFA; font-weight: 700; color: var(--gray); font-family: monospace;
-    }
-    .phone-input { flex: 1; }
-
-    /* VERTICAL COURSE LIST */
-    .course-list { display: flex; flex-direction: column; gap: 12px; }
-    .course-item { 
-        display: flex; align-items: flex-start; gap: 16px; padding: 20px; 
-        border: 1.5px solid var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; 
-    }
-    .course-item:hover { border-color: var(--maroon); background: #FAFAFA; }
-    .course-item.selected { border-color: var(--maroon); background: #FFF5F6; }
-    .course-item input[type="checkbox"] { 
-        width: 22px; height: 22px; accent-color: var(--maroon); cursor: pointer; margin-top: 2px; flex-shrink: 0;
-    }
-    .course-content h4 { font-size: 16px; font-weight: 800; margin-bottom: 4px; color: var(--black); }
-    .course-content p { font-size: 13px; color: var(--gray); }
-
-    .btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; margin-top: 10px; }
-    .btn:hover { background: var(--maroon-hover); }
-    .btn:disabled { opacity: 0.7; cursor: not-allowed; }
-    
-    #successState { display: none; text-align: center; }
-    .id-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; margin: 15px 0; }
-    .id-box .label { font-size: 11px; text-transform: uppercase; color: var(--gray); font-weight: 700; }
-    .id-box .value { font-family: monospace; font-size: 22px; font-weight: 800; color: var(--black); margin-top: 4px; }
-
-    .error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
-
-    @media (max-width: 768px) { .form-card { padding: 24px; } .row { grid-template-columns: 1fr; } }
+:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 24px; }
+.container { width: 100%; max-width: 600px; }
+.nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
+.form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
+.header { text-align: center; margin-bottom: 32px; }
+.header .logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
+.header h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+.header p { font-size: 14px; color: var(--gray); }
+.form-group { margin-bottom: 20px; }
+label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+input[type="text"], input[type="date"] { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; }
+input:focus { border-color: var(--maroon); }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.checkbox-group { display: flex; flex-direction: column; gap: 12px; margin: 24px 0; padding: 16px; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; }
+.checkbox-item { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
+.checkbox-item input { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+.checkbox-item span { font-size: 13px; color: var(--gray); line-height: 1.5; }
+.course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.course-item { display: flex; align-items: flex-start; gap: 16px; padding: 16px; border: 1.5px solid var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; background: var(--white); }
+.course-item:hover { border-color: var(--maroon); }
+.course-item.selected { border-color: var(--maroon); background: #FFF5F6; }
+.course-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; margin-top: 2px; }
+.btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+.btn:hover { background: var(--maroon-hover); }
+.btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+@media (max-width: 768px) { .form-card { padding: 24px; } .row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div class="container">
     <a href="index.html" class="nav-back"><i data-lucide="arrow-left"></i> Back to Home</a>
-    
     <div class="form-card">
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('apply')">Apply</button>
-            <button class="tab" onclick="switchTab('login')">Login</button>
+        <div class="header">
+            <div class="logo">∆</div>
+            <h1>2027 Application</h1>
+            <p>Register to take the Entrance Exam (AE).</p>
         </div>
-
-        <div id="applyTab">
-            <div class="header">
-                <div class="logo">∆</div>
-                <h1>2027 Application</h1>
-                <p>Register to receive your unique Student ID and Security Code.</p>
+        <div class="error-msg" id="applyError"></div>
+        <form id="admissionForm" autocomplete="off">
+            <div class="row">
+                <div class="form-group"><label>Full Name</label><input type="text" id="fullName" required></div>
+                <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
             </div>
-            
-            <div class="error-msg" id="applyError"></div>
-
-            <form id="admissionForm" autocomplete="off">
-                <div class="row">
-                    <div class="form-group"><label>Full Legal Name</label><input type="text" id="fullName" required autocomplete="off"></div>
-                    <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required autocomplete="off"></div>
-                </div>
-
-                <div class="form-group">
-                    <label>Country</label>
-                    <div class="custom-select" id="countrySelect">
-                        <div class="select-trigger" onclick="toggleCountryDropdown()">
-                            <span id="selectedCountryText">Select your country...</span>
-                            <i data-lucide="chevron-down" style="width:16px; height:16px; color:var(--gray);"></i>
+            <div class="form-group">
+                <label>Select Courses (Tick one or both)</label>
+                <div class="course-list">
+                    <label class="course-item" id="courseMath">
+                        <input type="checkbox" value="Mathematics" onchange="toggleCourse(this)">
+                        <div class="course-content">
+                            <h4 style="font-size:15px; font-weight:800;">Mathematics</h4>
+                            <p style="font-size:12px; color:var(--gray);">1 AE Paper (100 Marks) | 50% to pass</p>
                         </div>
-                        <div class="select-options" id="countryOptions">
-                            <div class="select-option" data-value="South Africa" data-code="+27" onclick="selectCountry(this)">🇿🇦 South Africa</div>
-                            <div class="select-option" data-value="United States" data-code="+1" onclick="selectCountry(this)">🇺🇸 United States</div>
-                            <div class="select-option" data-value="United Kingdom" data-code="+44" onclick="selectCountry(this)">🇬🇧 United Kingdom</div>
-                            <div class="select-option" data-value="Nigeria" data-code="+234" onclick="selectCountry(this)">🇳🇬 Nigeria</div>
-                            <div class="select-option" data-value="Kenya" data-code="+254" onclick="selectCountry(this)">🇰🇪 Kenya</div>
-                            <div class="select-option" data-value="India" data-code="+91" onclick="selectCountry(this)">🇮🇳 India</div>
-                            <div class="select-option" data-value="Other" data-code="+" onclick="selectCountry(this)">🌍 Other / Global</div>
+                    </label>
+                    <label class="course-item" id="courseWeb">
+                        <input type="checkbox" value="Front-end Web Development" onchange="toggleCourse(this)">
+                        <div class="course-content">
+                            <h4 style="font-size:15px; font-weight:800;">Front-end Web Development</h4>
+                            <p style="font-size:12px; color:var(--gray);">1 AE Paper (100 Marks) | 50% to pass</p>
                         </div>
-                    </div>
+                    </label>
                 </div>
-
-                <div class="row">
-                    <div class="form-group"><label>Email Address</label><input type="email" id="email" required autocomplete="off"></div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <div class="phone-group">
-                            <div class="phone-code" id="phoneCode">+27</div>
-                            <input type="tel" id="phone" class="phone-input" required autocomplete="off">
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group" style="margin-top: 32px;">
-                    <label>Select Courses (Tick to select one or both)</label>
-                    <div class="course-list">
-                        <label class="course-item" id="courseMath">
-                            <input type="checkbox" value="Mathematics" onchange="toggleCourse(this)">
-                            <div class="course-content">
-                                <h4>Mathematics</h4>
-                                <p>Advanced Mathematics Track</p>
-                            </div>
-                        </label>
-                        <label class="course-item" id="courseWeb">
-                            <input type="checkbox" value="Front-end Web Development" onchange="toggleCourse(this)">
-                            <div class="course-content">
-                                <h4>Front-end Web Development</h4>
-                                <p>Web Development Track</p>
-                            </div>
-                        </label>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn" id="submitBtn">Submit Application</button>
-            </form>
-        </div>
-
-        <div id="loginTab" style="display: none;">
-            <div class="header">
-                <div class="logo">∆</div>
-                <h1>Student Login</h1>
-                <p>Sign in to access your dashboard.</p>
             </div>
             
-            <div class="error-msg" id="loginError"></div>
+            <div class="checkbox-group">
+                <label class="checkbox-item">
+                    <input type="checkbox" id="termsCheck" required>
+                    <span>I agree to the <a href="guidelines-general.html" target="_blank" style="color:var(--maroon); font-weight:700;">Terms & Policies</a>.</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" id="accreditCheck" required>
+                    <span>I understand that IFB is a <strong>non-accredited</strong> institution. I am enrolling for the practical skills and knowledge, not a government certificate.</span>
+                </label>
+            </div>
 
-            <form id="loginForm" autocomplete="off">
-                <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" required autocomplete="off"></div>
-                <div class="form-group"><label>Password</label><input type="password" id="loginPass" required autocomplete="new-password"></div>
-                <button type="submit" class="btn" id="loginBtn">Sign In</button>
-            </form>
-        </div>
-
-        <div id="successState">
-            <div style="font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 10px;">∆</div>
-            <h2>Application Successful</h2>
-            <p style="font-size: 14px; color: var(--gray); margin-bottom: 20px;">CRITICAL: Take a screenshot of these credentials right now. You will need them to log in.</p>
-            
-            <div class="id-box">
-                <div class="label">13-Digit Student ID</div>
-                <div class="value" id="displayId">2701051026001</div>
-            </div>
-            <div class="id-box" style="border-color: var(--black);">
-                <div class="label">6-Digit Security Code (For Exams)</div>
-                <div class="value" id="displaySecurityCode">123456</div>
-            </div>
-            <div class="id-box" style="border-color: var(--maroon); background: #FFF5F6;">
-                <div class="label">Temporary Password</div>
-                <div class="value" id="displayPassword">IFB2027!1234</div>
-            </div>
-            
-            <a href="index.html" class="btn" style="display: block; text-decoration: none; text-align: center;">Go to Login</a>
-        </div>
+            <button type="button" class="btn" id="submitBtn" onclick="googleApply()">
+                <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+                Sign up with Google
+            </button>
+        </form>
     </div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    let selectedCourses = [];
-    let selectedCountry = "";
-    let selectedPhoneCode = "+27";
+let selectedCourses = [];
 
-    window.toggleCountryDropdown = function() {
-        document.getElementById('countryOptions').classList.toggle('active');
-        document.querySelector('.select-trigger').classList.toggle('active');
-    }
+window.toggleCourse = function(checkbox){
+    const course = checkbox.value;
+    const parent = checkbox.closest('.course-item');
+    if (checkbox.checked) { selectedCourses.push(course); parent.classList.add('selected'); }
+    else { selectedCourses = selectedCourses.filter(c=>c!==course); parent.classList.remove('selected'); }
+};
 
-    window.selectCountry = function(el) {
-        selectedCountry = el.dataset.value;
-        selectedPhoneCode = el.dataset.code;
-        document.getElementById('selectedCountryText').innerText = el.innerText;
-        document.getElementById('selectedCountryText').style.color = 'var(--black)';
-        document.getElementById('phoneCode').innerText = selectedPhoneCode;
-        document.querySelectorAll('.select-option').forEach(o => o.classList.remove('selected'));
-        el.classList.add('selected');
-        toggleCountryDropdown();
-    }
+window.googleApply = async function() {
+    const name = document.getElementById('fullName').value.trim();
+    const dob = document.getElementById('dob').value;
+    const terms = document.getElementById('termsCheck').checked;
+    const accredit = document.getElementById('accreditCheck').checked;
 
-    window.addEventListener('click', function(e) {
-        if (!document.getElementById('countrySelect').contains(e.target)) {
-            document.getElementById('countryOptions').classList.remove('active');
-            document.querySelector('.select-trigger').classList.remove('active');
-        }
-    });
+    if (!name || !dob) { showError("Please fill in all fields."); return; }
+    if (selectedCourses.length === 0) { showError("Tick at least one course."); return; }
+    if (!terms || !accredit) { showError("You must agree to the terms and acknowledge our status."); return; }
 
-    window.switchTab = function(tab) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('#applyError, #loginError').forEach(e => e.style.display = 'none');
-        if(tab === 'apply') {
-            document.querySelector('.tab:nth-child(1)').classList.add('active');
-            document.getElementById('applyTab').style.display = 'block';
-            document.getElementById('loginTab').style.display = 'none';
-        } else {
-            document.querySelector('.tab:nth-child(2)').classList.add('active');
-            document.getElementById('applyTab').style.display = 'none';
-            document.getElementById('loginTab').style.display = 'block';
-        }
-    }
+    const btn = document.getElementById('submitBtn');
+    btn.innerText = "Creating account..."; btn.disabled = true;
 
-    window.toggleCourse = function(checkbox) {
-        const course = checkbox.value;
-        const parent = checkbox.closest('.course-item');
-        if (checkbox.checked) {
-            selectedCourses.push(course);
-            parent.classList.add('selected');
-        } else {
-            selectedCourses = selectedCourses.filter(c => c !== course);
-            parent.classList.remove('selected');
-        }
-    }
-
-    document.getElementById('admissionForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('submitBtn');
-        const errorBox = document.getElementById('applyError');
-        errorBox.style.display = 'none';
-
-        if (selectedCourses.length === 0) { errorBox.innerText = "Please tick at least one course."; errorBox.style.display = 'block'; return; }
-        if (!selectedCountry) { errorBox.innerText = "Please select your country."; errorBox.style.display = 'block'; return; }
-
-        btn.innerText = "Processing..."; btn.disabled = true;
-
-        const name = document.getElementById('fullName').value;
-        const dobValue = document.getElementById('dob').value;
-        const email = document.getElementById('email').value;
-        const phoneNumber = document.getElementById('phone').value;
-        const fullPhone = `${selectedPhoneCode} ${phoneNumber}`;
+    try {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
         
-        // Generate 13-digit ID based on the dossier spec: 2701 + YY + MM + DD + XXX
-        const dobClean = dobValue.replace(/-/g, ''); // e.g., 20051026
-        const yy = dobClean.substring(2, 4); // 05
-        const mm = dobClean.substring(4, 6); // 10
-        const dd = dobClean.substring(6, 8); // 26
-        const random3 = Math.floor(100 + Math.random() * 900);
-        const studentId = `2701${yy}${mm}${dd}${random3}`; 
-        
-        // Generate 6-digit security code
-        const securityCode = Math.floor(100000 + Math.random() * 900000).toString();
+        // Save to Firestore WITHOUT generating the Student ID yet
+        await setDoc(doc(db, "users", result.user.uid), {
+            name: name,
+            email: result.user.email,
+            dob: dob,
+            courses: selectedCourses,
+            status: "Incomplete",
+            createdAt: new Date()
+        });
 
-        // Generate a Temporary Password so the user can actually log in
-        const tempPassword = "IFB2027!" + Math.floor(1000 + Math.random() * 9000);
+        window.location.href = "student-dashboard.html";
 
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, tempPassword);
-            const user = userCredential.user;
+    } catch(e) {
+        showError("Error: " + e.message);
+        btn.innerText = "Sign up with Google"; btn.disabled = false;
+    }
+};
 
-            await new Promise(resolve => setTimeout(resolve, 500));
+function showError(msg){
+    const box = document.getElementById('applyError');
+    box.innerText = msg; box.style.display = 'block';
+}
 
-            await setDoc(doc(db, "users", user.uid), {
-                name: name, email: email, phone: fullPhone, dob: dobValue, country: selectedCountry, 
-                studentId: studentId, securityCode: securityCode, courses: selectedCourses, status: "Applicant", createdAt: new Date()
-            });
-
-            document.getElementById('applyTab').style.display = 'none';
-            document.querySelector('.tabs').style.display = 'none';
-            document.getElementById('displayId').innerText = studentId;
-            document.getElementById('displaySecurityCode').innerText = securityCode;
-            document.getElementById('displayPassword').innerText = tempPassword;
-            document.getElementById('successState').style.display = 'block';
-
-        } catch (error) {
-            if (error.code === 'auth/email-already-in-use') { errorBox.innerText = "An account with this email already exists."; }
-            else { errorBox.innerText = "Error: " + error.message; }
-            errorBox.style.display = 'block';
-            btn.innerText = "Submit Application"; btn.disabled = false;
-        }
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('loginBtn');
-        const errorBox = document.getElementById('loginError');
-        errorBox.style.display = 'none';
-        btn.innerText = "Signing In..."; btn.disabled = true;
-
-        try {
-            await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
-            window.location.href = "student-dashboard.html";
-        } catch (error) {
-            errorBox.innerText = "Invalid email or password."; errorBox.style.display = 'block';
-            btn.innerText = "Sign In"; btn.disabled = false;
-        }
-    });
-
-    lucide.createIcons();
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) window.location.href = "student-dashboard.html";
+    }
+});
 </script>
 </body>
 </html>
