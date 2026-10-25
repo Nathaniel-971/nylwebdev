@@ -33,6 +33,12 @@ html, body {
     gap: 32px; align-items: start; box-sizing: border-box; 
 }
 
+/* WARNING BANNER */
+.warning-banner { background: #FFF5F6; border: 2px solid var(--maroon); border-radius: 12px; padding: 16px; margin-bottom: 24px; display: flex; align-items: flex-start; gap: 12px; }
+.warning-banner i { color: var(--maroon); flex-shrink: 0; margin-top: 2px; }
+.warning-banner h4 { font-size: 14px; font-weight: 800; color: var(--maroon); margin-bottom: 4px; }
+.warning-banner p { font-size: 13px; color: var(--black); }
+
 /* SIDEBAR & ID CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
 .id-card-container { width: 100%; max-width: 340px; height: 214px; margin: 0 auto 24px auto; perspective: 1000px; cursor: pointer; user-select: none; outline: none; }
@@ -50,12 +56,18 @@ html, body {
 .card-type { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
 .card-name { font-size: 16px; font-weight: 900; margin-bottom: 2px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
 .card-role { font-size: 8px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; align-self: flex-start;}
-.card-id { font-family: monospace; font-size: 14px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: auto;}
+.card-id { font-family: monospace; font-size: 14px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: auto; display: flex; align-items: center; justify-content: space-between;}
 
 .barcode-wrap-front { background: #fff; border-radius: 4px; width: 100%; height: 45px; margin-top: 4px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 2px; }
 .barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
 .card-back-text { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 4px;}
 .card-sec-code { font-family: monospace; font-size: 14px; font-weight: 900; letter-spacing: 2px; margin-top: 2px; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 6px;}
+
+/* COPY BUTTONS */
+.btn-copy { background: transparent; border: 1px solid var(--silver); border-radius: 4px; padding: 4px; cursor: pointer; color: var(--gray); display: flex; align-items: center; transition: 0.2s; }
+.btn-copy:hover { border-color: var(--black); color: var(--black); }
+.btn-copy.copied { background: #15803D; color: #FFF; border-color: #15803D; }
+
 .btn-reset { background: none; border: none; cursor: pointer; color: #fff; opacity: 0.7; display: flex; align-items: center;}
 .btn-reset:hover { opacity: 1; }
 .qr-wrap { background: #fff; padding: 4px; border-radius: 6px; margin-bottom: 4px; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; }
@@ -80,6 +92,18 @@ html, body {
 .course-item-display i { color: var(--maroon); }
 .btn-edit { padding: 10px 20px; background: var(--white); color: var(--maroon); border: 1.5px solid var(--maroon); border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; }
 .btn-edit:hover { background: #FFF5F6; }
+
+/* SETTINGS UI */
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.settings-group { background: #FAFAFA; border: 1px solid var(--silver); border-radius: 12px; padding: 20px; }
+.settings-group h4 { font-size: 15px; font-weight: 800; margin-bottom: 12px; color: var(--black); }
+.settings-group p { font-size: 13px; color: var(--gray); margin-bottom: 16px; }
+.settings-input { width: 100%; padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; margin-bottom: 12px; font-family: inherit; outline: none; background: #FFF; }
+.settings-input:focus { border-color: var(--maroon); }
+.btn-settings { padding: 10px 16px; background: var(--maroon); color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; width: 100%; }
+.btn-settings:hover { background: var(--maroon-hover); }
+.btn-settings.danger { background: #B91C1C; }
+.btn-settings.danger:hover { background: #991B1B; }
 
 /* ADMIN PANEL */
 .admin-toggle-bar { display: none; margin-bottom: 24px; background: #111; padding: 16px; border-radius: 12px; color: #fff; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2);}
@@ -121,7 +145,7 @@ input:checked + .slider:before { transform: translateX(26px); }
 @media (max-width: 900px) { 
     .container { grid-template-columns: 1fr; padding: 0 16px; } 
     .sidebar { position: static; } 
-    .grid-links { grid-template-columns: 1fr; }
+    .grid-links, .settings-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -152,7 +176,12 @@ input:checked + .slider:before { transform: translateX(26px); }
                             </div>
                             <div class="card-name" id="userName">Loading...</div>
                             <div class="card-role" id="userStatus">Applicant</div>
-                            <div class="card-id" id="userStudentId">---</div>
+                            <div class="card-id">
+                                <span id="userStudentId">---</span>
+                                <button class="btn-copy" id="copyIdBtn" onclick="copyToClipboard('userStudentId', this)" title="Copy ID">
+                                    <i data-lucide="copy" style="width:14px;height:14px;"></i>
+                                </button>
+                            </div>
                             
                             <div class="barcode-wrap-front">
                                 <svg id="barcodeSvg"></svg>
@@ -175,6 +204,16 @@ input:checked + .slider:before { transform: translateX(26px); }
                 </div>
             </div>
             <div class="flip-hint"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap to flip</div>
+            
+            <div class="warning-banner">
+                <i data-lucide="alert-triangle" style="width:20px;height:20px;"></i>
+                <div>
+                    <h4>SAVE THESE CREDENTIALS</h4>
+                    <p>You will need your Student ID and Security Code to enter the Exam Portal. Take a screenshot or copy them now.</p>
+                    <button class="btn-copy" onclick="copyToClipboard('userSecurityCode', this)" style="margin-top:8px; width:100%; justify-content:center; background:#FFF;">Copy Security Code</button>
+                </div>
+            </div>
+
             <a href="admissions-letter.html" target="_blank" class="btn-back" style="width:100%; justify-content:center; margin-top:12px;">View Admissions Letter</a>
         </div>
     </div>
@@ -254,16 +293,29 @@ input:checked + .slider:before { transform: translateX(26px); }
                 </button>
             </div>
 
-            <!-- Student Settings & Support -->
+            <!-- Settings & Support -->
             <div class="card">
-                <h3><i data-lucide="user-cog"></i> Account Settings</h3>
-                <div style="margin-bottom:16px;">
-                    <a href="mailto:n1nathaniel971@gmail.com?subject=IFB%20Support%20Request" class="btn-back" style="width:100%; justify-content:center; background:#FAFAFA;">
-                        <i data-lucide="mail"></i> Email Support
-                    </a>
-                </div>
-                <div>
-                    <button onclick="deregister()" class="btn-back" style="color:#B91C1C; border-color:#FECACA; width:100%; justify-content:center;" id="deregisterBtn">Revoke Application & Deregister</button>
+                <h3><i data-lucide="settings"></i> Settings & Profile</h3>
+                
+                <div class="settings-grid">
+                    <!-- Profile Info -->
+                    <div class="settings-group">
+                        <h4>Profile Information</h4>
+                        <p>Update your contact details.</p>
+                        <input type="text" id="settingName" class="settings-input" placeholder="Full Name">
+                        <input type="tel" id="settingPhone" class="settings-input" placeholder="Phone Number">
+                        <button class="btn-settings" onclick="updateProfile()">Update Profile</button>
+                    </div>
+
+                    <!-- Support & Account -->
+                    <div class="settings-group">
+                        <h4>Account & Support</h4>
+                        <p>Need help? Contact us or manage your account.</p>
+                        <a href="mailto:n1nathaniel971@gmail.com?subject=IFB%20Support%20Request" class="btn-settings" style="display:block; text-align:center; text-decoration:none; margin-bottom:12px;">
+                            <i data-lucide="mail" style="width:14px;height:14px; vertical-align:middle; margin-right:4px;"></i> Email Support
+                        </a>
+                        <button class="btn-settings danger" onclick="deregister()">Revoke Application</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -345,6 +397,10 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('userStatus').textContent = data.status;
         document.getElementById('userStudentId').textContent = data.studentId;
         document.getElementById('userSecurityCode').textContent = data.securityCode;
+        
+        // Populate Settings Inputs
+        document.getElementById('settingName').value = data.name || "";
+        document.getElementById('settingPhone').value = data.phone || "";
 
         // 3. Generate Barcode (Strictly Black) and QR
         setTimeout(() => {
@@ -369,14 +425,17 @@ onAuthStateChanged(auth, async (user) => {
             isPortalOpen = configSnap.data().isOpen || false;
         }
 
-        // 6. Admin Setup
+        // 6. Admin Setup - Default to Admin View if admin
         if (isAdmin) {
             document.getElementById('adminToggleBar').style.display = 'flex';
             document.getElementById('portalMasterSwitch').checked = isPortalOpen;
             updatePortalStatusText();
-            document.getElementById('adminDashboard').classList.add('hidden');
-            document.getElementById('studentDashboard').classList.remove('hidden');
-            document.getElementById('toggleViewBtn').textContent = "Switch to Admin View";
+            
+            // Default to Admin View
+            showAdminView = true;
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            document.getElementById('studentDashboard').classList.add('hidden');
+            document.getElementById('toggleViewBtn').textContent = "Switch to Student View";
         }
         
         updateExamPortalUI();
@@ -421,7 +480,6 @@ function updateExamPortalUI() {
     const link = document.getElementById('examGatewayLink');
     const statusText = document.getElementById('examStatusText');
     
-    // Admin always has access
     if (isPortalOpen || isAdmin) {
         link.classList.remove('locked');
         link.href = "exam-gateway.html";
@@ -455,19 +513,37 @@ function renderCoursesDisplay(courses) {
     lucide.createIcons();
 }
 
+// --- COPY TO CLIPBOARD ---
+window.copyToClipboard = function(elementId, btn) {
+    const text = document.getElementById(elementId).innerText;
+    if(!text || text === '---') return;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i>';
+        btn.classList.add('copied');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.classList.remove('copied');
+            lucide.createIcons();
+        }, 2000);
+    }).catch(err => {
+        alert("Failed to copy: " + err);
+    });
+};
+
 // --- COURSE MODAL ---
 window.openCourseModal = function() {
     const modal = document.getElementById('courseModal');
     const chkMath = document.getElementById('chkMath');
     const chkWeb = document.getElementById('chkWeb');
     
-    // Reset visual states
     chkMath.checked = false;
     chkWeb.checked = false;
     document.getElementById('optMath').classList.remove('selected');
     document.getElementById('optWeb').classList.remove('selected');
 
-    // Pre-fill
     const courses = currentUserData.courses || [];
     if (courses.includes("Mathematics")) { chkMath.checked = true; document.getElementById('optMath').classList.add('selected'); }
     if (courses.includes("Front-end Web Development")) { chkWeb.checked = true; document.getElementById('optWeb').classList.add('selected'); }
@@ -501,10 +577,7 @@ window.saveCourses = async function() {
         await updateDoc(doc(db, "users", currentUserId), { courses: newCourses });
         currentUserData.courses = newCourses;
         
-        // Update UI
         renderCoursesDisplay(newCourses);
-        
-        // Close Modal
         document.getElementById('courseModal').classList.remove('active');
         
     } catch (e) {
@@ -513,6 +586,23 @@ window.saveCourses = async function() {
         btn.innerHTML = '<i data-lucide="save"></i> Save Selection';
         btn.disabled = false;
         lucide.createIcons();
+    }
+};
+
+// --- SETTINGS ---
+window.updateProfile = async function() {
+    const newName = document.getElementById('settingName').value.trim();
+    const newPhone = document.getElementById('settingPhone').value.trim();
+    
+    if(!newName) { alert("Name cannot be empty."); return; }
+
+    try {
+        await updateDoc(doc(db, "users", currentUserId), { name: newName, phone: newPhone });
+        document.getElementById('userName').textContent = newName;
+        currentUserData.name = newName;
+        alert("Profile updated successfully.");
+    } catch(e) {
+        alert("Error updating profile: " + e.message);
     }
 };
 
