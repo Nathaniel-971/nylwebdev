@@ -42,14 +42,9 @@ html, body {
 /* CENTRAL LAYOUT */
 .container { 
     width: 100%; max-width: 1200px; margin: 40px auto; padding: 0 24px; 
-    display: grid; grid-template-columns: 440px 1fr; /* Wider card area */
+    display: grid; grid-template-columns: 440px 1fr; 
     gap: 32px; align-items: start; box-sizing: border-box; 
 }
-
-/* ADMIN TOGGLE */
-.admin-toggle-bar { display: none; margin-bottom: 24px; background: #111; padding: 12px; border-radius: 12px; color: #fff; justify-content: space-between; align-items: center;}
-.admin-toggle-bar span { font-size: 14px; font-weight: 700; }
-.btn-toggle { background: #fff; color: #111; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px;}
 
 /* SIDEBAR & FLIP CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
@@ -71,17 +66,16 @@ html, body {
 .card-role { font-size: 11px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: auto;}
 .card-id { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px;}
 
-/* Barcode fixed */
-.barcode-wrap-front { background: #fff; border-radius: 4px; padding: 8px; width: 100%; margin-top: auto; border: 1px solid #eee; }
-.barcode-wrap-front svg { width: 100%; height: 60px; display: block; }
+/* Fixed Barcode Container */
+.barcode-wrap-front { background: #fff; border-radius: 4px; padding: 8px; width: 100%; height: 70px; margin-top: auto; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; }
+.barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
 
-/* QR Code fixed */
+/* Fixed QR Container */
 .card-back-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 10px;}
 .card-sec-code { font-family: monospace; font-size: 20px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 6px 16px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 10px;}
 .btn-reset { background: none; border: none; cursor: pointer; color: #fff; opacity: 0.7; display: flex; align-items: center;}
 .btn-reset:hover { opacity: 1; }
-.pack-seq { font-size: 12px; font-weight: 700; color: var(--white); margin-top: 12px; }
-.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 140px; height: 140px; }
+.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 140px; height: 140px; display: flex; justify-content: center; align-items: center; }
 .qr-wrap svg { width: 100%; height: 100%; display: block; }
 
 .flip-hint { font-size: 13px; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -107,7 +101,13 @@ html, body {
 .btn-save { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; font-family: inherit; display: flex; justify-content: center; align-items: center; gap: 8px;}
 .btn-save:hover { background: var(--maroon-hover); }
 
-/* ADMIN PANEL (Master Switch) */
+/* ADMIN TOGGLE BAR */
+.admin-toggle-bar { display: none; margin-bottom: 24px; background: #111; padding: 16px; border-radius: 12px; color: #fff; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2);}
+.admin-toggle-bar span { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;}
+.btn-toggle { background: #fff; color: #111; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px;}
+.btn-toggle:hover { background: #eee; }
+
+/* ADMIN PANEL */
 .admin-panel { display: none; border: 2px solid #111; background: #111; color: #fff; }
 .admin-panel h3 { color: #fff; border-bottom-color: rgba(255,255,255,0.2); }
 .admin-panel h3 i { color: #fff; }
@@ -150,12 +150,6 @@ input:checked + .slider:before { transform: translateX(26px); }
         </div>
         
         <div id="profileData" style="display:none;">
-            <!-- ADMIN VIEW TOGGLE (Only visible to admin) -->
-            <div class="admin-toggle-bar" id="adminToggleBar">
-                <span><i data-lucide="shield-alert" style="width:16px;height:16px; vertical-align:middle; margin-right:4px;"></i> Admin Mode Active</span>
-                <button class="btn-toggle" id="toggleViewBtn" onclick="toggleAdminView()">Switch to Student View</button>
-            </div>
-
             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                 <div class="id-card-inner">
                     <!-- FRONT (Barcode) -->
@@ -186,7 +180,6 @@ input:checked + .slider:before { transform: translateX(26px); }
                                     <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i>
                                 </button>
                             </div>
-                            <div class="pack-seq">Pack Seq: <span id="userPackSeq"></span></div>
                         </div>
                     </div>
                 </div>
@@ -199,14 +192,20 @@ input:checked + .slider:before { transform: translateX(26px); }
     <!-- MAIN CONTENT -->
     <div class="main-content">
         
+        <!-- ADMIN TOGGLE BAR (Only visible to n1nathaniel971@gmail.com) -->
+        <div class="admin-toggle-bar" id="adminToggleBar">
+            <span><i data-lucide="shield-alert" style="width:18px;height:18px;"></i> Admin Privileges Active</span>
+            <button class="btn-toggle" id="toggleViewBtn" onclick="toggleAdminView()">Switch to Admin View</button>
+        </div>
+
         <!-- ADMIN DASHBOARD (Toggles visibility) -->
         <div id="adminDashboard" class="hidden">
-            <div class="card admin-panel" style="display:block;">
-                <h3><i data-lucide="settings"></i> Admin Control Panel</h3>
+            <div class="card admin-panel">
+                <h3><i data-lucide="settings"></i> Exam Control Center</h3>
                 
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,0.1);">
                     <div>
-                        <div style="font-size:16px; font-weight:700;">Exam Portal Status</div>
+                        <div style="font-size:16px; font-weight:700;">Exam Portal Access</div>
                         <div style="font-size:13px; color:#aaa;" id="portalStatusText">Checking...</div>
                     </div>
                     <label class="switch">
@@ -226,7 +225,7 @@ input:checked + .slider:before { transform: translateX(26px); }
             </div>
         </div>
 
-        <!-- STUDENT DASHBOARD (Standard View) -->
+        <!-- STUDENT DASHBOARD -->
         <div id="studentDashboard">
             <div class="card">
                 <h3><i data-lucide="monitor-play"></i> Entrance Examination</h3>
@@ -244,7 +243,6 @@ input:checked + .slider:before { transform: translateX(26px); }
                 </div>
             </div>
 
-            <!-- COURSE MANAGEMENT UI -->
             <div class="card">
                 <h3><i data-lucide="book-open"></i> My Courses</h3>
                 <p style="font-size:14px; color:var(--gray); margin-bottom:16px;">Select the tracks you want to study. This updates your Admissions Letter automatically.</p>
@@ -265,8 +263,8 @@ input:checked + .slider:before { transform: translateX(26px); }
                     </button>
                 </div>
 
-                <div style="margin-top:16px; display:flex; gap:12px;">
-                    <button onclick="deregister()" class="btn-back" style="color:#B91C1C; border-color:#FECACA;" id="deregisterBtn">Deregister Account</button>
+                <div style="margin-top:24px; padding-top:24px; border-top:1px dashed var(--silver);">
+                    <button onclick="deregister()" class="btn-back" style="color:#B91C1C; border-color:#FECACA; width:100%; justify-content:center;" id="deregisterBtn">Revoke Application & Deregister</button>
                 </div>
             </div>
         </div>
@@ -295,7 +293,6 @@ onAuthStateChanged(auth, async (user) => {
     currentUserId = user.uid;
     isAdmin = (user.email === "n1nathaniel971@gmail.com");
     
-    // Fetch Student Data
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
 
@@ -310,72 +307,66 @@ onAuthStateChanged(auth, async (user) => {
             const random3 = Math.floor(100 + Math.random()*900);
             const studentId = `2701${yy}${mm}${dd}${random3}`;
             const securityCode = Math.random().toString(36).substring(2,8).toUpperCase();
-            const packSeq = Math.floor(Math.random() * 12) + 1;
-
-            await updateDoc(docRef, { studentId, securityCode, packSeq, status: "Applicant" });
+            
+            await updateDoc(docRef, { studentId, securityCode, status: "Applicant" });
             data.studentId = studentId;
             data.securityCode = securityCode;
-            data.packSeq = packSeq;
             data.status = "Applicant";
             currentUserData = data;
         }
 
-        // Populate Card safely
+        // Populate Text
         document.getElementById('loader').style.display = 'none';
         document.getElementById('profileData').style.display = 'block';
         document.getElementById('userName').textContent = data.name;
         document.getElementById('userStatus').textContent = data.status;
         document.getElementById('userStudentId').textContent = data.studentId;
         document.getElementById('userSecurityCode').textContent = data.securityCode;
-        document.getElementById('userPackSeq').textContent = `${data.packSeq.toString().padStart(2, '0')}/12`;
 
-        // Generate Barcode & QR (Wait for render)
+        // Generate Assets after slight delay to ensure DOM is ready
         setTimeout(() => {
-            try {
-                JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
-            } catch (e) { console.warn("Barcode error:", e); }
+            generateAssets(data.studentId, data.name, data.securityCode);
+        }, 150);
 
-            try {
-                const qrPayload = `ID: ${data.studentId}\nName: ${data.name}\nPack: ${data.packSeq}`;
-                const qr = qrcode(0, 'M');
-                qr.addData(qrPayload);
-                qr.make();
-                document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
-            } catch (e) { console.warn("QR error:", e); }
-        }, 100);
-
-        // Populate Course UI
+        // Populate Courses
         const courses = data.courses || [];
-        if (courses.includes("Mathematics")) { document.getElementById('chkMath').checked = true; }
-        if (courses.includes("Front-end Web Development")) { document.getElementById('chkWeb').checked = true; }
-        toggleCourseUI(); // Apply styling
+        if (courses.includes("Mathematics")) document.getElementById('chkMath').checked = true;
+        if (courses.includes("Front-end Web Development")) document.getElementById('chkWeb').checked = true;
+        toggleCourseUI(); 
+
+        // Check Exam Config
+        const configSnap = await getDoc(doc(db, "config", "exam"));
+        if (configSnap.exists()) {
+            isPortalOpen = configSnap.data().isOpen || false;
+        }
 
         // ADMIN SETUP
         if (isAdmin) {
             document.getElementById('adminToggleBar').style.display = 'flex';
-            document.getElementById('adminDashboard').classList.remove('hidden');
-            document.getElementById('studentDashboard').classList.add('hidden');
-            showAdminView = true;
-            document.getElementById('toggleViewBtn').textContent = "Switch to Student View";
-            
-            // Fetch Global Exam Config
-            const configSnap = await getDoc(doc(db, "config", "exam"));
-            if (configSnap.exists()) {
-                isPortalOpen = configSnap.data().isOpen || false;
-                document.getElementById('portalMasterSwitch').checked = isPortalOpen;
-                updatePortalStatusText();
-            }
-        } else {
-            // Standard student: Check exam config
-            const configSnap = await getDoc(doc(db, "config", "exam"));
-            if (configSnap.exists()) {
-                isPortalOpen = configSnap.data().isOpen || false;
-            }
-            updateExamPortalUI();
+            document.getElementById('portalMasterSwitch').checked = isPortalOpen;
+            updatePortalStatusText();
+            // By default, admin sees student view, but can toggle
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('studentDashboard').classList.remove('hidden');
+            document.getElementById('toggleViewBtn').textContent = "Switch to Admin View";
         }
-
+        
+        updateExamPortalUI();
     }
 });
+
+function generateAssets(id, name, code) {
+    try {
+        JsBarcode("#barcodeSvg", id, { format: "CODE128", width: 2, height: 45, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
+    } catch(e) { console.error("Barcode error", e); }
+    
+    try {
+        const qr = qrcode(0, 'M');
+        qr.addData(`ID: ${id}\nName: ${name}\nCode: ${code}`);
+        qr.make();
+        document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    } catch(e) { console.error("QR error", e); }
+}
 
 // --- ADMIN LOGIC ---
 window.toggleAdminView = function() {
@@ -388,51 +379,44 @@ window.toggleAdminView = function() {
         document.getElementById('adminDashboard').classList.add('hidden');
         document.getElementById('studentDashboard').classList.remove('hidden');
         document.getElementById('toggleViewBtn').textContent = "Switch to Admin View";
-        updateExamPortalUI(); // Update student view
     }
 };
 
 window.toggleExamPortal = async function(checkbox) {
     const isChecked = checkbox.checked;
     document.getElementById('portalStatusText').textContent = "Updating...";
-    
     try {
         await setDoc(doc(db, "config", "exam"), { isOpen: isChecked }, { merge: true });
         isPortalOpen = isChecked;
         updatePortalStatusText();
+        if(!showAdminView) updateExamPortalUI(); // Update if admin switches to student view later
     } catch (e) {
         alert("Error updating portal: " + e.message);
-        checkbox.checked = !isChecked; // revert
+        checkbox.checked = !isChecked; 
         updatePortalStatusText();
     }
 };
 
 function updatePortalStatusText() {
     document.getElementById('portalStatusText').textContent = isPortalOpen ? "OPEN - Students can enter." : "CLOSED - Students are locked out.";
-    document.getElementById('portalStatusText').style.color = isPortalOpen ? "#15803D" : "#B91C1C";
+    document.getElementById('portalStatusText').style.color = isPortalOpen ? "#4ade80" : "#f87171";
 }
 
 // --- STUDENT LOGIC ---
 function updateExamPortalUI() {
     const link = document.getElementById('examGatewayLink');
     const statusText = document.getElementById('examStatusText');
-    const subText = document.getElementById('examPortalSub');
-    const now = new Date();
-    const examDate = new Date("2027-01-13T00:00:00Z");
-
-    if (isPortalOpen && now >= examDate) {
+    
+    if (isPortalOpen) {
         link.classList.remove('locked');
         link.href = "exam-gateway.html";
         link.innerHTML = '<i data-lucide="monitor-play"></i><span>Enter Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--maroon);">Active</span>';
         statusText.textContent = "The exam portal is now open. Good luck.";
-        document.getElementById('deregisterBtn').disabled = true;
-        document.getElementById('deregisterBtn').style.opacity = '0.5';
     } else {
         link.classList.add('locked');
         link.href = "#";
-        let reason = !isPortalOpen ? "Admin has closed the portal." : "Opens on 13 Jan 2027.";
-        link.innerHTML = `<i data-lucide="lock"></i><span>Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--gray);">${reason}</span>`;
-        statusText.textContent = "The exam portal is currently locked.";
+        link.innerHTML = `<i data-lucide="lock"></i><span>Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--gray);">Locked by Admin</span>`;
+        statusText.textContent = "The exam portal is currently locked. Please wait for the administrator to open it.";
     }
     lucide.createIcons();
 }
@@ -478,19 +462,14 @@ window.saveCourses = async function() {
 // --- UTILS ---
 window.resetSecurityCode = async function(e) {
     e.stopPropagation(); 
-    if(!confirm("Are you sure you want to reset your security code?")) return;
+    if(!confirm("Are you sure you want to reset your security code? You will need the new one to log in.")) return;
     
     try {
         const newCode = Math.random().toString(36).substring(2,8).toUpperCase();
         await updateDoc(doc(db, "users", currentUserId), { securityCode: newCode });
         currentUserData.securityCode = newCode;
         document.getElementById('userSecurityCode').textContent = newCode;
-        
-        const qrPayload = `ID: ${currentUserData.studentId}\nName: ${currentUserData.name}\nPack: ${currentUserData.packSeq}`;
-        const qr = qrcode(0, 'M');
-        qr.addData(qrPayload);
-        qr.make();
-        document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+        generateAssets(currentUserData.studentId, currentUserData.name, newCode);
     } catch (err) { alert("Error: " + err.message); }
 };
 
@@ -499,12 +478,21 @@ window.uploadExamPaper = function() {
 };
 
 window.deregister = async function() {
-    if(confirm("Are you sure you want to deregister? This frees your ID sequence for a new applicant.")) {
-        try {
-            await deleteDoc(doc(db, "users", currentUserId));
-            await deleteUser(auth.currentUser);
-            window.location.href = "index.html";
-        } catch (e) { alert("Please log out and log back in before deleting."); }
+    const firstConfirm = confirm("WARNING: Are you absolutely sure you want to revoke your application? This will permanently delete your account and free up your Student ID.");
+    if (!firstConfirm) return;
+
+    const secondConfirm = prompt("Type 'DELETE' to confirm.");
+    if (secondConfirm !== "DELETE") {
+        alert("Deregistration cancelled.");
+        return;
+    }
+
+    try {
+        await deleteDoc(doc(db, "users", currentUserId));
+        await deleteUser(auth.currentUser);
+        window.location.href = "index.html";
+    } catch (e) { 
+        alert("Please log out and log back in before deleting, or contact support."); 
     }
 };
 
