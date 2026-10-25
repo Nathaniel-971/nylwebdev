@@ -2,50 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Apply — IFB</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { 
-    font-family: 'Inter', sans-serif; 
-    background: var(--bg); 
-    color: var(--black); 
-    min-height: 100dvh; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    padding: 24px 16px; 
-    overflow-x: clip;
-}
-.container { width: 100%; max-width: 600px; }
+:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --bg: #F8FAFC; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); min-height: 100dvh; display: flex; justify-content: center; align-items: center; padding: 24px 16px; }
+.container { width: 100%; max-width: 500px; }
 .nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; }
 .form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
 .header { text-align: center; margin-bottom: 32px; }
 .header .logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
 .header h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
 .header p { font-size: 14px; color: var(--gray); }
+.btn-google { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; background: var(--white); border: 1.5px solid var(--silver); border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: 0.2s; }
+.btn-google:hover { background: #FAFAFA; border-color: var(--black); }
+.form-fields { display: none; margin-top: 24px; }
 .form-group { margin-bottom: 20px; }
 label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-input[type="text"], input[type="date"] { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; }
+input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; }
 input:focus { border-color: var(--maroon); }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .checkbox-group { display: flex; flex-direction: column; gap: 12px; margin: 24px 0; padding: 16px; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; }
 .checkbox-item { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
-.checkbox-item input { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+.checkbox-item input { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; margin-top: 2px; }
 .checkbox-item span { font-size: 13px; color: var(--gray); line-height: 1.5; }
-.course-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-.course-item { display: flex; align-items: flex-start; gap: 16px; padding: 16px; border: 1.5px solid var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; background: var(--white); }
-.course-item:hover { border-color: var(--maroon); }
-.course-item.selected { border-color: var(--maroon); background: #FFF5F6; }
-.course-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; margin-top: 2px; }
-.btn { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-.btn:hover { background: var(--maroon-hover); }
-.btn:disabled { opacity: 0.7; cursor: not-allowed; }
-.error-msg { display: none; background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 16px; }
-@media (max-width: 768px) { .form-card { padding: 24px; } .row { grid-template-columns: 1fr; } }
+.btn-submit { width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; }
+.btn-submit:hover { background: #5A1620; }
+@media (max-width: 768px) { .row { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -55,56 +41,52 @@ input:focus { border-color: var(--maroon); }
         <div class="header">
             <div class="logo">∆</div>
             <h1>2027 Application</h1>
-            <p>Register to take the Entrance Exam (AE).</p>
+            <p>Sign in to begin your application.</p>
         </div>
-        <div class="error-msg" id="applyError"></div>
-        <form id="admissionForm" autocomplete="off">
-            <div class="row">
-                <div class="form-group"><label>Full Name</label><input type="text" id="fullName" required></div>
-                <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
-            </div>
-            <div class="form-group">
-                <label>Select Courses (Tick one or both)</label>
-                <div class="course-list">
-                    <label class="course-item" id="courseMath">
-                        <input type="checkbox" value="Mathematics" onchange="toggleCourse(this)">
-                        <div class="course-content">
-                            <h4 style="font-size:15px; font-weight:800;">Mathematics</h4>
-                            <p style="font-size:12px; color:var(--gray);">1 AE Paper (100 Marks) | 50% to pass</p>
-                        </div>
+        
+        <button class="btn-google" id="googleBtn" onclick="googleLogin()">
+            <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+            Sign in with Google
+        </button>
+
+        <div class="form-fields" id="formFields">
+            <form id="admissionForm" onsubmit="submitForm(event)">
+                <div class="row">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="fullName" required></div>
+                    <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
+                </div>
+                <div class="form-group">
+                    <label>Select Courses</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="Mathematics" class="course-check" onchange="toggleCourse(this)">
+                            <span><strong>Mathematics</strong> (1 AE Paper, 100 Marks)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="Front-end Web Development" class="course-check" onchange="toggleCourse(this)">
+                            <span><strong>Front-End Web Development</strong> (1 AE Paper, 100 Marks)</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="termsCheck" required>
+                        <span>I agree to the Terms & Policies.</span>
                     </label>
-                    <label class="course-item" id="courseWeb">
-                        <input type="checkbox" value="Front-end Web Development" onchange="toggleCourse(this)">
-                        <div class="course-content">
-                            <h4 style="font-size:15px; font-weight:800;">Front-end Web Development</h4>
-                            <p style="font-size:12px; color:var(--gray);">1 AE Paper (100 Marks) | 50% to pass</p>
-                        </div>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="accreditCheck" required>
+                        <span>I understand IFB is non-accredited. I am enrolling for practical skills, not a government certificate.</span>
                     </label>
                 </div>
-            </div>
-            
-            <div class="checkbox-group">
-                <label class="checkbox-item">
-                    <input type="checkbox" id="termsCheck" required>
-                    <span>I agree to the <a href="guidelines-general.html" target="_blank" style="color:var(--maroon); font-weight:700;">Terms & Policies</a>.</span>
-                </label>
-                <label class="checkbox-item">
-                    <input type="checkbox" id="accreditCheck" required>
-                    <span>I understand that IFB is a <strong>non-accredited</strong> institution. I am enrolling for the practical skills and knowledge, not a government certificate.</span>
-                </label>
-            </div>
-
-            <button type="button" class="btn" id="submitBtn" onclick="googleApply()">
-                <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
-                Sign up with Google
-            </button>
-        </form>
+                <button type="submit" class="btn-submit">Complete Application</button>
+            </form>
+        </div>
     </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
@@ -112,60 +94,54 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+let currentUser = null;
 let selectedCourses = [];
 
-window.toggleCourse = function(checkbox){
-    const course = checkbox.value;
-    const parent = checkbox.closest('.course-item');
-    if (checkbox.checked) { selectedCourses.push(course); parent.classList.add('selected'); }
-    else { selectedCourses = selectedCourses.filter(c=>c!==course); parent.classList.remove('selected'); }
-};
-
-window.googleApply = async function() {
-    const name = document.getElementById('fullName').value.trim();
-    const dob = document.getElementById('dob').value;
-    const terms = document.getElementById('termsCheck').checked;
-    const accredit = document.getElementById('accreditCheck').checked;
-
-    if (!name || !dob) { showError("Please fill in all fields."); return; }
-    if (selectedCourses.length === 0) { showError("Tick at least one course."); return; }
-    if (!terms || !accredit) { showError("You must agree to the terms and acknowledge our status."); return; }
-
-    const btn = document.getElementById('submitBtn');
-    btn.innerText = "Creating account..."; btn.disabled = true;
-
+window.googleLogin = async function() {
     try {
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
+        currentUser = result.user;
         
-        await setDoc(doc(db, "users", result.user.uid), {
+        const snap = await getDoc(doc(db, "users", currentUser.uid));
+        if (snap.exists()) {
+            window.location.href = "student-dashboard.html";
+        } else {
+            document.getElementById('googleBtn').style.display = 'none';
+            document.getElementById('formFields').style.display = 'block';
+        }
+    } catch(e) { alert("Error: " + e.message); }
+};
+
+window.toggleCourse = function(checkbox) {
+    const val = checkbox.value;
+    if (checkbox.checked) selectedCourses.push(val);
+    else selectedCourses = selectedCourses.filter(c => c !== val);
+};
+
+window.submitForm = async function(e) {
+    e.preventDefault();
+    if (!currentUser) return;
+    if (selectedCourses.length === 0) { alert("Select at least one course."); return; }
+    if (!document.getElementById('termsCheck').checked || !document.getElementById('accreditCheck').checked) { alert("Agree to terms."); return; }
+
+    const name = document.getElementById('fullName').value;
+    const dob = document.getElementById('dob').value;
+    const btn = e.target.querySelector('button');
+    btn.innerText = "Saving..."; btn.disabled = true;
+
+    try {
+        await setDoc(doc(db, "users", currentUser.uid), {
             name: name,
-            email: result.user.email,
+            email: currentUser.email,
             dob: dob,
             courses: selectedCourses,
             status: "Incomplete",
             createdAt: new Date()
         });
-
         window.location.href = "student-dashboard.html";
-
-    } catch(e) {
-        showError("Error: " + e.message);
-        btn.innerText = "Sign up with Google"; btn.disabled = false;
-    }
+    } catch(e) { alert(e.message); btn.innerText = "Complete Application"; btn.disabled = false; }
 };
-
-function showError(msg){
-    const box = document.getElementById('applyError');
-    box.innerText = msg; box.style.display = 'block';
-}
-
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists()) window.location.href = "student-dashboard.html";
-    }
-});
 </script>
 </body>
 </html>
