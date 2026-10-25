@@ -5,21 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exam Gateway — IFB</title>
 <script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --maroon:#7A1F2B; --silver:#E2E8F0; --black:#111; --gray:#666; --white:#fff; --bg:#F8FAFC; }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Inter',sans-serif; background:var(--bg); display:flex; justify-content:center; align-items:center; min-height:100dvh; padding:20px; overflow-x: clip; }
-.card { background:var(--white); border:1px solid var(--silver); border-radius:16px; padding:40px; max-width:480px; width:100%; box-shadow:0 10px 30px rgba(0,0,0,.05); text-align:center; }
-.logo { font-size:48px; font-weight:900; color:var(--maroon); margin-bottom:12px; }
-h1 { font-size:24px; font-weight:900; margin-bottom:6px; }
-p.sub { font-size:14px; color:var(--gray); margin-bottom:28px; }
-.input-group { text-align:left; margin-bottom:16px; }
-label { display:block; font-size:13px; font-weight:700; margin-bottom:8px; }
-input { width:100%; padding:14px; font-size:16px; border:1.5px solid var(--silver); border-radius:8px; outline:none; font-family:monospace; text-align:center; }
-input:focus { border-color:var(--maroon); }
-.btn { width:100%; padding:16px; background:var(--maroon); color:var(--white); border:none; border-radius:8px; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; }
-.error { color:#B91C1C; font-size:14px; margin-top:15px; display:none; background:#FEF2F2; padding:12px; border-radius:8px; }
+:root { --maroon: #7A1F2B; --silver: #E2E8F0; --black: #111; --gray: #666; --white: #FFF; --bg: #F8FAFC; --success: #15803D; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+body { background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; color: var(--black); }
+.card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 40px; max-width: 480px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+.logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 12px; }
+h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+p.sub { font-size: 14px; color: var(--gray); margin-bottom: 28px; }
+.input-group { text-align: left; margin-bottom: 16px; }
+label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+input { width: 100%; padding: 14px; font-size: 16px; border: 1.5px solid var(--silver); border-radius: 8px; outline: none; font-family: monospace; text-align: center; letter-spacing: 2px; }
+input:focus { border-color: var(--maroon); }
+.btn { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; transition: 0.2s; }
+.btn:hover { background: #5A1620; }
+.btn:disabled { opacity: 0.7; cursor: wait; }
+.error { color: #B91C1C; font-size: 14px; margin-top: 15px; display: none; background: #FEF2F2; padding: 12px; border-radius: 8px; border: 1px solid #FECACA; }
+.back-link { display: block; margin-top: 24px; font-size: 14px; color: var(--gray); text-decoration: none; font-weight: 600; }
+.back-link:hover { color: var(--maroon); }
 </style>
 </head>
 <body>
@@ -27,18 +31,20 @@ input:focus { border-color:var(--maroon); }
 <div class="card">
     <div class="logo">∆</div>
     <h1>Examination Gateway</h1>
-    <p class="sub">Verify your identity to access the live exam session.</p>
+    <p class="sub">Verify your credentials to enter the live exam session.</p>
     
     <div class="input-group">
         <label>13-Digit Student ID</label>
-        <input type="text" id="studentId" placeholder="2701051026001" maxlength="13">
+        <input type="text" id="studentId" placeholder="2701051026001" maxlength="13" autocomplete="off">
     </div>
     <div class="input-group">
-        <label>6-Char Security Code</label>
-        <input type="password" id="securityCode" placeholder="A7X2B9" maxlength="6">
+        <label>6-Digit Security Code</label>
+        <input type="password" id="securityCode" placeholder="A7X2B9" maxlength="6" autocomplete="off">
     </div>
-    <button class="btn" id="enterBtn" onclick="verifyAndEnter()">Enter Examination Session</button>
+    <button class="btn" id="enterBtn" onclick="verifyAndEnter()">Verify & Enter Session</button>
     <div class="error" id="errorBox"></div>
+    
+    <a href="student-dashboard.html" class="back-link"><i data-lucide="arrow-left" style="width:14px; height:14px; vertical-align:middle;"></i> Back to Dashboard</a>
 </div>
 
 <script type="module">
@@ -51,11 +57,21 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Pre-fill if coming from dashboard (simulated, in reality they might not need to retype if we just pass sessionStorage)
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "admission.html"; return; }
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (!snap.exists() || snap.data().status === "Incomplete") {
-        window.location.href = "student-dashboard.html";
+    
+    // Check if Admin
+    const isAdmin = (user.email === "n1nathaniel971@gmail.com");
+    
+    // Check if portal is open (Admin ignores this)
+    const configSnap = await getDoc(doc(db, "config", "exam"));
+    const isPortalOpen = configSnap.exists() && configSnap.data().isOpen;
+    
+    if (!isPortalOpen && !isAdmin) {
+        document.getElementById('enterBtn').disabled = true;
+        document.getElementById('errorBox').innerText = "The Exam Portal is currently locked. Please wait for the Administrator.";
+        document.getElementById('errorBox').style.display = 'block';
     }
 });
 
@@ -63,33 +79,63 @@ window.verifyAndEnter = async function() {
     const id = document.getElementById('studentId').value.trim();
     const code = document.getElementById('securityCode').value.trim().toUpperCase();
     const errorBox = document.getElementById('errorBox');
+    const btn = document.getElementById('enterBtn');
     
     errorBox.style.display = 'none';
-    if (id.length !== 13 || !code) { errorBox.innerText = "Invalid format."; errorBox.style.display = 'block'; return; }
+    if (id.length !== 13 || code.length !== 6) { 
+        errorBox.innerText = "Invalid format. ID must be 13 digits, Code must be 6 characters."; 
+        errorBox.style.display = 'block'; 
+        return; 
+    }
 
-    const btn = document.getElementById('enterBtn');
     btn.innerText = "Verifying..."; btn.disabled = true;
 
     try {
+        // Find user by Student ID and Security Code
         const q = query(collection(db, "users"), where("studentId", "==", id), where("securityCode", "==", code));
         const snap = await getDocs(q);
 
         if (!snap.empty) {
-            const data = snap.docs[0].data();
+            const userData = snap.docs[0].data();
+            
+            // Check if the logged-in user matches the queried user (Security check)
+            if (auth.currentUser.uid !== snap.docs[0].id && auth.currentUser.email !== "n1nathaniel971@gmail.com") {
+                 errorBox.innerText = "Security Error: You cannot log in as another student.";
+                 errorBox.style.display = 'block';
+                 btn.innerText = "Verify & Enter Session"; btn.disabled = false;
+                 return;
+            }
+
+            // Set session data
             sessionStorage.setItem("examStudentId", id);
-            sessionStorage.setItem("examStudentCourses", JSON.stringify(data.courses || []));
+            sessionStorage.setItem("examSecurityCode", code);
+            sessionStorage.setItem("examStudentName", userData.name);
+            sessionStorage.setItem("examCourses", JSON.stringify(userData.courses || []));
+            sessionStorage.setItem("isAdmin", (auth.currentUser.email === "n1nathaniel971@gmail.com").toString());
+            
+            // Determine which paper they are writing (if they do both, default to Math for this session)
+            const examCode = (userData.courses && userData.courses.includes("Mathematics")) ? "AE-S-MATH" : "AE-W-AEW";
+            sessionStorage.setItem("examCode", examCode);
+
+            // Redirect to live session
             window.location.href = "exam-session.html";
         } else {
-            errorBox.innerText = "Invalid ID or Code.";
+            errorBox.innerText = "Invalid ID or Security Code. Please check your Student Card.";
             errorBox.style.display = 'block';
-            btn.innerText = "Enter Examination Session"; btn.disabled = false;
+            btn.innerText = "Verify & Enter Session"; btn.disabled = false;
         }
     } catch (error) {
-        errorBox.innerText = "Database error.";
+        console.error(error);
+        errorBox.innerText = "Database error. Contact the invigilator.";
         errorBox.style.display = 'block';
-        btn.innerText = "Enter Examination Session"; btn.disabled = false;
+        btn.innerText = "Verify & Enter Session"; btn.disabled = false;
     }
 };
+
+document.getElementById('studentId').addEventListener('input', (e) => e.target.value = e.target.value.replace(/\D/g, ''));
+document.getElementById('securityCode').addEventListener('input', (e) => e.target.value = e.target.value.toUpperCase());
+
+lucide.createIcons();
 </script>
 </body>
 </html>
