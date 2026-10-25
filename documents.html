@@ -78,6 +78,23 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); padding-bottom: 
         <p>Official prospectus, timetable, rules, and exam protocol.</p>
     </div>
 
+    <!-- USER SPECIFIC DOCUMENTS (Only show if logged in, using JS) -->
+    <div id="userDocs" style="display:none;">
+        <h2 class="section-title"><i data-lucide="user"></i> Your Documents</h2>
+        <div class="doc-grid">
+            <div class="doc-item" style="border-color: var(--maroon);">
+                <div class="doc-info">
+                    <div class="doc-icon"><i data-lucide="file-badge"></i></div>
+                    <div class="doc-text">
+                        <h4>Admissions Letter</h4>
+                        <p>Your official AE Entrance Slip.</p>
+                    </div>
+                </div>
+                <div class="actions"><a href="admissions-letter.html" target="_blank" class="btn-doc primary">View / Download</a></div>
+            </div>
+        </div>
+    </div>
+
     <h2 class="section-title"><i data-lucide="calendar"></i> AE Timetable 2027</h2>
     <div class="doc-grid">
         <div class="doc-item" style="border-color: var(--maroon);">
@@ -111,6 +128,20 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); padding-bottom: 
     </div>
 </div>
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        document.getElementById('userDocs').style.display = 'block';
+    }
+});
+</script>
 <script>
 const menuBtn=document.getElementById('menuBtn'),closeMenu=document.getElementById('closeMenu'),mobileMenu=document.getElementById('mobileMenu');
 menuBtn.addEventListener('click',()=>mobileMenu.classList.add('active'));
