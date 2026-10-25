@@ -3,405 +3,103 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Resources — IFB</title>
+<title>Resources — IFB</title>
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white:#FFF; --black:#111; --gray:#666; --silver:#E2E8F0; --maroon:#7A1F2B; --maroon-hover:#5A1620; --bg:#F8FAFC; --success:#15803D; --warning:#B45309; }
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--black); line-height:1.6; opacity:0; animation:fadeIn .4s ease forwards; padding-bottom:60px; }
-@keyframes fadeIn { to { opacity:1; } }
-a { text-decoration:none; color:inherit; }
-
-.header { background:var(--white); border-bottom:1px solid var(--silver); padding:0 24px; display:flex; justify-content:space-between; align-items:center; height:72px; position:sticky; top:0; z-index:100; }
-.brand { display:flex; align-items:center; gap:12px; font-weight:900; font-size:20px; color:var(--black); }
-.brand-logo { font-size:32px; color:var(--maroon); }
-.nav-right { display:flex; align-items:center; gap:10px; }
-.btn-nav { display:flex; align-items:center; gap:6px; background:transparent; border:1.5px solid var(--silver); padding:8px 16px; border-radius:8px; font-weight:600; font-size:14px; color:var(--black); transition:.2s; }
-.btn-nav:hover { border-color:var(--black); background:#FAFAFA; }
-.btn-nav.primary { background:var(--maroon); color:var(--white); border-color:var(--maroon); font-weight:700; }
-.btn-nav.primary:hover { background:var(--maroon-hover); }
-
-.container { max-width:1000px; margin:40px auto; padding:0 24px; }
-
-/* STATUS BANNER */
-.status-banner { background:var(--white); border:2px solid var(--maroon); border-radius:16px; padding:24px; margin-bottom:32px; display:flex; align-items:flex-start; gap:18px; background:linear-gradient(135deg,#FFF5F6 0%,#FFF 100%); }
-.status-avatar { width:56px; height:56px; border-radius:50%; background:var(--maroon); color:var(--white); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:900; flex-shrink:0; }
-.status-info { flex:1; min-width:0; }
-.status-info h2 { font-size:20px; font-weight:900; margin-bottom:2px; }
-.status-info p { font-size:14px; color:var(--gray); }
-.status-info .status-badge { display:inline-block; margin-top:8px; padding:4px 12px; border-radius:100px; font-size:11px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; }
-.status-info .status-badge.applicant { background:#FFF5F6; color:var(--maroon); border:1px solid var(--maroon); }
-.status-info .status-badge.enrolled { background:#F0FDF4; color:var(--success); border:1px solid var(--success); }
-
-/* NEXT STEPS */
-.next-steps { background:var(--white); border:1px solid var(--silver); border-radius:16px; padding:24px; margin-bottom:32px; }
-.next-steps h3 { font-size:15px; font-weight:900; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-.next-steps h3 i { color:var(--maroon); width:18px; height:18px; }
-.next-steps ol { list-style:none; padding:0; }
-.next-steps ol li { padding:10px 0 10px 32px; position:relative; font-size:14px; border-bottom:1px solid var(--silver); }
-.next-steps ol li:last-child { border-bottom:none; }
-.next-steps ol li::before { content:counter(step); counter-increment:step; position:absolute; left:0; top:10px; width:22px; height:22px; border-radius:50%; background:var(--maroon); color:var(--white); font-size:11px; font-weight:900; display:flex; align-items:center; justify-content:center; }
-.next-steps ol { counter-reset:step; }
-.next-steps strong { color:var(--black); }
-
-/* HOW A4 WORKS */
-.how-works { background:#FFF5F6; border:1px dashed var(--maroon); border-radius:16px; padding:24px; margin-bottom:32px; }
-.how-works h3 { font-size:15px; font-weight:900; margin-bottom:10px; display:flex; align-items:center; gap:8px; color:var(--maroon); }
-.how-works h3 i { width:18px; height:18px; }
-.how-works p { font-size:13px; color:var(--gray); line-height:1.7; margin-bottom:8px; }
-.how-works p:last-child { margin-bottom:0; }
-.how-works strong { color:var(--black); }
-
-.section-title { font-size:18px; font-weight:900; margin:32px 0 6px; display:flex; align-items:center; gap:10px; color:var(--maroon); }
-.section-title i { width:20px; height:20px; }
-.section-sub { font-size:13px; color:var(--gray); margin-bottom:16px; padding-left:30px; }
-
-.doc-grid { display:flex; flex-direction:column; gap:12px; }
-.doc-item { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; background:var(--white); border:1px solid var(--silver); border-radius:12px; gap:20px; transition:.2s; }
-.doc-item:hover { border-color:var(--maroon); box-shadow:0 4px 15px rgba(0,0,0,.03); }
-.doc-info { display:flex; align-items:center; gap:16px; flex:1; min-width:0; }
-.doc-icon { width:44px; height:44px; border-radius:10px; background:#FAFAFA; border:1px solid var(--silver); color:var(--maroon); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.doc-icon i { width:20px; height:20px; }
-.doc-text h4 { font-size:16px; font-weight:800; margin-bottom:2px; }
-.doc-text p { font-size:13px; color:var(--gray); line-height:1.5; }
-.doc-badge { display:inline-block; font-size:10px; font-weight:800; padding:2px 8px; border-radius:4px; letter-spacing:.5px; text-transform:uppercase; margin-left:6px; }
-.doc-badge.a4 { background:#FFF5F6; color:var(--maroon); border:1px solid var(--maroon); }
-.doc-badge.featured { background:var(--maroon); color:var(--white); }
-
-.actions { display:flex; gap:8px; flex-shrink:0; }
-.btn-doc { display:flex; align-items:center; gap:6px; padding:10px 16px; border-radius:8px; font-weight:700; font-size:13px; color:var(--black); background:var(--white); border:1.5px solid var(--silver); transition:.2s; cursor:pointer; font-family:inherit; }
-.btn-doc:hover { border-color:var(--black); background:#FAFAFA; }
-.btn-doc.primary { background:var(--maroon); color:var(--white); border-color:var(--maroon); }
-.btn-doc.primary:hover { background:var(--maroon-hover); }
-.btn-doc.loading { opacity:.8; cursor:wait; pointer-events:none; }
-.spin { animation:spin 1s linear infinite; }
-@keyframes spin { 100% { transform:rotate(360deg); } }
-
-#loader { position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; justify-content:center; align-items:center; transition:opacity .5s ease; }
-.loader-logo { font-size:80px; font-weight:900; color:var(--maroon); animation:pulse 1.5s infinite; }
-@keyframes pulse { 0%,100% { transform:scale(1); opacity:1; } 50% { transform:scale(.9); opacity:.7; } }
-
-.footer { text-align:center; padding:40px 24px; border-top:1px solid var(--silver); margin-top:48px; font-size:13px; color:var(--gray); }
-.footer strong { color:var(--maroon); }
-
-@media (max-width:768px) {
-    .doc-item { flex-direction:column; align-items:flex-start; }
-    .actions { width:100%; margin-top:12px; }
-    .btn-doc { flex:1; justify-content:center; }
-    .btn-nav span { display:none; }
-    .status-banner { flex-direction:column; text-align:center; align-items:center; }
-}
+:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --bg: #F8FAFC; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; overflow-x: clip; }
+.header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+.brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
+.brand-logo { font-size: 32px; color: var(--maroon); }
+.btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); }
+.container { width: 100%; max-width: 1000px; margin: 40px auto; padding: 0 24px; box-sizing: border-box; }
+.page-header { margin-bottom: 40px; }
+.page-header h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; }
+.page-header p { font-size: 16px; color: var(--gray); }
+.section-title { font-size: 18px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; border-bottom: 2px solid var(--silver); padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.doc-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+.doc-item { display: flex; justify-content: space-between; align-items: center; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; gap: 20px; }
+.doc-info h4 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+.doc-info p { font-size: 13px; color: var(--gray); }
+.actions { display: flex; gap: 10px; flex-shrink: 0; }
+.btn-doc { display: flex; align-items: center; gap: 6px; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; text-decoration: none; border: 1.5px solid var(--silver); color: var(--black); background: var(--white); cursor: pointer; }
+.btn-doc.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
+.btn-doc:hover { border-color: var(--black); }
+.btn-doc.primary:hover { background: var(--maroon-hover); }
+#loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+.loader-logo { font-size: 80px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); } }
+@media (max-width: 768px) { .doc-item { flex-direction: column; align-items: flex-start; } .actions { width: 100%; margin-top: 16px; } }
 </style>
 </head>
 <body>
-
 <div id="loader"><div class="loader-logo">∆</div></div>
 
 <header class="header">
-    <a href="index.html" class="brand"><div class="brand-logo">∆</div> Student Resources</a>
-    <div class="nav-right">
-        <a href="documents.html" class="btn-nav"><i data-lucide="file-text"></i> <span>Public Docs</span></a>
-        <a href="student-dashboard.html" class="btn-nav primary"><i data-lucide="arrow-left"></i> <span>Dashboard</span></a>
-    </div>
+    <a href="index.html" class="brand"><div class="brand-logo">∆</div> Resources</a>
+    <a href="student-dashboard.html" class="btn-back"><i data-lucide="arrow-left"></i> Dashboard</a>
 </header>
 
 <div class="container">
-    <div class="page-header" style="margin-bottom:24px;">
-        <div style="display:inline-flex;align-items:center;gap:8px;border:1px solid var(--silver);padding:8px 16px;border-radius:100px;font-size:12px;font-weight:800;text-transform:uppercase;margin-bottom:16px;background:var(--white);color:var(--maroon);letter-spacing:.5px;">
-            <i data-lucide="lock" style="width:14px;height:14px;"></i> Enrolled Students Only
-        </div>
-        <h1 style="font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:12px;">Academic Resources</h1>
-        <p style="font-size:16px;color:var(--gray);max-width:700px;margin:0 auto;">Study materials, mock papers, and templates. Only visible to signed-in applicants.</p>
+    <div class="page-header">
+        <h1>Academic Resources</h1>
+        <p>Download practice papers, view memos, and read guidelines.</p>
     </div>
 
-    <!-- STATUS BANNER (populated by JS) -->
-    <div class="status-banner" id="statusBanner" style="display:none;">
-        <div class="status-avatar" id="statusAvatar">00</div>
-        <div class="status-info">
-            <h2 id="statusName">Loading...</h2>
-            <p id="statusSubtitle">Fetching your status...</p>
-            <span class="status-badge applicant" id="statusBadge">Applicant</span>
-        </div>
-    </div>
-
-    <!-- NEXT STEPS (populated by JS) -->
-    <div class="next-steps" id="nextSteps" style="display:none;">
-        <h3><i data-lucide="target"></i> Your Next Steps</h3>
-        <ol id="nextStepsList"></ol>
-    </div>
-
-    <!-- HOW THE A4 TEMPLATES WORK -->
-    <div class="how-works">
-        <h3><i data-lucide="help-circle"></i> How these A4 templates work</h3>
-        <p><strong>Type A — Printable Templates (download &amp; print before exam):</strong> The Answer Book template and the Mock Papers are A4 documents you print at home. You write on the printed answer book during the actual exam.</p>
-        <p><strong>Type B — Live Exam Content (on screen only):</strong> The real AE question paper is <em>not</em> a downloadable file. It appears inside the Exam Session after you enter your credentials. This prevents sharing and cheating.</p>
-        <p><strong>The flow:</strong> Print answer book → practice with mock papers → on exam day, log into Exam Gateway → real paper appears on screen → write on your printed answer book → scan and upload each page.</p>
-    </div>
-
-    <!-- FEATURED: MOCK PAPERS -->
-    <h2 class="section-title"><i data-lucide="file-edit"></i> Mock Examination Papers</h2>
-    <p class="section-sub">Full-format practice papers mirroring the real AE. A4 format, print-ready.</p>
-    <div class="doc-grid" style="border:2px solid var(--maroon);border-radius:12px;padding:16px;background:#FFF5F6;">
-        <div class="doc-item" style="border-color:var(--maroon);">
-            <div class="doc-info">
-                <div class="doc-icon"><i data-lucide="calculator"></i></div>
-                <div class="doc-text">
-                    <h4>Mathematics Practice Paper <span class="doc-badge featured">Mock</span> <span class="doc-badge a4">A4</span></h4>
-                    <p>X01-MATH-2027 · Algebra, Calculus, Functions · 9 pages</p>
-                </div>
-            </div>
-            <div class="actions">
-                <a href="practice-paper-math.html" target="_blank" class="btn-doc">View</a>
-                <button onclick="downloadPDF('practice-paper-math.html', 'IFB_Math_Practice_Paper.pdf', this)" class="btn-doc primary"><i data-lucide="download"></i> PDF</button>
-            </div>
-        </div>
-        <div class="doc-item" style="border-color:var(--maroon);">
-            <div class="doc-info">
-                <div class="doc-icon"><i data-lucide="code"></i></div>
-                <div class="doc-text">
-                    <h4>Web Development Practice Paper <span class="doc-badge featured">Mock</span> <span class="doc-badge a4">A4</span></h4>
-                    <p>X01-AEW-2027 · Web aptitude, file paths, ratios · 7 pages</p>
-                </div>
-            </div>
-            <div class="actions">
-                <a href="practice-paper-web.html" target="_blank" class="btn-doc">View</a>
-                <button onclick="downloadPDF('practice-paper-web.html', 'IFB_Web_Practice_Paper.pdf', this)" class="btn-doc primary"><i data-lucide="download"></i> PDF</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ANSWER BOOKS -->
-    <h2 class="section-title"><i data-lucide="edit-3"></i> Answer Book Template</h2>
-    <p class="section-sub">Print this. You write your exam answers on it. A4, 23 pages.</p>
+    <div class="section-title"><i data-lucide="file-edit"></i> Mock Papers & Memos</div>
     <div class="doc-grid">
         <div class="doc-item">
             <div class="doc-info">
-                <div class="doc-icon"><i data-lucide="file-signature"></i></div>
-                <div class="doc-text">
-                    <h4>Standard Answer Book Template <span class="doc-badge a4">A4</span></h4>
-                    <p>23-page A4 answer book with barcode &amp; QR verification.</p>
-                </div>
+                <h4>Mathematics Mock Exam</h4>
+                <p>Practice paper covering Algebra, Calculus, and Functions.</p>
+            </div>
+            <div class="actions">
+                <a href="practice-paper-math.html" target="_blank" class="btn-doc">Question Paper</a>
+                <a href="memo-math.html" target="_blank" class="btn-doc primary">View Memo</a>
+            </div>
+        </div>
+        <div class="doc-item">
+            <div class="doc-info">
+                <h4>Web Development Mock Exam</h4>
+                <p>Practice paper covering HTML, CSS, and JS logic.</p>
+            </div>
+            <div class="actions">
+                <a href="practice-paper-web.html" target="_blank" class="btn-doc">Question Paper</a>
+                <a href="memo-web.html" target="_blank" class="btn-doc primary">View Memo</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title"><i data-lucide="edit-3"></i> Answer Books</div>
+    <div class="doc-grid">
+        <div class="doc-item">
+            <div class="doc-info">
+                <h4>Standard Answer Book Template</h4>
+                <p>Required template for writing your Entrance Exams.</p>
             </div>
             <div class="actions">
                 <a href="answer-book.html" target="_blank" class="btn-doc">View</a>
-                <button onclick="downloadPDF('answer-book.html', 'IFB_Answer_Book.pdf', this)" class="btn-doc primary"><i data-lucide="download"></i> PDF</button>
             </div>
         </div>
     </div>
-
-    <!-- GUIDELINES -->
-    <h2 class="section-title"><i data-lucide="scroll-text"></i> Subject Examination Guidelines</h2>
-    <p class="section-sub">Grading rubric and paper structure per subject.</p>
-    <div class="doc-grid">
-        <div class="doc-item">
-            <div class="doc-info">
-                <div class="doc-icon"><i data-lucide="sigma"></i></div>
-                <div class="doc-text">
-                    <h4>IFB-S Mathematics Guidelines <span class="doc-badge a4">A4</span></h4>
-                    <p>4-paper structure, 600 marks, no formula sheets, AI marking rubric.</p>
-                </div>
-            </div>
-            <div class="actions">
-                <a href="guidelines-math.html" target="_blank" class="btn-doc">View</a>
-                <button onclick="downloadPDF('guidelines-math.html', 'IFB_Math_Guidelines.pdf', this)" class="btn-doc primary"><i data-lucide="download"></i> PDF</button>
-            </div>
-        </div>
-        <div class="doc-item">
-            <div class="doc-info">
-                <div class="doc-icon"><i data-lucide="code-2"></i></div>
-                <div class="doc-text">
-                    <h4>IFB AQ-B Web Dev Guidelines <span class="doc-badge a4">A4</span></h4>
-                    <p>Continuous assessment, project rules, code standards, plagiarism.</p>
-                </div>
-            </div>
-            <div class="actions">
-                <a href="guidelines-web.html" target="_blank" class="btn-doc">View</a>
-                <button onclick="downloadPDF('guidelines-web.html', 'IFB_Web_Guidelines.pdf', this)" class="btn-doc primary"><i data-lucide="download"></i> PDF</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ATPs -->
-    <h2 class="section-title"><i data-lucide="calendar-range"></i> Annual Teaching Plans (ATP 2027)</h2>
-    <p class="section-sub">Full-year schedule per track.</p>
-    <div class="doc-grid">
-        <div class="doc-item">
-            <div class="doc-info">
-                <div class="doc-icon"><i data-lucide="book-marked"></i></div>
-                <div class="doc-text">
-                    <h4>ATP 2027: Mathematics <span class="doc-badge a4">A4</span></h4>
-                    <p>11 pillars over 40 weeks with weekly topic elaboration.</p>
-                </div>
-            </div>
-            <div class="actions">
-                <a href="atp-math.html" target="_blank" class="btn-doc">View</a>
-                <button onclick="downloadPDF('atp-math.html', 'IFB_Math_ATP_2027.pdf', this)" class="btn-doc primary"><i data-lucide="download"></i> PDF</button>
-            </div>
-        </div>
-        <div class="doc-item">
-            <div class="doc-info">
-                <div class="doc-icon"><i data-lucide="layout-panel-top"></i></div>
-                <div class="doc-text">
-                    <h4>ATP 2027: Web Development <span class="doc-badge a4">A4</span></h4>
-                    <p>Full-year module breakdown — HTML, CSS, JS, React, UI/UX, Deploy.</p>
-                </div>
-            </div>
-            <div class="actions">
-                <a href="atp-web.html" target="_blank" class="btn-doc">View</a>
-                <button onclick="downloadPDF('atp-web.html', 'IFB_Web_ATP_2027.pdf', this)" class="btn-doc primary"><i data-lucide="download"></i> PDF</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- EXAM ENTRY -->
-    <h2 class="section-title"><i data-lucide="monitor-play"></i> Ready to Sit the AE?</h2>
-    <p class="section-sub">Enter the Exam Gateway with your Student ID + Security Code.</p>
-    <div class="doc-grid">
-        <div class="doc-item" style="border:2px solid var(--maroon);background:#FFF5F6;">
-            <div class="doc-info">
-                <div class="doc-icon" style="background:var(--maroon);color:var(--white);border-color:var(--maroon);"><i data-lucide="shield"></i></div>
-                <div class="doc-text">
-                    <h4 style="color:var(--maroon);">Exam Gateway</h4>
-                    <p>Requires your 13-digit Student ID and 6-digit Security Code.</p>
-                </div>
-            </div>
-            <div class="actions">
-                <a href="exam-gateway.html" class="btn-doc primary"><i data-lucide="arrow-right"></i> Enter</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="footer">
-    The Institute of Board is an independent, <strong>non-accredited</strong> educational institution.<br>
-    Not registered with DHET or Umalusi.
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
     document.getElementById('loader').style.opacity = '0';
     setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-
-    if (!user) {
-        window.location.href = "admission.html";
-        return;
-    }
-
-    const docSnap = await getDoc(doc(db, "users", user.uid));
-    if (!docSnap.exists()) {
-        window.location.href = "admission.html";
-        return;
-    }
-
-    const data = docSnap.data();
-    const isEnrolled = (data.status === "Enrolled" || data.status === "Student");
-    const studentId = data.studentId || "00";
-
-    // Populate status banner
-    document.getElementById('statusBanner').style.display = 'flex';
-    document.getElementById('statusAvatar').innerText = studentId.slice(-2);
-    document.getElementById('statusName').innerText = data.name || "Applicant";
-    document.getElementById('statusSubtitle').innerText = isEnrolled
-        ? "You are enrolled. Final exams await."
-        : "You are a registered applicant. Sit the AE to unlock enrollment.";
-
-    const badge = document.getElementById('statusBadge');
-    badge.innerText = isEnrolled ? "Enrolled" : "Applicant";
-    badge.className = "status-badge " + (isEnrolled ? "enrolled" : "applicant");
-
-    // Populate next steps
-    document.getElementById('nextSteps').style.display = 'block';
-    const list = document.getElementById('nextStepsList');
-
-    if (isEnrolled) {
-        list.innerHTML = `
-            <li>Download the <strong>Answer Book</strong> template and print it fresh for each exam.</li>
-            <li>Review the <strong>subject guidelines</strong> for your track(s).</li>
-            <li>Practise with <strong>Mock Papers</strong> before the final assessment.</li>
-            <li>On exam day, enter the <strong>Exam Gateway</strong> with your Student ID + Security Code.</li>
-        `;
-    } else {
-        const exams = (data.courses || []).map(c => c === "Mathematics" ? "Math AE (13 Jan)" : "Web AE (18 Jan)").join(" & ");
-        list.innerHTML = `
-            <li>Download the <strong>Answer Book</strong> template and print it (A4, 23 pages).</li>
-            <li>Practise with the <strong>Mock Papers</strong> for your track(s).</li>
-            <li>Read the <strong>subject guidelines</strong> to know the mark distribution.</li>
-            <li>On exam day, visit the <strong>Exam Gateway</strong>: ${exams || "see timetable"}.</li>
-            <li>After passing, your status becomes <strong>Enrolled</strong>.</li>
-        `;
-    }
-
-    lucide.createIcons();
+    if (!user) { window.location.href = "admission.html"; }
 });
-</script>
-
-<script>
-async function downloadPDF(url, filename, btnElement) {
-    const originalHTML = btnElement.innerHTML;
-    btnElement.innerHTML = '<i data-lucide="loader" class="spin"></i> Generating...';
-    btnElement.classList.add('loading');
-    lucide.createIcons();
-
-    try {
-        const iframe = document.createElement('iframe');
-        iframe.style.position = 'absolute';
-        iframe.style.width = '210mm';
-        iframe.style.height = '297mm';
-        iframe.style.left = '-9999px';
-        iframe.src = url;
-        document.body.appendChild(iframe);
-
-        await new Promise(resolve => { iframe.onload = resolve; });
-        const iframeDoc = iframe.contentWindow.document;
-
-        await new Promise(resolve => {
-            let checks = 0;
-            const interval = setInterval(() => {
-                checks++;
-                if (iframe.contentWindow.MathJax && iframe.contentWindow.MathJax.startup) {
-                    iframe.contentWindow.MathJax.startup.promise.then(() => { clearInterval(interval); resolve(); });
-                } else if (checks > 10) { clearInterval(interval); resolve(); }
-            }, 500);
-        });
-
-        await new Promise(r => setTimeout(r, 500));
-
-        const pages = iframeDoc.querySelectorAll('.page');
-        if (pages.length === 0) throw new Error("No .page elements found.");
-
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-        for (let i = 0; i < pages.length; i++) {
-            const canvas = await html2canvas(pages[i], { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            if (i > 0) pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-        }
-
-        pdf.save(filename);
-        document.body.removeChild(iframe);
-    } catch (error) {
-        console.error('PDF Generation Error:', error);
-        alert('Error generating PDF. Try the View button and print manually.');
-    } finally {
-        btnElement.innerHTML = originalHTML;
-        btnElement.classList.remove('loading');
-        lucide.createIcons();
-    }
-}
+lucide.createIcons();
 </script>
 </body>
 </html>
