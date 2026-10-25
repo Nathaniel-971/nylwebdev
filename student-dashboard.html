@@ -10,9 +10,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root { 
-    --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; 
-    --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F1F5F9; 
-    --sidebar-bg: #1E293B; /* Dark slate for sidebar */
+    --white: #FFF; 
+    --black: #111; 
+    --gray: #64748B; 
+    --silver: #E2E8F0; 
+    --maroon: #7A1F2B; 
+    --maroon-hover: #5A1620; 
+    --bg: #F8FAFC; 
+    --sidebar-bg: #1E293B;
+    --sidebar-hover: #334155;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { 
@@ -26,25 +32,25 @@ html, body {
 .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
 /* SIDEBAR */
-.sidebar-logo { padding: 24px; font-size: 24px; font-weight: 900; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.sidebar-logo span { color: var(--maroon); font-size: 32px; }
+.sidebar-logo { padding: 24px; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.sidebar-logo span { color: var(--white); font-size: 28px; background: var(--maroon); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
 .sidebar-nav { padding: 24px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
 .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; color: #94A3B8; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; cursor: pointer; }
-.nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.05); color: var(--white); }
+.nav-item:hover, .nav-item.active { background: var(--sidebar-hover); color: var(--white); }
 .nav-item.active { border-left: 3px solid var(--maroon); }
 .nav-item i { width: 20px; height: 20px; }
-.sidebar-footer { padding: 24px 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+.sidebar-footer { padding: 24px 16px; border-top: 1px solid rgba(255,255,255,0.05); }
 .btn-logout { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; background: transparent; border: none; color: #94A3B8; font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 8px; transition: 0.2s; font-family: inherit; }
-.btn-logout:hover { background: rgba(255,255,255,0.05); color: var(--white); }
+.btn-logout:hover { background: var(--sidebar-hover); color: var(--white); }
 
 /* TOP BAR */
 .topbar { height: 72px; background: var(--white); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; flex-shrink: 0; }
-.search-bar { display: flex; align-items: center; background: #F1F5F9; border-radius: 8px; padding: 8px 16px; width: 300px; }
-.search-bar input { border: none; background: transparent; outline: none; margin-left: 8px; font-family: inherit; font-size: 14px; width: 100%; color: var(--black); }
+.search-bar { display: flex; align-items: center; background: var(--bg); border-radius: 8px; padding: 10px 16px; width: 320px; border: 1px solid var(--silver); }
+.search-bar input { border: none; background: transparent; outline: none; margin-left: 10px; font-family: inherit; font-size: 14px; width: 100%; color: var(--black); }
 .topbar-right { display: flex; align-items: center; gap: 24px; }
-.admin-toggle-btn { display: none; align-items: center; gap: 8px; background: var(--maroon); color: var(--white); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; }
+.admin-toggle-btn { display: none; align-items: center; gap: 8px; background: var(--maroon); color: var(--white); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
 .admin-toggle-btn:hover { background: var(--maroon-hover); }
-.profile-menu { display: flex; align-items: center; gap: 12px; }
+.profile-menu { display: flex; align-items: center; gap: 12px; border-left: 1px solid var(--silver); padding-left: 24px; }
 .profile-info { text-align: right; }
 .profile-info h4 { font-size: 14px; font-weight: 800; }
 .profile-info p { font-size: 12px; color: var(--gray); font-weight: 600; }
@@ -54,91 +60,95 @@ html, body {
 .dashboard-content { flex: 1; padding: 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
 .dashboard-header h1 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
 .dashboard-header p { font-size: 14px; color: var(--gray); }
-.dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; }
-.grid-span-2 { grid-column: span 2; }
-.grid-span-3 { grid-column: span 3; }
+
+/* GRID LAYOUT */
+.dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
 
 /* CARDS */
-.card { background: var(--white); border-radius: 16px; padding: 24px; border: 1px solid var(--silver); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+.card { background: var(--white); border-radius: 12px; padding: 24px; border: 1px solid var(--silver); box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .card-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-.card-title i { color: var(--maroon); }
+.card-title i { color: var(--maroon); width: 18px; height: 18px; }
 
-/* ID CARD (FLIP) */
-.id-card-container { width: 100%; max-width: 340px; height: 214px; margin: 0 auto; perspective: 1000px; cursor: pointer; user-select: none; }
+/* ID CARD SECTION */
+.id-section { display: flex; gap: 32px; flex-wrap: wrap; }
+.id-card-container { width: 320px; height: 200px; perspective: 1000px; cursor: pointer; user-select: none; flex-shrink: 0; }
 .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
 .id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
-.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
+.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
 .id-card-front { padding: 16px; text-align: left; }
 .id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 16px; align-items: center; justify-content: center; }
-.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
+
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 100px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; }
 .card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
 .card-logo { font-size: 20px; font-weight: 900; color: var(--maroon); }
 .card-type { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
-.card-name { font-size: 16px; font-weight: 900; margin-bottom: 2px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
-.card-role { font-size: 8px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; align-self: flex-start;}
-.card-id { font-family: monospace; font-size: 14px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: auto; display: flex; justify-content: space-between; align-items: center; }
-.barcode-wrap-front { background: #fff; border-radius: 4px; width: 100%; height: 45px; margin-top: 4px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 2px; }
+.card-name { font-size: 16px; font-weight: 900; margin-bottom: 2px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-role { font-size: 8px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 6px; border-radius: 4px; margin-bottom: auto; align-self: flex-start;}
+.card-id { font-family: monospace; font-size: 14px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px; }
+.barcode-wrap-front { background: #fff; border-radius: 4px; width: 100%; height: 40px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 2px; }
 .barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
+
 .card-back-text { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 4px;}
 .card-sec-code { font-family: monospace; font-size: 14px; font-weight: 900; letter-spacing: 2px; margin-top: 2px; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 6px;}
-.qr-wrap { background: #fff; padding: 4px; border-radius: 6px; margin-bottom: 4px; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; }
+.qr-wrap { background: #fff; padding: 4px; border-radius: 6px; margin-bottom: 4px; width: 70px; height: 70px; display: flex; justify-content: center; align-items: center; }
 .qr-wrap svg { width: 100%; height: 100%; display: block; }
-.flip-hint { font-size: 12px; color: var(--gray); margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center;}
 
-/* CREDENTIALS WARNING */
-.credentials-list { display: flex; flex-direction: column; gap: 12px; }
-.cred-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 8px; }
-.cred-label { font-size: 13px; font-weight: 700; color: var(--gray); }
+/* CREDENTIALS & WARNING */
+.credentials-col { flex: 1; min-width: 250px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+.cred-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 8px; }
+.cred-label { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; }
 .cred-value { font-family: monospace; font-size: 15px; font-weight: 800; color: var(--black); }
-.btn-copy { background: var(--white); border: 1.5px solid var(--silver); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; color: var(--black); }
+.btn-copy { background: var(--white); border: 1px solid var(--silver); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; color: var(--black); }
 .btn-copy:hover { border-color: var(--black); }
 .btn-copy.copied { background: #15803D; color: #FFF; border-color: #15803D; }
-.warning-banner { background: #FFF5F6; border: 2px solid var(--maroon); border-radius: 12px; padding: 16px; margin-top: 16px; display: flex; align-items: flex-start; gap: 12px; }
-.warning-banner i { color: var(--maroon); flex-shrink: 0; margin-top: 2px; }
-.warning-banner h4 { font-size: 14px; font-weight: 800; color: var(--maroon); margin-bottom: 4px; }
-.warning-banner p { font-size: 13px; color: var(--black); }
+.warning-box { background: #FFF5F6; border: 1px solid var(--maroon); border-radius: 8px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px; }
+.warning-box i { color: var(--maroon); flex-shrink: 0; margin-top: 2px; }
+.warning-box h4 { font-size: 13px; font-weight: 800; color: var(--maroon); margin-bottom: 2px; }
+.warning-box p { font-size: 12px; color: var(--black); }
 
-/* EXAM PORTAL & COURSES */
-.status-badge { padding: 6px 12px; border-radius: 100px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+/* EXAM PORTAL STATUS */
+.status-badge { padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
 .status-open { background: #DCFCE7; color: #15803D; }
 .status-closed { background: #FEE2E2; color: #B91C1C; }
-.course-list { display: flex; flex-direction: column; gap: 10px; }
-.course-item { padding: 14px 16px; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; }
-.course-item i { color: var(--maroon); }
-.btn-primary { padding: 12px 24px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+.btn-primary { padding: 12px 20px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; transition: 0.2s; }
 .btn-primary:hover { background: var(--maroon-hover); }
-.btn-outline { padding: 12px 24px; background: var(--white); color: var(--maroon); border: 1.5px solid var(--maroon); border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+.btn-outline { padding: 12px 20px; background: var(--white); color: var(--maroon); border: 1.5px solid var(--maroon); border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; transition: 0.2s; }
 .btn-outline:hover { background: #FFF5F6; }
+
+/* COURSE LIST */
+.course-list { display: flex; flex-direction: column; gap: 10px; }
+.course-item { padding: 14px 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+.course-item i { color: var(--maroon); }
 
 /* SETTINGS */
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.settings-group h4 { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
-.settings-input { width: 100%; padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; margin-bottom: 12px; font-family: inherit; outline: none; background: #FAFAFA; }
-.settings-input:focus { border-color: var(--maroon); background: #FFF; }
+.settings-group h4 { font-size: 14px; font-weight: 800; margin-bottom: 8px; }
+.settings-input { width: 100%; padding: 10px 12px; border: 1px solid var(--silver); border-radius: 6px; font-size: 14px; margin-bottom: 12px; font-family: inherit; outline: none; background: var(--white); }
+.settings-input:focus { border-color: var(--maroon); }
 
 /* ADMIN PANEL */
 .admin-panel { display: none; border: 2px solid #111; background: #111; color: #fff; }
 .admin-panel .card-title { color: #fff; }
 .admin-panel .card-title i { color: #fff; }
-.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+.switch { position: relative; display: inline-block; width: 50px; height: 28px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-.slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+.slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
 input:checked + .slider { background-color: var(--maroon); }
-input:checked + .slider:before { transform: translateX(26px); }
-.admin-btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; cursor: pointer; }
+input:checked + .slider:before { transform: translateX(22px); }
+.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: rgba(255,255,255,0.1); color: #FFF; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
 .admin-btn:hover { background: rgba(255,255,255,0.2); }
 
-/* MODAL FOR COURSES */
+/* MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
 .modal-overlay.active { display: flex; }
-.modal-content { background: var(--white); border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.1); }
+.modal-content { background: var(--white); border-radius: 12px; padding: 32px; max-width: 440px; width: 100%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.1); }
 .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
 .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
 .modal-subtitle { font-size: 14px; color: var(--gray); margin-bottom: 24px; }
-.course-option { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1.5px solid var(--silver); border-radius: 10px; margin-bottom: 12px; cursor: pointer; background: #FAFAFA; transition: 0.2s;}
+.course-option { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--silver); border-radius: 8px; margin-bottom: 12px; cursor: pointer; background: var(--bg); transition: 0.2s;}
 .course-option:hover { border-color: var(--maroon); }
 .course-option.selected { border-color: var(--maroon); background: #FFF5F6; }
 .course-option input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; }
@@ -147,26 +157,25 @@ input:checked + .slider:before { transform: translateX(26px); }
 /* UTILS */
 .hidden { display: none !important; }
 .loader-box { text-align: center; padding: 40px; }
-.spinner { width: 40px; height: 40px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+.spinner { width: 40px; height: 40px; border: 3px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* RESPONSIVE */
 @media (max-width: 1024px) {
-    .dashboard-grid { grid-template-columns: 1fr 1fr; }
-    .grid-span-2 { grid-column: span 2; }
-    .grid-span-3 { grid-column: span 2; }
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .id-section { flex-direction: column; align-items: center; }
+    .credentials-col { width: 100%; }
 }
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
     .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-between; padding: 12px; }
     .sidebar-nav { flex-direction: row; padding: 0; gap: 4px; }
     .sidebar-footer { padding: 0; border-top: none; }
-    .dashboard-grid { grid-template-columns: 1fr; }
-    .grid-span-2, .grid-span-3 { grid-column: span 1; }
     .topbar { padding: 0 16px; }
     .search-bar { display: none; }
     .dashboard-content { padding: 16px; }
-    .settings-grid, .admin-btn-grid { grid-template-columns: 1fr; }
+    .settings-grid { grid-template-columns: 1fr; }
+    .id-card-container { max-width: 100%; }
 }
 </style>
 </head>
@@ -176,12 +185,12 @@ input:checked + .slider:before { transform: translateX(26px); }
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <span>∆</span> IFB
+            <span>∆</span> IFB Portal
         </div>
         <nav class="sidebar-nav">
             <a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
             <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
-            <a href="#" class="nav-item" onclick="alert('Exam Portal access is controlled by the administrator. Check the dashboard for status.')"><i data-lucide="monitor-play"></i> Exam Portal</a>
+            <a href="#" class="nav-item" onclick="document.getElementById('examGatewayLink').click()"><i data-lucide="monitor-play"></i> Exam Portal</a>
             <a href="#settings" class="nav-item"><i data-lucide="settings"></i> Settings</a>
         </nav>
         <div class="sidebar-footer">
@@ -195,12 +204,12 @@ input:checked + .slider:before { transform: translateX(26px); }
         <header class="topbar">
             <div class="search-bar">
                 <i data-lucide="search" style="width:18px;height:18px;color:var(--gray);"></i>
-                <input type="text" placeholder="Search courses, files...">
+                <input type="text" placeholder="Search...">
             </div>
             
             <div class="topbar-right">
                 <button class="admin-toggle-btn" id="adminToggleBtn" onclick="toggleAdminView()">
-                    <i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Switch to Admin View
+                    <i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Admin View
                 </button>
                 <div class="profile-menu">
                     <div class="profile-info">
@@ -219,40 +228,29 @@ input:checked + .slider:before { transform: translateX(26px); }
                 <p>Welcome back. Here is your academic overview.</p>
             </div>
 
-            <!-- ADMIN ALERT (Hidden by default) -->
-            <div class="warning-banner" id="adminAlert" style="display:none; background:#1E293B; border-color:#1E293B; color:#fff;">
-                <i data-lucide="shield-check" style="color:#fff;"></i>
-                <div>
-                    <h4 style="color:#fff;">Admin Mode Active</h4>
-                    <p style="color:#cbd5e1;">You are viewing this dashboard as an administrator. You have full control over the exam portal.</p>
-                </div>
-            </div>
-
             <div class="dashboard-grid">
                 
-                <!-- COLUMN 1: ID CARD & CREDENTIALS -->
-                <div class="card grid-span-2">
+                <!-- LEFT COLUMN: ID & CREDENTIALS -->
+                <div class="card">
                     <div class="card-header">
-                        <div class="card-title"><i data-lucide="credit-card"></i> Student Identification</div>
+                        <div class="card-title"><i data-lucide="credit-card"></i> Student Profile</div>
                     </div>
                     
-                    <div style="display:flex; flex-wrap:wrap; gap:32px;">
+                    <div class="id-section">
                         <!-- Flip Card -->
-                        <div style="flex:1; min-width:280px;">
+                        <div>
                             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                                 <div class="id-card-inner">
                                     <div class="id-card-front">
                                         <div class="watermark">∆</div>
                                         <div class="card-content">
-                                            <div class="card-header" style="border:none; margin:0 0 8px 0; padding:0;">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                                                 <div class="card-logo">∆ IFB</div>
                                                 <div class="card-type">Student ID</div>
                                             </div>
                                             <div class="card-name" id="userName">Loading...</div>
                                             <div class="card-role" id="userStatus">Applicant</div>
-                                            <div class="card-id">
-                                                <span id="userStudentId">---</span>
-                                            </div>
+                                            <div class="card-id" id="userStudentId">---</div>
                                             <div class="barcode-wrap-front"><svg id="barcodeSvg"></svg></div>
                                         </div>
                                     </div>
@@ -270,71 +268,81 @@ input:checked + .slider:before { transform: translateX(26px); }
                                     </div>
                                 </div>
                             </div>
-                            <div class="flip-hint"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap to flip</div>
+                            <div style="font-size: 12px; color: var(--gray); margin-top: 8px; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Tap to flip</div>
                         </div>
 
-                        <!-- Credentials & Warning -->
-                        <div style="flex:1; min-width:280px; display:flex; flex-direction:column; justify-content:center;">
-                            <div class="credentials-list">
-                                <div class="cred-row">
-                                    <div>
-                                        <div class="cred-label">Student ID</div>
-                                        <div class="cred-value" id="credStudentId">---</div>
-                                    </div>
-                                    <button class="btn-copy" onclick="copyToClipboard('credStudentId', this)">
-                                        <i data-lucide="copy" style="width:14px;height:14px;"></i> Copy
-                                    </button>
+                        <!-- Credentials -->
+                        <div class="credentials-col">
+                            <div class="cred-row">
+                                <div>
+                                    <div class="cred-label">Student ID</div>
+                                    <div class="cred-value" id="credStudentId">---</div>
                                 </div>
-                                <div class="cred-row">
-                                    <div>
-                                        <div class="cred-label">Security Code</div>
-                                        <div class="cred-value" id="credSecCode">---</div>
-                                    </div>
-                                    <button class="btn-copy" onclick="copyToClipboard('credSecCode', this)">
-                                        <i data-lucide="copy" style="width:14px;height:14px;"></i> Copy
-                                    </button>
+                                <button class="btn-copy" onclick="copyToClipboard('credStudentId', this)">
+                                    <i data-lucide="copy" style="width:14px;height:14px;"></i>
+                                </button>
+                            </div>
+                            <div class="cred-row">
+                                <div>
+                                    <div class="cred-label">Security Code</div>
+                                    <div class="cred-value" id="credSecCode">---</div>
                                 </div>
+                                <button class="btn-copy" onclick="copyToClipboard('credSecCode', this)">
+                                    <i data-lucide="copy" style="width:14px;height:14px;"></i>
+                                </button>
                             </div>
 
-                            <div class="warning-banner">
-                                <i data-lucide="alert-triangle" style="width:20px;height:20px;"></i>
+                            <div class="warning-box">
+                                <i data-lucide="alert-triangle" style="width:18px;height:18px;"></i>
                                 <div>
                                     <h4>SAVE THESE CREDENTIALS</h4>
-                                    <p>You will need your Student ID and Security Code to enter the Exam Portal. Take a screenshot or copy them now.</p>
+                                    <p>You need these to access the exam portal.</p>
                                 </div>
                             </div>
-                            <a href="admissions-letter.html" target="_blank" class="btn-primary" style="margin-top:16px; text-decoration:none; width:100%;">
-                                <i data-lucide="file-text"></i> View Admissions Letter
-                            </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- COLUMN 2: EXAM PORTAL STATUS -->
+                <!-- RIGHT COLUMN: EXAM STATUS -->
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title"><i data-lucide="monitor-play"></i> Exam Portal</div>
-                        <span class="status-badge" id="examStatusBadge">Loading...</span>
+                        <span class="status-badge" id="examStatusBadge">---</span>
                     </div>
-                    <p style="font-size:14px; color:var(--gray); margin-bottom:20px;" id="examStatusText">Checking portal status...</p>
-                    <a href="#" id="examGatewayLink" class="btn-primary" style="width:100%; text-decoration:none;">
-                        Enter Exam Portal
+                    <p style="font-size:13px; color:var(--gray); margin-bottom:16px;" id="examStatusText">Checking status...</p>
+                    <a href="#" id="examGatewayLink" class="btn-primary" style="width:100%;">
+                        Enter Portal
+                    </a>
+                    <a href="admissions-letter.html" target="_blank" class="btn-outline" style="width:100%; margin-top:12px;">
+                        <i data-lucide="file-text"></i> Admissions Letter
                     </a>
                 </div>
 
-                <!-- COLUMN 3: COURSES -->
-                <div class="card grid-span-3" id="coursesCard">
+                <!-- LEFT COLUMN: COURSES -->
+                <div class="card">
                     <div class="card-header">
                         <div class="card-title"><i data-lucide="book-open"></i> My Courses</div>
-                        <button class="btn-outline" onclick="openCourseModal()"><i data-lucide="edit"></i> Edit</button>
+                        <button class="btn-copy" onclick="openCourseModal()"><i data-lucide="edit" style="width:14px;height:14px;"></i> Edit</button>
                     </div>
                     <div class="course-list" id="courseDisplayList">
                         <!-- Populated by JS -->
                     </div>
                 </div>
 
-                <!-- SETTINGS & PROFILE -->
-                <div class="card grid-span-3" id="settings">
+                <!-- RIGHT COLUMN: ALERTS / QUICK LINKS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i data-lucide="bell"></i> Important</div>
+                    </div>
+                    <div style="font-size: 13px; color: var(--gray); line-height: 1.6;">
+                        <p style="margin-bottom: 8px;"><strong>AE 2027:</strong> Math on 13 Jan, Web on 18 Jan.</p>
+                        <p style="margin-bottom: 8px;"><strong>Pass Mark:</strong> 60% required to unlock enrollment.</p>
+                        <p><strong>Support:</strong> <a href="mailto:n1nathaniel971@gmail.com" style="color:var(--maroon); font-weight:700;">Email Admin</a></p>
+                    </div>
+                </div>
+
+                <!-- FULL WIDTH: SETTINGS -->
+                <div class="card" id="settings" style="grid-column: 1 / -1;">
                     <div class="card-header">
                         <div class="card-title"><i data-lucide="settings"></i> Settings & Profile</div>
                     </div>
@@ -342,18 +350,13 @@ input:checked + .slider:before { transform: translateX(26px); }
                     <div class="settings-grid">
                         <div class="settings-group">
                             <h4>Profile Information</h4>
-                            <p style="font-size:13px; color:var(--gray); margin-bottom:12px;">Update your contact details.</p>
                             <input type="text" id="settingName" class="settings-input" placeholder="Full Name">
                             <input type="tel" id="settingPhone" class="settings-input" placeholder="Phone Number">
                             <button class="btn-primary" onclick="updateProfile()" style="width:100%;">Update Profile</button>
                         </div>
 
                         <div class="settings-group">
-                            <h4>Account & Support</h4>
-                            <p style="font-size:13px; color:var(--gray); margin-bottom:12px;">Need help? Contact us or manage your account.</p>
-                            <a href="mailto:n1nathaniel971@gmail.com?subject=IFB%20Support%20Request" class="btn-outline" style="width:100%; margin-bottom:12px; text-decoration:none;">
-                                <i data-lucide="mail"></i> Email Support
-                            </a>
+                            <h4>Account Management</h4>
                             <button class="btn-outline" onclick="deregister()" style="width:100%; color:#B91C1C; border-color:#FECACA;">
                                 <i data-lucide="trash-2"></i> Revoke Application
                             </button>
@@ -364,7 +367,7 @@ input:checked + .slider:before { transform: translateX(26px); }
             </div>
         </main>
 
-        <!-- ADMIN DASHBOARD (Hidden by default) -->
+        <!-- ADMIN DASHBOARD -->
         <main class="dashboard-content hidden" id="adminDashboard">
             <div class="dashboard-header">
                 <h1>Admin Control Center</h1>
@@ -372,12 +375,11 @@ input:checked + .slider:before { transform: translateX(26px); }
             </div>
 
             <div class="dashboard-grid">
-                <!-- ADMIN CARD 1: PORTAL CONTROL -->
-                <div class="card grid-span-2 admin-panel" style="display:block;">
+                <div class="card admin-panel" style="grid-column: 1 / -1;">
                     <div class="card-header">
                         <div class="card-title"><i data-lucide="settings"></i> Exam Portal Access</div>
                     </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 24px;">
                         <div>
                             <div style="font-size:16px; font-weight:700;">Global Portal Status</div>
                             <div style="font-size:13px; color:#aaa;" id="adminPortalStatusText">Checking...</div>
@@ -387,14 +389,8 @@ input:checked + .slider:before { transform: translateX(26px); }
                             <span class="slider"></span>
                         </label>
                     </div>
-                </div>
 
-                <!-- ADMIN CARD 2: QUICK LINKS -->
-                <div class="card admin-panel" style="display:block;">
-                    <div class="card-header">
-                        <div class="card-title"><i data-lucide="link"></i> Admin Resources</div>
-                    </div>
-                    <div class="admin-btn-grid">
+                    <div class="admin-grid">
                         <a href="admissions-list-2027.html" target="_blank" class="admin-btn">
                             <i data-lucide="users"></i> Admissions List
                         </a>
@@ -466,7 +462,7 @@ onAuthStateChanged(auth, async (user) => {
         let data = docSnap.data();
         currentUserData = data;
 
-        // 1. Generate IDs if missing
+        // Generate IDs if missing
         if (!data.studentId) {
             const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
             const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
@@ -481,7 +477,7 @@ onAuthStateChanged(auth, async (user) => {
             currentUserData = data;
         }
 
-        // 2. Populate UI
+        // Populate UI
         document.getElementById('topbarName').textContent = data.name;
         document.getElementById('topbarRole').textContent = isAdmin ? "Administrator" : "Student";
         document.getElementById('topbarAvatar').textContent = data.name.charAt(0).toUpperCase();
@@ -497,7 +493,7 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('settingName').value = data.name || "";
         document.getElementById('settingPhone').value = data.phone || "";
 
-        // 3. Generate Barcode and QR
+        // Generate Barcode and QR
         setTimeout(() => {
             try {
                 JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0, lineColor: "#000000" });
@@ -511,19 +507,18 @@ onAuthStateChanged(auth, async (user) => {
             } catch (e) { console.warn(e); }
         }, 100);
 
-        // 4. Render Courses
+        // Render Courses
         renderCoursesDisplay(data.courses || []);
 
-        // 5. Check Exam Config
+        // Check Exam Config
         const configSnap = await getDoc(doc(db, "config", "exam"));
         if (configSnap.exists()) {
             isPortalOpen = configSnap.data().isOpen || false;
         }
 
-        // 6. Admin Setup
+        // Admin Setup
         if (isAdmin) {
             document.getElementById('adminToggleBtn').style.display = 'flex';
-            document.getElementById('adminAlert').style.display = 'flex';
             document.getElementById('portalMasterSwitch').checked = isPortalOpen;
             updatePortalStatusText();
             
@@ -531,7 +526,7 @@ onAuthStateChanged(auth, async (user) => {
             showAdminView = true;
             document.getElementById('adminDashboard').classList.remove('hidden');
             document.getElementById('studentDashboard').classList.add('hidden');
-            document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Switch to Student View';
+            document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Student View';
         }
         
         updateExamPortalUI();
@@ -545,11 +540,11 @@ window.toggleAdminView = function() {
     if (showAdminView) {
         document.getElementById('adminDashboard').classList.remove('hidden');
         document.getElementById('studentDashboard').classList.add('hidden');
-        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Switch to Student View';
+        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Student View';
     } else {
         document.getElementById('adminDashboard').classList.add('hidden');
         document.getElementById('studentDashboard').classList.remove('hidden');
-        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Switch to Admin View';
+        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Admin View';
     }
     lucide.createIcons();
 };
