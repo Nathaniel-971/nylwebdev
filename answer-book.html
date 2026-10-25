@@ -26,44 +26,33 @@
     line-height: 1.6; 
     color: #000; 
     background: #F8FAFC; 
-    padding-top: 60px; /* Space for action bar */
+    padding-top: 60px; /* Space for the top bar */
   }
   
-  /* ACTION BAR */
-  .action-bar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    background: #fff;
-    border-bottom: 1px solid #E2E8F0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    z-index: 9999;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    font-family: 'Inter', sans-serif;
+  /* FLOATING CONTROL BAR (HIDES ON PRINT) */
+  .control-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px;
+    background: #FFF; border-bottom: 2px solid #7A1F2B;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 24px; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
-  .btn-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 14px;
-    text-decoration: none;
-    border: 1.5px solid #E2E8F0;
-    color: #111;
-    background: #fff;
-    cursor: pointer;
+  .control-bar .brand { font-size: 20px; font-weight: 900; color: #7A1F2B; display: flex; align-items: center; gap: 8px; }
+  .control-actions { display: flex; gap: 12px; }
+  .btn-nav {
+    padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 14px;
+    text-decoration: none; cursor: pointer; border: 1.5px solid #E2E8F0;
+    color: #111; background: #FFF; transition: 0.2s;
   }
-  .btn-action:hover { background: #FAFAFA; border-color: #111; }
-  .btn-action.primary { background: #7A1F2B; color: #fff; border-color: #7A1F2B; }
-  .btn-action.primary:hover { background: #5A1620; }
-  .btn-action.admin-only { background: #111; color: #fff; border-color: #111; display: none; }
-  .btn-action.admin-only:hover { background: #333; }
-  @media print { .action-bar { display: none; } body { padding-top: 0; } }
-
+  .btn-nav:hover { border-color: #111; }
+  .btn-nav.primary { background: #7A1F2B; color: #FFF; border-color: #7A1F2B; }
+  .btn-nav.primary:hover { background: #5A1620; }
+  
+  @media print { 
+    body { background: white; padding-top: 0; } 
+    .page { margin: 0; box-shadow: none; } 
+    .control-bar { display: none !important; }
+  }
+  
   /* A4 PAGE SETUP */
   .page { 
     width: 210mm; 
@@ -77,11 +66,6 @@
     display: flex; 
     flex-direction: column; 
     page-break-after: always; 
-  }
-  
-  @media print { 
-    body { background: white; } 
-    .page { margin: 0; box-shadow: none; } 
   }
   
   /* SECURITY PATTERN */
@@ -202,21 +186,12 @@
     align-items: center;
     text-align: right;
     background-color: #FFF5F6;
-    position: relative;
   }
   .candidate-barcode-box .label {
     font-size: 10pt;
     font-weight: bold;
     text-align: center;
     color: #7A1F2B;
-    z-index: 2;
-  }
-  #coverBarcode {
-    position: absolute;
-    bottom: 5px;
-    width: 90%;
-    height: 40px;
-    z-index: 1;
   }
   
   .sequence-circle-container {
@@ -235,7 +210,6 @@
     justify-content: center;
     font-weight: bold;
     font-size: 14pt;
-    z-index: 2;
   }
   .sequence-text {
     font-size: 9pt;
@@ -287,9 +261,9 @@
     display: flex;
     gap: 0;
   }
-  .block-input {
-    width: 25px;
-    height: 30px;
+  .block {
+    width: 22px;
+    height: 25px;
     border: 1.5px solid #000;
     border-right: none;
     background-color: transparent;
@@ -297,22 +271,20 @@
     font-family: monospace;
     font-size: 14pt;
     font-weight: bold;
-    padding: 0;
     outline: none;
+    padding: 0;
+    text-transform: uppercase;
   }
-  .block-input:last-child {
+  .block:last-child {
     border-right: 1.5px solid #000;
   }
-  .block-input:focus {
+  .block:focus {
     background-color: #FFF5F6;
-    border-color: #7A1F2B;
-    position: relative;
-    z-index: 10;
   }
   
   .input-line {
     border-bottom: 1.5px solid #000;
-    height: 30px;
+    height: 25px;
     width: 100%;
     display: flex;
     align-items: flex-end;
@@ -320,12 +292,16 @@
     padding-bottom: 2px;
     font-weight: bold;
     font-size: 12pt;
-    border: none;
-    border-bottom: 1.5px solid #000;
+    background: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
     outline: none;
     font-family: inherit;
   }
-  .input-line:focus { background-color: #FFF5F6; }
+  .input-line:focus {
+    background-color: #FFF5F6;
+  }
 
   /* Marking Grid Table */
   .marking-table {
@@ -402,7 +378,6 @@
     flex: 1;
     border-right: 1.5px solid #000;
     background-color: #FFF;
-    /* Restored bold horizontal lines */
     background-image: repeating-linear-gradient(to bottom, transparent, transparent 34px, #000 34px, #000 36px);
     background-position: 0 1px;
   }
@@ -431,16 +406,15 @@
 </head>
 <body>
 
-<!-- FLOATING ACTION BAR -->
-<div class="action-bar">
-    <a href="student-dashboard.html" class="btn-action"><i data-lucide="arrow-left"></i> Dashboard</a>
-    <div style="display:flex; gap:10px;">
-        <button class="btn-action admin-only" id="adminSetupBtn" onclick="openAdminSetup()">Admin: Setup Exam</button>
-        <a href="exam-gateway.html" class="btn-action primary">Open Exam Portal</a>
-    </div>
+<!-- NAVIGATION / CONTROL BAR (Auto-detects mode) -->
+<div class="control-bar" id="controlBar">
+  <div class="brand"><span>∆</span> Answer Book</div>
+  <div class="control-actions" id="navActions">
+    <!-- JavaScript injects buttons here based on context -->
+  </div>
 </div>
 
-<!-- ==================== PAGE 1: COVER PAGE (Auto-fills & Editable) ==================== -->
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -467,8 +441,8 @@
       
       <div class="top-right-container">
         <div class="candidate-barcode-box">
-          <div class="label">Candidate Barcode Label<br>(Auto-Generated)</div>
-          <svg id="coverBarcode"></svg>
+          <div class="label">Candidate Barcode Label</div>
+          <svg id="coverBarcode" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
         </div>
         <div class="sequence-circle-container">
           <div class="sequence-circle" id="coverSequence"></div>
@@ -482,18 +456,18 @@
       IFB Answer Book
     </div>
 
-    <!-- Form Fields (Editable Block Inputs) -->
+    <!-- Form Fields (Block Inputs) -->
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
-        <label>Student ID (13 Digits)</label>
-        <div class="block-container" id="studentIdBlocks">
-          <!-- 13 block inputs generated by JS -->
+        <label>Student ID</label>
+        <div class="block-container" id="idBlocks">
+          <!-- 13 blocks generated by JS -->
         </div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Security Code</label>
-        <div class="block-container" id="securityCodeBlocks">
-          <!-- 6 block inputs generated by JS -->
+        <div class="block-container" id="secBlocks">
+          <!-- 6 blocks generated by JS -->
         </div>
       </div>
     </div>
@@ -501,40 +475,59 @@
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Date</label>
-        <input type="date" class="input-line" id="valDate" style="border-bottom: 1.5px solid #000; background: transparent;">
+        <div class="block-container" id="dateBlocks">
+          <!-- 8 blocks -->
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+          <span class="block" style="border:none; width:10px; display:flex; align-items:center; justify-content:center;">/</span>
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+          <span class="block" style="border:none; width:10px; display:flex; align-items:center; justify-content:center;">/</span>
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+        </div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Book Number</label>
-        <input type="text" class="input-line" id="valBookNum" style="border-bottom: 1.5px solid #000; text-align: center;">
+        <input type="text" class="input-line" id="valBookNum">
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Of</label>
-        <input type="text" class="input-line" id="valTotalBooks" value="12" style="border-bottom: 1.5px solid #000; text-align: center;">
+        <input type="text" class="input-line" id="valTotalBooks">
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 2;">
         <label>Subject Code</label>
-        <input type="text" class="input-line" id="valSubjectCode" style="border-bottom: 1.5px solid #000;">
+        <div class="block-container" id="subjCodeBlocks">
+          <!-- 5 blocks -->
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+          <input type="text" class="block" maxlength="1">
+        </div>
       </div>
       <div class="form-box" style="flex: 1;">
         <label>Paper Number</label>
-        <input type="text" class="input-line" id="valPaperNum" value="1" style="border-bottom: 1.5px solid #000; text-align: center;">
+        <input type="text" class="input-line" id="valPaperNum" style="text-align: center;">
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-box" style="flex: 1;">
         <label>Subject Name</label>
-        <input type="text" class="input-line" id="valSubjectName" style="border-bottom: 1.5px solid #000;">
+        <input type="text" class="input-line" id="valSubjectName">
       </div>
     </div>
 
     <div class="form-row" style="margin-bottom: 15px;">
       <div class="form-box" style="flex: 1;">
         <label>Curriculum:</label>
-        <input type="text" class="input-line" id="valCurriculum" style="border-bottom: 1.5px solid #000;">
+        <input type="text" class="input-line" id="valCurriculum">
       </div>
     </div>
 
@@ -617,14 +610,14 @@
     </div>
 
     <ol class="instructions-list">
-      <li><strong>Verify your details:</strong> Your Student ID, Security Code, and Exam details are auto-filled on the cover page. Please verify them.</li>
-      <li><strong>Correction:</strong> If any information is incorrect, you may edit the text fields on the cover page to correct them before scanning.</li>
-      <li>This is a digital answer book. Do not attempt to tear pages. You will scan and upload each page individually.</li>
-      <li>Answer ALL questions in the spaces provided on the following pages.</li>
-      <li>Write clearly using a black pen. <strong>The system requires you to scan the same page twice to ensure legibility.</strong></li>
-      <li>Rule off through any rough work that must not be marked.</li>
-      <li>You must upload your scanned pages via the Exam Portal before the session ends.</li>
-      <li><strong>System Check:</strong> Ensure your camera is focused and lighting is adequate before scanning. If the auto-fill fails to populate your ID, you MUST manually type it in before submitting your script. Before uploading verify your answers are correctly translated by the AI. You are asked to scan the page twice for the AI so verify your text to be filled on the answer space.</li>
+      <li>This is a digital answer book. Do not attempt to tear pages. You will scan and upload each page individually via the Exam Portal.</li>
+      <li>Your Student ID, Security Code, and Subject details are auto-filled on the cover page. Please verify them. If incorrect, you may type in the correct information.</li>
+      <li>Answer ALL questions in the blank writing areas provided on the following pages.</li>
+      <li>Write clearly using a black pen. We recommend black ink for optimal scanner recognition.</li>
+      <li>Rule off through any work/rough work that must not be marked.</li>
+      <li>You must upload your scanned pages before the session ends.</li>
+      <li>The Exam Portal requires you to scan the same page twice to ensure AI accuracy.</li>
+      <li>Before uploading, verify your answers are correctly translated by the AI. You are asked to scan the page twice for the AI so verify your text to be filled on the answer space.</li>
     </ol>
     
   </div>
@@ -692,59 +685,33 @@
   }
 </script>
 
-<!-- ADMIN SETUP MODAL (Hidden by default) -->
-<div id="adminModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:99999; justify-content:center; align-items:center;">
-    <div style="background:#fff; padding:40px; border-radius:16px; max-width:500px; width:90%;">
-        <h2 style="font-size:24px; font-weight:900; margin-bottom:16px;">Admin Exam Setup</h2>
-        <p style="color:#666; margin-bottom:24px;">Upload the question paper and set the exam parameters.</p>
-        <input type="file" style="margin-bottom:16px; display:block;">
-        <label style="display:block; font-weight:bold; margin-bottom:8px;">Exam Date</label>
-        <input type="date" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; margin-bottom:24px;">
-        <div style="display:flex; gap:10px;">
-            <button onclick="document.getElementById('adminModal').style.display='none'" style="flex:1; padding:12px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer;">Cancel</button>
-            <button onclick="alert('Paper Uploaded & Exam Setup Complete!'); document.getElementById('adminModal').style.display='none';" style="flex:1; padding:12px; border-radius:6px; border:none; background:#7A1F2B; color:#fff; font-weight:bold; cursor:pointer;">Publish Exam</button>
-        </div>
-    </div>
-</div>
-
-<script src="https://unpkg.com/lucide@latest"></script>
 <script>
-// Generate Block Inputs dynamically
-function createBlockInputs(containerId, count) {
+(function () {
+  // Generate Block Inputs dynamically
+  function createBlocks(containerId, count, maxLength = 1) {
     const container = document.getElementById(containerId);
-    container.innerHTML = "";
+    if (!container) return;
     for (let i = 0; i < count; i++) {
-        const input = document.createElement("input");
-        input.type = "text";
-        input.className = "block-input";
-        input.maxLength = 1;
-        input.id = `${containerId}_${i}`;
-        
-        // Auto-tabindex
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'block';
+        input.maxLength = maxLength;
+        // Handle auto-advance on type
         input.addEventListener('input', function() {
             if (this.value.length === this.maxLength) {
                 let next = this.nextElementSibling;
-                if (next) next.focus();
+                if (next && next.tagName === 'INPUT') next.focus();
             }
         });
-        
         container.appendChild(input);
     }
-}
+  }
+  
+  // Create blocks for ID (13), Security (6), Subject Code (5)
+  createBlocks('idBlocks', 13);
+  createBlocks('secBlocks', 6);
+  createBlocks('subjCodeBlocks', 5);
 
-createBlockInputs('studentIdBlocks', 13);
-createBlockInputs('securityCodeBlocks', 6);
-
-// Function to fill blocks with a string
-function fillBlocks(containerId, text) {
-    for (let i = 0; i < text.length; i++) {
-        const input = document.getElementById(`${containerId}_${i}`);
-        if (input) input.value = text[i];
-    }
-}
-
-// Barcode & QR generation
-(function () {
   function makeBarcodes() {
     if (typeof JsBarcode !== "function") return;
     document.querySelectorAll(".barcode-footer").forEach(function (el) {
@@ -791,45 +758,79 @@ function fillBlocks(containerId, text) {
   });
 })();
 
-// EXAM PORTAL AUTO-FILL LOGIC & ADMIN CHECK
+// AUTO-FILL & CONTROL BAR LOGIC
 document.addEventListener("DOMContentLoaded", () => {
-    const studentId = sessionStorage.getItem("examStudentId") || "";
-    const secCode = sessionStorage.getItem("examSecurityCode") || "";
-    const examCode = sessionStorage.getItem("examCode") || "";
-    const packSeq = sessionStorage.getItem("examPackSeq") || ""; 
+    const studentId = sessionStorage.getItem("examStudentId");
+    const secCode = sessionStorage.getItem("examSecurityCode");
+    const examCode = sessionStorage.getItem("examCode") || "AE-S-MATH";
+    const packSeq = sessionStorage.getItem("examPackSeq") || "01";
+    const isAdmin = sessionStorage.getItem("isAdmin") === "true";
+    const navActions = document.getElementById('navActions');
 
-    // If in Exam Portal, auto-fill
+    // Populate Blocks Function
+    function fillBlocks(containerId, text) {
+        if (!text) return;
+        const inputs = document.querySelectorAll(`#${containerId} input`);
+        for (let i = 0; i < text.length && i < inputs.length; i++) {
+            inputs[i].value = text[i].toUpperCase();
+        }
+    }
+
     if (studentId) {
-        fillBlocks('studentIdBlocks', studentId);
-        fillBlocks('securityCodeBlocks', secCode);
-        
+        // EXAM MODE ACTIVE
         document.getElementById('coverSequence').innerText = packSeq;
-        document.getElementById('valSubjectCode').value = examCode;
         
-        // Simulate date
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('valDate').value = today;
+        // Auto fill block inputs
+        fillBlocks('idBlocks', studentId);
+        fillBlocks('secBlocks', secCode || "______");
+        fillBlocks('subjCodeBlocks', examCode.replace(/-/g, ''));
 
+        // Fill text inputs
+        document.getElementById('valBookNum').value = "1";
+        document.getElementById('valTotalBooks').value = "12";
+        document.getElementById('valPaperNum').value = "1";
+        document.getElementById('valSubjectName').value = examCode.includes("MATH") ? "Mathematics" : "Web Development";
+        document.getElementById('valCurriculum').value = examCode.includes("MATH") ? "IFB-S" : "IFB AQ-B";
+
+        // Set Date (Today)
+        const today = new Date().toISOString().split('T')[0].split('-');
+        const dateInputs = document.querySelectorAll('#dateBlocks input');
+        // YYYY / MM / DD
+        const dateStr = `${today[2]}${today[1]}${today[0]}`; // DDMMYYYY format for the blocks
+        for (let i = 0; i < dateStr.length && i < dateInputs.length; i++) {
+            // Skip the slash spans
+            dateInputs[i].value = dateStr[i];
+        }
+
+        // Generate Barcode
         try {
             JsBarcode("#coverBarcode", `${studentId}-${secCode}`, {
                 format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0
             });
         } catch (e) { console.warn(e); }
+
+        // Setup Control Bar for Exam Mode
+        navActions.innerHTML = `
+            <a href="exam-session.html" class="btn-nav">Back to Portal</a>
+            <button class="btn-nav primary" onclick="window.print()">Print / Save PDF</button>
+        `;
+
+    } else {
+        // DOWNLOAD / BLANK MODE
+        // Leave blocks empty, leave inputs empty, hide control bar buttons except back
+        navActions.innerHTML = `
+            <a href="resources.html" class="btn-nav">Back to Resources</a>
+        `;
     }
 
-    // Admin Check
-    // Simulating admin login for the prototype. In production, use Firebase Auth state.
-    const isAdmin = localStorage.getItem("isAdmin") === "true" || sessionStorage.getItem("isAdmin") === "true" || true; // Forced true for preview
-    if (isAdmin) {
-        document.getElementById('adminSetupBtn').style.display = 'inline-flex';
+    // Admin Override (If Admin is viewing)
+    if (isAdmin && !studentId) {
+         navActions.innerHTML = `
+            <a href="student-dashboard.html" class="btn-nav">Back to Dashboard</a>
+            <a href="exam-session.html" class="btn-nav primary">Open Exam Portal</a>
+        `;
     }
 });
-
-function openAdminSetup() {
-    document.getElementById('adminModal').style.display = 'flex';
-}
-
-lucide.createIcons();
 </script>
 </body>
 </html>
