@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AE-S 2027/IFB - Mathematics</title>
+<title>IFB-S 2027 - Mathematics P1</title>
 <script>
   window.MathJax = {
     tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
@@ -15,21 +15,10 @@
 <style>
   @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { 
-    width: 100%; 
-    max-width: 100vw;
-    overflow-x: hidden; 
-  }
-  body { 
-    font-family: 'Times New Roman', Times, serif; 
-    font-size: 11.5pt; 
-    line-height: 1.6; 
-    color: #000; 
-    background: #F8FAFC; 
-    padding-top: 60px; /* Space for the top UI bar */
-  }
+  html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.6; color: #000; background: #F8FAFC; padding-top: 60px; }
   
-  /* FLOATING CONTROL BAR (HIDES ON PRINT) */
+  /* FLOATING CONTROL BAR */
   .control-bar {
     position: fixed; top: 0; left: 0; right: 0; height: 60px;
     background: #FFF; border-bottom: 2px solid #7A1F2B;
@@ -49,75 +38,23 @@
   .btn-nav.primary:hover { background: #5A1620; }
 
   /* A4 PAGE SETUP */
-  .page { 
-    width: 210mm; 
-    height: 297mm; 
-    padding: 15mm 20mm 0 20mm; 
-    margin: 15px auto; 
-    position: relative; 
-    background: white; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-    overflow: hidden; 
-    display: flex; 
-    flex-direction: column; 
-    page-break-after: always; 
-  }
+  .page { width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; }
   
-  @media print { 
-    body { background: white; padding-top: 0; } 
-    .page { margin: 0; box-shadow: none; } 
-    .control-bar { display: none !important; }
-  }
+  @media print { body { background: white; padding-top: 0; } .page { margin: 0; box-shadow: none; } .control-bar { display: none !important; } }
   
-  /* SECURITY PATTERN */
-  .security-pattern { 
-    position: absolute; 
-    top: 0; left: 0; right: 0; bottom: 0; 
-    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); 
-    pointer-events: none; 
-    z-index: 0; 
-  }
+  /* SECURITY PATTERN & CONTENT WRAPPER */
+  .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 30mm; }
   
-  /* CONTENT WRAPPER - Padding bottom prevents text overlapping footer */
-  .content-wrapper { 
-    position: relative; 
-    z-index: 1; 
-    display: flex; 
-    flex-direction: column; 
-    flex: 1;
-    padding-bottom: 30mm; 
-  }
-  
-  /* EXAM HEADERS (Black & White, NO LINE) */
-  .header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: flex-start; 
-    margin-bottom: 30px; 
-    font-size: 10.5pt; 
-    font-family: Arial, sans-serif;
-    flex-shrink: 0;
-  }
+  /* HEADERS & FOOTERS */
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; }
   .header-left { width: 30%; text-align: left; font-weight: bold; color: #000; }
   .header-center { width: 40%; text-align: center; }
   .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
   .header-center .confidential { font-style: italic; font-weight: bold; color: #000; }
   .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
 
-  /* FOOTER - Anchored to the bottom */
-  .footer { 
-    position: absolute; 
-    bottom: 10mm; 
-    left: 20mm; 
-    right: 20mm; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: flex-end; 
-    z-index: 2; 
-    font-size: 10pt; 
-    font-family: Arial, sans-serif;
-    height: 15mm;
-  }
+  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; }
   .footer-left { display: flex; align-items: center; gap: 10px; }
   .footer-qr { display: inline-block; width: 35px; height: 35px; }
   .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
@@ -125,190 +62,65 @@
   .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #000; }
   .footer-brand .tag { font-size: 7pt; color: #000; }
   .footer-right { color: #000; font-style: italic;}
+  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; }
 
-  /* MIDDLE BARCODE FOOTER */
-  .bottom-barcode {
-    position: absolute;
-    bottom: 10mm;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-  }
-  .bottom-barcode svg {
-    display: block;
-  }
-
-  /* ========================================= */
-  /* COVER PAGE SPECIFIC                       */
-  /* ========================================= */
-  .cover-page {
-    padding: 15mm 20mm 20mm 20mm; 
-  }
-  
+  /* COVER PAGE SPECIFIC */
+  .cover-page { padding: 15mm 20mm 20mm 20mm; }
   .cover-confidential { text-align: center; font-style: italic; font-size: 12pt; margin-bottom: 30px; color: #111;}
-  
   .cover-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; margin-left: 10px;}
   .ifb-logo-svg { width: 80px; height: 80px; }
-  
   .cover-header-text .title { font-size: 32px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px;}
   .cover-header-text .sub { font-size: 12pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
   .cover-header-text .country { font-size: 10pt; font-family: Arial, sans-serif; margin-top: 5px; color: #555;}
   
-  /* Black box with Maroon border */
-  .cover-black-box {
-    background: #111;
-    color: white;
-    border-radius: 10px;
-    padding: 15px 30px;
-    text-align: center;
-    width: 80%;
-    margin: 0 auto 40px auto;
-    border: 3px solid #7A1F2B;
-  }
+  .cover-black-box { background: #111; color: white; border-radius: 10px; padding: 15px 30px; text-align: center; width: 80%; margin: 0 auto 40px auto; border: 3px solid #7A1F2B; }
   .cover-black-box h1 { font-size: 22pt; font-weight: normal; line-height: 1.3; letter-spacing: 1px; }
-  
-  /* Grey box with Maroon border */
-  .cover-grey-box {
-    background: #f8f8f8;
-    border: 3px solid #7A1F2B;
-    border-radius: 8px;
-    padding: 8px 40px;
-    text-align: center;
-    width: max-content;
-    margin: 0 auto 50px auto;
-  }
+  .cover-grey-box { background: #f8f8f8; border: 3px solid #7A1F2B; border-radius: 8px; padding: 8px 40px; text-align: center; width: max-content; margin: 0 auto 50px auto; }
   .cover-grey-box h2 { font-size: 20pt; font-weight: normal; letter-spacing: 1px; color: #111;}
-
-  /* Dashed box with Maroon border and light tint */
-  .cover-dashed-box {
-    border: 4px dashed #7A1F2B;
-    border-radius: 10px;
-    padding: 30px 20px;
-    text-align: center;
-    width: 85%;
-    margin: 0 auto 40px auto;
-    background: #FFF5F6; 
-  }
+  .cover-dashed-box { border: 4px dashed #7A1F2B; border-radius: 10px; padding: 30px 20px; text-align: center; width: 85%; margin: 0 auto 40px auto; background: #FFF5F6; }
   .cover-dashed-box h3 { font-size: 18pt; font-weight: bold; margin-bottom: 10px; color: #111;}
   .cover-dashed-box h4 { font-size: 16pt; font-weight: bold; margin-bottom: 0; color: #111;}
-
-  .cover-marks {
-    font-size: 13pt;
-    font-weight: bold;
-    margin-left: 10px;
-    margin-bottom: 40px;
-    font-family: Arial, sans-serif;
-    color: #111;
-  }
+  .cover-marks { font-size: 13pt; font-weight: bold; margin-left: 10px; margin-bottom: 40px; font-family: Arial, sans-serif; color: #111; }
   .cover-marks div { margin-bottom: 10px; }
-  
-  /* Cover Barcode Section */
-  .cover-barcode-section {
-    margin-left: 10px;
-    font-family: Arial, sans-serif;
-    color: #111;
-  }
-  .cover-barcode-section .code-x01 {
-    font-size: 18pt;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  .cover-barcode-section svg {
-    display: block;
-  }
+  .cover-barcode-section { margin-left: 10px; font-family: Arial, sans-serif; color: #111; }
+  .cover-barcode-section .code-x02 { font-size: 18pt; font-weight: bold; margin-bottom: 5px; }
+  .cover-bottom-text { text-align: center; font-size: 11pt; font-weight: bold; margin-top: auto; margin-bottom: 20px; line-height: 1.5; color: #111; }
+  .cover-page .footer-brand .name, .cover-page .footer-brand .tag, .cover-page .footer-right, .cover-page .footer-left { color: #7A1F2B; }
 
-  .cover-bottom-text {
-    text-align: center;
-    font-size: 11pt;
-    font-weight: bold;
-    margin-top: auto;
-    margin-bottom: 20px;
-    line-height: 1.5;
-    color: #111;
-  }
-
-  /* Cover Page Footer Colors */
-  .cover-page .footer-brand .name { color: #7A1F2B; }
-  .cover-page .footer-brand .tag { color: #7A1F2B; }
-  .cover-page .footer-right { color: #7A1F2B; }
-  .cover-page .footer-left { color: #7A1F2B; }
-
-  /* INSTRUCTIONS & QUESTIONS (Black & White) */
+  /* INSTRUCTIONS & QUESTIONS */
   .instructions h2 { font-size: 14pt; font-weight: bold; margin-bottom: 20px; font-family: Arial, sans-serif; color: #000;}
   .instructions p { margin-bottom: 15px; font-size: 11pt; }
   .instructions ol { margin-left: 20px; font-family: Arial, sans-serif; font-size: 11pt;}
   .instructions li { margin-bottom: 12px; padding-left: 10px; }
-  
   .question-header { margin: 25px 0 15px 0; page-break-inside: avoid; flex-shrink: 0; }
   .question-header h2 { font-size: 13pt; font-weight: bold; font-family: Arial, sans-serif; color: #000;}
-  
   .sub-questions { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
   .question-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; }
   .question-number { font-weight: bold; width: 50px; flex-shrink: 0; font-family: Arial, sans-serif; font-size: 11pt; color: #000;}
   .question-content { flex: 1; min-width: 0; font-size: 11.5pt; }
   .marks { font-weight: bold; width: 40px; flex-shrink: 0; text-align: right; font-family: Arial, sans-serif; font-size: 11pt;}
-  
   .nested-questions { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; margin-left: 30px; page-break-inside: avoid; }
   .nested-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; }
   .nested-item .question-number { width: 60px; }
-
   .total-marks { text-align: right; font-weight: bold; margin-top: 10px; font-size: 12pt; font-family: Arial, sans-serif; page-break-inside: avoid; color: #000;}
-  
   .math-display { text-align: center; margin: 15px 0; font-size: 12pt; }
 
-  /* ========================================= */
-  /* DIAGRAMS (Black & White, NO BOX)          */
-  /* ========================================= */
-  .diagram-container {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-    page-break-inside: avoid;
-  }
-  .diagram-container svg {
-    border: none;
-    background: #fff;
-    width: 100%;
-    max-width: 450px; 
-    height: auto;
-  }
-
-  /* ========================================= */
-  /* FORMULA SHEET (Exact Layout, No Headings) */
-  /* ========================================= */
+  /* DIAGRAMS & FORMULA SHEET */
+  .diagram-container { display: flex; justify-content: center; margin: 20px 0; page-break-inside: avoid; }
+  .diagram-container svg { border: none; background: #fff; width: 100%; max-width: 450px; height: auto; }
   .info-title { text-align: center; font-weight: bold; font-size: 16pt; letter-spacing: 1px; margin: 10px 0 40px 0; font-family: Arial, sans-serif; color: #000;}
-  
-  .formula-layout {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    font-size: 14pt;
-    margin-top: 20px;
-  }
-
-  .formula-center {
-    text-align: center;
-  }
-
-  .formula-row {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    width: 100%;
-  }
-
-  .formula-item {
-    text-align: center;
-  }
+  .formula-layout { display: flex; flex-direction: column; gap: 30px; font-size: 13pt; margin-top: 20px; }
+  .formula-center { text-align: center; }
+  .formula-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
+  .formula-item { text-align: center; }
 </style>
 </head>
 <body>
 
-<!-- FLOATING UI BAR -->
 <div class="control-bar">
-    <div class="brand"><span>∆</span> Question Paper</div>
+    <div class="brand"><span>∆</span> IFB-S Mathematics</div>
     <div class="control-actions">
-        <a href="resources.html" class="btn-nav">Back to Resources</a>
+        <a href="#" class="btn-nav">Back to Resources</a>
         <button onclick="window.print()" class="btn-nav primary">Print / Save PDF</button>
     </div>
 </div>
@@ -317,25 +129,22 @@
 <div class="page cover-page">
   <div class="security-pattern"></div>
   <div class="content-wrapper" style="padding-bottom: 0;">
-    
-    <div class="cover-confidential">AE-S / IFB / Confidential</div>
-    
+    <div class="cover-confidential">IFB-S / Confidential</div>
     <div class="cover-header">
       <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
           <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
           <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
       </svg>
-      
       <div class="cover-header-text">
         <div class="title">Institute of Board</div>
-        <div class="sub">Department:<br>Academic Assessment</div>
+        <div class="sub">Department:<br>Pure & Applied Sciences</div>
         <div class="country">NON-ACCREDITED ACADEMIC INSTITUTION</div>
       </div>
     </div>
 
     <div class="cover-black-box">
-      <h1>ADMISSIONS EXAMINATION</h1>
+      <h1>ADVANCED MATHEMATICS</h1>
     </div>
 
     <div class="cover-grey-box">
@@ -343,29 +152,28 @@
     </div>
 
     <div class="cover-dashed-box">
-      <h3>MATHEMATICS</h3>
-      <h4>ENTRANCE ASSESSMENT</h4>
+      <h3>IFB-S SYLLABUS</h3>
+      <h4>PAPER 1: ALGEBRA, FUNCTIONS & CALCULUS</h4>
     </div>
 
     <div class="cover-marks">
-      <div>MARKS: 100</div>
-      <div>TIME: 2 hours</div>
+      <div>MARKS: 150</div>
+      <div>TIME: 3 hours</div>
     </div>
 
     <div class="cover-barcode-section">
-      <div class="code-x01">X01</div>
-      <svg class="barcode-cover" data-barcode="X01-MATH-2027" data-bc-width="2.4" data-bc-height="50" data-bc-display="false"></svg>
+      <div class="code-x02">X02</div>
+      <svg class="barcode-cover" data-barcode="X02-MATHS-2027" data-bc-width="2.4" data-bc-height="50" data-bc-display="false"></svg>
     </div>
 
     <div class="cover-bottom-text">
-      This question paper consists of 6 pages, 1 information sheet and<br>an answer book of 23 pages.
+      This question paper consists of 8 pages, 1 information sheet and<br>an answer book of 25 pages.
     </div>
-
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ifb-s-math-p1.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
@@ -376,12 +184,11 @@
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
-    
     <div class="header">
-      <div class="header-left">Mathematics</div>
+      <div class="header-left">IFB-S Mathematics</div>
       <div class="header-center">
         <span class="page-num">2</span>
-        <span class="confidential">AE-S / IFB / Confidential</span>
+        <span class="confidential">IFB-S / Confidential</span>
       </div>
       <div class="header-right">2027</div>
     </div>
@@ -390,30 +197,24 @@
       <h2>INSTRUCTIONS AND INFORMATION</h2>
       <p>Read the following instructions and information carefully before answering the questions.</p>
       <ol>
-        <li>This question paper consists of 6 questions.</li>
-        <li>Answer ALL the questions in the SPECIAL ANSWER BOOK provided.</li>
-        <li>Clearly show ALL calculations, diagrams, graphs, etc. that you have used in determining your answers.</li>
-        <li>Answers only will NOT necessarily be awarded full marks.</li>
-        <li>You may use an approved scientific calculator (non-programmable and non-graphical), unless stated otherwise.</li>
-        <li>If necessary, round off answers to TWO decimal places, unless stated otherwise.</li>
-        <li>Diagrams are NOT necessarily drawn to scale.</li>
-        <li>An information sheet with formulae is included at the end of the question paper.</li>
+        <li>This question paper consists of 5 questions. Answer ALL the questions.</li>
+        <li>Clearly show ALL calculations, proofs, and derivations. <strong>Answers only will NOT be awarded full marks.</strong></li>
+        <li>You may use an approved scientific calculator (non-programmable and non-graphical).</li>
+        <li>An information sheet with formulae is included at the end of the question paper. You are expected to use these tools to solve complex problems, not memorize them.</li>
         <li>Write neatly and legibly.</li>
       </ol>
     </div>
-    
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ifb-s-math-p1.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
-  
   <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+    <svg class="barcode-footer" data-barcode="X02-MATHS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
@@ -421,438 +222,472 @@
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
-    
     <div class="header">
-      <div class="header-left">Mathematics</div>
+      <div class="header-left">IFB-S Mathematics</div>
       <div class="header-center">
         <span class="page-num">3</span>
-        <span class="confidential">AE-S / IFB / Confidential</span>
+        <span class="confidential">IFB-S / Confidential</span>
       </div>
       <div class="header-right">2027</div>
     </div>
 
-    <div class="question-header">
-      <h2>QUESTION 1</h2>
-    </div>
+    <div class="question-header"><h2>QUESTION 1: ALGEBRA & FOUNDATIONAL LOGIC</h2></div>
 
     <div class="question-item">
       <div class="question-number">1.1</div>
       <div class="question-content">
-        Solve for \(x\):
-        <div class="math-display">
-          \(x^2 - 5x + 6 = 0\)
-        </div>
+        Derive the quadratic formula \(x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\) from the general equation \(ax^2 + bx + c = 0\) using the method of completing the square.
       </div>
-      <div class="marks">(2)</div>
+      <div class="marks">(5)</div>
     </div>
 
     <div class="question-item" style="margin-top: 20px;">
       <div class="question-number">1.2</div>
       <div class="question-content">
-        Solve for \(x\):
+        Solve for \(x\) and \(y\) in the following system of equations. State whether the system represents intersecting lines, a line and a parabola, or is impossible:
         <div class="math-display">
-          \(2^{2x+1} - 5 \cdot 2^x + 2 = 0\)
+          \(y = 3x^2 - 4x + 2\) <br>
+          \(y = -2x + 5\)
         </div>
       </div>
-      <div class="marks">(3)</div>
+      <div class="marks">(6)</div>
     </div>
 
     <div class="question-item" style="margin-top: 20px;">
       <div class="question-number">1.3</div>
       <div class="question-content">
-        Solve for \(x\):
-        <div class="math-display">
-          \(\sqrt{2x + 5} - x = 1\)
-        </div>
+        Consider the exponential equation: \(3^{2x} - 2 \cdot 3^{x+1} + 8 = 0\). Determine the exact values of \(x\) without using a calculator.
       </div>
-      <div class="marks">(4)</div>
+      <div class="marks">(5)</div>
     </div>
 
     <div class="question-item" style="margin-top: 20px;">
       <div class="question-number">1.4</div>
       <div class="question-content">
-        Solve for \(x\):
+        The roots of a cubic equation \(f(x) = x^3 + ax^2 + bx + c = 0\) are \(\alpha, \beta, \text{ and } \gamma\). Without finding the actual roots, prove that the product of the roots \((\alpha \cdot \beta \cdot \gamma) = -c\).
       </div>
-    </div>
-
-    <div class="nested-questions">
-      <div class="nested-item">
-        <div class="question-number">1.4.1</div>
-        <div class="question-content">
-          \(\dfrac{x - 1}{x + 3} \geq \dfrac{x}{x - 2}\)
-        </div>
-        <div class="marks">(5)</div>
-      </div>
-      <div class="nested-item">
-        <div class="question-number">1.4.2</div>
-        <div class="question-content">
-          \(\left(x - \dfrac{8}{x}\right)^2 + 2\left(x - \dfrac{8}{x}\right) - 15 = 0\)
-        </div>
-        <div class="marks">(5)</div>
-      </div>
-      <div class="nested-item">
-        <div class="question-number">1.4.3</div>
-        <div class="question-content">
-          \((x^2 - 2x + 5)^{x^2 - 7x + 12} = 1\)
-        </div>
-        <div class="marks">(6)</div>
-      </div>
+      <div class="marks">(4)</div>
     </div>
 
     <div class="question-item" style="margin-top: 20px;">
       <div class="question-number">1.5</div>
       <div class="question-content">
-        Two numbers have a product of 27. The second number is the square of the first number. It is also given that the sum of the two numbers is less than 20. Calculate the values of the first and second numbers.
+        Solve for \(x\): \(\frac{x^2 - 4}{x + 1} \geq 0\). Represent your final answer using interval notation and a sign graph (number line).
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">1.6</div>
+      <div class="question-content">
+        The sum of the first \(n\) terms of a quadratic number pattern is given by \(S_n = 2n^2 + 3n\). Determine the \(n^{th}\) term (\(T_n\)) and the constant second difference of the sequence.
       </div>
       <div class="marks">(5)</div>
     </div>
 
     <div class="total-marks">[30]</div>
-
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ifb-s-math-p1.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
-  
   <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+    <svg class="barcode-footer" data-barcode="X02-MATHS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
-<!-- ==================== PAGE 4: QUESTION 2 (Nature of Roots) ==================== -->
+<!-- ==================== PAGE 4: QUESTION 2 (Functions) ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
-    
     <div class="header">
-      <div class="header-left">Mathematics</div>
+      <div class="header-left">IFB-S Mathematics</div>
       <div class="header-center">
         <span class="page-num">4</span>
-        <span class="confidential">AE-S / IFB / Confidential</span>
+        <span class="confidential">IFB-S / Confidential</span>
       </div>
       <div class="header-right">2027</div>
     </div>
 
-    <div class="question-header">
-      <h2>QUESTION 2</h2>
-    </div>
+    <div class="question-header"><h2>QUESTION 2: FUNCTIONS & TRANSFORMATIONS</h2></div>
 
     <div class="question-item">
       <div class="question-number">2.1</div>
       <div class="question-content">
-        State the condition for the roots of a quadratic equation to be equal.
-      </div>
-      <div class="marks">(2)</div>
-    </div>
-
-    <div class="question-item" style="margin-top: 20px;">
-      <div class="question-number">2.2</div>
-      <div class="question-content">
-        Determine the value(s) of \(k\) for which the quadratic equation \(kx^2 + (k+2)x + 1 = 0\) has equal roots.
+        Consider the function \(f(x) = \frac{a}{x-p} + q\). The graph of \(f\) has a vertical asymptote at \(x = -2\), a horizontal asymptote at \(y = 3\), and passes through the point \((0, 5)\). Determine the values of \(a, p,\) and \(q\).
       </div>
       <div class="marks">(5)</div>
     </div>
 
     <div class="question-item" style="margin-top: 20px;">
-      <div class="question-number">2.3</div>
+      <div class="question-number">2.2</div>
       <div class="question-content">
-        Given the cubic equation \(x^3 - 3x^2 - 9x + 5 = k\). Determine the value(s) of \(k\) for which the equation has three distinct real roots.
+        Given the function \(g(x) = 2^x\):
       </div>
-      <div class="marks">(6)</div>
+    </div>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">2.2.1</div>
+        <div class="question-content">Write down the equation of the inverse function \(g^{-1}(x)\) in the form \(y = ...\)</div>
+        <div class="marks">(2)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">2.2.2</div>
+        <div class="question-content">Sketch the graph of \(g(x)\) and \(g^{-1}(x)\) on the same set of axes. Clearly show the asymptotes and intercepts.</div>
+        <div class="marks">(4)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">2.2.3</div>
+        <div class="question-content">For which values of \(x\) is \(g^{-1}(x) < 0\)?</div>
+        <div class="marks">(2)</div>
+      </div>
     </div>
 
-    <div class="total-marks">[13]</div>
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.3</div>
+      <div class="question-content">
+        The graph of a cubic function \(h(x) = x^3 - 3x^2 - 9x + 5\) is given.
+      </div>
+    </div>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">2.3.1</div>
+        <div class="question-content">Calculate the coordinates of the \(x\)-intercepts and the \(y\)-intercept.</div>
+        <div class="marks">(4)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">2.3.2</div>
+        <div class="question-content">Find the coordinates of the stationary points and determine their nature (local maximum or minimum).</div>
+        <div class="marks">(6)</div>
+      </div>
+    </div>
 
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.4</div>
+      <div class="question-content">
+        A parabola \(k(x) = -(x-3)^2 + 4\) is translated 2 units to the left and 3 units down to form a new parabola \(m(x)\). Write down the equation of \(m(x)\) and determine the range of \(m(x)\).
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="total-marks">[27]</div>
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ifb-s-math-p1.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
-  
   <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+    <svg class="barcode-footer" data-barcode="X02-MATHS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
-<!-- ==================== PAGE 5: QUESTION 3 (Functions) ==================== -->
+<!-- ==================== PAGE 5: QUESTION 3 (Calculus) ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
-    
     <div class="header">
-      <div class="header-left">Mathematics</div>
+      <div class="header-left">IFB-S Mathematics</div>
       <div class="header-center">
         <span class="page-num">5</span>
-        <span class="confidential">AE-S / IFB / Confidential</span>
+        <span class="confidential">IFB-S / Confidential</span>
       </div>
       <div class="header-right">2027</div>
     </div>
 
-    <div class="question-header">
-      <h2>QUESTION 3</h2>
-    </div>
+    <div class="question-header"><h2>QUESTION 3: DIFFERENTIAL CALCULUS & OPTIMIZATION</h2></div>
 
     <div class="question-item">
       <div class="question-number">3.1</div>
       <div class="question-content">
-        The sketch below shows the functions \(f(x) = -x^2 + 4x + 5\) and \(g(x) = x^2 - 4x - 5\). The points of intersection are \(A\) and \(B\).
-        
-        <div class="diagram-container" id="svg-q3"></div>
+        Determine \(f'(x)\) from first principles if \(f(x) = -2x^2 + 3x\).
       </div>
+      <div class="marks">(5)</div>
     </div>
 
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.2</div>
+      <div class="question-content">
+        Differentiate the following with respect to \(x\). Leave your answer in simplified form with positive exponents:
+      </div>
+    </div>
     <div class="nested-questions">
       <div class="nested-item">
-        <div class="question-number">3.1.1</div>
-        <div class="question-content">Determine the coordinates of the turning point of \(f\).</div>
+        <div class="question-number">3.2.1</div>
+        <div class="question-content">\(y = 4x^3 - \dfrac{2}{x^2} + \sqrt{x}\)</div>
         <div class="marks">(4)</div>
       </div>
       <div class="nested-item">
-        <div class="question-number">3.1.2</div>
-        <div class="question-content">Calculate the coordinates of the points of intersection \(A\) and \(B\).</div>
-        <div class="marks">(5)</div>
-      </div>
-      <div class="nested-item">
-        <div class="question-number">3.1.3</div>
-        <div class="question-content">Determine the maximum vertical distance between the graphs of \(f\) and \(g\).</div>
-        <div class="marks">(7)</div>
+        <div class="question-number">3.2.2</div>
+        <div class="question-content">\(y = \dfrac{x^2 - 1}{2x + 3}\) (Use the quotient rule)</div>
+        <div class="marks">(4)</div>
       </div>
     </div>
 
-    <div class="total-marks">[16]</div>
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.3</div>
+      <div class="question-content">
+        A closed cylindrical can is to be manufactured to hold exactly \(500 \text{ cm}^3\) of liquid. The material for the top and bottom costs R0.05 per \(\text{cm}^2\), and the material for the curved side costs R0.03 per \(\text{cm}^2\). Determine the dimensions (radius and height) of the cylinder that will minimize the cost of the material.
+      </div>
+      <div class="marks">(8)</div>
+    </div>
 
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.4</div>
+      <div class="question-content">
+        The graph of \(f(x) = x^3 - 6x^2 + 9x\) is given below.
+        <div class="diagram-container" id="svg-q3"></div>
+      </div>
+    </div>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">3.4.1</div>
+        <div class="question-content">Calculate the equation of the tangent to the graph at the point where \(x = 2\).</div>
+        <div class="marks">(5)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">3.4.2</div>
+        <div class="question-content">Determine the point of inflection of \(f(x)\).</div>
+        <div class="marks">(3)</div>
+      </div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.5</div>
+      <div class="question-content">
+        A farmer wants to build a rectangular enclosure using \(100\text{m}\) of fencing. He will use an existing straight wall as one side of the enclosure. Determine the dimensions that will enclose the maximum area.
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.6</div>
+      <div class="question-content">
+        If \(f(x) = ax^2 + bx + c\) has a local minimum at \((2, -4)\) and passes through the origin \((0,0)\), determine the values of \(a, b,\) and \(c\).
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="total-marks">[40]</div>
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ifb-s-math-p1.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
-  
   <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+    <svg class="barcode-footer" data-barcode="X02-MATHS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
-<!-- ==================== PAGE 6: QUESTION 4 (Calculus Basics) ==================== -->
+<!-- ==================== PAGE 6: QUESTION 4 (Finance) ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
-    
     <div class="header">
-      <div class="header-left">Mathematics</div>
+      <div class="header-left">IFB-S Mathematics</div>
       <div class="header-center">
         <span class="page-num">6</span>
-        <span class="confidential">AE-S / IFB / Confidential</span>
+        <span class="confidential">IFB-S / Confidential</span>
       </div>
       <div class="header-right">2027</div>
     </div>
 
-    <div class="question-header">
-      <h2>QUESTION 4</h2>
-    </div>
+    <div class="question-header"><h2>QUESTION 4: FINANCE & SERIES</h2></div>
 
     <div class="question-item">
       <div class="question-number">4.1</div>
       <div class="question-content">
-        Determine \(f'(x)\) from first principles if \(f(x) = -2x^2 + 3x\).
+        Prove that the sum of a geometric series is \(S_n = \frac{a(1 - r^n)}{1 - r}\) for \(|r| < 1\).
       </div>
-      <div class="marks">(6)</div>
+      <div class="marks">(4)</div>
     </div>
 
     <div class="question-item" style="margin-top: 20px;">
       <div class="question-number">4.2</div>
       <div class="question-content">
-        Differentiate the following with respect to \(x\):
+        An investor deposits R5,000 into an account at the end of every month for 10 years. The interest rate is 7.5% per annum compounded monthly. Calculate the future value of the investment after 10 years.
       </div>
+      <div class="marks">(4)</div>
     </div>
 
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">4.3</div>
+      <div class="question-content">
+        A loan of R250,000 is taken out to buy a house. The interest rate is 9% per annum compounded monthly, and the loan is to be repaid over 20 years in equal monthly instalments. Calculate the monthly repayment amount.
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">4.4</div>
+      <div class="question-content">
+        Consider the infinite geometric series: \(S_\infty = 3 + 1 + \frac{1}{3} + \frac{1}{9} + ...\)
+      </div>
+    </div>
     <div class="nested-questions">
       <div class="nested-item">
-        <div class="question-number">4.2.1</div>
-        <div class="question-content">
-          \(y = 4x^3 - \dfrac{2}{x^2} + \sqrt{x}\)
-        </div>
-        <div class="marks">(4)</div>
+        <div class="question-number">4.4.1</div>
+        <div class="question-content">Show that the series converges.</div>
+        <div class="marks">(2)</div>
       </div>
       <div class="nested-item">
-        <div class="question-number">4.2.2</div>
-        <div class="question-content">
-          \(y = (x^2 - 3)(2x + 1)\)
-        </div>
-        <div class="marks">(4)</div>
-      </div>
-      <div class="nested-item">
-        <div class="question-number">4.2.3</div>
-        <div class="question-content">
-          \(y = \dfrac{x^2 - 1}{x}\)
-        </div>
+        <div class="question-number">4.4.2</div>
+        <div class="question-content">Calculate the sum to infinity.</div>
         <div class="marks">(3)</div>
       </div>
     </div>
 
-    <div class="total-marks">[17]</div>
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">4.5</div>
+      <div class="question-content">
+        A sequence is defined by \(T_n = 3n - 2\).
+      </div>
+    </div>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">4.5.1</div>
+        <div class="question-content">Write down the first 4 terms of the sequence.</div>
+        <div class="marks">(2)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">4.5.2</div>
+        <div class="question-content">Prove that the sequence is arithmetic and determine the sum of the first 50 terms.</div>
+        <div class="marks">(5)</div>
+      </div>
+    </div>
 
+    <div class="total-marks">[25]</div>
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ifb-s-math-p1.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
-  
   <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+    <svg class="barcode-footer" data-barcode="X02-MATHS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
-<!-- ==================== PAGE 7: QUESTION 5 (Calculus - Tangents & Cubics) ==================== -->
+<!-- ==================== PAGE 7: QUESTION 5 (Probability) ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
-    
     <div class="header">
-      <div class="header-left">Mathematics</div>
+      <div class="header-left">IFB-S Mathematics</div>
       <div class="header-center">
         <span class="page-num">7</span>
-        <span class="confidential">AE-S / IFB / Confidential</span>
+        <span class="confidential">IFB-S / Confidential</span>
       </div>
       <div class="header-right">2027</div>
     </div>
 
-    <div class="question-header">
-      <h2>QUESTION 5</h2>
-    </div>
+    <div class="question-header"><h2>QUESTION 5: COMBINATORICS & PROBABILITY</h2></div>
 
     <div class="question-item">
       <div class="question-number">5.1</div>
       <div class="question-content">
-        Determine the equation of the tangent to the curve \(f(x) = x^3 - 2x\) at the point where \(x = -1\).
+        How many different 5-letter passwords can be formed from the letters in the word "ROCKET" if repetition is not allowed?
       </div>
-      <div class="marks">(6)</div>
+      <div class="marks">(2)</div>
     </div>
 
     <div class="question-item" style="margin-top: 20px;">
       <div class="question-number">5.2</div>
       <div class="question-content">
-        Given \(g(x) = x^3 - 3x^2 - 9x + 5\).
-      </div>
-    </div>
-
-    <div class="nested-questions">
-      <div class="nested-item">
-        <div class="question-number">5.2.1</div>
-        <div class="question-content">Determine the \(x\)-coordinates of the stationary points and state their nature.</div>
-        <div class="marks">(6)</div>
-      </div>
-      <div class="nested-item">
-        <div class="question-number">5.2.2</div>
-        <div class="question-content">Draw a neat sketch of \(g(x)\), clearly showing all intercepts and turning points.</div>
-        <div class="marks">(7)</div>
-      </div>
-    </div>
-
-    <div class="total-marks">[19]</div>
-
-  </div>
-  
-  <div class="footer">
-    <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
-      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-    </div>
-    <div class="footer-right">Please turn over</div>
-  </div>
-  
-  <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
-  </div>
-</div>
-
-<!-- ==================== PAGE 8: QUESTION 6 (Optimization) ==================== -->
-<div class="page">
-  <div class="security-pattern"></div>
-  <div class="content-wrapper">
-    
-    <div class="header">
-      <div class="header-left">Mathematics</div>
-      <div class="header-center">
-        <span class="page-num">8</span>
-        <span class="confidential">AE-S / IFB / Confidential</span>
-      </div>
-      <div class="header-right">2027</div>
-    </div>
-
-    <div class="question-header">
-      <h2>QUESTION 6</h2>
-    </div>
-
-    <div class="question-item">
-      <div class="question-number">6.1</div>
-      <div class="question-content">
-        A rectangular box without a lid is to be made from a piece of cardboard with an area of \(108 \text{ cm}^2\). The length of the base is twice the width. Determine the dimensions of the box that will yield a maximum volume.
-      </div>
-      <div class="marks">(7)</div>
-    </div>
-
-    <!-- UPDATED 6.2 (Now 3 marks) -->
-    <div class="question-item" style="margin-top: 20px;">
-      <div class="question-number">6.2</div>
-      <div class="question-content">
-        A farmer has \(100 \text{ m}\) of fencing to enclose a rectangular vegetable garden. One side of the garden is bounded by a straight river and requires no fencing. If the width of the garden is \(x\), show that the area of the garden is given by \(A = 100x - 2x^2\).
-      </div>
-      <div class="marks">(3)</div>
-    </div>
-
-    <!-- NEW 6.3 (4 marks) -->
-    <div class="question-item" style="margin-top: 20px;">
-      <div class="question-number">6.3</div>
-      <div class="question-content">
-        Hence, determine the dimensions of the garden that will maximize the enclosed area.
+        A committee of 4 people must be chosen from 6 men and 5 women. How many different committees can be formed if the committee must contain exactly 2 men and 2 women?
       </div>
       <div class="marks">(4)</div>
     </div>
 
-    <div class="total-marks">[14]</div>
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">5.3</div>
+      <div class="question-content">
+        A bag contains 4 red balls and 6 blue balls. Two balls are drawn from the bag without replacement.
+      </div>
+    </div>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">5.3.1</div>
+        <div class="question-content">Draw a tree diagram to represent this scenario.</div>
+        <div class="marks">(3)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">5.3.2</div>
+        <div class="question-content">Calculate the probability that both balls are red.</div>
+        <div class="marks">(2)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">5.3.3</div>
+        <div class="question-content">Calculate the probability that exactly one ball is blue.</div>
+        <div class="marks">(4)</div>
+      </div>
+    </div>
 
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">5.4</div>
+      <div class="question-content">
+        In a class of 40 students, 18 take History, 25 take Geography, and 8 take both.
+      </div>
+    </div>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">5.4.1</div>
+        <div class="question-content">Draw a Venn diagram to represent the data.</div>
+        <div class="marks">(3)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">5.4.2</div>
+        <div class="question-content">Determine the probability that a student chosen at random takes neither History nor Geography.</div>
+        <div class="marks">(3)</div>
+      </div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">5.5</div>
+      <div class="question-content">
+        Events A and B are independent. \(P(A) = 0.4\) and \(P(B) = 0.7\). Calculate \(P(A \text{ or } B)\).
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="total-marks">[25]</div>
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ifb-s-math-p1.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">Please turn over</div>
   </div>
-  
   <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+    <svg class="barcode-footer" data-barcode="X02-MATHS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
-<!-- ==================== PAGE 9: INFORMATION SHEET ==================== -->
+<!-- ==================== PAGE 8: INFORMATION SHEET ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
   <div class="content-wrapper">
-    
     <div class="header">
-      <div class="header-left">Mathematics</div>
+      <div class="header-left">IFB-S Mathematics</div>
       <div class="header-center">
-        <span class="page-num">9</span>
-        <span class="confidential">AE-S / IFB / Confidential</span>
+        <span class="page-num">8</span>
+        <span class="confidential">IFB-S / Confidential</span>
       </div>
       <div class="header-right">2027</div>
     </div>
@@ -860,44 +695,32 @@
     <div class="info-title">INFORMATION SHEET</div>
 
     <div class="formula-layout">
+      <div class="formula-center">\(x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)</div>
+      <div class="formula-center">\(A = P(1 + ni)\) &nbsp;&nbsp;&nbsp; \(A = P(1 - ni)\) &nbsp;&nbsp;&nbsp; \(A = P(1 - i)^n\) &nbsp;&nbsp;&nbsp; \(A = P(1 + i)^n\)</div>
+      <div class="formula-center">\(F = \dfrac{x[(1 + i)^n - 1]}{i}\) &nbsp;&nbsp;&nbsp; \(P = \dfrac{x[1 - (1 + i)^{-n}]}{i}\)</div>
       
-      <!-- Algebra (Quadratic Formula) -->
-      <div class="formula-center">
-        \(x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)
+      <div class="formula-center" style="margin-top: 20px;">
+        \(f'(x) = \lim_{h \to 0} \dfrac{f(x + h) - f(x)}{h}\)
       </div>
-
-      <!-- Functions (Straight Lines) -->
+      <div class="formula-center">If \(f(x) = ax^n\), then \(f'(x) = anx^{n-1}\)</div>
+      
       <div class="formula-row" style="margin-top: 20px;">
         <div class="formula-item">\(y = mx + c\)</div>
         <div class="formula-item">\(y - y_1 = m(x - x_1)\)</div>
         <div class="formula-item">\(m = \dfrac{y_2 - y_1}{x_2 - x_1}\)</div>
       </div>
-
-      <!-- Calculus (First Principles & Derivative Rules) -->
-      <div class="formula-center" style="margin-top: 40px;">
-        \(f'(x) = \lim_{h \to 0} \dfrac{f(x + h) - f(x)}{h}\)
-      </div>
-      <div class="formula-center">
-        If \(f(x) = ax^n\), then \(f'(x) = anx^{n-1}\)
-      </div>
-      <div class="formula-center">
-        \(m_{tangent} = f'(x_1)\)
-      </div>
-
     </div>
-    
   </div>
   
   <div class="footer">
     <div class="footer-left">
-      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ifb-s-math-p1.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
     <div class="footer-right">END</div>
   </div>
-  
   <div class="bottom-barcode">
-    <svg class="barcode-footer" data-barcode="X01-MATH-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+    <svg class="barcode-footer" data-barcode="X02-MATHS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
   </div>
 </div>
 
@@ -907,7 +730,7 @@
     if (typeof JsBarcode !== "function") return;
     document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
       try {
-        JsBarcode(el, el.dataset.barcode || "X01-MATH-2027", {
+        JsBarcode(el, el.dataset.barcode || "X02-MATHS-2027", {
           format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
           height: parseInt(el.dataset.bcHeight || "30", 10),
           displayValue: el.dataset.bcDisplay === "true",
@@ -923,7 +746,7 @@
     document.querySelectorAll(".footer-qr").forEach(function (el) {
       try {
         var qr = qrcode(0, "M");
-        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/practice-paper-math.html");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/ifb-s-math-p1.html");
         qr.make();
         el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
       } catch (e) { console.warn(e); }
@@ -943,11 +766,11 @@
       if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
     })();
     
-    // --- Q3 Diagram: Quadratic & Negative Quadratic ---
+    // --- Q3 Diagram: Cubic Function ---
     const svg3 = document.getElementById('svg-q3');
     if (svg3) {
-        const width = 500, height = 500;
-        const xMin = -3, xMax = 7, yMin = -12, yMax = 12;
+        const width = 500, height = 400;
+        const xMin = -2, xMax = 6, yMin = -10, yMax = 15;
         
         function mapX(x) { return ((x - xMin) / (xMax - xMin)) * width; }
         function mapY(y) { return height - (((y - yMin) / (yMax - yMin)) * height); }
@@ -955,39 +778,23 @@
         let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
         
         // Axes
-        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="2"/>`;
         html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="2"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="2"/>`;
 
-        // Parabola f(x) = -x^2 + 4x + 5
+        // Cubic f(x) = x^3 - 6x^2 + 9x
         let pathF = "";
         for (let x = xMin; x <= xMax; x += 0.1) {
-            let y = -Math.pow(x, 2) + 4 * x + 5;
+            let y = Math.pow(x, 3) - 6 * Math.pow(x, 2) + 9 * x;
             if (y >= yMin && y <= yMax) {
                 pathF += (pathF === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
             }
         }
         html += `<path d="${pathF}" fill="none" stroke="#000" stroke-width="2"/>`;
 
-        // Parabola g(x) = x^2 - 4x - 5
-        let pathG = "";
-        for (let x = xMin; x <= xMax; x += 0.1) {
-            let y = Math.pow(x, 2) - 4 * x - 5;
-            if (y >= yMin && y <= yMax) {
-                pathG += (pathG === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
-            }
-        }
-        html += `<path d="${pathG}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="6"/>`;
-
-        // Points of Intersection (x = -1, 5)
-        html += `<circle cx="${mapX(-1)}" cy="${mapY(0)}" r="4" fill="#000"/>`;
-        html += `<text x="${mapX(-1) - 15}" y="${mapY(0) - 10}" font-family="Times New Roman" font-size="16">A</text>`;
-        
-        html += `<circle cx="${mapX(5)}" cy="${mapY(0)}" r="4" fill="#000"/>`;
-        html += `<text x="${mapX(5) + 10}" y="${mapY(0) - 10}" font-family="Times New Roman" font-size="16">B</text>`;
-
         // Labels
-        html += `<text x="${mapX(2)}" y="${mapY(10)}" font-family="Times New Roman" font-size="18">f</text>`;
-        html += `<text x="${mapX(2)}" y="${mapY(-9)}" font-family="Times New Roman" font-size="18">g</text>`;
+        html += `<text x="${mapX(4)}" y="${mapY(12)}" font-family="Times New Roman" font-size="18">f</text>`;
+        html += `<text x="${width - 20}" y="${mapY(0) - 10}" font-family="Times New Roman" font-size="16">x</text>`;
+        html += `<text x="${mapX(0) + 10}" y="20" font-family="Times New Roman" font-size="16">y</text>`;
 
         html += `</svg>`;
         svg3.innerHTML = html;
