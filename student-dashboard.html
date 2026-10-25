@@ -9,54 +9,82 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --success: #15803D; }
+:root { 
+    --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; 
+    --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --success: #15803D; 
+}
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { 
     width: 100%; max-width: 100vw; overflow-x: hidden; 
     font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; 
 }
 
-/* HEADER */
+/* ANIMATED HEADER */
 .header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; position: sticky; top: 0; z-index: 100; }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
-.brand-logo { font-size: 32px; color: var(--maroon); }
+.brand-logo { 
+    font-size: 32px; color: var(--maroon); 
+    animation: pulseLogo 2s infinite ease-in-out;
+}
+@keyframes pulseLogo {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1) rotate(5deg); color: #5A1620; }
+    100% { transform: scale(1); }
+}
+.brand-text { animation: slideIn 1s ease-out; }
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
 .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); }
+.btn-back:hover { border-color: var(--black); }
 
 /* CENTRAL LAYOUT */
-.container { width: 100%; max-width: 1148px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 380px 1fr; gap: 32px; align-items: start; box-sizing: border-box; }
+.container { 
+    width: 100%; max-width: 1200px; margin: 40px auto; padding: 0 24px; 
+    display: grid; grid-template-columns: 440px 1fr; /* Wider card area */
+    gap: 32px; align-items: start; box-sizing: border-box; 
+}
+
+/* ADMIN TOGGLE */
+.admin-toggle-bar { display: none; margin-bottom: 24px; background: #111; padding: 12px; border-radius: 12px; color: #fff; justify-content: space-between; align-items: center;}
+.admin-toggle-bar span { font-size: 14px; font-weight: 700; }
+.btn-toggle { background: #fff; color: #111; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px;}
 
 /* SIDEBAR & FLIP CARD */
 .sidebar { background: var(--white); border: 1px solid var(--silver); border-radius: 20px; padding: 32px; position: sticky; top: 100px; text-align: center; }
-.id-card-container { perspective: 1000px; width: 100%; height: 260px; margin-bottom: 24px; cursor: pointer; user-select: none; outline: none; }
+.id-card-container { perspective: 1000px; width: 100%; height: 280px; margin-bottom: 24px; cursor: pointer; user-select: none; outline: none; }
 .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
 .id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
 .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
 .id-card-front { padding: 24px; text-align: left; }
 .id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 24px; align-items: center; justify-content: center; }
 
-/* Watermark & Content */
-.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 120px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
+/* Watermark */
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 140px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; font-family: sans-serif; }
 .card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
 
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.card-logo { font-size: 28px; font-weight: 900; color: var(--maroon); }
-.card-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
-.card-name { font-size: 20px; font-weight: 900; margin-bottom: 4px; color: var(--black); }
+.card-logo { font-size: 32px; font-weight: 900; color: var(--maroon); }
+.card-type { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.card-name { font-size: 22px; font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-role { font-size: 11px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: auto;}
-.card-id { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px;}
+.card-id { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px;}
 
-.barcode-wrap-front { background: var(--white); border-radius: 4px; padding: 4px; width: 100%; margin-top: auto; }
-.barcode-wrap-front svg { width: 100%; height: 45px; }
+/* Barcode fixed */
+.barcode-wrap-front { background: #fff; border-radius: 4px; padding: 8px; width: 100%; margin-top: auto; border: 1px solid #eee; }
+.barcode-wrap-front svg { width: 100%; height: 60px; display: block; }
 
+/* QR Code fixed */
 .card-back-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 10px;}
-.card-sec-code { font-family: monospace; font-size: 18px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 10px;}
+.card-sec-code { font-family: monospace; font-size: 20px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 6px 16px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 10px;}
 .btn-reset { background: none; border: none; cursor: pointer; color: #fff; opacity: 0.7; display: flex; align-items: center;}
 .btn-reset:hover { opacity: 1; }
 .pack-seq { font-size: 12px; font-weight: 700; color: var(--white); margin-top: 12px; }
-.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 10px; width: 100px; height: 100px; }
-.qr-wrap svg { width: 100%; height: 100%; }
+.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 140px; height: 140px; }
+.qr-wrap svg { width: 100%; height: 100%; display: block; }
 
-.flip-hint { font-size: 12px; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.flip-hint { font-size: 13px; color: var(--gray); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
 /* MAIN CONTENT */
 .main-content { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
@@ -70,43 +98,46 @@ html, body {
 .link-card.locked { opacity: 0.6; cursor: not-allowed; }
 .link-card.locked:hover { transform: none; border-color: var(--silver); background: #FAFAFA; }
 
-/* ADMIN PANEL */
-.admin-panel { border: 2px solid #111; background: #111; color: #fff; }
-.admin-panel h3 { color: #fff; border-bottom-color: rgba(255,255,255,0.2); }
-.admin-panel h3 i { color: #fff; }
-.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: var(--maroon); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 700; border: none; cursor: pointer; font-family: inherit;}
-.admin-btn.outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.3); }
-
-/* MODAL FOR COURSE CHANGE */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
-.modal-overlay.active { display: flex; }
-.modal-content { background: var(--white); border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.1); }
-.close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; color: var(--gray); }
-.modal-title { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
-.modal-subtitle { font-size: 14px; color: var(--gray); margin-bottom: 24px; }
-.course-option { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1.5px solid var(--silver); border-radius: 10px; margin-bottom: 12px; cursor: pointer; }
-.course-option:hover { border-color: var(--maroon); background: #FAFAFA; }
+/* COURSE MANAGEMENT UI */
+.course-option { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1.5px solid var(--silver); border-radius: 10px; margin-bottom: 12px; cursor: pointer; background: #FAFAFA;}
+.course-option:hover { border-color: var(--maroon); }
 .course-option.selected { border-color: var(--maroon); background: #FFF5F6; }
 .course-option input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; }
 .course-option label { font-size: 15px; font-weight: 700; cursor: pointer; flex: 1; }
-.btn-save-courses { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; font-family: inherit;}
-.btn-save-courses:hover { background: var(--maroon-hover); }
+.btn-save { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; font-family: inherit; display: flex; justify-content: center; align-items: center; gap: 8px;}
+.btn-save:hover { background: var(--maroon-hover); }
+
+/* ADMIN PANEL (Master Switch) */
+.admin-panel { display: none; border: 2px solid #111; background: #111; color: #fff; }
+.admin-panel h3 { color: #fff; border-bottom-color: rgba(255,255,255,0.2); }
+.admin-panel h3 i { color: #fff; }
+.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--success); }
+input:checked + .slider:before { transform: translateX(26px); }
 
 .loader-box { display: none; text-align: center; padding: 40px; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
+/* UTILS */
+.hidden { display: none !important; }
+
 @media (max-width: 900px) { 
     .container { grid-template-columns: 1fr; padding: 0 16px; } 
     .sidebar { position: static; } 
-    .grid-links, .admin-grid { grid-template-columns: 1fr; }
+    .grid-links { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 <header class="header">
-    <a href="index.html" class="brand"><div class="brand-logo">∆</div> Dashboard</a>
+    <a href="index.html" class="brand">
+        <div class="brand-logo">∆</div> 
+        <div class="brand-text">Dashboard</div>
+    </a>
     <a href="index.html" class="btn-back"><i data-lucide="arrow-left"></i> Home</a>
 </header>
 
@@ -119,6 +150,12 @@ html, body {
         </div>
         
         <div id="profileData" style="display:none;">
+            <!-- ADMIN VIEW TOGGLE (Only visible to admin) -->
+            <div class="admin-toggle-bar" id="adminToggleBar">
+                <span><i data-lucide="shield-alert" style="width:16px;height:16px; vertical-align:middle; margin-right:4px;"></i> Admin Mode Active</span>
+                <button class="btn-toggle" id="toggleViewBtn" onclick="toggleAdminView()">Switch to Student View</button>
+            </div>
+
             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                 <div class="id-card-inner">
                     <!-- FRONT (Barcode) -->
@@ -154,7 +191,7 @@ html, body {
                     </div>
                 </div>
             </div>
-            <div class="flip-hint"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap to flip</div>
+            <div class="flip-hint"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap card to flip</div>
             <a href="admissions-letter.html" target="_blank" class="btn-back" style="width:100%; justify-content:center; margin-top:16px;">View Admissions Letter</a>
         </div>
     </div>
@@ -162,67 +199,85 @@ html, body {
     <!-- MAIN CONTENT -->
     <div class="main-content">
         
-        <!-- ADMIN PANEL -->
-        <div class="card admin-panel" id="adminPanel" style="display:none;">
-            <h3><i data-lucide="shield-alert"></i> Admin Control</h3>
-            <div class="admin-grid">
-                <a href="admissions-list-2027.html" target="_blank" class="admin-btn"><i data-lucide="users"></i> Admissions List 2027</a>
-                <button onclick="setupExamPortal()" class="admin-btn outline"><i data-lucide="settings"></i> Setup Exam Portal</button>
+        <!-- ADMIN DASHBOARD (Toggles visibility) -->
+        <div id="adminDashboard" class="hidden">
+            <div class="card admin-panel" style="display:block;">
+                <h3><i data-lucide="settings"></i> Admin Control Panel</h3>
+                
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <div>
+                        <div style="font-size:16px; font-weight:700;">Exam Portal Status</div>
+                        <div style="font-size:13px; color:#aaa;" id="portalStatusText">Checking...</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="portalMasterSwitch" onchange="toggleExamPortal(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                    <a href="admissions-list-2027.html" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; padding:16px; background:#FFF; color:#111; border-radius:8px; text-decoration:none; font-weight:700;">
+                        <i data-lucide="users"></i> Admissions List
+                    </a>
+                    <button onclick="uploadExamPaper()" style="display:flex; align-items:center; justify-content:center; gap:8px; padding:16px; background:rgba(255,255,255,0.1); color:#FFF; border:1px solid rgba(255,255,255,0.3); border-radius:8px; text-decoration:none; font-weight:700; cursor:pointer; font-family:inherit;">
+                        <i data-lucide="upload"></i> Upload Exam Paper
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <h3><i data-lucide="monitor-play"></i> Entrance Examination</h3>
-            <p style="font-size:14px; color:var(--gray); margin-bottom:24px;" id="examStatusText">You must write 1 paper per course. The exam portal is locked until the official date.</p>
-            <div class="grid-links">
-                <a href="#" id="examGatewayLink" class="link-card locked">
-                    <i data-lucide="lock"></i>
-                    <span>Exam Portal</span>
-                    <span style="font-size:12px; font-weight:normal; color:var(--gray);">Locked</span>
-                </a>
-                <a href="resources.html" class="link-card">
-                    <i data-lucide="folder-open"></i>
-                    <span>Study Resources</span>
-                </a>
+        <!-- STUDENT DASHBOARD (Standard View) -->
+        <div id="studentDashboard">
+            <div class="card">
+                <h3><i data-lucide="monitor-play"></i> Entrance Examination</h3>
+                <p style="font-size:14px; color:var(--gray); margin-bottom:24px;" id="examStatusText">Checking exam portal status...</p>
+                <div class="grid-links">
+                    <a href="#" id="examGatewayLink" class="link-card locked">
+                        <i data-lucide="lock"></i>
+                        <span>Exam Portal</span>
+                        <span style="font-size:12px; font-weight:normal; color:var(--gray);" id="examPortalSub">Locked</span>
+                    </a>
+                    <a href="resources.html" class="link-card">
+                        <i data-lucide="folder-open"></i>
+                        <span>Study Resources</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- COURSE MANAGEMENT UI -->
+            <div class="card">
+                <h3><i data-lucide="book-open"></i> My Courses</h3>
+                <p style="font-size:14px; color:var(--gray); margin-bottom:16px;">Select the tracks you want to study. This updates your Admissions Letter automatically.</p>
+                
+                <div id="courseSelectionArea">
+                    <label class="course-option" id="optMath">
+                        <input type="checkbox" value="Mathematics" id="chkMath" onchange="toggleCourseUI()">
+                        <label for="chkMath">Mathematics (IFB-S)</label>
+                    </label>
+                    
+                    <label class="course-option" id="optWeb">
+                        <input type="checkbox" value="Front-end Web Development" id="chkWeb" onchange="toggleCourseUI()">
+                        <label for="chkWeb">Web Development (IFB AQ-B)</label>
+                    </label>
+
+                    <button class="btn-save" id="saveCoursesBtn" onclick="saveCourses()">
+                        <i data-lucide="save"></i> Save Course Selection
+                    </button>
+                </div>
+
+                <div style="margin-top:16px; display:flex; gap:12px;">
+                    <button onclick="deregister()" class="btn-back" style="color:#B91C1C; border-color:#FECACA;" id="deregisterBtn">Deregister Account</button>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <h3><i data-lucide="settings"></i> Account Settings</h3>
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom: 16px;">
-                <button onclick="openCourseModal()" class="btn-back" style="background:var(--maroon); color:#fff; border-color:var(--maroon);" id="changeCourseBtn">Change Courses</button>
-                <button onclick="deregister()" class="btn-back" style="color:#B91C1C; border-color:#FECACA;" id="deregisterBtn">Deregister</button>
-            </div>
-            <p style="font-size: 13px; color: var(--gray);">Current Courses: <span id="currentCoursesDisplay" style="font-weight: 700; color: var(--black);">Loading...</span></p>
-        </div>
-    </div>
-</div>
-
-<!-- COURSE MODAL -->
-<div class="modal-overlay" id="courseModal">
-    <div class="modal-content">
-        <button class="close-modal" onclick="document.getElementById('courseModal').classList.remove('active')"><i data-lucide="x"></i></button>
-        <div class="modal-title">Update Courses</div>
-        <div class="modal-subtitle">Select the tracks you want to study. This updates your Admissions Letter.</div>
-        
-        <label class="course-option" id="optMath">
-            <input type="checkbox" value="Mathematics" id="chkMath">
-            <label for="chkMath">Mathematics (IFB-S)</label>
-        </label>
-        
-        <label class="course-option" id="optWeb">
-            <input type="checkbox" value="Front-end Web Development" id="chkWeb">
-            <label for="chkWeb">Web Development (IFB AQ-B)</label>
-        </label>
-
-        <button class="btn-save-courses" id="saveCoursesBtn" onclick="saveCourses()">Save Changes</button>
     </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
@@ -231,11 +286,16 @@ const db = getFirestore(app);
 
 let currentUserData = null;
 let currentUserId = null;
+let isAdmin = false;
+let showAdminView = false;
+let isPortalOpen = false;
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     currentUserId = user.uid;
+    isAdmin = (user.email === "n1nathaniel971@gmail.com");
     
+    // Fetch Student Data
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
 
@@ -243,12 +303,7 @@ onAuthStateChanged(auth, async (user) => {
         let data = docSnap.data();
         currentUserData = data;
 
-        // 1. Admin Check
-        if (user.email === "n1nathaniel971@gmail.com") {
-            document.getElementById('adminPanel').style.display = 'block';
-        }
-
-        // 2. Generate IDs if missing
+        // Generate IDs if missing
         if (!data.studentId) {
             const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
             const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
@@ -265,85 +320,128 @@ onAuthStateChanged(auth, async (user) => {
             currentUserData = data;
         }
 
-        // 3. Populate UI
+        // Populate Card safely
         document.getElementById('loader').style.display = 'none';
         document.getElementById('profileData').style.display = 'block';
-        
         document.getElementById('userName').textContent = data.name;
         document.getElementById('userStatus').textContent = data.status;
         document.getElementById('userStudentId').textContent = data.studentId;
         document.getElementById('userSecurityCode').textContent = data.securityCode;
         document.getElementById('userPackSeq').textContent = `${data.packSeq.toString().padStart(2, '0')}/12`;
-        
-        // Display current courses
-        const coursesText = (data.courses || []).map(c => c === "Mathematics" ? "Math" : "Web Dev").join(" & ") || "None";
-        document.getElementById('currentCoursesDisplay').textContent = coursesText;
 
-        // 4. Generate Barcode & QR
-        try {
-            JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 45, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
-        } catch (e) { console.warn(e); }
+        // Generate Barcode & QR (Wait for render)
+        setTimeout(() => {
+            try {
+                JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0, lineColor: "#7A1F2B" });
+            } catch (e) { console.warn("Barcode error:", e); }
 
-        try {
-            const qrPayload = `ID: ${data.studentId}\nName: ${data.name}\nStatus: ${data.status}\nPack: ${data.packSeq}/12\nCode: ${data.securityCode}`;
-            const qr = qrcode(0, 'M');
-            qr.addData(qrPayload);
-            qr.make();
-            document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
-        } catch (e) { console.warn(e); }
+            try {
+                const qrPayload = `ID: ${data.studentId}\nName: ${data.name}\nPack: ${data.packSeq}`;
+                const qr = qrcode(0, 'M');
+                qr.addData(qrPayload);
+                qr.make();
+                document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+            } catch (e) { console.warn("QR error:", e); }
+        }, 100);
 
-        // 5. Check Exam Lock
-        const now = new Date();
-        const examDate = new Date("2027-01-13T00:00:00Z");
-        if (now >= examDate || user.email === "n1nathaniel971@gmail.com") {
-            const link = document.getElementById('examGatewayLink');
-            link.classList.remove('locked');
-            link.href = "exam-gateway.html";
-            link.innerHTML = '<i data-lucide="monitor-play"></i><span>Enter Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--maroon);">Active</span>';
-            document.getElementById('examStatusText').textContent = "The exam portal is now open. Good luck.";
-            lucide.createIcons();
+        // Populate Course UI
+        const courses = data.courses || [];
+        if (courses.includes("Mathematics")) { document.getElementById('chkMath').checked = true; }
+        if (courses.includes("Front-end Web Development")) { document.getElementById('chkWeb').checked = true; }
+        toggleCourseUI(); // Apply styling
+
+        // ADMIN SETUP
+        if (isAdmin) {
+            document.getElementById('adminToggleBar').style.display = 'flex';
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            document.getElementById('studentDashboard').classList.add('hidden');
+            showAdminView = true;
+            document.getElementById('toggleViewBtn').textContent = "Switch to Student View";
             
-            if (user.email !== "n1nathaniel971@gmail.com") {
-                document.getElementById('changeCourseBtn').disabled = true;
-                document.getElementById('changeCourseBtn').style.opacity = '0.5';
-                document.getElementById('deregisterBtn').disabled = true;
-                document.getElementById('deregisterBtn').style.opacity = '0.5';
+            // Fetch Global Exam Config
+            const configSnap = await getDoc(doc(db, "config", "exam"));
+            if (configSnap.exists()) {
+                isPortalOpen = configSnap.data().isOpen || false;
+                document.getElementById('portalMasterSwitch').checked = isPortalOpen;
+                updatePortalStatusText();
             }
+        } else {
+            // Standard student: Check exam config
+            const configSnap = await getDoc(doc(db, "config", "exam"));
+            if (configSnap.exists()) {
+                isPortalOpen = configSnap.data().isOpen || false;
+            }
+            updateExamPortalUI();
         }
+
     }
 });
 
-// OPEN MODAL & PRE-FILL CHECKBOXES
-window.openCourseModal = function() {
-    const modal = document.getElementById('courseModal');
-    const chkMath = document.getElementById('chkMath');
-    const chkWeb = document.getElementById('chkWeb');
-    const optMath = document.getElementById('optMath');
-    const optWeb = document.getElementById('optWeb');
-
-    // Reset states
-    chkMath.checked = false;
-    chkWeb.checked = false;
-    optMath.classList.remove('selected');
-    optWeb.classList.remove('selected');
-
-    // Pre-fill based on current DB data
-    const courses = currentUserData.courses || [];
-    if (courses.includes("Mathematics")) { chkMath.checked = true; optMath.classList.add('selected'); }
-    if (courses.includes("Front-end Web Development")) { chkWeb.checked = true; optWeb.classList.add('selected'); }
-
-    modal.classList.add('active');
+// --- ADMIN LOGIC ---
+window.toggleAdminView = function() {
+    showAdminView = !showAdminView;
+    if (showAdminView) {
+        document.getElementById('adminDashboard').classList.remove('hidden');
+        document.getElementById('studentDashboard').classList.add('hidden');
+        document.getElementById('toggleViewBtn').textContent = "Switch to Student View";
+    } else {
+        document.getElementById('adminDashboard').classList.add('hidden');
+        document.getElementById('studentDashboard').classList.remove('hidden');
+        document.getElementById('toggleViewBtn').textContent = "Switch to Admin View";
+        updateExamPortalUI(); // Update student view
+    }
 };
 
-// ADD SELECTED STYLING TO CHECKBOXES
-document.getElementById('chkMath').addEventListener('change', (e) => {
-    document.getElementById('optMath').classList.toggle('selected', e.target.checked);
-});
-document.getElementById('chkWeb').addEventListener('change', (e) => {
-    document.getElementById('optWeb').classList.toggle('selected', e.target.checked);
-});
+window.toggleExamPortal = async function(checkbox) {
+    const isChecked = checkbox.checked;
+    document.getElementById('portalStatusText').textContent = "Updating...";
+    
+    try {
+        await setDoc(doc(db, "config", "exam"), { isOpen: isChecked }, { merge: true });
+        isPortalOpen = isChecked;
+        updatePortalStatusText();
+    } catch (e) {
+        alert("Error updating portal: " + e.message);
+        checkbox.checked = !isChecked; // revert
+        updatePortalStatusText();
+    }
+};
 
-// SAVE COURSES
+function updatePortalStatusText() {
+    document.getElementById('portalStatusText').textContent = isPortalOpen ? "OPEN - Students can enter." : "CLOSED - Students are locked out.";
+    document.getElementById('portalStatusText').style.color = isPortalOpen ? "#15803D" : "#B91C1C";
+}
+
+// --- STUDENT LOGIC ---
+function updateExamPortalUI() {
+    const link = document.getElementById('examGatewayLink');
+    const statusText = document.getElementById('examStatusText');
+    const subText = document.getElementById('examPortalSub');
+    const now = new Date();
+    const examDate = new Date("2027-01-13T00:00:00Z");
+
+    if (isPortalOpen && now >= examDate) {
+        link.classList.remove('locked');
+        link.href = "exam-gateway.html";
+        link.innerHTML = '<i data-lucide="monitor-play"></i><span>Enter Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--maroon);">Active</span>';
+        statusText.textContent = "The exam portal is now open. Good luck.";
+        document.getElementById('deregisterBtn').disabled = true;
+        document.getElementById('deregisterBtn').style.opacity = '0.5';
+    } else {
+        link.classList.add('locked');
+        link.href = "#";
+        let reason = !isPortalOpen ? "Admin has closed the portal." : "Opens on 13 Jan 2027.";
+        link.innerHTML = `<i data-lucide="lock"></i><span>Exam Portal</span><span style="font-size:12px; font-weight:normal; color:var(--gray);">${reason}</span>`;
+        statusText.textContent = "The exam portal is currently locked.";
+    }
+    lucide.createIcons();
+}
+
+window.toggleCourseUI = function() {
+    document.getElementById('optMath').classList.toggle('selected', document.getElementById('chkMath').checked);
+    document.getElementById('optWeb').classList.toggle('selected', document.getElementById('chkWeb').checked);
+};
+
 window.saveCourses = async function() {
     const btn = document.getElementById('saveCoursesBtn');
     const chkMath = document.getElementById('chkMath');
@@ -358,66 +456,55 @@ window.saveCourses = async function() {
         return;
     }
 
-    btn.textContent = "Saving...";
+    btn.innerHTML = '<i data-lucide="loader" class="spin"></i> Saving...';
     btn.disabled = true;
 
     try {
         await updateDoc(doc(db, "users", currentUserId), { courses: newCourses });
-        
-        // Update local state
         currentUserData.courses = newCourses;
-        
-        // Update display
-        const coursesText = newCourses.map(c => c === "Mathematics" ? "Math" : "Web Dev").join(" & ");
-        document.getElementById('currentCoursesDisplay').textContent = coursesText;
-        
-        // Close modal
-        document.getElementById('courseModal').classList.remove('active');
-        
+        btn.innerHTML = '<i data-lucide="check"></i> Saved Successfully';
+        setTimeout(() => {
+            btn.innerHTML = '<i data-lucide="save"></i> Save Course Selection';
+        }, 2000);
     } catch (e) {
         alert("Error saving courses: " + e.message);
+        btn.innerHTML = '<i data-lucide="save"></i> Save Course Selection';
     } finally {
-        btn.textContent = "Save Changes";
         btn.disabled = false;
+        lucide.createIcons();
     }
 };
 
-// OTHER ACTIONS
+// --- UTILS ---
 window.resetSecurityCode = async function(e) {
     e.stopPropagation(); 
-    if(!confirm("Are you sure you want to reset your security code? You will need the new one to log into the exam portal.")) return;
+    if(!confirm("Are you sure you want to reset your security code?")) return;
     
     try {
         const newCode = Math.random().toString(36).substring(2,8).toUpperCase();
         await updateDoc(doc(db, "users", currentUserId), { securityCode: newCode });
         currentUserData.securityCode = newCode;
-        
         document.getElementById('userSecurityCode').textContent = newCode;
         
-        const qrPayload = `ID: ${currentUserData.studentId}\nName: ${currentUserData.name}\nStatus: ${currentUserData.status}\nPack: ${currentUserData.packSeq}/12\nCode: ${newCode}`;
+        const qrPayload = `ID: ${currentUserData.studentId}\nName: ${currentUserData.name}\nPack: ${currentUserData.packSeq}`;
         const qr = qrcode(0, 'M');
         qr.addData(qrPayload);
         qr.make();
-        document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
-        
-    } catch (err) {
-        alert("Error resetting code: " + err.message);
-    }
+        document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    } catch (err) { alert("Error: " + err.message); }
 };
 
-window.setupExamPortal = function() {
-    alert("Admin Setup: This will open the interface to upload exam papers and manage the live session.");
+window.uploadExamPaper = function() {
+    alert("Admin Setup: This opens the interface to upload exam papers and manage the live session.");
 };
 
 window.deregister = async function() {
-    if(confirm("Are you sure you want to deregister? This will free up your Student ID sequence for a new applicant.")) {
+    if(confirm("Are you sure you want to deregister? This frees your ID sequence for a new applicant.")) {
         try {
             await deleteDoc(doc(db, "users", currentUserId));
             await deleteUser(auth.currentUser);
             window.location.href = "index.html";
-        } catch (e) {
-            alert("Please log out and log back in before deleting.");
-        }
+        } catch (e) { alert("Please log out and log back in before deleting."); }
     }
 };
 
