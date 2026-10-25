@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AE-S 2027/IFB - Mathematics Marking Guide</title>
+<title>AE-S 2027/IFB - Mathematics MEMO</title>
 <script>
   window.MathJax = {
     tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
@@ -16,32 +16,9 @@
   @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
-  body { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.6; color: #111; background: #F8FAFC; padding-top: 60px; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.6; color: #000; background: #F8FAFC; }
   
-  /* FLOATING CONTROL BAR */
-  .control-bar {
-    position: fixed; top: 0; left: 0; right: 0; height: 60px;
-    background: #FFF; border-bottom: 2px solid #7A1F2B;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 24px; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    font-family: 'Inter', sans-serif;
-  }
-  .control-bar .brand { font-size: 20px; font-weight: 900; color: #7A1F2B; display: flex; align-items: center; gap: 8px; }
-  .control-actions { display: flex; gap: 12px; }
-  .btn-nav {
-    padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 14px;
-    text-decoration: none; cursor: pointer; border: 1.5px solid #E2E8F0;
-    color: #111; background: #FFF; transition: 0.2s; display: flex; align-items: center; gap: 6px;
-  }
-  .btn-nav:hover { border-color: #111; }
-  .btn-nav.primary { background: #7A1F2B; color: #FFF; border-color: #7A1F2B; }
-  .btn-nav.primary:hover { background: #5A1620; }
-  
-  /* DEEPSEEK AI BUTTON (Authorized Colors Only) */
-  .btn-nav.ai { background: #F8FAFC; color: #7A1F2B; border: 2px solid #7A1F2B; font-weight: 800; }
-  .btn-nav.ai:hover { background: #E2E8F0; }
-
-  /* A4 PAGE SETUP - Strict Padding to prevent overlap */
+  /* A4 PAGE SETUP */
   .page { 
     width: 210mm; 
     height: 297mm; 
@@ -55,54 +32,87 @@
     flex-direction: column; 
     page-break-after: always; 
   }
-  @media print { body { background: white; padding-top: 0; } .page { margin: 0; box-shadow: none; } .control-bar { display: none !important; } }
+  @media print { 
+    body { background: white; } 
+    .page { margin: 0; box-shadow: none; } 
+  }
   
-  /* SECURITY & WATERMARK */
-  .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(122,31,43,0.02) 0px, rgba(122,31,43,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
-  .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.05; pointer-events: none; z-index: 0; }
+  /* SECURITY PATTERN */
+  .security-pattern { 
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); 
+    pointer-events: none; 
+    z-index: 0; 
+  }
   
-  /* CONTENT WRAPPER - 45mm bottom padding strictly prevents footer overlap */
+  /* CONTENT WRAPPER - Strict 40mm padding prevents footer overlap */
   .content-wrapper { 
     position: relative; 
     z-index: 1; 
     display: flex; 
     flex-direction: column; 
-    flex: 1; 
-    padding-bottom: 45mm; 
+    flex: 1;
+    padding-bottom: 40mm; 
   }
   
-  /* HEADERS & FOOTERS */
-  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; border-bottom: 1px solid #111; padding-bottom: 4px; }
-  .header-left { width: 30%; text-align: left; font-weight: bold; color: #7A1F2B; }
+  /* EXAM HEADERS */
+  .header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 30px; 
+    font-size: 10.5pt; 
+    font-family: Arial, sans-serif;
+    flex-shrink: 0;
+  }
+  .header-left { width: 30%; text-align: left; font-weight: bold; color: #000; }
   .header-center { width: 40%; text-align: center; }
-  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #111; }
-  .header-center .confidential { font-style: italic; font-weight: bold; color: #7A1F2B; }
-  .header-right { width: 30%; text-align: right; font-weight: bold; color: #7A1F2B; }
-  
-  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; }
+  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: #000; }
+  .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
+
+  /* FOOTER */
+  .footer { 
+    position: absolute; 
+    bottom: 10mm; 
+    left: 20mm; 
+    right: 20mm; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    z-index: 2; 
+    font-size: 10pt; 
+    font-family: Arial, sans-serif;
+    height: 15mm;
+  }
   .footer-left { display: flex; align-items: center; gap: 10px; }
   .footer-qr { display: inline-block; width: 35px; height: 35px; }
   .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
   .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
-  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #7A1F2B; }
-  .footer-brand .tag { font-size: 7pt; color: #111; }
-  .footer-right { color: #111; font-style: italic; }
-  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .tag { font-size: 7pt; color: #000; }
+  .footer-right { color: #000; font-style: italic;}
 
-  /* COVER PAGE */
+  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; }
+  .bottom-barcode svg { display: block; }
+
+  /* ========================================= */
+  /* COVER PAGE SPECIFIC (Matches Question Paper) */
+  /* ========================================= */
   .cover-page { padding: 15mm 20mm 20mm 20mm; }
   .cover-confidential { text-align: center; font-style: italic; font-size: 12pt; margin-bottom: 30px; color: #111;}
   .cover-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; margin-left: 10px;}
   .ifb-logo-svg { width: 80px; height: 80px; }
   .cover-header-text .title { font-size: 32px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px;}
   .cover-header-text .sub { font-size: 12pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
-  .cover-header-text .country { font-size: 10pt; font-family: Arial, sans-serif; margin-top: 5px; color: #111;}
+  .cover-header-text .country { font-size: 10pt; font-family: Arial, sans-serif; margin-top: 5px; color: #555;}
   
   .cover-black-box { background: #111; color: white; border-radius: 10px; padding: 15px 30px; text-align: center; width: 80%; margin: 0 auto 40px auto; border: 3px solid #7A1F2B; }
   .cover-black-box h1 { font-size: 22pt; font-weight: normal; line-height: 1.3; letter-spacing: 1px; }
-  .cover-grey-box { background: #F8FAFC; border: 3px solid #7A1F2B; border-radius: 8px; padding: 8px 40px; text-align: center; width: max-content; margin: 0 auto 50px auto; }
+  .cover-grey-box { background: #f8f8f8; border: 3px solid #7A1F2B; border-radius: 8px; padding: 8px 40px; text-align: center; width: max-content; margin: 0 auto 50px auto; }
   .cover-grey-box h2 { font-size: 20pt; font-weight: normal; letter-spacing: 1px; color: #111;}
-  .cover-dashed-box { border: 4px dashed #7A1F2B; border-radius: 10px; padding: 30px 20px; text-align: center; width: 85%; margin: 0 auto 40px auto; background: #FFF; }
+  .cover-dashed-box { border: 4px dashed #7A1F2B; border-radius: 10px; padding: 30px 20px; text-align: center; width: 85%; margin: 0 auto 40px auto; background: #FFF5F6; }
   .cover-dashed-box h3 { font-size: 18pt; font-weight: bold; margin-bottom: 10px; color: #111;}
   .cover-dashed-box h4 { font-size: 16pt; font-weight: bold; margin-bottom: 0; color: #111;}
   .cover-marks { font-size: 13pt; font-weight: bold; margin-left: 10px; margin-bottom: 40px; font-family: Arial, sans-serif; color: #111; }
@@ -111,46 +121,30 @@
   .cover-barcode-section .code-x01 { font-size: 18pt; font-weight: bold; margin-bottom: 5px; }
   .cover-bottom-text { text-align: center; font-size: 11pt; font-weight: bold; margin-top: auto; margin-bottom: 20px; line-height: 1.5; color: #111; }
 
-  /* AI HELP BOX */
-  .ai-help-box { border: 2px solid #7A1F2B; border-radius: 8px; padding: 15px; margin: 20px 10px; text-align: center; background: #F8FAFC; font-family: Arial, sans-serif; }
-  .ai-help-box h4 { font-size: 14pt; font-weight: bold; color: #7A1F2B; margin-bottom: 8px; }
-  .ai-help-box p { font-size: 10pt; color: #111; margin-bottom: 12px; }
-  .ai-btn { display: inline-block; background: #7A1F2B; color: #FFF; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 11pt; border: 1px solid #7A1F2B; transition: 0.2s; }
-  .ai-btn:hover { background: #5A1620; }
-
-  /* MARKING STYLES */
-  .q-header { font-size: 14pt; font-weight: bold; font-family: Arial, sans-serif; margin: 25px 0 15px 0; border-bottom: 2px solid #111; padding-bottom: 4px; color: #7A1F2B; page-break-after: avoid; }
+  /* ========================================= */
+  /* MARKING MEMO BODY (Answer Book Spacing)   */
+  /* ========================================= */
+  .q-header { font-size: 14pt; font-weight: bold; font-family: Arial, sans-serif; margin: 25px 0 15px 0; border-bottom: 2px solid #000; padding-bottom: 4px; color: #7A1F2B; page-break-after: avoid; }
   
   .sub-question { display: block; margin-bottom: 24px; page-break-inside: avoid; }
-  .q-title { font-size: 12pt; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 8px; display: flex; justify-content: space-between; color: #111; border-bottom: 1px dotted #111; padding-bottom: 2px;}
+  .q-title { font-size: 12pt; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 8px; display: flex; justify-content: space-between; color: #000; border-bottom: 1px dotted #000; padding-bottom: 2px;}
   
-  .step { display: block; margin-bottom: 8px; line-height: 1.6; position: relative; padding-left: 24px; font-size: 11pt; }
+  .step { display: block; margin-bottom: 6px; line-height: 1.6; position: relative; padding-left: 24px; font-size: 11.5pt; }
   .step .tick { color: #7A1F2B; font-weight: bold; font-size: 14pt; position: absolute; left: 0; top: 0; }
   
-  .rule-box { border: 1.5px solid #111; padding: 10px 12px; margin: 12px 0 12px 24px; font-size: 10pt; font-family: Arial, sans-serif; background: #F8FAFC; }
+  .rule-box { border: 1.5px solid #000; padding: 10px 12px; margin: 12px 0 12px 24px; font-size: 10pt; font-family: Arial, sans-serif; background: #FAFAFA; }
   .rule-box strong { color: #7A1F2B; }
-  .no-mark { color: #111; font-weight: bold; font-family: Arial, sans-serif; font-size: 10pt; }
+  .or-text { font-weight: bold; font-style: italic; color: #000; font-family: Arial, sans-serif; font-size: 10pt; margin: 6px 0 6px 24px; display: block; }
 </style>
 </head>
 <body>
-
-<!-- FLOATING UI BAR -->
-<div class="control-bar">
-    <div class="brand"><span>∆</span> Marking Guide</div>
-    <div class="control-actions">
-        <a href="resources.html" class="btn-nav">Back to Resources</a>
-        <!-- DEEPSEEK AI LINK -->
-        <a href="https://chat.deepseek.com/" target="_blank" class="btn-nav ai">Ask DeepSeek AI</a>
-        <button onclick="window.print()" class="btn-nav primary">Print / Save PDF</button>
-    </div>
-</div>
 
 <!-- ==================== PAGE 1: COVER PAGE ==================== -->
 <div class="page cover-page">
   <div class="security-pattern"></div>
   <div class="content-wrapper" style="padding-bottom: 0;">
     
-    <div class="cover-confidential">AE-S / IFB / CONFIDENTIAL — MARKING GUIDE</div>
+    <div class="cover-confidential">AE-S / IFB / CONFIDENTIAL</div>
     
     <div class="cover-header">
       <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -167,7 +161,7 @@
     </div>
 
     <div class="cover-black-box">
-      <h1>MARKING GUIDE</h1>
+      <h1>MARKING MEMORANDUM</h1>
     </div>
 
     <div class="cover-grey-box">
@@ -189,15 +183,8 @@
       <svg class="barcode-cover" data-barcode="X01-MATH-2027-MEMO" data-bc-width="2.4" data-bc-height="50" data-bc-display="false"></svg>
     </div>
 
-    <!-- AI HELP BOX ON COVER -->
-    <div class="ai-help-box">
-        <h4>Struggling with a question?</h4>
-        <p>Use DeepSeek AI to help you understand the steps and logic behind the questions.</p>
-        <a href="https://chat.deepseek.com/" target="_blank" class="ai-btn">Ask DeepSeek AI Now</a>
-    </div>
-
     <div class="cover-bottom-text">
-      This marking guide consists of 7 pages.<br>For markers and moderators only.
+      This marking memo consists of 6 pages.<br>For markers and moderators only.
     </div>
 
   </div>
@@ -207,36 +194,36 @@
       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/memo-math.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
-    <div class="footer-right">Internal Use Only</div>
+    <div class="footer-right">Copyright reserved</div>
   </div>
 </div>
 
-<!-- ==================== PAGE 2: MARKING RULES ==================== -->
+<!-- ==================== PAGE 2: MARKING RULES & Q1 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
+    
     <div class="header">
-      <div class="header-left">Marking Rules</div>
-      <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-left">Mathematics</div>
+      <div class="header-center">
+        <span class="page-num">2</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
 
     <h2 style="font-family: Arial; font-size: 14pt; margin-bottom: 12px; color: #7A1F2B;">MARKING GUIDELINES</h2>
     
-    <div style="font-size: 11pt; line-height: 1.8;">
+    <div style="font-size: 11pt; line-height: 1.8; margin-bottom: 24px;">
         <p><strong>1. Tick Marks (✓):</strong> The symbol <strong>✓</strong> indicates exactly where a mark is awarded for a specific step.</p>
-        
         <p><strong>2. Alternative Methods (OR):</strong> Where an alternative method is mathematically valid, it is marked with <strong>OR</strong>. Accept any correct alternative unless explicitly stated otherwise.</p>
-
         <p><strong>3. Consistent Accuracy (C.A.):</strong> If a student makes an error in an early step but uses that <em>incorrect value correctly</em> in subsequent steps, they are awarded <strong>C.A. marks</strong>.</p>
         <div class="rule-box">
             <strong>How C.A. is Applied:</strong><br>
             If the correct answer is 10, but the student gets 8. In the next step, they multiply by 2. (8 x 2 = 16). <br>
             <span style="font-weight:bold;">Award:</span> The mark for the multiplication step (because they correctly multiplied their wrong value).<br>
-            <span class="no-mark">Do NOT Award:</span> The final accuracy mark (because 16 is not the correct final answer of 20).
+            <span style="font-weight:bold;">Do NOT Award:</span> The final accuracy mark (because 16 is not the correct final answer of 20).
         </div>
-
         <p><strong>4. When NOT to Award Marks:</strong></p>
         <ul style="margin-left: 20px; margin-bottom: 12px;">
             <li><strong>Answers Only:</strong> If a student writes only the final answer without showing the required calculation steps, award <strong>0 marks</strong> (unless specifically asked for an answer only).</li>
@@ -245,104 +232,102 @@
             <li><strong>Extraneous Roots:</strong> In equations with square roots or logs, if a student does not reject invalid roots, deduct 1 mark.</li>
         </ul>
     </div>
-  </div>
-  <div class="footer">
-    <div class="footer-left"><span class="footer-qr" data-qr="https://nylwebdev.vercel.app/memo-math.html"></span><div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div></div>
-    <div class="footer-right">Please turn over</div>
-  </div>
-  <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
-</div>
 
-<!-- ==================== PAGE 3: Q1 ==================== -->
-<div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
-  <div class="content-wrapper">
-    <div class="header">
-      <div class="header-left">Mathematics</div>
-      <div class="header-center"><span class="page-num">3</span><span class="confidential">IFB / Confidential</span></div>
-      <div class="header-right">2027</div>
-    </div>
-
-    <div class="q-header">QUESTION 1 [30 Marks]</div>
+    <div class="q-header">QUESTION 1 (Algebra) [30 Marks]</div>
 
     <div class="sub-question">
       <div class="q-title">1.1 <span>(2 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for correctly factorising the quadratic equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for both correct values of x.</div>
-      <div class="rule-box"><strong>Do NOT Award:</strong> If only one value is given, award only the factorisation mark, not the values mark.</div>
+      <div class="step"><span class="tick">✓</span> \(x^2 - 5x + 6 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \((x-2)(x-3) = 0\) <strong>[Factorisation]</strong></div>
+      <div class="step"><span class="tick">✓</span> \(x = 2\) or \(x = 3\) <strong>[Values]</strong></div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">1.2 <span>(3 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for converting to standard quadratic form.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for factorising the quadratic in terms of the base.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for both final exponents.</div>
+      <div class="step"><span class="tick">✓</span> \(2^{2x+1} - 5 \cdot 2^x + 2 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(2(2^x)^2 - 5(2^x) + 2 = 0\) <strong>[Standard form]</strong></div>
+      <div class="step">Let \(k = 2^x\): \(2k^2 - 5k + 2 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \((2k - 1)(k - 2) = 0\) <strong>[Factorising]</strong></div>
+      <div class="step">\(k = \frac{1}{2}\) or \(k = 2\)</div>
+      <div class="step"><span class="tick">✓</span> \(2^x = 2^{-1} \implies x = -1\) <strong>[Correct exponent]</strong></div>
+      <div class="step"><span class="tick">✓</span> \(2^x = 2^1 \implies x = 1\)</div>
+      <div class="rule-box"><strong>C.A. Applies:</strong> If factorisation is wrong but values substituted correctly into \(2^x\), award C.A. marks.</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">1.3 <span>(4 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for squaring both sides correctly.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for simplifying and factorising.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for checking and rejecting the extraneous root.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the final correct answer.</div>
-      <div class="rule-box"><strong>Do NOT Award:</strong> If a student provides an extraneous root as a solution without explicitly rejecting it, deduct 1 mark.</div>
+      <div class="step"><span class="tick">✓</span> \(\sqrt{2x+5} - x = 1\)</div>
+      <div class="step"><span class="tick">✓</span> \(\sqrt{2x+5} = x+1\) <strong>[Isolating root]</strong></div>
+      <div class="step"><span class="tick">✓</span> \(2x+5 = x^2 + 2x + 1\) <strong>[Squaring both sides]</strong></div>
+      <div class="step"><span class="tick">✓</span> \(x^2 - 4 = 0 \implies (x-2)(x+2) = 0\)</div>
+      <div class="step">\(x = 2\) or \(x = -2\)</div>
+      <div class="step"><span class="tick">✓</span> Check \(x=2\): \(\sqrt{9} - 2 = 1\) (Valid). Check \(x=-2\): \(\sqrt{1} - (-2) = 3 \neq 1\) (Invalid).</div>
+      <div class="step"><span class="tick">✓</span> Final Answer: \(x = 2\)</div>
+      <div class="rule-box"><strong>Do NOT Award:</strong> Giving \(x = -2\) as a solution without checking. (1 mark lost).</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left"><span class="footer-qr" data-qr="https://nylwebdev.vercel.app/memo-math.html"></span><div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div></div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+</div>
+
+<!-- ==================== PAGE 3: Q1 Cont & Q2 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">Mathematics</div>
+      <div class="header-center">
+        <span class="page-num">3</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">1.4.1 <span>(5 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for rewriting as a single fraction.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for simplifying the numerator.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for identifying the critical values.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for a correctly drawn sign table/number line.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the correct final inequality.</div>
-    </div>
-  </div>
-  <div class="footer">
-    <div class="footer-left"><span class="footer-qr" data-qr="https://nylwebdev.vercel.app/memo-math.html"></span><div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div></div>
-    <div class="footer-right">Please turn over</div>
-  </div>
-  <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
-</div>
-
-<!-- ==================== PAGE 4: Q1 Cont & Q2 ==================== -->
-<div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
-  <div class="content-wrapper">
-    <div class="header">
-      <div class="header-left">Mathematics</div>
-      <div class="header-center"><span class="page-num">4</span><span class="confidential">IFB / Confidential</span></div>
-      <div class="header-right">2027</div>
+      <div class="step"><span class="tick">✓</span> \(\frac{x-1}{x+3} - \frac{x}{x-2} \geq 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(\frac{(x-1)(x-2) - x(x+3)}{(x+3)(x-2)} \geq 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(\frac{-6x+2}{(x+3)(x-2)} \geq 0\)</div>
+      <div class="step"><span class="tick">✓</span> Critical values: \(x = \frac{1}{3}, x = -3, x = 2\)</div>
+      <div class="step"><span class="tick">✓</span> Sign table / Number line correctly drawn:</div>
+      <div class="step"><span class="tick">✓</span> Final: \(x < -3\) or \(\frac{1}{3} \leq x < 2\)</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">1.4.2 <span>(5 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for setting up the correct substitution.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the correct quadratic equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the two values of the substituted variable.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for solving the first substituted equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for solving the second substituted equation.</div>
+      <div class="step"><span class="tick">✓</span> Let \(k = x - \frac{8}{x}\)</div>
+      <div class="step"><span class="tick">✓</span> \(k^2 + 2k - 15 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \((k+5)(k-3) = 0 \implies k = -5\) or \(k = 3\)</div>
+      <div class="step"><span class="tick">✓</span> \(x - \frac{8}{x} = -5 \implies x^2 + 5x - 8 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(x = \frac{-5 \pm \sqrt{25 + 32}}{2} = \frac{-5 \pm \sqrt{57}}{2}\)</div>
+      <div class="step"><span class="tick">✓</span> \(x - \frac{8}{x} = 3 \implies x^2 - 3x - 8 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(x = \frac{3 \pm \sqrt{9 + 32}}{2} = \frac{3 \pm \sqrt{41}}{2}\)</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">1.4.3 <span>(6 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for identifying Case 1 (Exponent = 0).</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for solving Case 1.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for identifying Case 2 (Base = 1).</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for showing Case 2 has no real roots.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for identifying Case 3 (Base = -1) and showing it has no real roots.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for final answers.</div>
-      <div class="rule-box"><strong>C.A. Applies:</strong> If a student finds the roots for Case 1 incorrectly, but correctly checks the base conditions, award the marks for the base checks.</div>
+      <div class="step"><span class="tick">✓</span> \((x^2 - 2x + 5)^{x^2 - 7x + 12} = 1\)</div>
+      <div class="step"><strong>Case 1: Exponent = 0</strong></div>
+      <div class="step"><span class="tick">✓</span> \(x^2 - 7x + 12 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \((x-3)(x-4) = 0 \implies x = 3, x = 4\)</div>
+      <div class="step"><strong>Case 2: Base = 1</strong></div>
+      <div class="step"><span class="tick">✓</span> \(x^2 - 2x + 5 = 1 \implies x^2 - 2x + 4 = 0\). Discriminant \(< 0\), no real roots.</div>
+      <div class="step"><strong>Case 3: Base = -1</strong> (Requires even exponent)</div>
+      <div class="step"><span class="tick">✓</span> \(x^2 - 2x + 5 = -1 \implies x^2 - 2x + 6 = 0\). Discriminant \(< 0\), no real roots.</div>
+      <div class="step"><span class="tick">✓</span> Final Answer: \(x = 3, x = 4\)</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">1.5 <span>(5 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for setting up the equations correctly.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the correct substitution.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the first number.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the second number.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for verifying the sum condition.</div>
+      <div class="step"><span class="tick">✓</span> Let numbers be \(x\) and \(y\). \(x \cdot y = 27\) and \(y = x^2\).</div>
+      <div class="step"><span class="tick">✓</span> \(x(x^2) = 27 \implies x^3 = 27 \implies x = 3\)</div>
+      <div class="step"><span class="tick">✓</span> \(y = (3)^2 = 9\)</div>
+      <div class="step"><span class="tick">✓</span> Check sum: \(3 + 9 = 12 < 20\).</div>
+      <div class="step"><span class="tick">✓</span> Numbers are 3 and 9.</div>
     </div>
   </div>
   <div class="footer">
@@ -352,53 +337,60 @@
   <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
 </div>
 
-<!-- ==================== PAGE 5: Q2 & Q3 ==================== -->
+<!-- ==================== PAGE 4: Q2 & Q3 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
+    
     <div class="header">
       <div class="header-left">Mathematics</div>
-      <div class="header-center"><span class="page-num">5</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-center">
+        <span class="page-num">4</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
 
-    <div class="q-header">QUESTION 2 [13 Marks]</div>
+    <div class="q-header">QUESTION 2 (Nature of Roots) [13 Marks]</div>
 
     <div class="sub-question">
       <div class="q-title">2.1 <span>(2 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the correct formula.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for stating the condition.</div>
+      <div class="step"><span class="tick">✓</span> Condition for equal roots: \(\Delta = b^2 - 4ac = 0\)</div>
+      <div class="step"><span class="tick">✓</span> <span class="accepted">Accepted:</span> \(\Delta = 0\) or Discriminant = 0.</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">2.2 <span>(5 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for setting the discriminant to 0.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for expanding.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for simplifying.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for reaching the final simplified equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the correct conclusion regarding real solutions.</div>
+      <div class="step"><span class="tick">✓</span> \(kx^2 + (k+2)x + 1 = 0\) has equal roots \(\implies \Delta = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \((k+2)^2 - 4(k)(1) = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(k^2 + 4k + 4 - 4k = 0 \implies k^2 + 4 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(k^2 = -4\)</div>
+      <div class="step"><span class="tick">✓</span> No real solution for \(k\).</div>
+      <div class="rule-box"><strong>C.A. Applies:</strong> If the student makes an algebra error but correctly concludes the discriminant is negative/no real roots.</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">2.3 <span>(6 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the first derivative.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for setting the derivative to 0.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the x-values.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the corresponding y-values.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the logic connecting the y-values to the condition.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the final inequality.</div>
+      <div class="step"><span class="tick">✓</span> Let \(f(x) = x^3 - 3x^2 - 9x + 5\).</div>
+      <div class="step"><span class="tick">✓</span> Find stationary points: \(f'(x) = 3x^2 - 6x - 9 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(x^2 - 2x - 3 = 0 \implies (x-3)(x+1) = 0 \implies x=3, x=-1\)</div>
+      <div class="step"><span class="tick">✓</span> Find y-values: \(f(3) = 27 - 27 - 27 + 5 = -22\)</div>
+      <div class="step"><span class="tick">✓</span> \(f(-1) = -1 - 3 + 9 + 5 = 10\)</div>
+      <div class="step"><span class="tick">✓</span> For 3 distinct real roots: \(-22 < k < 10\)</div>
     </div>
 
-    <div class="q-header">QUESTION 3 [16 Marks]</div>
+    <div class="q-header">QUESTION 3 (Functions) [16 Marks]</div>
 
     <div class="sub-question">
       <div class="q-title">3.1.1 <span>(4 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the axis of symmetry.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for substituting to find y.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for stating the coordinates.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the alternative method.</div>
-      <div class="rule-box"><strong>Do NOT Award:</strong> If a student only gives the x-coordinate but fails to calculate y, they lose the substitution mark.</div>
+      <div class="step"><span class="tick">✓</span> Turning point of \(f(x) = -x^2 + 4x + 5\).</div>
+      <div class="step"><span class="tick">✓</span> \(x = -\frac{b}{2a} = -\frac{4}{2(-1)} = 2\)</div>
+      <div class="step"><span class="tick">✓</span> \(y = -(2)^2 + 4(2) + 5 = 9\)</div>
+      <div class="step"><span class="tick">✓</span> Turning point is \((2, 9)\)</div>
+      <div class="or-text">OR</div>
+      <div class="step"><span class="tick">✓</span> \(f'(x) = -2x + 4 = 0 \implies x=2\)</div>
+      <div class="step"><span class="tick">✓</span> \(f(2) = 9\)</div>
+      <div class="step"><span class="tick">✓</span> TP: \((2, 9)\)</div>
     </div>
   </div>
   <div class="footer">
@@ -408,102 +400,59 @@
   <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
 </div>
 
-<!-- ==================== PAGE 6: Q3 Cont & Q4 ==================== -->
+<!-- ==================== PAGE 5: Q3 Cont & Q4 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
+    
     <div class="header">
       <div class="header-left">Mathematics</div>
-      <div class="header-center"><span class="page-num">6</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-center">
+        <span class="page-num">5</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">3.1.2 <span>(5 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for equating the functions.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for simplifying to standard form.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for factorising.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the x-values.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding both y-coordinates.</div>
-      <div class="rule-box"><strong>C.A. Applies:</strong> If the x-values are found incorrectly, but substituted correctly into either equation to find y, award the final mark.</div>
+      <div class="step"><span class="tick">✓</span> Equate \(f(x) = g(x)\): \(-x^2 + 4x + 5 = x^2 - 4x - 5\)</div>
+      <div class="step"><span class="tick">✓</span> \(0 = 2x^2 - 8x - 10 \implies x^2 - 4x - 5 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \((x-5)(x+1) = 0 \implies x = 5\) or \(x = -1\)</div>
+      <div class="step"><span class="tick">✓</span> Substitute to find y: \(x=-1 \implies y = -1-4+5=0 \implies A(-1, 0)\)</div>
+      <div class="step"><span class="tick">✓</span> \(x=5 \implies y = -25+20+5=0 \implies B(5, 0)\)</div>
+      <div class="rule-box"><strong>C.A. Applies:</strong> If the x-values are found incorrectly, but substituted correctly into either equation to find y, award the final two marks.</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">3.1.3 <span>(7 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for defining the vertical distance equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for substituting the functions correctly.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for simplifying.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the x-coordinate of the turning point.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for substituting the x-value into the distance equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for calculating the final value.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for stating the final maximum distance.</div>
+      <div class="step"><span class="tick">✓</span> Vertical distance \(D(x) = f(x) - g(x)\)</div>
+      <div class="step"><span class="tick">✓</span> \(D(x) = (-x^2 + 4x + 5) - (x^2 - 4x - 5)\)</div>
+      <div class="step"><span class="tick">✓</span> \(D(x) = -2x^2 + 8x + 10\)</div>
+      <div class="step"><span class="tick">✓</span> Max distance occurs at TP of \(D\): \(x = -\frac{8}{2(-2)} = 2\)</div>
+      <div class="step"><span class="tick">✓</span> \(D(2) = -2(4) + 8(2) + 10 = 18\)</div>
+      <div class="step"><span class="tick">✓</span> Max vertical distance is 18 units.</div>
     </div>
 
-    <div class="q-header">QUESTION 4 [17 Marks]</div>
+    <div class="q-header">QUESTION 4 (Calculus Basics) [17 Marks]</div>
 
     <div class="sub-question">
       <div class="q-title">4.1 <span>(6 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for writing the first principles formula.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for correct substitution.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for expanding the numerator.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for simplifying the numerator.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for factoring out h and cancelling.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the final limit.</div>
-    </div>
-  </div>
-  <div class="footer">
-    <div class="footer-left"><span class="footer-qr" data-qr="https://nylwebdev.vercel.app/memo-math.html"></span><div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div></div>
-    <div class="footer-right">Please turn over</div>
-  </div>
-  <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
-</div>
-
-<!-- ==================== PAGE 7: Q4 Cont, Q5, Q6 ==================== -->
-<div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
-  <div class="content-wrapper">
-    <div class="header">
-      <div class="header-left">Mathematics</div>
-      <div class="header-center"><span class="page-num">7</span><span class="confidential">IFB / Confidential</span></div>
-      <div class="header-right">2027</div>
+      <div class="step"><span class="tick">✓</span> \(f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}\)</div>
+      <div class="step"><span class="tick">✓</span> \(= \lim_{h \to 0} \frac{-2(x+h)^2 + 3(x+h) - (-2x^2 + 3x)}{h}\)</div>
+      <div class="step"><span class="tick">✓</span> \(= \lim_{h \to 0} \frac{-2x^2 - 4xh - 2h^2 + 3x + 3h + 2x^2 - 3x}{h}\)</div>
+      <div class="step"><span class="tick">✓</span> \(= \lim_{h \to 0} \frac{-4xh - 2h^2 + 3h}{h}\)</div>
+      <div class="step"><span class="tick">✓</span> \(= \lim_{h \to 0} (-4x - 2h + 3)\)</div>
+      <div class="step"><span class="tick">✓</span> \(= -4x + 3\)</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">4.2.1 <span>(4 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for rewriting with exponents.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the derivative of the first term.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the derivative of the second term.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the derivative of the third term.</div>
-      <div class="rule-box"><strong>Do NOT Award:</strong> If a student loses the negative sign on a term or fails to convert the square root to a fractional exponent, penalize the specific term mark.</div>
-    </div>
-
-    <div class="sub-question">
-      <div class="q-title">4.2.2 <span>(4 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the product rule formula.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for correct application.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for expanding.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the final simplified answer.</div>
-    </div>
-
-    <div class="sub-question">
-      <div class="q-title">4.2.3 <span>(3 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for rewriting with exponents.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for differentiating the first term.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for differentiating the second term.</div>
-    </div>
-
-    <div class="q-header">QUESTION 5 [19 Marks]</div>
-
-    <div class="sub-question">
-      <div class="q-title">5.1 <span>(6 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the y-coordinate.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the derivative.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for evaluating the gradient.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for substituting into the line formula.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for simplifying.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for writing the equation in standard form.</div>
+      <div class="step"><span class="tick">✓</span> \(y = 4x^3 - 2x^{-2} + x^{\frac{1}{2}}\)</div>
+      <div class="step"><span class="tick">✓</span> \(y' = 12x^2 + 4x^{-3} + \frac{1}{2}x^{-\frac{1}{2}}\)</div>
+      <div class="step"><span class="tick">✓</span> (for \(12x^2\))</div>
+      <div class="step"><span class="tick">✓</span> (for \(+ 4x^{-3}\))</div>
+      <div class="step"><span class="tick">✓</span> (for \(+ \frac{1}{2}x^{-\frac{1}{2}}\))</div>
     </div>
   </div>
   <div class="footer">
@@ -513,69 +462,119 @@
   <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
 </div>
 
-<!-- ==================== PAGE 8: Q5 Cont & Q6 ==================== -->
+<!-- ==================== PAGE 6: Q4 Cont, Q5 & Q6 ==================== -->
 <div class="page">
   <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
+    
     <div class="header">
       <div class="header-left">Mathematics</div>
-      <div class="header-center"><span class="page-num">8</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-center">
+        <span class="page-num">6</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
 
     <div class="sub-question">
+      <div class="q-title">4.2.2 <span>(4 marks)</span></div>
+      <div class="step"><span class="tick">✓</span> \(y = (x^2 - 3)(2x + 1)\)</div>
+      <div class="step"><span class="tick">✓</span> <strong>Product Rule:</strong> \(y' = 2x(2x+1) + (x^2-3)(2)\)</div>
+      <div class="step"><span class="tick">✓</span> \(= 4x^2 + 2x + 2x^2 - 6\)</div>
+      <div class="step"><span class="tick">✓</span> \(= 6x^2 + 2x - 6\)</div>
+    </div>
+
+    <div class="sub-question">
+      <div class="q-title">4.2.3 <span>(3 marks)</span></div>
+      <div class="step"><span class="tick">✓</span> \(y = \frac{x^2-1}{x} = x - x^{-1}\)</div>
+      <div class="step"><span class="tick">✓</span> \(y' = 1 + x^{-2} = 1 + \frac{1}{x^2}\)</div>
+      <div class="step"><span class="tick">✓</span> (for final term)</div>
+    </div>
+
+    <div class="q-header">QUESTION 5 (Tangents & Cubics) [19 Marks]</div>
+
+    <div class="sub-question">
+      <div class="q-title">5.1 <span>(6 marks)</span></div>
+      <div class="step"><span class="tick">✓</span> \(f(x) = x^3 - 2x\). Point at \(x = -1\): \(y = (-1)^3 - 2(-1) = 1\).</div>
+      <div class="step"><span class="tick">✓</span> Point is \((-1, 1)\)</div>
+      <div class="step"><span class="tick">✓</span> \(f'(x) = 3x^2 - 2\)</div>
+      <div class="step"><span class="tick">✓</span> Gradient \(m = f'(-1) = 3(-1)^2 - 2 = 1\)</div>
+      <div class="step"><span class="tick">✓</span> Equation: \(y - 1 = 1(x - (-1))\)</div>
+      <div class="step"><span class="tick">✓</span> \(y = x + 2\)</div>
+    </div>
+
+    <div class="sub-question">
       <div class="q-title">5.2.1 <span>(6 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the derivative.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for setting the derivative to 0.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for finding the x-coordinates.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the second derivative.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for proving the local minimum.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for proving the local maximum.</div>
+      <div class="step"><span class="tick">✓</span> \(g(x) = x^3 - 3x^2 - 9x + 5\).</div>
+      <div class="step"><span class="tick">✓</span> \(g'(x) = 3x^2 - 6x - 9 = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(x^2 - 2x - 3 = 0 \implies (x-3)(x+1)=0 \implies x=3, x=-1\)</div>
+      <div class="step"><span class="tick">✓</span> \(g''(x) = 6x - 6\)</div>
+      <div class="step"><span class="tick">✓</span> \(g''(3) = 12 > 0 \implies\) Local Minimum at \(x=3\). \(y = -22\).</div>
+      <div class="step"><span class="tick">✓</span> \(g''(-1) = -12 < 0 \implies\) Local Maximum at \(x=-1\). \(y = 10\).</div>
     </div>
 
     <div class="sub-question">
       <div class="q-title">5.2.2 <span>(7 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the correct cubic shape.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the correct y-intercept.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the Local Maximum.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the Local Minimum.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for indicating the correct x-intercepts.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for a clear, neat sketch.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for correctly labelling axes and key points.</div>
-    </div>
-
-    <div class="q-header">QUESTION 6 [14 Marks]</div>
-
-    <div class="sub-question">
-      <div class="q-title">6.1 <span>(7 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for setting up the surface area equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for isolating the height variable.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for substituting into the volume formula.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for simplifying the volume equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for differentiating the volume equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for solving for the variable.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for stating the final dimensions.</div>
-    </div>
-
-    <div class="sub-question">
-      <div class="q-title">6.2 <span>(3 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for identifying the fencing used by the widths.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for identifying the length in terms of the width.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for correctly setting up the area equation.</div>
-    </div>
-
-    <div class="sub-question">
-      <div class="q-title">6.3 <span>(4 marks)</span></div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for differentiating the area equation.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for setting the derivative to 0 and finding the width.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for calculating the length.</div>
-      <div class="step"><span class="tick">✓</span> <strong>Award 1 mark</strong> for the final maximum area.</div>
+      <div class="step"><span class="tick">✓</span> Correct cubic shape (starts bottom-left, ends top-right).</div>
+      <div class="step"><span class="tick">✓</span> x-intercepts at roughly \((-2.2, 0), (0.4, 0), (4.8, 0)\).</div>
+      <div class="step"><span class="tick">✓</span> y-intercept at \((0, 5)\).</div>
+      <div class="step"><span class="tick">✓</span> Local Maximum at \((-1, 10)\).</div>
+      <div class="step"><span class="tick">✓</span> Local Minimum at \((3, -22)\).</div>
     </div>
   </div>
   <div class="footer">
     <div class="footer-left"><span class="footer-qr" data-qr="https://nylwebdev.vercel.app/memo-math.html"></span><div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div></div>
-    <div class="footer-right">END OF MARKING GUIDE</div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+</div>
+
+<!-- ==================== PAGE 7: Q6 Optimization ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    
+    <div class="header">
+      <div class="header-left">Mathematics</div>
+      <div class="header-center">
+        <span class="page-num">7</span>
+        <span class="confidential">AE-S / IFB / Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="q-header">QUESTION 6 (Optimization) [14 Marks]</div>
+
+    <div class="sub-question">
+      <div class="q-title">6.1 <span>(7 marks)</span></div>
+      <div class="step"><span class="tick">✓</span> Let width = \(x\), length = \(2x\), height = \(h\).</div>
+      <div class="step"><span class="tick">✓</span> Surface Area \(= 2x^2 + 2(2xh) + 2(xh) = 108\)</div>
+      <div class="step"><span class="tick">✓</span> \(6xh = 108 - 2x^2 \implies h = \frac{108 - 2x^2}{6x}\)</div>
+      <div class="step"><span class="tick">✓</span> Volume \(V = l \cdot w \cdot h = (2x)(x)\left(\frac{108 - 2x^2}{6x}\right)\)</div>
+      <div class="step"><span class="tick">✓</span> \(V = 36x - \frac{2}{3}x^3\)</div>
+      <div class="step"><span class="tick">✓</span> \(\frac{dV}{dx} = 36 - 2x^2 = 0 \implies 2x^2 = 36 \implies x^2 = 18 \implies x = 3\sqrt{2}\)</div>
+      <div class="step"><span class="tick">✓</span> Check nature: \(\frac{d^2V}{dx^2} = -4x < 0\) for \(x>0 \implies\) Maximum.</div>
+      <div class="step"><span class="tick">✓</span> Dimensions: Width = \(3\sqrt{2}\) cm, Length = \(6\sqrt{2}\) cm, Height = \(2\sqrt{2}\) cm.</div>
+    </div>
+
+    <div class="sub-question">
+      <div class="q-title">6.2 <span>(3 marks)</span></div>
+      <div class="step"><span class="tick">✓</span> Let width = \(x\). The two widths use \(2x\) fencing.</div>
+      <div class="step"><span class="tick">✓</span> Length uses \(100 - 2x\) fencing.</div>
+      <div class="step"><span class="tick">✓</span> Area \(A = x(100 - 2x) = 100x - 2x^2\).</div>
+    </div>
+
+    <div class="sub-question">
+      <div class="q-title">6.3 <span>(4 marks)</span></div>
+      <div class="step"><span class="tick">✓</span> Maximize \(A\): \(\frac{dA}{dx} = 100 - 4x = 0\)</div>
+      <div class="step"><span class="tick">✓</span> \(4x = 100 \implies x = 25\)</div>
+      <div class="step"><span class="tick">✓</span> Width = 25 m. Length = \(100 - 2(25) = 50\) m.</div>
+      <div class="step"><span class="tick">✓</span> Maximum Area = \(25 \times 50 = 1250 \text{ m}^2\)</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left"><span class="footer-qr" data-qr="https://nylwebdev.vercel.app/memo-math.html"></span><div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div></div>
+    <div class="footer-right">END OF MEMO</div>
   </div>
   <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="X01-MATH-2027-MEMO" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
 </div>
