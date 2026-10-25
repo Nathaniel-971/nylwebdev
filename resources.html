@@ -2,67 +2,93 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resources — IFB</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Academic Resources — IFB</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --bg: #F8FAFC; }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; overflow-x: clip; }
-.header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { 
+    width: 100%; max-width: 100vw; overflow-x: hidden; 
+    font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; 
+}
+
+/* HEADER (Matches Dashboard) */
+.header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; position: sticky; top: 0; z-index: 100; }
 .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
 .brand-logo { font-size: 32px; color: var(--maroon); }
 .btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); }
-.container { width: 100%; max-width: 800px; margin: 40px auto; padding: 0 24px; box-sizing: border-box; }
+.btn-back:hover { border-color: var(--black); }
+
+/* CENTRAL LAYOUT */
+.container { width: 100%; max-width: 900px; margin: 40px auto; padding: 0 24px; box-sizing: border-box; }
 .page-header { margin-bottom: 32px; }
-.page-header h1 { font-size: 28px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
+.page-header h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
 .page-header p { font-size: 15px; color: var(--gray); }
 
-.year-tabs { display: flex; gap: 10px; margin-bottom: 24px; border-bottom: 2px solid var(--silver); padding-bottom: 10px; }
-.year-tab { padding: 8px 16px; font-size: 16px; font-weight: 800; color: var(--gray); cursor: pointer; border-radius: 6px; }
+/* YEAR TABS */
+.year-tabs { display: flex; gap: 8px; margin-bottom: 32px; border-bottom: 2px solid var(--silver); padding-bottom: 8px; }
+.year-tab { padding: 8px 20px; font-size: 15px; font-weight: 800; color: var(--gray); cursor: pointer; border-radius: 6px; transition: 0.2s; }
+.year-tab:hover { background: #E2E8F0; }
 .year-tab.active { background: var(--maroon); color: var(--white); }
 
-.section-title { font-size: 14px; font-weight: 800; color: var(--maroon); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+/* LIST GROUPS */
+.section-title { font-size: 13px; font-weight: 800; color: var(--maroon); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
 .list-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
 .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--white); border: 1px solid var(--silver); border-radius: 8px; transition: 0.2s; }
-.list-item:hover { border-color: var(--maroon); }
+.list-item:hover { border-color: var(--maroon); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 .item-title { font-size: 15px; font-weight: 700; }
 .item-meta { font-size: 12px; color: var(--gray); margin-top: 2px; }
-.actions { display: flex; gap: 8px; }
-.btn-sm { padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 6px; text-decoration: none; border: 1px solid var(--silver); color: var(--black); background: var(--white); }
+.actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-sm { padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 6px; text-decoration: none; border: 1px solid var(--silver); color: var(--black); background: var(--white); transition: 0.2s; display: flex; align-items: center; gap: 4px;}
+.btn-sm:hover { border-color: var(--black); }
 .btn-sm.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
+.btn-sm.primary:hover { background: var(--maroon-hover); }
 
-#loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+/* LOADER */
+#loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
 .loader-logo { font-size: 80px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); opacity: 0.7; } }
+
+@media (max-width: 600px) {
+    .list-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .actions { width: 100%; }
+    .btn-sm { flex: 1; justify-content: center; }
+}
 </style>
 </head>
 <body>
+
 <div id="loader"><div class="loader-logo">∆</div></div>
 
 <header class="header">
-    <a href="index.html" class="brand"><div class="brand-logo">∆</div> Resources</a>
+    <a href="index.html" class="brand">
+        <div class="brand-logo">∆</div> 
+        <div class="brand-text">Resources</div>
+    </a>
     <a href="student-dashboard.html" class="btn-back"><i data-lucide="arrow-left"></i> Dashboard</a>
 </header>
 
 <div class="container">
     <div class="page-header">
         <h1>Academic Resources</h1>
-        <p>Practice assessments and templates.</p>
+        <p>Download practice papers, view memos, and read subject guidelines.</p>
     </div>
 
+    <!-- YEAR TABS -->
     <div class="year-tabs">
         <div class="year-tab active">2027</div>
-        <!-- Add more years dynamically later -->
+        <!-- Future years can be added here -->
     </div>
 
+    <!-- MOCK PAPERS & MEMOS -->
     <div class="section-title">Mock Papers & Memos</div>
     <div class="list-group">
         <div class="list-item">
             <div>
                 <div class="item-title">Mathematics Mock Exam</div>
-                <div class="item-meta">X01-MATH-2027 · 9 pages</div>
+                <div class="item-meta">X01-MATH-2027</div>
             </div>
             <div class="actions">
                 <a href="practice-paper-math.html" target="_blank" class="btn-sm">Paper</a>
@@ -72,7 +98,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
         <div class="list-item">
             <div>
                 <div class="item-title">Web Development Mock Exam</div>
-                <div class="item-meta">X01-AEW-2027 · 7 pages</div>
+                <div class="item-meta">X01-AEW-2027</div>
             </div>
             <div class="actions">
                 <a href="practice-paper-web.html" target="_blank" class="btn-sm">Paper</a>
@@ -81,6 +107,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
         </div>
     </div>
 
+    <!-- ANSWER BOOKS -->
     <div class="section-title">Answer Books</div>
     <div class="list-group">
         <div class="list-item">
@@ -89,10 +116,57 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
                 <div class="item-meta">Blank A4 format for practice</div>
             </div>
             <div class="actions">
-                <a href="answer-book.html" target="_blank" class="btn-sm">View</a>
+                <a href="answer-book.html" target="_blank" class="btn-sm">View / Print</a>
             </div>
         </div>
     </div>
+
+    <!-- SUBJECT GUIDELINES -->
+    <div class="section-title">Subject Guidelines</div>
+    <div class="list-group">
+        <div class="list-item">
+            <div>
+                <div class="item-title">IFB-S Mathematics Guidelines</div>
+                <div class="item-meta">Marking rubric and paper structure</div>
+            </div>
+            <div class="actions">
+                <a href="guidelines-math.html" target="_blank" class="btn-sm">View</a>
+            </div>
+        </div>
+        <div class="list-item">
+            <div>
+                <div class="item-title">IFB AQ-B Web Dev Guidelines</div>
+                <div class="item-meta">Project rules, code standards, plagiarism policy</div>
+            </div>
+            <div class="actions">
+                <a href="guidelines-web.html" target="_blank" class="btn-sm">View</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ANNUAL TEACHING PLANS -->
+    <div class="section-title">Annual Teaching Plans (ATPs)</div>
+    <div class="list-group">
+        <div class="list-item">
+            <div>
+                <div class="item-title">ATP 2027: Mathematics</div>
+                <div class="item-meta">11 pillars over 40 weeks with weekly breakdown</div>
+            </div>
+            <div class="actions">
+                <a href="atp-math.html" target="_blank" class="btn-sm">View</a>
+            </div>
+        </div>
+        <div class="list-item">
+            <div>
+                <div class="item-title">ATP 2027: Web Development</div>
+                <div class="item-meta">Full-year module breakdown — HTML, CSS, JS, React</div>
+            </div>
+            <div class="actions">
+                <a href="atp-web.html" target="_blank" class="btn-sm">View</a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script type="module">
@@ -103,10 +177,14 @@ const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", auth
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// Protect Route: Must be logged in to view resources
 onAuthStateChanged(auth, (user) => {
     document.getElementById('loader').style.opacity = '0';
     setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-    if (!user) { window.location.href = "admission.html"; }
+    
+    if (!user) { 
+        window.location.href = "admission.html"; 
+    }
 });
 lucide.createIcons();
 </script>
