@@ -702,12 +702,12 @@
         </div>
         <div class="top-right-container">
           <div class="candidate-barcode-box">
-            <div class="label" id="scriptLabel">StudentID—ScriptNumber</div>
+            <div class="label" id="scriptLabel">StudentID—ScriptID</div>
             <svg id="coverBarcode" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
           </div>
           <div class="sequence-circle-container">
             <div class="sequence-circle" id="coverSequence"></div>
-            <div class="sequence-text">Sequence Number<br>(Pack of 12)</div>
+            <div class="sequence-text">Sequence Number<br>(1 - 30)</div>
           </div>
         </div>
       </div>
@@ -847,8 +847,13 @@
 
     <div class="q-selector">
       <select id="questionPick">
-        <option value="1">Question 1 (All sub-questions)</option>
-        <option value="2">Question 2 (All sub-questions)</option>
+        <option value="1">Question 1</option>
+        <option value="2">Question 2</option>
+        <option value="3">Question 3</option>
+        <option value="4">Question 4</option>
+        <option value="5">Question 5</option>
+        <option value="6">Question 6</option>
+        <option value="7">Question 7</option>
       </select>
     </div>
 
@@ -881,12 +886,25 @@
   const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
   const secCode = sessionStorage.getItem('examSecurityCode') || 'ABCDEF';
   const examCode = sessionStorage.getItem('examCode') || 'AE-S-MATH';
-  const packSeq = sessionStorage.getItem('examPackSeq') || '01';
+  
+  // Generate or retrieve unique 6-digit script ID
+  let scriptId = sessionStorage.getItem('examScriptId');
+  if (!scriptId) {
+      scriptId = Math.floor(100000 + Math.random() * 900000).toString();
+      sessionStorage.setItem('examScriptId', scriptId);
+  }
+
+  // Generate or retrieve sequence number (1-30)
+  let seqNum = sessionStorage.getItem('examSeqNum');
+  if (!seqNum) {
+      seqNum = Math.floor(Math.random() * 30) + 1;
+      sessionStorage.setItem('examSeqNum', seqNum.toString());
+  }
   
   // Ensure script format is ID—CODE
   const scriptLabel = document.getElementById('scriptLabel');
   if (scriptLabel) {
-      scriptLabel.innerText = `${studentId}—${secCode}`;
+      scriptLabel.innerText = `${studentId}—${scriptId}`;
   }
 
   // Timer (2 hours)
@@ -991,7 +1009,7 @@
   createBlocks('idBlocks', 13);
   createBlocks('secBlocks', 6);
   createBlocks('dateBlocks', 8);
-  createBlocks('subjCodeBlocks', 5);
+  createBlocks('subjCodeBlocks', 7); // Increased to 7 to fit 102626F
 
   // 3. Auto-fill Answer Book
   function fillBlocks(containerId, text) {
@@ -1002,10 +1020,10 @@
           inputs[i].value = str[i].toUpperCase();
       }
   }
-  document.getElementById('coverSequence').innerText = packSeq;
+  document.getElementById('coverSequence').innerText = seqNum;
   fillBlocks('idBlocks', studentId);
   fillBlocks('secBlocks', secCode);
-  fillBlocks('subjCodeBlocks', examCode.replace(/-/g, ''));
+  fillBlocks('subjCodeBlocks', '102626F'); // Hardcoded to match paper
   
   document.getElementById('valSubjectName').value = examCode.includes("MATH") ? "Mathematics" : "Web Development";
   document.getElementById('valCurriculum').value = examCode.includes("MATH") ? "IFB-S" : "IFB AQ-B";
@@ -1019,7 +1037,7 @@
     if (typeof JsBarcode !== "function") return;
     
     try {
-      JsBarcode("#coverBarcode", `${studentId}-${secCode}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 });
+      JsBarcode("#coverBarcode", `${studentId}-${scriptId}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 });
     } catch (e) { console.warn(e); }
 
     document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
