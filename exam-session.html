@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>IFB Live Examination</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Times+New+Roman:wght@400;700&display=swap" rel="stylesheet">
 <script>
@@ -12,12 +12,14 @@
   };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<!-- ADDED LUCIDE -->
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <style>
+  /* ==================== BASE & TABS ==================== */
   :root {
     --maroon: #7A1F2B;
     --silver: #E2E8F0;
@@ -28,40 +30,140 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: var(--black); padding-bottom: 50px; }
   
-  /* HEADER */
-  .exam-header { background: #111; color: white; padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .exam-header { background: #111; color: white; padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
   .exam-header h1 { font-size: 16px; font-weight: 800; color: #fff; margin: 0; }
   .timer { background: var(--maroon); color: white; padding: 8px 16px; border-radius: 8px; font-family: monospace; font-size: 18px; font-weight: bold; }
   
-  /* NAVIGATION TABS */
-  .tabs { display: flex; max-width: 800px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .tabs { display: flex; max-width: 800px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
   .tab-btn { flex: 1; padding: 15px; text-align: center; font-weight: 800; border-radius: 8px; border: none; background: transparent; cursor: pointer; transition: 0.2s; font-size: 15px; color: var(--gray); display: flex; align-items: center; justify-content: center; gap: 8px; }
   .tab-btn.active { background: var(--maroon); color: white; box-shadow: 0 4px 10px rgba(122,31,43,0.2); }
 
-  /* VIEWS */
-  .view { display: none; max-width: 800px; margin: 0 auto; padding: 20px; }
+  .view { display: none; }
   .view.active { display: block; }
 
-  /* QUESTION PAPER VIEW */
-  .paper-container { background: white; border: 1px solid var(--silver); border-radius: 16px; padding: 40px; font-family: 'Times New Roman', Times, serif; line-height: 1.6; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-  .paper-header { text-align: center; border-bottom: 2px solid var(--black); padding-bottom: 20px; margin-bottom: 30px; }
-  .paper-header h2 { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; margin-bottom: 5px; }
-  .paper-header p { font-family: 'Inter', sans-serif; font-size: 14px; color: var(--gray); font-weight: 600; }
-  .question-block { margin-bottom: 30px; }
-  .q-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-  .q-text { font-size: 16px; margin-bottom: 15px; }
-  .math-display { text-align: center; margin: 15px 0; font-size: 18px; }
-  .sub-q { margin-left: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; }
-  .sub-q .q-num { font-weight: bold; width: 60px; flex-shrink: 0; }
-  .sub-q .q-content { flex: 1; }
-  .sub-q .q-marks { width: 40px; text-align: right; font-weight: bold; }
+  /* HIDE ORIGINAL CONTROL BARS FROM EMBEDDED DOCS */
+  .view .control-bar { display: none !important; }
+  .view { padding-top: 20px; }
 
-  /* SCANNER VIEW */
+  /* ==================== A4 PAGE SETUP (STRICT) ==================== */
+  @page { size: A4; margin: 0; }
+  .page { 
+    width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; 
+    position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    overflow: hidden; display: flex; flex-direction: column; page-break-after: always; 
+    font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; color: #000;
+  }
+  
+  .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
+  .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.03; pointer-events: none; z-index: 0; }
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 35mm; }
+  
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; font-size: 10.5pt; flex-shrink: 0; padding-bottom: 5px; }
+  .header-left { width: 30%; text-align: left; font-weight: bold; color: var(--maroon); }
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: var(--maroon); }
+  .header-right { width: 30%; text-align: right; font-weight: bold; color: var(--maroon); }
+
+  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; height: 15mm; }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 35px; height: 35px; }
+  .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
+  .footer-brand .tag { font-size: 7pt; color: var(--black); }
+  .footer-right { color: var(--black); font-style: italic;}
+  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; }
+
+  /* ==================== QUESTION PAPER SPECIFIC ==================== */
+  .cover-page { padding: 15mm 20mm 20mm 20mm; }
+  .cover-confidential { text-align: center; font-style: italic; font-size: 12pt; margin-bottom: 30px; color: #111;}
+  .cover-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; margin-left: 10px;}
+  .ifb-logo-svg { width: 80px; height: 80px; }
+  .cover-header-text .title { font-size: 32px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px;}
+  .cover-header-text .sub { font-size: 12pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
+  .cover-header-text .country { font-size: 10pt; font-family: Arial, sans-serif; margin-top: 5px; color: #555;}
+  .cover-black-box { background: #111; color: white; border-radius: 10px; padding: 15px 30px; text-align: center; width: 80%; margin: 0 auto 20px auto; border: 3px solid #7A1F2B; }
+  .cover-black-box h1 { font-size: 22pt; font-weight: normal; line-height: 1.3; letter-spacing: 1px; }
+  .cover-grey-box { background: #f8f8f8; border: 3px solid #7A1F2B; border-radius: 8px; padding: 8px 40px; text-align: center; width: max-content; margin: 0 auto 30px auto; }
+  .cover-grey-box h2 { font-size: 20pt; font-weight: normal; letter-spacing: 1px; color: #111;}
+  .cover-dashed-box { border: 4px dashed #7A1F2B; border-radius: 10px; padding: 30px 20px; text-align: center; width: 85%; margin: 0 auto 40px auto; background: #FFF5F6; }
+  .cover-dashed-box h3 { font-size: 18pt; font-weight: bold; margin-bottom: 10px; color: #111;}
+  .cover-marks { font-size: 13pt; font-weight: bold; margin-left: 10px; margin-bottom: 40px; font-family: Arial, sans-serif; color: #111; }
+  .cover-marks div { margin-bottom: 10px; }
+  .cover-barcode-section { margin-left: 10px; font-family: Arial, sans-serif; color: #111; }
+  .cover-barcode-section .code-x10 { font-size: 24pt; font-weight: bold; margin-bottom: 5px; letter-spacing: 2px;}
+  .cover-bottom-text { text-align: center; font-size: 11pt; font-weight: bold; margin-top: auto; margin-bottom: 20px; line-height: 1.5; color: #111; }
+  .cover-page .footer-brand .name, .cover-page .footer-brand .tag, .cover-page .footer-right, .cover-page .footer-left { color: #7A1F2B; }
+  
+  .instructions h2 { font-size: 14pt; font-weight: bold; margin-bottom: 20px; font-family: Arial, sans-serif; color: #000;}
+  .instructions p { margin-bottom: 15px; font-size: 11pt; }
+  .instructions ol { margin-left: 20px; font-family: Arial, sans-serif; font-size: 11pt;}
+  .instructions li { margin-bottom: 12px; padding-left: 10px; }
+  
+  .question-header { margin: 0 0 20px 0; page-break-inside: avoid; flex-shrink: 0; }
+  .question-header h2 { font-size: 14pt; font-weight: bold; font-family: 'Times New Roman', serif; color: #000;}
+  
+  .question-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; margin-bottom: 15px; }
+  .question-number { font-weight: bold; width: 50px; flex-shrink: 0; font-family: Arial, sans-serif; font-size: 11pt; color: #000;}
+  .question-content { flex: 1; min-width: 0; font-size: 11.5pt; font-family: 'Times New Roman', serif;}
+  .marks { font-weight: bold; width: 40px; flex-shrink: 0; text-align: right; font-family: Arial, sans-serif; font-size: 11pt;}
+  .nested-questions { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; margin-left: 30px; page-break-inside: avoid; }
+  .nested-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; }
+  .nested-item .question-number { width: 60px; }
+  .total-marks { text-align: right; font-weight: bold; margin-top: 10px; font-size: 12pt; font-family: Arial, sans-serif; page-break-inside: avoid; color: #000;}
+  .math-display { text-align: center; margin: 15px 0; font-size: 12pt; }
+  
+  .diagram-container { display: flex; flex-direction: column; align-items: center; margin: 20px 0; page-break-inside: avoid; }
+  .diagram-container svg { border: none; background: #fff; width: 100%; max-width: 450px; height: auto; }
+  .diagram-caption { font-size: 10pt; font-family: Arial, sans-serif; color: #000; margin-top: 10px; text-align: left; background: #F8FAFC; border: 1px solid #E2E8F0; padding: 10px 15px; border-radius: 6px; width: 100%; max-width: 450px; }
+  .diagram-caption strong { color: #7A1F2B; }
+  .info-title { text-align: center; font-weight: bold; font-size: 16pt; letter-spacing: 1px; margin: 10px 0 40px 0; font-family: Arial, sans-serif; color: #000;}
+  .formula-layout { display: flex; flex-direction: column; gap: 30px; font-size: 13pt; margin-top: 20px; }
+  .formula-center { text-align: center; }
+  .formula-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
+  .formula-item { text-align: center; }
+
+  /* ==================== ANSWER BOOK SPECIFIC ==================== */
+  .cover-header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .cover-brand { display: flex; align-items: center; gap: 15px; width: 60%;}
+  .top-right-container { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; width: 40%; }
+  .candidate-barcode-box { border: 2px dashed #000; padding: 15px; width: 100%; max-width: 250px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: right; background-color: #FFF5F6; }
+  .candidate-barcode-box .label { font-size: 10pt; font-weight: bold; text-align: center; color: #7A1F2B; }
+  .sequence-circle-container { display: flex; align-items: center; gap: 10px; }
+  .sequence-circle { width: 45px; height: 45px; border: 2px solid #000; border-radius: 50%; background-color: #FFF5F6; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14pt; }
+  .sequence-text { font-size: 9pt; font-weight: bold; text-align: right; line-height: 1.1; color: #7A1F2B; }
+  .answer-book-title { border: 2px solid #000; border-radius: 15px; padding: 12px; text-align: center; font-size: 22pt; font-weight: bold; font-style: italic; margin-bottom: 25px; width: 65%; background-color: #FFF5F6; color: #7A1F2B; }
+  .form-row { display: flex; gap: 15px; margin-bottom: 10px; }
+  .form-box { border: 1.5px solid #000; padding: 5px 8px; display: flex; flex-direction: column; flex: 1; justify-content: center; }
+  .form-box label { font-size: 9pt; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; color: #7A1F2B; }
+  .block-container { display: flex; gap: 0; }
+  .block { width: 22px; height: 25px; border: 1.5px solid #000; border-right: none; background-color: transparent; text-align: center; font-family: monospace; font-size: 14pt; font-weight: bold; outline: none; padding: 0; text-transform: uppercase; }
+  .block:last-child { border-right: 1.5px solid #000; }
+  .block:focus { background-color: #FFF5F6; }
+  .input-line { border-bottom: 1.5px solid #000; height: 25px; width: 100%; display: flex; align-items: flex-end; padding-left: 5px; padding-bottom: 2px; font-weight: bold; font-size: 12pt; background: transparent; border-top: none; border-left: none; border-right: none; outline: none; font-family: inherit; }
+  .input-line:focus { background-color: #FFF5F6; }
+  .marking-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: auto; }
+  .marking-table th, .marking-table td { border: 1.5px solid #000; padding: 4px; text-align: center; }
+  .marking-table th { background-color: #7A1F2B; color: white; font-weight: bold; font-size: 8.5pt; }
+  .marking-table td { height: 22px; }
+  .marking-table .text-left { text-align: left; padding-left: 10px; }
+  .total-row td { height: 30px; font-weight: bold; background-color: #E2E8F0; color: #7A1F2B; }
+  .instructions-header { background-color: #7A1F2B; color: white; padding: 10px 20px; font-weight: bold; font-size: 12pt; margin-bottom: 20px; border-radius: 4px; }
+  .instructions-list { margin-left: 25px; font-size: 11pt; line-height: 1.8; }
+  .instructions-list li { margin-bottom: 15px; padding-left: 10px; }
+  .answer-page { border: 1.5px solid #000; flex: 1; display: flex; width: 100%; margin-bottom: 20px; }
+  .left-margin { width: 40px; border-right: 1.5px solid #000; background-color: #FFF5F6; }
+  .writing-area { flex: 1; border-right: 1.5px solid #000; background-color: #FFF; background-image: repeating-linear-gradient(to bottom, transparent, transparent 34px, #000 34px, #000 36px); background-position: 0 1px; }
+  .marks-area { width: 70px; display: flex; flex-direction: column; align-items: center; padding-top: 10px; background-color: #FFF5F6; }
+  .marks-area .marks-title { font-size: 10pt; font-weight: bold; font-style: italic; border-bottom: 1.5px solid #000; width: 100%; text-align: center; padding-bottom: 5px; margin-bottom: 10px; color: #7A1F2B; }
+
+  /* ==================== SCANNER UI ==================== */
   .scanner-header { text-align: center; margin-bottom: 20px; }
   .scanner-header h2 { font-size: 22px; font-weight: 900; color: var(--maroon); margin-bottom: 5px; }
   .scanner-header p { font-size: 14px; color: var(--gray); margin-bottom: 20px; }
   
-  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #f3f4f6; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .stage { position: relative; width: 100%; max-width: 600px; margin: 0 auto; aspect-ratio: 3/4; background: #f3f4f6; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
   video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
   video.active, canvas.active, img.preview.active { display:block; }
   .placeholder { color:#9ca3af; text-align:center; padding:1rem; font-size:.95rem; }
@@ -75,18 +177,18 @@
   .flash-overlay { position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:8; transition:opacity .28s ease-out; }
   .flash-overlay.fire { opacity:1; transition:none; }
   
-  .q-selector { margin-top:15px; display:flex; align-items:center; gap:10px; }
+  .q-selector { margin: 15px auto 0; display:flex; align-items:center; gap:10px; max-width: 600px;}
   .q-selector select { flex:1; padding: 15px; border: 2px solid var(--silver); border-radius: 8px; font-size: 16px; font-weight: 700; outline: none; }
   
-  .pages-strip { margin-top:15px; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--silver); }
+  .pages-strip { margin: 15px auto 0; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--silver); max-width: 600px;}
   .pages-list { display:flex; gap:10px; flex-wrap:wrap; }
   .page-thumb { position:relative; width:70px; background:#fafafa; border:1px solid var(--silver); border-radius:6px; padding:4px; display:flex; flex-direction:column; align-items:center; }
   .page-thumb img { width:100%; border-radius:3px; display:block; }
   .page-thumb .num { position:absolute; bottom:2px; right:2px; background:var(--maroon); color:#fff; font-size:.65rem; font-weight:700; padding:1px 5px; border-radius:6px; }
   .page-thumb .del { position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#fff; border:1px solid var(--maroon); color:var(--maroon); cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; }
   
-  .controls { display:flex; gap:10px; margin-top:15px; flex-wrap:wrap; }
-  .action { padding:15px 20px; font-size:15px; font-weight:700; border:none; border-radius:8px; cursor:pointer; transition:0.15s; flex:1; min-width:130px; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .controls { display:flex; gap:10px; margin: 15px auto 0; flex-wrap:wrap; max-width: 600px;}
+  .action { padding:15px 20px; font-size:15px; font-weight:700; border:none; border-radius:8px; cursor:pointer; transition:0.15s; flex:1; min-width:130px; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px;}
   .btn-primary { background:var(--maroon); color:#fff; }
   .btn-primary:hover { background:#5A1620; }
   .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
@@ -95,21 +197,26 @@
   
   .status { margin-top:15px; font-size:14px; text-align:center; min-height:1.4em; color:var(--gray); font-weight: 600; }
 
-  /* UPLOADING OVERLAY */
+  /* OVERLAYS */
+  #tabWarning { position:fixed; inset:0; background:rgba(0,0,0,0.9); color:white; z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:20px; }
   #uploadOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
   .spinner { width: 60px; height: 60px; border: 6px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  @media (max-width: 768px) {
-    .paper-container { padding: 20px; }
-    .tab-btn { font-size: 13px; padding: 10px; }
+  /* ==================== PRINT STYLES ==================== */
+  @media print { 
+    body { background: white; padding: 0; } 
+    .exam-header, .tabs, #tabWarning, #uploadOverlay, .view:not(.active) { display: none !important; }
+    .view.active { display: block !important; padding: 0; margin: 0; }
+    .page { margin: 0; box-shadow: none; page-break-after: always; } 
+    .control-bar { display: none !important; }
   }
 </style>
 </head>
 <body oncontextmenu="return false;">
 
 <!-- TAB SWITCH WARNING -->
-<div id="tabWarning" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); color:white; z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:20px;">
+<div id="tabWarning">
   <h2 style="color:#ff4444; font-size:32px; margin-bottom:10px;">WARNING!</h2>
   <p style="font-size: 18px;">You have left the examination tab. This action has been logged and reported to the Invigilator.</p>
   <button class="action btn-primary" style="margin-top:20px; max-width:200px;" onclick="document.getElementById('tabWarning').style.display='none'">I Understand</button>
@@ -130,105 +237,560 @@
 <!-- TABS -->
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper"><i data-lucide="file-text"></i> Question Paper</button>
+  <button class="tab-btn" onclick="switchTab('answer')" id="tabAnswer"><i data-lucide="edit-3"></i> Answer Book</button>
   <button class="tab-btn" onclick="switchTab('scanner')" id="tabScanner"><i data-lucide="camera"></i> Scan Answers</button>
 </div>
 
 <!-- ==================== VIEW 1: QUESTION PAPER ==================== -->
 <div class="view active" id="viewPaper">
-  <div class="paper-container">
-    <div class="paper-header">
-      <h2>INSTITUTE OF BOARD</h2>
-      <p>AE-S MATHEMATICS P1 PRACTICE EXAMINATION</p>
-      <p style="margin-top: 10px; font-weight: bold; color: var(--maroon);">MARKS: 50 | TIME: 2 HOURS</p>
-    </div>
-
-    <div class="question-block">
-      <div class="q-title"><span>QUESTION 1</span><span>(25 Marks)</span></div>
-      
-      <div class="sub-q">
-        <div class="q-num">1.1</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\(2^{2x+1} - 5 \cdot 2^x + 2 = 0\)</div>
+  <!-- PAGE 1: COVER PAGE -->
+  <div class="page cover-page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper" style="padding-bottom: 0;">
+      <div class="cover-confidential">IFB/Confidential</div>
+      <div class="cover-header">
+        <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+            <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+        </svg>
+        <div class="cover-header-text">
+          <div class="title">Institute of Board</div>
+          <div class="sub">Department:<br>Academic Assessment</div>
+          <div class="country">NON-ACCREDITED ACADEMIC INSTITUTION</div>
         </div>
-        <div class="q-marks">(4)</div>
       </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.2</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\((x^2 - 2x + 5)^{x^2 - 7x + 12} = 1\)</div>
-        </div>
-        <div class="q-marks">(5)</div>
+      <div class="cover-black-box"><h1>Admission Examination</h1></div>
+      <div class="cover-grey-box"><h2>2027</h2></div>
+      <div class="cover-dashed-box"><h3>Mathematics</h3></div>
+      <div class="cover-marks">
+        <div>MARKS: 100</div>
+        <div>TIME: 2 hours</div>
       </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.3</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\(\left(x - \dfrac{8}{x}\right)^2 + 2\left(x - \dfrac{8}{x}\right) - 15 = 0\)</div>
-        </div>
-        <div class="q-marks">(5)</div>
+      <div class="cover-barcode-section">
+        <div class="code-x10">X10</div>
+        <svg class="barcode-cover" data-barcode="102626F" data-bc-width="2.4" data-bc-height="50" data-bc-display="true" data-bc-font-size="16"></svg>
       </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.4</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\(\dfrac{x - 1}{x + 3} \geq \dfrac{x}{x - 2}\)</div>
-        </div>
-        <div class="q-marks">(4)</div>
-      </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.5</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\(\sqrt{2x + 5} - x = 1\)</div>
-        </div>
-        <div class="q-marks">(4)</div>
-      </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.6</div>
-        <div class="q-content">
-          Two numbers have a product of 27. The second number is the square of the first number. It is also given that the sum of the two numbers is less than 20. Calculate the values of the first and second numbers.
-        </div>
-        <div class="q-marks">(3)</div>
+      <div class="cover-bottom-text">
+        This question paper consists of 10 pages, 1 information sheet and<br>an answer book of 23 pages.
       </div>
     </div>
-
-    <div class="question-block">
-      <div class="q-title"><span>QUESTION 2</span><span>(25 Marks)</span></div>
-      
-      <div class="sub-q">
-        <div class="q-num">2.1</div>
-        <div class="q-content">
-          Consider the quadratic equation \(kx^2 + (k+2)x + 1 = 0\) and the cubic equation \(x^3 - 3x^2 - 9x + 5 = k\).
-          <br><br>
-          <strong>2.1.1</strong> Determine the value(s) of \(k\) for which the quadratic equation has equal roots.
-        </div>
-        <div class="q-marks">(4)</div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
       </div>
-      <div class="sub-q">
-        <div class="q-num"></div>
-        <div class="q-content">
-          <strong>2.1.2</strong> Determine the value(s) of \(k\) for which the cubic equation has three distinct real roots.
-        </div>
-        <div class="q-marks">(5)</div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: INSTRUCTIONS -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="instructions">
+        <h2>INSTRUCTIONS AND INFORMATION</h2>
+        <p>Read the following instructions and information carefully before answering the questions.</p>
+        <ol>
+          <li>This question paper consists of 7 questions. Answer ALL the questions.</li>
+          <li>Clearly show ALL calculations, diagrams, graphs, etc. that you have used in determining your answers.</li>
+          <li>Answers only will NOT necessarily be awarded full marks.</li>
+          <li>You may use an approved scientific calculator (non-programmable and non-graphical), unless stated otherwise.</li>
+          <li>If necessary, round off answers to TWO decimal places, unless stated otherwise.</li>
+          <li>Diagrams are NOT necessarily drawn to scale.</li>
+          <li>An information sheet with formulae is included at the end of the question paper.</li>
+          <li>Write neatly and legibly.</li>
+        </ol>
       </div>
     </div>
-
-    <div style="text-align: center; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
-      <p style="font-weight: bold; font-family: 'Inter', sans-serif; color: var(--maroon);">END OF QUESTION PAPER</p>
-      <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">Ensure you have written all answers on your physical paper.</p>
-      <button class="action btn-primary" style="margin-top: 15px; width: 100%;" onclick="switchTab('scanner')">Proceed to Scan Answers →</button>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
     </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 3: QUESTION 1 -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">3</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="question-header"><h2>QUESTION 1</h2></div>
+      <div class="question-item"><div class="question-number">1.1</div><div class="question-content">Solve for \(x\):</div></div>
+      <div class="nested-questions">
+        <div class="nested-item"><div class="question-number">1.1.1</div><div class="question-content"><div class="math-display">\(x^2 - 5x + 6 = 0\)</div></div><div class="marks">(3)</div></div>
+        <div class="nested-item"><div class="question-number">1.1.2</div><div class="question-content"><div class="math-display">\(3x^2 - 4x - 2 = 0\) (correct to TWO decimal places)</div></div><div class="marks">(3)</div></div>
+        <div class="nested-item"><div class="question-number">1.1.3</div><div class="question-content"><div class="math-display">\(2^{2x+1} - 5 \cdot 2^x + 2 = 0\)</div></div><div class="marks">(3)</div></div>
+        <div class="nested-item"><div class="question-number">1.1.4</div><div class="question-content"><div class="math-display">\(\sqrt{2x+5} - x = 1\)</div></div><div class="marks">(4)</div></div>
+      </div>
+      <div class="question-item" style="margin-top: 20px;"><div class="question-number">1.2</div><div class="question-content">Solve simultaneously for \(x\) and \(y\):<div class="math-display">\(y = x^2 - 3x + 1\) <br> \(y = 2x - 5\)</div></div><div class="marks">(4)</div></div>
+      <div class="question-item" style="margin-top: 20px;"><div class="question-number">1.3</div><div class="question-content">Solve for \(x\):<div class="math-display">\(\dfrac{x-1}{x+3} \geq \dfrac{x}{x-2}\)</div></div><div class="marks">(4)</div></div>
+      <div class="question-item" style="margin-top: 20px;"><div class="question-number">1.4</div><div class="question-content">Determine the value(s) of \(k\) for which the equation \(x^2 + (k-3)x + 4 = 0\) has equal roots.</div><div class="marks">(4)</div></div>
+      <div class="total-marks">[25]</div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 4: QUESTION 2 -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">4</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="question-header"><h2>QUESTION 2</h2></div>
+      <div class="question-item">
+        <div class="question-number">2.1</div>
+        <div class="question-content">
+          The sketch below shows the graph of \(f(x) = -x^2 + 4x\) for \(x \geq 2\). 
+          <div class="diagram-container" id="svg-q2-parabola">
+              <div class="diagram-caption">
+                  <strong>Key Points:</strong><br>
+                  Turning point: \((2; 4)\)<br>
+                  \(x\)-intercept: \((4; 0)\)
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="nested-questions">
+        <div class="nested-item"><div class="question-number">2.1.1</div><div class="question-content">Determine the equation of the inverse function \(f^{-1}(x)\).</div><div class="marks">(3)</div></div>
+        <div class="nested-item"><div class="question-number">2.1.2</div><div class="question-content">Sketch the graph of \(f^{-1}(x)\) on the same set of axes provided in the ANSWER BOOK. Clearly indicate the domain and range.</div><div class="marks">(4)</div></div>
+        <div class="nested-item"><div class="question-number">2.1.3</div><div class="question-content">State the domain and range of \(f^{-1}\).</div><div class="marks">(2)</div></div>
+        <div class="nested-item"><div class="question-number">2.1.4</div><div class="question-content">For which values of \(x\) is \(f^{-1}(x) \leq 2\)?</div><div class="marks">(4)</div></div>
+      </div>
+      <div class="total-marks">[13]</div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 5: QUESTION 3 -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">5</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="question-header"><h2>QUESTION 3</h2></div>
+      <div class="question-item">
+        <div class="question-number">3.1</div>
+        <div class="question-content">
+          The sketch below shows the graphs of two cubic functions, \(f(x) = x^3 - 3x^2 - 9x + 27\) and \(g(x) = -x^3 + 3x^2 + 9x - 27\). The graph of \(g(x)\) is restricted to \(x \geq 3\). 
+          <div class="diagram-container" id="svg-q3-cubics">
+              <div class="diagram-caption">
+                  <strong>Key Points for \(f\):</strong><br>
+                  \(x\)-intercepts: \((-3; 0)\) and \((3; 0)\)<br>
+                  \(y\)-intercept: \((0; 27)\)<br>
+                  Turning points: \((-1; 32)\) and \((3; 0)\)
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="nested-questions">
+        <div class="nested-item"><div class="question-number">3.1.1</div><div class="question-content">Show algebraically that the \(x\)-intercepts of \(f(x)\) are \(x = -3\) and \(x = 3\).</div><div class="marks">(4)</div></div>
+        <div class="nested-item"><div class="question-number">3.1.2</div><div class="question-content">Determine the derivative \(f'(x)\) and use it to calculate the coordinates of the stationary points.</div><div class="marks">(4)</div></div>
+        <div class="nested-item"><div class="question-number">3.1.3</div><div class="question-content">Determine the equation of the inverse function \(g^{-1}(x)\) and state its domain.</div><div class="marks">(3)</div></div>
+        <div class="nested-item"><div class="question-number">3.1.4</div><div class="question-content">If \(h(x)\) is the reflection of \(f(x)\) across the \(y\)-axis, write down the equation of \(h(x)\).</div><div class="marks">(2)</div></div>
+      </div>
+      <div class="total-marks">[13]</div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 6: QUESTION 4 -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">6</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="question-header"><h2>QUESTION 4</h2></div>
+      <div class="question-item">
+        <div class="question-number">4.1</div>
+        <div class="question-content">
+          The sketch below shows the graphs of \(f(x) = x^2 - 4\) and \(g(x) = x + 2\). The points of intersection are \(A\) and \(B\).
+          <div class="diagram-container" id="svg-q4-line-parabola">
+              <div class="diagram-caption">
+                  <strong>Points of Intersection:</strong><br>
+                  \(A(-2; 0)\) and \(B(3; 5)\)
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="nested-questions">
+        <div class="nested-item"><div class="question-number">4.1.1</div><div class="question-content">Show algebraically that the points of intersection are indeed \(A(-2; 0)\) and \(B(3; 5)\).</div><div class="marks">(4)</div></div>
+        <div class="nested-item"><div class="question-number">4.1.2</div><div class="question-content">For which values of \(x\) is \(f(x) \leq g(x)\)?</div><div class="marks">(3)</div></div>
+        <div class="nested-item"><div class="question-number">4.1.3</div><div class="question-content">Determine the maximum vertical distance between \(f(x)\) and \(g(x)\) on the interval \([-2, 3]\).</div><div class="marks">(3)</div></div>
+      </div>
+      <div class="total-marks">[10]</div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 7: QUESTION 5 -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">7</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="question-header"><h2>QUESTION 5</h2></div>
+      <div class="question-item">
+        <div class="question-number">5.1</div>
+        <div class="question-content">
+          The sketch below shows the graphs of four functions:
+          <ul>
+            <li>A straight line \(f\) passing through the origin.</li>
+            <li>An exponential function \(g\) passing through \((0; 1)\) and \((1; 2)\).</li>
+            <li>A hyperbola \(h\) with asymptotes \(x = 0\) and \(y = 0\), passing through \((1; 1)\).</li>
+            <li>A logarithmic function \(k\) passing through \((2; 1)\) with an asymptote at \(x = 0\).</li>
+          </ul>
+          <div class="diagram-container" id="svg-q5-p1">
+              <div class="diagram-caption">
+                  <strong>Key Points:</strong><br>
+                  \(g(0; 1)\) and \(g(1; 2)\)<br>
+                  \(h(1; 1)\)<br>
+                  \(k(2; 1)\)
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="nested-questions">
+        <div class="nested-item"><div class="question-number">5.1.1</div><div class="question-content">Determine the equation of \(g(x)\).</div><div class="marks">(2)</div></div>
+        <div class="nested-item"><div class="question-number">5.1.2</div><div class="question-content">Determine the equation of the inverse of \(g(x)\), \(g^{-1}(x)\).</div><div class="marks">(2)</div></div>
+        <div class="nested-item"><div class="question-number">5.1.3</div><div class="question-content">Determine the equation of \(h(x)\).</div><div class="marks">(2)</div></div>
+        <div class="nested-item"><div class="question-number">5.1.4</div><div class="question-content">Determine the equation of \(k(x)\).</div><div class="marks">(2)</div></div>
+        <div class="nested-item"><div class="question-number">5.1.5</div><div class="question-content">Show that the point \((1; 1)\) lies on the graph of \(h(x)\).</div><div class="marks">(2)</div></div>
+      </div>
+      <div class="total-marks">[10]</div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 8: QUESTION 5 (CONTINUED) -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">8</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="question-header"><h2>QUESTION 5 (Continued)</h2></div>
+      <div class="question-item">
+        <div class="question-number">5.2</div>
+        <div class="question-content">
+          Use the graphs and functions from the previous page to answer the following integrated questions:
+          <div class="nested-questions">
+            <div class="nested-item"><div class="question-number">5.2.1</div><div class="question-content">The graph of \(g(x)\) is shifted 2 units downwards to form a new function \(m(x)\). Write down the equation of \(m(x)\).</div><div class="marks">(2)</div></div>
+            <div class="nested-item"><div class="question-number">5.2.2</div><div class="question-content">Write down the equation of the asymptote of \(m(x)\).</div><div class="marks">(1)</div></div>
+            <div class="nested-item"><div class="question-number">5.2.3</div><div class="question-content">The graph of \(h(x)\) is reflected across the \(y\)-axis to form \(q(x)\). Write down the equation of \(q(x)\).</div><div class="marks">(2)</div></div>
+            <div class="nested-item"><div class="question-number">5.2.4</div><div class="question-content">For which values of \(x\) (where \(x > 0\)) is \(h(x) \leq g(x)\)?</div><div class="marks">(4)</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="total-marks">[9]</div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 9: QUESTION 6 -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">9</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="question-header"><h2>QUESTION 6</h2></div>
+      <div class="question-item"><div class="question-number">6.1</div><div class="question-content">Determine the derivatives:</div></div>
+      <div class="nested-questions">
+        <div class="nested-item"><div class="question-number">6.1.1</div><div class="question-content">Determine \(f'(x)\) from first principles if \(f(x) = -2x^2 + 3x\).</div><div class="marks">(5)</div></div>
+        <div class="nested-item"><div class="question-number">6.1.2</div><div class="question-content">Determine \(\dfrac{dy}{dx}\) if \(y = (x^2 - 1)(2x + 3)\).</div><div class="marks">(3)</div></div>
+        <div class="nested-item"><div class="question-number">6.1.3</div><div class="question-content">Determine \(\dfrac{dy}{dx}\) if \(y = \dfrac{x + 1}{x - 1}\).</div><div class="marks">(4)</div></div>
+      </div>
+      <div class="total-marks">[12]</div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 10: QUESTION 7 -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">10</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="question-header"><h2>QUESTION 7</h2></div>
+      <div class="question-item"><div class="question-number">7.1</div><div class="question-content">A closed rectangular box with a square base has a volume of \(32 \text{ cm}^3\). The side length of the base is \(x\) cm and the height is \(h\) cm.</div></div>
+      <div class="nested-questions">
+        <div class="nested-item"><div class="question-number">7.1.1</div><div class="question-content">Show that the surface area of the box is given by \(S(x) = 2x^2 + \dfrac{128}{x}\).</div><div class="marks">(4)</div></div>
+        <div class="nested-item"><div class="question-number">7.1.2</div><div class="question-content">Hence, calculate the dimensions of the box that will minimize the surface area.</div><div class="marks">(4)</div></div>
+      </div>
+      <div class="total-marks">[8]</div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGE 11: INFO SHEET -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Mathematics/AE</div>
+        <div class="header-center"><span class="page-num">11</span><span class="confidential">IFB/Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="info-title">INFORMATION SHEET</div>
+      <div class="formula-layout">
+        <div class="formula-center">\(x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)</div>
+        <div class="formula-center" style="margin-top: 20px;">\(f'(x) = \lim_{h \to 0} \dfrac{f(x + h) - f(x)}{h}\)</div>
+        <div class="formula-center">If \(f(x) = ax^n\), then \(f'(x) = anx^{n-1}\)</div>
+        <div class="formula-row" style="margin-top: 20px;">
+          <div class="formula-item">\(y = mx + c\)</div>
+          <div class="formula-item">\(y - y_1 = m(x - x_1)\)</div>
+          <div class="formula-item">\(m = \dfrac{y_2 - y_1}{x_2 - x_1}\)</div>
+        </div>
+        <div class="formula-center" style="margin-top: 20px;">\(V_{\text{sphere}} = \dfrac{4}{3}\pi r^3\)</div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/practice-paper-math.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">END</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 </div>
 
-<!-- ==================== VIEW 2: SCANNER ==================== -->
+<!-- ==================== VIEW 2: ANSWER BOOK ==================== -->
+<div class="view" id="viewAnswerBook">
+  <!-- PAGE 1: COVER PAGE -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+      <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+      <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+    </svg>
+    <div class="content-wrapper">
+      <div class="cover-header-container">
+        <div class="cover-brand">
+          <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+              <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+              <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+          </svg>
+          <div class="cover-header-text">
+            <div class="title">Institute of Board</div>
+            <div class="sub">Department:<br>Examination Board<br>NON-ACCREDITED ACADEMIC INSTITUTION</div>
+          </div>
+        </div>
+        <div class="top-right-container">
+          <div class="candidate-barcode-box">
+            <div class="label">Candidate Barcode Label</div>
+            <svg id="coverBarcode" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
+          </div>
+          <div class="sequence-circle-container">
+            <div class="sequence-circle" id="coverSequence"></div>
+            <div class="sequence-text">Sequence Number<br>(Pack of 12)</div>
+          </div>
+        </div>
+      </div>
+      <div class="answer-book-title">IFB Answer Book</div>
+      <div class="form-row">
+        <div class="form-box" style="flex: 2;">
+          <label>Student ID</label>
+          <div class="block-container" id="idBlocks"></div>
+        </div>
+        <div class="form-box" style="flex: 1;">
+          <label>Security Code</label>
+          <div class="block-container" id="secBlocks"></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-box" style="flex: 2;">
+          <label>Date (DDMMYYYY)</label>
+          <div class="block-container" id="dateBlocks"></div>
+        </div>
+        <div class="form-box" style="flex: 1;"><label>Book Number</label><input type="text" class="input-line" id="valBookNum"></div>
+        <div class="form-box" style="flex: 1;"><label>Of</label><input type="text" class="input-line" id="valTotalBooks"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-box" style="flex: 2;">
+          <label>Subject Code</label>
+          <div class="block-container" id="subjCodeBlocks"></div>
+        </div>
+        <div class="form-box" style="flex: 1;"><label>Paper Number</label><input type="text" class="input-line" id="valPaperNum" style="text-align: center;"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-box" style="flex: 1;"><label>Subject Name</label><input type="text" class="input-line" id="valSubjectName"></div>
+      </div>
+      <div class="form-row" style="margin-bottom: 15px;">
+        <div class="form-box" style="flex: 1;"><label>Curriculum:</label><input type="text" class="input-line" id="valCurriculum"></div>
+      </div>
+      <table class="marking-table">
+        <thead>
+          <tr>
+            <th colspan="2">MARKER</th>
+            <th colspan="5">MODERATOR'S INITIALS IN RELEVANT BLOCK</th>
+            <th colspan="2">RE-MARK/RE-CHECK</th>
+          </tr>
+          <tr>
+            <th style="width: 15%;">Marks</th>
+            <th style="width: 35%;">Marker's Code & Initials</th>
+            <th style="width: 10%;">Marks</th>
+            <th style="width: 8%;">DS</th>
+            <th style="width: 8%;">Ge</th>
+            <th style="width: 8%;">GP</th>
+            <th style="width: 8%;">Cl</th>
+            <th style="width: 10%;">Marks</th>
+            <th style="width: 15%;">Initials</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr class="total-row"><td colspan="2" class="text-left" style="text-align: right; padding-right: 15px;">TOTAL:</td><td colspan="7"></td></tr>
+          <tr class="total-row"><td colspan="2" class="text-left" style="font-size: 8pt;">CONTROLLED AND CERTIFIED CORRECT</td><td colspan="7"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Copyright reserved</div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: INSTRUCTIONS -->
+  <div class="page">
+    <div class="security-pattern"></div>
+    <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" /><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" /><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" /></svg>
+    <div class="content-wrapper">
+      <div class="header">
+        <div class="header-left">Answer Book</div>
+        <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
+        <div class="header-right">2027</div>
+      </div>
+      <div class="instructions-header">DIGITAL EXAMINATION INSTRUCTIONS</div>
+      <ol class="instructions-list">
+        <li>This is a digital answer book. Do not attempt to tear pages. You will scan and upload each page individually via the Exam Portal.</li>
+        <li>Your Student ID, Security Code, and Subject details are auto-filled on the cover page. Please verify them. If incorrect, you may type in the correct information.</li>
+        <li>Answer ALL questions in the blank writing areas provided on the following pages.</li>
+        <li>Write clearly using a black pen. We recommend black ink for optimal scanner recognition.</li>
+        <li>Rule off through any work/rough work that must not be marked.</li>
+        <li>You must upload your scanned pages before the session ends.</li>
+        <li>The Exam Portal requires you to scan the same page twice to ensure AI accuracy.</li>
+        <li>Before uploading, verify your answers are correctly translated by the AI. You are asked to scan the page twice for the AI so verify your text to be filled on the answer space.</li>
+      </ol>
+    </div>
+    <div class="footer">
+      <div class="footer-left">
+        <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+        <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+      </div>
+      <div class="footer-right">Please turn over</div>
+    </div>
+    <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+  </div>
+
+  <!-- PAGES 3-25 CONTAINER -->
+  <div id="answer-book-pages"></div>
+
+</div>
+
+<!-- ==================== VIEW 3: SCANNER ==================== -->
 <div class="view" id="viewScanner">
   <div class="scanner-header">
     <h2>Scan Your Physical Answers</h2>
@@ -268,7 +830,7 @@
 
   <div class="status" id="status"></div>
 
-  <div style="margin-top: 30px; border-top: 1px solid var(--silver); padding-top: 20px;">
+  <div style="margin-top: 30px; border-top: 1px solid var(--silver); padding-top: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
     <button class="action btn-success" id="btnSubmit" style="width: 100%; padding: 20px; font-size: 18px;" disabled onclick="submitExam()">
       <i data-lucide="send"></i> Submit All Scripts & Finish
     </button>
@@ -276,367 +838,611 @@
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const studentName = sessionStorage.getItem('examStudentName') || 'Student';
-const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
+  /* ================= CONFIG ================= */
+  const studentName = sessionStorage.getItem('examStudentName') || 'Student';
+  const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
+  const secCode = sessionStorage.getItem('examSecurityCode') || 'ABCDEF';
+  const examCode = sessionStorage.getItem('examCode') || 'AE-S-MATH';
+  const packSeq = sessionStorage.getItem('examPackSeq') || '01';
 
-// Timer (2 hours)
-let timeLeft = 2 * 60 * 60; 
-setInterval(() => {
-  if (timeLeft <= 0) {
-    alert("Time is up! Submitting your scanned pages automatically...");
-    submitExam();
-    return;
-  }
-  timeLeft--;
-  const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
-  const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
-  const s = (timeLeft % 60).toString().padStart(2, '0');
-  document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
-}, 1000);
-
-// Tab Switch Detection
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    document.getElementById('tabWarning').style.display = 'flex';
-  }
-});
-
-/* ================= UI NAVIGATION ================= */
-function switchTab(tab) {
-  if (tab === 'paper') {
-    document.getElementById('viewPaper').classList.add('active');
-    document.getElementById('viewScanner').classList.remove('active');
-    document.getElementById('tabPaper').classList.add('active');
-    document.getElementById('tabScanner').classList.remove('active');
-  } else {
-    document.getElementById('viewPaper').classList.remove('active');
-    document.getElementById('viewScanner').classList.add('active');
-    document.getElementById('tabPaper').classList.remove('active');
-    document.getElementById('tabScanner').classList.add('active');
-    // Stop camera if switching back to paper
-    stopCamera(); 
-  }
-}
-
-/* ================= SCANNER LOGIC ================= */
-const A4_W = 1240, A4_H = 1754;
-const captures = {}; 
-let stream = null, videoTrack = null, pendingBlob = null;
-let cvReady = false;
-
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const preview = document.getElementById('preview');
-const placeholder = document.getElementById('placeholder');
-const statusEl = document.getElementById('status');
-const framingGuide = document.getElementById('framingGuide');
-const flashOverlay = document.getElementById('flashOverlay');
-const questionPick = document.getElementById('questionPick');
-const pagesList = document.getElementById('pagesList');
-const pagesTitle = document.getElementById('pagesTitle');
-
-const btnOpen = document.getElementById('btnOpen');
-const btnCapture = document.getElementById('btnCapture');
-const btnRetake = document.getElementById('btnRetake');
-const btnAddPage = document.getElementById('btnAddPage');
-const btnSubmit = document.getElementById('btnSubmit');
-
-function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? '#B91C1C' : (type === 'success' ? '#15803d' : 'var(--gray)'); }
-
-function waitCv() {
-  const started = Date.now();
-  let attached = false;
-  const t = setInterval(() => {
-    if (typeof cv !== 'undefined') {
-      if (cv.Mat) { cvReady = true; clearInterval(t); return; }
-      if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
-        attached = true;
-        cv.onRuntimeInitialized = () => { cvReady = true; };
-      }
+  // Timer (2 hours)
+  let timeLeft = 2 * 60 * 60; 
+  setInterval(() => {
+    if (timeLeft <= 0) {
+      alert("Time is up! Submitting your scanned pages automatically...");
+      submitExam();
+      return;
     }
-    if (Date.now() - started > 20000) clearInterval(t);
-  }, 150);
-}
-waitCv();
+    timeLeft--;
+    const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+    const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
+  }, 1000);
 
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-async function openCamera() {
-  setStatus('Requesting camera permission…');
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
-      audio: false
-    });
-    video.srcObject = stream;
-    await video.play();
-    videoTrack = stream.getVideoTracks()[0];
-
-    placeholder.style.display = 'none';
-    video.classList.add('active');
-    framingGuide.classList.add('visible');
-
-    btnOpen.disabled = true;
-    btnCapture.disabled = false;
-    btnRetake.disabled = true;
-    btnAddPage.disabled = true;
-    setStatus(`Scanning Q${questionPick.value}. Hold straight above the paper.`);
-  } catch (err) {
-    setStatus('Could not open camera: ' + err.message, 'error');
-  }
-}
-
-async function capture() {
-  if (!stream) return;
-  const w = video.videoWidth, h = video.videoHeight;
-  if (!w || !h) return;
-
-  btnCapture.disabled = true;
-  setStatus('Capturing…');
-  fireScreenFlash();
-  await sleep(150);
-
-  canvas.width = w; canvas.height = h;
-  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
-  stopCamera();
-
-  setStatus('Processing page…');
-  let a4Canvas = null, detected = false;
-  try {
-    if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
-      a4Canvas = detectAndWarpToA4(canvas);
-      if (a4Canvas) detected = true;
+  // Tab Switch Detection
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      document.getElementById('tabWarning').style.display = 'flex';
     }
-  } catch (e) { console.warn('Page detection failed:', e); }
+  });
+
+  /* ================= UI NAVIGATION ================= */
+  function switchTab(tab) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    
+    if (tab === 'paper') {
+      document.getElementById('viewPaper').classList.add('active');
+      document.getElementById('tabPaper').classList.add('active');
+    } else if (tab === 'answer') {
+      document.getElementById('viewAnswerBook').classList.add('active');
+      document.getElementById('tabAnswer').classList.add('active');
+    } else {
+      document.getElementById('viewScanner').classList.add('active');
+      document.getElementById('tabScanner').classList.add('active');
+    }
+    // Stop camera if switching away
+    if (tab !== 'scanner') stopCamera();
+  }
+
+  /* ================= INITIALIZATION LOGIC ================= */
   
-  if (!a4Canvas) a4Canvas = fallbackA4(canvas);
-  enhanceText(a4Canvas); 
+  // 1. Generate Answer Book Pages (3 to 25)
+  let answerPagesHtml = '';
+  for (let i = 3; i <= 25; i++) {
+    answerPagesHtml += `
+      <div class="page">
+        <div class="security-pattern"></div>
+        <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+        </svg>
+        <div class="content-wrapper">
+          <div class="header">
+            <div class="header-left">Answer Book</div>
+            <div class="header-center"><span class="page-num">${i}</span><span class="confidential">IFB / Confidential</span></div>
+            <div class="header-right">2027</div>
+          </div>
+          <div class="answer-page">
+            <div class="left-margin"></div>
+            <div class="writing-area"></div>
+            <div class="marks-area"><div class="marks-title">Marks</div></div>
+          </div>
+        </div>
+        <div class="footer">
+          <div class="footer-left">
+            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+            <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+          </div>
+          <div class="footer-right">${i === 25 ? 'END' : 'Please turn over'}</div>
+        </div>
+        <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+      </div>
+    `;
+  }
+  document.getElementById('answer-book-pages').innerHTML = answerPagesHtml;
 
-  a4Canvas.toBlob(blob => {
-    pendingBlob = blob;
-    const url = URL.createObjectURL(blob);
-    preview.src = url;
-    preview.classList.add('active');
-    video.classList.remove('active');
-    framingGuide.classList.remove('visible');
+  // 2. Generate Block Inputs
+  function createBlocks(containerId, count) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    for (let i = 0; i < count; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'block';
+        input.maxLength = 1;
+        input.addEventListener('input', function() {
+            if (this.value.length === 1) {
+                let next = this.nextElementSibling;
+                if (next) next.focus();
+            }
+        });
+        container.appendChild(input);
+    }
+  }
+  createBlocks('idBlocks', 13);
+  createBlocks('secBlocks', 6);
+  createBlocks('dateBlocks', 8);
+  createBlocks('subjCodeBlocks', 5);
+
+  // 3. Auto-fill Answer Book
+  function fillBlocks(containerId, text) {
+      if (!text) return;
+      const inputs = document.querySelectorAll(`#${containerId} input`);
+      const str = String(text);
+      for (let i = 0; i < str.length && i < inputs.length; i++) {
+          inputs[i].value = str[i].toUpperCase();
+      }
+  }
+  document.getElementById('coverSequence').innerText = packSeq;
+  fillBlocks('idBlocks', studentId);
+  fillBlocks('secBlocks', secCode);
+  fillBlocks('subjCodeBlocks', examCode.replace(/-/g, ''));
+  document.getElementById('valBookNum').value = "1";
+  document.getElementById('valTotalBooks').value = "12";
+  document.getElementById('valPaperNum').value = "1";
+  document.getElementById('valSubjectName').value = examCode.includes("MATH") ? "Mathematics" : "Web Development";
+  document.getElementById('valCurriculum').value = examCode.includes("MATH") ? "IFB-S" : "IFB AQ-B";
+  
+  const today = new Date();
+  const dateStr = String(today.getDate()).padStart(2, '0') + String(today.getMonth() + 1).padStart(2, '0') + String(today.getFullYear());
+  fillBlocks('dateBlocks', dateStr);
+
+  // 4. Generate Barcodes and QRs
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    
+    // Answer Book Cover
+    try {
+      JsBarcode("#coverBarcode", `${studentId}-${secCode}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 });
+    } catch (e) { console.warn(e); }
+
+    // Paper & Answer Book Footers
+    document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "102626F", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: parseInt(el.dataset.bcFontSize || "12", 10), textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  // 5. Generate Paper Diagrams
+  function drawPaperDiagrams() {
+    const svg2 = document.getElementById('svg-q2-parabola');
+    if (svg2) {
+        const width = 400, height = 400, xMin = -1, xMax = 5, yMin = -2, yMax = 6;
+        const mapX = (x) => ((x - xMin) / (xMax - xMin)) * width;
+        const mapY = (y) => height - (((y - yMin) / (yMax - yMin)) * height);
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="2"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="2"/>`;
+        let pathF = "";
+        for (let x = 2; x <= xMax; x += 0.05) {
+            let y = -Math.pow(x, 2) + 4 * x;
+            if (y >= yMin && y <= yMax) pathF += (pathF === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+        }
+        html += `<path d="${pathF}" fill="none" stroke="#000" stroke-width="2"/>`;
+        html += `<circle cx="${mapX(2)}" cy="${mapY(4)}" r="3" fill="#000"/>`;
+        html += `<circle cx="${mapX(4)}" cy="${mapY(0)}" r="3" fill="#000"/>`;
+        html += `<text x="${mapX(3.5)}" y="${mapY(4.5)}" font-family="Times New Roman" font-size="16" font-style="italic">f</text>`;
+        html += `<text x="${width - 20}" y="${mapY(0) - 10}" font-family="Times New Roman" font-size="12">x</text>`;
+        html += `<text x="${mapX(0) + 10}" y="20" font-family="Times New Roman" font-size="12">y</text>`;
+        html += `</svg>`;
+        svg2.innerHTML = html;
+    }
+
+    const svg3 = document.getElementById('svg-q3-cubics');
+    if (svg3) {
+        const width = 450, height = 400, xMin = -4, xMax = 6, yMin = -35, yMax = 40;
+        const mapX = (x) => ((x - xMin) / (xMax - xMin)) * width;
+        const mapY = (y) => height - (((y - yMin) / (yMax - yMin)) * height);
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="2"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="2"/>`;
+        let pathF = "";
+        for (let x = xMin; x <= xMax; x += 0.05) {
+            let y = Math.pow(x, 3) - 3 * Math.pow(x, 2) - 9 * x + 27;
+            if (y >= yMin && y <= yMax) pathF += (pathF === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+        }
+        html += `<path d="${pathF}" fill="none" stroke="#000" stroke-width="2"/>`;
+        let pathG = "";
+        for (let x = 3; x <= xMax; x += 0.05) {
+            let y = -Math.pow(x, 3) + 3 * Math.pow(x, 2) + 9 * x - 27;
+            if (y >= yMin && y <= yMax) pathG += (pathG === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+        }
+        html += `<path d="${pathG}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="6"/>`;
+        html += `<text x="${mapX(4.5)}" y="${mapY(30)}" font-family="Times New Roman" font-size="16" font-style="italic">f</text>`;
+        html += `<text x="${mapX(4.5)}" y="${mapY(-20)}" font-family="Times New Roman" font-size="16" font-style="italic">g</text>`;
+        html += `</svg>`;
+        svg3.innerHTML = html;
+    }
+
+    const svg4 = document.getElementById('svg-q4-line-parabola');
+    if (svg4) {
+        const width = 400, height = 400, xMin = -4, xMax = 4, yMin = -6, yMax = 10;
+        const mapX = (x) => ((x - xMin) / (xMax - xMin)) * width;
+        const mapY = (y) => height - (((y - yMin) / (yMax - yMin)) * height);
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="2"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="2"/>`;
+        let pathF = "";
+        for (let x = xMin; x <= xMax; x += 0.05) {
+            let y = Math.pow(x, 2) - 4;
+            if (y >= yMin && y <= yMax) pathF += (pathF === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+        }
+        html += `<path d="${pathF}" fill="none" stroke="#000" stroke-width="2"/>`;
+        html += `<line x1="${mapX(xMin)}" y1="${mapY(xMin + 2)}" x2="${mapX(xMax)}" y2="${mapY(xMax + 2)}" stroke="#000" stroke-width="2" stroke-dasharray="6"/>`;
+        html += `<circle cx="${mapX(-2)}" cy="${mapY(0)}" r="3" fill="#000"/>`;
+        html += `<circle cx="${mapX(3)}" cy="${mapY(5)}" r="3" fill="#000"/>`;
+        html += `<text x="${mapX(-3)}" y="${mapY(6)}" font-family="Times New Roman" font-size="16" font-style="italic">f</text>`;
+        html += `<text x="${mapX(2)}" y="${mapY(5)}" font-family="Times New Roman" font-size="16" font-style="italic">g</text>`;
+        html += `</svg>`;
+        svg4.innerHTML = html;
+    }
+
+    const svg5p1 = document.getElementById('svg-q5-p1');
+    if (svg5p1) {
+        const width = 450, height = 400, xMin = -4, xMax = 4, yMin = -4, yMax = 6;
+        const mapX = (x) => ((x - xMin) / (xMax - xMin)) * width;
+        const mapY = (y) => height - (((y - yMin) / (yMax - yMin)) * height);
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="2"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="2"/>`;
+        html += `<line x1="${mapX(xMin)}" y1="${mapY(xMin)}" x2="${mapX(xMax)}" y2="${mapY(xMax)}" stroke="#000" stroke-width="2"/>`;
+        let pathG = "";
+        for (let x = xMin; x <= xMax; x += 0.05) {
+            let y = Math.pow(2, x);
+            if (y >= yMin && y <= yMax) pathG += (pathG === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+        }
+        html += `<path d="${pathG}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="2"/>`;
+        let pathH1 = "", pathH2 = "";
+        for (let x = xMin; x <= xMax; x += 0.05) {
+            if (Math.abs(x) < 0.1) continue;
+            let y = 1 / x;
+            if (y >= yMin && y <= yMax) {
+                if (x < 0) pathH1 += (pathH1 === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+                else pathH2 += (pathH2 === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+            }
+        }
+        html += `<path d="${pathH1}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="6"/>`;
+        html += `<path d="${pathH2}" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="6"/>`;
+        let pathK = "";
+        for (let x = 0.1; x <= xMax; x += 0.05) {
+            let y = Math.log2(x);
+            if (y >= yMin && y <= yMax) pathK += (pathK === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+        }
+        html += `<path d="${pathK}" fill="none" stroke="#7A1F2B" stroke-width="2"/>`;
+        html += `<circle cx="${mapX(0)}" cy="${mapY(1)}" r="3" fill="#000"/>`;
+        html += `<circle cx="${mapX(1)}" cy="${mapY(2)}" r="3" fill="#000"/>`;
+        html += `<circle cx="${mapX(1)}" cy="${mapY(1)}" r="3" fill="#000"/>`;
+        html += `<circle cx="${mapX(2)}" cy="${mapY(1)}" r="3" fill="#000"/>`;
+        html += `<text x="${mapX(3)}" y="${mapY(3.5)}" font-family="Times New Roman" font-size="14" font-style="italic">f</text>`;
+        html += `<text x="${mapX(2.5)}" y="${mapY(4.5)}" font-family="Times New Roman" font-size="14" font-style="italic">g</text>`;
+        html += `<text x="${mapX(-2.5)}" y="${mapY(-1)}" font-family="Times New Roman" font-size="14" font-style="italic">h</text>`;
+        html += `<text x="${mapX(3)}" y="${mapY(1.8)}" font-family="Times New Roman" font-size="14" font-style="italic">k</text>`;
+        html += `</svg>`;
+        svg5p1.innerHTML = html;
+    }
+  }
+
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
+    drawPaperDiagrams();
+    lucide.createIcons();
+  });
+
+  /* ================= SCANNER LOGIC ================= */
+  const A4_W = 1240, A4_H = 1754;
+  const captures = {}; 
+  let stream = null, videoTrack = null, pendingBlob = null;
+  let cvReady = false;
+
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const preview = document.getElementById('preview');
+  const placeholder = document.getElementById('placeholder');
+  const statusEl = document.getElementById('status');
+  const framingGuide = document.getElementById('framingGuide');
+  const flashOverlay = document.getElementById('flashOverlay');
+  const questionPick = document.getElementById('questionPick');
+  const pagesList = document.getElementById('pagesList');
+  const pagesTitle = document.getElementById('pagesTitle');
+
+  const btnOpen = document.getElementById('btnOpen');
+  const btnCapture = document.getElementById('btnCapture');
+  const btnRetake = document.getElementById('btnRetake');
+  const btnAddPage = document.getElementById('btnAddPage');
+  const btnSubmit = document.getElementById('btnSubmit');
+
+  function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? '#B91C1C' : (type === 'success' ? '#15803d' : 'var(--gray)'); }
+
+  function waitCv() {
+    const started = Date.now();
+    let attached = false;
+    const t = setInterval(() => {
+      if (typeof cv !== 'undefined') {
+        if (cv.Mat) { cvReady = true; clearInterval(t); return; }
+        if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
+          attached = true;
+          cv.onRuntimeInitialized = () => { cvReady = true; };
+        }
+      }
+      if (Date.now() - started > 20000) clearInterval(t);
+    }, 150);
+  }
+  waitCv();
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  async function openCamera() {
+    setStatus('Requesting camera permission…');
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+        audio: false
+      });
+      video.srcObject = stream;
+      await video.play();
+      videoTrack = stream.getVideoTracks()[0];
+
+      placeholder.style.display = 'none';
+      video.classList.add('active');
+      framingGuide.classList.add('visible');
+
+      btnOpen.disabled = true;
+      btnCapture.disabled = false;
+      btnRetake.disabled = true;
+      btnAddPage.disabled = true;
+      setStatus(`Scanning Q${questionPick.value}. Hold straight above the paper.`);
+    } catch (err) {
+      setStatus('Could not open camera: ' + err.message, 'error');
+    }
+  }
+
+  async function capture() {
+    if (!stream) return;
+    const w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return;
 
     btnCapture.disabled = true;
-    btnRetake.disabled = false;
-    btnAddPage.disabled = false;
-    btnOpen.disabled = true;
+    setStatus('Capturing…');
+    fireScreenFlash();
+    await sleep(150);
 
-    setStatus(detected ? 'Page detected & straightened.' : 'Page captured.', detected ? 'success' : 'warn');
-  }, 'image/jpeg', 0.92);
-}
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+    stopCamera();
 
-function fireScreenFlash() {
-  flashOverlay.classList.add('fire');
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    flashOverlay.classList.remove('fire');
-  }));
-}
+    setStatus('Processing page…');
+    let a4Canvas = null, detected = false;
+    try {
+      if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
+        a4Canvas = detectAndWarpToA4(canvas);
+        if (a4Canvas) detected = true;
+      }
+    } catch (e) { console.warn('Page detection failed:', e); }
+    
+    if (!a4Canvas) a4Canvas = fallbackA4(canvas);
+    enhanceText(a4Canvas); 
 
-function detectAndWarpToA4(srcCanvas) {
-  const src = cv.imread(srcCanvas);
-  const maxDim = 600;
-  const scale = Math.min(1, maxDim / Math.max(src.cols, src.rows));
-  const small = new cv.Mat();
-  cv.resize(src, small, new cv.Size(Math.round(src.cols * scale), Math.round(src.rows * scale)), 0, 0, cv.INTER_AREA);
+    a4Canvas.toBlob(blob => {
+      pendingBlob = blob;
+      const url = URL.createObjectURL(blob);
+      preview.src = url;
+      preview.classList.add('active');
+      video.classList.remove('active');
+      framingGuide.classList.remove('visible');
 
-  const gray = new cv.Mat();
-  cv.cvtColor(small, gray, cv.COLOR_RGBA2GRAY);
-  cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0);
+      btnCapture.disabled = true;
+      btnRetake.disabled = false;
+      btnAddPage.disabled = false;
+      btnOpen.disabled = true;
 
-  const edges = new cv.Mat();
-  cv.Canny(gray, edges, 50, 150);
-  const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
-  cv.dilate(edges, edges, kernel);
+      setStatus(detected ? 'Page detected & straightened.' : 'Page captured.', detected ? 'success' : 'warn');
+    }, 'image/jpeg', 0.92);
+  }
 
-  const contours = new cv.MatVector();
-  const hierarchy = new cv.Mat();
-  cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+  function fireScreenFlash() {
+    flashOverlay.classList.add('fire');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      flashOverlay.classList.remove('fire');
+    }));
+  }
 
-  let best = null, bestArea = 0;
-  const minArea = small.rows * small.cols * 0.15;
+  function detectAndWarpToA4(srcCanvas) {
+    const src = cv.imread(srcCanvas);
+    const maxDim = 600;
+    const scale = Math.min(1, maxDim / Math.max(src.cols, src.rows));
+    const small = new cv.Mat();
+    cv.resize(src, small, new cv.Size(Math.round(src.cols * scale), Math.round(src.rows * scale)), 0, 0, cv.INTER_AREA);
 
-  for (let i = 0; i < contours.size(); i++) {
-    const cnt = contours.get(i);
-    const peri = cv.arcLength(cnt, true);
-    const approx = new cv.Mat();
-    cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
-    const area = cv.contourArea(approx);
-    if (approx.rows === 4 && area > bestArea && area > minArea) {
-      if (best) best.delete();
-      best = approx.clone(); bestArea = area;
+    const gray = new cv.Mat();
+    cv.cvtColor(small, gray, cv.COLOR_RGBA2GRAY);
+    cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0);
+
+    const edges = new cv.Mat();
+    cv.Canny(gray, edges, 50, 150);
+    const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
+    cv.dilate(edges, edges, kernel);
+
+    const contours = new cv.MatVector();
+    const hierarchy = new cv.Mat();
+    cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+    let best = null, bestArea = 0;
+    const minArea = small.rows * small.cols * 0.15;
+
+    for (let i = 0; i < contours.size(); i++) {
+      const cnt = contours.get(i);
+      const peri = cv.arcLength(cnt, true);
+      const approx = new cv.Mat();
+      cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+      const area = cv.contourArea(approx);
+      if (approx.rows === 4 && area > bestArea && area > minArea) {
+        if (best) best.delete();
+        best = approx.clone(); bestArea = area;
+      }
+      approx.delete();
     }
-    approx.delete();
-  }
 
-  let corners = null;
-  if (best) {
-    corners = [];
-    for (let i = 0; i < 4; i++) corners.push({ x: best.data32S[i * 2] / scale, y: best.data32S[i * 2 + 1] / scale });
-    best.delete();
-  }
-  src.delete(); small.delete(); gray.delete(); edges.delete(); kernel.delete(); contours.delete(); hierarchy.delete();
-  if (!corners) return null;
-
-  corners = orderCorners(corners);
-  const srcFull = cv.imread(srcCanvas);
-  const srcQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [corners[0].x, corners[0].y, corners[1].x, corners[1].y, corners[2].x, corners[2].y, corners[3].x, corners[3].y]);
-  const dstQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, A4_W, 0, A4_W, A4_H, 0, A4_H]);
-  const M = cv.getPerspectiveTransform(srcQuad, dstQuad);
-  const warped = new cv.Mat();
-  cv.warpPerspective(srcFull, warped, M, new cv.Size(A4_W, A4_H));
-
-  const out = document.createElement('canvas');
-  out.width = A4_W; out.height = A4_H;
-  cv.imshow(out, warped);
-
-  srcFull.delete(); srcQuad.delete(); dstQuad.delete(); M.delete(); warped.delete();
-  return out;
-}
-
-function orderCorners(pts) {
-  const cx = pts.reduce((s, p) => s + p.x, 0) / 4;
-  const cy = pts.reduce((s, p) => s + p.y, 0) / 4;
-  pts.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
-  let minI = 0, minSum = Infinity;
-  for (let i = 0; i < 4; i++) { const s = pts[i].x + pts[i].y; if (s < minSum) { minSum = s; minI = i; } }
-  return [pts[minI], pts[(minI + 1) % 4], pts[(minI + 2) % 4], pts[(minI + 3) % 4]];
-}
-
-function fallbackA4(srcCanvas) {
-  const out = document.createElement('canvas');
-  out.width = A4_W; out.height = A4_H;
-  const ctx = out.getContext('2d');
-  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, A4_W, A4_H);
-  const sw = srcCanvas.width, sh = srcCanvas.height;
-  const scale = Math.min(A4_W / sw, A4_H / sh);
-  const dw = sw * scale, dh = sh * scale;
-  ctx.drawImage(srcCanvas, (A4_W - dw) / 2, (A4_H - dh) / 2, dw, dh);
-  return out;
-}
-
-function enhanceText(canvasEl) {
-  const W = canvasEl.width, H = canvasEl.height;
-  const ctx = canvasEl.getContext('2d');
-  const imgData = ctx.getImageData(0, 0, W, H);
-  const d = imgData.data;
-  const gray = new Uint8ClampedArray(W * H);
-  for (let i = 0, p = 0; i < d.length; i += 4, p++) gray[p] = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
-  
-  const IW = W + 1;
-  const integ = new Uint32Array(IW * (H + 1));
-  for (let y = 0; y < H; y++) {
-    let rowSum = 0;
-    for (let x = 0; x < W; x++) { rowSum += gray[y * W + x]; integ[(y + 1) * IW + (x + 1)] = integ[y * IW + (x + 1)] + rowSum; }
-  }
-  const block = 41, half = (block - 1) >> 1, C = 15;
-  const bin = new Uint8ClampedArray(W * H);
-  for (let y = 0; y < H; y++) {
-    const y0 = Math.max(0, y - half), y1 = Math.min(H - 1, y + half);
-    for (let x = 0; x < W; x++) {
-      const x0 = Math.max(0, x - half), x1 = Math.min(W - 1, x + half);
-      const area = (x1 - x0 + 1) * (y1 - y0 + 1);
-      const sum = integ[(y1 + 1) * IW + (x1 + 1)] - integ[y0 * IW + (x1 + 1)] - integ[(y1 + 1) * IW + x0] + integ[y0 * IW + x0];
-      bin[y * W + x] = gray[y * W + x] < (sum / area - C) ? 0 : 255;
+    let corners = null;
+    if (best) {
+      corners = [];
+      for (let i = 0; i < 4; i++) corners.push({ x: best.data32S[i * 2] / scale, y: best.data32S[i * 2 + 1] / scale });
+      best.delete();
     }
+    src.delete(); small.delete(); gray.delete(); edges.delete(); kernel.delete(); contours.delete(); hierarchy.delete();
+    if (!corners) return null;
+
+    corners = orderCorners(corners);
+    const srcFull = cv.imread(srcCanvas);
+    const srcQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [corners[0].x, corners[0].y, corners[1].x, corners[1].y, corners[2].x, corners[2].y, corners[3].x, corners[3].y]);
+    const dstQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, A4_W, 0, A4_W, A4_H, 0, A4_H]);
+    const M = cv.getPerspectiveTransform(srcQuad, dstQuad);
+    const warped = new cv.Mat();
+    cv.warpPerspective(srcFull, warped, M, new cv.Size(A4_W, A4_H));
+
+    const out = document.createElement('canvas');
+    out.width = A4_W; out.height = A4_H;
+    cv.imshow(out, warped);
+
+    srcFull.delete(); srcQuad.delete(); dstQuad.delete(); M.delete(); warped.delete();
+    return out;
   }
-  for (let i = 0, p = 0; p < bin.length; i += 4, p++) {
-    d[i] = d[i + 1] = d[i + 2] = bin[p];
-    d[i + 3] = 255;
+
+  function orderCorners(pts) {
+    const cx = pts.reduce((s, p) => s + p.x, 0) / 4;
+    const cy = pts.reduce((s, p) => s + p.y, 0) / 4;
+    pts.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
+    let minI = 0, minSum = Infinity;
+    for (let i = 0; i < 4; i++) { const s = pts[i].x + pts[i].y; if (s < minSum) { minSum = s; minI = i; } }
+    return [pts[minI], pts[(minI + 1) % 4], pts[(minI + 2) % 4], pts[(minI + 3) % 4]];
   }
-  ctx.putImageData(imgData, 0, 0);
-}
 
-function stopCamera() {
-  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-  videoTrack = null; video.srcObject = null;
-  video.classList.remove('active'); placeholder.style.display = '';
-}
+  function fallbackA4(srcCanvas) {
+    const out = document.createElement('canvas');
+    out.width = A4_W; out.height = A4_H;
+    const ctx = out.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, A4_W, A4_H);
+    const sw = srcCanvas.width, sh = srcCanvas.height;
+    const scale = Math.min(A4_W / sw, A4_H / sh);
+    const dw = sw * scale, dh = sh * scale;
+    ctx.drawImage(srcCanvas, (A4_W - dw) / 2, (A4_H - dh) / 2, dw, dh);
+    return out;
+  }
 
-function retake() {
-  if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
-  pendingBlob = null; preview.classList.remove('active');
-  btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
-  setStatus('Discarded. Reopen the camera to try again.');
-}
+  function enhanceText(canvasEl) {
+    const W = canvasEl.width, H = canvasEl.height;
+    const ctx = canvasEl.getContext('2d');
+    const imgData = ctx.getImageData(0, 0, W, H);
+    const d = imgData.data;
+    const gray = new Uint8ClampedArray(W * H);
+    for (let i = 0, p = 0; i < d.length; i += 4, p++) gray[p] = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
+    
+    const IW = W + 1;
+    const integ = new Uint32Array(IW * (H + 1));
+    for (let y = 0; y < H; y++) {
+      let rowSum = 0;
+      for (let x = 0; x < W; x++) { rowSum += gray[y * W + x]; integ[(y + 1) * IW + (x + 1)] = integ[y * IW + (x + 1)] + rowSum; }
+    }
+    const block = 41, half = (block - 1) >> 1, C = 15;
+    const bin = new Uint8ClampedArray(W * H);
+    for (let y = 0; y < H; y++) {
+      const y0 = Math.max(0, y - half), y1 = Math.min(H - 1, y + half);
+      for (let x = 0; x < W; x++) {
+        const x0 = Math.max(0, x - half), x1 = Math.min(W - 1, x + half);
+        const area = (x1 - x0 + 1) * (y1 - y0 + 1);
+        const sum = integ[(y1 + 1) * IW + (x1 + 1)] - integ[y0 * IW + (x1 + 1)] - integ[(y1 + 1) * IW + x0] + integ[y0 * IW + x0];
+        bin[y * W + x] = gray[y * W + x] < (sum / area - C) ? 0 : 255;
+      }
+    }
+    for (let i = 0, p = 0; p < bin.length; i += 4, p++) {
+      d[i] = d[i + 1] = d[i + 2] = bin[p];
+      d[i + 3] = 255;
+    }
+    ctx.putImageData(imgData, 0, 0);
+  }
 
-function saveCurrentPage() {
-  if (!pendingBlob) return;
-  const q = questionPick.value;
-  const reader = new FileReader();
-  reader.onload = () => {
-    if (!captures[q]) captures[q] = [];
-    captures[q].push(reader.result);
+  function stopCamera() {
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    videoTrack = null; video.srcObject = null;
+    video.classList.remove('active'); placeholder.style.display = '';
+  }
 
+  function retake() {
     if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
     pendingBlob = null; preview.classList.remove('active');
     btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
-
-    renderPagesStrip();
-    updateSubmitButton();
-    setStatus(`Page saved to Question ${q}.`, 'success');
-  };
-  reader.readAsDataURL(pendingBlob);
-}
-
-function renderPagesStrip() {
-  const q = questionPick.value;
-  const pages = captures[q] || [];
-  pagesTitle.textContent = pages.length ? `Pages saved for Question ${q} (${pages.length})` : `Pages saved for Question ${q} (0)`;
-  pagesList.innerHTML = '';
-  if (!pages.length) {
-    pagesList.innerHTML = '<div style="font-size:14px; color:#999; font-style:italic;">No pages captured yet.</div>';
-    return;
+    setStatus('Discarded. Reopen the camera to try again.');
   }
-  pages.forEach((src, i) => {
-    const wrap = document.createElement('div'); wrap.className = 'page-thumb';
-    const img = document.createElement('img'); img.src = src; wrap.appendChild(img);
-    const num = document.createElement('span'); num.className = 'num'; num.textContent = i + 1; wrap.appendChild(num);
-    const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕';
-    del.onclick = () => { captures[q].splice(i, 1); if (!captures[q].length) delete captures[q]; renderPagesStrip(); updateSubmitButton(); };
-    wrap.appendChild(del); pagesList.appendChild(wrap);
-  });
-}
 
-function updateSubmitButton() {
-  const total = Object.values(captures).reduce((s, arr) => s + (arr?.length || 0), 0);
-  btnSubmit.disabled = total === 0;
-  btnSubmit.innerHTML = total > 0 ? `<i data-lucide="send"></i> Submit All Scripts (${total} pages) & Finish` : `<i data-lucide="send"></i> Submit All Scripts & Finish`;
+  function saveCurrentPage() {
+    if (!pendingBlob) return;
+    const q = questionPick.value;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (!captures[q]) captures[q] = [];
+      captures[q].push(reader.result);
+
+      if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
+      pendingBlob = null; preview.classList.remove('active');
+      btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
+
+      renderPagesStrip();
+      updateSubmitButton();
+      setStatus(`Page saved to Question ${q}.`, 'success');
+    };
+    reader.readAsDataURL(pendingBlob);
+  }
+
+  function renderPagesStrip() {
+    const q = questionPick.value;
+    const pages = captures[q] || [];
+    pagesTitle.textContent = pages.length ? `Pages saved for Question ${q} (${pages.length})` : `Pages saved for Question ${q} (0)`;
+    pagesList.innerHTML = '';
+    if (!pages.length) {
+      pagesList.innerHTML = '<div style="font-size:14px; color:#999; font-style:italic;">No pages captured yet.</div>';
+      return;
+    }
+    pages.forEach((src, i) => {
+      const wrap = document.createElement('div'); wrap.className = 'page-thumb';
+      const img = document.createElement('img'); img.src = src; wrap.appendChild(img);
+      const num = document.createElement('span'); num.className = 'num'; num.textContent = i + 1; wrap.appendChild(num);
+      const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕';
+      del.onclick = () => { captures[q].splice(i, 1); if (!captures[q].length) delete captures[q]; renderPagesStrip(); updateSubmitButton(); };
+      wrap.appendChild(del); pagesList.appendChild(wrap);
+    });
+  }
+
+  function updateSubmitButton() {
+    const total = Object.values(captures).reduce((s, arr) => s + (arr?.length || 0), 0);
+    btnSubmit.disabled = total === 0;
+    btnSubmit.innerHTML = total > 0 ? `<i data-lucide="send"></i> Submit All Scripts (${total} pages) & Finish` : `<i data-lucide="send"></i> Submit All Scripts & Finish`;
+    lucide.createIcons();
+  }
+
+  async function submitExam() {
+    if (!confirm("Are you sure you want to submit? Ensure all questions have been scanned. You cannot undo this.")) return;
+
+    document.getElementById('uploadOverlay').style.display = 'flex';
+    await new Promise(r => setTimeout(r, 2500));
+    document.getElementById('uploadOverlay').style.display = 'none';
+    
+    sessionStorage.clear();
+    alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded and sent to the AI Invigilator for moderation.");
+    window.location.href = "student-dashboard.html";
+  }
+
+  /* ================= INIT ================= */
+  btnOpen.addEventListener('click', openCamera);
+  btnCapture.addEventListener('click', capture);
+  btnRetake.addEventListener('click', retake);
+  btnAddPage.addEventListener('click', saveCurrentPage);
+  questionPick.addEventListener('change', renderPagesStrip);
+  window.addEventListener('beforeunload', stopCamera);
+  
+  renderPagesStrip();
   lucide.createIcons();
-}
-
-/* ================= SUBMIT LOGIC ================= */
-async function submitExam() {
-  if (!confirm("Are you sure you want to submit? Ensure all questions have been scanned. You cannot undo this.")) return;
-
-  document.getElementById('uploadOverlay').style.display = 'flex';
-  
-  // Simulate network delay for upload
-  await new Promise(r => setTimeout(r, 2500));
-  
-  // Hide overlay
-  document.getElementById('uploadOverlay').style.display = 'none';
-  
-  // Clear session and redirect
-  sessionStorage.clear();
-  alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded and sent to the AI Invigilator (DeepSeek, Gemini, ChatGPT, Claude) for moderation.");
-  window.location.href = "student-dashboard.html";
-}
-
-/* ================= INIT ================= */
-btnOpen.addEventListener('click', openCamera);
-btnCapture.addEventListener('click', capture);
-btnRetake.addEventListener('click', retake);
-btnAddPage.addEventListener('click', saveCurrentPage);
-questionPick.addEventListener('change', renderPagesStrip);
-
-window.addEventListener('beforeunload', stopCamera);
-renderPagesStrip();
-lucide.createIcons();
 </script>
 </body>
 </html>
