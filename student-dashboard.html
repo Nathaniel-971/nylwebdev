@@ -12,13 +12,14 @@
 :root { 
     --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0; 
     --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; 
-    --sidebar-bg: #1E293B; --sidebar-hover: #334155;
+    --sidebar-bg: #1E293B; --sidebar-hover: #334155; --success: #15803D;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); }
 .app-container { display: flex; height: 100vh; width: 100%; }
 .sidebar { width: 260px; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; transition: 0.3s; }
 .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
 .sidebar-logo { padding: 24px; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 .sidebar-logo span { color: var(--white); font-size: 28px; background: var(--maroon); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
 .sidebar-nav { padding: 24px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
@@ -30,62 +31,69 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .btn-logout:hover { background: #FEE2E2; color: #B91C1C; }
 
 .topbar { height: 72px; background: var(--white); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; flex-shrink: 0; }
-.topbar-right { display: flex; align-items: center; gap: 24px; }
-.admin-toggle-btn { display: none; align-items: center; gap: 8px; background: var(--maroon); color: var(--white); border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; }
-.profile-menu { display: flex; align-items: center; gap: 12px; border-left: 1px solid var(--silver); padding-left: 24px; }
-.profile-info { text-align: right; }
-.profile-info h4 { font-size: 14px; font-weight: 800; }
-.profile-info p { font-size: 12px; color: var(--gray); font-weight: 600; }
-.profile-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px; }
+.topbar-title { font-weight: 900; font-size: 18px; color: var(--maroon); }
+.profile-menu { display: flex; align-items: center; gap: 16px; }
+.profile-info h4 { font-size: 14px; font-weight: 800; text-align: right; }
+.profile-info p { font-size: 12px; color: var(--gray); font-weight: 600; text-align: right; }
+.profile-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; box-shadow: 0 4px 10px rgba(122,31,43,0.3); }
 
-.dashboard-content { flex: 1; padding: 32px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
-.dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
-.card { background: var(--white); border-radius: 12px; padding: 24px; border: 1px solid var(--silver); box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+.dashboard-content { flex: 1; padding: 32px; overflow-y: auto; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.card { background: var(--white); border-radius: 16px; padding: 24px; border: 1px solid var(--silver); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.card.full-width { grid-column: 1 / -1; }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.card-title { font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.card-title { font-size: 16px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 
-/* ID CARD */
-.id-section { display: flex; gap: 32px; flex-wrap: wrap; }
-.id-card-container { width: 100%; max-width: 480px; aspect-ratio: 1.586; perspective: 1000px; cursor: pointer; user-select: none; flex-shrink: 0; }
+/* ID CARD - BANK CARD SIZE (85.60 × 53.98 mm ratio = 1.586) */
+.id-section { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; justify-content: center; }
+.id-card-container { 
+    width: 100%; 
+    max-width: 400px; /* Adjust for bigger screens */
+    aspect-ratio: 1.586; 
+    perspective: 1000px; 
+    cursor: pointer; 
+    user-select: none; 
+}
 .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
 .id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
-.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
-.id-card-front { padding: 24px; text-align: left; }
-.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 24px; align-items: center; justify-content: center; }
-.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 160px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; }
+.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
+.id-card-front { padding: 20px; text-align: left; }
+.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 20px; align-items: center; justify-content: center; }
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 140px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; }
 .card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
-.card-logo { font-size: 24px; font-weight: 900; color: var(--maroon); }
-.card-type { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
-.card-name { font-size: 22px; font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-role { font-size: 10px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 3px 8px; border-radius: 4px; margin-bottom: auto; align-self: flex-start;}
-.card-id { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 12px; }
-.barcode-wrap-front { background: #fff; border-radius: 6px; width: 100%; height: 60px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 4px; }
+.card-logo { font-size: 20px; font-weight: 900; color: var(--maroon); }
+.card-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.card-name { font-size: 20px; font-weight: 900; margin-bottom: 2px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-role { font-size: 9px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: auto; align-self: flex-start;}
+.card-id { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px; }
+.barcode-wrap-front { background: #fff; border-radius: 6px; width: 100%; height: 45px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 4px; }
 .barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
-.card-back-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 8px;}
-.card-sec-code { font-family: monospace; font-size: 18px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 6px 16px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 8px;}
-.qr-wrap { background: #fff; padding: 6px; border-radius: 8px; margin-bottom: 8px; width: 100px; height: 100px; display: flex; justify-content: center; align-items: center; }
+.card-back-text { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 8px;}
+.card-sec-code { font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+.qr-wrap { background: #fff; padding: 4px; border-radius: 6px; margin-bottom: 8px; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; }
 .qr-wrap svg { width: 100%; height: 100%; display: block; }
 
-.credentials-col { flex: 1; min-width: 250px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
-.cred-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 8px; }
-.cred-label { font-size: 12px; font-weight: 700; color: var(--gray); text-transform: uppercase; }
+.credentials-col { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 12px; }
+.cred-row { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 12px; }
+.cred-label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; }
 .cred-value { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); }
-.btn-copy { background: var(--white); border: 1px solid var(--silver); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; color: var(--black); }
-.btn-copy:hover { border-color: var(--black); }
-.btn-copy.copied { background: #15803D; color: #FFF; border-color: #15803D; }
 
-.course-list { display: flex; flex-direction: column; gap: 10px; }
-.course-item { padding: 14px 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 8px; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 10px; }
-.course-item i { color: var(--maroon); }
+/* QUICK ACTIONS / EVENTS */
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 14px; transition: 0.2s; text-align: center; }
+.action-btn:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.action-btn i { color: var(--maroon); width: 24px; height: 24px; }
 
-.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.settings-input { width: 100%; padding: 10px 12px; border: 1px solid var(--silver); border-radius: 6px; font-size: 14px; margin-bottom: 12px; font-family: inherit; outline: none; background: var(--white); }
-.btn-primary { padding: 12px 20px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; transition: 0.2s; }
-.btn-primary:hover { background: var(--maroon-hover); }
-.btn-outline { padding: 12px 20px; background: var(--white); color: var(--maroon); border: 1.5px solid var(--maroon); border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; justify-content: center; align-items: center; gap: 8px; text-decoration: none; transition: 0.2s; }
+.event-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--silver); }
+.event-item:last-child { border-bottom: none; }
+.event-date { background: #FFF5F6; color: var(--maroon); border: 1px solid var(--maroon); padding: 8px 12px; border-radius: 8px; text-align: center; font-weight: 900; font-size: 18px; line-height: 1; }
+.event-date span { display: block; font-size: 10px; text-transform: uppercase; margin-top: 4px; }
+.event-info h4 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.event-info p { font-size: 13px; color: var(--gray); }
 
-.hidden { display: none !important; }
-
+@media (max-width: 900px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+}
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
     .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.1); order: 2; }
@@ -93,14 +101,12 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
     .sidebar-nav { flex-direction: row; padding: 0; gap: 0; width: 100%; justify-content: space-around; }
     .nav-item { flex-direction: column; gap: 4px; font-size: 10px; padding: 8px 12px; border-radius: 4px; }
     .nav-item.active { border-left: none; background: var(--sidebar-hover); }
-    .main-wrapper { order: 1; height: calc(100vh - 60px); }
+    .main-wrapper { order: 1; height: calc(100vh - 65px); }
     .topbar { padding: 0 16px; height: 64px; }
     .profile-info { display: none; }
-    .admin-toggle-btn { display: flex; }
-    .dashboard-content { padding: 16px; gap: 16px; }
-    .dashboard-grid { grid-template-columns: 1fr; }
+    .dashboard-content { padding: 16px; }
+    .action-grid { grid-template-columns: 1fr; }
     .id-card-container { max-width: 100%; }
-    .settings-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -113,7 +119,6 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
             <a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
             <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
             <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
-            <a href="#settings" class="nav-item"><i data-lucide="settings"></i> Settings</a>
         </nav>
         <div class="sidebar-footer">
             <button class="btn-logout" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
@@ -122,37 +127,51 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 
     <div class="main-wrapper">
         <header class="topbar">
-            <div style="font-weight: 800; font-size: 18px;">Student Dashboard</div>
-            <div class="topbar-right">
-                <button class="admin-toggle-btn" id="adminToggleBtn" onclick="toggleAdminView()">
-                    <i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Admin
-                </button>
-                <div class="profile-menu">
-                    <div class="profile-info">
-                        <h4 id="topbarName">Loading...</h4>
-                        <p id="topbarRole">Student</p>
-                    </div>
-                    <div class="profile-avatar" id="topbarAvatar">--</div>
+            <div class="topbar-title">Student Dashboard</div>
+            <div class="profile-menu">
+                <div class="profile-info">
+                    <h4 id="topbarName">Loading...</h4>
+                    <p id="topbarRole">Applicant</p>
                 </div>
+                <div class="profile-avatar" id="topbarAvatar">--</div>
             </div>
         </header>
 
-        <main class="dashboard-content" id="studentDashboard">
-            <div class="dashboard-header">
-                <h1>Dashboard</h1>
-                <p>Welcome back. Here is your academic overview.</p>
-            </div>
-
+        <main class="dashboard-content">
             <div class="dashboard-grid">
-                <div class="card">
+                
+                <!-- UPDATES & EVENTS -->
+                <div class="card full-width">
                     <div class="card-header">
-                        <div class="card-title"><i data-lucide="credit-card"></i> Student Profile</div>
+                        <div class="card-title"><i data-lucide="bell"></i> Latest Updates</div>
+                    </div>
+                    <div class="event-item">
+                        <div class="event-date">13<span>Jan</span></div>
+                        <div class="event-info">
+                            <h4>AE 2027 Examinations</h4>
+                            <p>Admission Examinations for Mathematics and Physics take place today. Check your timetable for exact times.</p>
+                        </div>
+                    </div>
+                    <div class="event-item">
+                        <div class="event-date">18<span>Feb</span></div>
+                        <div class="event-info">
+                            <h4>Academic Year Begins</h4>
+                            <p>Welcome to the Institute of Board. Classes officially commence for all enrolled students.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ID CARD -->
+                <div class="card" style="grid-column: 1 / -1;">
+                    <div class="card-header">
+                        <div class="card-title"><i data-lucide="credit-card"></i> Student ID Card</div>
                     </div>
                     
                     <div class="id-section">
                         <div>
                             <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                                 <div class="id-card-inner">
+                                    <!-- FRONT -->
                                     <div class="id-card-front">
                                         <div class="watermark">∆</div>
                                         <div class="card-content">
@@ -162,25 +181,24 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                                             </div>
                                             <div class="card-name" id="userName">Loading...</div>
                                             <div class="card-role" id="userStatus">Applicant</div>
+                                            <div style="flex-grow:1;"></div>
                                             <div class="card-id" id="userStudentId">---</div>
                                             <div class="barcode-wrap-front"><svg id="barcodeSvg"></svg></div>
                                         </div>
                                     </div>
+                                    <!-- BACK -->
                                     <div class="id-card-back">
                                         <div class="card-content" style="align-items:center; justify-content:center;">
                                             <div class="qr-wrap" id="qrCodeContainer"></div>
                                             <div class="card-back-text">Security Code</div>
                                             <div class="card-sec-code">
                                                 <span id="userSecurityCode">---</span>
-                                                <button onclick="resetSecurityCode(event)" style="background:none;border:none;color:#fff;cursor:pointer;">
-                                                    <i data-lucide="refresh-cw" style="width:12px;height:12px;"></i>
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div style="font-size: 12px; color: var(--gray); margin-top: 8px; text-align: center;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Tap to flip</div>
+                            <div style="font-size: 12px; color: var(--gray); margin-top: 8px; text-align: center; display:flex; justify-content:center; align-items:center; gap:4px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Tap to flip</div>
                         </div>
 
                         <div class="credentials-col">
@@ -189,127 +207,68 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                                     <div class="cred-label">Student ID</div>
                                     <div class="cred-value" id="credStudentId">---</div>
                                 </div>
-                                <button class="btn-copy" onclick="copyToClipboard('credStudentId', this)"><i data-lucide="copy" style="width:14px;height:14px;"></i></button>
                             </div>
                             <div class="cred-row">
                                 <div>
                                     <div class="cred-label">Security Code</div>
                                     <div class="cred-value" id="credSecCode">---</div>
                                 </div>
-                                <button class="btn-copy" onclick="copyToClipboard('credSecCode', this)"><i data-lucide="copy" style="width:14px;height:14px;"></i></button>
                             </div>
+                            <a href="admissions-letter.html" target="_blank" class="btn-primary" style="width:100%; text-align:center; margin-top:8px; display:block;">View Admissions Letter</a>
                         </div>
                     </div>
                 </div>
 
+                <!-- QUICK ACTIONS -->
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title"><i data-lucide="monitor-play"></i> Exam Portal</div>
-                        <span class="status-badge status-closed" id="examStatusBadge">Closed</span>
+                    <div class="card-header"><div class="card-title"><i data-lucide="zap"></i> Quick Actions</div></div>
+                    <div class="action-grid">
+                        <a href="resources.html" class="action-btn">
+                            <i data-lucide="book-open"></i> Resources
+                        </a>
+                        <a href="ae-timetable.html" class="action-btn">
+                            <i data-lucide="calendar"></i> Timetable
+                        </a>
+                        <a href="exam-gateway.html" class="action-btn" style="border-color: var(--maroon);">
+                            <i data-lucide="monitor-play"></i> Exam Portal
+                        </a>
+                        <a href="courses-ifb.html" class="action-btn">
+                            <i data-lucide="file-text"></i> Prospectus
+                        </a>
                     </div>
-                    <p style="font-size:13px; color:var(--gray); margin-bottom:16px;" id="examStatusText">Checking status...</p>
-                    <a href="#" id="examGatewayLink" class="btn-outline" style="width:100%;">Portal Locked</a>
                 </div>
 
+                <!-- COURSES -->
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-title"><i data-lucide="book-open"></i> My Courses</div>
-                        <button class="btn-copy" onclick="openCourseModal()"><i data-lucide="edit" style="width:14px;height:14px;"></i> Edit</button>
-                    </div>
+                    <div class="card-header"><div class="card-title"><i data-lucide="graduation-cap"></i> My Courses</div></div>
                     <div class="course-list" id="courseDisplayList"></div>
                 </div>
 
-                <div class="card" id="settings" style="grid-column: 1 / -1;">
-                    <div class="card-header"><div class="card-title"><i data-lucide="settings"></i> Settings & Profile</div></div>
-                    <div class="settings-grid">
-                        <div class="settings-group">
-                            <h4>Profile Information</h4>
-                            <input type="text" id="settingName" class="settings-input" placeholder="Full Name">
-                            <input type="tel" id="settingPhone" class="settings-input" placeholder="Phone Number">
-                            <button class="btn-primary" onclick="updateProfile()" style="width:100%;">Update Profile</button>
-                        </div>
-                        <div class="settings-group">
-                            <h4>Account Management</h4>
-                            <button class="btn-outline" onclick="deregister()" style="width:100%; color:#B91C1C; border-color:#FECACA;">
-                                <i data-lucide="trash-2"></i> Revoke Application
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </main>
-
-        <main class="dashboard-content hidden" id="adminDashboard">
-            <div class="dashboard-header">
-                <h1>Admin Control Center</h1>
-                <p>Manage exams, view admissions, and control the portal.</p>
-            </div>
-            <div class="dashboard-grid">
-                <div class="card" style="grid-column: 1 / -1; background:#111; color:#fff;">
-                    <div class="card-header"><div class="card-title"><i data-lucide="settings"></i> Exam Portal Access</div></div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                        <div>
-                            <div style="font-size:16px; font-weight:700;">Global Portal Status</div>
-                            <div style="font-size:13px; color:#aaa;" id="adminPortalStatusText">Checking...</div>
-                        </div>
-                        <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
-                            <input type="checkbox" id="portalMasterSwitch" onchange="toggleExamPortal(this)" style="opacity: 0; width: 0; height: 0;">
-                            <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-</div>
-
-<!-- COURSE MODAL -->
-<div class="modal-overlay" id="courseModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:10000; justify-content:center; align-items:center;">
-    <div style="background:#fff; border-radius:12px; padding:32px; max-width:400px; width:100%;">
-        <h2 style="font-size:20px; font-weight:900; margin-bottom:16px;">Update Courses</h2>
-        <label style="display:flex; align-items:center; gap:12px; padding:16px; border:1px solid #E2E8F0; border-radius:8px; margin-bottom:12px; cursor:pointer;">
-            <input type="checkbox" value="Mathematics" id="chkMath" style="width:20px; height:20px; accent-color:var(--maroon);">
-            <span style="font-weight:700;">Mathematics (IFB-S)</span>
-        </label>
-        <label style="display:flex; align-items:center; gap:12px; padding:16px; border:1px solid #E2E8F0; border-radius:8px; margin-bottom:12px; cursor:pointer;">
-            <input type="checkbox" value="Physics" id="chkPhysics" style="width:20px; height:20px; accent-color:var(--maroon);">
-            <span style="font-weight:700;">Physics (IFB-P)</span>
-        </label>
-        <button class="btn-primary" onclick="saveCourses()" style="width:100%; margin-top:12px;">Save Selection</button>
-        <button class="btn-outline" onclick="document.getElementById('courseModal').style.display='none'" style="width:100%; margin-top:8px; border:none;">Cancel</button>
     </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, deleteUser, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let currentUserData = null;
-let currentUserId = null;
-let isAdmin = false;
-let showAdminView = false;
-let isPortalOpen = false;
-
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
-    currentUserId = user.uid;
-    
-    // Check if admin
-    isAdmin = (user.email === "n1nathaniel971@gmail.com");
     
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
         let data = docSnap.data();
-        currentUserData = data;
 
+        // Generate ID if missing (should happen on first dashboard load)
         if (!data.studentId) {
             const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
             const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
@@ -317,193 +276,50 @@ onAuthStateChanged(auth, async (user) => {
             const studentId = `2701${yy}${mm}${dd}${random3}`;
             const securityCode = Math.random().toString(36).substring(2,8).toUpperCase();
             
-            await updateDoc(docRef, { studentId, securityCode, status: "Applicant" });
+            await updateDoc(docRef, { studentId, securityCode });
             data.studentId = studentId;
             data.securityCode = securityCode;
-            data.status = "Applicant";
-            currentUserData = data;
         }
 
         document.getElementById('topbarName').textContent = data.name;
-        document.getElementById('topbarRole').textContent = isAdmin ? "Administrator" : "Student";
-        document.getElementById('topbarAvatar').textContent = data.name.charAt(0).toUpperCase();
+        document.getElementById('topbarRole').textContent = data.status || "Applicant";
+        document.getElementById('topbarAvatar').textContent = data.name ? data.name.charAt(0).toUpperCase() : "S";
+        
         document.getElementById('userName').textContent = data.name;
-        document.getElementById('userStatus').textContent = data.status;
+        document.getElementById('userStatus').textContent = data.status || "Applicant";
         document.getElementById('userStudentId').textContent = data.studentId;
         document.getElementById('userSecurityCode').textContent = data.securityCode;
         document.getElementById('credStudentId').textContent = data.studentId;
         document.getElementById('credSecCode').textContent = data.securityCode;
-        document.getElementById('settingName').value = data.name || "";
-        document.getElementById('settingPhone').value = data.phone || "";
 
+        // Render courses
+        const container = document.getElementById('courseDisplayList');
+        container.innerHTML = '';
+        (data.courses || []).forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'cred-row';
+            div.style.marginBottom = '8px';
+            div.innerHTML = `<div class="cred-value" style="font-family:Inter;">${c}</div> <i data-lucide="check-circle" style="color:var(--success);"></i>`;
+            container.appendChild(div);
+        });
+
+        // Generate Barcode and QR
         setTimeout(() => {
-            try { JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0, lineColor: "#000000" }); } catch (e) { console.warn(e); }
+            try { JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0 }); } catch (e) {}
             try {
                 const qr = qrcode(0, 'M');
                 qr.addData(`ID: ${data.studentId}\nName: ${data.name}`);
                 qr.make();
                 document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
-            } catch (e) { console.warn(e); }
+            } catch (e) {}
         }, 100);
 
-        renderCoursesDisplay(data.courses || []);
-
-        const configSnap = await getDoc(doc(db, "config", "exam"));
-        if (configSnap.exists()) { isPortalOpen = configSnap.data().isOpen || false; }
-
-        if (isAdmin) {
-            document.getElementById('adminToggleBtn').style.display = 'flex';
-            document.getElementById('portalMasterSwitch').checked = isPortalOpen;
-            updatePortalStatusText();
-            showAdminView = true;
-            document.getElementById('adminDashboard').classList.remove('hidden');
-            document.getElementById('studentDashboard').classList.add('hidden');
-            document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Student';
-        }
-        
-        updateExamPortalUI();
         lucide.createIcons();
+    } else {
+        // If user exists in Auth but not Firestore, send to apply
+        window.location.href = "admission.html";
     }
 });
-
-window.toggleAdminView = function() {
-    showAdminView = !showAdminView;
-    if (showAdminView) {
-        document.getElementById('adminDashboard').classList.remove('hidden');
-        document.getElementById('studentDashboard').classList.add('hidden');
-        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="user" style="width:16px;height:16px;"></i> Student';
-    } else {
-        document.getElementById('adminDashboard').classList.add('hidden');
-        document.getElementById('studentDashboard').classList.remove('hidden');
-        document.getElementById('adminToggleBtn').innerHTML = '<i data-lucide="shield-alert" style="width:16px;height:16px;"></i> Admin';
-    }
-    lucide.createIcons();
-};
-
-window.toggleExamPortal = async function(checkbox) {
-    const isChecked = checkbox.checked;
-    document.getElementById('adminPortalStatusText').textContent = "Updating...";
-    try {
-        await setDoc(doc(db, "config", "exam"), { isOpen: isChecked }, { merge: true });
-        isPortalOpen = isChecked;
-        updatePortalStatusText();
-    } catch (e) { alert("Error updating portal: " + e.message); checkbox.checked = !isChecked; updatePortalStatusText(); }
-};
-
-function updatePortalStatusText() {
-    document.getElementById('adminPortalStatusText').textContent = isPortalOpen ? "OPEN - Students can enter." : "CLOSED - Students are locked out.";
-}
-
-function updateExamPortalUI() {
-    const link = document.getElementById('examGatewayLink');
-    const badge = document.getElementById('examStatusBadge');
-    const statusText = document.getElementById('examStatusText');
-    
-    if (isPortalOpen || isAdmin) {
-        link.classList.remove('hidden'); link.classList.add('btn-primary'); link.classList.remove('btn-outline');
-        link.href = "exam-gateway.html";
-        link.innerHTML = '<i data-lucide="monitor-play"></i> Enter Exam Portal';
-        badge.className = 'status-badge status-open';
-        badge.textContent = 'Open';
-        badge.style.cssText = "background:#DCFCE7; color:#15803D; padding:4px 10px; border-radius:100px; font-size:11px; font-weight:800; text-transform:uppercase;";
-        statusText.textContent = isAdmin ? "Admin Access: Portal is always accessible." : "The exam portal is now open. Good luck.";
-    } else {
-        link.classList.remove('hidden'); link.classList.add('btn-outline'); link.classList.remove('btn-primary');
-        link.href = "#";
-        link.innerHTML = '<i data-lucide="lock"></i> Portal Locked';
-        badge.className = 'status-badge status-closed';
-        badge.textContent = 'Closed';
-        badge.style.cssText = "background:#FEE2E2; color:#B91C1C; padding:4px 10px; border-radius:100px; font-size:11px; font-weight:800; text-transform:uppercase;";
-        statusText.textContent = "The exam portal is currently locked. Please wait for the administrator.";
-    }
-    lucide.createIcons();
-}
-
-function renderCoursesDisplay(courses) {
-    const container = document.getElementById('courseDisplayList');
-    container.innerHTML = '';
-    if (!courses || courses.length === 0) {
-        container.innerHTML = '<div style="color:var(--gray); font-size:14px; font-style:italic;">No courses selected yet.</div>';
-    } else {
-        courses.forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'course-item';
-            div.innerHTML = `<i data-lucide="check-circle-2" style="width:18px;height:18px;"></i> ${c}`;
-            container.appendChild(div);
-        });
-    }
-    lucide.createIcons();
-}
-
-window.copyToClipboard = function(elementId, btn) {
-    const text = document.getElementById(elementId).innerText;
-    if(!text || text === '---') return;
-    navigator.clipboard.writeText(text).then(() => {
-        btn.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i> Copied';
-        btn.classList.add('copied');
-        setTimeout(() => { btn.innerHTML = '<i data-lucide="copy" style="width:14px;height:14px;"></i>'; btn.classList.remove('copied'); lucide.createIcons(); }, 2000);
-    });
-};
-
-window.openCourseModal = function() {
-    const modal = document.getElementById('courseModal');
-    modal.style.display = 'flex';
-    document.getElementById('chkMath').checked = false;
-    document.getElementById('chkPhysics').checked = false;
-    const courses = currentUserData.courses || [];
-    if (courses.includes("Mathematics")) document.getElementById('chkMath').checked = true;
-    if (courses.includes("Physics")) document.getElementById('chkPhysics').checked = true;
-};
-
-window.saveCourses = async function() {
-    const newCourses = [];
-    if (document.getElementById('chkMath').checked) newCourses.push("Mathematics");
-    if (document.getElementById('chkPhysics').checked) newCourses.push("Physics");
-
-    if (newCourses.length === 0) { alert("You must select at least one course."); return; }
-
-    try {
-        await updateDoc(doc(db, "users", currentUserId), { courses: newCourses });
-        currentUserData.courses = newCourses;
-        renderCoursesDisplay(newCourses);
-        document.getElementById('courseModal').style.display = 'none';
-    } catch (e) { alert("Error saving courses: " + e.message); }
-};
-
-window.updateProfile = async function() {
-    const newName = document.getElementById('settingName').value.trim();
-    const newPhone = document.getElementById('settingPhone').value.trim();
-    if(!newName) { alert("Name cannot be empty."); return; }
-    try {
-        await updateDoc(doc(db, "users", currentUserId), { name: newName, phone: newPhone });
-        document.getElementById('userName').textContent = newName;
-        document.getElementById('topbarName').textContent = newName;
-        alert("Profile updated successfully.");
-    } catch(e) { alert("Error updating profile: " + e.message); }
-};
-
-window.resetSecurityCode = async function(e) {
-    e.stopPropagation(); 
-    if(!confirm("Are you sure you want to reset your security code?")) return;
-    try {
-        const newCode = Math.random().toString(36).substring(2,8).toUpperCase();
-        await updateDoc(doc(db, "users", currentUserId), { securityCode: newCode });
-        document.getElementById('userSecurityCode').textContent = newCode;
-        document.getElementById('credSecCode').textContent = newCode;
-        const qr = qrcode(0, 'M'); qr.addData(`ID: ${currentUserData.studentId}\nName: ${currentUserData.name}`); qr.make();
-        document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
-    } catch (err) { alert("Error: " + err.message); }
-};
-
-window.deregister = async function() {
-    if (!confirm("WARNING: Permanently delete your account?")) return;
-    if (prompt("Type 'DELETE' to confirm.") !== "DELETE") { alert("Cancelled."); return; }
-    try {
-        await deleteDoc(doc(db, "users", currentUserId));
-        await deleteUser(auth.currentUser);
-        window.location.href = "index.html";
-    } catch (e) { alert("Please log out and back in before deleting, or contact support."); }
-};
 
 window.signOut = async function() {
     await firebaseSignOut(auth);
