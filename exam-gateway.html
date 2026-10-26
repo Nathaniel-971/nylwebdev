@@ -41,6 +41,12 @@ input:focus { border-color: var(--maroon); }
         <label>6-Digit Security Code</label>
         <input type="password" id="securityCode" placeholder="A7X2B9" maxlength="6" autocomplete="off">
     </div>
+    <!-- NEW EXAM CODE INPUT -->
+    <div class="input-group" id="examCodeGroup">
+        <label>Examination Access Code</label>
+        <input type="text" id="examCode" placeholder="Provided by Invigilator" maxlength="10" autocomplete="off" style="text-transform: uppercase;">
+    </div>
+    
     <button class="btn" id="enterBtn" onclick="verifyAndEnter()">Verify & Enter Session</button>
     <div class="error" id="errorBox"></div>
     
@@ -49,21 +55,31 @@ input:focus { border-color: var(--maroon); }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-onAuthStateChanged(auth, (user) => {
-    if (!user) { window.location.href = "index.html"; }
+let isCurrentUserAdmin = false;
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = "index.html"; return; }
+    
+    // Check if logged in user is Admin
+    if (user.email === "n1nathaniel971@gmail.com") {
+        isCurrentUserAdmin = true;
+        document.getElementById('examCodeGroup').style.display = 'none'; // Admin doesn't need code
+    }
 });
 
 window.verifyAndEnter = async function() {
     const id = document.getElementById('studentId').value.trim();
     const code = document.getElementById('securityCode').value.trim().toUpperCase();
+    const examCodeInput = document.getElementById('examCode').value.trim().toUpperCase();
+    
     const errorBox = document.getElementById('errorBox');
     const btn = document.getElementById('enterBtn');
     
@@ -77,30 +93,52 @@ window.verifyAndEnter = async function() {
     btn.innerText = "Verifying..."; btn.disabled = true;
 
     try {
+        // 1. Verify Exam Code (If not admin)
+        if (!isCurrentUserAdmin) {
+            const configSnap = await getDoc(doc(db, "config", "examSettings"));
+            if (configSnap.exists()) {
+                const correctCode = configSnap.data().examCode || "IFB2027";
+                if (examCodeInput !== correctCode) {
+                    errorBox.innerText = "Invalid Examination Access Code. Please ask the invigilator.";
+                    errorBox.style.display = 'block';
+                    btn.innerText = "Verify & Enter Session"; btn.disabled = false;
+                    return;
+                }
+            } else {
+                // Fallback if no config set
+                if (examCodeInput !== "IFB2027") {
+                    errorBox.innerText = "Invalid Examination Access Code.";
+                    errorBox.style.display = 'block';
+                    btn.innerText = "Verify & Enter Session"; btn.disabled = false;
+                    return;
+                }
+            }
+        }
+
+        // 2. Verify Student ID & Security Code
         const q = query(collection(db, "users"), where("studentId", "==", id), where("securityCode", "==", code));
         const snap = await getDocs(q);
 
         if (!snap.empty) {
-            // Check if the logged-in user matches the queried user (Security check)
-            if (auth.currentUser.uid !== snap.docs[0].id) {
+            if (auth.currentUser.uid !== snap.docs[0].id && !isCurrentUserAdmin) {
                  errorBox.innerText = "Security Error: You cannot log in as another student.";
                  errorBox.style.display = 'block';
                  btn.innerText = "Verify & Enter Session"; btn.disabled = false;
                  return;
             }
 
-            // Set session data
             const userData = snap.docs[0].data();
             sessionStorage.setItem("examStudentId", id);
             sessionStorage.setItem("examSecurityCode", code);
             sessionStorage.setItem("examStudentName", userData.name);
+            sessionStorage.setItem("isAdmin", isCurrentUserAdmin.toString());
             
-            // Default to Math paper for now
-            sessionStorage.setItem("examCode", "AE-S-MATH");
+            const examCodeVal = (userData.courses && userData.courses.includes("Mathematics")) ? "AE-S-MATH" : "AE-W-AEW";
+            sessionStorage.setItem("examCode", examCodeVal);
 
             window.location.href = "exam-session.html";
         } else {
-            errorBox.innerText = "Invalid ID or Security Code. Please check your Student Card.";
+            errorBox.innerText = "Invalid Student ID or Security Code. Please check your Student Card.";
             errorBox.style.display = 'block';
             btn.innerText = "Verify & Enter Session"; btn.disabled = false;
         }
