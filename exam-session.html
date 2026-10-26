@@ -210,6 +210,51 @@
   .marks-area { width: 70px; display: flex; flex-direction: column; align-items: center; padding-top: 10px; background-color: #FFF5F6; }
   .marks-area .marks-title { font-size: 10pt; font-weight: bold; font-style: italic; border-bottom: 1.5px solid #000; width: 100%; text-align: center; padding-bottom: 5px; margin-bottom: 10px; color: #7A1F2B; }
 
+  /* ==================== BOOK NAV (FLIP BUTTONS) ==================== */
+  .book-nav {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 1px solid var(--silver);
+    border-radius: 50px;
+    padding: 6px 10px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    z-index: 100;
+    font-family: 'Inter', sans-serif;
+  }
+  .book-nav.visible { display: flex; }
+  .book-nav-btn {
+    background: var(--maroon);
+    color: white;
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, opacity 0.2s;
+    font-family: inherit;
+  }
+  .book-nav-btn:hover:not(:disabled) { background: #5A1620; }
+  .book-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .book-nav-indicator {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--maroon);
+    min-width: 150px;
+    text-align: center;
+    padding: 0 6px;
+  }
+
   /* ==================== SCANNER UI ENCLOSURE ==================== */
   .scanner-ui {
     max-width: 600px;
@@ -303,7 +348,7 @@
   /* ==================== PRINT STYLES ==================== */
   @media print { 
     body { background: white; padding: 0; } 
-    .exam-header, .tabs, #tabWarning, #uploadOverlay, .view:not(.active), .admin-viewer-header, .admin-container { display: none !important; }
+    .exam-header, .tabs, #tabWarning, #uploadOverlay, .view:not(.active), .admin-viewer-header, .admin-container, .book-nav { display: none !important; }
     .view.active { display: block !important; padding: 0; margin: 0; }
     
     .admin-script-viewer { position: static; background: none; padding: 0; display: block !important; overflow: visible;}
@@ -760,8 +805,8 @@
 
 <!-- ==================== VIEW 2: ANSWER BOOK ==================== -->
 <div class="view" id="viewAnswerBook">
-  <!-- PAGE 1: COVER PAGE -->
-  <div class="page">
+  <!-- BOOK 1 COVER (STATIC) -->
+  <div class="page" data-book="1" data-book-page="1">
     <div class="security-pattern"></div>
     <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
@@ -868,8 +913,8 @@
     </div>
   </div>
 
-  <!-- PAGE 2: INSTRUCTIONS -->
-  <div class="page">
+  <!-- BOOK 1 INSTRUCTIONS (STATIC) -->
+  <div class="page" data-book="1" data-book-page="2">
     <div class="security-pattern"></div>
     <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" /><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" /><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" /></svg>
     <div class="content-wrapper">
@@ -900,9 +945,15 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGES 3-25 CONTAINER -->
+  <!-- DYNAMIC ANSWER BOOK PAGES CONTAINER -->
   <div id="answer-book-pages"></div>
 
+  <!-- BOOK NAV (FLIP BUTTONS) -->
+  <div class="book-nav" id="bookNav">
+    <button class="book-nav-btn" id="bookNavPrev" onclick="turnBookPage(-1)" aria-label="Previous page">◀</button>
+    <span class="book-nav-indicator" id="bookNavIndicator">1 / 25</span>
+    <button class="book-nav-btn" id="bookNavNext" onclick="turnBookPage(1)" aria-label="Next page">▶</button>
+  </div>
 </div>
 
 <!-- ==================== VIEW 3: SCANNER ==================== -->
@@ -1052,6 +1103,9 @@
 
 <script>
   /* ================= CONFIG & STATE ================= */
+  const PAGES_PER_BOOK = 23; // pages 3-25 per book
+  let currentBookPageIdx = 0;
+
   const studentName = sessionStorage.getItem('examStudentName') || 'Student';
   const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
   const secCode = sessionStorage.getItem('examSecurityCode') || 'ABCDEF';
@@ -1170,51 +1224,16 @@
       loadAdminData();
     }
     
+    const nav = document.getElementById('bookNav');
+    if (nav) nav.classList.toggle('visible', tab === 'answer');
+    
     if (tab !== 'scanner') stopCamera();
     if (tab !== 'register') stopCameraReg();
   }
 
   /* ================= INITIALIZATION LOGIC ================= */
   
-  // 1. Generate Answer Book Pages (3 to 25)
-  let answerPagesHtml = '';
-  for (let i = 3; i <= 25; i++) {
-    answerPagesHtml += `
-      <div class="page">
-        <div class="security-pattern"></div>
-        <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-        </svg>
-        <div class="content-wrapper">
-          <div class="header">
-            <div class="header-left">Answer Book</div>
-            <div class="header-center"><span class="page-num">${i}</span><span class="confidential">IFB / Confidential</span></div>
-            <div class="header-right">2027</div>
-          </div>
-          <div class="answer-page">
-            <div class="left-margin"></div>
-            <div class="writing-area" id="ans-page-${i}">
-               <img class="scanned-image" id="img-page-${i}" alt="Scanned Script Page ${i}">
-            </div>
-            <div class="marks-area"><div class="marks-title">Marks</div></div>
-          </div>
-        </div>
-        <div class="footer">
-          <div class="footer-left">
-            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
-            <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-          </div>
-          <div class="footer-right">${i === 25 ? 'END' : 'Please turn over'}</div>
-        </div>
-        <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
-      </div>
-    `;
-  }
-  document.getElementById('answer-book-pages').innerHTML = answerPagesHtml;
-
-  // 2. Generate Block Inputs
+  // 2. Generate Block Inputs (Book 1, static containers)
   function createBlocks(containerId, count) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -1237,7 +1256,16 @@
   createBlocks('dateBlocks', 8);
   createBlocks('subjCodeBlocks', 7);
 
-  // 3. Auto-fill Answer Book
+  // Helper for dynamic Book 2+ block HTML
+  function blockInputsHtml(count) {
+    let html = '';
+    for (let i = 0; i < count; i++) {
+      html += `<input type="text" class="block" maxlength="1" oninput="if(this.value.length===1){const n=this.nextElementSibling;if(n&&n.classList.contains('block'))n.focus();}">`;
+    }
+    return html;
+  }
+
+  // 3. Auto-fill Answer Book (works for any container ID)
   function fillBlocks(containerId, text) {
       if (!text) return;
       const inputs = document.querySelectorAll(`#${containerId} input`);
@@ -1258,12 +1286,15 @@
   const dateStr = String(today.getDate()).padStart(2, '0') + String(today.getMonth() + 1).padStart(2, '0') + String(today.getFullYear());
   fillBlocks('dateBlocks', dateStr);
 
-  // 4. Generate Barcodes and QRs
+  // 4. Generate Barcodes and QRs (Book-aware for covers)
   function makeBarcodes() {
     if (typeof JsBarcode !== "function") return;
     
+    const totalBooks = Math.max(1, Math.ceil((window.captures ? captures.length : 0) / PAGES_PER_BOOK));
+    const coverSuffix = totalBooks > 1 ? '-B1' : '';
+    
     try {
-      JsBarcode("#coverBarcode", `${studentId}-${scriptId}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 });
+      JsBarcode("#coverBarcode", `${studentId}-${scriptId}${coverSuffix}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 });
     } catch (e) { console.warn(e); }
 
     document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
@@ -1443,6 +1474,7 @@
   /* ================= SCANNER LOGIC (ANSWERS) ================= */
   const A4_W = 1240, A4_H = 1754;
   let captures = []; 
+  window.captures = captures; // exposed for makeBarcodes
   let stream = null, videoTrack = null, pendingBlob = null;
   let cvReady = false;
   let flashOn = false;
@@ -1832,7 +1864,7 @@
         grouped[c.q].push({ index: index, src: c.src });
     });
 
-    Object.keys(grouped).sort().forEach(qNum => {
+    Object.keys(grouped).sort((a,b) => parseInt(a) - parseInt(b)).forEach(qNum => {
         grouped[qNum].forEach((item, idx) => {
             const wrap = document.createElement('div'); 
             wrap.className = 'page-thumb';
@@ -1861,24 +1893,273 @@
     });
   }
 
-  function syncAnswerBook() {
-      for (let i = 3; i <= 25; i++) {
-          const img = document.getElementById(`img-page-${i}`);
-          if (img) {
-              img.src = '';
-              img.style.display = 'none';
-          }
+  // ==================== ANSWER BOOK RENDERING (multi-book) ====================
+  function renderBookWritingPages(bookNum, totalBooks) {
+    let html = '';
+    for (let p = 1; p <= PAGES_PER_BOOK; p++) {
+      const pageNum = p + 2;
+      const captureIdx = (bookNum - 1) * PAGES_PER_BOOK + p - 1;
+      const capture = captures[captureIdx];
+      const imgStyle = capture ? 'display:block;' : 'display:none;';
+      const imgSrc = capture ? capture.src : '';
+      
+      const isLastBook = bookNum === totalBooks;
+      let footerRight;
+      if (p === PAGES_PER_BOOK) {
+        footerRight = isLastBook ? 'END' : `Continued in Book ${bookNum + 1} — Please flip`;
+      } else {
+        footerRight = 'Please turn over';
       }
-      captures.forEach((cap, idx) => {
-          const pageNum = idx + 3;
-          if (pageNum <= 25) {
-              const img = document.getElementById(`img-page-${pageNum}`);
-              if (img) {
-                  img.src = cap.src;
-                  img.style.display = 'block';
-              }
-          }
-      });
+      
+      const headerLeft = totalBooks > 1 ? `Answer Book · ${bookNum}/${totalBooks}` : 'Answer Book';
+      
+      html += `
+        <div class="page" data-book="${bookNum}" data-book-page="${pageNum}">
+          <div class="security-pattern"></div>
+          <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+            <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+          </svg>
+          <div class="content-wrapper">
+            <div class="header">
+              <div class="header-left">${headerLeft}</div>
+              <div class="header-center"><span class="page-num">${pageNum}</span><span class="confidential">IFB / Confidential</span></div>
+              <div class="header-right">2027</div>
+            </div>
+            <div class="answer-page">
+              <div class="left-margin"></div>
+              <div class="writing-area" id="ans-book${bookNum}-page${pageNum}">
+                 <img class="scanned-image" id="img-book${bookNum}-page${pageNum}" src="${imgSrc}" style="${imgStyle}" alt="Scanned Script Page ${pageNum}">
+              </div>
+              <div class="marks-area"><div class="marks-title">Marks</div></div>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="footer-left">
+              <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+              <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+            </div>
+            <div class="footer-right">${footerRight}</div>
+          </div>
+          <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+        </div>
+      `;
+    }
+    return html;
+  }
+
+  function renderBookCover(bookNum, totalBooks) {
+    const b = bookNum;
+    const barcodeId = `coverBarcodeBook${b}`;
+    const scriptLabelId = `scriptLabelBook${b}`;
+    const sequenceId = `coverSequenceBook${b}`;
+    const idBlocksId = `idBlocksBook${b}`;
+    const secBlocksId = `secBlocksBook${b}`;
+    const dateBlocksId = `dateBlocksBook${b}`;
+    const subjBlocksId = `subjCodeBlocksBook${b}`;
+    const bookNumId = `valBookNumBook${b}`;
+    const bookTotalId = `valTotalBooksBook${b}`;
+    const paperNumId = `valPaperNumBook${b}`;
+    const subjectNameId = `valSubjectNameBook${b}`;
+    const currId = `valCurriculumBook${b}`;
+    
+    return `
+      <div class="page" data-book="${b}" data-book-page="1">
+        <div class="security-pattern"></div>
+        <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+        </svg>
+        <div class="content-wrapper">
+          <div class="cover-header-container">
+            <div class="cover-brand">
+              <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+                  <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+                  <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+              </svg>
+              <div class="cover-header-text">
+                <div class="title">Institute of Board</div>
+                <div class="sub">Department:<br>Examination Board<br>NON-ACCREDITED ACADEMIC INSTITUTION</div>
+              </div>
+            </div>
+            <div class="top-right-container">
+              <div class="candidate-barcode-box">
+                <div class="label" id="${scriptLabelId}">${studentId}—${scriptId}</div>
+                <svg id="${barcodeId}" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
+              </div>
+              <div class="sequence-circle-container">
+                <div class="sequence-circle" id="${sequenceId}">${seqNum}</div>
+                <div class="sequence-text">Sequence Number<br>(1 - 30)</div>
+              </div>
+            </div>
+          </div>
+          <div class="answer-book-title">IFB Answer Book</div>
+          <div class="form-row">
+            <div class="form-box" style="flex: 2;">
+              <label>Student ID</label>
+              <div class="block-container" id="${idBlocksId}">${blockInputsHtml(13)}</div>
+            </div>
+            <div class="form-box" style="flex: 1;">
+              <label>Security Code</label>
+              <div class="block-container" id="${secBlocksId}">${blockInputsHtml(6)}</div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-box" style="flex: 2;">
+              <label>Date (DDMMYYYY)</label>
+              <div class="block-container" id="${dateBlocksId}">${blockInputsHtml(8)}</div>
+            </div>
+            <div class="form-box" style="flex: 1;"><label>Book Number</label><input type="text" class="input-line" id="${bookNumId}" value="${b}"></div>
+            <div class="form-box" style="flex: 1;"><label>Of</label><input type="text" class="input-line" id="${bookTotalId}" value="${totalBooks}"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-box" style="flex: 2;">
+              <label>Subject Code</label>
+              <div class="block-container" id="${subjBlocksId}">${blockInputsHtml(7)}</div>
+            </div>
+            <div class="form-box" style="flex: 1;"><label>Paper Number</label><input type="text" class="input-line" id="${paperNumId}" value="1" style="text-align: center;"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-box" style="flex: 1;"><label>Subject Name</label><input type="text" class="input-line" id="${subjectNameId}"></div>
+          </div>
+          <div class="form-row" style="margin-bottom: 15px;">
+            <div class="form-box" style="flex: 1;"><label>Curriculum:</label><input type="text" class="input-line" id="${currId}"></div>
+          </div>
+          <table class="marking-table">
+            <thead>
+              <tr>
+                <th colspan="2">MARKER</th>
+                <th colspan="5">MODERATOR'S INITIALS IN RELEVANT BLOCK</th>
+                <th colspan="2">RE-MARK/RE-CHECK</th>
+              </tr>
+              <tr>
+                <th style="width: 15%;">Marks</th>
+                <th style="width: 35%;">Marker's Code & Initials</th>
+                <th style="width: 10%;">Marks</th>
+                <th style="width: 8%;">DS</th>
+                <th style="width: 8%;">Ge</th>
+                <th style="width: 8%;">GP</th>
+                <th style="width: 8%;">Cl</th>
+                <th style="width: 10%;">Marks</th>
+                <th style="width: 15%;">Initials</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr class="total-row"><td colspan="2" class="text-left" style="text-align: right; padding-right: 15px;">TOTAL:</td><td colspan="7"></td></tr>
+              <tr class="total-row"><td colspan="2" class="text-left" style="font-size: 8pt;">CONTROLLED AND CERTIFIED CORRECT</td><td colspan="7"></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="footer">
+          <div class="footer-left">
+            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+            <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+          </div>
+          <div class="footer-right">Copyright reserved</div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderBookInstructions(bookNum) {
+    return `
+      <div class="page" data-book="${bookNum}" data-book-page="2">
+        <div class="security-pattern"></div>
+        <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" /><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" /><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" /></svg>
+        <div class="content-wrapper">
+          <div class="header">
+            <div class="header-left">Answer Book</div>
+            <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
+            <div class="header-right">2027</div>
+          </div>
+          <div class="instructions-header">DIGITAL EXAMINATION INSTRUCTIONS</div>
+          <ol class="instructions-list">
+            <li>This is a digital answer book. Do not attempt to tear pages. You will scan and upload each page individually via the Exam Portal.</li>
+            <li>Your Student ID, Security Code, and Subject details are auto-filled on the cover page. Please verify them. If incorrect, you may type in the correct information.</li>
+            <li>Answer ALL questions in the blank writing areas provided on the following pages.</li>
+            <li>Write clearly using a black pen. We recommend black ink for optimal scanner recognition.</li>
+            <li>Rule off through any work/rough work that must not be marked.</li>
+            <li>You must upload your scanned pages before the session ends.</li>
+            <li>The Exam Portal requires you to scan the same page twice to ensure AI accuracy.</li>
+            <li>Before uploading, verify your answers are correctly translated by the AI. You are asked to scan the page twice for the AI so verify your text to be filled on the answer space.</li>
+          </ol>
+        </div>
+        <div class="footer">
+          <div class="footer-left">
+            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+            <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+          </div>
+          <div class="footer-right">Please turn over</div>
+        </div>
+        <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+      </div>
+    `;
+  }
+
+  function renderAnswerBooks() {
+    const container = document.getElementById('answer-book-pages');
+    if (!container) return;
+    
+    const totalBooks = Math.max(1, Math.ceil(captures.length / PAGES_PER_BOOK));
+    
+    // Update Book 1 static cover fields
+    const b1Total = document.getElementById('valTotalBooks');
+    if (b1Total) b1Total.value = String(totalBooks);
+    const b1Num = document.getElementById('valBookNum');
+    if (b1Num) b1Num.value = '1';
+    
+    // Build dynamic pages: Book 1 writing pages + Book 2+ full blocks
+    let html = renderBookWritingPages(1, totalBooks);
+    for (let b = 2; b <= totalBooks; b++) {
+      html += renderBookCover(b, totalBooks);
+      html += renderBookInstructions(b);
+      html += renderBookWritingPages(b, totalBooks);
+    }
+    container.innerHTML = html;
+    
+    // Fill blocks + values on Book 2+ covers
+    for (let b = 2; b <= totalBooks; b++) {
+      fillBlocks(`idBlocksBook${b}`, studentId);
+      fillBlocks(`secBlocksBook${b}`, secCode);
+      fillBlocks(`subjCodeBlocksBook${b}`, '102626F');
+      fillBlocks(`dateBlocksBook${b}`, dateStr);
+      
+      const sn = document.getElementById(`valSubjectNameBook${b}`);
+      if (sn) sn.value = examCode.includes("MATH") ? "Mathematics" : "Web Development";
+      const cv = document.getElementById(`valCurriculumBook${b}`);
+      if (cv) cv.value = examCode.includes("MATH") ? "IFB-S" : "IFB AQ-B";
+      
+      const bcEl = document.getElementById(`coverBarcodeBook${b}`);
+      if (bcEl && typeof JsBarcode === 'function') {
+        try {
+          JsBarcode(`#coverBarcodeBook${b}`, `${studentId}-${scriptId}-B${b}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 });
+        } catch(e) {}
+      }
+    }
+    
+    // Regenerate all barcodes (Book 1's cover will get -B1 suffix if multi-book)
+    makeBarcodes();
+    makeQRCodes();
+    
+    // Attach observer for page nav
+    attachPageNavObserver();
+  }
+
+  function syncAnswerBook() {
+    renderAnswerBooks();
   }
 
   function updateSubmitButton() {
@@ -2126,6 +2407,61 @@
   btnSaveReg.addEventListener('click', saveSignature);
   window.addEventListener('beforeunload', stopCameraReg);
 
+  /* ================= BOOK NAV (FLIP) ================= */
+  function attachPageNavObserver() {
+    const pages = document.querySelectorAll('#viewAnswerBook .page');
+    if (!pages.length) return;
+    
+    if (window._pageObserver) {
+      try { window._pageObserver.disconnect(); } catch(e) {}
+    }
+    
+    window._pageObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = Array.from(pages).indexOf(entry.target);
+          if (idx >= 0) {
+            currentBookPageIdx = idx;
+            updatePageNav();
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    pages.forEach(p => window._pageObserver.observe(p));
+    
+    if (currentBookPageIdx >= pages.length) currentBookPageIdx = 0;
+    updatePageNav();
+  }
+
+  window.turnBookPage = function(delta) {
+    const pages = document.querySelectorAll('#viewAnswerBook .page');
+    if (!pages.length) return;
+    currentBookPageIdx = Math.max(0, Math.min(pages.length - 1, currentBookPageIdx + delta));
+    pages[currentBookPageIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    updatePageNav();
+  };
+
+  function updatePageNav() {
+    const pages = document.querySelectorAll('#viewAnswerBook .page');
+    const indicator = document.getElementById('bookNavIndicator');
+    const prevBtn = document.getElementById('bookNavPrev');
+    const nextBtn = document.getElementById('bookNavNext');
+    if (!indicator) return;
+    
+    const totalBooks = Math.max(1, Math.ceil(captures.length / PAGES_PER_BOOK));
+    const PAGES_PER_BOOK_TOTAL = PAGES_PER_BOOK + 2; // cover + instructions + writing pages
+    const bookNum = Math.min(totalBooks, Math.floor(currentBookPageIdx / PAGES_PER_BOOK_TOTAL) + 1);
+    
+    const bookLabel = totalBooks > 1 ? ` · Book ${bookNum}/${totalBooks}` : '';
+    indicator.textContent = pages.length 
+      ? `${currentBookPageIdx + 1} / ${pages.length}${bookLabel}`
+      : '0 / 0';
+    
+    if (prevBtn) prevBtn.disabled = currentBookPageIdx <= 0;
+    if (nextBtn) nextBtn.disabled = currentBookPageIdx >= pages.length - 1;
+  }
+
   /* ================= ADMIN LOGIC ================= */
   async function openExamCodeSettings() {
       const currentCode = prompt("Enter the new Examination Access Code (Students need this to enter):", "IFB2027");
@@ -2230,6 +2566,7 @@
                         <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Sequence Number:</td><td style="padding:10px; border:1px solid #ccc;">${data.seqNum}</td></tr>
                         <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Login Status:</td><td style="padding:10px; border:1px solid #ccc;">${data.status || 'Unknown'}</td></tr>
                         <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Total Tab Switches:</td><td style="padding:10px; border:1px solid #ccc; color:red; font-weight:bold;">${data.tabSwitches ? data.tabSwitches.length : 0}</td></tr>
+                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Total Pages:</td><td style="padding:10px; border:1px solid #ccc;">${data.scripts ? data.scripts.length : 0} (${Math.max(1, Math.ceil((data.scripts ? data.scripts.length : 0) / 23))} book${Math.max(1, Math.ceil((data.scripts ? data.scripts.length : 0) / 23)) > 1 ? 's' : ''})</td></tr>
                     </table>
                     <div style="margin-top:20px;">
                         <h3 style="font-size:16px; margin-bottom:10px;">Student Signature:</h3>
@@ -2248,9 +2585,13 @@
               `;
               
               if (data.scripts && data.scripts.length > 0) {
+                  const adminTotalBooks = Math.max(1, Math.ceil(data.scripts.length / PAGES_PER_BOOK));
                   data.scripts.forEach((cap, idx) => {
+                      const adminBookNum = Math.floor(idx / PAGES_PER_BOOK) + 1;
+                      const adminPageInBook = (idx % PAGES_PER_BOOK) + 3;
+                      const adminHeaderLeft = adminTotalBooks > 1 ? `Answer Book · ${adminBookNum}/${adminTotalBooks}` : 'Answer Book';
                       container.innerHTML += `
-                        <div class="page">
+                        <div class="page" data-book="${adminBookNum}" data-book-page="${adminPageInBook}">
                           <div class="security-pattern"></div>
                           <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                             <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
@@ -2259,8 +2600,8 @@
                           </svg>
                           <div class="content-wrapper">
                             <div class="header">
-                              <div class="header-left">Answer Book</div>
-                              <div class="header-center"><span class="page-num">${idx + 3}</span><span class="confidential">IFB / Confidential</span></div>
+                              <div class="header-left">${adminHeaderLeft}</div>
+                              <div class="header-center"><span class="page-num">${adminPageInBook}</span><span class="confidential">IFB / Confidential</span></div>
                               <div class="header-right">2027</div>
                             </div>
                             <div class="answer-page">
@@ -2297,8 +2638,10 @@
       document.getElementById('adminScriptViewer').classList.remove('active');
   }
 
+  // ==================== INIT ====================
   renderPagesStrip();
   updateSubmitButton();
+  renderAnswerBooks();
   lucide.createIcons();
 </script>
 </body>
