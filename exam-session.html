@@ -19,7 +19,7 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   
   const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
@@ -29,12 +29,11 @@
   
   window.db = db;
   window.auth = auth;
+  window.firebaseSignOut = signOut;
   
-  // Check Auth State for Admin
   onAuthStateChanged(auth, (user) => {
       if (user && user.email === "n1nathaniel971@gmail.com") {
           document.getElementById('tabAdmin').style.display = 'flex';
-          console.log("[ADMIN] Admin logged in.");
       }
   });
 </script>
@@ -53,16 +52,19 @@
   
   .exam-header { background: #111; color: white; padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
   .exam-header h1 { font-size: 16px; font-weight: 800; color: #fff; margin: 0; }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .btn-logout { background: #FEE2E2; color: #B91C1C; border: 1px solid #FCA5A5; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px;}
+  .btn-logout:hover { background: #FCA5A5; }
   .timer { background: var(--maroon); color: white; padding: 8px 16px; border-radius: 8px; font-family: monospace; font-size: 18px; font-weight: bold; }
   
-  .tabs { display: flex; max-width: 800px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
-  .tab-btn { flex: 1; padding: 15px; text-align: center; font-weight: 800; border-radius: 8px; border: none; background: transparent; cursor: pointer; transition: 0.2s; font-size: 15px; color: var(--gray); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .tabs { display: flex; max-width: 900px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
+  .tab-btn { flex: 1; padding: 15px; text-align: center; font-weight: 800; border-radius: 8px; border: none; background: transparent; cursor: pointer; transition: 0.2s; font-size: 14px; color: var(--gray); display: flex; align-items: center; justify-content: center; gap: 8px; }
   .tab-btn.active { background: var(--maroon); color: white; box-shadow: 0 4px 10px rgba(122,31,43,0.2); }
 
   .view { display: none; }
   .view.active { display: block; }
 
-  /* ==================== DESKTOP WARNING ==================== */
+  /* ==================== FORCE DESKTOP WARNING ==================== */
   #desktopWarning {
       position: fixed; inset: 0; background: rgba(0,0,0,0.95); color: white; z-index: 999999;
       display: none; justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px;
@@ -262,7 +264,7 @@
   .status { font-size:14px; text-align:center; min-height:1.4em; color:var(--gray); font-weight: 600; padding: 10px; background: #F8FAFC; border-radius: 8px; border: 1px solid var(--silver);}
 
   /* ==================== ADMIN DASHBOARD ==================== */
-  .admin-container { max-width: 1100px; margin: 20px auto; padding: 20px; }
+  .admin-container { max-width: 1200px; margin: 20px auto; padding: 20px; }
   .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .btn-refresh { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; color: var(--black); display: flex; align-items: center; gap: 6px; width: auto; min-width: unset; flex: none; }
   .btn-refresh:hover { border-color: var(--black); background: #FAFAFA; }
@@ -274,6 +276,7 @@
   .admin-barcode svg { height: 40px; width: 150px; }
   .badge-submitted { background: #DCFCE7; color: #15803D; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
   .badge-active { background: #FEF3C7; color: #D97706; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+  .badge-offline { background: #F1F5F9; color: #64748B; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
   
   .admin-script-viewer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; overflow-y: auto; padding: 20px; }
   .admin-script-viewer.active { display: block; }
@@ -293,7 +296,6 @@
     .exam-header, .tabs, #tabWarning, #uploadOverlay, .view:not(.active), .admin-viewer-header, .admin-container { display: none !important; }
     .view.active { display: block !important; padding: 0; margin: 0; }
     
-    /* Admin Print Logic */
     .admin-script-viewer { position: static; background: none; padding: 0; display: block !important; overflow: visible;}
     .admin-script-viewer .page { margin: 0; box-shadow: none; page-break-after: always; transform: none !important; } 
     .admin-script-viewer:not(.active) { display: none !important; }
@@ -329,7 +331,10 @@
 
 <header class="exam-header">
   <h1 id="headerTitle">IFB Examination Portal</h1>
-  <div class="timer" id="examTimer">02:00:00</div>
+  <div class="header-right">
+    <div class="timer" id="examTimer">02:00:00</div>
+    <button class="btn-logout" onclick="logout()"><i data-lucide="log-out" style="width:16px;height:16px;"></i> Log Out</button>
+  </div>
 </header>
 
 <!-- TABS -->
@@ -337,6 +342,7 @@
   <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper"><i data-lucide="file-text"></i> Question Paper</button>
   <button class="tab-btn" onclick="switchTab('answer')" id="tabAnswer"><i data-lucide="edit-3"></i> Answer Book</button>
   <button class="tab-btn" onclick="switchTab('scanner')" id="tabScanner"><i data-lucide="camera"></i> Scan Answers</button>
+  <button class="tab-btn" onclick="switchTab('register')" id="tabRegister"><i data-lucide="pen-tool"></i> Register Signature</button>
   <button class="tab-btn" onclick="switchTab('admin')" id="tabAdmin" style="display: none;"><i data-lucide="shield"></i> Admin</button>
 </div>
 
@@ -946,7 +952,45 @@
   </div>
 </div>
 
-<!-- ==================== VIEW 4: ADMIN DASHBOARD ==================== -->
+<!-- ==================== VIEW 4: REGISTER SIGNATURE ==================== -->
+<div class="view" id="viewRegister">
+  <div class="scanner-ui">
+    <div class="scanner-header">
+      <h2>Register Signature</h2>
+      <p>Scan a clear image of your physical signature.</p>
+    </div>
+
+    <div class="stage">
+      <video id="videoReg" autoplay playsinline muted></video>
+      <canvas id="canvasReg"></canvas>
+      <img id="previewReg" class="preview" alt="Scanned signature">
+      <div class="placeholder" id="placeholderReg">Tap “Open Camera” to start scanning.</div>
+      <div class="framing-guide" id="framingGuideReg">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+      </div>
+      <div class="scanner-line" id="scannerLineReg"></div>
+      <div class="flash-overlay" id="flashOverlayReg"></div>
+    </div>
+
+    <div class="controls">
+      <button class="action btn-primary" id="btnOpenReg"><i data-lucide="camera"></i> Open Camera</button>
+      <button class="action btn-secondary" id="btnFlashReg" style="display: none;"><i data-lucide="flashlight"></i> Flashlight</button>
+      <button class="action btn-secondary" id="btnCaptureReg" disabled><i data-lucide="aperture"></i> Capture</button>
+      <button class="action btn-secondary" id="btnRetakeReg" disabled><i data-lucide="rotate-ccw"></i> Retake</button>
+      <button class="action btn-secondary" id="btnSaveReg" disabled><i data-lucide="save"></i> Save Signature</button>
+    </div>
+
+    <div class="status" id="statusReg">Ready to scan.</div>
+    
+    <div id="signatureSaved" style="display:none; text-align:center; margin-top:20px;">
+        <p style="color:var(--success); font-weight:800; margin-bottom:10px;">Signature Saved Successfully!</p>
+        <img id="savedSignatureImg" style="max-height:100px; border:1px solid var(--silver); border-radius:8px;">
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VIEW 5: ADMIN DASHBOARD ==================== -->
 <div class="view" id="viewAdmin">
   <div class="admin-container">
     <div class="admin-header">
@@ -954,7 +998,10 @@
             <h1 style="font-size: 28px; font-weight: 900; color: var(--maroon); margin-bottom: 5px;">Admin Invigilator Dashboard</h1>
             <p style="color: var(--gray);">Monitor active sessions and view uploaded scripts.</p>
         </div>
-        <button class="btn-refresh" onclick="loadAdminData()"><i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Refresh</button>
+        <div style="display:flex; gap:10px;">
+            <button class="btn-refresh" onclick="openExamCodeSettings()" style="border-color:var(--maroon); color:var(--maroon);"><i data-lucide="settings" style="width:16px;height:16px;"></i> Session Settings</button>
+            <button class="btn-refresh" onclick="loadAdminData()"><i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Refresh</button>
+        </div>
     </div>
     
     <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
@@ -999,6 +1046,7 @@
   const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
   const secCode = sessionStorage.getItem('examSecurityCode') || 'ABCDEF';
   const examCode = sessionStorage.getItem('examCode') || 'AE-S-MATH';
+  const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
   
   // Generate or retrieve unique 6-digit script ID
   let scriptId = sessionStorage.getItem('examScriptId');
@@ -1020,15 +1068,31 @@
       scriptLabel.innerText = `${studentId}—${scriptId}`;
   }
 
+  // Logout Function
+  window.logout = async function() {
+      if(confirm("Are you sure you want to log out? Your exam progress will be saved.")) {
+          // Update status to Logged Out in Firebase
+          try {
+              if (window.db) {
+                  const docRef = doc(window.db, "examLogs", studentId);
+                  await setDoc(docRef, { status: "Logged Out", lastActive: serverTimestamp() }, { merge: true });
+              }
+          } catch(e) {}
+          
+          if (window.firebaseSignOut && window.auth) {
+              await window.firebaseSignOut(window.auth);
+          }
+          sessionStorage.clear();
+          window.location.href = "index.html";
+      }
+  };
+
   /* ================= TIMER (PERSISTENT) ================= */
   const EXAM_DURATION_MINS = 120; 
   let startTime = sessionStorage.getItem('examStartTime');
   if (!startTime) {
       startTime = Date.now();
       sessionStorage.setItem('examStartTime', startTime);
-      console.log("[TIMER] Started new session at", new Date(startTime).toLocaleTimeString());
-  } else {
-      console.log("[TIMER] Resumed session. Started at", new Date(parseInt(startTime)).toLocaleTimeString());
   }
 
   setInterval(() => {
@@ -1040,7 +1104,6 @@
     if (remaining <= 0) {
       if (!window.hasAutoSubmitted) {
           window.hasAutoSubmitted = true;
-          console.log("[TIMER] Time is up! Auto-submitting.");
           alert("Time is up! Submitting your scanned scripts automatically...");
           submitExam();
       }
@@ -1058,7 +1121,6 @@
   document.addEventListener("visibilitychange", async () => {
     if (document.hidden) {
       const timestamp = new Date().toISOString();
-      console.log("[SECURITY] Tab/App switch detected at", timestamp);
       document.getElementById('tabWarning').style.display = 'flex';
       
       try {
@@ -1071,17 +1133,13 @@
                   tabSwitches: arrayUnion(timestamp),
                   lastActive: serverTimestamp()
               }, { merge: true });
-              console.log("[FIREBASE] Tab switch logged successfully.");
           }
-      } catch(e) {
-          console.warn("[FIREBASE] Failed to log tab switch:", e);
-      }
+      } catch(e) {}
     }
   });
 
   /* ================= UI NAVIGATION ================= */
   function switchTab(tab) {
-    console.log(`[NAV] Switching to tab: ${tab}`);
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     
@@ -1094,6 +1152,9 @@
     } else if (tab === 'scanner') {
       document.getElementById('viewScanner').classList.add('active');
       document.getElementById('tabScanner').classList.add('active');
+    } else if (tab === 'register') {
+      document.getElementById('viewRegister').classList.add('active');
+      document.getElementById('tabRegister').classList.add('active');
     } else if (tab === 'admin') {
       document.getElementById('viewAdmin').classList.add('active');
       document.getElementById('tabAdmin').classList.add('active');
@@ -1101,6 +1162,7 @@
     }
     
     if (tab !== 'scanner') stopCamera();
+    if (tab !== 'register') stopCameraReg();
   }
 
   /* ================= INITIALIZATION LOGIC ================= */
@@ -1345,14 +1407,11 @@
     drawPaperDiagrams();
     lucide.createIcons();
     
-    // Check for reload
     const lastTime = sessionStorage.getItem('lastUploadTimestamp');
     if (lastTime) {
         setStatus(`Session resumed. Last script upload at ${lastTime}.`, 'success');
-        console.log("[SESSION] Resumed. Last upload was at", lastTime);
     }
 
-    // Show desktop warning on mobile devices
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         document.getElementById('desktopWarning').style.display = 'flex';
     }
@@ -1365,15 +1424,16 @@
                 studentId: studentId,
                 scriptId: scriptId,
                 seqNum: seqNum,
-                lastActive: serverTimestamp()
+                lastActive: serverTimestamp(),
+                status: "In Session"
             }, { merge: true }).catch(e => console.warn(e));
         }
     }
   });
 
-  /* ================= SCANNER LOGIC ================= */
+  /* ================= SCANNER LOGIC (ANSWERS) ================= */
   const A4_W = 1240, A4_H = 1754;
-  let captures = []; // Flattened array of { q: "1", src: "data..." }
+  let captures = []; 
   let stream = null, videoTrack = null, pendingBlob = null;
   let cvReady = false;
   let flashOn = false;
@@ -1401,7 +1461,6 @@
   function setStatus(msg, type = '') { 
       statusEl.textContent = msg; 
       statusEl.style.color = type === 'error' ? '#B91C1C' : (type === 'success' ? '#15803d' : 'var(--gray)'); 
-      console.log(`[STATUS] ${msg}`);
   }
 
   function waitCv() {
@@ -1409,10 +1468,10 @@
     let attached = false;
     const t = setInterval(() => {
       if (typeof cv !== 'undefined') {
-        if (cv.Mat) { cvReady = true; clearInterval(t); console.log("[OPENCV] Ready."); return; }
+        if (cv.Mat) { cvReady = true; clearInterval(t); return; }
         if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
           attached = true;
-          cv.onRuntimeInitialized = () => { cvReady = true; console.log("[OPENCV] Initialized."); };
+          cv.onRuntimeInitialized = () => { cvReady = true; };
         }
       }
       if (Date.now() - started > 20000) clearInterval(t);
@@ -1422,7 +1481,6 @@
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-  // Web Audio API for Shutter Click
   function playBeep() {
       try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1437,16 +1495,13 @@
           gainNode.connect(ctx.destination);
           osc.start();
           osc.stop(ctx.currentTime + 0.05);
-      } catch(e) { console.warn("Audio error", e); }
+      } catch(e) { }
   }
 
   async function openCamera() {
     setStatus('Requesting camera permission…');
     try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
-        audio: false
-      });
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
       video.srcObject = stream;
       await video.play();
       videoTrack = stream.getVideoTracks()[0];
@@ -1481,16 +1536,12 @@
         await videoTrack.applyConstraints({ advanced: [{ torch: flashOn }] });
         btnFlash.style.background = flashOn ? 'var(--maroon)' : '#fff';
         btnFlash.style.color = flashOn ? '#fff' : 'var(--maroon)';
-        console.log(`[CAMERA] Flashlight toggled: ${flashOn ? 'ON' : 'OFF'}`);
-    } catch(err) {
-        console.warn("Flash failed: ", err);
-    }
+    } catch(err) {}
   }
 
   function rotateScript() {
       rotationAngle = (rotationAngle + 90) % 360;
       preview.style.transform = `rotate(${rotationAngle}deg)`;
-      console.log(`[SCANNER] Script rotated to ${rotationAngle} degrees.`);
   }
 
   async function capture() {
@@ -1519,8 +1570,8 @@
         a4Canvas = detectAndWarpToA4(canvas);
         if (a4Canvas) detected = true;
       }
-    } catch (e) { console.warn('Page detection failed:', e); }
-    
+    } catch (e) { }
+
     if (!a4Canvas) a4Canvas = fallbackA4(canvas);
     enhanceText(a4Canvas); 
 
@@ -1552,120 +1603,6 @@
     }));
   }
 
-  function detectAndWarpToA4(srcCanvas) {
-    const src = cv.imread(srcCanvas);
-    const maxDim = 600;
-    const scale = Math.min(1, maxDim / Math.max(src.cols, src.rows));
-    const small = new cv.Mat();
-    cv.resize(src, small, new cv.Size(Math.round(src.cols * scale), Math.round(src.rows * scale)), 0, 0, cv.INTER_AREA);
-
-    const gray = new cv.Mat();
-    cv.cvtColor(small, gray, cv.COLOR_RGBA2GRAY);
-    cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0);
-
-    const edges = new cv.Mat();
-    cv.Canny(gray, edges, 50, 150);
-    const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
-    cv.dilate(edges, edges, kernel);
-
-    const contours = new cv.MatVector();
-    const hierarchy = new cv.Mat();
-    cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
-
-    let best = null, bestArea = 0;
-    const minArea = small.rows * small.cols * 0.15;
-
-    for (let i = 0; i < contours.size(); i++) {
-      const cnt = contours.get(i);
-      const peri = cv.arcLength(cnt, true);
-      const approx = new cv.Mat();
-      cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
-      const area = cv.contourArea(approx);
-      if (approx.rows === 4 && area > bestArea && area > minArea) {
-        if (best) best.delete();
-        best = approx.clone(); bestArea = area;
-      }
-      approx.delete();
-    }
-
-    let corners = null;
-    if (best) {
-      corners = [];
-      for (let i = 0; i < 4; i++) corners.push({ x: best.data32S[i * 2] / scale, y: best.data32S[i * 2 + 1] / scale });
-      best.delete();
-    }
-    src.delete(); small.delete(); gray.delete(); edges.delete(); kernel.delete(); contours.delete(); hierarchy.delete();
-    if (!corners) return null;
-
-    corners = orderCorners(corners);
-    const srcFull = cv.imread(srcCanvas);
-    const srcQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [corners[0].x, corners[0].y, corners[1].x, corners[1].y, corners[2].x, corners[2].y, corners[3].x, corners[3].y]);
-    const dstQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, A4_W, 0, A4_W, A4_H, 0, A4_H]);
-    const M = cv.getPerspectiveTransform(srcQuad, dstQuad);
-    const warped = new cv.Mat();
-    cv.warpPerspective(srcFull, warped, M, new cv.Size(A4_W, A4_H));
-
-    const out = document.createElement('canvas');
-    out.width = A4_W; out.height = A4_H;
-    cv.imshow(out, warped);
-
-    srcFull.delete(); srcQuad.delete(); dstQuad.delete(); M.delete(); warped.delete();
-    return out;
-  }
-
-  function orderCorners(pts) {
-    const cx = pts.reduce((s, p) => s + p.x, 0) / 4;
-    const cy = pts.reduce((s, p) => s + p.y, 0) / 4;
-    pts.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
-    let minI = 0, minSum = Infinity;
-    for (let i = 0; i < 4; i++) { const s = pts[i].x + pts[i].y; if (s < minSum) { minSum = s; minI = i; } }
-    return [pts[minI], pts[(minI + 1) % 4], pts[(minI + 2) % 4], pts[(minI + 3) % 4]];
-  }
-
-  function fallbackA4(srcCanvas) {
-    const out = document.createElement('canvas');
-    out.width = A4_W; out.height = A4_H;
-    const ctx = out.getContext('2d');
-    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, A4_W, A4_H);
-    const sw = srcCanvas.width, sh = srcCanvas.height;
-    const scale = Math.min(A4_W / sw, A4_H / sh);
-    const dw = sw * scale, dh = sh * scale;
-    ctx.drawImage(srcCanvas, (A4_W - dw) / 2, (A4_H - dh) / 2, dw, dh);
-    return out;
-  }
-
-  function enhanceText(canvasEl) {
-    const W = canvasEl.width, H = canvasEl.height;
-    const ctx = canvasEl.getContext('2d');
-    const imgData = ctx.getImageData(0, 0, W, H);
-    const d = imgData.data;
-    const gray = new Uint8ClampedArray(W * H);
-    for (let i = 0, p = 0; i < d.length; i += 4, p++) gray[p] = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
-    
-    const IW = W + 1;
-    const integ = new Uint32Array(IW * (H + 1));
-    for (let y = 0; y < H; y++) {
-      let rowSum = 0;
-      for (let x = 0; x < W; x++) { rowSum += gray[y * W + x]; integ[(y + 1) * IW + (x + 1)] = integ[y * IW + (x + 1)] + rowSum; }
-    }
-    const block = 41, half = (block - 1) >> 1, C = 15;
-    const bin = new Uint8ClampedArray(W * H);
-    for (let y = 0; y < H; y++) {
-      const y0 = Math.max(0, y - half), y1 = Math.min(H - 1, y + half);
-      for (let x = 0; x < W; x++) {
-        const x0 = Math.max(0, x - half), x1 = Math.min(W - 1, x + half);
-        const area = (x1 - x0 + 1) * (y1 - y0 + 1);
-        const sum = integ[(y1 + 1) * IW + (x1 + 1)] - integ[y0 * IW + (x1 + 1)] - integ[(y1 + 1) * IW + x0] + integ[y0 * IW + x0];
-        bin[y * W + x] = gray[y * W + x] < (sum / area - C) ? 0 : 255;
-      }
-    }
-    for (let i = 0, p = 0; p < bin.length; i += 4, p++) {
-      d[i] = d[i + 1] = d[i + 2] = bin[p];
-      d[i + 3] = 255;
-    }
-    ctx.putImageData(imgData, 0, 0);
-  }
-
   function stopCamera() {
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
     videoTrack = null; video.srcObject = null;
@@ -1683,7 +1620,6 @@
     preview.style.transform = `rotate(0deg)`;
     btnRetake.disabled = true; btnRotate.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
     setStatus('Discarded. Reopen the camera to try again.');
-    console.log("[SCANNER] Script discarded.");
   }
 
   function saveCurrentPage() {
@@ -1714,7 +1650,6 @@
 
         const timestamp = new Date().toLocaleTimeString();
         sessionStorage.setItem('lastUploadTimestamp', timestamp);
-        console.log(`[SCANNER] Script for Q${q} saved. Timestamp: ${timestamp}`);
 
         if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
         pendingBlob = null; preview.classList.remove('active');
@@ -1765,7 +1700,6 @@
             del.innerHTML = '✕';
             del.onclick = () => { 
                 captures.splice(item.index, 1); 
-                console.log(`[SCANNER] Deleted script from Q${qNum}. Remaining: ${captures.length}`);
                 renderPagesStrip(); 
                 syncAnswerBook(); 
                 updateSubmitButton(); 
@@ -1807,7 +1741,6 @@
     if (!confirm("Are you sure you want to submit? Ensure all questions have been scanned. You cannot undo this.")) return;
 
     document.getElementById('uploadOverlay').style.display = 'flex';
-    console.log("[SUBMIT] Uploading scripts...");
     
     try {
         if (window.db) {
@@ -1820,11 +1753,8 @@
                 submittedAt: serverTimestamp(),
                 scripts: captures
             }, { merge: true });
-            console.log("[FIREBASE] Script submitted successfully.");
         }
-    } catch(e) {
-        console.warn("[FIREBASE] Failed to submit to Firebase:", e);
-    }
+    } catch(e) {}
 
     await new Promise(r => setTimeout(r, 2500));
     document.getElementById('uploadOverlay').style.display = 'none';
@@ -1835,11 +1765,215 @@
     sessionStorage.removeItem('examSeqNum');
     sessionStorage.clear();
     
-    alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded and sent to the AI Invigilator for moderation.");
+    alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded.");
     window.location.href = "student-dashboard.html";
   }
 
+  // Attach Events
+  btnOpen.addEventListener('click', openCamera);
+  btnFlash.addEventListener('click', toggleFlash);
+  btnCapture.addEventListener('click', capture);
+  btnRotate.addEventListener('click', rotateScript);
+  btnRetake.addEventListener('click', retake);
+  btnAddPage.addEventListener('click', saveCurrentPage);
+  window.addEventListener('beforeunload', stopCamera);
+
+  /* ================= SIGNATURE SCANNER LOGIC ================= */
+  let streamReg = null, videoTrackReg = null, pendingBlobReg = null;
+  let flashOnReg = false;
+
+  const videoReg = document.getElementById('videoReg');
+  const canvasReg = document.getElementById('canvasReg');
+  const previewReg = document.getElementById('previewReg');
+  const placeholderReg = document.getElementById('placeholderReg');
+  const statusElReg = document.getElementById('statusReg');
+  const framingGuideReg = document.getElementById('framingGuideReg');
+  const flashOverlayReg = document.getElementById('flashOverlayReg');
+  const scannerLineReg = document.getElementById('scannerLineReg');
+
+  const btnOpenReg = document.getElementById('btnOpenReg');
+  const btnFlashReg = document.getElementById('btnFlashReg');
+  const btnCaptureReg = document.getElementById('btnCaptureReg');
+  const btnRetakeReg = document.getElementById('btnRetakeReg');
+  const btnSaveReg = document.getElementById('btnSaveReg');
+
+  function setStatusReg(msg, type = '') { 
+      statusElReg.textContent = msg; 
+      statusElReg.style.color = type === 'error' ? '#B91C1C' : (type === 'success' ? '#15803d' : 'var(--gray)'); 
+  }
+
+  function playPrinterSound() {
+      try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(100, ctx.currentTime); 
+          osc.frequency.linearRampToValueAtTime(50, ctx.currentTime + 0.8); 
+          gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
+          osc.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.8);
+      } catch(e) { }
+  }
+
+  async function openCameraReg() {
+    setStatusReg('Requesting camera permission…');
+    try {
+      streamReg = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
+      videoReg.srcObject = streamReg;
+      await videoReg.play();
+      videoTrackReg = streamReg.getVideoTracks()[0];
+
+      placeholderReg.style.display = 'none';
+      videoReg.classList.add('active');
+      framingGuideReg.classList.add('visible');
+
+      const capabilities = videoTrackReg.getCapabilities();
+      if (capabilities.torch) {
+          btnFlashReg.style.display = 'flex';
+          btnFlashReg.disabled = false;
+      } else {
+          btnFlashReg.style.display = 'none';
+      }
+
+      btnOpenReg.disabled = true;
+      btnCaptureReg.disabled = false;
+      btnRetakeReg.disabled = true;
+      btnSaveReg.disabled = true;
+      setStatusReg(`Hold straight above your signature.`);
+    } catch (err) {
+      setStatusReg('Could not open camera: ' + err.message, 'error');
+    }
+  }
+
+  async function toggleFlashReg() {
+    if (!videoTrackReg) return;
+    try {
+        flashOnReg = !flashOnReg;
+        await videoTrackReg.applyConstraints({ advanced: [{ torch: flashOnReg }] });
+        btnFlashReg.style.background = flashOnReg ? 'var(--maroon)' : '#fff';
+        btnFlashReg.style.color = flashOnReg ? '#fff' : 'var(--maroon)';
+    } catch(err) {}
+  }
+
+  async function captureReg() {
+    if (!streamReg) return;
+    const w = videoReg.videoWidth, h = videoReg.videoHeight;
+    if (!w || !h) return;
+
+    btnCaptureReg.disabled = true;
+    setStatusReg('Capturing signature…');
+    
+    playPrinterSound();
+    scannerLineReg.classList.add('active');
+    flashOverlayReg.classList.add('fire');
+    requestAnimationFrame(() => requestAnimationFrame(() => { flashOverlayReg.classList.remove('fire'); }));
+    
+    await sleep(1200); 
+
+    canvasReg.width = w; canvasReg.height = h;
+    canvasReg.getContext('2d').drawImage(videoReg, 0, 0, w, h);
+    stopCameraReg();
+    scannerLineReg.classList.remove('active');
+
+    setStatusReg('Processing signature…');
+    let a4Canvas = null;
+    try {
+      if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
+        a4Canvas = detectAndWarpToA4(canvasReg);
+      }
+    } catch (e) { }
+
+    if (!a4Canvas) a4Canvas = fallbackA4(canvasReg);
+    enhanceText(a4Canvas); 
+
+    a4Canvas.toBlob(blob => {
+      pendingBlobReg = blob;
+      const url = URL.createObjectURL(blob);
+      previewReg.src = url;
+      previewReg.classList.add('active');
+      videoReg.classList.remove('active');
+      framingGuideReg.classList.remove('visible');
+
+      btnCaptureReg.disabled = true;
+      btnRetakeReg.disabled = false;
+      btnSaveReg.disabled = false;
+      btnOpenReg.disabled = true;
+
+      setStatusReg('Signature captured.', 'success');
+    }, 'image/jpeg', 0.92);
+  }
+
+  function stopCameraReg() {
+    if (streamReg) { streamReg.getTracks().forEach(t => t.stop()); streamReg = null; }
+    videoTrackReg = null; videoReg.srcObject = null;
+    videoReg.classList.remove('active'); placeholderReg.style.display = '';
+    scannerLineReg.classList.remove('active');
+    flashOnReg = false;
+    btnFlashReg.style.background = '#fff';
+    btnFlashReg.style.color = 'var(--maroon)';
+  }
+
+  function retakeReg() {
+    if (previewReg.src) { URL.revokeObjectURL(previewReg.src); previewReg.removeAttribute('src'); }
+    pendingBlobReg = null; previewReg.classList.remove('active');
+    btnRetakeReg.disabled = true; btnSaveReg.disabled = true; btnOpenReg.disabled = false; btnCaptureReg.disabled = true;
+    setStatusReg('Discarded. Reopen the camera to try again.');
+  }
+
+  async function saveSignature() {
+    if (!pendingBlobReg) return;
+    
+    const reader = new FileReader();
+    reader.onload = async () => {
+        const base64Data = reader.result;
+        
+        try {
+            if (window.db && window.auth.currentUser) {
+                const userRef = doc(window.db, "users", window.auth.currentUser.uid);
+                await setDoc(userRef, { signature: base64Data }, { merge: true });
+                
+                document.getElementById('savedSignatureImg').src = base64Data;
+                document.getElementById('signatureSaved').style.display = 'block';
+                
+                setStatusReg('Signature saved to database successfully!', 'success');
+                btnSaveReg.disabled = true;
+                btnRetakeReg.disabled = true;
+            }
+        } catch(e) {
+            console.error(e);
+            setStatusReg('Failed to save signature to database.', 'error');
+        }
+    };
+    reader.readAsDataURL(pendingBlobReg);
+  }
+
+  btnOpenReg.addEventListener('click', openCameraReg);
+  btnFlashReg.addEventListener('click', toggleFlashReg);
+  btnCaptureReg.addEventListener('click', captureReg);
+  btnRetakeReg.addEventListener('click', retakeReg);
+  btnSaveReg.addEventListener('click', saveSignature);
+  window.addEventListener('beforeunload', stopCameraReg);
+
   /* ================= ADMIN LOGIC ================= */
+  async function openExamCodeSettings() {
+      const currentCode = prompt("Enter the new Examination Access Code (Students need this to enter):", "IFB2027");
+      if (currentCode !== null && currentCode.trim() !== "") {
+          try {
+              if (window.db) {
+                  const configRef = doc(window.db, "config", "examSettings");
+                  await setDoc(configRef, { examCode: currentCode.trim() }, { merge: true });
+                  alert("Exam Code updated successfully!");
+              }
+          } catch(e) {
+              alert("Failed to update Exam Code: " + e.message);
+          }
+      }
+  }
+
   async function loadAdminData() {
       const tbody = document.getElementById('adminTableBody');
       tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">Fetching records from Firebase...</td></tr>';
@@ -1866,9 +2000,9 @@
               const tabSwitchText = tabSwitches > 0 ? `<span style="color: red; font-weight: bold;">${tabSwitches}</span>` : "0";
               const lastActive = data.lastActive ? new Date(data.lastActive.toDate()).toLocaleTimeString() : "N/A";
               
-              const statusBadge = data.status === "Submitted" 
-                  ? `<span class="badge-submitted">Submitted</span>` 
-                  : `<span class="badge-active">In Progress</span>`;
+              let statusBadge = `<span class="badge-active">In Session</span>`;
+              if (data.status === "Submitted") statusBadge = `<span class="badge-submitted">Submitted</span>`;
+              if (data.status === "Logged Out") statusBadge = `<span class="badge-offline">Logged Out</span>`;
               
               tr.innerHTML = `
                   <td>${data.studentId}</td>
@@ -1889,7 +2023,6 @@
               }, 100);
           });
           
-          console.log(`[ADMIN] Loaded ${count} records.`);
       } catch(e) {
           console.error("[ADMIN] Error loading data:", e);
           tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color: red;">Error loading data. Check console.</td></tr>`;
@@ -1897,7 +2030,6 @@
   }
 
   async function viewAdminScript(docId) {
-      console.log(`[ADMIN] Viewing script for student: ${docId}`);
       document.getElementById('viewerTitle').innerText = `Script: ${docId}`;
       const container = document.getElementById('adminA4Container');
       container.innerHTML = '<div style="text-align:center; color:white; font-size:20px;">Loading script...</div>';
@@ -1912,6 +2044,40 @@
           if (docSnap.exists()) {
               const data = docSnap.data();
               container.innerHTML = '';
+              
+              // A4 Summary Sheet (Admin Only)
+              container.innerHTML += `
+                <div class="page">
+                  <div class="security-pattern"></div>
+                  <div class="content-wrapper">
+                    <div class="header">
+                      <div class="header-left">ADMIN A4 SUMMARY</div>
+                      <div class="header-center"><span class="page-num">1</span><span class="confidential">IFB / Confidential</span></div>
+                      <div class="header-right">2027</div>
+                    </div>
+                    <h2 style="font-family:'Inter'; font-size:24px; color:var(--maroon); margin-bottom:20px; text-align:center;">Examination Script Summary</h2>
+                    <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Student ID:</td><td style="padding:10px; border:1px solid #ccc;">${data.studentId}</td></tr>
+                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Script ID:</td><td style="padding:10px; border:1px solid #ccc;">${data.scriptId}</td></tr>
+                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Sequence Number:</td><td style="padding:10px; border:1px solid #ccc;">${data.seqNum}</td></tr>
+                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Login Status:</td><td style="padding:10px; border:1px solid #ccc;">${data.status || 'Unknown'}</td></tr>
+                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Total Tab Switches:</td><td style="padding:10px; border:1px solid #ccc; color:red; font-weight:bold;">${data.tabSwitches ? data.tabSwitches.length : 0}</td></tr>
+                    </table>
+                    <div style="margin-top:20px;">
+                        <h3 style="font-size:16px; margin-bottom:10px;">Student Signature:</h3>
+                        <img src="${data.signature || '#'}" style="max-height:150px; border:1px solid #ccc; padding:5px; display:block;">
+                        ${data.signature ? '' : '<p style="color:#999;">No signature registered.</p>'}
+                    </div>
+                  </div>
+                  <div class="footer">
+                    <div class="footer-left">
+                      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+                      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+                    </div>
+                    <div class="footer-right">Admin Document</div>
+                  </div>
+                </div>
+              `;
               
               if (data.scripts && data.scripts.length > 0) {
                   data.scripts.forEach((cap, idx) => {
@@ -1948,7 +2114,7 @@
                       `;
                   });
               } else {
-                  container.innerHTML = '<div class="page" style="display:flex; justify-content:center; align-items:center; font-size:24px; color:#999;">No scripts uploaded yet for this student.</div>';
+                  container.innerHTML += '<div class="page" style="display:flex; justify-content:center; align-items:center; font-size:24px; color:#999;">No scripts uploaded yet for this student.</div>';
               }
           } else {
               container.innerHTML = '<div class="page" style="display:flex; justify-content:center; align-items:center; font-size:24px; color:#999;">Student record not found.</div>';
@@ -1963,15 +2129,6 @@
       document.getElementById('adminScriptViewer').classList.remove('active');
   }
 
-  /* ================= INIT ================= */
-  btnOpen.addEventListener('click', openCamera);
-  btnFlash.addEventListener('click', toggleFlash);
-  btnCapture.addEventListener('click', capture);
-  btnRotate.addEventListener('click', rotateScript);
-  btnRetake.addEventListener('click', retake);
-  btnAddPage.addEventListener('click', saveCurrentPage);
-  window.addEventListener('beforeunload', stopCamera);
-  
   renderPagesStrip();
   updateSubmitButton();
   lucide.createIcons();
