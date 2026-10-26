@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>IFB Live Examination</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Times+New Roman:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Times+New+Roman:wght@400;700&display=swap" rel="stylesheet">
 <script>
   window.MathJax = {
     tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
@@ -12,19 +12,13 @@
   };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
 <style>
-  :root {
-    --maroon: #7A1F2B;
-    --silver: #E2E8F0;
-    --black: #111;
-    --gray: #666;
-    --white: #fff;
-  }
+  @page { size: A4; margin: 0; }
+  :root { --maroon: #7A1F2B; --silver: #E2E8F0; --black: #111; --gray: #666; --white: #fff; --bg: #F8FAFC; --success: #15803D; --error: #B91C1C; }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: var(--black); padding-bottom: 50px; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 50px; }
   
   /* HEADER */
   .exam-header { background: #111; color: white; padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
@@ -33,91 +27,82 @@
   
   /* NAVIGATION TABS */
   .tabs { display: flex; max-width: 800px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-  .tab-btn { flex: 1; padding: 15px; text-align: center; font-weight: 800; border-radius: 8px; border: none; background: transparent; cursor: pointer; transition: 0.2s; font-size: 15px; color: var(--gray); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .tab-btn { flex: 1; padding: 12px; text-align: center; font-weight: 800; border-radius: 8px; border: none; background: transparent; cursor: pointer; transition: 0.2s; font-size: 14px; color: var(--gray); display: flex; align-items: center; justify-content: center; gap: 8px; }
   .tab-btn.active { background: var(--maroon); color: white; box-shadow: 0 4px 10px rgba(122,31,43,0.2); }
 
   /* VIEWS */
   .view { display: none; max-width: 800px; margin: 0 auto; padding: 20px; }
   .view.active { display: block; }
 
-  /* QUESTION PAPER VIEW */
-  .paper-container { background: white; border: 1px solid var(--silver); border-radius: 16px; padding: 40px; font-family: 'Times New Roman', Times, serif; line-height: 1.6; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-  .paper-header { text-align: center; border-bottom: 2px solid var(--black); padding-bottom: 20px; margin-bottom: 30px; }
-  .paper-header h2 { font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 900; margin-bottom: 5px; }
-  .paper-header p { font-family: 'Inter', sans-serif; font-size: 14px; color: var(--gray); font-weight: 600; }
-  .question-block { margin-bottom: 30px; }
-  .q-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-  .q-text { font-size: 16px; margin-bottom: 15px; }
-  .math-display { text-align: center; margin: 15px 0; font-size: 18px; }
-  .sub-q { margin-left: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; }
-  .sub-q .q-num { font-weight: bold; width: 60px; flex-shrink: 0; }
-  .sub-q .q-content { flex: 1; }
-  .sub-q .q-marks { width: 40px; text-align: right; font-weight: bold; }
+  /* ==================== VIEW 1: QUESTION PAPER (STRICT A4) ==================== */
+  .paper-wrapper { display: flex; justify-content: center; background: #e2e8f0; padding: 20px; border-radius: 12px; overflow-x: auto; }
+  .a4-page { 
+    width: 210mm; height: 297mm; padding: 15mm 20mm; background: white; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif;
+    font-size: 11.5pt; line-height: 1.6; color: #000;
+  }
+  .paper-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+  .paper-header h2 { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+  .paper-header p { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; }
+  .q-block { margin-bottom: 20px; }
+  .q-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 14px; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .q-text { font-size: 12pt; margin-bottom: 10px; }
+  .q-marks { font-weight: bold; float: right; }
+  .math-display { text-align: center; margin: 12px 0; font-size: 13pt; }
 
-  /* SCANNER VIEW */
-  .scanner-header { text-align: center; margin-bottom: 20px; }
-  .scanner-header h2 { font-size: 22px; font-weight: 900; color: var(--maroon); margin-bottom: 5px; }
-  .scanner-header p { font-size: 14px; color: var(--gray); margin-bottom: 20px; }
+  /* ==================== VIEW 2: ANSWER BOOK (STRICT A4 AUTOFILL) ==================== */
+  .answer-book-controls { text-align: center; margin-bottom: 20px; }
+  .btn-print { background: var(--maroon); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; }
+  .answer-page { 
+    width: 210mm; height: 297mm; padding: 20mm; background: white; margin: 0 auto 20px auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: relative;
+    font-family: 'Times New Roman', serif;
+  }
+  .ans-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+  .ans-barcode { width: 180px; height: 50px; }
+  .ans-info { text-align: right; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; }
+  .ans-lines { width: 100%; height: calc(100% - 100px); background-image: repeating-linear-gradient(transparent, transparent 31px, #e2e8f0 31px, #e2e8f0 32px); background-size: 100% 32px; }
   
-  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #f3f4f6; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
-  video.active, canvas.active, img.preview.active { display:block; }
-  .placeholder { color:#9ca3af; text-align:center; padding:1rem; font-size:.95rem; }
-  .framing-guide { position:absolute; inset:6%; pointer-events:none; display:none; z-index:4; }
-  .framing-guide.visible { display:block; }
-  .framing-guide .corner { position:absolute; width:36px; height:36px; border:3px solid var(--maroon); }
-  .framing-guide .tl { top:0; left:0; border-right:none; border-bottom:none; border-radius:8px 0 0 0; }
-  .framing-guide .tr { top:0; right:0; border-left:none; border-bottom:none; border-radius:0 8px 0 0; }
-  .framing-guide .bl { bottom:0; left:0; border-right:none; border-top:none; border-radius:0 0 0 8px; }
-  .framing-guide .br { bottom:0; right:0; border-left:none; border-top:none; border-radius:0 0 8px 0; }
-  .flash-overlay { position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:8; transition:opacity .28s ease-out; }
-  .flash-overlay.fire { opacity:1; transition:none; }
+  /* ==================== VIEW 3: SCANNER (MODERN UI) ==================== */
+  .scanner-ui { max-width: 500px; margin: 0 auto; background: white; border-radius: 16px; border: 1px solid var(--silver); padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+  .scanner-preview { position: relative; width: 100%; aspect-ratio: 3/4; background: #1a1a1a; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 2px dashed #444; margin-bottom: 20px; }
+  .scanner-preview video, .scanner-preview img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .scanner-preview video.active, .scanner-preview img.active { display: block; }
+  .scanner-placeholder { color: #888; text-align: center; padding: 20px; font-weight: 600; }
+  .scanner-guide { position: absolute; inset: 5%; border: 2px solid rgba(255,255,255,0.5); border-radius: 8px; pointer-events: none; display: none; }
+  .scanner-guide.active { display: block; }
   
-  .q-selector { margin-top:15px; display:flex; align-items:center; gap:10px; }
-  .q-selector select { flex:1; padding: 15px; border: 2px solid var(--silver); border-radius: 8px; font-size: 16px; font-weight: 700; outline: none; }
+  .scanner-controls { display: flex; flex-direction: column; gap: 12px; }
+  .btn-scan { width: 100%; padding: 16px; border-radius: 10px; border: none; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+  .btn-scan.primary { background: var(--maroon); color: white; }
+  .btn-scan.secondary { background: var(--silver); color: var(--black); }
+  .btn-scan:disabled { opacity: 0.5; cursor: not-allowed; }
   
-  .pages-strip { margin-top:15px; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--silver); }
-  .pages-list { display:flex; gap:10px; flex-wrap:wrap; }
-  .page-thumb { position:relative; width:70px; background:#fafafa; border:1px solid var(--silver); border-radius:6px; padding:4px; display:flex; flex-direction:column; align-items:center; }
-  .page-thumb img { width:100%; border-radius:3px; display:block; }
-  .page-thumb .num { position:absolute; bottom:2px; right:2px; background:var(--maroon); color:#fff; font-size:.65rem; font-weight:700; padding:1px 5px; border-radius:6px; }
-  .page-thumb .del { position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#fff; border:1px solid var(--maroon); color:var(--maroon); cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; }
-  
-  .controls { display:flex; gap:10px; margin-top:15px; flex-wrap:wrap; }
-  .action { padding:15px 20px; font-size:15px; font-weight:700; border:none; border-radius:8px; cursor:pointer; transition:0.15s; flex:1; min-width:130px; font-family: 'Inter', sans-serif; }
-  .btn-primary { background:var(--maroon); color:#fff; }
-  .btn-primary:hover { background:#5A1620; }
-  .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
-  .btn-success { background:#15803d; color:#fff; }
-  .action:disabled { opacity:.4; cursor:not-allowed; }
-  
-  .status { margin-top:15px; font-size:14px; text-align:center; min-height:1.4em; color:var(--gray); font-weight: 600; }
+  .page-list { margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 12px; }
+  .page-thumb { position: relative; aspect-ratio: 1/1.4; background: #eee; border-radius: 8px; overflow: hidden; border: 1px solid var(--silver); }
+  .page-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .page-thumb .del { position: absolute; top: 4px; right: 4px; background: rgba(255,0,0,0.8); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-  /* UPLOADING OVERLAY */
+  /* OVERLAYS */
   #uploadOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-  .spinner { width: 60px; height: 60px; border: 6px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+  .spinner { width: 50px; height: 50px; border: 5px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
-  @media (max-width: 768px) {
-    .paper-container { padding: 20px; }
-    .tab-btn { font-size: 13px; padding: 10px; }
+  @media print {
+    body { background: white; padding: 0; }
+    .exam-header, .tabs, .view:not(#viewAnswerBook), .answer-book-controls { display: none !important; }
+    .view.active { display: block !important; padding: 0; margin: 0; }
+    .answer-page { width: 210mm; height: 297mm; margin: 0; box-shadow: none; page-break-after: always; }
   }
 </style>
 </head>
 <body oncontextmenu="return false;">
 
-<!-- TAB SWITCH WARNING -->
-<div id="tabWarning" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); color:white; z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:20px;">
-  <h2 style="color:#ff4444; font-size:32px; margin-bottom:10px;">WARNING!</h2>
-  <p style="font-size: 18px;">You have left the examination tab. This action has been logged and reported to the Invigilator.</p>
-  <button class="action btn-primary" style="margin-top:20px; max-width:200px;" onclick="document.getElementById('tabWarning').style.display='none'">I Understand</button>
-</div>
-
 <!-- UPLOADING OVERLAY -->
 <div id="uploadOverlay">
   <div class="spinner"></div>
-  <h2 style="font-size: 24px; font-weight: 900; color: var(--maroon);">Uploading Script...</h2>
-  <p style="color: var(--gray); margin-top: 10px;">Optimising images and securing your submission.</p>
+  <h2 style="font-size: 22px; font-weight: 900; color: var(--maroon);">Uploading Script...</h2>
+  <p style="color: var(--gray); margin-top: 8px;">Optimising images and securing your submission.</p>
 </div>
 
 <header class="exam-header">
@@ -128,511 +113,281 @@
 <!-- TABS -->
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper">📄 Question Paper</button>
+  <button class="tab-btn" onclick="switchTab('answer')" id="tabAnswer">📝 Answer Book</button>
   <button class="tab-btn" onclick="switchTab('scanner')" id="tabScanner">📷 Scan Answers</button>
 </div>
 
 <!-- ==================== VIEW 1: QUESTION PAPER ==================== -->
 <div class="view active" id="viewPaper">
-  <div class="paper-container">
-    <div class="paper-header">
-      <h2>INSTITUTE OF BOARD</h2>
-      <p>AE-S MATHEMATICS P1 PRACTICE EXAMINATION</p>
-      <p style="margin-top: 10px; font-weight: bold; color: var(--maroon);">MARKS: 50 | TIME: 2 HOURS</p>
-    </div>
+  <div class="paper-wrapper">
+    <div class="a4-page">
+      <div class="paper-header">
+        <h2>INSTITUTE OF BOARD</h2>
+        <p>AE-S MATHEMATICS P1 PRACTICE EXAMINATION</p>
+        <p style="margin-top: 8px; font-weight: bold; color: var(--maroon);">MARKS: 50 | TIME: 2 HOURS</p>
+      </div>
 
-    <div class="question-block">
-      <div class="q-title"><span>QUESTION 1</span><span>(25 Marks)</span></div>
+      <div class="q-block">
+        <div class="q-title"><span>QUESTION 1</span><span>(25 Marks)</span></div>
+        <div class="q-text">Solve for \(x\):</div>
+        
+        <div style="margin-left: 20px; margin-bottom: 15px;">
+          <div class="q-text">1.1 <span class="math-display" style="display:inline;">\(2^{2x+1} - 5 \cdot 2^x + 2 = 0\)</span> <span class="q-marks">(4)</span></div>
+          <div class="q-text">1.2 <span class="math-display" style="display:inline;">\((x^2 - 2x + 5)^{x^2 - 7x + 12} = 1\)</span> <span class="q-marks">(5)</span></div>
+          <div class="q-text">1.3 <span class="math-display" style="display:inline;">\(\left(x - \dfrac{8}{x}\right)^2 + 2\left(x - \dfrac{8}{x}\right) - 15 = 0\)</span> <span class="q-marks">(5)</span></div>
+          <div class="q-text">1.4 <span class="math-display" style="display:inline;">\(\dfrac{x - 1}{x + 3} \geq \dfrac{x}{x - 2}\)</span> <span class="q-marks">(4)</span></div>
+          <div class="q-text">1.5 <span class="math-display" style="display:inline;">\(\sqrt{2x + 5} - x = 1\)</span> <span class="q-marks">(4)</span></div>
+          <div class="q-text">1.6 Two numbers have a product of 27. The second number is the square of the first number. It is also given that the sum of the two numbers is less than 20. Calculate the values of the first and second numbers. <span class="q-marks">(3)</span></div>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-title"><span>QUESTION 2</span><span>(25 Marks)</span></div>
+        <div class="q-text">2.1 Consider the quadratic equation \(kx^2 + (k+2)x + 1 = 0\) and the cubic equation \(x^3 - 3x^2 - 9x + 5 = k\).</div>
+        <div style="margin-left: 20px;">
+          <div class="q-text">2.1.1 Determine the value(s) of \(k\) for which the quadratic equation has equal roots. <span class="q-marks">(4)</span></div>
+          <div class="q-text">2.1.2 Determine the value(s) of \(k\) for which the cubic equation has three distinct real roots. <span class="q-marks">(5)</span></div>
+        </div>
+      </div>
       
-      <div class="sub-q">
-        <div class="q-num">1.1</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\(2^{2x+1} - 5 \cdot 2^x + 2 = 0\)</div>
-        </div>
-        <div class="q-marks">(4)</div>
+      <div style="text-align: center; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
+        <p style="font-weight: bold; font-family: 'Inter', sans-serif; color: var(--maroon);">END OF QUESTION PAPER</p>
       </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.2</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\((x^2 - 2x + 5)^{x^2 - 7x + 12} = 1\)</div>
-        </div>
-        <div class="q-marks">(5)</div>
-      </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.3</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\(\left(x - \dfrac{8}{x}\right)^2 + 2\left(x - \dfrac{8}{x}\right) - 15 = 0\)</div>
-        </div>
-        <div class="q-marks">(5)</div>
-      </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.4</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\(\dfrac{x - 1}{x + 3} \geq \dfrac{x}{x - 2}\)</div>
-        </div>
-        <div class="q-marks">(4)</div>
-      </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.5</div>
-        <div class="q-content">
-          Solve for \(x\):
-          <div class="math-display">\(\sqrt{2x + 5} - x = 1\)</div>
-        </div>
-        <div class="q-marks">(4)</div>
-      </div>
-
-      <div class="sub-q">
-        <div class="q-num">1.6</div>
-        <div class="q-content">
-          Two numbers have a product of 27. The second number is the square of the first number. It is also given that the sum of the two numbers is less than 20. Calculate the values of the first and second numbers.
-        </div>
-        <div class="q-marks">(3)</div>
-      </div>
-    </div>
-
-    <div class="question-block">
-      <div class="q-title"><span>QUESTION 2</span><span>(25 Marks)</span></div>
-      
-      <div class="sub-q">
-        <div class="q-num">2.1</div>
-        <div class="q-content">
-          Consider the quadratic equation \(kx^2 + (k+2)x + 1 = 0\) and the cubic equation \(x^3 - 3x^2 - 9x + 5 = k\).
-          <br><br>
-          <strong>2.1.1</strong> Determine the value(s) of \(k\) for which the quadratic equation has equal roots.
-        </div>
-        <div class="q-marks">(4)</div>
-      </div>
-      <div class="sub-q">
-        <div class="q-num"></div>
-        <div class="q-content">
-          <strong>2.1.2</strong> Determine the value(s) of \(k\) for which the cubic equation has three distinct real roots.
-        </div>
-        <div class="q-marks">(5)</div>
-      </div>
-    </div>
-
-    <div style="text-align: center; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 20px;">
-      <p style="font-weight: bold; font-family: 'Inter', sans-serif; color: var(--maroon);">END OF QUESTION PAPER</p>
-      <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">Ensure you have written all answers on your physical paper.</p>
-      <button class="action btn-primary" style="margin-top: 15px; width: 100%;" onclick="switchTab('scanner')">Proceed to Scan Answers →</button>
     </div>
   </div>
 </div>
 
-<!-- ==================== VIEW 2: SCANNER ==================== -->
-<div class="view" id="viewScanner">
-  <div class="scanner-header">
-    <h2>Scan Your Physical Answers</h2>
-    <p>Select the question you are uploading for, then capture the page.</p>
-  </div>
-
-  <div class="stage">
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
-    <img id="preview" class="preview" alt="Scanned page">
-    <div class="placeholder" id="placeholder">Tap “Open Camera” to start scanning.</div>
-    <div class="framing-guide" id="framingGuide">
-      <div class="corner tl"></div><div class="corner tr"></div>
-      <div class="corner bl"></div><div class="corner br"></div>
-    </div>
-    <div class="flash-overlay" id="flashOverlay"></div>
-  </div>
-
-  <div class="q-selector">
-    <select id="questionPick">
-      <option value="1">Question 1 (All sub-questions)</option>
-      <option value="2">Question 2 (All sub-questions)</option>
-    </select>
-  </div>
-
-  <div class="pages-strip">
-    <h4 id="pagesTitle" style="font-size: 14px; color: var(--maroon); margin-bottom: 8px; font-weight: 800;">Pages for this question</h4>
-    <div class="pages-list" id="pagesList"></div>
-  </div>
-
-  <div class="controls">
-    <button class="action btn-primary" id="btnOpen">Open Camera</button>
-    <button class="action btn-secondary" id="btnCapture" disabled>Capture</button>
-    <button class="action btn-secondary" id="btnRetake" disabled>Retake</button>
-    <button class="action btn-secondary" id="btnAddPage" disabled>Save Page</button>
-  </div>
-
-  <div class="status" id="status"></div>
-
-  <div style="margin-top: 30px; border-top: 1px solid var(--silver); padding-top: 20px;">
-    <button class="action btn-success" id="btnSubmit" style="width: 100%; padding: 20px; font-size: 18px;" disabled onclick="submitExam()">
-      🚀 Submit All Scripts & Finish
+<!-- ==================== VIEW 2: ANSWER BOOK (AUTOFILL) ==================== -->
+<div class="view" id="viewAnswerBook">
+  <div class="answer-book-controls">
+    <button class="btn-print" onclick="window.print()">
+      <i data-lucide="printer"></i> Print / Save Answer Book PDF
     </button>
+    <p style="font-size: 12px; color: var(--gray); margin-top: 8px;">Your Student ID has been automatically attached.</p>
+  </div>
+
+  <div class="answer-page">
+    <div class="ans-header">
+      <div>
+        <div style="font-family:'Inter'; font-weight:900; font-size:18px; margin-bottom:4px;">INSTITUTE OF BOARD</div>
+        <div style="font-family:'Inter'; font-weight:700; font-size:12px; color:var(--gray);">AE-S MATHEMATICS P1</div>
+      </div>
+      <div class="ans-info">
+        <div>STUDENT ID (ANONYMOUS)</div>
+        <div style="font-family: monospace; font-size: 16px; margin-top:4px;" id="ansStudentId">---</div>
+        <svg class="ans-barcode" id="ansBarcode"></svg>
+      </div>
+    </div>
+    
+    <div style="font-family:'Inter'; font-weight:800; font-size:14px; margin-bottom:12px;">QUESTION 1</div>
+    <div class="ans-lines"></div>
+  </div>
+</div>
+
+<!-- ==================== VIEW 3: SCANNER ==================== -->
+<div class="view" id="viewScanner">
+  <div class="scanner-ui">
+    <div style="text-align:center; margin-bottom:20px;">
+      <h2 style="font-size:22px; font-weight:900; color:var(--maroon);">Scan Your Answer Book</h2>
+      <p style="font-size:14px; color:var(--gray);">Capture each page clearly. Ensure the barcode is visible.</p>
+    </div>
+
+    <div class="scanner-preview">
+      <div class="scanner-placeholder" id="scannerPlaceholder">
+        <i data-lucide="camera" style="width:40px; height:40px; margin-bottom:10px; color:#555;"></i>
+        <p>Camera Inactive</p>
+      </div>
+      <video id="video" autoplay playsinline muted></video>
+      <img id="preview" alt="Scanned Page">
+      <div class="scanner-guide" id="scannerGuide"></div>
+    </div>
+
+    <div class="scanner-controls">
+      <button class="btn-scan primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
+      <button class="btn-scan secondary" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture Page</button>
+      <button class="btn-scan secondary" id="btnRetake" disabled><i data-lucide="rotate-ccw"></i> Retake</button>
+      <button class="btn-scan primary" id="btnSave" disabled><i data-lucide="check"></i> Save Page to Script</button>
+    </div>
+
+    <div class="page-list" id="pageList">
+      <!-- Thumbnails injected here -->
+    </div>
+
+    <div style="margin-top: 24px; border-top: 1px solid var(--silver); padding-top: 20px;">
+      <button class="btn-scan primary" id="btnSubmit" style="background:var(--success); padding:20px;" disabled onclick="submitExam()">
+        <i data-lucide="send"></i> Submit Final Script
+      </button>
+    </div>
   </div>
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const studentName = sessionStorage.getItem('examStudentName') || 'Student';
-const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
-
-// Timer (2 hours)
-let timeLeft = 2 * 60 * 60; 
-setInterval(() => {
-  if (timeLeft <= 0) {
-    alert("Time is up! Submitting your scanned pages automatically...");
-    submitExam();
-    return;
-  }
-  timeLeft--;
-  const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
-  const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
-  const s = (timeLeft % 60).toString().padStart(2, '0');
-  document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
-}, 1000);
-
-// Tab Switch Detection
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) {
-    document.getElementById('tabWarning').style.display = 'flex';
-  }
-});
-
-/* ================= UI NAVIGATION ================= */
-function switchTab(tab) {
-  if (tab === 'paper') {
-    document.getElementById('viewPaper').classList.add('active');
-    document.getElementById('viewScanner').classList.remove('active');
-    document.getElementById('tabPaper').classList.add('active');
-    document.getElementById('tabScanner').classList.remove('active');
-  } else {
-    document.getElementById('viewPaper').classList.remove('active');
-    document.getElementById('viewScanner').classList.add('active');
-    document.getElementById('tabPaper').classList.remove('active');
-    document.getElementById('tabScanner').classList.add('active');
-    // Stop camera if switching back to paper
-    stopCamera(); 
-  }
-}
-
-/* ================= SCANNER LOGIC ================= */
-const A4_W = 1240, A4_H = 1754;
-const captures = {}; 
-let stream = null, videoTrack = null, pendingBlob = null;
-let cvReady = false;
-
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const preview = document.getElementById('preview');
-const placeholder = document.getElementById('placeholder');
-const statusEl = document.getElementById('status');
-const framingGuide = document.getElementById('framingGuide');
-const flashOverlay = document.getElementById('flashOverlay');
-const questionPick = document.getElementById('questionPick');
-const pagesList = document.getElementById('pagesList');
-const pagesTitle = document.getElementById('pagesTitle');
-
-const btnOpen = document.getElementById('btnOpen');
-const btnCapture = document.getElementById('btnCapture');
-const btnRetake = document.getElementById('btnRetake');
-const btnAddPage = document.getElementById('btnAddPage');
-const btnSubmit = document.getElementById('btnSubmit');
-
-function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? '#B91C1C' : (type === 'success' ? '#15803d' : 'var(--gray)'); }
-
-function waitCv() {
-  const started = Date.now();
-  let attached = false;
-  const t = setInterval(() => {
-    if (typeof cv !== 'undefined') {
-      if (cv.Mat) { cvReady = true; clearInterval(t); return; }
-      if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
-        attached = true;
-        cv.onRuntimeInitialized = () => { cvReady = true; };
-      }
-    }
-    if (Date.now() - started > 20000) clearInterval(t);
-  }, 150);
-}
-waitCv();
-
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-async function openCamera() {
-  setStatus('Requesting camera permission…');
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
-      audio: false
-    });
-    video.srcObject = stream;
-    await video.play();
-    videoTrack = stream.getVideoTracks()[0];
-
-    placeholder.style.display = 'none';
-    video.classList.add('active');
-    framingGuide.classList.add('visible');
-
-    btnOpen.disabled = true;
-    btnCapture.disabled = false;
-    btnRetake.disabled = true;
-    btnAddPage.disabled = true;
-    setStatus(`Scanning Q${questionPick.value}. Hold straight above the paper.`);
-  } catch (err) {
-    setStatus('Could not open camera: ' + err.message, 'error');
-  }
-}
-
-async function capture() {
-  if (!stream) return;
-  const w = video.videoWidth, h = video.videoHeight;
-  if (!w || !h) return;
-
-  btnCapture.disabled = true;
-  setStatus('Capturing…');
-  fireScreenFlash();
-  await sleep(150);
-
-  canvas.width = w; canvas.height = h;
-  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
-  stopCamera();
-
-  setStatus('Processing page…');
-  let a4Canvas = null, detected = false;
-  try {
-    if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
-      a4Canvas = detectAndWarpToA4(canvas);
-      if (a4Canvas) detected = true;
-    }
-  } catch (e) { console.warn('Page detection failed:', e); }
+  const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
+  document.getElementById('ansStudentId').textContent = studentId;
   
-  if (!a4Canvas) a4Canvas = fallbackA4(canvas);
-  enhanceText(a4Canvas); 
+  // Generate Barcode on Answer Book
+  try { JsBarcode("#ansBarcode", studentId, { format: "CODE128", width: 2, height: 40, displayValue: false }); } catch (e) { console.warn("Barcode error"); }
 
-  a4Canvas.toBlob(blob => {
-    pendingBlob = blob;
-    const url = URL.createObjectURL(blob);
-    preview.src = url;
-    preview.classList.add('active');
+  // Timer Logic
+  let timeLeft = 2 * 60 * 60; 
+  setInterval(() => {
+    if (timeLeft <= 0) { alert("Time is up! Submitting your scanned pages..."); submitExam(); return; }
+    timeLeft--;
+    const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+    const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
+  }, 1000);
+
+  // Tab Navigation
+  function switchTab(tab) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    
+    if (tab === 'paper') { document.getElementById('viewPaper').classList.add('active'); document.getElementById('tabPaper').classList.add('active'); }
+    if (tab === 'answer') { document.getElementById('viewAnswerBook').classList.add('active'); document.getElementById('tabAnswer').classList.add('active'); }
+    if (tab === 'scanner') { document.getElementById('viewScanner').classList.add('active'); document.getElementById('tabScanner').classList.add('active'); }
+    
+    if (tab !== 'scanner') stopCamera();
+  }
+
+  // Scanner Logic
+  let stream = null;
+  let captures = [];
+  let pendingBlob = null;
+
+  const video = document.getElementById('video');
+  const preview = document.getElementById('preview');
+  const placeholder = document.getElementById('scannerPlaceholder');
+  const guide = document.getElementById('scannerGuide');
+  
+  const btnOpen = document.getElementById('btnOpen');
+  const btnCapture = document.getElementById('btnCapture');
+  const btnRetake = document.getElementById('btnRetake');
+  const btnSave = document.getElementById('btnSave');
+  const btnSubmit = document.getElementById('btnSubmit');
+  const pageList = document.getElementById('pageList');
+
+  async function openCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      video.srcObject = stream;
+      video.classList.add('active');
+      placeholder.style.display = 'none';
+      guide.classList.add('active');
+      
+      btnOpen.disabled = true;
+      btnCapture.disabled = false;
+      btnRetake.disabled = true;
+      btnSave.disabled = true;
+    } catch (err) {
+      alert("Error accessing camera: " + err.message + "\nPlease ensure you have granted camera permissions.");
+    }
+  }
+
+  function stopCamera() {
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    video.srcObject = null;
     video.classList.remove('active');
-    framingGuide.classList.remove('visible');
+    guide.classList.remove('active');
+  }
 
+  function capture() {
+    if (!stream) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    
+    canvas.toBlob(blob => {
+      pendingBlob = blob;
+      const url = URL.createObjectURL(blob);
+      preview.src = url;
+      preview.classList.add('active');
+      stopCamera();
+      placeholder.style.display = 'none';
+      
+      btnCapture.disabled = true;
+      btnRetake.disabled = false;
+      btnSave.disabled = false;
+    }, 'image/jpeg', 0.9);
+  }
+
+  function retake() {
+    if (preview.src) URL.revokeObjectURL(preview.src);
+    preview.classList.remove('active');
+    pendingBlob = null;
+    
+    btnOpen.disabled = false;
     btnCapture.disabled = true;
-    btnRetake.disabled = false;
-    btnAddPage.disabled = false;
-    btnOpen.disabled = true;
+    btnRetake.disabled = true;
+    btnSave.disabled = true;
+    placeholder.style.display = 'block';
+  }
 
-    setStatus(detected ? 'Page detected & straightened.' : 'Page captured.', detected ? 'success' : 'warn');
-  }, 'image/jpeg', 0.92);
-}
+  function savePage() {
+    if (!pendingBlob) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      captures.push(reader.result);
+      preview.classList.remove('active');
+      pendingBlob = null;
+      
+      btnOpen.disabled = false;
+      btnCapture.disabled = true;
+      btnRetake.disabled = true;
+      btnSave.disabled = true;
+      placeholder.style.display = 'block';
+      
+      renderPages();
+    };
+    reader.readAsDataURL(pendingBlob);
+  }
 
-function fireScreenFlash() {
-  flashOverlay.classList.add('fire');
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    flashOverlay.classList.remove('fire');
-  }));
-}
-
-function detectAndWarpToA4(srcCanvas) {
-  const src = cv.imread(srcCanvas);
-  const maxDim = 600;
-  const scale = Math.min(1, maxDim / Math.max(src.cols, src.rows));
-  const small = new cv.Mat();
-  cv.resize(src, small, new cv.Size(Math.round(src.cols * scale), Math.round(src.rows * scale)), 0, 0, cv.INTER_AREA);
-
-  const gray = new cv.Mat();
-  cv.cvtColor(small, gray, cv.COLOR_RGBA2GRAY);
-  cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0);
-
-  const edges = new cv.Mat();
-  cv.Canny(gray, edges, 50, 150);
-  const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
-  cv.dilate(edges, edges, kernel);
-
-  const contours = new cv.MatVector();
-  const hierarchy = new cv.Mat();
-  cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
-
-  let best = null, bestArea = 0;
-  const minArea = small.rows * small.cols * 0.15;
-
-  for (let i = 0; i < contours.size(); i++) {
-    const cnt = contours.get(i);
-    const peri = cv.arcLength(cnt, true);
-    const approx = new cv.Mat();
-    cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
-    const area = cv.contourArea(approx);
-    if (approx.rows === 4 && area > bestArea && area > minArea) {
-      if (best) best.delete();
-      best = approx.clone(); bestArea = area;
+  function renderPages() {
+    pageList.innerHTML = '';
+    captures.forEach((src, index) => {
+      const div = document.createElement('div');
+      div.className = 'page-thumb';
+      div.innerHTML = `<img src="${src}"><button class="del" onclick="deletePage(${index})">✕</button>`;
+      pageList.appendChild(div);
+    });
+    
+    if (captures.length > 0) {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = `<i data-lucide="send"></i> Submit Final Script (${captures.length} pages)`;
+    } else {
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = `<i data-lucide="send"></i> Submit Final Script`;
     }
-    approx.delete();
+    lucide.createIcons();
   }
 
-  let corners = null;
-  if (best) {
-    corners = [];
-    for (let i = 0; i < 4; i++) corners.push({ x: best.data32S[i * 2] / scale, y: best.data32S[i * 2 + 1] / scale });
-    best.delete();
+  function deletePage(index) {
+    captures.splice(index, 1);
+    renderPages();
   }
-  src.delete(); small.delete(); gray.delete(); edges.delete(); kernel.delete(); contours.delete(); hierarchy.delete();
-  if (!corners) return null;
 
-  corners = orderCorners(corners);
-  const srcFull = cv.imread(srcCanvas);
-  const srcQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [corners[0].x, corners[0].y, corners[1].x, corners[1].y, corners[2].x, corners[2].y, corners[3].x, corners[3].y]);
-  const dstQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, A4_W, 0, A4_W, A4_H, 0, A4_H]);
-  const M = cv.getPerspectiveTransform(srcQuad, dstQuad);
-  const warped = new cv.Mat();
-  cv.warpPerspective(srcFull, warped, M, new cv.Size(A4_W, A4_H));
-
-  const out = document.createElement('canvas');
-  out.width = A4_W; out.height = A4_H;
-  cv.imshow(out, warped);
-
-  srcFull.delete(); srcQuad.delete(); dstQuad.delete(); M.delete(); warped.delete();
-  return out;
-}
-
-function orderCorners(pts) {
-  const cx = pts.reduce((s, p) => s + p.x, 0) / 4;
-  const cy = pts.reduce((s, p) => s + p.y, 0) / 4;
-  pts.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
-  let minI = 0, minSum = Infinity;
-  for (let i = 0; i < 4; i++) { const s = pts[i].x + pts[i].y; if (s < minSum) { minSum = s; minI = i; } }
-  return [pts[minI], pts[(minI + 1) % 4], pts[(minI + 2) % 4], pts[(minI + 3) % 4]];
-}
-
-function fallbackA4(srcCanvas) {
-  const out = document.createElement('canvas');
-  out.width = A4_W; out.height = A4_H;
-  const ctx = out.getContext('2d');
-  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, A4_W, A4_H);
-  const sw = srcCanvas.width, sh = srcCanvas.height;
-  const scale = Math.min(A4_W / sw, A4_H / sh);
-  const dw = sw * scale, dh = sh * scale;
-  ctx.drawImage(srcCanvas, (A4_W - dw) / 2, (A4_H - dh) / 2, dw, dh);
-  return out;
-}
-
-function enhanceText(canvasEl) {
-  const W = canvasEl.width, H = canvasEl.height;
-  const ctx = canvasEl.getContext('2d');
-  const imgData = ctx.getImageData(0, 0, W, H);
-  const d = imgData.data;
-  const gray = new Uint8ClampedArray(W * H);
-  for (let i = 0, p = 0; i < d.length; i += 4, p++) gray[p] = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
-  
-  const IW = W + 1;
-  const integ = new Uint32Array(IW * (H + 1));
-  for (let y = 0; y < H; y++) {
-    let rowSum = 0;
-    for (let x = 0; x < W; x++) { rowSum += gray[y * W + x]; integ[(y + 1) * IW + (x + 1)] = integ[y * IW + (x + 1)] + rowSum; }
+  async function submitExam() {
+    if (!confirm("Are you sure you want to submit? You cannot undo this.")) return;
+    if (captures.length === 0) { alert("You must capture at least one page."); return; }
+    
+    document.getElementById('uploadOverlay').style.display = 'flex';
+    await new Promise(r => setTimeout(r, 2500)); // Simulate network
+    
+    document.getElementById('uploadOverlay').style.display = 'none';
+    sessionStorage.clear();
+    alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded.");
+    window.location.href = "student-dashboard.html";
   }
-  const block = 41, half = (block - 1) >> 1, C = 15;
-  const bin = new Uint8ClampedArray(W * H);
-  for (let y = 0; y < H; y++) {
-    const y0 = Math.max(0, y - half), y1 = Math.min(H - 1, y + half);
-    for (let x = 0; x < W; x++) {
-      const x0 = Math.max(0, x - half), x1 = Math.min(W - 1, x + half);
-      const area = (x1 - x0 + 1) * (y1 - y0 + 1);
-      const sum = integ[(y1 + 1) * IW + (x1 + 1)] - integ[y0 * IW + (x1 + 1)] - integ[(y1 + 1) * IW + x0] + integ[y0 * IW + x0];
-      bin[y * W + x] = gray[y * W + x] < (sum / area - C) ? 0 : 255;
-    }
-  }
-  for (let i = 0, p = 0; p < bin.length; i += 4, p++) {
-    d[i] = d[i + 1] = d[i + 2] = bin[p];
-    d[i + 3] = 255;
-  }
-  ctx.putImageData(imgData, 0, 0);
-}
 
-function stopCamera() {
-  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-  videoTrack = null; video.srcObject = null;
-  video.classList.remove('active'); placeholder.style.display = '';
-}
+  // Bind events
+  btnOpen.addEventListener('click', openCamera);
+  btnCapture.addEventListener('click', capture);
+  btnRetake.addEventListener('click', retake);
+  btnSave.addEventListener('click', savePage);
 
-function retake() {
-  if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
-  pendingBlob = null; preview.classList.remove('active');
-  btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
-  setStatus('Discarded. Reopen the camera to try again.');
-}
-
-function saveCurrentPage() {
-  if (!pendingBlob) return;
-  const q = questionPick.value;
-  const reader = new FileReader();
-  reader.onload = () => {
-    if (!captures[q]) captures[q] = [];
-    captures[q].push(reader.result);
-
-    if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
-    pendingBlob = null; preview.classList.remove('active');
-    btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
-
-    renderPagesStrip();
-    updateSubmitButton();
-    setStatus(`Page saved to Question ${q}.`, 'success');
-  };
-  reader.readAsDataURL(pendingBlob);
-}
-
-function renderPagesStrip() {
-  const q = questionPick.value;
-  const pages = captures[q] || [];
-  pagesTitle.textContent = pages.length ? `Pages saved for Question ${q} (${pages.length})` : `Pages saved for Question ${q} (0)`;
-  pagesList.innerHTML = '';
-  if (!pages.length) {
-    pagesList.innerHTML = '<div style="font-size:14px; color:#999; font-style:italic;">No pages captured yet.</div>';
-    return;
-  }
-  pages.forEach((src, i) => {
-    const wrap = document.createElement('div'); wrap.className = 'page-thumb';
-    const img = document.createElement('img'); img.src = src; wrap.appendChild(img);
-    const num = document.createElement('span'); num.className = 'num'; num.textContent = i + 1; wrap.appendChild(num);
-    const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕';
-    del.onclick = () => { captures[q].splice(i, 1); if (!captures[q].length) delete captures[q]; renderPagesStrip(); updateSubmitButton(); };
-    wrap.appendChild(del); pagesList.appendChild(wrap);
-  });
-}
-
-function updateSubmitButton() {
-  const total = Object.values(captures).reduce((s, arr) => s + (arr?.length || 0), 0);
-  btnSubmit.disabled = total === 0;
-  btnSubmit.innerText = total > 0 ? `🚀 Submit All Scripts (${total} pages) & Finish` : `🚀 Submit All Scripts & Finish`;
-}
-
-/* ================= SUBMIT LOGIC ================= */
-async function submitExam() {
-  if (!confirm("Are you sure you want to submit? Ensure all questions have been scanned. You cannot undo this.")) return;
-
-  document.getElementById('uploadOverlay').style.display = 'flex';
-  
-  // Simulate network delay for upload
-  await new Promise(r => setTimeout(r, 2500));
-  
-  // Hide overlay
-  document.getElementById('uploadOverlay').style.display = 'none';
-  
-  // Clear session and redirect
-  sessionStorage.clear();
-  alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded and sent to the AI Invigilator (DeepSeek, Gemini, ChatGPT, Claude) for moderation.");
-  window.location.href = "student-dashboard.html";
-}
-
-/* ================= INIT ================= */
-btnOpen.addEventListener('click', openCamera);
-btnCapture.addEventListener('click', capture);
-btnRetake.addEventListener('click', retake);
-btnAddPage.addEventListener('click', saveCurrentPage);
-questionPick.addEventListener('change', renderPagesStrip);
-
-window.addEventListener('beforeunload', stopCamera);
-renderPagesStrip();
+  lucide.createIcons();
 </script>
 </body>
 </html>
