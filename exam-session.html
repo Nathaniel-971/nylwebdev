@@ -34,6 +34,7 @@
   onAuthStateChanged(auth, (user) => {
       if (user && user.email === "n1nathaniel971@gmail.com") {
           document.getElementById('tabAdmin').style.display = 'flex';
+          console.log("[ADMIN] Admin logged in.");
       }
   });
 </script>
@@ -61,19 +62,14 @@
   .view { display: none; }
   .view.active { display: block; }
 
-  /* ==================== FORCE DESKTOP WARNING ==================== */
+  /* ==================== DESKTOP WARNING ==================== */
   #desktopWarning {
-      position: fixed; inset: 0; background: #111; color: white; z-index: 99999;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.95); color: white; z-index: 999999;
       display: none; justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px;
   }
   #desktopWarning h2 { font-size: 28px; color: var(--maroon); margin-bottom: 15px; }
-  #desktopWarning p { font-size: 18px; max-width: 600px; line-height: 1.6; }
+  #desktopWarning p { font-size: 16px; max-width: 500px; line-height: 1.6; margin-bottom: 30px; }
   
-  @media (max-width: 1024px) {
-      #desktopWarning { display: flex; }
-      body > *:not(#desktopWarning) { display: none !important; }
-  }
-
   /* ==================== A4 PAGE SETUP ==================== */
   .page { 
     width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; 
@@ -83,6 +79,15 @@
     transform-origin: top center;
   }
   
+  @media (max-width: 900px) {
+    .page { transform: scale(0.45); margin-bottom: -160mm; margin-top: -10mm; }
+    .tabs { max-width: 95%; }
+    .tab-btn { font-size: 12px; padding: 10px; gap: 4px; }
+  }
+  @media (max-width: 600px) {
+    .page { transform: scale(0.35); margin-bottom: -190mm; }
+  }
+
   .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
   .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.03; pointer-events: none; z-index: 0; }
   .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 35mm; }
@@ -259,7 +264,7 @@
   /* ==================== ADMIN DASHBOARD ==================== */
   .admin-container { max-width: 1100px; margin: 20px auto; padding: 20px; }
   .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .btn-refresh { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; color: var(--black); display: flex; align-items: center; gap: 6px; width: auto; }
+  .btn-refresh { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; color: var(--black); display: flex; align-items: center; gap: 6px; width: auto; min-width: unset; flex: none; }
   .btn-refresh:hover { border-color: var(--black); background: #FAFAFA; }
   
   .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'Inter', sans-serif; }
@@ -302,8 +307,10 @@
 
 <!-- DESKTOP WARNING -->
 <div id="desktopWarning">
-    <h2>Desktop Required</h2>
-    <p>This examination portal requires a larger screen for optimal security and functionality. Please switch to a desktop computer, or enable "Desktop Site" in your mobile browser settings.</p>
+    <i data-lucide="monitor" style="width: 64px; height: 64px; color: var(--maroon); margin-bottom: 20px;"></i>
+    <h2>Desktop Mode Recommended</h2>
+    <p>This examination portal is optimized for desktop. For the best experience, please enable <strong>Desktop Site</strong> in your browser settings. You may still proceed on mobile, but some features might be restricted.</p>
+    <button class="action btn-primary" style="max-width: 200px;" onclick="document.getElementById('desktopWarning').style.display='none'">Proceed Anyway</button>
 </div>
 
 <!-- TAB SWITCH WARNING -->
@@ -1014,7 +1021,6 @@
   }
 
   /* ================= TIMER (PERSISTENT) ================= */
-  // Admin sets time (in minutes). For this demo, 120 minutes.
   const EXAM_DURATION_MINS = 120; 
   let startTime = sessionStorage.getItem('examStartTime');
   if (!startTime) {
@@ -1055,7 +1061,6 @@
       console.log("[SECURITY] Tab/App switch detected at", timestamp);
       document.getElementById('tabWarning').style.display = 'flex';
       
-      // Log to Firebase
       try {
           if (window.db) {
               const docRef = doc(window.db, "examLogs", studentId);
@@ -1092,7 +1097,7 @@
     } else if (tab === 'admin') {
       document.getElementById('viewAdmin').classList.add('active');
       document.getElementById('tabAdmin').classList.add('active');
-      loadAdminData(); // Auto-load when opening admin tab
+      loadAdminData();
     }
     
     if (tab !== 'scanner') stopCamera();
@@ -1347,6 +1352,11 @@
         console.log("[SESSION] Resumed. Last upload was at", lastTime);
     }
 
+    // Show desktop warning on mobile devices
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        document.getElementById('desktopWarning').style.display = 'flex';
+    }
+
     // Ensure Admin appears on list by logging session on load
     if (window.auth.currentUser && window.auth.currentUser.email === "n1nathaniel971@gmail.com") {
         if (window.db) {
@@ -1445,7 +1455,6 @@
       video.classList.add('active');
       framingGuide.classList.add('visible');
 
-      // Check for Flashlight support
       const capabilities = videoTrack.getCapabilities();
       if (capabilities.torch) {
           btnFlash.style.display = 'flex';
@@ -1492,12 +1501,11 @@
     btnCapture.disabled = true;
     setStatus('Capturing…');
     
-    // Play sound and animation
     playBeep();
     scannerLine.classList.add('active');
     fireScreenFlash();
     
-    await sleep(1500); // Wait for snow animation
+    await sleep(1500); 
 
     canvas.width = w; canvas.height = h;
     canvas.getContext('2d').drawImage(video, 0, 0, w, h);
@@ -1524,7 +1532,6 @@
       video.classList.remove('active');
       framingGuide.classList.remove('visible');
       
-      // Reset rotation on new capture
       rotationAngle = 0;
       preview.style.transform = `rotate(0deg)`;
 
@@ -1683,14 +1690,12 @@
     if (!pendingBlob) return;
     const q = questionPick.value;
     
-    // We need to apply rotation physically to the canvas before saving
     const img = new Image();
     const url = URL.createObjectURL(pendingBlob);
     img.onload = () => {
         const c = document.createElement('canvas');
         const ctx = c.getContext('2d');
         
-        // Handle rotation dimensions
         if (rotationAngle === 90 || rotationAngle === 270) {
             c.width = img.height;
             c.height = img.width;
@@ -1707,7 +1712,6 @@
         
         captures.push({ q: q, src: rotatedDataUrl });
 
-        // Set Timestamp
         const timestamp = new Date().toLocaleTimeString();
         sessionStorage.setItem('lastUploadTimestamp', timestamp);
         console.log(`[SCANNER] Script for Q${q} saved. Timestamp: ${timestamp}`);
@@ -1736,14 +1740,12 @@
       return;
     }
     
-    // Group by question number for display
     const grouped = {};
     captures.forEach((c, index) => {
         if (!grouped[c.q]) grouped[c.q] = [];
         grouped[c.q].push({ index: index, src: c.src });
     });
 
-    // Render
     Object.keys(grouped).sort().forEach(qNum => {
         grouped[qNum].forEach((item, idx) => {
             const wrap = document.createElement('div'); 
@@ -1775,7 +1777,6 @@
   }
 
   function syncAnswerBook() {
-      // Clear all images first
       for (let i = 3; i <= 25; i++) {
           const img = document.getElementById(`img-page-${i}`);
           if (img) {
@@ -1783,9 +1784,8 @@
               img.style.display = 'none';
           }
       }
-      // Fill based on captures array
       captures.forEach((cap, idx) => {
-          const pageNum = idx + 3; // Starts at page 3
+          const pageNum = idx + 3;
           if (pageNum <= 25) {
               const img = document.getElementById(`img-page-${pageNum}`);
               if (img) {
@@ -1809,7 +1809,6 @@
     document.getElementById('uploadOverlay').style.display = 'flex';
     console.log("[SUBMIT] Uploading scripts...");
     
-    // Save to Firebase
     try {
         if (window.db) {
             const docRef = doc(window.db, "examLogs", studentId);
@@ -1819,7 +1818,7 @@
                 seqNum: seqNum,
                 status: "Submitted",
                 submittedAt: serverTimestamp(),
-                scripts: captures // Storing base64 images for demo (normally use Storage)
+                scripts: captures
             }, { merge: true });
             console.log("[FIREBASE] Script submitted successfully.");
         }
@@ -1849,7 +1848,7 @@
           if (!window.db) throw new Error("Firebase not initialized");
           
           const querySnapshot = await getDocs(collection(window.db, "examLogs"));
-          tbody.innerHTML = ''; // Clear loading
+          tbody.innerHTML = ''; 
           
           if (querySnapshot.empty) {
               tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No active exam sessions found.</td></tr>';
@@ -1883,7 +1882,6 @@
               `;
               tbody.appendChild(tr);
               
-              // Generate Barcode
               setTimeout(() => {
                   try {
                       JsBarcode(`#${barcodeId}`, `${data.studentId}-${data.scriptId}`, { format: "CODE128", width: 1.5, height: 30, displayValue: false });
