@@ -31,14 +31,9 @@
   window.auth = auth;
   window.firebaseSignOut = signOut;
   
-  // Verify Authentication on Load
   onAuthStateChanged(auth, (user) => {
-      if (!user) {
-          window.location.href = "exam-gateway.html";
-      } else {
-          if (user.email === "n1nathaniel971@gmail.com") {
-              document.getElementById('tabAdmin').style.display = 'flex';
-          }
+      if (user && user.email === "n1nathaniel971@gmail.com") {
+          document.getElementById('tabAdmin').style.display = 'flex';
       }
   });
 </script>
@@ -2190,7 +2185,7 @@
           
       } catch(e) {
           console.error("[ADMIN] Error loading data:", e);
-          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color: red;">Error loading data. Check console.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color: red; font-weight:bold;">Database Error: ${e.message}</td></tr>`;
       }
   }
 
