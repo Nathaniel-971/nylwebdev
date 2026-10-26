@@ -41,7 +41,7 @@
   .view { display: none; }
   .view.active { display: block; }
 
-  /* ==================== A4 PAGE SETUP (STRICT & RESPONSIVE) ==================== */
+  /* ==================== A4 PAGE SETUP ==================== */
   .page { 
     width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; 
     position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
@@ -50,13 +50,8 @@
     transform-origin: top center;
   }
   
-  /* Mobile Scaling to keep same view */
   @media (max-width: 900px) {
-    .page { 
-      transform: scale(0.45); 
-      margin-bottom: -160mm; 
-      margin-top: -10mm;
-    }
+    .page { transform: scale(0.45); margin-bottom: -160mm; margin-top: -10mm; }
     .tabs { max-width: 95%; }
     .tab-btn { font-size: 12px; padding: 10px; gap: 4px; }
   }
@@ -169,18 +164,30 @@
   .writing-area { 
     flex: 1; border-right: 1.5px solid #000; background-color: #FFF; 
     display: flex; align-items: center; justify-content: center; padding: 10px;
-    /* REMOVED LINES AS REQUESTED */
   }
   .writing-area img { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
   .marks-area { width: 70px; display: flex; flex-direction: column; align-items: center; padding-top: 10px; background-color: #FFF5F6; }
   .marks-area .marks-title { font-size: 10pt; font-weight: bold; font-style: italic; border-bottom: 1.5px solid #000; width: 100%; text-align: center; padding-bottom: 5px; margin-bottom: 10px; color: #7A1F2B; }
 
-  /* ==================== SCANNER UI ==================== */
-  .scanner-header { text-align: center; margin-bottom: 20px; }
+  /* ==================== SCANNER UI ENCLOSURE ==================== */
+  .scanner-ui {
+    max-width: 600px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid var(--silver);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .scanner-header { text-align: center; margin-bottom: 10px; }
   .scanner-header h2 { font-size: 22px; font-weight: 900; color: var(--maroon); margin-bottom: 5px; }
-  .scanner-header p { font-size: 14px; color: var(--gray); margin-bottom: 20px; }
+  .scanner-header p { font-size: 14px; color: var(--gray); margin-bottom: 10px; }
   
-  .stage { position: relative; width: 100%; max-width: 600px; margin: 0 auto; aspect-ratio: 3/4; background: #f3f4f6; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #1a1a1a; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
   video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
   video.active, canvas.active, img.preview.active { display:block; }
   .placeholder { color:#9ca3af; text-align:center; padding:1rem; font-size:.95rem; }
@@ -191,20 +198,30 @@
   .framing-guide .tr { top:0; right:0; border-left:none; border-bottom:none; border-radius:0 8px 0 0; }
   .framing-guide .bl { bottom:0; left:0; border-right:none; border-top:none; border-radius:0 0 0 8px; }
   .framing-guide .br { bottom:0; right:0; border-left:none; border-top:none; border-radius:0 0 8px 0; }
+  
+  /* SNOW SCANNING ANIMATION */
+  .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: #ff4444; box-shadow: 0 0 15px 5px rgba(255,68,68,0.5); z-index: 9; display: none; }
+  .scanner-line.active { display: block; animation: scanMove 1.5s linear infinite; }
+  @keyframes scanMove {
+    0% { top: 0; opacity: 1; }
+    50% { top: 100%; opacity: 1; }
+    100% { top: 0; opacity: 1; }
+  }
+
   .flash-overlay { position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:8; transition:opacity .28s ease-out; }
   .flash-overlay.fire { opacity:1; transition:none; }
   
-  .q-selector { margin: 15px auto 0; display:flex; align-items:center; gap:10px; max-width: 600px;}
+  .q-selector { display:flex; align-items:center; gap:10px; }
   .q-selector select { flex:1; padding: 15px; border: 2px solid var(--silver); border-radius: 8px; font-size: 16px; font-weight: 700; outline: none; }
   
-  .pages-strip { margin: 15px auto 0; background: white; padding: 15px; border-radius: 8px; border: 1px solid var(--silver); max-width: 600px;}
-  .pages-list { display:flex; gap:10px; flex-wrap:wrap; }
-  .page-thumb { position:relative; width:70px; background:#fafafa; border:1px solid var(--silver); border-radius:6px; padding:4px; display:flex; flex-direction:column; align-items:center; }
-  .page-thumb img { width:100%; border-radius:3px; display:block; }
-  .page-thumb .num { position:absolute; bottom:2px; right:2px; background:var(--maroon); color:#fff; font-size:.65rem; font-weight:700; padding:1px 5px; border-radius:6px; }
-  .page-thumb .del { position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#fff; border:1px solid var(--maroon); color:var(--maroon); cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; }
+  .pages-strip { background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid var(--silver); }
+  .pages-list { display:flex; gap:12px; flex-wrap:wrap; }
+  .page-thumb { position:relative; width:80px; background:#fff; border:1px solid var(--silver); border-radius:6px; padding:6px; display:flex; flex-direction:column; align-items:center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+  .page-thumb img { width:100%; border-radius:3px; display:block; margin-bottom: 4px; }
+  .page-thumb .label { font-size: 0.65rem; font-weight: 800; color: var(--maroon); text-align: center; line-height: 1.1; }
+  .page-thumb .del { position:absolute; top:-8px; right:-8px; width:24px; height:24px; border-radius:50%; background:#fff; border:1px solid var(--maroon); color:var(--maroon); cursor:pointer; font-size:.8rem; display:flex; align-items:center; justify-content:center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
   
-  .controls { display:flex; gap:10px; margin: 15px auto 0; flex-wrap:wrap; max-width: 600px;}
+  .controls { display:flex; gap:10px; flex-wrap:wrap; }
   .action { padding:15px 20px; font-size:15px; font-weight:700; border:none; border-radius:8px; cursor:pointer; transition:0.15s; flex:1; min-width:130px; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 8px;}
   .btn-primary { background:var(--maroon); color:#fff; }
   .btn-primary:hover { background:#5A1620; }
@@ -212,7 +229,7 @@
   .btn-success { background:#15803d; color:#fff; }
   .action:disabled { opacity:.4; cursor:not-allowed; }
   
-  .status { margin-top:15px; font-size:14px; text-align:center; min-height:1.4em; color:var(--gray); font-weight: 600; }
+  .status { font-size:14px; text-align:center; min-height:1.4em; color:var(--gray); font-weight: 600; padding: 10px; background: #F8FAFC; border-radius: 8px; border: 1px solid var(--silver);}
 
   /* OVERLAYS */
   #tabWarning { position:fixed; inset:0; background:rgba(0,0,0,0.9); color:white; z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:20px; }
@@ -809,49 +826,52 @@
 
 <!-- ==================== VIEW 3: SCANNER ==================== -->
 <div class="view" id="viewScanner">
-  <div class="scanner-header">
-    <h2>Scan Your Physical Answers</h2>
-    <p>Select the question you are uploading for, then capture the page.</p>
-  </div>
-
-  <div class="stage">
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
-    <img id="preview" class="preview" alt="Scanned page">
-    <div class="placeholder" id="placeholder">Tap “Open Camera” to start scanning.</div>
-    <div class="framing-guide" id="framingGuide">
-      <div class="corner tl"></div><div class="corner tr"></div>
-      <div class="corner bl"></div><div class="corner br"></div>
+  <div class="scanner-ui">
+    <div class="scanner-header">
+      <h2>Scan Your Physical Answers</h2>
+      <p>Select the question you are uploading for, then capture the page.</p>
     </div>
-    <div class="flash-overlay" id="flashOverlay"></div>
-  </div>
 
-  <div class="q-selector">
-    <select id="questionPick">
-      <option value="1">Question 1 (All sub-questions)</option>
-      <option value="2">Question 2 (All sub-questions)</option>
-    </select>
-  </div>
+    <div class="stage">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas"></canvas>
+      <img id="preview" class="preview" alt="Scanned page">
+      <div class="placeholder" id="placeholder">Tap “Open Camera” to start scanning.</div>
+      <div class="framing-guide" id="framingGuide">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+      </div>
+      <div class="scanner-line" id="scannerLine"></div>
+      <div class="flash-overlay" id="flashOverlay"></div>
+    </div>
 
-  <div class="pages-strip">
-    <h4 id="pagesTitle" style="font-size: 14px; color: var(--maroon); margin-bottom: 8px; font-weight: 800;">Pages for this question</h4>
-    <div class="pages-list" id="pagesList"></div>
-  </div>
+    <div class="q-selector">
+      <select id="questionPick">
+        <option value="1">Question 1 (All sub-questions)</option>
+        <option value="2">Question 2 (All sub-questions)</option>
+      </select>
+    </div>
 
-  <div class="controls">
-    <button class="action btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
-    <button class="action btn-secondary" id="btnFlash" style="display: none;"><i data-lucide="flashlight"></i> Flashlight</button>
-    <button class="action btn-secondary" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture</button>
-    <button class="action btn-secondary" id="btnRetake" disabled><i data-lucide="rotate-ccw"></i> Retake</button>
-    <button class="action btn-secondary" id="btnAddPage" disabled><i data-lucide="save"></i> Save Page</button>
-  </div>
+    <div class="pages-strip">
+      <h4 id="pagesTitle" style="font-size: 14px; color: var(--maroon); margin-bottom: 8px; font-weight: 800;">Scanned Pages</h4>
+      <div class="pages-list" id="pagesList"></div>
+    </div>
 
-  <div class="status" id="status"></div>
+    <div class="controls">
+      <button class="action btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
+      <button class="action btn-secondary" id="btnFlash" style="display: none;"><i data-lucide="flashlight"></i> Flashlight</button>
+      <button class="action btn-secondary" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture</button>
+      <button class="action btn-secondary" id="btnRetake" disabled><i data-lucide="rotate-ccw"></i> Retake</button>
+      <button class="action btn-secondary" id="btnAddPage" disabled><i data-lucide="save"></i> Save Page</button>
+    </div>
 
-  <div style="margin-top: 30px; border-top: 1px solid var(--silver); padding-top: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
-    <button class="action btn-success" id="btnSubmit" style="width: 100%; padding: 20px; font-size: 18px;" disabled onclick="submitExam()">
-      <i data-lucide="send"></i> Submit All Scripts & Finish
-    </button>
+    <div class="status" id="status">Ready to scan.</div>
+
+    <div style="margin-top: 10px; border-top: 1px solid var(--silver); padding-top: 20px;">
+      <button class="action btn-success" id="btnSubmit" style="width: 100%; padding: 20px; font-size: 18px;" disabled onclick="submitExam()">
+        <i data-lucide="send"></i> Submit All Scripts & Finish
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1151,11 +1171,17 @@
     makeQRCodes();
     drawPaperDiagrams();
     lucide.createIcons();
+    
+    // Check for reload
+    const lastTime = sessionStorage.getItem('lastUploadTimestamp');
+    if (lastTime) {
+        setStatus(`Session resumed. Last upload at ${lastTime}.`, 'success');
+    }
   });
 
   /* ================= SCANNER LOGIC ================= */
   const A4_W = 1240, A4_H = 1754;
-  const captures = {}; 
+  let captures = []; // Flattened array of { q: "1", src: "data..." }
   let stream = null, videoTrack = null, pendingBlob = null;
   let cvReady = false;
   let flashOn = false;
@@ -1169,7 +1195,7 @@
   const flashOverlay = document.getElementById('flashOverlay');
   const questionPick = document.getElementById('questionPick');
   const pagesList = document.getElementById('pagesList');
-  const pagesTitle = document.getElementById('pagesTitle');
+  const scannerLine = document.getElementById('scannerLine');
 
   const btnOpen = document.getElementById('btnOpen');
   const btnFlash = document.getElementById('btnFlash');
@@ -1197,6 +1223,24 @@
   waitCv();
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  // Web Audio API for Beep
+  function playBeep() {
+      try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gainNode = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
+          osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1);
+          gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+          osc.connect(gainNode);
+          gainNode.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.1);
+      } catch(e) { console.warn("Audio error", e); }
+  }
 
   async function openCamera() {
     setStatus('Requesting camera permission…');
@@ -1251,12 +1295,18 @@
 
     btnCapture.disabled = true;
     setStatus('Capturing…');
+    
+    // Play sound and animation
+    playBeep();
+    scannerLine.classList.add('active');
     fireScreenFlash();
-    await sleep(150);
+    
+    await sleep(1500); // Wait for snow animation
 
     canvas.width = w; canvas.height = h;
     canvas.getContext('2d').drawImage(video, 0, 0, w, h);
     stopCamera();
+    scannerLine.classList.remove('active');
 
     setStatus('Processing page…');
     let a4Canvas = null, detected = false;
@@ -1412,6 +1462,7 @@
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
     videoTrack = null; video.srcObject = null;
     video.classList.remove('active'); placeholder.style.display = '';
+    scannerLine.classList.remove('active');
     flashOn = false;
     btnFlash.style.background = '#fff';
     btnFlash.style.color = 'var(--maroon)';
@@ -1429,26 +1480,18 @@
     const q = questionPick.value;
     const reader = new FileReader();
     reader.onload = () => {
-      if (!captures[q]) captures[q] = [];
-      captures[q].push(reader.result);
+      captures.push({ q: q, src: reader.result });
 
-      // Inject into Answer Book
-      const totalPages = Object.values(captures).reduce((s, arr) => s + arr.length, 0);
-      const answerPageId = `img-page-${totalPages + 2}`; // offset by 2 (cover + instructions)
-      const ansImg = document.getElementById(answerPageId);
-      
-      if (ansImg) {
-          ansImg.src = reader.result;
-          ansImg.style.display = 'block';
-      } else {
-          alert("Warning: You have exceeded the 23 physical answer book pages. Please request a new book.");
-      }
+      // Set Timestamp
+      const timestamp = new Date().toLocaleTimeString();
+      sessionStorage.setItem('lastUploadTimestamp', timestamp);
 
       if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
       pendingBlob = null; preview.classList.remove('active');
       btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
 
       renderPagesStrip();
+      syncAnswerBook();
       updateSubmitButton();
       setStatus(`Page saved to Question ${q} and transferred to Answer Book.`, 'success');
     };
@@ -1456,31 +1499,73 @@
   }
 
   function renderPagesStrip() {
-    const q = questionPick.value;
-    const pages = captures[q] || [];
-    pagesTitle.textContent = pages.length ? `Pages saved for Question ${q} (${pages.length})` : `Pages saved for Question ${q} (0)`;
     pagesList.innerHTML = '';
-    if (!pages.length) {
+    if (!captures.length) {
       pagesList.innerHTML = '<div style="font-size:14px; color:#999; font-style:italic;">No pages captured yet.</div>';
       return;
     }
-    pages.forEach((src, i) => {
-      const wrap = document.createElement('div'); wrap.className = 'page-thumb';
-      const img = document.createElement('img'); img.src = src; wrap.appendChild(img);
-      const num = document.createElement('span'); num.className = 'num'; num.textContent = i + 1; wrap.appendChild(num);
-      const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕';
-      del.onclick = () => { 
-          captures[q].splice(i, 1); 
-          if (!captures[q].length) delete captures[q]; 
-          renderPagesStrip(); 
-          updateSubmitButton(); 
-      };
-      wrap.appendChild(del); pagesList.appendChild(wrap);
+    
+    // Group by question number for display
+    const grouped = {};
+    captures.forEach((c, index) => {
+        if (!grouped[c.q]) grouped[c.q] = [];
+        grouped[c.q].push({ index: index, src: c.src });
+    });
+
+    // Render
+    Object.keys(grouped).sort().forEach(qNum => {
+        grouped[qNum].forEach((item, idx) => {
+            const wrap = document.createElement('div'); 
+            wrap.className = 'page-thumb';
+            
+            const img = document.createElement('img'); 
+            img.src = item.src; 
+            wrap.appendChild(img);
+
+            const label = document.createElement('div');
+            label.className = 'label';
+            label.innerText = `Q${qNum} · Page ${idx + 1}`;
+            wrap.appendChild(label);
+
+            const del = document.createElement('button'); 
+            del.className = 'del'; 
+            del.innerHTML = '✕';
+            del.onclick = () => { 
+                captures.splice(item.index, 1); 
+                renderPagesStrip(); 
+                syncAnswerBook(); 
+                updateSubmitButton(); 
+            };
+            wrap.appendChild(del); 
+            pagesList.appendChild(wrap);
+        });
     });
   }
 
+  function syncAnswerBook() {
+      // Clear all images first
+      for (let i = 3; i <= 25; i++) {
+          const img = document.getElementById(`img-page-${i}`);
+          if (img) {
+              img.src = '';
+              img.style.display = 'none';
+          }
+      }
+      // Fill based on captures array
+      captures.forEach((cap, idx) => {
+          const pageNum = idx + 3; // Starts at page 3
+          if (pageNum <= 25) {
+              const img = document.getElementById(`img-page-${pageNum}`);
+              if (img) {
+                  img.src = cap.src;
+                  img.style.display = 'block';
+              }
+          }
+      });
+  }
+
   function updateSubmitButton() {
-    const total = Object.values(captures).reduce((s, arr) => s + (arr?.length || 0), 0);
+    const total = captures.length;
     btnSubmit.disabled = total === 0;
     btnSubmit.innerHTML = total > 0 ? `<i data-lucide="send"></i> Submit All Scripts (${total} pages) & Finish` : `<i data-lucide="send"></i> Submit All Scripts & Finish`;
     lucide.createIcons();
@@ -1493,6 +1578,7 @@
     await new Promise(r => setTimeout(r, 2500));
     document.getElementById('uploadOverlay').style.display = 'none';
     
+    sessionStorage.removeItem('lastUploadTimestamp');
     sessionStorage.clear();
     alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded and sent to the AI Invigilator for moderation.");
     window.location.href = "student-dashboard.html";
@@ -1504,10 +1590,10 @@
   btnCapture.addEventListener('click', capture);
   btnRetake.addEventListener('click', retake);
   btnAddPage.addEventListener('click', saveCurrentPage);
-  questionPick.addEventListener('change', renderPagesStrip);
   window.addEventListener('beforeunload', stopCamera);
   
   renderPagesStrip();
+  updateSubmitButton();
   lucide.createIcons();
 </script>
 </body>
