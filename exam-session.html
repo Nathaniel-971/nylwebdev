@@ -17,6 +17,15 @@
 <script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  
+  const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window.db = db; // Make available globally for the script below
+</script>
 
 <style>
   /* ==================== BASE & TABS ==================== */
@@ -31,7 +40,7 @@
   body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: var(--black); padding-bottom: 50px; }
   
   .exam-header { background: #111; color: white; padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
-  .exam-header h1 { font-size: 16px; font-weight: 800; color: #fff; margin: 0; }
+  .exam-header h1 { font-size: 16px; font-weight: 800; color: #fff; margin: 0; cursor: pointer; }
   .timer { background: var(--maroon); color: white; padding: 8px 16px; border-radius: 8px; font-family: monospace; font-size: 18px; font-weight: bold; }
   
   .tabs { display: flex; max-width: 800px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
@@ -227,9 +236,24 @@
   .btn-primary:hover { background:#5A1620; }
   .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
   .btn-success { background:#15803d; color:#fff; }
+  .btn-warning { background:#f59e0b; color:#fff; }
   .action:disabled { opacity:.4; cursor:not-allowed; }
   
   .status { font-size:14px; text-align:center; min-height:1.4em; color:var(--gray); font-weight: 600; padding: 10px; background: #F8FAFC; border-radius: 8px; border: 1px solid var(--silver);}
+
+  /* ==================== ADMIN DASHBOARD ==================== */
+  .admin-container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+  .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .admin-table th, .admin-table td { border: 1px solid var(--silver); padding: 12px; text-align: left; font-size: 14px; }
+  .admin-table th { background: var(--maroon); color: white; font-weight: bold; }
+  .admin-table tr:nth-child(even) { background: #F8FAFC; }
+  .admin-barcode svg { height: 40px; width: 150px; }
+  
+  .admin-script-viewer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; overflow-y: auto; padding: 20px; }
+  .admin-script-viewer.active { display: block; }
+  .admin-viewer-header { max-width: 210mm; margin: 0 auto 10px auto; display: flex; justify-content: space-between; color: white; align-items: center; }
+  .btn-close-viewer { background: red; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  .btn-print-viewer { background: var(--maroon); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
   /* OVERLAYS */
   #tabWarning { position:fixed; inset:0; background:rgba(0,0,0,0.9); color:white; z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:20px; }
@@ -240,8 +264,11 @@
   /* ==================== PRINT STYLES ==================== */
   @media print { 
     body { background: white; padding: 0; } 
-    .exam-header, .tabs, #tabWarning, #uploadOverlay, .view:not(.active) { display: none !important; }
+    .exam-header, .tabs, #tabWarning, #uploadOverlay, .view:not(.active), .admin-viewer-header { display: none !important; }
     .view.active { display: block !important; padding: 0; margin: 0; }
+    .admin-script-viewer { position: static; background: none; padding: 0; display: block !important; }
+    .admin-script-viewer .page { margin: 0; box-shadow: none; page-break-after: always; transform: none !important; } 
+    .admin-script-viewer:not(.active) { display: none !important; }
     .page { margin: 0; box-shadow: none; page-break-after: always; transform: none !important; } 
     .control-bar { display: none !important; }
   }
@@ -264,7 +291,7 @@
 </div>
 
 <header class="exam-header">
-  <h1>IFB Examination Portal</h1>
+  <h1 id="headerTitle">IFB Examination Portal</h1>
   <div class="timer" id="examTimer">02:00:00</div>
 </header>
 
@@ -835,7 +862,7 @@
     <div class="stage">
       <video id="video" autoplay playsinline muted></video>
       <canvas id="canvas"></canvas>
-      <img id="preview" class="preview" alt="Scanned page">
+      <img id="preview" class="preview" alt="Scanned script">
       <div class="placeholder" id="placeholder">Tap “Open Camera” to start scanning.</div>
       <div class="framing-guide" id="framingGuide">
         <div class="corner tl"></div><div class="corner tr"></div>
@@ -858,7 +885,7 @@
     </div>
 
     <div class="pages-strip">
-      <h4 id="pagesTitle" style="font-size: 14px; color: var(--maroon); margin-bottom: 8px; font-weight: 800;">Scanned Pages</h4>
+      <h4 id="pagesTitle" style="font-size: 14px; color: var(--maroon); margin-bottom: 8px; font-weight: 800;">Scanned Scripts</h4>
       <div class="pages-list" id="pagesList"></div>
     </div>
 
@@ -866,8 +893,9 @@
       <button class="action btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
       <button class="action btn-secondary" id="btnFlash" style="display: none;"><i data-lucide="flashlight"></i> Flashlight</button>
       <button class="action btn-secondary" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture</button>
+      <button class="action btn-secondary" id="btnRotate" disabled><i data-lucide="rotate-cw"></i> Rotate</button>
       <button class="action btn-secondary" id="btnRetake" disabled><i data-lucide="rotate-ccw"></i> Retake</button>
-      <button class="action btn-secondary" id="btnAddPage" disabled><i data-lucide="save"></i> Save Page</button>
+      <button class="action btn-secondary" id="btnAddPage" disabled><i data-lucide="save"></i> Save Script</button>
     </div>
 
     <div class="status" id="status">Ready to scan.</div>
@@ -880,8 +908,48 @@
   </div>
 </div>
 
+<!-- ==================== ADMIN VIEW (SIMULATED) ==================== -->
+<div class="view" id="viewAdmin">
+  <div class="admin-container">
+    <h1 style="font-size: 28px; font-weight: 900; color: var(--maroon); margin-bottom: 10px;">Admin Invigilator Dashboard</h1>
+    <p style="color: var(--gray); margin-bottom: 20px;">Monitor active sessions and view uploaded scripts.</p>
+    
+    <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Script ID</th>
+            <th>Seq</th>
+            <th>Barcode (Scan to View)</th>
+            <th>Tab Switches</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody">
+          <!-- Populated via JS/Firebase -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN A4 VIEWER MODAL -->
+<div class="admin-script-viewer" id="adminScriptViewer">
+  <div class="admin-viewer-header">
+    <h3 style="margin: 0; font-weight: 900;" id="viewerTitle">Student Script</h3>
+    <div>
+      <button class="btn-print-viewer" onclick="window.print()">Download / Print A4</button>
+      <button class="btn-close-viewer" onclick="closeAdminViewer()">Close</button>
+    </div>
+  </div>
+  <div id="adminA4Container">
+    <!-- A4 Pages injected here -->
+  </div>
+</div>
+
 <script>
-  /* ================= CONFIG ================= */
+  /* ================= CONFIG & STATE ================= */
   const studentName = sessionStorage.getItem('examStudentName') || 'Student';
   const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
   const secCode = sessionStorage.getItem('examSecurityCode') || 'ABCDEF';
@@ -907,30 +975,70 @@
       scriptLabel.innerText = `${studentId}—${scriptId}`;
   }
 
-  // Timer (2 hours)
-  let timeLeft = 2 * 60 * 60; 
+  /* ================= TIMER (PERSISTENT) ================= */
+  // Admin sets time (in minutes). For this demo, 120 minutes.
+  const EXAM_DURATION_MINS = 120; 
+  let startTime = sessionStorage.getItem('examStartTime');
+  if (!startTime) {
+      startTime = Date.now();
+      sessionStorage.setItem('examStartTime', startTime);
+      console.log("[TIMER] Started new session at", new Date(startTime).toLocaleTimeString());
+  } else {
+      console.log("[TIMER] Resumed session. Started at", new Date(parseInt(startTime)).toLocaleTimeString());
+  }
+
   setInterval(() => {
-    if (timeLeft <= 0) {
-      alert("Time is up! Submitting your scanned pages automatically...");
-      submitExam();
+    const now = Date.now();
+    const elapsed = now - parseInt(startTime);
+    const totalDuration = EXAM_DURATION_MINS * 60 * 1000;
+    const remaining = totalDuration - elapsed;
+
+    if (remaining <= 0) {
+      if (!window.hasAutoSubmitted) {
+          window.hasAutoSubmitted = true;
+          console.log("[TIMER] Time is up! Auto-submitting.");
+          alert("Time is up! Submitting your scanned scripts automatically...");
+          submitExam();
+      }
+      document.getElementById('examTimer').innerText = "00:00:00";
       return;
     }
-    timeLeft--;
-    const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
-    const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
-    const s = (timeLeft % 60).toString().padStart(2, '0');
+
+    const h = Math.floor(remaining / (1000 * 60 * 60)).toString().padStart(2, '0');
+    const m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+    const s = Math.floor((remaining % (1000 * 60)) / 1000).toString().padStart(2, '0');
     document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
   }, 1000);
 
-  // Tab Switch Detection
-  document.addEventListener("visibilitychange", () => {
+  /* ================= TAB SWITCH DETECTION & FIREBASE LOGGING ================= */
+  document.addEventListener("visibilitychange", async () => {
     if (document.hidden) {
+      const timestamp = new Date().toISOString();
+      console.log("[SECURITY] Tab/App switch detected at", timestamp);
       document.getElementById('tabWarning').style.display = 'flex';
+      
+      // Log to Firebase
+      try {
+          if (window.db) {
+              const docRef = doc(window.db, "examLogs", studentId);
+              await setDoc(docRef, {
+                  studentId: studentId,
+                  scriptId: scriptId,
+                  seqNum: seqNum,
+                  tabSwitches: arrayUnion(timestamp),
+                  lastActive: serverTimestamp()
+              }, { merge: true });
+              console.log("[FIREBASE] Tab switch logged successfully.");
+          }
+      } catch(e) {
+          console.warn("[FIREBASE] Failed to log tab switch:", e);
+      }
     }
   });
 
   /* ================= UI NAVIGATION ================= */
   function switchTab(tab) {
+    console.log(`[NAV] Switching to tab: ${tab}`);
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     
@@ -940,13 +1048,29 @@
     } else if (tab === 'answer') {
       document.getElementById('viewAnswerBook').classList.add('active');
       document.getElementById('tabAnswer').classList.add('active');
-    } else {
+    } else if (tab === 'scanner') {
       document.getElementById('viewScanner').classList.add('active');
       document.getElementById('tabScanner').classList.add('active');
+    } else if (tab === 'admin') {
+      document.getElementById('viewAdmin').classList.add('active');
+      document.getElementById('headerTitle').innerText = "Admin Dashboard";
+      loadAdminData();
     }
-    // Stop camera if switching away
+    
     if (tab !== 'scanner') stopCamera();
   }
+
+  // Secret Admin Toggle (Click the header title 3 times fast)
+  let clickCount = 0;
+  document.getElementById('headerTitle').addEventListener('click', () => {
+      clickCount++;
+      setTimeout(() => { clickCount = 0; }, 1000);
+      if (clickCount === 3) {
+          console.log("[ADMIN] Admin mode activated.");
+          document.getElementById('headerTitle').innerText = "Admin Mode";
+          switchTab('admin');
+      }
+  });
 
   /* ================= INITIALIZATION LOGIC ================= */
   
@@ -970,7 +1094,7 @@
           <div class="answer-page">
             <div class="left-margin"></div>
             <div class="writing-area" id="ans-page-${i}">
-               <img class="scanned-image" id="img-page-${i}" alt="Scanned Answer Page ${i}">
+               <img class="scanned-image" id="img-page-${i}" alt="Scanned Script Page ${i}">
             </div>
             <div class="marks-area"><div class="marks-title">Marks</div></div>
           </div>
@@ -1009,7 +1133,7 @@
   createBlocks('idBlocks', 13);
   createBlocks('secBlocks', 6);
   createBlocks('dateBlocks', 8);
-  createBlocks('subjCodeBlocks', 7); // Increased to 7 to fit 102626F
+  createBlocks('subjCodeBlocks', 7);
 
   // 3. Auto-fill Answer Book
   function fillBlocks(containerId, text) {
@@ -1023,7 +1147,7 @@
   document.getElementById('coverSequence').innerText = seqNum;
   fillBlocks('idBlocks', studentId);
   fillBlocks('secBlocks', secCode);
-  fillBlocks('subjCodeBlocks', '102626F'); // Hardcoded to match paper
+  fillBlocks('subjCodeBlocks', '102626F');
   
   document.getElementById('valSubjectName').value = examCode.includes("MATH") ? "Mathematics" : "Web Development";
   document.getElementById('valCurriculum').value = examCode.includes("MATH") ? "IFB-S" : "IFB AQ-B";
@@ -1193,7 +1317,8 @@
     // Check for reload
     const lastTime = sessionStorage.getItem('lastUploadTimestamp');
     if (lastTime) {
-        setStatus(`Session resumed. Last upload at ${lastTime}.`, 'success');
+        setStatus(`Session resumed. Last script upload at ${lastTime}.`, 'success');
+        console.log("[SESSION] Resumed. Last upload was at", lastTime);
     }
   });
 
@@ -1203,6 +1328,7 @@
   let stream = null, videoTrack = null, pendingBlob = null;
   let cvReady = false;
   let flashOn = false;
+  let rotationAngle = 0;
 
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
@@ -1218,21 +1344,26 @@
   const btnOpen = document.getElementById('btnOpen');
   const btnFlash = document.getElementById('btnFlash');
   const btnCapture = document.getElementById('btnCapture');
+  const btnRotate = document.getElementById('btnRotate');
   const btnRetake = document.getElementById('btnRetake');
   const btnAddPage = document.getElementById('btnAddPage');
   const btnSubmit = document.getElementById('btnSubmit');
 
-  function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? '#B91C1C' : (type === 'success' ? '#15803d' : 'var(--gray)'); }
+  function setStatus(msg, type = '') { 
+      statusEl.textContent = msg; 
+      statusEl.style.color = type === 'error' ? '#B91C1C' : (type === 'success' ? '#15803d' : 'var(--gray)'); 
+      console.log(`[STATUS] ${msg}`);
+  }
 
   function waitCv() {
     const started = Date.now();
     let attached = false;
     const t = setInterval(() => {
       if (typeof cv !== 'undefined') {
-        if (cv.Mat) { cvReady = true; clearInterval(t); return; }
+        if (cv.Mat) { cvReady = true; clearInterval(t); console.log("[OPENCV] Ready."); return; }
         if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
           attached = true;
-          cv.onRuntimeInitialized = () => { cvReady = true; };
+          cv.onRuntimeInitialized = () => { cvReady = true; console.log("[OPENCV] Initialized."); };
         }
       }
       if (Date.now() - started > 20000) clearInterval(t);
@@ -1286,6 +1417,7 @@
 
       btnOpen.disabled = true;
       btnCapture.disabled = false;
+      btnRotate.disabled = true;
       btnRetake.disabled = true;
       btnAddPage.disabled = true;
       setStatus(`Scanning Q${questionPick.value}. Hold straight above the paper.`);
@@ -1301,9 +1433,16 @@
         await videoTrack.applyConstraints({ advanced: [{ torch: flashOn }] });
         btnFlash.style.background = flashOn ? 'var(--maroon)' : '#fff';
         btnFlash.style.color = flashOn ? '#fff' : 'var(--maroon)';
+        console.log(`[CAMERA] Flashlight toggled: ${flashOn ? 'ON' : 'OFF'}`);
     } catch(err) {
         console.warn("Flash failed: ", err);
     }
+  }
+
+  function rotateScript() {
+      rotationAngle = (rotationAngle + 90) % 360;
+      preview.style.transform = `rotate(${rotationAngle}deg)`;
+      console.log(`[SCANNER] Script rotated to ${rotationAngle} degrees.`);
   }
 
   async function capture() {
@@ -1326,7 +1465,7 @@
     stopCamera();
     scannerLine.classList.remove('active');
 
-    setStatus('Processing page…');
+    setStatus('Processing script…');
     let a4Canvas = null, detected = false;
     try {
       if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
@@ -1345,13 +1484,18 @@
       preview.classList.add('active');
       video.classList.remove('active');
       framingGuide.classList.remove('visible');
+      
+      // Reset rotation on new capture
+      rotationAngle = 0;
+      preview.style.transform = `rotate(0deg)`;
 
       btnCapture.disabled = true;
+      btnRotate.disabled = false;
       btnRetake.disabled = false;
       btnAddPage.disabled = false;
       btnOpen.disabled = true;
 
-      setStatus(detected ? 'Page detected & straightened.' : 'Page captured.', detected ? 'success' : 'warn');
+      setStatus(detected ? 'Script detected & straightened.' : 'Script captured.', detected ? 'success' : 'warn');
     }, 'image/jpeg', 0.92);
   }
 
@@ -1489,37 +1633,67 @@
   function retake() {
     if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
     pendingBlob = null; preview.classList.remove('active');
-    btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
+    rotationAngle = 0;
+    preview.style.transform = `rotate(0deg)`;
+    btnRetake.disabled = true; btnRotate.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
     setStatus('Discarded. Reopen the camera to try again.');
+    console.log("[SCANNER] Script discarded.");
   }
 
   function saveCurrentPage() {
     if (!pendingBlob) return;
     const q = questionPick.value;
-    const reader = new FileReader();
-    reader.onload = () => {
-      captures.push({ q: q, src: reader.result });
+    
+    // We need to apply rotation physically to the canvas before saving
+    const img = new Image();
+    const url = URL.createObjectURL(pendingBlob);
+    img.onload = () => {
+        const c = document.createElement('canvas');
+        const ctx = c.getContext('2d');
+        
+        // Handle rotation dimensions
+        if (rotationAngle === 90 || rotationAngle === 270) {
+            c.width = img.height;
+            c.height = img.width;
+        } else {
+            c.width = img.width;
+            c.height = img.height;
+        }
+        
+        ctx.translate(c.width/2, c.height/2);
+        ctx.rotate(rotationAngle * Math.PI / 180);
+        ctx.drawImage(img, -img.width/2, -img.height/2);
+        
+        const rotatedDataUrl = c.toDataURL('image/jpeg', 0.92);
+        
+        captures.push({ q: q, src: rotatedDataUrl });
 
-      // Set Timestamp
-      const timestamp = new Date().toLocaleTimeString();
-      sessionStorage.setItem('lastUploadTimestamp', timestamp);
+        // Set Timestamp
+        const timestamp = new Date().toLocaleTimeString();
+        sessionStorage.setItem('lastUploadTimestamp', timestamp);
+        console.log(`[SCANNER] Script for Q${q} saved. Timestamp: ${timestamp}`);
 
-      if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
-      pendingBlob = null; preview.classList.remove('active');
-      btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
+        if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
+        pendingBlob = null; preview.classList.remove('active');
+        rotationAngle = 0;
+        preview.style.transform = `rotate(0deg)`;
+        
+        btnRetake.disabled = true; btnRotate.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
 
-      renderPagesStrip();
-      syncAnswerBook();
-      updateSubmitButton();
-      setStatus(`Page saved to Question ${q} and transferred to Answer Book.`, 'success');
+        renderPagesStrip();
+        syncAnswerBook();
+        updateSubmitButton();
+        setStatus(`Script for Q${q} saved to Answer Book.`, 'success');
+        
+        URL.revokeObjectURL(url);
     };
-    reader.readAsDataURL(pendingBlob);
+    img.src = url;
   }
 
   function renderPagesStrip() {
     pagesList.innerHTML = '';
     if (!captures.length) {
-      pagesList.innerHTML = '<div style="font-size:14px; color:#999; font-style:italic;">No pages captured yet.</div>';
+      pagesList.innerHTML = '<div style="font-size:14px; color:#999; font-style:italic;">No scripts captured yet.</div>';
       return;
     }
     
@@ -1542,7 +1716,7 @@
 
             const label = document.createElement('div');
             label.className = 'label';
-            label.innerText = `Q${qNum} · Page ${idx + 1}`;
+            label.innerText = `Q${qNum} · Script ${idx + 1}`;
             wrap.appendChild(label);
 
             const del = document.createElement('button'); 
@@ -1550,6 +1724,7 @@
             del.innerHTML = '✕';
             del.onclick = () => { 
                 captures.splice(item.index, 1); 
+                console.log(`[SCANNER] Deleted script from Q${qNum}. Remaining: ${captures.length}`);
                 renderPagesStrip(); 
                 syncAnswerBook(); 
                 updateSubmitButton(); 
@@ -1593,19 +1768,124 @@
     if (!confirm("Are you sure you want to submit? Ensure all questions have been scanned. You cannot undo this.")) return;
 
     document.getElementById('uploadOverlay').style.display = 'flex';
+    console.log("[SUBMIT] Uploading scripts...");
+    
+    // Save to Firebase
+    try {
+        if (window.db) {
+            const docRef = doc(window.db, "examLogs", studentId);
+            await setDoc(docRef, {
+                studentId: studentId,
+                scriptId: scriptId,
+                seqNum: seqNum,
+                status: "Submitted",
+                submittedAt: serverTimestamp(),
+                scripts: captures // Storing base64 images for demo (normally use Storage)
+            }, { merge: true });
+            console.log("[FIREBASE] Script submitted successfully.");
+        }
+    } catch(e) {
+        console.warn("[FIREBASE] Failed to submit to Firebase:", e);
+    }
+
     await new Promise(r => setTimeout(r, 2500));
     document.getElementById('uploadOverlay').style.display = 'none';
     
     sessionStorage.removeItem('lastUploadTimestamp');
+    sessionStorage.removeItem('examStartTime');
+    sessionStorage.removeItem('examScriptId');
+    sessionStorage.removeItem('examSeqNum');
     sessionStorage.clear();
+    
     alert("Examination submitted successfully!\n\nYour scripts have been securely uploaded and sent to the AI Invigilator for moderation.");
     window.location.href = "student-dashboard.html";
+  }
+
+  /* ================= ADMIN LOGIC ================= */
+  function loadAdminData() {
+      const tbody = document.getElementById('adminTableBody');
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading active sessions...</td></tr>';
+      
+      // Simulate fetching from Firebase. 
+      // In a real app, you'd query collection('examLogs')
+      // Since we can't query easily without setting up a listener in this demo, we'll mock it.
+      
+      setTimeout(() => {
+          tbody.innerHTML = `
+            <tr>
+                <td>2701010100001</td>
+                <td>${scriptId}</td>
+                <td>${seqNum}</td>
+                <td class="admin-barcode"><svg id="bc-admin-1"></svg></td>
+                <td><span style="color: red; font-weight: bold;">3</span></td>
+                <td><button class="btn-primary" style="padding: 5px 10px; font-size: 12px;" onclick="viewAdminScript('2701010100001')">View Script</button></td>
+            </tr>
+            <tr>
+                <td>2701010200002</td>
+                <td>849201</td>
+                <td>14</td>
+                <td class="admin-barcode"><svg id="bc-admin-2"></svg></td>
+                <td>0</td>
+                <td><button class="btn-primary" style="padding: 5px 10px; font-size: 12px;" onclick="viewAdminScript('2701010200002')">View Script</button></td>
+            </tr>
+          `;
+          
+          // Generate barcodes for table
+          try {
+              JsBarcode("#bc-admin-1", `${studentId}-${scriptId}`, { format: "CODE128", width: 1.5, height: 30, displayValue: false });
+              JsBarcode("#bc-admin-2", `2701010200002-849201`, { format: "CODE128", width: 1.5, height: 30, displayValue: false });
+          } catch(e) {}
+          
+          console.log("[ADMIN] Data loaded.");
+      }, 1000);
+  }
+
+  function viewAdminScript(id) {
+      console.log(`[ADMIN] Viewing script for student: ${id}`);
+      document.getElementById('viewerTitle').innerText = `Script: ${id}`;
+      
+      // In a real app, fetch this from Firebase. For demo, we use the current captures if it's the active student.
+      const container = document.getElementById('adminA4Container');
+      container.innerHTML = '';
+      
+      if (captures.length > 0) {
+          captures.forEach((cap, idx) => {
+              container.innerHTML += `
+                <div class="page">
+                  <div class="security-pattern"></div>
+                  <div class="content-wrapper">
+                    <div class="header">
+                      <div class="header-left">Answer Book</div>
+                      <div class="header-center"><span class="page-num">${idx + 3}</span><span class="confidential">IFB / Confidential</span></div>
+                      <div class="header-right">2027</div>
+                    </div>
+                    <div class="answer-page">
+                      <div class="left-margin"></div>
+                      <div class="writing-area">
+                         <img src="${cap.src}" style="display:block; max-width:100%; max-height:100%;">
+                      </div>
+                      <div class="marks-area"><div class="marks-title">Marks</div></div>
+                    </div>
+                  </div>
+                </div>
+              `;
+          });
+      } else {
+          container.innerHTML = '<div class="page" style="display:flex; justify-content:center; align-items:center; font-size:24px; color:#999;">No scripts uploaded yet.</div>';
+      }
+      
+      document.getElementById('adminScriptViewer').classList.add('active');
+  }
+
+  function closeAdminViewer() {
+      document.getElementById('adminScriptViewer').classList.remove('active');
   }
 
   /* ================= INIT ================= */
   btnOpen.addEventListener('click', openCamera);
   btnFlash.addEventListener('click', toggleFlash);
   btnCapture.addEventListener('click', capture);
+  btnRotate.addEventListener('click', rotateScript);
   btnRetake.addEventListener('click', retake);
   btnAddPage.addEventListener('click', saveCurrentPage);
   window.addEventListener('beforeunload', stopCamera);
