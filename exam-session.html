@@ -41,19 +41,29 @@
   .view { display: none; }
   .view.active { display: block; }
 
-  /* HIDE ORIGINAL CONTROL BARS FROM EMBEDDED DOCS */
-  .view .control-bar { display: none !important; }
-  .view { padding-top: 20px; }
-
-  /* ==================== A4 PAGE SETUP (STRICT) ==================== */
-  @page { size: A4; margin: 0; }
+  /* ==================== A4 PAGE SETUP (STRICT & RESPONSIVE) ==================== */
   .page { 
     width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; 
     position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
     overflow: hidden; display: flex; flex-direction: column; page-break-after: always; 
     font-family: Arial, sans-serif; font-size: 11.5pt; line-height: 1.6; color: #000;
+    transform-origin: top center;
   }
   
+  /* Mobile Scaling to keep same view */
+  @media (max-width: 900px) {
+    .page { 
+      transform: scale(0.45); 
+      margin-bottom: -160mm; 
+      margin-top: -10mm;
+    }
+    .tabs { max-width: 95%; }
+    .tab-btn { font-size: 12px; padding: 10px; gap: 4px; }
+  }
+  @media (max-width: 600px) {
+    .page { transform: scale(0.35); margin-bottom: -190mm; }
+  }
+
   .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
   .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.03; pointer-events: none; z-index: 0; }
   .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 35mm; }
@@ -128,8 +138,8 @@
   .cover-header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
   .cover-brand { display: flex; align-items: center; gap: 15px; width: 60%;}
   .top-right-container { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; width: 40%; }
-  .candidate-barcode-box { border: 2px dashed #000; padding: 15px; width: 100%; max-width: 250px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: right; background-color: #FFF5F6; }
-  .candidate-barcode-box .label { font-size: 10pt; font-weight: bold; text-align: center; color: #7A1F2B; }
+  .candidate-barcode-box { border: 2px dashed #000; padding: 10px; width: 100%; max-width: 250px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background-color: #FFF5F6; }
+  .candidate-barcode-box .label { font-size: 10pt; font-weight: bold; color: #7A1F2B; margin-bottom: 4px; }
   .sequence-circle-container { display: flex; align-items: center; gap: 10px; }
   .sequence-circle { width: 45px; height: 45px; border: 2px solid #000; border-radius: 50%; background-color: #FFF5F6; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14pt; }
   .sequence-text { font-size: 9pt; font-weight: bold; text-align: right; line-height: 1.1; color: #7A1F2B; }
@@ -149,12 +159,19 @@
   .marking-table td { height: 22px; }
   .marking-table .text-left { text-align: left; padding-left: 10px; }
   .total-row td { height: 30px; font-weight: bold; background-color: #E2E8F0; color: #7A1F2B; }
+  
   .instructions-header { background-color: #7A1F2B; color: white; padding: 10px 20px; font-weight: bold; font-size: 12pt; margin-bottom: 20px; border-radius: 4px; }
   .instructions-list { margin-left: 25px; font-size: 11pt; line-height: 1.8; }
   .instructions-list li { margin-bottom: 15px; padding-left: 10px; }
-  .answer-page { border: 1.5px solid #000; flex: 1; display: flex; width: 100%; margin-bottom: 20px; }
+  
+  .answer-page { border: 1.5px solid #000; flex: 1; display: flex; width: 100%; margin-bottom: 20px; background: #fff;}
   .left-margin { width: 40px; border-right: 1.5px solid #000; background-color: #FFF5F6; }
-  .writing-area { flex: 1; border-right: 1.5px solid #000; background-color: #FFF; background-image: repeating-linear-gradient(to bottom, transparent, transparent 34px, #000 34px, #000 36px); background-position: 0 1px; }
+  .writing-area { 
+    flex: 1; border-right: 1.5px solid #000; background-color: #FFF; 
+    display: flex; align-items: center; justify-content: center; padding: 10px;
+    /* REMOVED LINES AS REQUESTED */
+  }
+  .writing-area img { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
   .marks-area { width: 70px; display: flex; flex-direction: column; align-items: center; padding-top: 10px; background-color: #FFF5F6; }
   .marks-area .marks-title { font-size: 10pt; font-weight: bold; font-style: italic; border-bottom: 1.5px solid #000; width: 100%; text-align: center; padding-bottom: 5px; margin-bottom: 10px; color: #7A1F2B; }
 
@@ -208,7 +225,7 @@
     body { background: white; padding: 0; } 
     .exam-header, .tabs, #tabWarning, #uploadOverlay, .view:not(.active) { display: none !important; }
     .view.active { display: block !important; padding: 0; margin: 0; }
-    .page { margin: 0; box-shadow: none; page-break-after: always; } 
+    .page { margin: 0; box-shadow: none; page-break-after: always; transform: none !important; } 
     .control-bar { display: none !important; }
   }
 </style>
@@ -668,7 +685,7 @@
         </div>
         <div class="top-right-container">
           <div class="candidate-barcode-box">
-            <div class="label">Candidate Barcode Label</div>
+            <div class="label" id="scriptLabel">StudentID—ScriptNumber</div>
             <svg id="coverBarcode" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
           </div>
           <div class="sequence-circle-container">
@@ -693,15 +710,15 @@
           <label>Date (DDMMYYYY)</label>
           <div class="block-container" id="dateBlocks"></div>
         </div>
-        <div class="form-box" style="flex: 1;"><label>Book Number</label><input type="text" class="input-line" id="valBookNum"></div>
-        <div class="form-box" style="flex: 1;"><label>Of</label><input type="text" class="input-line" id="valTotalBooks"></div>
+        <div class="form-box" style="flex: 1;"><label>Book Number</label><input type="text" class="input-line" id="valBookNum" value="1"></div>
+        <div class="form-box" style="flex: 1;"><label>Of</label><input type="text" class="input-line" id="valTotalBooks" value="1"></div>
       </div>
       <div class="form-row">
         <div class="form-box" style="flex: 2;">
           <label>Subject Code</label>
           <div class="block-container" id="subjCodeBlocks"></div>
         </div>
-        <div class="form-box" style="flex: 1;"><label>Paper Number</label><input type="text" class="input-line" id="valPaperNum" style="text-align: center;"></div>
+        <div class="form-box" style="flex: 1;"><label>Paper Number</label><input type="text" class="input-line" id="valPaperNum" value="1" style="text-align: center;"></div>
       </div>
       <div class="form-row">
         <div class="form-box" style="flex: 1;"><label>Subject Name</label><input type="text" class="input-line" id="valSubjectName"></div>
@@ -823,6 +840,7 @@
 
   <div class="controls">
     <button class="action btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
+    <button class="action btn-secondary" id="btnFlash" style="display: none;"><i data-lucide="flashlight"></i> Flashlight</button>
     <button class="action btn-secondary" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture</button>
     <button class="action btn-secondary" id="btnRetake" disabled><i data-lucide="rotate-ccw"></i> Retake</button>
     <button class="action btn-secondary" id="btnAddPage" disabled><i data-lucide="save"></i> Save Page</button>
@@ -844,6 +862,12 @@
   const secCode = sessionStorage.getItem('examSecurityCode') || 'ABCDEF';
   const examCode = sessionStorage.getItem('examCode') || 'AE-S-MATH';
   const packSeq = sessionStorage.getItem('examPackSeq') || '01';
+  
+  // Ensure script format is ID—CODE
+  const scriptLabel = document.getElementById('scriptLabel');
+  if (scriptLabel) {
+      scriptLabel.innerText = `${studentId}—${secCode}`;
+  }
 
   // Timer (2 hours)
   let timeLeft = 2 * 60 * 60; 
@@ -907,7 +931,9 @@
           </div>
           <div class="answer-page">
             <div class="left-margin"></div>
-            <div class="writing-area"></div>
+            <div class="writing-area" id="ans-page-${i}">
+               <img class="scanned-image" id="img-page-${i}" alt="Scanned Answer Page ${i}">
+            </div>
             <div class="marks-area"><div class="marks-title">Marks</div></div>
           </div>
         </div>
@@ -960,9 +986,7 @@
   fillBlocks('idBlocks', studentId);
   fillBlocks('secBlocks', secCode);
   fillBlocks('subjCodeBlocks', examCode.replace(/-/g, ''));
-  document.getElementById('valBookNum').value = "1";
-  document.getElementById('valTotalBooks').value = "12";
-  document.getElementById('valPaperNum').value = "1";
+  
   document.getElementById('valSubjectName').value = examCode.includes("MATH") ? "Mathematics" : "Web Development";
   document.getElementById('valCurriculum').value = examCode.includes("MATH") ? "IFB-S" : "IFB AQ-B";
   
@@ -974,12 +998,10 @@
   function makeBarcodes() {
     if (typeof JsBarcode !== "function") return;
     
-    // Answer Book Cover
     try {
       JsBarcode("#coverBarcode", `${studentId}-${secCode}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 });
     } catch (e) { console.warn(e); }
 
-    // Paper & Answer Book Footers
     document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
       try {
         JsBarcode(el, el.dataset.barcode || "102626F", {
@@ -1136,6 +1158,7 @@
   const captures = {}; 
   let stream = null, videoTrack = null, pendingBlob = null;
   let cvReady = false;
+  let flashOn = false;
 
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
@@ -1149,6 +1172,7 @@
   const pagesTitle = document.getElementById('pagesTitle');
 
   const btnOpen = document.getElementById('btnOpen');
+  const btnFlash = document.getElementById('btnFlash');
   const btnCapture = document.getElementById('btnCapture');
   const btnRetake = document.getElementById('btnRetake');
   const btnAddPage = document.getElementById('btnAddPage');
@@ -1189,6 +1213,15 @@
       video.classList.add('active');
       framingGuide.classList.add('visible');
 
+      // Check for Flashlight support
+      const capabilities = videoTrack.getCapabilities();
+      if (capabilities.torch) {
+          btnFlash.style.display = 'flex';
+          btnFlash.disabled = false;
+      } else {
+          btnFlash.style.display = 'none';
+      }
+
       btnOpen.disabled = true;
       btnCapture.disabled = false;
       btnRetake.disabled = true;
@@ -1196,6 +1229,18 @@
       setStatus(`Scanning Q${questionPick.value}. Hold straight above the paper.`);
     } catch (err) {
       setStatus('Could not open camera: ' + err.message, 'error');
+    }
+  }
+
+  async function toggleFlash() {
+    if (!videoTrack) return;
+    try {
+        flashOn = !flashOn;
+        await videoTrack.applyConstraints({ advanced: [{ torch: flashOn }] });
+        btnFlash.style.background = flashOn ? 'var(--maroon)' : '#fff';
+        btnFlash.style.color = flashOn ? '#fff' : 'var(--maroon)';
+    } catch(err) {
+        console.warn("Flash failed: ", err);
     }
   }
 
@@ -1367,6 +1412,9 @@
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
     videoTrack = null; video.srcObject = null;
     video.classList.remove('active'); placeholder.style.display = '';
+    flashOn = false;
+    btnFlash.style.background = '#fff';
+    btnFlash.style.color = 'var(--maroon)';
   }
 
   function retake() {
@@ -1384,13 +1432,25 @@
       if (!captures[q]) captures[q] = [];
       captures[q].push(reader.result);
 
+      // Inject into Answer Book
+      const totalPages = Object.values(captures).reduce((s, arr) => s + arr.length, 0);
+      const answerPageId = `img-page-${totalPages + 2}`; // offset by 2 (cover + instructions)
+      const ansImg = document.getElementById(answerPageId);
+      
+      if (ansImg) {
+          ansImg.src = reader.result;
+          ansImg.style.display = 'block';
+      } else {
+          alert("Warning: You have exceeded the 23 physical answer book pages. Please request a new book.");
+      }
+
       if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
       pendingBlob = null; preview.classList.remove('active');
       btnRetake.disabled = true; btnAddPage.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
 
       renderPagesStrip();
       updateSubmitButton();
-      setStatus(`Page saved to Question ${q}.`, 'success');
+      setStatus(`Page saved to Question ${q} and transferred to Answer Book.`, 'success');
     };
     reader.readAsDataURL(pendingBlob);
   }
@@ -1409,7 +1469,12 @@
       const img = document.createElement('img'); img.src = src; wrap.appendChild(img);
       const num = document.createElement('span'); num.className = 'num'; num.textContent = i + 1; wrap.appendChild(num);
       const del = document.createElement('button'); del.className = 'del'; del.textContent = '✕';
-      del.onclick = () => { captures[q].splice(i, 1); if (!captures[q].length) delete captures[q]; renderPagesStrip(); updateSubmitButton(); };
+      del.onclick = () => { 
+          captures[q].splice(i, 1); 
+          if (!captures[q].length) delete captures[q]; 
+          renderPagesStrip(); 
+          updateSubmitButton(); 
+      };
       wrap.appendChild(del); pagesList.appendChild(wrap);
     });
   }
@@ -1435,6 +1500,7 @@
 
   /* ================= INIT ================= */
   btnOpen.addEventListener('click', openCamera);
+  btnFlash.addEventListener('click', toggleFlash);
   btnCapture.addEventListener('click', capture);
   btnRetake.addEventListener('click', retake);
   btnAddPage.addEventListener('click', saveCurrentPage);
