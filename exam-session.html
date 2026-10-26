@@ -13,6 +13,8 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<!-- RESTORED OPENCV -->
+<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
 
 <style>
   @page { size: A4; margin: 0; }
@@ -189,7 +191,7 @@
   <div class="scanner-ui">
     <div style="text-align:center; margin-bottom:20px;">
       <h2 style="font-size:22px; font-weight:900; color:var(--maroon);">Scan Your Answer Book</h2>
-      <p style="font-size:14px; color:var(--gray);">Capture each page clearly. Ensure the barcode is visible.</p>
+      <p style="font-size:14px; color:var(--gray);" id="scannerStatus">Align the page within the frame. Auto-detect is active.</p>
     </div>
 
     <div class="scanner-preview">
@@ -200,6 +202,7 @@
       <video id="video" autoplay playsinline muted></video>
       <img id="preview" alt="Scanned Page">
       <div class="scanner-guide" id="scannerGuide"></div>
+      <div class="flash-overlay" id="flashOverlay" style="position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:8; transition:opacity .28s ease-out;"></div>
     </div>
 
     <div class="scanner-controls">
@@ -209,9 +212,7 @@
       <button class="btn-scan primary" id="btnSave" disabled><i data-lucide="check"></i> Save Page to Script</button>
     </div>
 
-    <div class="page-list" id="pageList">
-      <!-- Thumbnails injected here -->
-    </div>
+    <div class="page-list" id="pageList"></div>
 
     <div style="margin-top: 24px; border-top: 1px solid var(--silver); padding-top: 20px;">
       <button class="btn-scan primary" id="btnSubmit" style="background:var(--success); padding:20px;" disabled onclick="submitExam()">
@@ -225,10 +226,8 @@
   const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
   document.getElementById('ansStudentId').textContent = studentId;
   
-  // Generate Barcode on Answer Book
   try { JsBarcode("#ansBarcode", studentId, { format: "CODE128", width: 2, height: 40, displayValue: false }); } catch (e) { console.warn("Barcode error"); }
 
-  // Timer Logic
   let timeLeft = 2 * 60 * 60; 
   setInterval(() => {
     if (timeLeft <= 0) { alert("Time is up! Submitting your scanned pages..."); submitExam(); return; }
@@ -239,7 +238,6 @@
     document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
   }, 1000);
 
-  // Tab Navigation
   function switchTab(tab) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -251,15 +249,19 @@
     if (tab !== 'scanner') stopCamera();
   }
 
-  // Scanner Logic
+  /* ================= SCANNER LOGIC WITH OPENCV ================= */
+  const A4_W = 1240, A4_H = 1754;
   let stream = null;
   let captures = [];
   let pendingBlob = null;
+  let cvReady = false;
 
   const video = document.getElementById('video');
   const preview = document.getElementById('preview');
   const placeholder = document.getElementById('scannerPlaceholder');
   const guide = document.getElementById('scannerGuide');
+  const statusEl = document.getElementById('scannerStatus');
+  const flashOverlay = document.getElementById('flashOverlay');
   
   const btnOpen = document.getElementById('btnOpen');
   const btnCapture = document.getElementById('btnCapture');
@@ -268,9 +270,26 @@
   const btnSubmit = document.getElementById('btnSubmit');
   const pageList = document.getElementById('pageList');
 
+  // Wait for OpenCV to load
+  function waitCv() {
+    const started = Date.now();
+    let attached = false;
+    const t = setInterval(() => {
+      if (typeof cv !== 'undefined') {
+        if (cv.Mat) { cvReady = true; clearInterval(t); return; }
+        if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
+          attached = true;
+          cv.onRuntimeInitialized = () => { cvReady = true; };
+        }
+      }
+      if (Date.now() - started > 20000) clearInterval(t);
+    }, 150);
+  }
+  waitCv();
+
   async function openCamera() {
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } } });
       video.srcObject = stream;
       video.classList.add('active');
       placeholder.style.display = 'none';
@@ -280,6 +299,7 @@
       btnCapture.disabled = false;
       btnRetake.disabled = true;
       btnSave.disabled = true;
+      statusEl.textContent = "Hold straight above the paper. Auto-detect active.";
     } catch (err) {
       alert("Error accessing camera: " + err.message + "\nPlease ensure you have granted camera permissions.");
     }
@@ -292,25 +312,169 @@
     guide.classList.remove('active');
   }
 
-  function capture() {
+  async function capture() {
     if (!stream) return;
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext('2d').drawImage(video, 0, 0);
+    const w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return;
+
+    btnCapture.disabled = true;
+    statusEl.textContent = "Capturing...";
     
-    canvas.toBlob(blob => {
+    // Flash effect
+    flashOverlay.style.opacity = '1';
+    setTimeout(() => { flashOverlay.style.opacity = '0'; }, 150);
+    await new Promise(r => setTimeout(r, 150));
+
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+    stopCamera();
+
+    statusEl.textContent = "Processing & enhancing handwriting...";
+    
+    let a4Canvas = null;
+    let detected = false;
+    
+    try {
+      if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
+        a4Canvas = detectAndWarpToA4(canvas);
+        if (a4Canvas) detected = true;
+      }
+    } catch (e) { console.warn('Page detection failed:', e); }
+    
+    if (!a4Canvas) a4Canvas = fallbackA4(canvas);
+    
+    // RESTORED: Adaptive thresholding for handwriting
+    enhanceText(a4Canvas); 
+
+    a4Canvas.toBlob(blob => {
       pendingBlob = blob;
       const url = URL.createObjectURL(blob);
       preview.src = url;
       preview.classList.add('active');
-      stopCamera();
       placeholder.style.display = 'none';
       
       btnCapture.disabled = true;
       btnRetake.disabled = false;
       btnSave.disabled = false;
-    }, 'image/jpeg', 0.9);
+      
+      statusEl.textContent = detected ? "Page detected & straightened." : "Page captured (manual crop).";
+    }, 'image/jpeg', 0.92);
+  }
+
+  function detectAndWarpToA4(srcCanvas) {
+    const src = cv.imread(srcCanvas);
+    const maxDim = 600;
+    const scale = Math.min(1, maxDim / Math.max(src.cols, src.rows));
+    const small = new cv.Mat();
+    cv.resize(src, small, new cv.Size(Math.round(src.cols * scale), Math.round(src.rows * scale)), 0, 0, cv.INTER_AREA);
+
+    const gray = new cv.Mat();
+    cv.cvtColor(small, gray, cv.COLOR_RGBA2GRAY);
+    cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0);
+
+    const edges = new cv.Mat();
+    cv.Canny(gray, edges, 50, 150);
+    const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
+    cv.dilate(edges, edges, kernel);
+
+    const contours = new cv.MatVector();
+    const hierarchy = new cv.Mat();
+    cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+    let best = null, bestArea = 0;
+    const minArea = small.rows * small.cols * 0.15;
+
+    for (let i = 0; i < contours.size(); i++) {
+      const cnt = contours.get(i);
+      const peri = cv.arcLength(cnt, true);
+      const approx = new cv.Mat();
+      cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+      const area = cv.contourArea(approx);
+      if (approx.rows === 4 && area > bestArea && area > minArea) {
+        if (best) best.delete();
+        best = approx.clone(); bestArea = area;
+      }
+      approx.delete();
+    }
+
+    let corners = null;
+    if (best) {
+      corners = [];
+      for (let i = 0; i < 4; i++) corners.push({ x: best.data32S[i * 2] / scale, y: best.data32S[i * 2 + 1] / scale });
+      best.delete();
+    }
+    src.delete(); small.delete(); gray.delete(); edges.delete(); kernel.delete(); contours.delete(); hierarchy.delete();
+    if (!corners) return null;
+
+    corners = orderCorners(corners);
+    const srcFull = cv.imread(srcCanvas);
+    const srcQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [corners[0].x, corners[0].y, corners[1].x, corners[1].y, corners[2].x, corners[2].y, corners[3].x, corners[3].y]);
+    const dstQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, A4_W, 0, A4_W, A4_H, 0, A4_H]);
+    const M = cv.getPerspectiveTransform(srcQuad, dstQuad);
+    const warped = new cv.Mat();
+    cv.warpPerspective(srcFull, warped, M, new cv.Size(A4_W, A4_H));
+
+    const out = document.createElement('canvas');
+    out.width = A4_W; out.height = A4_H;
+    cv.imshow(out, warped);
+
+    srcFull.delete(); srcQuad.delete(); dstQuad.delete(); M.delete(); warped.delete();
+    return out;
+  }
+
+  function orderCorners(pts) {
+    const cx = pts.reduce((s, p) => s + p.x, 0) / 4;
+    const cy = pts.reduce((s, p) => s + p.y, 0) / 4;
+    pts.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
+    let minI = 0, minSum = Infinity;
+    for (let i = 0; i < 4; i++) { const s = pts[i].x + pts[i].y; if (s < minSum) { minSum = s; minI = i; } }
+    return [pts[minI], pts[(minI + 1) % 4], pts[(minI + 2) % 4], pts[(minI + 3) % 4]];
+  }
+
+  function fallbackA4(srcCanvas) {
+    const out = document.createElement('canvas');
+    out.width = A4_W; out.height = A4_H;
+    const ctx = out.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, A4_W, A4_H);
+    const sw = srcCanvas.width, sh = srcCanvas.height;
+    const scale = Math.min(A4_W / sw, A4_H / sh);
+    const dw = sw * scale, dh = sh * scale;
+    ctx.drawImage(srcCanvas, (A4_W - dw) / 2, (A4_H - dh) / 2, dw, dh);
+    return out;
+  }
+
+  // RESTORED: Adaptive thresholding for handwriting enhancement
+  function enhanceText(canvasEl) {
+    const W = canvasEl.width, H = canvasEl.height;
+    const ctx = canvasEl.getContext('2d');
+    const imgData = ctx.getImageData(0, 0, W, H);
+    const d = imgData.data;
+    const gray = new Uint8ClampedArray(W * H);
+    for (let i = 0, p = 0; i < d.length; i += 4, p++) gray[p] = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
+    
+    const IW = W + 1;
+    const integ = new Uint32Array(IW * (H + 1));
+    for (let y = 0; y < H; y++) {
+      let rowSum = 0;
+      for (let x = 0; x < W; x++) { rowSum += gray[y * W + x]; integ[(y + 1) * IW + (x + 1)] = integ[y * IW + (x + 1)] + rowSum; }
+    }
+    const block = 41, half = (block - 1) >> 1, C = 15;
+    const bin = new Uint8ClampedArray(W * H);
+    for (let y = 0; y < H; y++) {
+      const y0 = Math.max(0, y - half), y1 = Math.min(H - 1, y + half);
+      for (let x = 0; x < W; x++) {
+        const x0 = Math.max(0, x - half), x1 = Math.min(W - 1, x + half);
+        const area = (x1 - x0 + 1) * (y1 - y0 + 1);
+        const sum = integ[(y1 + 1) * IW + (x1 + 1)] - integ[y0 * IW + (x1 + 1)] - integ[(y1 + 1) * IW + x0] + integ[y0 * IW + x0];
+        bin[y * W + x] = gray[y * W + x] < (sum / area - C) ? 0 : 255;
+      }
+    }
+    for (let i = 0, p = 0; p < bin.length; i += 4, p++) {
+      d[i] = d[i + 1] = d[i + 2] = bin[p];
+      d[i + 3] = 255;
+    }
+    ctx.putImageData(imgData, 0, 0);
   }
 
   function retake() {
@@ -323,6 +487,7 @@
     btnRetake.disabled = true;
     btnSave.disabled = true;
     placeholder.style.display = 'block';
+    statusEl.textContent = "Align the page within the frame. Auto-detect is active.";
   }
 
   function savePage() {
@@ -338,6 +503,7 @@
       btnRetake.disabled = true;
       btnSave.disabled = true;
       placeholder.style.display = 'block';
+      statusEl.textContent = "Page saved. Open camera to scan the next page.";
       
       renderPages();
     };
@@ -373,7 +539,7 @@
     if (captures.length === 0) { alert("You must capture at least one page."); return; }
     
     document.getElementById('uploadOverlay').style.display = 'flex';
-    await new Promise(r => setTimeout(r, 2500)); // Simulate network
+    await new Promise(r => setTimeout(r, 2500));
     
     document.getElementById('uploadOverlay').style.display = 'none';
     sessionStorage.clear();
@@ -381,7 +547,6 @@
     window.location.href = "student-dashboard.html";
   }
 
-  // Bind events
   btnOpen.addEventListener('click', openCamera);
   btnCapture.addEventListener('click', capture);
   btnRetake.addEventListener('click', retake);
