@@ -24,6 +24,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
 input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; }
 input:focus { border-color: var(--maroon); }
+input:disabled { background: #F8FAFC; color: var(--gray); cursor: not-allowed; }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .checkbox-group { display: flex; flex-direction: column; gap: 12px; margin: 24px 0; padding: 16px; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; }
 .checkbox-item { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
@@ -41,7 +42,7 @@ input:focus { border-color: var(--maroon); }
         <div class="header">
             <div class="logo">∆</div>
             <h1>2027 Application</h1>
-            <p>Sign in with Google to begin your application.</p>
+            <p>Sign in with Google to begin.</p>
         </div>
         
         <button class="btn-google" id="googleBtn" onclick="googleLogin()">
@@ -52,18 +53,26 @@ input:focus { border-color: var(--maroon); }
         <div class="form-fields" id="formFields">
             <form id="admissionForm" onsubmit="submitForm(event)">
                 <div class="row">
-                    <div class="form-group"><label>Full Name</label><input type="text" id="fullName" required></div>
-                    <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
+                    <div class="form-group"><label>First Name</label><input type="text" id="firstName" required></div>
+                    <div class="form-group"><label>Surname</label><input type="text" id="surname" required></div>
                 </div>
                 <div class="form-group">
-                    <label>Select Courses</label>
+                    <label>Email Address (Google)</label>
+                    <input type="email" id="emailAddress" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="dob" required>
+                </div>
+                <div class="form-group">
+                    <label>Select Course</label>
                     <div class="checkbox-group">
                         <label class="checkbox-item">
-                            <input type="checkbox" value="Mathematics" class="course-check" onchange="toggleCourse(this)">
+                            <input type="radio" name="course" value="Mathematics" required>
                             <span><strong>Mathematics</strong> (IFB-S)</span>
                         </label>
                         <label class="checkbox-item">
-                            <input type="checkbox" value="Physics" class="course-check" onchange="toggleCourse(this)">
+                            <input type="radio" name="course" value="Physics" required>
                             <span><strong>Physics</strong> (IFB-P)</span>
                         </label>
                     </div>
@@ -75,10 +84,10 @@ input:focus { border-color: var(--maroon); }
                     </label>
                     <label class="checkbox-item">
                         <input type="checkbox" id="accreditCheck" required>
-                        <span>I understand IFB is non-accredited. I am enrolling for practical skills, not a government certificate.</span>
+                        <span>I understand IFB is non-accredited.</span>
                     </label>
                 </div>
-                <button type="submit" class="btn-submit">Complete Application</button>
+                <button type="submit" class="btn-submit" id="submitBtn">Complete Application</button>
             </form>
         </div>
     </div>
@@ -95,9 +104,21 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUser = null;
-let selectedCourses = [];
 
-// Admin account note: n1nathaniel971@gmail.com is automatically given admin rights in the student-dashboard logic.
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        currentUser = user;
+        const snap = await getDoc(doc(db, "users", currentUser.uid));
+        if (snap.exists()) {
+            // If they already applied, send them back to index
+            window.location.href = "index.html";
+        } else {
+            document.getElementById('googleBtn').style.display = 'none';
+            document.getElementById('formFields').style.display = 'block';
+            document.getElementById('emailAddress').value = currentUser.email;
+        }
+    }
+});
 
 window.googleLogin = async function() {
     try {
@@ -107,41 +128,40 @@ window.googleLogin = async function() {
         
         const snap = await getDoc(doc(db, "users", currentUser.uid));
         if (snap.exists()) {
-            window.location.href = "student-dashboard.html";
+            window.location.href = "index.html";
         } else {
             document.getElementById('googleBtn').style.display = 'none';
             document.getElementById('formFields').style.display = 'block';
+            document.getElementById('emailAddress').value = currentUser.email;
         }
     } catch(e) { alert("Error: " + e.message); }
-};
-
-window.toggleCourse = function(checkbox) {
-    const val = checkbox.value;
-    if (checkbox.checked) selectedCourses.push(val);
-    else selectedCourses = selectedCourses.filter(c => c !== val);
 };
 
 window.submitForm = async function(e) {
     e.preventDefault();
     if (!currentUser) return;
-    if (selectedCourses.length === 0) { alert("Select at least one course."); return; }
-    if (!document.getElementById('termsCheck').checked || !document.getElementById('accreditCheck').checked) { alert("Agree to terms."); return; }
 
-    const name = document.getElementById('fullName').value;
+    const fName = document.getElementById('firstName').value.trim();
+    const sName = document.getElementById('surname').value.trim();
     const dob = document.getElementById('dob').value;
-    const btn = e.target.querySelector('button');
-    btn.innerText = "Saving..."; btn.disabled = true;
+    const course = document.querySelector('input[name="course"]:checked').value;
+    const btn = document.getElementById('submitBtn');
+    
+    btn.innerText = "Processing..."; btn.disabled = true;
 
     try {
         await setDoc(doc(db, "users", currentUser.uid), {
-            name: name,
+            firstName: fName,
+            surname: sName,
+            name: `${fName} ${sName}`,
             email: currentUser.email,
             dob: dob,
-            courses: selectedCourses,
-            status: "Incomplete",
+            courses: [course],
+            status: "Applicant",
             createdAt: new Date()
         });
-        window.location.href = "student-dashboard.html";
+        // Redirect to index as requested
+        window.location.href = "index.html";
     } catch(e) { alert(e.message); btn.innerText = "Complete Application"; btn.disabled = false; }
 };
 </script>
