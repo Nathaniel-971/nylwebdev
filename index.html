@@ -29,11 +29,11 @@ ul { list-style: none; }
 .loader-logo { font-size: 100px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
 @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.9); opacity: .7; } }
 
-/* POPUP MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(4px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
+/* FORCED NON-ACCREDITED POPUP */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(6px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
 .modal-overlay.active { display: flex; }
-.modal-content { background: var(--white); border-radius: 16px; padding: 40px 24px; max-width: 440px; width: 100%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.1); }
-.modal-logo { font-size: 40px; font-weight: 900; color: var(--maroon); text-align: center; margin-bottom: 16px; }
+.modal-content { background: var(--white); border-radius: 20px; padding: 40px 24px; max-width: 440px; width: 100%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.2); text-align: center; }
+.modal-logo { font-size: 48px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
 
 .top-notice-bar { background: var(--silver); text-align: center; padding: 10px 16px; font-size: 13px; font-weight: 700; border-bottom: 1px solid #d1d5db; z-index: 1001; position: relative; }
 .top-notice-bar span { color: var(--maroon); }
@@ -56,7 +56,6 @@ ul { list-style: none; }
 .mobile-menu { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: .4s ease; overflow-y: auto; }
 .mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
 .menu-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--silver); height: 72px; }
-.menu-header .brand-logo { font-size: 28px; }
 .close-btn { background: transparent; border: none; cursor: pointer; padding: 8px; }
 .menu-content { padding: 0 32px 32px; flex-grow: 1; }
 .menu-item { border-bottom: 1px solid var(--silver); }
@@ -64,7 +63,7 @@ ul { list-style: none; }
 .submenu { max-height: 0; overflow: hidden; transition: max-height .4s ease-out; background: #FAFAFA; border-radius: 8px; }
 .submenu a { display: block; padding: 14px 24px; font-size: 15px; color: var(--gray); font-weight: 500; }
 .menu-footer { padding: 24px 32px; border-top: 1px solid var(--silver); display: flex; flex-direction: column; gap: 12px; }
-.btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; border: 1px solid var(--maroon); }
+.btn-menu-apply { display: flex; justify-content: center; align-items: center; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; }
 
 .hero-section { background-color: var(--maroon); color: var(--white); padding: 80px 0; position: relative; overflow: hidden; }
 .hero-container { max-width: 1200px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
@@ -77,7 +76,7 @@ ul { list-style: none; }
 
 .hero-visual { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; }
 .hero-img-wrapper { width: 100%; max-width: 440px; aspect-ratio: 1/1; border-radius: 50%; overflow: hidden; border: 8px solid rgba(255,255,255,0.1); position: relative; z-index: 2; background: #111; }
-.hero-img-wrapper img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; mix-blend-mode: luminosity; }
+.hero-img-wrapper img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; mix-blend-mode: luminosity; }
 .floating-card { position: absolute; background: var(--white); border-radius: 12px; padding: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); color: var(--black); z-index: 3; display: flex; flex-direction: column; gap: 4px; animation: float 6s ease-in-out infinite; width: max-content; max-width: 200px; }
 .floating-card .label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--gray); letter-spacing: 0.5px; }
 .floating-card .value { font-size: 16px; font-weight: 900; color: var(--maroon); font-family: monospace; }
@@ -157,9 +156,9 @@ ul { list-style: none; }
 
 <div id="loader"><div class="loader-logo">∆</div></div>
 
-<!-- NON-ACCREDITED POPUP (Forced on load) -->
+<!-- NON-ACCREDITED POPUP (Forced on every load) -->
 <div class="modal-overlay active" id="accreditationModal">
-    <div class="modal-content" style="max-width: 480px; text-align: center;">
+    <div class="modal-content">
         <div class="modal-logo">∆</div>
         <h2 style="font-size: 24px; font-weight: 900; margin-bottom: 12px; color: var(--maroon);">Non-Accredited Institution</h2>
         <p style="font-size: 15px; color: var(--gray); margin-bottom: 24px; line-height: 1.6;">
@@ -181,6 +180,7 @@ ul { list-style: none; }
             <div class="brand-text"><h1>Institute of Board</h1></div>
         </a>
         <div class="auth-buttons-header">
+            <!-- Auth buttons updated by JS -->
             <button class="btn-login" id="headerLoginBtn" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
             <button class="btn-logout" id="headerLogoutBtn" onclick="signOut()">Log Out</button>
             <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
@@ -209,9 +209,17 @@ ul { list-style: none; }
         <div class="hero-text">
             <h1 id="heroTitle">Master the disciplines<br>that <span style="color:#E2E8F0">build the future.</span></h1>
             <p id="heroSubtitle">The Institute of Board provides university-level instruction in Mathematics and Physics. We operate fee-free, allowing us to focus purely on modern, rigorous academic skills without administrative bureaucracy.</p>
-            <div class="hero-buttons">
+            
+            <!-- Hero Buttons (Logged Out) -->
+            <div class="hero-buttons" id="heroLoggedOut">
                 <a href="admission.html" class="btn-hero primary">Apply for Admission</a>
                 <a href="courses-ifb.html" class="btn-hero outline">View Prospectus</a>
+            </div>
+
+            <!-- Hero Buttons (Logged In) -->
+            <div class="hero-buttons" id="heroLoggedIn" style="display:none;">
+                <a href="student-dashboard.html" class="btn-hero primary">Go to Dashboard</a>
+                <a href="resources.html" class="btn-hero outline">Study Resources</a>
             </div>
         </div>
         <div class="hero-visual">
@@ -306,8 +314,8 @@ ul { list-style: none; }
 
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
-    <div class="modal-content">
-        <button class="close-modal" style="position:absolute;top:20px;right:20px;background:none;border:none;cursor:pointer;" onclick="document.getElementById('authModal').classList.remove('active')"><i data-lucide="x"></i></button>
+    <div class="modal-content" style="padding: 40px 24px;">
+        <button style="position:absolute;top:20px;right:20px;background:none;border:none;cursor:pointer;" onclick="document.getElementById('authModal').classList.remove('active')"><i data-lucide="x"></i></button>
         <div class="modal-logo">∆</div>
         <div style="font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px;">Sign In</div>
         <div style="font-size: 14px; color: var(--gray); text-align: center; margin-bottom: 32px;">Use Google to access your student account.</div>
@@ -346,13 +354,21 @@ onAuthStateChanged(auth, (user) => {
     setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
     if (user) {
+        // Logged In State
         document.getElementById('headerLoginBtn').style.display = 'none';
         document.getElementById('headerLogoutBtn').style.display = 'block';
+        document.getElementById('heroLoggedOut').style.display = 'none';
+        document.getElementById('heroLoggedIn').style.display = 'flex';
+        
+        // Update hero text
         document.getElementById('heroTitle').innerHTML = `Welcome back,<br><span style="color:#E2E8F0">${user.displayName ? user.displayName.split(' ')[0] : 'Student'}.</span>`;
-        document.getElementById('heroSubtitle').innerText = "Access your dashboard to view your application status and study resources.";
+        document.getElementById('heroSubtitle').innerText = "Access your dashboard to view your latest updates, exam portals, and study resources.";
     } else {
+        // Logged Out State
         document.getElementById('headerLoginBtn').style.display = 'block';
         document.getElementById('headerLogoutBtn').style.display = 'none';
+        document.getElementById('heroLoggedOut').style.display = 'flex';
+        document.getElementById('heroLoggedIn').style.display = 'none';
     }
     lucide.createIcons();
 });
