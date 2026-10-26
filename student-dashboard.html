@@ -12,7 +12,7 @@
 :root { 
     --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0; 
     --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; 
-    --sidebar-bg: #1E293B; --sidebar-hover: #334155; --success: #15803D;
+    --sidebar-bg: #1E293B; --sidebar-hover: #334155; --success: #15803D; --error: #B91C1C;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); }
@@ -38,17 +38,16 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .profile-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; box-shadow: 0 4px 10px rgba(122,31,43,0.3); }
 
 .dashboard-content { flex: 1; padding: 32px; overflow-y: auto; }
-.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.card { background: var(--white); border-radius: 16px; padding: 24px; border: 1px solid var(--silver); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-.card.full-width { grid-column: 1 / -1; }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.card-title { font-size: 16px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
+.card { background: var(--white); border-radius: 16px; padding: 32px; border: 1px solid var(--silver); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.card-title { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 
-/* ID CARD - BANK CARD SIZE (85.60 × 53.98 mm ratio = 1.586) */
-.id-section { display: flex; gap: 32px; flex-wrap: wrap; align-items: center; justify-content: center; }
+/* ID CARD - LARGER BANK CARD SIZE */
+.id-section { display: flex; flex-direction: column; align-items: center; gap: 24px; }
 .id-card-container { 
     width: 100%; 
-    max-width: 400px; /* Adjust for bigger screens */
+    max-width: 520px; /* Significantly larger */
     aspect-ratio: 1.586; 
     perspective: 1000px; 
     cursor: pointer; 
@@ -56,44 +55,44 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 }
 .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
 .id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
-.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid var(--silver); background: var(--white); }
-.id-card-front { padding: 20px; text-align: left; }
-.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 20px; align-items: center; justify-content: center; }
-.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 140px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; }
+.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 1px solid var(--silver); background: var(--white); }
+.id-card-front { padding: 28px; text-align: left; }
+.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 28px; align-items: center; justify-content: center; }
+.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 180px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; }
 .card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
-.card-logo { font-size: 20px; font-weight: 900; color: var(--maroon); }
-.card-type { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
-.card-name { font-size: 20px; font-weight: 900; margin-bottom: 2px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-role { font-size: 9px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 2px 8px; border-radius: 4px; margin-bottom: auto; align-self: flex-start;}
-.card-id { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px; }
-.barcode-wrap-front { background: #fff; border-radius: 6px; width: 100%; height: 45px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 4px; }
+.card-logo { font-size: 24px; font-weight: 900; color: var(--maroon); }
+.card-type { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.card-name { font-size: 26px; font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-role { font-size: 11px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: auto; align-self: flex-start;}
+.card-id { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 12px; }
+.barcode-wrap-front { background: #fff; border-radius: 8px; width: 100%; height: 60px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 6px; }
 .barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
-.card-back-text { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 8px;}
-.card-sec-code { font-family: monospace; font-size: 16px; font-weight: 900; letter-spacing: 2px; margin-top: 4px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 8px;}
-.qr-wrap { background: #fff; padding: 4px; border-radius: 6px; margin-bottom: 8px; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; }
+.card-back-text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 12px;}
+.card-sec-code { font-family: monospace; font-size: 20px; font-weight: 900; letter-spacing: 3px; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 8px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 110px; height: 110px; display: flex; justify-content: center; align-items: center; }
 .qr-wrap svg { width: 100%; height: 100%; display: block; }
 
-.credentials-col { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 12px; }
-.cred-row { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 12px; }
+.credentials-row { display: flex; gap: 16px; width: 100%; max-width: 520px; }
+.cred-box { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 12px; text-align: center; }
 .cred-label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; }
-.cred-value { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); }
+.cred-value { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--black); }
 
-/* QUICK ACTIONS / EVENTS */
-.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 14px; transition: 0.2s; text-align: center; }
-.action-btn:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-.action-btn i { color: var(--maroon); width: 24px; height: 24px; }
-
+/* EVENTS & ACTIONS */
 .event-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--silver); }
 .event-item:last-child { border-bottom: none; }
-.event-date { background: #FFF5F6; color: var(--maroon); border: 1px solid var(--maroon); padding: 8px 12px; border-radius: 8px; text-align: center; font-weight: 900; font-size: 18px; line-height: 1; }
-.event-date span { display: block; font-size: 10px; text-transform: uppercase; margin-top: 4px; }
-.event-info h4 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
-.event-info p { font-size: 13px; color: var(--gray); }
+.event-date { background: #FFF5F6; color: var(--maroon); border: 1px solid var(--maroon); padding: 8px 12px; border-radius: 8px; text-align: center; font-weight: 900; font-size: 20px; line-height: 1; min-width: 60px;}
+.event-date span { display: block; font-size: 11px; text-transform: uppercase; margin-top: 4px; }
+.event-info h4 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+.event-info p { font-size: 14px; color: var(--gray); }
 
-@media (max-width: 900px) {
-    .dashboard-grid { grid-template-columns: 1fr; }
-}
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 15px; transition: 0.2s; text-align: center; }
+.action-btn:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+.action-btn i { color: var(--maroon); width: 28px; height: 28px; }
+
+/* ERROR ALERT */
+.alert-error { display: none; background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 16px; border-radius: 8px; margin-bottom: 24px; font-weight: 600; text-align: center; }
+
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
     .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.1); order: 2; }
@@ -107,6 +106,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
     .dashboard-content { padding: 16px; }
     .action-grid { grid-template-columns: 1fr; }
     .id-card-container { max-width: 100%; }
+    .credentials-row { flex-direction: column; }
 }
 </style>
 </head>
@@ -138,18 +138,75 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
         </header>
 
         <main class="dashboard-content">
+            <div class="alert-error" id="errorAlert">Failed to load dashboard data. Please try refreshing.</div>
+            
             <div class="dashboard-grid">
                 
-                <!-- UPDATES & EVENTS -->
-                <div class="card full-width">
+                <!-- ID CARD (Primary Focus) -->
+                <div class="card">
                     <div class="card-header">
-                        <div class="card-title"><i data-lucide="bell"></i> Latest Updates</div>
+                        <div class="card-title"><i data-lucide="credit-card"></i> Student ID Card</div>
                     </div>
+                    
+                    <div class="id-section">
+                        <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
+                            <div class="id-card-inner">
+                                <!-- FRONT -->
+                                <div class="id-card-front">
+                                    <div class="watermark">∆</div>
+                                    <div class="card-content">
+                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                            <div class="card-logo">∆ IFB</div>
+                                            <div class="card-type">Student ID</div>
+                                        </div>
+                                        <div class="card-name" id="userName">Loading...</div>
+                                        <div class="card-role" id="userStatus">Applicant</div>
+                                        <div style="flex-grow:1;"></div>
+                                        <div class="card-id" id="userStudentId">---</div>
+                                        <div class="barcode-wrap-front"><svg id="barcodeSvg"></svg></div>
+                                    </div>
+                                </div>
+                                <!-- BACK -->
+                                <div class="id-card-back">
+                                    <div class="card-content" style="align-items:center; justify-content:center;">
+                                        <div class="qr-wrap" id="qrCodeContainer"></div>
+                                        <div class="card-back-text">Security Code</div>
+                                        <div class="card-sec-code">
+                                            <span id="userSecurityCode">---</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; color: var(--gray); text-align: center; display:flex; justify-content:center; align-items:center; gap:6px; margin-top:8px;">
+                            <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap card to flip
+                        </div>
+
+                        <div class="credentials-row">
+                            <div class="cred-box">
+                                <div class="cred-label">Student ID</div>
+                                <div class="cred-value" id="credStudentId">---</div>
+                            </div>
+                            <div class="cred-box">
+                                <div class="cred-label">Security Code</div>
+                                <div class="cred-value" id="credSecCode">---</div>
+                            </div>
+                        </div>
+                        
+                        <a href="admissions-letter.html" target="_blank" class="btn-logout" style="background:var(--maroon); color:#fff; border:none; width:100%; max-width:520px; justify-content:center; padding:16px; margin-top:8px;">
+                            <i data-lucide="file-text"></i> View Admissions Letter
+                        </a>
+                    </div>
+                </div>
+
+                <!-- UPDATES & EVENTS -->
+                <div class="card">
+                    <div class="card-header"><div class="card-title"><i data-lucide="bell"></i> Latest Updates</div></div>
                     <div class="event-item">
                         <div class="event-date">13<span>Jan</span></div>
                         <div class="event-info">
                             <h4>AE 2027 Examinations</h4>
-                            <p>Admission Examinations for Mathematics and Physics take place today. Check your timetable for exact times.</p>
+                            <p>Admission Examinations take place. Ensure you have your Student ID and Security Code ready.</p>
                         </div>
                     </div>
                     <div class="event-item">
@@ -161,87 +218,15 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                     </div>
                 </div>
 
-                <!-- ID CARD -->
-                <div class="card" style="grid-column: 1 / -1;">
-                    <div class="card-header">
-                        <div class="card-title"><i data-lucide="credit-card"></i> Student ID Card</div>
-                    </div>
-                    
-                    <div class="id-section">
-                        <div>
-                            <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
-                                <div class="id-card-inner">
-                                    <!-- FRONT -->
-                                    <div class="id-card-front">
-                                        <div class="watermark">∆</div>
-                                        <div class="card-content">
-                                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                                                <div class="card-logo">∆ IFB</div>
-                                                <div class="card-type">Student ID</div>
-                                            </div>
-                                            <div class="card-name" id="userName">Loading...</div>
-                                            <div class="card-role" id="userStatus">Applicant</div>
-                                            <div style="flex-grow:1;"></div>
-                                            <div class="card-id" id="userStudentId">---</div>
-                                            <div class="barcode-wrap-front"><svg id="barcodeSvg"></svg></div>
-                                        </div>
-                                    </div>
-                                    <!-- BACK -->
-                                    <div class="id-card-back">
-                                        <div class="card-content" style="align-items:center; justify-content:center;">
-                                            <div class="qr-wrap" id="qrCodeContainer"></div>
-                                            <div class="card-back-text">Security Code</div>
-                                            <div class="card-sec-code">
-                                                <span id="userSecurityCode">---</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="font-size: 12px; color: var(--gray); margin-top: 8px; text-align: center; display:flex; justify-content:center; align-items:center; gap:4px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Tap to flip</div>
-                        </div>
-
-                        <div class="credentials-col">
-                            <div class="cred-row">
-                                <div>
-                                    <div class="cred-label">Student ID</div>
-                                    <div class="cred-value" id="credStudentId">---</div>
-                                </div>
-                            </div>
-                            <div class="cred-row">
-                                <div>
-                                    <div class="cred-label">Security Code</div>
-                                    <div class="cred-value" id="credSecCode">---</div>
-                                </div>
-                            </div>
-                            <a href="admissions-letter.html" target="_blank" class="btn-primary" style="width:100%; text-align:center; margin-top:8px; display:block;">View Admissions Letter</a>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- QUICK ACTIONS -->
                 <div class="card">
                     <div class="card-header"><div class="card-title"><i data-lucide="zap"></i> Quick Actions</div></div>
                     <div class="action-grid">
-                        <a href="resources.html" class="action-btn">
-                            <i data-lucide="book-open"></i> Resources
-                        </a>
-                        <a href="ae-timetable.html" class="action-btn">
-                            <i data-lucide="calendar"></i> Timetable
-                        </a>
-                        <a href="exam-gateway.html" class="action-btn" style="border-color: var(--maroon);">
-                            <i data-lucide="monitor-play"></i> Exam Portal
-                        </a>
-                        <a href="courses-ifb.html" class="action-btn">
-                            <i data-lucide="file-text"></i> Prospectus
-                        </a>
+                        <a href="resources.html" class="action-btn"><i data-lucide="book-open"></i> Resources</a>
+                        <a href="ae-timetable.html" class="action-btn"><i data-lucide="calendar"></i> Timetable</a>
+                        <a href="exam-gateway.html" class="action-btn" style="border-color: var(--maroon);"><i data-lucide="monitor-play"></i> Exam Portal</a>
+                        <a href="courses-ifb.html" class="action-btn"><i data-lucide="file-text"></i> Prospectus</a>
                     </div>
-                </div>
-
-                <!-- COURSES -->
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i data-lucide="graduation-cap"></i> My Courses</div></div>
-                    <div class="course-list" id="courseDisplayList"></div>
                 </div>
 
             </div>
@@ -259,71 +244,73 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+function showError(msg) {
+    const el = document.getElementById('errorAlert');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
+    try {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
 
-    if (docSnap.exists()) {
-        let data = docSnap.data();
+        if (docSnap.exists()) {
+            let data = docSnap.data();
 
-        // Generate ID if missing (should happen on first dashboard load)
-        if (!data.studentId) {
-            const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
-            const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
-            const random3 = Math.floor(100 + Math.random()*900);
-            const studentId = `2701${yy}${mm}${dd}${random3}`;
-            const securityCode = Math.random().toString(36).substring(2,8).toUpperCase();
+            if (!data.studentId) {
+                const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
+                const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
+                const random3 = Math.floor(100 + Math.random()*900);
+                const studentId = `2701${yy}${mm}${dd}${random3}`;
+                const securityCode = Math.random().toString(36).substring(2,8).toUpperCase();
+                
+                await updateDoc(docRef, { studentId, securityCode });
+                data.studentId = studentId;
+                data.securityCode = securityCode;
+            }
+
+            document.getElementById('topbarName').textContent = data.name || "Student";
+            document.getElementById('topbarRole').textContent = data.status || "Applicant";
+            document.getElementById('topbarAvatar').textContent = data.name ? data.name.charAt(0).toUpperCase() : "S";
             
-            await updateDoc(docRef, { studentId, securityCode });
-            data.studentId = studentId;
-            data.securityCode = securityCode;
+            document.getElementById('userName').textContent = data.name || "Student";
+            document.getElementById('userStatus').textContent = data.status || "Applicant";
+            document.getElementById('userStudentId').textContent = data.studentId;
+            document.getElementById('userSecurityCode').textContent = data.securityCode;
+            document.getElementById('credStudentId').textContent = data.studentId;
+            document.getElementById('credSecCode').textContent = data.securityCode;
+
+            setTimeout(() => {
+                try { JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0 }); } catch (e) { console.warn("Barcode error", e); }
+                try {
+                    const qr = qrcode(0, 'M');
+                    qr.addData(`ID: ${data.studentId}\nName: ${data.name}`);
+                    qr.make();
+                    document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+                } catch (e) { console.warn("QR error", e); }
+            }, 100);
+
+            lucide.createIcons();
+        } else {
+            window.location.href = "admission.html";
         }
-
-        document.getElementById('topbarName').textContent = data.name;
-        document.getElementById('topbarRole').textContent = data.status || "Applicant";
-        document.getElementById('topbarAvatar').textContent = data.name ? data.name.charAt(0).toUpperCase() : "S";
-        
-        document.getElementById('userName').textContent = data.name;
-        document.getElementById('userStatus').textContent = data.status || "Applicant";
-        document.getElementById('userStudentId').textContent = data.studentId;
-        document.getElementById('userSecurityCode').textContent = data.securityCode;
-        document.getElementById('credStudentId').textContent = data.studentId;
-        document.getElementById('credSecCode').textContent = data.securityCode;
-
-        // Render courses
-        const container = document.getElementById('courseDisplayList');
-        container.innerHTML = '';
-        (data.courses || []).forEach(c => {
-            const div = document.createElement('div');
-            div.className = 'cred-row';
-            div.style.marginBottom = '8px';
-            div.innerHTML = `<div class="cred-value" style="font-family:Inter;">${c}</div> <i data-lucide="check-circle" style="color:var(--success);"></i>`;
-            container.appendChild(div);
-        });
-
-        // Generate Barcode and QR
-        setTimeout(() => {
-            try { JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 40, displayValue: false, margin: 0 }); } catch (e) {}
-            try {
-                const qr = qrcode(0, 'M');
-                qr.addData(`ID: ${data.studentId}\nName: ${data.name}`);
-                qr.make();
-                document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
-            } catch (e) {}
-        }, 100);
-
-        lucide.createIcons();
-    } else {
-        // If user exists in Auth but not Firestore, send to apply
-        window.location.href = "admission.html";
+    } catch (error) {
+        console.error("Dashboard Error:", error);
+        showError("Database connection error. Please check your internet and refresh.");
     }
 });
 
 window.signOut = async function() {
-    await firebaseSignOut(auth);
-    window.location.href = "index.html";
+    try {
+        await firebaseSignOut(auth);
+        window.location.href = "index.html";
+    } catch (error) {
+        showError("Failed to sign out. Please refresh the page.");
+    }
 };
 
 lucide.createIcons();
