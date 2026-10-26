@@ -41,7 +41,6 @@ input:focus { border-color: var(--maroon); }
         <label>6-Digit Security Code</label>
         <input type="password" id="securityCode" placeholder="A7X2B9" maxlength="6" autocomplete="off">
     </div>
-    <!-- NEW EXAM CODE INPUT -->
     <div class="input-group" id="examCodeGroup">
         <label>Examination Access Code</label>
         <input type="text" id="examCode" placeholder="Provided by Invigilator" maxlength="10" autocomplete="off" style="text-transform: uppercase;">
@@ -55,8 +54,8 @@ input:focus { border-color: var(--maroon); }
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
@@ -64,6 +63,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let isCurrentUserAdmin = false;
+let currentUserDoc = null;
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
@@ -71,7 +71,14 @@ onAuthStateChanged(auth, async (user) => {
     // Check if logged in user is Admin
     if (user.email === "n1nathaniel971@gmail.com") {
         isCurrentUserAdmin = true;
-        document.getElementById('examCodeGroup').style.display = 'none'; // Admin doesn't need code
+        document.getElementById('examCodeGroup').style.display = 'none'; 
+    }
+
+    // Fetch the user's document securely
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+        currentUserDoc = docSnap.data();
     }
 });
 
@@ -93,6 +100,13 @@ window.verifyAndEnter = async function() {
     btn.innerText = "Verifying..."; btn.disabled = true;
 
     try {
+        if (!currentUserDoc) {
+            errorBox.innerText = "Student record not found.";
+            errorBox.style.display = 'block';
+            btn.innerText = "Verify & Enter Session"; btn.disabled = false;
+            return;
+        }
+
         // 1. Verify Exam Code (If not admin)
         if (!isCurrentUserAdmin) {
             const configSnap = await getDoc(doc(db, "config", "examSettings"));
@@ -105,7 +119,6 @@ window.verifyAndEnter = async function() {
                     return;
                 }
             } else {
-                // Fallback if no config set
                 if (examCodeInput !== "IFB2027") {
                     errorBox.innerText = "Invalid Examination Access Code.";
                     errorBox.style.display = 'block';
@@ -115,25 +128,14 @@ window.verifyAndEnter = async function() {
             }
         }
 
-        // 2. Verify Student ID & Security Code
-        const q = query(collection(db, "users"), where("studentId", "==", id), where("securityCode", "==", code));
-        const snap = await getDocs(q);
-
-        if (!snap.empty) {
-            if (auth.currentUser.uid !== snap.docs[0].id && !isCurrentUserAdmin) {
-                 errorBox.innerText = "Security Error: You cannot log in as another student.";
-                 errorBox.style.display = 'block';
-                 btn.innerText = "Verify & Enter Session"; btn.disabled = false;
-                 return;
-            }
-
-            const userData = snap.docs[0].data();
+        // 2. Verify Student ID & Security Code against the fetched document
+        if (currentUserDoc.studentId === id && currentUserDoc.securityCode === code) {
             sessionStorage.setItem("examStudentId", id);
             sessionStorage.setItem("examSecurityCode", code);
-            sessionStorage.setItem("examStudentName", userData.name);
+            sessionStorage.setItem("examStudentName", currentUserDoc.name);
             sessionStorage.setItem("isAdmin", isCurrentUserAdmin.toString());
             
-            const examCodeVal = (userData.courses && userData.courses.includes("Mathematics")) ? "AE-S-MATH" : "AE-W-AEW";
+            const examCodeVal = (currentUserDoc.courses && currentUserDoc.courses.includes("Mathematics")) ? "AE-S-MATH" : "AE-W-AEW";
             sessionStorage.setItem("examCode", examCodeVal);
 
             window.location.href = "exam-session.html";
