@@ -27,9 +27,17 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
   
+  // EXPOSE FUNCTIONS TO GLOBAL SCOPE FOR THE MAIN SCRIPT
   window.db = db;
   window.auth = auth;
   window.firebaseSignOut = signOut;
+  window.doc = doc;
+  window.setDoc = setDoc;
+  window.getDoc = getDoc;
+  window.collection = collection;
+  window.getDocs = getDocs;
+  window.arrayUnion = arrayUnion;
+  window.serverTimestamp = serverTimestamp;
   
   onAuthStateChanged(auth, (user) => {
       if (user && user.email === "n1nathaniel971@gmail.com") {
@@ -2141,7 +2149,7 @@
       try {
           if (!window.db) throw new Error("Firebase not initialized");
           
-          const querySnapshot = await getDocs(collection(window.db, "examLogs"));
+          const querySnapshot = await window.getDocs(window.collection(window.db, "examLogs"));
           tbody.innerHTML = ''; 
           
           if (querySnapshot.empty) {
@@ -2198,8 +2206,8 @@
       try {
           if (!window.db) throw new Error("Firebase not initialized");
           
-          const docRef = doc(window.db, "examLogs", docId);
-          const docSnap = await getDoc(docRef);
+          const docRef = window.doc(window.db, "examLogs", docId);
+          const docSnap = await window.getDoc(docRef);
           
           if (docSnap.exists()) {
               const data = docSnap.data();
