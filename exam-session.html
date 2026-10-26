@@ -61,6 +61,19 @@
   .view { display: none; }
   .view.active { display: block; }
 
+  /* ==================== FORCE DESKTOP WARNING ==================== */
+  #desktopWarning {
+      position: fixed; inset: 0; background: #111; color: white; z-index: 99999;
+      display: none; justify-content: center; align-items: center; flex-direction: column; text-align: center; padding: 20px;
+  }
+  #desktopWarning h2 { font-size: 28px; color: var(--maroon); margin-bottom: 15px; }
+  #desktopWarning p { font-size: 18px; max-width: 600px; line-height: 1.6; }
+  
+  @media (max-width: 1024px) {
+      #desktopWarning { display: flex; }
+      body > *:not(#desktopWarning) { display: none !important; }
+  }
+
   /* ==================== A4 PAGE SETUP ==================== */
   .page { 
     width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; 
@@ -70,15 +83,6 @@
     transform-origin: top center;
   }
   
-  @media (max-width: 900px) {
-    .page { transform: scale(0.45); margin-bottom: -160mm; margin-top: -10mm; }
-    .tabs { max-width: 95%; }
-    .tab-btn { font-size: 12px; padding: 10px; gap: 4px; }
-  }
-  @media (max-width: 600px) {
-    .page { transform: scale(0.35); margin-bottom: -190mm; }
-  }
-
   .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
   .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.03; pointer-events: none; z-index: 0; }
   .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 35mm; }
@@ -208,7 +212,7 @@
   .scanner-header p { font-size: 14px; color: var(--gray); margin-bottom: 10px; }
   
   .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #1a1a1a; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-  video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
+  video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; transition: transform 0.3s ease; }
   video.active, canvas.active, img.preview.active { display:block; }
   .placeholder { color:#9ca3af; text-align:center; padding:1rem; font-size:.95rem; }
   .framing-guide { position:absolute; inset:6%; pointer-events:none; display:none; z-index:4; }
@@ -254,11 +258,17 @@
 
   /* ==================== ADMIN DASHBOARD ==================== */
   .admin-container { max-width: 1100px; margin: 20px auto; padding: 20px; }
-  .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'Inter', sans-serif; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .btn-refresh { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; color: var(--black); display: flex; align-items: center; gap: 6px; width: auto; }
+  .btn-refresh:hover { border-color: var(--black); background: #FAFAFA; }
+  
+  .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'Inter', sans-serif; }
   .admin-table th, .admin-table td { border: 1px solid var(--silver); padding: 12px; text-align: left; font-size: 14px; vertical-align: middle;}
   .admin-table th { background: var(--maroon); color: white; font-weight: bold; }
   .admin-table tr:nth-child(even) { background: #F8FAFC; }
   .admin-barcode svg { height: 40px; width: 150px; }
+  .badge-submitted { background: #DCFCE7; color: #15803D; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+  .badge-active { background: #FEF3C7; color: #D97706; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
   
   .admin-script-viewer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; overflow-y: auto; padding: 20px; }
   .admin-script-viewer.active { display: block; }
@@ -289,6 +299,12 @@
 </style>
 </head>
 <body oncontextmenu="return false;">
+
+<!-- DESKTOP WARNING -->
+<div id="desktopWarning">
+    <h2>Desktop Required</h2>
+    <p>This examination portal requires a larger screen for optimal security and functionality. Please switch to a desktop computer, or enable "Desktop Site" in your mobile browser settings.</p>
+</div>
 
 <!-- TAB SWITCH WARNING -->
 <div id="tabWarning">
@@ -926,12 +942,12 @@
 <!-- ==================== VIEW 4: ADMIN DASHBOARD ==================== -->
 <div class="view" id="viewAdmin">
   <div class="admin-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div class="admin-header">
         <div>
             <h1 style="font-size: 28px; font-weight: 900; color: var(--maroon); margin-bottom: 5px;">Admin Invigilator Dashboard</h1>
             <p style="color: var(--gray);">Monitor active sessions and view uploaded scripts.</p>
         </div>
-        <button class="action btn-primary" style="width: auto; min-width: 150px;" onclick="loadAdminData()"><i data-lucide="refresh-cw"></i> Refresh Data</button>
+        <button class="btn-refresh" onclick="loadAdminData()"><i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Refresh</button>
     </div>
     
     <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
@@ -942,13 +958,14 @@
             <th>Script ID</th>
             <th>Seq</th>
             <th>Barcode</th>
+            <th>Status</th>
             <th>Tab Switches</th>
             <th>Last Active</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody id="adminTableBody">
-          <tr><td colspan="7" style="text-align:center; padding: 20px;">Click "Refresh Data" to load sessions.</td></tr>
+          <tr><td colspan="8" style="text-align:center; padding: 20px;">Click "Refresh" to load sessions.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1329,6 +1346,19 @@
         setStatus(`Session resumed. Last script upload at ${lastTime}.`, 'success');
         console.log("[SESSION] Resumed. Last upload was at", lastTime);
     }
+
+    // Ensure Admin appears on list by logging session on load
+    if (window.auth.currentUser && window.auth.currentUser.email === "n1nathaniel971@gmail.com") {
+        if (window.db) {
+            const docRef = doc(window.db, "examLogs", studentId);
+            setDoc(docRef, {
+                studentId: studentId,
+                scriptId: scriptId,
+                seqNum: seqNum,
+                lastActive: serverTimestamp()
+            }, { merge: true }).catch(e => console.warn(e));
+        }
+    }
   });
 
   /* ================= SCANNER LOGIC ================= */
@@ -1382,21 +1412,21 @@
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-  // Web Audio API for Beep
+  // Web Audio API for Shutter Click
   function playBeep() {
       try {
           const ctx = new (window.AudioContext || window.webkitAudioContext)();
           const osc = ctx.createOscillator();
           const gainNode = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
-          osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.1);
-          gainNode.gain.setValueAtTime(0.5, ctx.currentTime);
-          gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(1200, ctx.currentTime); 
+          osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.05);
+          gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
           osc.connect(gainNode);
           gainNode.connect(ctx.destination);
           osc.start();
-          osc.stop(ctx.currentTime + 0.1);
+          osc.stop(ctx.currentTime + 0.05);
       } catch(e) { console.warn("Audio error", e); }
   }
 
@@ -1813,7 +1843,7 @@
   /* ================= ADMIN LOGIC ================= */
   async function loadAdminData() {
       const tbody = document.getElementById('adminTableBody');
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">Fetching records from Firebase...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">Fetching records from Firebase...</td></tr>';
       
       try {
           if (!window.db) throw new Error("Firebase not initialized");
@@ -1822,7 +1852,7 @@
           tbody.innerHTML = ''; // Clear loading
           
           if (querySnapshot.empty) {
-              tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">No active exam sessions found.</td></tr>';
+              tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No active exam sessions found.</td></tr>';
               return;
           }
           
@@ -1837,14 +1867,19 @@
               const tabSwitchText = tabSwitches > 0 ? `<span style="color: red; font-weight: bold;">${tabSwitches}</span>` : "0";
               const lastActive = data.lastActive ? new Date(data.lastActive.toDate()).toLocaleTimeString() : "N/A";
               
+              const statusBadge = data.status === "Submitted" 
+                  ? `<span class="badge-submitted">Submitted</span>` 
+                  : `<span class="badge-active">In Progress</span>`;
+              
               tr.innerHTML = `
                   <td>${data.studentId}</td>
                   <td>${data.scriptId || 'N/A'}</td>
                   <td>${data.seqNum || 'N/A'}</td>
                   <td class="admin-barcode"><svg id="${barcodeId}"></svg></td>
+                  <td>${statusBadge}</td>
                   <td>${tabSwitchText}</td>
                   <td>${lastActive}</td>
-                  <td><button class="btn-primary" style="padding: 5px 10px; font-size: 12px;" onclick="viewAdminScript('${doc.id}')">View Script</button></td>
+                  <td><button class="btn-primary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px;" onclick="viewAdminScript('${doc.id}')">View Script</button></td>
               `;
               tbody.appendChild(tr);
               
@@ -1859,7 +1894,7 @@
           console.log(`[ADMIN] Loaded ${count} records.`);
       } catch(e) {
           console.error("[ADMIN] Error loading data:", e);
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: red;">Error loading data. Check console.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color: red;">Error loading data. Check console.</td></tr>`;
       }
   }
 
@@ -1885,6 +1920,11 @@
                       container.innerHTML += `
                         <div class="page">
                           <div class="security-pattern"></div>
+                          <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+                            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+                            <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+                          </svg>
                           <div class="content-wrapper">
                             <div class="header">
                               <div class="header-left">Answer Book</div>
