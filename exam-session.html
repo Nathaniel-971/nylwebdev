@@ -49,7 +49,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: var(--black); padding-bottom: 50px; user-select: none; -webkit-user-select: none; }
 
-  /* FIX UI JUMPING: Force fixed heights for icons and tabs */
+  /* FIX UI JUMPING */
   .tab-btn i, .action i, .nav-item i { width: 18px; height: 18px; flex-shrink: 0; }
   .tab-btn { min-height: 54px; }
   .action { min-height: 50px; }
@@ -61,7 +61,6 @@
   .btn-logout:hover { background: #FCA5A5; }
   .timer { background: var(--maroon); color: white; padding: 8px 16px; border-radius: 8px; font-family: monospace; font-size: 18px; font-weight: bold; }
 
-  /* MOBILE BANNER (Replaced annoying modal) */
   #mobileBanner { display: none; background: #FEF3C7; color: #92400E; padding: 10px 16px; font-size: 13px; font-weight: 600; text-align: center; border-bottom: 1px solid #FDE68A; }
   @media (max-width: 900px) { #mobileBanner { display: block; } }
 
@@ -72,17 +71,19 @@
   .view { display: none; }
   .view.active { display: block; }
 
-  /* SECURITY BLUR */
   .security-blur { filter: blur(20px); pointer-events: none; opacity: 0.5; }
 
+  /* UNIVERSAL PAGE SETUP (Used by Paper & Answer Book) */
+  @page { size: A4; margin: 0; }
   .page { width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.6; color: #000; transform-origin: top center; }
-
   @media (max-width: 900px) { .page { transform: scale(0.55); margin-bottom: -120mm; margin-top: -10mm; } .tabs { max-width: 95%; } .tab-btn { font-size: 12px; padding: 10px; gap: 4px; } }
   @media (max-width: 600px) { .page { transform: scale(0.42); margin-bottom: -160mm; } }
 
   .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
   .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.03; pointer-events: none; z-index: 0; }
-  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 35mm; }
+  
+  /* FIXED FOOTER OVERLAP: Increased padding to 50mm */
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 50mm; }
 
   .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; padding-bottom: 5px; }
   .header-left { width: 30%; text-align: left; font-weight: bold; color: var(--maroon); }
@@ -98,10 +99,15 @@
   .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
   .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
   .footer-brand .tag { font-size: 7pt; color: var(--black); }
-  .footer-right { color: var(--black); font-style: italic;}
+  
+  /* REMOVED "Please turn over" entirely */
+  .footer-right { display: none !important; } 
+
   .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; }
 
-  /* COVER PAGE SPECIFIC */
+  /* ========================================= */
+  /* PAPER SPECIFIC STYLES                     */
+  /* ========================================= */
   .cover-page { padding: 15mm 20mm 20mm 20mm; }
   .cover-confidential { text-align: center; font-style: italic; font-size: 12pt; margin-bottom: 30px; color: #111;}
   .cover-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; margin-left: 10px;}
@@ -120,14 +126,13 @@
   .cover-barcode-section { margin-left: 10px; font-family: Arial, sans-serif; color: #111; }
   .cover-barcode-section .code-x10 { font-size: 24pt; font-weight: bold; margin-bottom: 5px; letter-spacing: 2px;}
   .cover-bottom-text { text-align: center; font-size: 11pt; font-weight: bold; margin-top: auto; margin-bottom: 20px; line-height: 1.5; color: #111; }
-  .cover-page .footer-brand .name, .cover-page .footer-brand .tag, .cover-page .footer-right, .cover-page .footer-left { color: #7A1F2B; }
 
-  /* INSTRUCTIONS & QUESTIONS */
   .instructions h2 { font-size: 14pt; font-weight: bold; margin-bottom: 20px; font-family: Arial, sans-serif; color: #000;}
   .instructions p { margin-bottom: 15px; font-size: 11pt; }
   .instructions ol { margin-left: 20px; font-family: Arial, sans-serif; font-size: 11pt;}
   .instructions li { margin-bottom: 12px; padding-left: 10px; }
 
+  /* SECURITY: Prevent questions from breaking across pages */
   .question-header { margin: 0 0 20px 0; page-break-inside: avoid; flex-shrink: 0; }
   .question-header h2 { font-size: 14pt; font-weight: bold; font-family: 'Times New Roman', serif; color: #000;}
   .question-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; margin-bottom: 15px; }
@@ -149,12 +154,14 @@
   .formula-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
   .formula-item { text-align: center; }
 
-  /* ANSWER BOOK SPECIFIC */
+  /* ========================================= */
+  /* ANSWER BOOK SPECIFIC STYLES (From Template) */
+  /* ========================================= */
   .cover-header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
   .cover-brand { display: flex; align-items: center; gap: 15px; width: 60%;}
   .top-right-container { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; width: 40%; }
-  .candidate-barcode-box { border: 2px dashed #000; padding: 10px; width: 100%; max-width: 250px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background-color: #FFF5F6; }
-  .candidate-barcode-box .label { font-size: 10pt; font-weight: bold; color: #7A1F2B; margin-bottom: 4px; }
+  .candidate-barcode-box { border: 2px dashed #000; padding: 15px; width: 100%; max-width: 250px; height: 80px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: right; background-color: #FFF5F6; }
+  .candidate-barcode-box .label { font-size: 10pt; font-weight: bold; text-align: center; color: #7A1F2B; }
   .sequence-circle-container { display: flex; align-items: center; gap: 10px; }
   .sequence-circle { width: 45px; height: 45px; border: 2px solid #000; border-radius: 50%; background-color: #FFF5F6; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14pt; }
   .sequence-text { font-size: 9pt; font-weight: bold; text-align: right; line-height: 1.1; color: #7A1F2B; }
@@ -162,12 +169,15 @@
   .form-row { display: flex; gap: 15px; margin-bottom: 10px; }
   .form-box { border: 1.5px solid #000; padding: 5px 8px; display: flex; flex-direction: column; flex: 1; justify-content: center; }
   .form-box label { font-size: 9pt; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; color: #7A1F2B; }
+  
   .block-container { display: flex; gap: 0; }
   .block { width: 22px; height: 25px; border: 1.5px solid #000; border-right: none; background-color: transparent; text-align: center; font-family: monospace; font-size: 14pt; font-weight: bold; outline: none; padding: 0; text-transform: uppercase; }
   .block:last-child { border-right: 1.5px solid #000; }
   .block:focus { background-color: #FFF5F6; }
+  
   .input-line { border-bottom: 1.5px solid #000; height: 25px; width: 100%; display: flex; align-items: flex-end; padding-left: 5px; padding-bottom: 2px; font-weight: bold; font-size: 12pt; background: transparent; border-top: none; border-left: none; border-right: none; outline: none; font-family: inherit; }
   .input-line:focus { background-color: #FFF5F6; }
+
   .marking-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-top: auto; }
   .marking-table th, .marking-table td { border: 1.5px solid #000; padding: 4px; text-align: center; }
   .marking-table th { background-color: #7A1F2B; color: white; font-weight: bold; font-size: 8.5pt; }
@@ -186,31 +196,7 @@
   .marks-area { width: 70px; display: flex; flex-direction: column; align-items: center; padding-top: 10px; background-color: #FFF5F6; }
   .marks-area .marks-title { font-size: 10pt; font-weight: bold; font-style: italic; border-bottom: 1.5px solid #000; width: 100%; text-align: center; padding-bottom: 5px; margin-bottom: 10px; color: #7A1F2B; }
 
-  #answer-book-pages { display: contents; }
-  #viewAnswerBook { perspective: 2200px; perspective-origin: 50% 50%; position: relative; min-height: 100vh; }
-  #viewAnswerBook .page { display: none; margin: 20px auto; will-change: transform, opacity; backface-visibility: hidden; }
-  #viewAnswerBook .page.page-active { display: flex; }
-
-  @keyframes flipOutNext { 0% { transform: rotateY(0deg) scale(1); opacity: 1; } 100% { transform: rotateY(-88deg) scale(0.96); opacity: 0; } }
-  @keyframes flipInNext { 0% { transform: rotateY(88deg) scale(0.96); opacity: 0; } 100% { transform: rotateY(0deg) scale(1); opacity: 1; } }
-  @keyframes flipOutPrev { 0% { transform: rotateY(0deg) scale(1); opacity: 1; } 100% { transform: rotateY(88deg) scale(0.96); opacity: 0; } }
-  @keyframes flipInPrev { 0% { transform: rotateY(-88deg) scale(0.96); opacity: 0; } 100% { transform: rotateY(0deg) scale(1); opacity: 1; } }
-
-  #viewAnswerBook .page.page-flipping-next { animation: flipOutNext 560ms cubic-bezier(0.5, 0, 0.5, 1) forwards; }
-  #viewAnswerBook .page.page-active.page-flipping-next { animation: flipInNext 560ms cubic-bezier(0.5, 0, 0.5, 1) forwards; }
-  #viewAnswerBook .page.page-flipping-prev { animation: flipOutPrev 560ms cubic-bezier(0.5, 0, 0.5, 1) forwards; }
-  #viewAnswerBook .page.page-active.page-flipping-prev { animation: flipInPrev 560ms cubic-bezier(0.5, 0, 0.5, 1) forwards; }
-
-  @media (max-width: 900px) { #viewAnswerBook .page.page-active { transform: scale(0.55); margin-bottom: -120mm; margin-top: -10mm; } }
-  @media (max-width: 600px) { #viewAnswerBook .page.page-active { transform: scale(0.42); margin-bottom: -160mm; } }
-
-  .book-nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid var(--silver); border-radius: 50px; padding: 6px 10px; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); z-index: 100; font-family: 'Inter', sans-serif; }
-  .book-nav.visible { display: flex; }
-  .book-nav-btn { background: var(--maroon); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, opacity 0.2s; font-family: inherit; }
-  .book-nav-btn:hover:not(:disabled) { background: #5A1620; }
-  .book-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-  .book-nav-indicator { font-size: 12px; font-weight: 800; color: var(--maroon); min-width: 180px; text-align: center; padding: 0 6px; }
-
+  /* SCANNER SPECIFIC */
   .scanner-ui { max-width: 600px; margin: 20px auto; background: white; border-radius: 16px; padding: 24px; border: 1px solid var(--silver); box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 16px; }
   .scanner-header { text-align: center; margin-bottom: 10px; }
   .scanner-header h2 { font-size: 22px; font-weight: 900; color: var(--maroon); margin-bottom: 5px; }
@@ -262,11 +248,16 @@
   .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .btn-refresh { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; color: var(--black); display: flex; align-items: center; gap: 6px; width: auto; min-width: unset; flex: none; }
   .btn-refresh:hover { border-color: var(--black); background: #FAFAFA; }
+  
   .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'Inter', sans-serif; }
   .admin-table th, .admin-table td { border: 1px solid var(--silver); padding: 12px; text-align: left; font-size: 14px; vertical-align: middle;}
   .admin-table th { background: var(--maroon); color: white; font-weight: bold; }
   .admin-table tr:nth-child(even) { background: #F8FAFC; }
   .admin-barcode svg { height: 40px; width: 150px; }
+  
+  .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+  .status-active { background-color: var(--success); box-shadow: 0 0 5px var(--success); }
+  .status-offline { background-color: var(--error); }
   .badge-submitted { background: #DCFCE7; color: #15803D; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
   .badge-active { background: #FEF3C7; color: #D97706; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
   .badge-offline { background: #F1F5F9; color: #64748B; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
@@ -295,7 +286,6 @@
     .exam-header, .tabs, #tabWarning, #uploadOverlay, #mobileBanner, .view:not(.active), .admin-viewer-header, .admin-container, .book-nav { display: none !important; }
     .view.active { display: block !important; padding: 0; margin: 0; }
     
-    /* Print Fix for Admin Viewer */
     .admin-script-viewer { position: static; background: none; padding: 0; display: block !important; overflow: visible;}
     .admin-script-viewer .page { margin: 0; box-shadow: none; page-break-after: always; transform: none !important; }
     .admin-script-viewer:not(.active) { display: none !important; }
@@ -307,7 +297,6 @@
 </head>
 <body oncontextmenu="return false;">
 
-<!-- MOBILE BANNER -->
 <div id="mobileBanner">
   <i data-lucide="monitor" style="width: 14px; height: 14px; display: inline; vertical-align: middle; margin-right: 4px;"></i>
   For the best experience, enable <strong>Desktop Site</strong> in your browser settings.
@@ -422,109 +411,27 @@
         <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
         <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
       </div>
-      <div class="footer-right">Please turn over</div>
     </div>
   </div>
   
-  <!-- ADD REMAINING PAGES HERE (Truncated for brevity, paste from previous code) -->
+  <!-- QUESTION PAPER PAGES (Truncated for space, assume full content here) -->
   <div class="page">
     <div class="content-wrapper">
         <h2 style="text-align: center; color: var(--maroon); margin-top: 50px;">Questions 1 - 6</h2>
         <p style="text-align: center; color: var(--gray); margin-top: 20px;">(Refer to the printed paper or scroll down in the full version)</p>
-    </div>
-  </div>
-</div>
-
-<!-- VIEW: ANSWER BOOK -->
-<div class="view" id="viewAnswerBook">
-  <div class="page" data-book="1" data-book-page="1">
-    <div class="security-pattern"></div>
-    <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-      <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-      <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-    </svg>
-    <div class="content-wrapper">
-      <div class="cover-header-container">
-        <div class="cover-brand">
-          <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-              <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-              <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-          </svg>
-          <div class="cover-header-text">
-            <div class="title">Institute of Board</div>
-            <div class="sub">Department:<br>Examination Board<br>NON-ACCREDITED ACADEMIC INSTITUTION</div>
-          </div>
-        </div>
-        <div class="top-right-container">
-          <div class="candidate-barcode-box">
-            <div class="label" id="scriptLabel">StudentID—ScriptID</div>
-            <svg id="coverBarcode" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
-          </div>
-          <div class="sequence-circle-container">
-            <div class="sequence-circle" id="coverSequence"></div>
-            <div class="sequence-text">Sequence Number<br>(1 - 30)</div>
-          </div>
-        </div>
-      </div>
-      <div class="answer-book-title">IFB Answer Book</div>
-      <div class="form-row">
-        <div class="form-box" style="flex: 2;"><label>Student ID</label><div class="block-container" id="idBlocks"></div></div>
-        <div class="form-box" style="flex: 1;"><label>Security Code</label><div class="block-container" id="secBlocks"></div></div>
-      </div>
-      <div class="form-row">
-        <div class="form-box" style="flex: 2;"><label>Date (DDMMYYYY)</label><div class="block-container" id="dateBlocks"></div></div>
-        <div class="form-box" style="flex: 1;"><label>Book Number</label><input type="text" class="input-line" id="valBookNum" value="1"></div>
-        <div class="form-box" style="flex: 1;"><label>Of</label><input type="text" class="input-line" id="valTotalBooks" value="1"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-box" style="flex: 2;"><label>Subject Code</label><div class="block-container" id="subjCodeBlocks"></div></div>
-        <div class="form-box" style="flex: 1;"><label>Paper Number</label><input type="text" class="input-line" id="valPaperNum" value="1" style="text-align: center;"></div>
-      </div>
-      <div class="form-row"><div class="form-box" style="flex: 1;"><label>Subject Name</label><input type="text" class="input-line" id="valSubjectName"></div></div>
-      <div class="form-row" style="margin-bottom: 15px;"><div class="form-box" style="flex: 1;"><label>Curriculum:</label><input type="text" class="input-line" id="valCurriculum"></div></div>
-      <table class="marking-table">
-        <thead>
-          <tr><th colspan="2">MARKER</th><th colspan="5">MODERATOR'S INITIALS IN RELEVANT BLOCK</th><th colspan="2">RE-MARK/RE-CHECK</th></tr>
-          <tr>
-            <th style="width: 15%;">Marks</th><th style="width: 35%;">Marker's Code & Initials</th>
-            <th style="width: 10%;">Marks</th><th style="width: 8%;">DS</th><th style="width: 8%;">Ge</th><th style="width: 8%;">GP</th><th style="width: 8%;">Cl</th>
-            <th style="width: 10%;">Marks</th><th style="width: 15%;">Initials</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr class="total-row"><td colspan="2" class="text-left" style="text-align: right; padding-right: 15px;">TOTAL:</td><td colspan="7"></td></tr>
-          <tr class="total-row"><td colspan="2" class="text-left" style="font-size: 8pt;">CONTROLLED AND CERTIFIED CORRECT</td><td colspan="7"></td></tr>
-        </tbody>
-      </table>
     </div>
     <div class="footer">
       <div class="footer-left">
         <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
         <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
       </div>
-      <div class="footer-right">Copyright reserved</div>
     </div>
   </div>
+</div>
 
+<!-- VIEW: ANSWER BOOK (NEW TEMPLATE) -->
+<div class="view" id="viewAnswerBook">
   <div id="answer-book-pages"></div>
-
-  <div class="book-nav" id="bookNav">
-    <button class="book-nav-btn" id="bookNavPrev" onclick="turnBookPage(-1)" aria-label="Previous page">◀</button>
-    <span class="book-nav-indicator" id="bookNavIndicator">1 / 25</span>
-    <button class="book-nav-btn" id="bookNavNext" onclick="turnBookPage(1)" aria-label="Next page">▶</button>
-  </div>
 </div>
 
 <!-- VIEW: SCANNER -->
@@ -607,24 +514,25 @@
 
 <!-- VIEW: ADMIN -->
 <div class="view" id="viewAdmin">
-  <div class="admin-container">
+  <div class="admin-container" id="adminRosterContainer">
     <div class="admin-header">
         <div>
             <h1 style="font-size: 28px; font-weight: 900; color: var(--maroon); margin-bottom: 5px;">Admin Invigilator Dashboard</h1>
             <p style="color: var(--gray);">Monitor active sessions and view uploaded scripts.</p>
         </div>
         <div style="display:flex; gap:10px;">
-            <button class="btn-refresh" onclick="openExamCodeSettings()" style="border-color:var(--maroon); color:var(--maroon);"><i data-lucide="settings" style="width:16px;height:16px;"></i> Session Settings</button>
+            <button class="btn-refresh" onclick="downloadAdminRoster()" style="border-color:var(--maroon); color:var(--maroon);"><i data-lucide="download" style="width:16px;height:16px;"></i> Download A4 Roster</button>
+            <button class="btn-refresh" onclick="openExamCodeSettings()"><i data-lucide="settings" style="width:16px;height:16px;"></i> Settings</button>
             <button class="btn-refresh" onclick="loadAdminData()"><i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Refresh</button>
         </div>
     </div>
     <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-      <table class="admin-table">
+      <table class="admin-table" id="adminTable">
         <thead>
-          <tr><th>Student ID</th><th>Script ID</th><th>Seq</th><th>Barcode</th><th>Status</th><th>Tab Switches</th><th>Last Active</th><th>Action</th></tr>
+          <tr><th>Status</th><th>Student ID</th><th>Name</th><th>Barcode</th><th>Tab Switches</th><th>Last Active</th><th>Action</th></tr>
         </thead>
         <tbody id="adminTableBody">
-          <tr><td colspan="8" style="text-align:center; padding: 20px;">Click "Refresh" to load sessions.</td></tr>
+          <tr><td colspan="7" style="text-align:center; padding: 20px;">Click "Refresh" to load sessions.</td></tr>
         </tbody>
       </table>
     </div>
@@ -645,10 +553,10 @@
 <script>
   /* ================= CONFIG & STATE ================= */
   const PAGES_PER_BOOK = 23;
-  const BOOK_STATE = { currentIdx: 0, total: 0, isFlipping: false, flipDir: 1 };
-
+  
   const studentId = sessionStorage.getItem('examStudentId');
   const secCode = sessionStorage.getItem('examSecurityCode');
+  const studentName = sessionStorage.getItem('examStudentName');
   const examCode = sessionStorage.getItem('examCode');
   const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
 
@@ -666,11 +574,6 @@
   if (!seqNum) {
       seqNum = Math.floor(Math.random() * 30) + 1;
       sessionStorage.setItem('examSeqNum', seqNum.toString());
-  }
-
-  const scriptLabel = document.getElementById('scriptLabel');
-  if (scriptLabel) {
-      scriptLabel.innerText = `${studentId}—${scriptId}`;
   }
 
   window.logout = async function() {
@@ -712,7 +615,6 @@
     document.getElementById('examTimer').innerText = `${h}:${m}:${s}`;
   }, 1000);
 
-  // SECURITY: Tab Switch Detection
   document.addEventListener("visibilitychange", async () => {
     if (document.hidden) {
       const timestamp = new Date().toISOString();
@@ -737,13 +639,10 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
     if (tab === 'paper') { document.getElementById('viewPaper').classList.add('active'); document.getElementById('tabPaper').classList.add('active'); }
-    else if (tab === 'answer') { document.getElementById('viewAnswerBook').classList.add('active'); document.getElementById('tabAnswer').classList.add('active'); applyPagedView(); }
+    else if (tab === 'answer') { document.getElementById('viewAnswerBook').classList.add('active'); document.getElementById('tabAnswer').classList.add('active'); }
     else if (tab === 'scanner') { document.getElementById('viewScanner').classList.add('active'); document.getElementById('tabScanner').classList.add('active'); }
     else if (tab === 'register') { document.getElementById('viewRegister').classList.add('active'); document.getElementById('tabRegister').classList.add('active'); }
     else if (tab === 'admin') { document.getElementById('viewAdmin').classList.add('active'); document.getElementById('tabAdmin').classList.add('active'); loadAdminData(); }
-
-    const nav = document.getElementById('bookNav');
-    if (nav) nav.classList.toggle('visible', tab === 'answer');
 
     if (tab !== 'scanner') stopCamera();
     if (tab !== 'register') stopCameraReg();
@@ -761,79 +660,21 @@
         container.appendChild(input);
     }
   }
-  createBlocks('idBlocks', 13);
-  createBlocks('secBlocks', 6);
-  createBlocks('dateBlocks', 8);
-  createBlocks('subjCodeBlocks', 7);
-
-  function blockInputsHtml(count) {
-    let html = '';
-    for (let i = 0; i < count; i++) {
-      html += `<input type="text" class="block" maxlength="1" oninput="if(this.value.length===1){const n=this.nextElementSibling;if(n&&n.classList.contains('block'))n.focus();}">`;
-    }
-    return html;
-  }
-
-  function fillBlocks(containerId, text) {
-      if (!text) return;
-      const inputs = document.querySelectorAll(`#${containerId} input`);
-      const str = String(text);
-      for (let i = 0; i < str.length && i < inputs.length; i++) { inputs[i].value = str[i].toUpperCase(); }
-  }
-  document.getElementById('coverSequence').innerText = seqNum;
-  fillBlocks('idBlocks', studentId);
-  fillBlocks('secBlocks', secCode);
-  fillBlocks('subjCodeBlocks', '270001F');
-  document.getElementById('valSubjectName').value = "Mathematics";
-  document.getElementById('valCurriculum').value = "IFB-AE";
-
-  const today = new Date();
-  const dateStr = String(today.getDate()).padStart(2, '0') + String(today.getMonth() + 1).padStart(2, '0') + String(today.getFullYear());
-  fillBlocks('dateBlocks', dateStr);
-
-  function makeBarcodes() {
-    if (typeof JsBarcode !== "function") return;
-    const totalBooks = Math.max(1, Math.ceil((window.captures ? captures.length : 0) / PAGES_PER_BOOK));
-    const coverSuffix = totalBooks > 1 ? '-B1' : '';
-    try {
-      JsBarcode("#coverBarcode", `${studentId}-${scriptId}${coverSuffix}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 });
-    } catch (e) { console.warn(e); }
-    document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
-      try {
-        JsBarcode(el, el.dataset.barcode || "270001F", {
-          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
-          height: parseInt(el.dataset.bcHeight || "30", 10),
-          displayValue: el.dataset.bcDisplay === "true",
-          font: "monospace", fontSize: parseInt(el.dataset.bcFontSize || "12", 10), textMargin: 2, margin: 0,
-          background: "#ffffff", lineColor: "#111111"
-        });
-      } catch (e) { console.warn(e); }
-    });
-  }
-
-  function makeQRCodes() {
-    if (typeof qrcode !== "function") return;
-    document.querySelectorAll(".footer-qr").forEach(function (el) {
-      try {
-        var qr = qrcode(0, "M");
-        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app");
-        qr.make();
-        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
-      } catch (e) { console.warn(e); }
-    });
-  }
 
   window.addEventListener("load", function () {
     makeBarcodes();
     makeQRCodes();
     lucide.createIcons();
     
+    // Restore captures
     const savedCaptures = sessionStorage.getItem('examCaptures');
     if (savedCaptures) {
         window.captures = JSON.parse(savedCaptures);
         renderPagesStrip();
-        syncAnswerBook();
+        renderAnswerBooks(); // Render dynamically
         updateSubmitButton();
+    } else {
+        renderAnswerBooks(); // Render empty template
     }
     
     const lastTime = sessionStorage.getItem('lastUploadTimestamp');
@@ -1115,7 +956,7 @@
             rotationAngle = 0; preview.style.transform = `rotate(0deg)`;
             btnRetake.disabled = true; btnRotate.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
             btnAddPage.innerHTML = '<i data-lucide="save"></i> Save Script';
-            renderPagesStrip(); syncAnswerBook(); updateSubmitButton();
+            renderPagesStrip(); renderAnswerBooks(); updateSubmitButton();
             setStatus(`Script for Q${q} saved to Answer Book.`, 'success');
             URL.revokeObjectURL(url);
         } catch (error) {
@@ -1139,92 +980,30 @@
             const img = document.createElement('img'); img.src = item.src; wrap.appendChild(img);
             const label = document.createElement('div'); label.className = 'label'; label.innerText = `Q${qNum} · Script ${idx + 1}`; wrap.appendChild(label);
             const del = document.createElement('button'); del.className = 'del'; del.innerHTML = '✕';
-            del.onclick = () => { captures.splice(item.index, 1); sessionStorage.setItem('examCaptures', JSON.stringify(captures)); renderPagesStrip(); syncAnswerBook(); updateSubmitButton(); };
+            del.onclick = () => { captures.splice(item.index, 1); sessionStorage.setItem('examCaptures', JSON.stringify(captures)); renderPagesStrip(); renderAnswerBooks(); updateSubmitButton(); };
             wrap.appendChild(del); pagesList.appendChild(wrap);
         });
     });
   }
 
-  /* ================= ANSWER BOOK RENDERING ================= */
-  function headerLeftFor(bookNum, totalBooks) {
-    return totalBooks > 1 ? `Answer Book · ${bookNum} of ${totalBooks}` : 'Answer Book';
-  }
-
-  function renderBookWritingPages(bookNum, totalBooks) {
+  /* ================= ANSWER BOOK RENDERING (New Template) ================= */
+  function blockInputsHtml(count) {
     let html = '';
-    const headerLeft = headerLeftFor(bookNum, totalBooks);
-    for (let p = 1; p <= PAGES_PER_BOOK; p++) {
-      const pageNum = p + 2;
-      const captureIdx = (bookNum - 1) * PAGES_PER_BOOK + p - 1;
-      const capture = captures[captureIdx];
-      const imgStyle = capture ? 'display:block;' : 'display:none;';
-      const imgSrc = capture ? capture.src : '';
-      const isLastBook = bookNum === totalBooks;
-      let footerRight;
-      if (p === PAGES_PER_BOOK) {
-        footerRight = isLastBook ? 'END' : `Continued in Book ${bookNum + 1}`;
-      } else {
-        footerRight = 'Please turn over';
-      }
-      html += `
-        <div class="page" data-book="${bookNum}" data-book-page="${pageNum}">
-          <div class="security-pattern"></div>
-          <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-            <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-          </svg>
-          <div class="content-wrapper">
-            <div class="header">
-              <div class="header-left" data-book-header="${bookNum}">${headerLeft}</div>
-              <div class="header-center"><span class="page-num">${pageNum}</span><span class="confidential">IFB / Confidential</span></div>
-              <div class="header-right">2027</div>
-            </div>
-            <div class="answer-page">
-              <div class="left-margin"></div>
-              <div class="writing-area" id="ans-book${bookNum}-page${pageNum}">
-                 <img class="scanned-image" id="img-book${bookNum}-page${pageNum}" src="${imgSrc}" style="${imgStyle}" alt="Scanned Script Page ${pageNum}">
-              </div>
-              <div class="marks-area"><div class="marks-title">Marks</div></div>
-            </div>
-          </div>
-          <div class="footer">
-            <div class="footer-left">
-              <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
-              <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-            </div>
-            <div class="footer-right">${footerRight}</div>
-          </div>
-          <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="270001F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
-        </div>
-      `;
+    for (let i = 0; i < count; i++) {
+      html += `<input type="text" class="block" maxlength="1" oninput="if(this.value.length===1){const n=this.nextElementSibling;if(n&&n.classList.contains('block'))n.focus();}">`;
     }
     return html;
   }
 
-  function renderBookCover(bookNum, totalBooks) {
-    const b = bookNum;
-    const barcodeId = `coverBarcodeBook${b}`;
-    const scriptLabelId = `scriptLabelBook${b}`;
-    const sequenceId = `coverSequenceBook${b}`;
-    const idBlocksId = `idBlocksBook${b}`;
-    const secBlocksId = `secBlocksBook${b}`;
-    const dateBlocksId = `dateBlocksBook${b}`;
-    const subjBlocksId = `subjCodeBlocksBook${b}`;
-    const bookNumId = `valBookNumBook${b}`;
-    const bookTotalId = `valTotalBooksBook${b}`;
-    const paperNumId = `valPaperNumBook${b}`;
-    const subjectNameId = `valSubjectNameBook${b}`;
-    const currId = `valCurriculumBook${b}`;
-
-    return `
-      <div class="page" data-book="${b}" data-book-page="1">
+  function renderAnswerBooks() {
+    const container = document.getElementById('answer-book-pages');
+    if (!container) return;
+    
+    // Create Cover Page
+    let html = `
+      <div class="page">
         <div class="security-pattern"></div>
-        <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-        </svg>
+        <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" /><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" /><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" /></svg>
         <div class="content-wrapper">
           <div class="cover-header-container">
             <div class="cover-brand">
@@ -1240,31 +1019,31 @@
             </div>
             <div class="top-right-container">
               <div class="candidate-barcode-box">
-                <div class="label" id="${scriptLabelId}">${studentId}—${scriptId}</div>
-                <svg id="${barcodeId}" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
+                <div class="label">Candidate Barcode Label</div>
+                <svg id="coverBarcode" style="width: 100%; height: 40px; margin-top: 5px;"></svg>
               </div>
               <div class="sequence-circle-container">
-                <div class="sequence-circle" id="${sequenceId}">${seqNum}</div>
-                <div class="sequence-text">Sequence Number<br>(1 - 30)</div>
+                <div class="sequence-circle" id="coverSequence">${seqNum}</div>
+                <div class="sequence-text">Sequence Number<br>(Pack of 12)</div>
               </div>
             </div>
           </div>
           <div class="answer-book-title">IFB Answer Book</div>
           <div class="form-row">
-            <div class="form-box" style="flex: 2;"><label>Student ID</label><div class="block-container" id="${idBlocksId}">${blockInputsHtml(13)}</div></div>
-            <div class="form-box" style="flex: 1;"><label>Security Code</label><div class="block-container" id="${secBlocksId}">${blockInputsHtml(6)}</div></div>
+            <div class="form-box" style="flex: 2;"><label>Student ID</label><div class="block-container" id="idBlocks"></div></div>
+            <div class="form-box" style="flex: 1;"><label>Security Code</label><div class="block-container" id="secBlocks"></div></div>
           </div>
           <div class="form-row">
-            <div class="form-box" style="flex: 2;"><label>Date (DDMMYYYY)</label><div class="block-container" id="${dateBlocksId}">${blockInputsHtml(8)}</div></div>
-            <div class="form-box" style="flex: 1;"><label>Book Number</label><input type="text" class="input-line" id="${bookNumId}" value="${b}"></div>
-            <div class="form-box" style="flex: 1;"><label>Of</label><input type="text" class="input-line" id="${bookTotalId}" value="${totalBooks}"></div>
+            <div class="form-box" style="flex: 2;"><label>Date (DDMMYYYY)</label><div class="block-container" id="dateBlocks"></div></div>
+            <div class="form-box" style="flex: 1;"><label>Book Number</label><input type="text" class="input-line" id="valBookNum" value="1"></div>
+            <div class="form-box" style="flex: 1;"><label>Of</label><input type="text" class="input-line" id="valTotalBooks" value="${Math.max(1, Math.ceil(captures.length / 23))}"></div>
           </div>
           <div class="form-row">
-            <div class="form-box" style="flex: 2;"><label>Subject Code</label><div class="block-container" id="${subjBlocksId}">${blockInputsHtml(7)}</div></div>
-            <div class="form-box" style="flex: 1;"><label>Paper Number</label><input type="text" class="input-line" id="${paperNumId}" value="1" style="text-align: center;"></div>
+            <div class="form-box" style="flex: 2;"><label>Subject Code</label><div class="block-container" id="subjCodeBlocks"></div></div>
+            <div class="form-box" style="flex: 1;"><label>Paper Number</label><input type="text" class="input-line" id="valPaperNum" value="1" style="text-align: center;"></div>
           </div>
-          <div class="form-row"><div class="form-box" style="flex: 1;"><label>Subject Name</label><input type="text" class="input-line" id="${subjectNameId}"></div></div>
-          <div class="form-row" style="margin-bottom: 15px;"><div class="form-box" style="flex: 1;"><label>Curriculum:</label><input type="text" class="input-line" id="${currId}"></div></div>
+          <div class="form-row"><div class="form-box" style="flex: 1;"><label>Subject Name</label><input type="text" class="input-line" id="valSubjectName"></div></div>
+          <div class="form-row" style="margin-bottom: 15px;"><div class="form-box" style="flex: 1;"><label>Curriculum:</label><input type="text" class="input-line" id="valCurriculum"></div></div>
           <table class="marking-table">
             <thead>
               <tr><th colspan="2">MARKER</th><th colspan="5">MODERATOR'S INITIALS IN RELEVANT BLOCK</th><th colspan="2">RE-MARK/RE-CHECK</th></tr>
@@ -1275,16 +1054,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-              <tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              ${Array(10).fill('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>').join('')}
               <tr class="total-row"><td colspan="2" class="text-left" style="text-align: right; padding-right: 15px;">TOTAL:</td><td colspan="7"></td></tr>
               <tr class="total-row"><td colspan="2" class="text-left" style="font-size: 8pt;">CONTROLLED AND CERTIFIED CORRECT</td><td colspan="7"></td></tr>
             </tbody>
@@ -1292,24 +1062,19 @@
         </div>
         <div class="footer">
           <div class="footer-left">
-            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
+            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
             <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
           </div>
-          <div class="footer-right">Copyright reserved</div>
         </div>
       </div>
-    `;
-  }
-
-  function renderBookInstructions(bookNum, totalBooks) {
-    const headerLeft = headerLeftFor(bookNum, totalBooks);
-    return `
-      <div class="page" data-book="${bookNum}" data-book-page="2">
+      
+      <!-- Instructions Page -->
+      <div class="page">
         <div class="security-pattern"></div>
         <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" /><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" /><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" /></svg>
         <div class="content-wrapper">
           <div class="header">
-            <div class="header-left" data-book-header="${bookNum}">${headerLeft}</div>
+            <div class="header-left">Answer Book</div>
             <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
             <div class="header-right">2027</div>
           </div>
@@ -1327,130 +1092,84 @@
         </div>
         <div class="footer">
           <div class="footer-left">
-            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
+            <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
             <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
           </div>
-          <div class="footer-right">Please turn over</div>
         </div>
-        <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="270001F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
+        <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="IFB-ANS-2027" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
       </div>
     `;
-  }
 
-  function fixStaticHeaders(totalBooks) {
-    const view = document.getElementById('viewAnswerBook');
-    if (!view) return;
-    view.querySelectorAll('.header-left[data-book-header="1"]').forEach(hl => {
-      hl.textContent = headerLeftFor(1, totalBooks);
-    });
-  }
-
-  function renderAnswerBooks() {
-    const container = document.getElementById('answer-book-pages');
-    if (!container) return;
-    const totalBooks = Math.max(1, Math.ceil(captures.length / PAGES_PER_BOOK));
-
-    const b1Total = document.getElementById('valTotalBooks');
-    if (b1Total) b1Total.value = String(totalBooks);
-    const b1Num = document.getElementById('valBookNum');
-    if (b1Num) b1Num.value = '1';
-
-    fixStaticHeaders(totalBooks);
-
-    let html = renderBookWritingPages(1, totalBooks);
-    for (let b = 2; b <= totalBooks; b++) {
-      html += renderBookCover(b, totalBooks);
-      html += renderBookInstructions(b, totalBooks);
-      html += renderBookWritingPages(b, totalBooks);
+    // Generate Writing Pages (3 to 25)
+    for (let i = 3; i <= 25; i++) {
+      const captureIdx = i - 3;
+      const capture = captures[captureIdx];
+      const imgStyle = capture ? 'display:block;' : 'display:none;';
+      const imgSrc = capture ? capture.src : '';
+      
+      html += `
+        <div class="page">
+          <div class="security-pattern"></div>
+          <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+            <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+          </svg>
+          <div class="content-wrapper">
+            <div class="header">
+              <div class="header-left">Answer Book</div>
+              <div class="header-center"><span class="page-num">${i}</span><span class="confidential">IFB / Confidential</span></div>
+              <div class="header-right">2027</div>
+            </div>
+            <div class="answer-page">
+              <div class="left-margin"></div>
+              <div class="writing-area">
+                 <img src="${imgSrc}" style="${imgStyle}" alt="Scanned Script Page ${i}">
+              </div>
+              <div class="marks-area"><div class="marks-title">Marks</div></div>
+            </div>
+          </div>
+          <div class="footer">
+            <div class="footer-left">
+              <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/answer-book.html"></span>
+              <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+            </div>
+          </div>
+        </div>
+      `;
     }
+    
     container.innerHTML = html;
 
-    for (let b = 2; b <= totalBooks; b++) {
-      fillBlocks(`idBlocksBook${b}`, studentId);
-      fillBlocks(`secBlocksBook${b}`, secCode);
-      fillBlocks(`subjCodeBlocksBook${b}`, '270001F');
-      fillBlocks(`dateBlocksBook${b}`, dateStr);
-      const sn = document.getElementById(`valSubjectNameBook${b}`);
-      if (sn) sn.value = "Mathematics";
-      const cv = document.getElementById(`valCurriculumBook${b}`);
-      if (cv) cv.value = "IFB-AE";
-      const bcEl = document.getElementById(`coverBarcodeBook${b}`);
-      if (bcEl && typeof JsBarcode === 'function') {
-        try { JsBarcode(`#coverBarcodeBook${b}`, `${studentId}-${scriptId}-B${b}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 }); } catch(e) {}
-      }
+    // Re-apply JS logic for blocks and barcodes
+    createBlocks('idBlocks', 13);
+    createBlocks('secBlocks', 6);
+    createBlocks('dateBlocks', 8);
+    createBlocks('subjCodeBlocks', 5);
+
+    function fillBlocks(containerId, text) {
+        if (!text) return;
+        const inputs = document.querySelectorAll(`#${containerId} input`);
+        const str = String(text);
+        for (let i = 0; i < str.length && i < inputs.length; i++) {
+            inputs[i].value = str[i].toUpperCase();
+        }
     }
 
-    makeBarcodes();
+    fillBlocks('idBlocks', studentId);
+    fillBlocks('secBlocks', secCode);
+    fillBlocks('subjCodeBlocks', '270001F');
+    document.getElementById('valSubjectName').value = "Mathematics";
+    document.getElementById('valCurriculum').value = "IFB-AE";
+    
+    const today = new Date();
+    const dateStr = String(today.getDate()).padStart(2, '0') + String(today.getMonth() + 1).padStart(2, '0') + String(today.getFullYear());
+    fillBlocks('dateBlocks', dateStr);
+
+    try { JsBarcode("#coverBarcode", `${studentId}-${scriptId}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 }); } catch(e) {}
     makeQRCodes();
-
-    const allPages = document.querySelectorAll('#viewAnswerBook .page');
-    BOOK_STATE.total = allPages.length;
-    if (BOOK_STATE.currentIdx >= allPages.length) BOOK_STATE.currentIdx = 0;
-    applyPagedView();
+    makeBarcodes();
   }
-
-  function applyPagedView() {
-    const allPages = document.querySelectorAll('#viewAnswerBook .page');
-    if (!allPages.length) return;
-    allPages.forEach((p, i) => {
-      p.classList.remove('page-active', 'page-before', 'page-after', 'page-flipping-next', 'page-flipping-prev');
-      if (i === BOOK_STATE.currentIdx) p.classList.add('page-active');
-      else if (i < BOOK_STATE.currentIdx) p.classList.add('page-before');
-      else p.classList.add('page-after');
-    });
-    updatePageNav();
-  }
-
-  function updatePageNav() {
-    const indicator = document.getElementById('bookNavIndicator');
-    const prevBtn = document.getElementById('bookNavPrev');
-    const nextBtn = document.getElementById('bookNavNext');
-    if (!indicator) return;
-
-    const totalBooks = Math.max(1, Math.ceil(captures.length / PAGES_PER_BOOK));
-    const PAGES_PER_BOOK_TOTAL = PAGES_PER_BOOK + 2;
-    const allPages = document.querySelectorAll('#viewAnswerBook .page');
-    const cur = allPages[BOOK_STATE.currentIdx];
-    const bookNum = cur ? Math.min(totalBooks, Math.floor(BOOK_STATE.currentIdx / PAGES_PER_BOOK_TOTAL) + 1) : 1;
-    const bookLabel = totalBooks > 1 ? ` · Book ${bookNum} of ${totalBooks}` : '';
-    indicator.textContent = allPages.length
-      ? `Page ${BOOK_STATE.currentIdx + 1} of ${allPages.length}${bookLabel}`
-      : '0 / 0';
-
-    if (prevBtn) prevBtn.disabled = BOOK_STATE.currentIdx <= 0 || BOOK_STATE.isFlipping;
-    if (nextBtn) nextBtn.disabled = BOOK_STATE.currentIdx >= allPages.length - 1 || BOOK_STATE.isFlipping;
-  }
-
-  function flipToPage(targetIdx, dir) {
-    if (BOOK_STATE.isFlipping) return;
-    const allPages = document.querySelectorAll('#viewAnswerBook .page');
-    if (targetIdx < 0 || targetIdx >= allPages.length) return;
-
-    BOOK_STATE.isFlipping = true;
-    BOOK_STATE.flipDir = dir;
-    const fromPage = allPages[BOOK_STATE.currentIdx];
-    const toPage = allPages[targetIdx];
-
-    toPage.classList.remove('page-before', 'page-after', 'page-active');
-    toPage.classList.add('page-active', dir > 0 ? 'page-flipping-next' : 'page-flipping-prev');
-    fromPage.classList.add(dir > 0 ? 'page-flipping-next' : 'page-flipping-prev');
-
-    const settle = () => {
-      fromPage.classList.remove('page-active', 'page-flipping-next', 'page-flipping-prev');
-      toPage.classList.remove('page-flipping-next', 'page-flipping-prev');
-      BOOK_STATE.currentIdx = targetIdx;
-      BOOK_STATE.isFlipping = false;
-      applyPagedView();
-    };
-    setTimeout(settle, 560);
-  }
-
-  window.turnBookPage = function(delta) {
-    if (BOOK_STATE.isFlipping) return;
-    flipToPage(BOOK_STATE.currentIdx + delta, delta > 0 ? 1 : -1);
-  };
-
-  function syncAnswerBook() { renderAnswerBooks(); }
 
   function updateSubmitButton() {
     const total = captures.length;
@@ -1479,7 +1198,6 @@
     await new Promise(r => setTimeout(r, 2000));
     document.getElementById('uploadOverlay').style.display = 'none';
     
-    // Show Success Modal instead of redirect
     document.getElementById('recId').innerText = studentId;
     document.getElementById('recScript').innerText = scriptId;
     document.getElementById('recDate').innerText = new Date().toLocaleString();
@@ -1490,8 +1208,7 @@
   window.downloadReceipt = function() {
       const element = document.getElementById('receiptContent');
       const opt = {
-          margin: 1,
-          filename: `IFB_Receipt_${studentId}.pdf`,
+          margin: 1, filename: `IFB_Receipt_${studentId}.pdf`,
           image: { type: 'jpeg', quality: 0.98 },
           html2canvas: { scale: 2 },
           jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
@@ -1681,44 +1398,72 @@
 
   async function loadAdminData() {
       const tbody = document.getElementById('adminTableBody');
-      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">Fetching records from Firebase...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">Fetching records from Firebase...</td></tr>';
       try {
           if (!window.db) throw new Error("Firebase not initialized");
           const querySnapshot = await window.getDocs(window.collection(window.db, "examLogs"));
           tbody.innerHTML = '';
           if (querySnapshot.empty) {
-              tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding: 20px;">No active exam sessions found.</td></tr>';
+              tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">No active exam sessions found.</td></tr>';
               return;
           }
           querySnapshot.forEach((doc) => {
               const data = doc.data();
               const tr = document.createElement('tr');
               const barcodeId = `bc-admin-${data.studentId}`;
+              
               const tabSwitches = data.tabSwitches ? data.tabSwitches.length : 0;
               const tabSwitchText = tabSwitches > 0 ? `<span style="color: red; font-weight: bold;">${tabSwitches}</span>` : "0";
-              const lastActive = data.lastActive ? new Date(data.lastActive.toDate()).toLocaleTimeString() : "N/A";
-              let statusBadge = `<span class="badge-active">In Session</span>`;
-              if (data.status === "Submitted") statusBadge = `<span class="badge-submitted">Submitted</span>`;
-              if (data.status === "Logged Out") statusBadge = `<span class="badge-offline">Logged Out</span>`;
+              
+              let lastActiveTime = "N/A";
+              let isActive = false;
+              if (data.lastActive) {
+                  const d = new Date(data.lastActive.toDate());
+                  lastActiveTime = d.toLocaleTimeString();
+                  // If last active was less than 10 mins ago, show as active
+                  if ((new Date().getTime() - d.getTime()) < 10 * 60 * 1000) isActive = true;
+              }
+              
+              let statusText = data.status || "In Session";
+              if (statusText === "Submitted") isActive = false; // override if submitted
+
+              const indicator = isActive 
+                  ? `<span class="status-indicator status-active"></span> Active` 
+                  : `<span class="status-indicator status-offline"></span> Offline`;
+
               tr.innerHTML = `
-                  <td>${data.studentId}</td>
-                  <td>${data.scriptId || 'N/A'}</td>
-                  <td>${data.seqNum || 'N/A'}</td>
+                  <td>${indicator}</td>
+                  <td>${data.studentId || 'N/A'}</td>
+                  <td>${data.studentName || 'Unknown'}</td>
                   <td class="admin-barcode"><svg id="${barcodeId}"></svg></td>
-                  <td>${statusBadge}</td>
                   <td>${tabSwitchText}</td>
-                  <td>${lastActive}</td>
+                  <td>${lastActiveTime}</td>
                   <td><button class="btn-primary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px;" onclick="viewAdminScript('${doc.id}')">View Script</button></td>
               `;
               tbody.appendChild(tr);
+              
               setTimeout(() => {
-                  try { JsBarcode(`#${barcodeId}`, `${data.studentId}-${data.scriptId}`, { format: "CODE128", width: 1.5, height: 30, displayValue: false }); } catch(e) {}
+                  try { 
+                      JsBarcode(`#${barcodeId}`, `${data.studentId}-${data.scriptId}`, { format: "CODE128", width: 1.5, height: 30, displayValue: false }); 
+                  } catch(e) {}
               }, 100);
           });
       } catch(e) {
           console.error("[ADMIN] Error loading data:", e);
-          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color: red; font-weight:bold;">Database Error: ${e.message}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: red; font-weight:bold;">Database Error: ${e.message}</td></tr>`;
       }
+  }
+
+  window.downloadAdminRoster = function() {
+      const element = document.getElementById('adminRosterContainer');
+      const opt = {
+          margin: 10,
+          filename: `IFB_Admin_Roster_${new Date().toISOString().split('T')[0]}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+      };
+      html2pdf().set(opt).from(element).save();
   }
 
   async function viewAdminScript(docId) {
@@ -1745,6 +1490,7 @@
                     <h2 style="font-family:'Inter'; font-size:24px; color:var(--maroon); margin-bottom:20px; text-align:center;">Examination Script Summary</h2>
                     <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
                         <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Student ID:</td><td style="padding:10px; border:1px solid #ccc;">${data.studentId}</td></tr>
+                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Name:</td><td style="padding:10px; border:1px solid #ccc;">${data.studentName || 'N/A'}</td></tr>
                         <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Script ID:</td><td style="padding:10px; border:1px solid #ccc;">${data.scriptId}</td></tr>
                         <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Sequence Number:</td><td style="padding:10px; border:1px solid #ccc;">${data.seqNum}</td></tr>
                         <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Login Status:</td><td style="padding:10px; border:1px solid #ccc;">${data.status || 'Unknown'}</td></tr>
@@ -1762,18 +1508,13 @@
                       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
                       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
                     </div>
-                    <div class="footer-right">Admin Document</div>
                   </div>
                 </div>
               `;
               if (data.scripts && data.scripts.length > 0) {
-                  const adminTotalBooks = Math.max(1, Math.ceil(data.scripts.length / PAGES_PER_BOOK));
                   data.scripts.forEach((cap, idx) => {
-                      const adminBookNum = Math.floor(idx / PAGES_PER_BOOK) + 1;
-                      const adminPageInBook = (idx % PAGES_PER_BOOK) + 3;
-                      const adminHeaderLeft = adminTotalBooks > 1 ? `Answer Book · ${adminBookNum} of ${adminTotalBooks}` : 'Answer Book';
                       container.innerHTML += `
-                        <div class="page" data-book="${adminBookNum}" data-book-page="${adminPageInBook}">
+                        <div class="page">
                           <div class="security-pattern"></div>
                           <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                             <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
@@ -1782,8 +1523,8 @@
                           </svg>
                           <div class="content-wrapper">
                             <div class="header">
-                              <div class="header-left">${adminHeaderLeft}</div>
-                              <div class="header-center"><span class="page-num">${adminPageInBook}</span><span class="confidential">IFB / Confidential</span></div>
+                              <div class="header-left">Scanned Script</div>
+                              <div class="header-center"><span class="page-num">${idx + 1}</span><span class="confidential">IFB / Confidential</span></div>
                               <div class="header-right">2027</div>
                             </div>
                             <div class="answer-page">
@@ -1799,7 +1540,6 @@
                               <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
                               <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
                             </div>
-                            <div class="footer-right">END</div>
                           </div>
                         </div>
                       `;
@@ -1818,14 +1558,39 @@
 
   function closeAdminViewer() { document.getElementById('adminScriptViewer').classList.remove('active'); }
 
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "270001F", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: parseInt(el.dataset.bcFontSize || "12", 10), textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
   // Disable Right Click & Copying
   document.addEventListener('copy', e => e.preventDefault());
   document.addEventListener('cut', e => e.preventDefault());
   document.addEventListener('contextmenu', e => e.preventDefault());
 
-  renderPagesStrip();
   updateSubmitButton();
-  renderAnswerBooks();
   lucide.createIcons();
 </script>
 </body>
