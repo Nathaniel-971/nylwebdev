@@ -80,10 +80,10 @@
   .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
   .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.03; pointer-events: none; z-index: 0; }
   
-  /* FIXED FOOTER OVERLAP: Increased padding to 60mm to ensure questions never touch the footer */
-  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 60mm; overflow: hidden; }
+  /* MASSIVE PADDING TO PROTECT FOOTER */
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 65mm; overflow: hidden; }
 
-  /* ADJUSTED HEADER PROPORTIONS: Left 35%, Center 30%, Right 35% */
+  /* HEADER */
   .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; padding-bottom: 5px; }
   .header-left { width: 35%; text-align: left; font-weight: bold; color: var(--maroon); }
   .header-center { width: 30%; text-align: center; }
@@ -91,8 +91,8 @@
   .header-center .confidential { font-style: italic; font-weight: bold; color: var(--maroon); }
   .header-right { width: 35%; text-align: right; font-weight: bold; color: var(--maroon); }
 
-  /* FOOTER */
-  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; background: #fff; padding-top: 5px;}
+  /* FOOTER - SOLID WHITE BACKGROUND MASKS ANY OVERLAPPING TEXT */
+  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 10; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; background: #fff; padding-top: 5px;}
   .footer-left { display: flex; align-items: center; gap: 10px; }
   .footer-qr { display: inline-block; width: 35px; height: 35px; }
   .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
@@ -100,7 +100,7 @@
   .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
   .footer-brand .tag { font-size: 7pt; color: var(--black); }
   .footer-right { display: none !important; } 
-  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; background: #fff; padding: 2px;}
+  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 10; background: #fff; padding: 2px;}
 
   /* COVER PAGE SPECIFIC */
   .cover-page { padding: 15mm 20mm 20mm 20mm; }
@@ -120,9 +120,9 @@
   .cover-marks div { margin-bottom: 10px; }
   .cover-barcode-section { margin-left: 10px; font-family: Arial, sans-serif; color: #111; }
   .cover-barcode-section .code-x10 { font-size: 24pt; font-weight: bold; margin-bottom: 5px; letter-spacing: 2px;}
-  .cover-bottom-text { text-align: center; font-size: 11pt; font-weight: bold; margin-top: auto; margin-bottom: 20px; line-height: 1.5; color: #111; }
+  .cover-bottom-text { text-align: center; font-size: 11pt; font-weight: bold; margin-top: 50px; margin-bottom: 20px; line-height: 1.5; color: #111; }
 
-  /* QUESTION PAPER STYLES */
+  /* INSTRUCTIONS & QUESTIONS */
   .instructions h2 { font-size: 14pt; font-weight: bold; margin-bottom: 20px; font-family: Arial, sans-serif; color: #000;}
   .instructions p { margin-bottom: 15px; font-size: 11pt; }
   .instructions ol { margin-left: 20px; font-family: Arial, sans-serif; font-size: 11pt;}
@@ -365,7 +365,7 @@
   <!-- Cover Page -->
   <div class="page cover-page">
     <div class="security-pattern"></div>
-    <div class="content-wrapper" style="padding-bottom: 0;">
+    <div class="content-wrapper" style="padding-bottom: 0; overflow: visible;">
       <div class="cover-confidential">IFB-AE / Confidential</div>
       <div class="cover-header">
         <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1038,6 +1038,7 @@
   <div class="admin-viewer-header">
     <h3 style="margin: 0; font-weight: 900;" id="viewerTitle">Student Script</h3>
     <div>
+      <button class="btn-print-viewer" onclick="triggerDeepSeekMarking()" style="background:var(--success); margin-right:10px;">AI Mark Script</button>
       <button class="btn-print-viewer" onclick="printAdminScript()">Print / Download A4</button>
       <button class="btn-close-viewer" onclick="closeAdminViewer()">Close</button>
     </div>
@@ -1159,7 +1160,6 @@
     makeQRCodes();
     lucide.createIcons();
     
-    // Restore captures
     const savedCaptures = sessionStorage.getItem('examCaptures');
     if (savedCaptures) {
         window.captures = JSON.parse(savedCaptures);
@@ -2049,6 +2049,41 @@
       document.title = `IFB_Script_${document.getElementById('viewerTitle').innerText.replace("Script: ", "")}`;
       window.print();
       document.title = originalTitle;
+  }
+
+  window.triggerDeepSeekMarking = async function() {
+      const docId = document.getElementById('viewerTitle').innerText.replace("Script: ", "");
+      if (!confirm("Are you sure you want to trigger AI marking for this script? This will incur API costs.")) return;
+      
+      const btn = document.querySelector('.btn-print-viewer[onclick="triggerDeepSeekMarking()"]');
+      const originalText = btn.innerText;
+      btn.innerText = "Processing AI...";
+      btn.disabled = true;
+
+      try {
+          // Replace with your actual deployed Firebase Cloud Function URL
+          const cloudFunctionUrl = "https://us-central1-nyldevcourses.cloudfunctions.net/autoMarkScripts";
+          
+          const response = await fetch(cloudFunctionUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ docId: docId })
+          });
+
+          if (response.ok) {
+              alert("AI Marking complete! Refreshing data...");
+              loadAdminData(); // Reload to show new marks
+              closeAdminViewer();
+          } else {
+              alert("Failed to trigger AI marking. Check Cloud Function logs.");
+          }
+      } catch(e) {
+          console.error(e);
+          alert("Error connecting to AI backend: " + e.message);
+      } finally {
+          btn.innerText = originalText;
+          btn.disabled = false;
+      }
   }
 
   function closeAdminViewer() { document.getElementById('adminScriptViewer').classList.remove('active'); }
