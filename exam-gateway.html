@@ -72,6 +72,9 @@ onAuthStateChanged(auth, async (user) => {
     if (user.email === "n1nathaniel971@gmail.com") {
         isCurrentUserAdmin = true;
         document.getElementById('examCodeGroup').style.display = 'none'; 
+        // Admin bypass fields
+        document.getElementById('studentId').placeholder = "ADMIN";
+        document.getElementById('securityCode').placeholder = "ADMIN";
     }
 
     // Fetch the user's document securely
@@ -83,14 +86,27 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 window.verifyAndEnter = async function() {
-    const id = document.getElementById('studentId').value.trim();
-    const code = document.getElementById('securityCode').value.trim().toUpperCase();
-    const examCodeInput = document.getElementById('examCode').value.trim().toUpperCase();
-    
     const errorBox = document.getElementById('errorBox');
     const btn = document.getElementById('enterBtn');
     
     errorBox.style.display = 'none';
+
+    // 1. ADMIN BYPASS
+    if (isCurrentUserAdmin) {
+        sessionStorage.setItem("examStudentId", "ADMIN");
+        sessionStorage.setItem("examSecurityCode", "ADMIN");
+        sessionStorage.setItem("examStudentName", "Administrator");
+        sessionStorage.setItem("isAdmin", "true");
+        sessionStorage.setItem("examCode", "ADMIN");
+        window.location.href = "exam-session.html";
+        return;
+    }
+
+    // 2. STUDENT LOGIN
+    const id = document.getElementById('studentId').value.trim();
+    const code = document.getElementById('securityCode').value.trim().toUpperCase();
+    const examCodeInput = document.getElementById('examCode').value.trim().toUpperCase();
+    
     if (id.length !== 13 || code.length !== 6) { 
         errorBox.innerText = "Invalid format. ID must be 13 digits, Code must be 6 characters."; 
         errorBox.style.display = 'block'; 
@@ -101,39 +117,32 @@ window.verifyAndEnter = async function() {
 
     try {
         if (!currentUserDoc) {
-            errorBox.innerText = "Student record not found.";
+            errorBox.innerText = "Student record not found. Please complete your application.";
             errorBox.style.display = 'block';
             btn.innerText = "Verify & Enter Session"; btn.disabled = false;
             return;
         }
 
-        // 1. Verify Exam Code (If not admin)
-        if (!isCurrentUserAdmin) {
-            const configSnap = await getDoc(doc(db, "config", "examSettings"));
-            if (configSnap.exists()) {
-                const correctCode = configSnap.data().examCode || "IFB2027";
-                if (examCodeInput !== correctCode) {
-                    errorBox.innerText = "Invalid Examination Access Code. Please ask the invigilator.";
-                    errorBox.style.display = 'block';
-                    btn.innerText = "Verify & Enter Session"; btn.disabled = false;
-                    return;
-                }
-            } else {
-                if (examCodeInput !== "IFB2027") {
-                    errorBox.innerText = "Invalid Examination Access Code.";
-                    errorBox.style.display = 'block';
-                    btn.innerText = "Verify & Enter Session"; btn.disabled = false;
-                    return;
-                }
-            }
+        // Verify Exam Code
+        const configSnap = await getDoc(doc(db, "config", "examSettings"));
+        let correctCode = "IFB2027";
+        if (configSnap.exists()) {
+            correctCode = configSnap.data().examCode || "IFB2027";
+        }
+        
+        if (examCodeInput !== correctCode) {
+            errorBox.innerText = "Invalid Examination Access Code. Please ask the invigilator.";
+            errorBox.style.display = 'block';
+            btn.innerText = "Verify & Enter Session"; btn.disabled = false;
+            return;
         }
 
-        // 2. Verify Student ID & Security Code against the fetched document
+        // Verify Student ID & Security Code
         if (currentUserDoc.studentId === id && currentUserDoc.securityCode === code) {
             sessionStorage.setItem("examStudentId", id);
             sessionStorage.setItem("examSecurityCode", code);
             sessionStorage.setItem("examStudentName", currentUserDoc.name);
-            sessionStorage.setItem("isAdmin", isCurrentUserAdmin.toString());
+            sessionStorage.setItem("isAdmin", "false");
             
             const examCodeVal = (currentUserDoc.courses && currentUserDoc.courses.includes("Mathematics")) ? "AE-S-MATH" : "AE-W-AEW";
             sessionStorage.setItem("examCode", examCodeVal);
