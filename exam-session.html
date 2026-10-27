@@ -176,6 +176,76 @@
   .marks-area { width: 70px; display: flex; flex-direction: column; align-items: center; padding-top: 10px; background-color: #FFF5F6; }
   .marks-area .marks-title { font-size: 10pt; font-weight: bold; font-style: italic; border-bottom: 1.5px solid #000; width: 100%; text-align: center; padding-bottom: 5px; margin-bottom: 10px; color: #7A1F2B; }
 
+  /* ==================== PAGED ANSWER BOOK + FLIP ==================== */
+  #answer-book-pages { display: contents; }
+
+  #viewAnswerBook {
+    perspective: 2200px;
+    perspective-origin: 50% 50%;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  #viewAnswerBook .page {
+    display: none;
+    margin: 20px auto;
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+  }
+
+  #viewAnswerBook .page.page-active {
+    display: flex;
+  }
+
+  @keyframes flipOutNext {
+    0%   { transform: rotateY(0deg)   scale(1);   opacity: 1; }
+    100% { transform: rotateY(-88deg) scale(0.96); opacity: 0; }
+  }
+  @keyframes flipInNext {
+    0%   { transform: rotateY(88deg)  scale(0.96); opacity: 0; }
+    100% { transform: rotateY(0deg)   scale(1);   opacity: 1; }
+  }
+  @keyframes flipOutPrev {
+    0%   { transform: rotateY(0deg)   scale(1);   opacity: 1; }
+    100% { transform: rotateY(88deg)  scale(0.96); opacity: 0; }
+  }
+  @keyframes flipInPrev {
+    0%   { transform: rotateY(-88deg) scale(0.96); opacity: 0; }
+    100% { transform: rotateY(0deg)   scale(1);   opacity: 1; }
+  }
+
+  #viewAnswerBook .page.page-flipping-next {
+    animation: flipOutNext 560ms cubic-bezier(0.5, 0, 0.5, 1) forwards;
+  }
+  #viewAnswerBook .page.page-active.page-flipping-next {
+    animation: flipInNext 560ms cubic-bezier(0.5, 0, 0.5, 1) forwards;
+  }
+  #viewAnswerBook .page.page-flipping-prev {
+    animation: flipOutPrev 560ms cubic-bezier(0.5, 0, 0.5, 1) forwards;
+  }
+  #viewAnswerBook .page.page-active.page-flipping-prev {
+    animation: flipInPrev 560ms cubic-bezier(0.5, 0, 0.5, 1) forwards;
+  }
+
+  @media (max-width: 900px) {
+    #viewAnswerBook .page.page-active { transform: scale(0.45); margin-bottom: -160mm; margin-top: -10mm; }
+  }
+  @media (max-width: 600px) {
+    #viewAnswerBook .page.page-active { transform: scale(0.35); margin-bottom: -190mm; }
+  }
+
+  @media print {
+    #viewAnswerBook .page,
+    #viewAnswerBook .page.page-before,
+    #viewAnswerBook .page.page-after,
+    #viewAnswerBook .page.page-active {
+      display: flex !important;
+      transform: none !important;
+      animation: none !important;
+      opacity: 1 !important;
+    }
+  }
+
   .book-nav { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: white; border: 1px solid var(--silver); border-radius: 50px; padding: 6px 10px; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 25px rgba(0,0,0,0.2); z-index: 100; font-family: 'Inter', sans-serif; }
   .book-nav.visible { display: flex; }
   .book-nav-btn { background: var(--maroon); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s, opacity 0.2s; font-family: inherit; }
@@ -294,7 +364,6 @@
 </div>
 
 <div class="view active" id="viewPaper">
-  <!-- PAGE 1: COVER -->
   <div class="page cover-page">
     <div class="security-pattern"></div>
     <div class="content-wrapper" style="padding-bottom: 0;">
@@ -335,7 +404,6 @@
     </div>
   </div>
 
-  <!-- PAGE 2: INSTRUCTIONS -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -369,7 +437,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 3: QUESTION 1 -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -401,7 +468,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 4: QUESTION 2 -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -442,7 +508,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 5: QUESTION 3 -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -484,7 +549,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 6: QUESTION 4 -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -523,7 +587,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 7: QUESTION 5 -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -572,7 +635,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 8: QUESTION 5 CONT -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -606,7 +668,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 9: QUESTION 6 -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -634,7 +695,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 10: QUESTION 7 -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -661,7 +721,6 @@
     <div class="bottom-barcode"><svg class="barcode-footer" data-barcode="102626F" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg></div>
   </div>
 
-  <!-- PAGE 11: INFO SHEET -->
   <div class="page">
     <div class="security-pattern"></div>
     <div class="content-wrapper">
@@ -695,7 +754,6 @@
 </div>
 
 <div class="view" id="viewAnswerBook">
-  <!-- BOOK 1 COVER (STATIC) -->
   <div class="page" data-book="1" data-book-page="1">
     <div class="security-pattern"></div>
     <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -777,7 +835,6 @@
     </div>
   </div>
 
-  <!-- BOOK 1 INSTRUCTIONS (STATIC) -->
   <div class="page" data-book="1" data-book-page="2">
     <div class="security-pattern"></div>
     <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" /><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" /><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" /></svg>
@@ -934,7 +991,7 @@
 <script>
   /* ================= CONFIG & STATE ================= */
   const PAGES_PER_BOOK = 23;
-  let currentBookPageIdx = 0;
+  const BOOK_STATE = { currentIdx: 0, total: 0, isFlipping: false, flipDir: 1 };
 
   const studentName = sessionStorage.getItem('examStudentName') || 'Student';
   const studentId = sessionStorage.getItem('examStudentId') || '2701010100001';
@@ -973,7 +1030,6 @@
       }
   };
 
-  /* ================= TIMER ================= */
   const EXAM_DURATION_MINS = 120;
   let startTime = sessionStorage.getItem('examStartTime');
   if (!startTime) { startTime = Date.now(); sessionStorage.setItem('examStartTime', startTime); }
@@ -1017,7 +1073,7 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
     if (tab === 'paper') { document.getElementById('viewPaper').classList.add('active'); document.getElementById('tabPaper').classList.add('active'); }
-    else if (tab === 'answer') { document.getElementById('viewAnswerBook').classList.add('active'); document.getElementById('tabAnswer').classList.add('active'); }
+    else if (tab === 'answer') { document.getElementById('viewAnswerBook').classList.add('active'); document.getElementById('tabAnswer').classList.add('active'); applyPagedView(); }
     else if (tab === 'scanner') { document.getElementById('viewScanner').classList.add('active'); document.getElementById('tabScanner').classList.add('active'); }
     else if (tab === 'register') { document.getElementById('viewRegister').classList.add('active'); document.getElementById('tabRegister').classList.add('active'); }
     else if (tab === 'admin') { document.getElementById('viewAdmin').classList.add('active'); document.getElementById('tabAdmin').classList.add('active'); loadAdminData(); }
@@ -1029,7 +1085,6 @@
     if (tab !== 'register') stopCameraReg();
   }
 
-  /* ================= BLOCKS ================= */
   function createBlocks(containerId, count) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -1072,7 +1127,6 @@
   const dateStr = String(today.getDate()).padStart(2, '0') + String(today.getMonth() + 1).padStart(2, '0') + String(today.getFullYear());
   fillBlocks('dateBlocks', dateStr);
 
-  /* ================= BARCODES / QRs ================= */
   function makeBarcodes() {
     if (typeof JsBarcode !== "function") return;
     const totalBooks = Math.max(1, Math.ceil((window.captures ? captures.length : 0) / PAGES_PER_BOOK));
@@ -1105,7 +1159,6 @@
     });
   }
 
-  /* ================= DIAGRAMS ================= */
   function drawPaperDiagrams() {
     const svg2 = document.getElementById('svg-q2-parabola');
     if (svg2) {
@@ -1495,10 +1548,14 @@
     });
   }
 
-  /* ================= ANSWER BOOK RENDERING ================= */
+  /* ================= ANSWER BOOK RENDERING (PAGED + FLIP) ================= */
+  function headerLeftFor(bookNum, totalBooks) {
+    return totalBooks > 1 ? `Answer Book · ${bookNum} of ${totalBooks}` : 'Answer Book';
+  }
+
   function renderBookWritingPages(bookNum, totalBooks) {
     let html = '';
-    const headerLeft = totalBooks > 1 ? `Answer Book · ${bookNum} of ${totalBooks}` : 'Answer Book';
+    const headerLeft = headerLeftFor(bookNum, totalBooks);
     for (let p = 1; p <= PAGES_PER_BOOK; p++) {
       const pageNum = p + 2;
       const captureIdx = (bookNum - 1) * PAGES_PER_BOOK + p - 1;
@@ -1648,7 +1705,7 @@
   }
 
   function renderBookInstructions(bookNum, totalBooks) {
-    const headerLeft = totalBooks > 1 ? `Answer Book · ${bookNum} of ${totalBooks}` : 'Answer Book';
+    const headerLeft = headerLeftFor(bookNum, totalBooks);
     return `
       <div class="page" data-book="${bookNum}" data-book-page="2">
         <div class="security-pattern"></div>
@@ -1683,15 +1740,11 @@
     `;
   }
 
-  function updateBook1StaticHeaders(totalBooks) {
-    // Update the two static Book 1 pages (cover has no .header-left, instructions does)
-    const viewAnswerBook = document.getElementById('viewAnswerBook');
-    const staticPages = viewAnswerBook.querySelectorAll(':scope > .page');
-    staticPages.forEach(page => {
-      const hl = page.querySelector('.header-left');
-      if (hl) {
-        hl.textContent = totalBooks > 1 ? `Answer Book · 1 of ${totalBooks}` : 'Answer Book';
-      }
+  function fixStaticHeaders(totalBooks) {
+    const view = document.getElementById('viewAnswerBook');
+    if (!view) return;
+    view.querySelectorAll('.header-left[data-book-header="1"]').forEach(hl => {
+      hl.textContent = headerLeftFor(1, totalBooks);
     });
   }
 
@@ -1700,14 +1753,12 @@
     if (!container) return;
     const totalBooks = Math.max(1, Math.ceil(captures.length / PAGES_PER_BOOK));
 
-    // Book 1 cover fields
     const b1Total = document.getElementById('valTotalBooks');
     if (b1Total) b1Total.value = String(totalBooks);
     const b1Num = document.getElementById('valBookNum');
     if (b1Num) b1Num.value = '1';
 
-    // Update Book 1 static page headers for consistency
-    updateBook1StaticHeaders(totalBooks);
+    fixStaticHeaders(totalBooks);
 
     let html = renderBookWritingPages(1, totalBooks);
     for (let b = 2; b <= totalBooks; b++) {
@@ -1717,7 +1768,6 @@
     }
     container.innerHTML = html;
 
-    // Fill Book 2+ cover fields
     for (let b = 2; b <= totalBooks; b++) {
       fillBlocks(`idBlocksBook${b}`, studentId);
       fillBlocks(`secBlocksBook${b}`, secCode);
@@ -1735,8 +1785,73 @@
 
     makeBarcodes();
     makeQRCodes();
-    attachPageNavObserver();
+
+    const allPages = document.querySelectorAll('#viewAnswerBook .page');
+    BOOK_STATE.total = allPages.length;
+    if (BOOK_STATE.currentIdx >= allPages.length) BOOK_STATE.currentIdx = 0;
+    applyPagedView();
   }
+
+  function applyPagedView() {
+    const allPages = document.querySelectorAll('#viewAnswerBook .page');
+    if (!allPages.length) return;
+    allPages.forEach((p, i) => {
+      p.classList.remove('page-active', 'page-before', 'page-after', 'page-flipping-next', 'page-flipping-prev');
+      if (i === BOOK_STATE.currentIdx) p.classList.add('page-active');
+      else if (i < BOOK_STATE.currentIdx) p.classList.add('page-before');
+      else p.classList.add('page-after');
+    });
+    updatePageNav();
+  }
+
+  function updatePageNav() {
+    const indicator = document.getElementById('bookNavIndicator');
+    const prevBtn = document.getElementById('bookNavPrev');
+    const nextBtn = document.getElementById('bookNavNext');
+    if (!indicator) return;
+
+    const totalBooks = Math.max(1, Math.ceil(captures.length / PAGES_PER_BOOK));
+    const PAGES_PER_BOOK_TOTAL = PAGES_PER_BOOK + 2;
+    const allPages = document.querySelectorAll('#viewAnswerBook .page');
+    const cur = allPages[BOOK_STATE.currentIdx];
+    const bookNum = cur ? Math.min(totalBooks, Math.floor(BOOK_STATE.currentIdx / PAGES_PER_BOOK_TOTAL) + 1) : 1;
+    const bookLabel = totalBooks > 1 ? ` · Book ${bookNum} of ${totalBooks}` : '';
+    indicator.textContent = allPages.length
+      ? `Page ${BOOK_STATE.currentIdx + 1} of ${allPages.length}${bookLabel}`
+      : '0 / 0';
+
+    if (prevBtn) prevBtn.disabled = BOOK_STATE.currentIdx <= 0 || BOOK_STATE.isFlipping;
+    if (nextBtn) nextBtn.disabled = BOOK_STATE.currentIdx >= allPages.length - 1 || BOOK_STATE.isFlipping;
+  }
+
+  function flipToPage(targetIdx, dir) {
+    if (BOOK_STATE.isFlipping) return;
+    const allPages = document.querySelectorAll('#viewAnswerBook .page');
+    if (targetIdx < 0 || targetIdx >= allPages.length) return;
+
+    BOOK_STATE.isFlipping = true;
+    BOOK_STATE.flipDir = dir;
+    const fromPage = allPages[BOOK_STATE.currentIdx];
+    const toPage = allPages[targetIdx];
+
+    toPage.classList.remove('page-before', 'page-after', 'page-active');
+    toPage.classList.add('page-active', dir > 0 ? 'page-flipping-next' : 'page-flipping-prev');
+    fromPage.classList.add(dir > 0 ? 'page-flipping-next' : 'page-flipping-prev');
+
+    const settle = () => {
+      fromPage.classList.remove('page-active', 'page-flipping-next', 'page-flipping-prev');
+      toPage.classList.remove('page-flipping-next', 'page-flipping-prev');
+      BOOK_STATE.currentIdx = targetIdx;
+      BOOK_STATE.isFlipping = false;
+      applyPagedView();
+    };
+    setTimeout(settle, 560);
+  }
+
+  window.turnBookPage = function(delta) {
+    if (BOOK_STATE.isFlipping) return;
+    flipToPage(BOOK_STATE.currentIdx + delta, delta > 0 ? 1 : -1);
+  };
 
   function syncAnswerBook() { renderAnswerBooks(); }
 
@@ -1916,52 +2031,6 @@
   btnRetakeReg.addEventListener('click', retakeReg);
   btnSaveReg.addEventListener('click', saveSignature);
   window.addEventListener('beforeunload', stopCameraReg);
-
-  /* ================= BOOK NAV ================= */
-  function attachPageNavObserver() {
-    const pages = document.querySelectorAll('#viewAnswerBook .page');
-    if (!pages.length) return;
-    if (window._pageObserver) { try { window._pageObserver.disconnect(); } catch(e) {} }
-    window._pageObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const idx = Array.from(pages).indexOf(entry.target);
-          if (idx >= 0) { currentBookPageIdx = idx; updatePageNav(); }
-        }
-      });
-    }, { threshold: 0.5 });
-    pages.forEach(p => window._pageObserver.observe(p));
-    if (currentBookPageIdx >= pages.length) currentBookPageIdx = 0;
-    updatePageNav();
-  }
-
-  window.turnBookPage = function(delta) {
-    const pages = document.querySelectorAll('#viewAnswerBook .page');
-    if (!pages.length) return;
-    currentBookPageIdx = Math.max(0, Math.min(pages.length - 1, currentBookPageIdx + delta));
-    pages[currentBookPageIdx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    updatePageNav();
-  };
-
-  function updatePageNav() {
-    const pages = document.querySelectorAll('#viewAnswerBook .page');
-    const indicator = document.getElementById('bookNavIndicator');
-    const prevBtn = document.getElementById('bookNavPrev');
-    const nextBtn = document.getElementById('bookNavNext');
-    if (!indicator) return;
-
-    const totalBooks = Math.max(1, Math.ceil(captures.length / PAGES_PER_BOOK));
-    const PAGES_PER_BOOK_TOTAL = PAGES_PER_BOOK + 2;
-    const bookNum = Math.min(totalBooks, Math.floor(currentBookPageIdx / PAGES_PER_BOOK_TOTAL) + 1);
-
-    const bookLabel = totalBooks > 1 ? ` · Book ${bookNum} of ${totalBooks}` : '';
-    indicator.textContent = pages.length
-      ? `Page ${currentBookPageIdx + 1} of ${pages.length}${bookLabel}`
-      : '0 / 0';
-
-    if (prevBtn) prevBtn.disabled = currentBookPageIdx <= 0;
-    if (nextBtn) nextBtn.disabled = currentBookPageIdx >= pages.length - 1;
-  }
 
   /* ================= ADMIN ================= */
   async function openExamCodeSettings() {
