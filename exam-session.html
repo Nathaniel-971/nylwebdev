@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>IFB Smart Scanner</title>
+<title>IFB Advanced Scanner</title>
 <script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
     --maroon: #7A1F2B;
-    --bg: #111;
+    --bg: #0F172A;
     --surface: #1E293B;
     --text: #fff;
     --success: #15803D;
@@ -19,35 +19,42 @@
   body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
   /* HEADER */
-  .header { background: var(--maroon); padding: 15px 20px; text-align: center; font-size: 18px; font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; }
+  .header { background: var(--maroon); padding: 15px 20px; text-align: center; font-size: 18px; font-weight: 900; letter-spacing: 1px; z-index: 10; }
   
   /* VIEWPORT */
   .viewport { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: #000; overflow: hidden; }
-  video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+  video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
+  video.active { opacity: 1; }
   canvas { display: none; }
-  img.preview { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; background: #222; display: none; z-index: 5; }
+  img.preview { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; background: #111; display: none; z-index: 5; }
+  img.preview.active { display: block; }
   
   /* LOADER */
-  #loader { position: absolute; inset: 0; background: rgba(0,0,0,0.8); z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-  .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+  #loader { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: opacity 0.5s; }
+  .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
 
   /* CONTROLS */
-  .controls { background: var(--surface); padding: 20px; border-top-left-radius: 24px; border-top-right-radius: 24px; display: flex; flex-direction: column; gap: 12px; z-index: 10; box-shadow: 0 -4px 20px rgba(0,0,0,0.3); }
+  .controls { background: var(--surface); padding: 24px 20px; border-top-left-radius: 24px; border-top-right-radius: 24px; display: flex; flex-direction: column; gap: 15px; z-index: 10; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
   
-  .btn-row { display: flex; gap: 10px; }
+  .action-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
   
-  button {
-    flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;
-  }
+  .btn-circle { width: 60px; height: 60px; border-radius: 50%; background: #334155; border: none; color: white; font-size: 24px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
+  .btn-circle:active { transform: scale(0.9); }
   
-  #btnCapture { background: #fff; color: var(--maroon); width: 100%; }
-  #btnCapture:active { transform: scale(0.98); }
+  .btn-capture { width: 80px; height: 80px; border-radius: 50%; background: var(--maroon); border: 4px solid white; box-shadow: 0 4px 15px rgba(122,31,43,0.5); font-size: 32px; }
   
-  #btnSave { background: var(--success); color: #fff; display: none; }
-  #btnRetake { background: #334155; color: #fff; display: none; }
+  .btn-main { flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+  .btn-save { background: var(--success); color: #fff; }
+  .btn-retake { background: #334155; color: #fff; }
   
-  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .filter-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 5px; }
+  .filter-btn { padding: 10px 20px; border-radius: 100px; background: #334155; border: 2px solid transparent; color: #94A3B8; font-weight: 800; font-size: 13px; cursor: pointer; }
+  .filter-btn.active { background: rgba(122,31,43,0.2); border-color: var(--maroon); color: white; }
+
+  /* Hide elements initially */
+  #previewControls { display: none; flex-direction: column; gap: 15px; }
+  #btnFlash { display: none; }
 </style>
 </head>
 <body>
@@ -57,7 +64,7 @@
   <div class="viewport">
     <div id="loader">
       <div class="spinner"></div>
-      <div>Initializing Engine...</div>
+      <div>Initializing OpenCV...</div>
     </div>
     <video id="video" autoplay playsinline muted></video>
     <canvas id="canvas"></canvas>
@@ -65,33 +72,57 @@
   </div>
 
   <div class="controls">
-    <button id="btnCapture" disabled>📸 Capture Document</button>
     
-    <div class="btn-row" id="actionRow" style="display:none;">
-      <button id="btnRetake">Retake</button>
-      <button id="btnSave">Save Image</button>
+    <!-- Camera Controls -->
+    <div id="cameraControls">
+      <div class="action-row">
+        <button class="btn-circle" id="btnFlash" title="Toggle Flash">⚡</button>
+        <button class="btn-circle btn-capture" id="btnCapture" title="Capture Document">📸</button>
+        <div style="width: 60px;"></div> <!-- Spacer to center the capture button -->
+      </div>
     </div>
+
+    <!-- Preview Controls -->
+    <div id="previewControls">
+      <div class="filter-row">
+        <button class="filter-btn active" id="btnViewInk" onclick="toggleView('ink')">✍️ Ink Only</button>
+        <button class="filter-btn" id="btnViewOrig" onclick="toggleView('original')">🖼️ Original</button>
+      </div>
+      <button class="btn-main btn-save" id="btnSave">⬇️ Save Image to Device</button>
+      <button class="btn-main btn-retake" id="btnRetake">🔄 Retake Scan</button>
+    </div>
+
   </div>
 
 <script>
   let cvReady = false;
+  let stream = null;
+  let videoTrack = null;
+  let flashOn = false;
+  let originalImage = null;
+  let currentView = 'ink';
+
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const preview = document.getElementById('preview');
   const loader = document.getElementById('loader');
+  
+  const btnFlash = document.getElementById('btnFlash');
   const btnCapture = document.getElementById('btnCapture');
   const btnSave = document.getElementById('btnSave');
   const btnRetake = document.getElementById('btnRetake');
-  const actionRow = document.getElementById('actionRow');
+  
+  const cameraControls = document.getElementById('cameraControls');
+  const previewControls = document.getElementById('previewControls');
 
-  // 1. Wait for OpenCV to load
+  // 1. Initialize OpenCV
   function waitForOpenCV() {
     const interval = setInterval(() => {
       if (typeof cv !== 'undefined' && cv.Mat) {
         cvReady = true;
         clearInterval(interval);
-        loader.style.display = 'none';
-        btnCapture.disabled = false;
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
         startCamera();
       }
     }, 100);
@@ -101,17 +132,34 @@
   // 2. Start Camera
   async function startCamera() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } } 
       });
       video.srcObject = stream;
       await video.play();
+      videoTrack = stream.getVideoTracks()[0];
+      video.classList.add('active');
+
+      // Check for Flash/Torch
+      if (videoTrack.getCapabilities().torch) {
+        btnFlash.style.display = 'flex';
+      }
     } catch (err) {
-      alert("Camera access denied or unavailable. Make sure you are on HTTPS.");
+      alert("Camera Error: " + err.message + "\n(Make sure you are on HTTPS)");
     }
   }
 
-  // 3. Capture & Process
+  // 3. Toggle Flash
+  btnFlash.addEventListener('click', async () => {
+    if (!videoTrack) return;
+    try {
+      flashOn = !flashOn;
+      await videoTrack.applyConstraints({ advanced: [{ torch: flashOn }] });
+      btnFlash.style.background = flashOn ? 'var(--maroon)' : '#334155';
+    } catch(e) { console.warn(e); }
+  });
+
+  // 4. Capture & Process
   btnCapture.addEventListener('click', () => {
     const w = video.videoWidth;
     const h = video.videoHeight;
@@ -121,64 +169,131 @@
     canvas.height = h;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, w, h);
+    
+    originalImage = canvas.toDataURL('image/jpeg', 1.0);
 
-    // Run OpenCV
+    // Run CV
     const processedCanvas = processImage(canvas);
-    
-    // Show Preview
     preview.src = processedCanvas.toDataURL('image/jpeg', 0.95);
-    preview.style.display = 'block';
     
-    // Update UI
-    btnCapture.style.display = 'none';
-    actionRow.style.display = 'flex';
-    btnSave.style.display = 'flex';
-    btnRetake.style.display = 'flex';
+    // Switch UI
+    video.classList.remove('active');
+    preview.classList.add('active');
+    cameraControls.style.display = 'none';
+    previewControls.style.display = 'flex';
+    currentView = 'ink';
+    updateFilterUI();
   });
 
-  // 4. OpenCV Image Processing (Ink Extraction)
+  // 5. OpenCV Engine (Perspective Warp + Ink Extraction)
   function processImage(sourceCanvas) {
     if (!cvReady) return sourceCanvas;
 
     let src = cv.imread(sourceCanvas);
     let gray = new cv.Mat();
-    let dst = new cv.Mat();
-
-    // Grayscale
+    let edges = new cv.Mat();
+    let contours = new cv.MatVector();
+    let hierarchy = new cv.Mat();
+    
+    // Grayscale & Blur
     cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
+    cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
     
-    // Blur to remove noise
-    cv.GaussianBlur(gray, gray, new cv.Size(3, 3), 0, 0, cv.BORDER_DEFAULT);
+    // Edge Detection
+    cv.Canny(gray, edges, 50, 150);
+    cv.dilate(edges, edges, cv.Mat.ones(3, 3, cv.CV_8U));
     
-    // Adaptive Thresholding (The magic that isolates ink)
-    cv.adaptiveThreshold(
-      gray, dst, 255, 
-      cv.ADAPTIVE_THRESH_GAUSSIAN_C, 
-      cv.THRESH_BINARY, 
-      21, // Block size
-      15  // Contrast
-    );
+    // Find Contours
+    cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+    
+    let maxArea = 0;
+    let bestContour = null;
+    
+    for (let i = 0; i < contours.size(); ++i) {
+        let cnt = contours.get(i);
+        let area = cv.contourArea(cnt);
+        if (area > maxArea && area > 5000) {
+            maxArea = area;
+            bestContour = cnt;
+        }
+    }
 
-    // Morphological opening to remove tiny dust specks
-    let M = cv.Mat.ones(2, 2, cv.CV_8U);
-    cv.morphologyEx(dst, dst, cv.MORPH_OPEN, M);
+    let dst = new cv.Mat();
+    
+    if (bestContour) {
+        let peri = cv.arcLength(bestContour, true);
+        let approx = new cv.Mat();
+        cv.approxPolyDP(bestContour, approx, 0.02 * peri, true);
+        
+        if (approx.rows === 4) {
+            // Perspective Warp (Auto-Crop)
+            let pts = [];
+            for (let i = 0; i < 4; i++) pts.push({ x: approx.data32S[i * 2], y: approx.data32S[i * 2 + 1] });
+            pts.sort((a, b) => a.y - b.y);
+            let top = pts.slice(0, 2).sort((a, b) => a.x - b.x);
+            let bottom = pts.slice(2, 4).sort((a, b) => a.x - b.x);
+            let ordered = [top[0], top[1], bottom[1], bottom[0]];
+            
+            let width = Math.max(Math.hypot(ordered[0].x - ordered[1].x, ordered[0].y - ordered[1].y), Math.hypot(ordered[2].x - ordered[3].x, ordered[2].y - ordered[3].y));
+            let height = Math.max(Math.hypot(ordered[0].x - ordered[3].x, ordered[0].y - ordered[3].y), Math.hypot(ordered[1].x - ordered[2].x, ordered[1].y - ordered[2].y));
+            
+            let srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, [ordered[0].x, ordered[0].y, ordered[1].x, ordered[1].y, ordered[2].x, ordered[2].y, ordered[3].x, ordered[3].y]);
+            let dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, width, 0, width, height, 0, height]);
+            
+            let M = cv.getPerspectiveTransform(srcTri, dstTri);
+            cv.warpPerspective(src, dst, M, new cv.Size(width, height));
+            
+            M.delete(); srcTri.delete(); dstTri.delete();
+        } else {
+            src.copyTo(dst);
+        }
+        approx.delete();
+    } else {
+        src.copyTo(dst);
+    }
 
-    // Output to canvas
+    // Ink Extraction
+    let finalDst = new cv.Mat();
+    cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
+    cv.adaptiveThreshold(gray, finalDst, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 21, 15);
+    
+    // Cleanup
+    src.delete(); gray.delete(); edges.delete(); contours.delete(); hierarchy.delete(); dst.delete();
+    
     let outCanvas = document.createElement('canvas');
-    outCanvas.width = dst.cols;
-    outCanvas.height = dst.rows;
-    cv.imshow(outCanvas, dst);
-
-    // Cleanup memory
-    src.delete(); gray.delete(); dst.delete(); M.delete();
-
+    outCanvas.width = finalDst.cols;
+    outCanvas.height = finalDst.rows;
+    cv.imshow(outCanvas, finalDst);
+    finalDst.delete();
+    
     return outCanvas;
   }
 
-  // 5. Save Image to Device
+  // 6. Toggle View
+  window.toggleView = function(type) {
+    currentView = type;
+    if (type === 'ink') {
+      const processedCanvas = processImage(canvas);
+      preview.src = processedCanvas.toDataURL('image/jpeg', 0.95);
+    } else {
+      preview.src = originalImage;
+    }
+    updateFilterUI();
+  }
+
+  function updateFilterUI() {
+    if (currentView === 'ink') {
+      document.getElementById('btnViewInk').classList.add('active');
+      document.getElementById('btnViewOrig').classList.remove('active');
+    } else {
+      document.getElementById('btnViewOrig').classList.add('active');
+      document.getElementById('btnViewInk').classList.remove('active');
+    }
+  }
+
+  // 7. Save Image
   btnSave.addEventListener('click', () => {
     if (!preview.src) return;
-    
     const link = document.createElement('a');
     link.download = `IFB_Scan_${new Date().getTime()}.jpg`;
     link.href = preview.src;
@@ -187,14 +302,14 @@
     document.body.removeChild(link);
   });
 
-  // 6. Retake
+  // 8. Retake
   btnRetake.addEventListener('click', () => {
-    preview.style.display = 'none';
+    preview.classList.remove('active');
     preview.src = "";
-    btnCapture.style.display = 'block';
-    actionRow.style.display = 'none';
-    btnSave.style.display = 'none';
-    btnRetake.style.display = 'none';
+    video.classList.add('active');
+    previewControls.style.display = 'none';
+    cameraControls.style.display = 'block';
+    originalImage = null;
   });
 
 </script>
