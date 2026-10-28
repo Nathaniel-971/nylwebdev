@@ -52,7 +52,7 @@
     --white: #fff; 
     --success: #15803D; 
     --error: #B91C1C; 
-    /* Modern Scanner Colors */
+    /* Scanner Colors */
     --bg-dark: #0F172A;
     --surface-dark: #1E293B;
     --surface-hover: #334155;
@@ -61,12 +61,15 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Inter', sans-serif; background: #F8FAFC; color: var(--black); padding-bottom: 50px; user-select: none; -webkit-user-select: none; }
 
+  /* FIX UI JUMPING */
   .tab-btn i, .action i, .nav-item i { width: 18px; height: 18px; flex-shrink: 0; }
   .tab-btn { min-height: 54px; }
   .action { min-height: 50px; }
 
-  /* HEADER */
+  /* HEADER WITH LOGO */
   .exam-header { background: #111; color: white; padding: 15px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-left svg { width: 32px; height: 32px; }
   .exam-header h1 { font-size: 16px; font-weight: 800; color: #fff; margin: 0; }
   .header-right { display: flex; align-items: center; gap: 20px; }
   .btn-logout { background: #FEE2E2; color: #B91C1C; border: 1px solid #FCA5A5; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px;}
@@ -76,25 +79,57 @@
   #mobileBanner { display: none; background: #FEF3C7; color: #92400E; padding: 10px 16px; font-size: 13px; font-weight: 600; text-align: center; border-bottom: 1px solid #FDE68A; }
   @media (max-width: 900px) { #mobileBanner { display: block; } }
 
-  .tabs { display: flex; max-width: 900px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; }
-  .tab-btn { flex: 1; padding: 12px; text-align: center; font-weight: 800; border-radius: 8px; border: none; background: transparent; cursor: pointer; transition: 0.2s; font-size: 14px; color: var(--gray); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  /* TABS (Mobile Optimized) */
+  .tabs { display: flex; flex-wrap: wrap; max-width: 900px; margin: 20px auto 0; background: white; border-radius: 12px; border: 1px solid var(--silver); padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; z-index: 10; justify-content: center;}
+  .tab-btn { flex: 1 1 120px; padding: 12px; text-align: center; font-weight: 800; border-radius: 8px; border: none; background: transparent; cursor: pointer; transition: 0.2s; font-size: 14px; color: var(--gray); display: flex; align-items: center; justify-content: center; gap: 8px; }
   .tab-btn.active { background: var(--maroon); color: white; box-shadow: 0 4px 10px rgba(122,31,43,0.2); }
 
   .view { display: none; }
   .view.active { display: block; }
   .security-blur { filter: blur(20px); pointer-events: none; opacity: 0.5; }
 
-  /* QUESTION PAPER PLACEHOLDER */
+  /* PLACEHOLDER PAPER */
   .placeholder-page { 
     width: 210mm; height: 297mm; margin: 15px auto; background: white; border: 1px solid var(--silver);
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; padding: 40px;
   }
-  @media (max-width: 900px) { .placeholder-page { width: 90%; height: auto; aspect-ratio: 1/1.414; } }
+  @media (max-width: 900px) { .placeholder-page { width: 90%; height: auto; aspect-ratio: 1/1.414; transform: scale(0.9); } }
   .placeholder-page h2 { font-size: 32px; color: var(--maroon); margin-bottom: 16px; }
-  .placeholder-page p { color: var(--gray); font-size: 18px; }
 
-  /* ANSWER BOOK STYLES (Same as before) */
+  /* UNIVERSAL A4 PAGE SETUP */
+  @page { size: A4; margin: 0; }
+  .page { width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.6; color: #000; transform-origin: top center; }
+  
+  @media (max-width: 900px) { 
+      .page { transform: scale(0.55); margin-bottom: -120mm; margin-top: -10mm; } 
+  }
+  @media (max-width: 600px) { 
+      .page { transform: scale(0.42); margin-bottom: -160mm; } 
+  }
+
+  .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
+  .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: 400px; opacity: 0.03; pointer-events: none; z-index: 0; }
+  
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 50mm; }
+  
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; padding-bottom: 5px; }
+  .header-left { width: 35%; text-align: left; font-weight: bold; color: var(--maroon); }
+  .header-center { width: 30%; text-align: center; }
+  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: var(--maroon); }
+  .header-right { width: 35%; text-align: right; font-weight: bold; color: var(--maroon); }
+
+  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 10; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; background: #fff; padding-top: 5px;}
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 35px; height: 35px; }
+  .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
+  .footer-brand .tag { font-size: 7pt; color: var(--black); }
+  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 10; background: #fff; padding: 2px;}
+
+  /* ANSWER BOOK SPECIFIC */
   .cover-header-container { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
   .cover-brand { display: flex; align-items: center; gap: 15px; width: 60%;}
   .ifb-logo-svg { width: 80px; height: 80px; z-index: 1; }
@@ -108,7 +143,6 @@
   .sequence-circle-container { display: flex; align-items: center; gap: 10px; }
   .sequence-circle { width: 45px; height: 45px; border: 2px solid #000; border-radius: 50%; background-color: #FFF5F6; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14pt; }
   .sequence-text { font-size: 9pt; font-weight: bold; text-align: right; line-height: 1.1; color: #7A1F2B; }
-
   .answer-book-title { border: 2px solid #000; border-radius: 15px; padding: 12px; text-align: center; font-size: 22pt; font-weight: bold; font-style: italic; margin-bottom: 25px; width: 65%; background-color: #FFF5F6; color: #7A1F2B; }
   
   .form-row { display: flex; gap: 15px; margin-bottom: 10px; }
@@ -141,27 +175,9 @@
   .marks-area { width: 70px; display: flex; flex-direction: column; align-items: center; padding-top: 10px; background-color: #FFF5F6; }
   .marks-area .marks-title { font-size: 10pt; font-weight: bold; font-style: italic; border-bottom: 1.5px solid #000; width: 100%; text-align: center; padding-bottom: 5px; margin-bottom: 10px; color: #7A1F2B; }
 
-  /* PAGE SETUP */
-  @page { size: A4; margin: 0; }
-  .page { width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.6; color: #000; transform-origin: top center; }
-  .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
-  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 50mm; }
-  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; background: #fff; padding-top: 5px;}
-  .footer-left { display: flex; align-items: center; gap: 10px; }
-  .footer-qr { display: inline-block; width: 35px; height: 35px; }
-  .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
-  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
-  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
-  .footer-brand .tag { font-size: 7pt; color: var(--black); }
-  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; background: #fff; padding: 2px;}
-  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; padding-bottom: 5px; }
-  .header-left { width: 35%; text-align: left; font-weight: bold; color: var(--maroon); }
-  .header-center { width: 30%; text-align: center; }
-  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
-  .header-center .confidential { font-style: italic; font-weight: bold; color: var(--maroon); }
-  .header-right { width: 35%; text-align: right; font-weight: bold; color: var(--maroon); }
-
-  /* MODERN SCANNER UI */
+  /* ========================================= */
+  /* MODERN SCANNER UI (Only applied to tab)   */
+  /* ========================================= */
   .scanner-container { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: #000; overflow: hidden; max-width: 600px; margin: 20px auto; border-radius: 24px; height: 70vh; border: 1px solid var(--silver); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
   video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
   video.active { opacity: 1; }
@@ -217,7 +233,30 @@
   #toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--success); color: white; padding: 12px 24px; border-radius: 100px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); opacity: 0; pointer-events: none; transition: 0.3s; z-index: 1000; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* ADMIN MODAL */
+  /* SUCCESS MODAL & OVERLAYS */
+  #successModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 20px; }
+  #successModal .modal-content { background: #fff; padding: 40px; border-radius: 16px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+  #successModal i { color: var(--success); width: 64px; height: 64px; margin-bottom: 20px; }
+  #successModal h2 { font-size: 24px; font-weight: 900; color: var(--maroon); margin-bottom: 10px; }
+  .receipt-box { background: #F8FAFC; border: 2px dashed var(--silver); border-radius: 8px; padding: 20px; text-align: left; font-family: monospace; font-size: 14px; margin-bottom: 20px; }
+
+  #tabWarning { position:fixed; inset:0; background:rgba(0,0,0,0.95); color:white; z-index:999999; display:none; justify-content:center; align-items:center; flex-direction:column; text-align:center; padding:20px; }
+  #uploadOverlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 9999; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+
+  /* ADMIN SPECIFIC */
+  .admin-container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;}
+  .btn-refresh { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; color: var(--black); display: flex; align-items: center; gap: 6px; width: auto; min-width: unset; flex: none; }
+  .btn-refresh:hover { border-color: var(--black); background: #FAFAFA; }
+  .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'Inter', sans-serif; }
+  .admin-table th, .admin-table td { border: 1px solid var(--silver); padding: 12px; text-align: left; font-size: 14px; vertical-align: middle;}
+  .admin-table th { background: var(--maroon); color: white; font-weight: bold; }
+  .admin-table tr:nth-child(even) { background: #F8FAFC; }
+  .admin-barcode svg { height: 40px; width: 150px; }
+  .status-indicator { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+  .status-active { background-color: var(--success); box-shadow: 0 0 5px var(--success); }
+  .status-offline { background-color: var(--error); }
+  
   .admin-script-viewer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10000; overflow-y: auto; padding: 20px; }
   .admin-script-viewer.active { display: block; }
   .admin-viewer-header { max-width: 210mm; margin: 0 auto 10px auto; display: flex; justify-content: space-between; color: white; align-items: center; }
@@ -254,22 +293,20 @@
   <p style="color: var(--gray); margin-top: 10px;">Optimising images and securing your submission.</p>
 </div>
 
+<!-- SUCCESS / EXIT MODAL -->
 <div id="successModal">
-    <div class="modal-content" style="background: #fff; padding: 40px; border-radius: 16px; max-width: 500px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100000; display: none;" id="modalInner">
-        <i data-lucide="check-circle" style="color: var(--success); width: 64px; height: 64px; margin-bottom: 20px;"></i>
-        <h2 style="font-size: 24px; font-weight: 900; color: var(--maroon); margin-bottom: 10px;">Examination Complete!</h2>
-        <p style="color: var(--gray); margin-bottom: 30px; font-size: 15px;">Your scripts have been securely uploaded to the IFB Server. You can now save your confirmation receipt.</p>
+    <div class="modal-content">
+        <i data-lucide="check-circle"></i>
+        <h2>Examination Complete!</h2>
+        <p>Your scripts have been securely uploaded to the IFB Server. You can now save your confirmation receipt.</p>
         
-        <div class="receipt-box" id="receiptContent" style="background: #F8FAFC; border: 2px dashed var(--silver); border-radius: 8px; padding: 20px; text-align: left; font-family: monospace; font-size: 14px; margin-bottom: 20px;">
+        <div class="receipt-box" id="receiptContent">
             <div style="font-weight: bold; text-align: center; margin-bottom: 10px; font-family: 'Inter';">IFB EXAMINATION RECEIPT</div>
             <div><strong>Student ID:</strong> <span id="recId"></span></div>
             <div><strong>Script ID:</strong> <span id="recScript"></span></div>
             <div><strong>Date/Time:</strong> <span id="recDate"></span></div>
             <div><strong>Total Pages:</strong> <span id="recPages"></span></div>
             <div><strong>Status:</strong> SUBMITTED</div>
-            <div style="margin-top: 10px; font-size: 11px; color: #666; border-top: 1px dashed #ccc; padding-top: 10px;">
-                This acts as proof of submission. Do not lose this receipt.
-            </div>
         </div>
 
         <button class="action btn-primary" style="width: 100%; margin-bottom: 10px; padding: 15px; border-radius: 8px; border: none; background: var(--maroon); color: white; font-weight: bold; cursor: pointer;" onclick="downloadReceipt()">
@@ -282,7 +319,14 @@
 </div>
 
 <header class="exam-header">
-  <h1 id="headerTitle">IFB Examination Portal</h1>
+  <div class="header-left">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+      <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+      <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+    </svg>
+    <h1 id="headerTitle">IFB Examination Portal</h1>
+  </div>
   <div class="header-right">
     <div class="timer" id="examTimer">02:00:00</div>
     <button class="btn-logout" onclick="logout()"><i data-lucide="log-out" style="width:16px;height:16px;"></i> Log Out</button>
@@ -297,7 +341,7 @@
   <button class="tab-btn" onclick="switchTab('admin')" id="tabAdmin" style="display: none;"><i data-lucide="shield"></i> Admin</button>
 </div>
 
-<!-- VIEW: PAPER (PLACEHOLDER) -->
+<!-- VIEW: PAPER -->
 <div class="view active" id="viewPaper">
   <div class="placeholder-page">
     <h2>Question Paper Pending</h2>
@@ -316,7 +360,7 @@
     
     <div id="loader">
       <div class="spinner"></div>
-      <div style="font-size: 14px; color: var(--text-muted);">Initializing Scanner...</div>
+      <div style="font-size: 14px; color: #94A3B8;">Initializing Scanner...</div>
     </div>
 
     <video id="video" autoplay playsinline muted></video>
@@ -368,29 +412,21 @@
 
 <!-- VIEW: ADMIN -->
 <div class="view" id="viewAdmin">
-  <div class="admin-container" id="adminRosterContainer" style="max-width: 1200px; margin: 20px auto; padding: 20px;">
-    <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+  <div class="admin-container" id="adminRosterContainer">
+    <div class="admin-header">
         <div>
             <h1 style="font-size: 28px; font-weight: 900; color: var(--maroon); margin-bottom: 5px;">Admin Invigilator Dashboard</h1>
             <p style="color: var(--gray);">Monitor active sessions and view uploaded scripts.</p>
         </div>
         <div style="display:flex; gap:10px;">
-            <button class="btn-refresh" onclick="printAdminRoster()" style="background: white; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer;"><i data-lucide="printer" style="width:16px;height:16px;"></i> Print Roster</button>
-            <button class="btn-refresh" onclick="loadAdminData()" style="background: white; border: 1px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer;"><i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Refresh</button>
+            <button class="btn-refresh" onclick="printAdminRoster()" style="border-color:var(--maroon); color:var(--maroon);"><i data-lucide="printer" style="width:16px;height:16px;"></i> Print A4 Roster</button>
+            <button class="btn-refresh" onclick="loadAdminData()"><i data-lucide="refresh-cw" style="width:16px;height:16px;"></i> Refresh</button>
         </div>
     </div>
     <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-      <table class="admin-table" id="adminTable" style="width: 100%; border-collapse: collapse;">
+      <table class="admin-table" id="adminTable">
         <thead>
-          <tr style="background: var(--maroon); color: white;">
-            <th style="padding: 12px; text-align: left;">Status</th>
-            <th style="padding: 12px; text-align: left;">Student ID</th>
-            <th style="padding: 12px; text-align: left;">Name</th>
-            <th style="padding: 12px; text-align: left;">Barcode</th>
-            <th style="padding: 12px; text-align: left;">Tab Switches</th>
-            <th style="padding: 12px; text-align: left;">Last Active</th>
-            <th style="padding: 12px; text-align: left;">Action</th>
-          </tr>
+          <tr><th>Status</th><th>Student ID</th><th>Name</th><th>Barcode</th><th>Tab Switches</th><th>Last Active</th><th>Action</th></tr>
         </thead>
         <tbody id="adminTableBody">
           <tr><td colspan="7" style="text-align:center; padding: 20px;">Click "Refresh" to load sessions.</td></tr>
@@ -416,7 +452,6 @@
   const studentId = sessionStorage.getItem('examStudentId');
   const secCode = sessionStorage.getItem('examSecurityCode');
   const studentName = sessionStorage.getItem('examStudentName');
-  const examCode = sessionStorage.getItem('examCode');
   const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
 
   if (!studentId || !secCode) {
@@ -506,19 +541,6 @@
     if (tab !== 'scanner') stopCamera();
   }
 
-  function createBlocks(containerId, count) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    for (let i = 0; i < count; i++) {
-        const input = document.createElement('input');
-        input.type = 'text'; input.className = 'block'; input.maxLength = 1;
-        input.addEventListener('input', function() {
-            if (this.value.length === 1) { let next = this.nextElementSibling; if (next) next.focus(); }
-        });
-        container.appendChild(input);
-    }
-  }
-
   /* ================= SCANNER ENGINE ================= */
   let stream = null;
   let videoTrack = null;
@@ -527,7 +549,6 @@
   let originalImage = null; 
   let currentView = 'ink'; 
   let captures = JSON.parse(sessionStorage.getItem('examCaptures') || '[]');
-
   let contrastVal = 15;
   let blockSizeVal = 21;
 
@@ -564,19 +585,19 @@
       video.srcObject = stream;
       await video.play();
       videoTrack = stream.getVideoTracks()[0];
-      
       video.classList.add('active');
       framingGuide.classList.add('visible');
-      
-      const caps = videoTrack.getCapabilities();
-      if (caps.torch) {
-        btnFlash.style.display = 'flex';
-      } else {
-        btnFlash.style.display = 'none';
-      }
+      if (videoTrack.getCapabilities().torch) btnFlash.style.display = 'flex';
+      else btnFlash.style.display = 'none';
     } catch (err) {
-      alert("Camera error: " + err.message);
+      console.warn("Camera error: " + err.message);
     }
+  }
+
+  function stopCamera() {
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    videoTrack = null; video.srcObject = null;
+    video.classList.remove('active'); 
   }
 
   async function toggleFlash() {
@@ -590,7 +611,6 @@
 
   function processImage(sourceCanvas) {
     if (!cvReady) return sourceCanvas;
-
     let src = cv.imread(sourceCanvas);
     let dst = new cv.Mat();
     cv.cvtColor(src, src, cv.COLOR_RGBA2GRAY, 0);
@@ -600,12 +620,11 @@
     let M = cv.Mat.ones(2, 2, cv.CV_8U);
     let anchor = new cv.Point(-1, -1);
     cv.morphologyEx(dst, dst, cv.MORPH_OPEN, M, anchor, 1, cv.BORDER_CONSTANT, cv.morphologyDefaultBorderValue());
-
+    
     let outCanvas = document.createElement('canvas');
     outCanvas.width = dst.cols;
     outCanvas.height = dst.rows;
     cv.imshow(outCanvas, dst);
-
     src.delete(); dst.delete(); M.delete();
     return outCanvas;
   }
@@ -673,6 +692,7 @@
     originalImage = null;
   }
 
+  // SETTINGS PANEL LOGIC (Not shown in UI but here for completeness)
   function openSettings() { document.getElementById('settingsModal').classList.add('active'); }
   function closeSettings() {
     document.getElementById('settingsModal').classList.remove('active');
@@ -691,10 +711,10 @@
     document.getElementById('valBlock').innerText = blockSizeVal;
   });
 
-  /* ================= UPLOAD TO CLOUDINARY ================= */
+  /* ================= UPLOAD TO CLOUDINARY & RENDER ================= */
   async function saveCurrentPage() {
     if (!preview.src) return;
-    const q = document.getElementById('questionPick').value;
+    const q = document.getElementById('questionPick') ? document.getElementById('questionPick').value : "1";
     
     document.getElementById('btnSave').innerHTML = '<i data-lucide="loader"></i> Uploading...';
     document.getElementById('btnSave').disabled = true;
@@ -722,8 +742,8 @@
             }, { merge: true });
         }
 
-        renderAnswerBooks();
-        switchTab('answer');
+        renderAnswerBooks(); // Update the Answer Book UI
+        switchTab('answer'); // Jump to Answer Book
         
     } catch (error) {
         console.error("Upload Error:", error);
@@ -731,7 +751,7 @@
     } finally {
         document.getElementById('btnSave').innerHTML = '<i data-lucide="upload-cloud"></i> Save to Answer Book';
         document.getElementById('btnSave').disabled = false;
-        retake(); // Reset scanner for next page
+        retake(); // Reset scanner
     }
   }
 
@@ -885,11 +905,6 @@
     
     container.innerHTML = html;
 
-    createBlocks('idBlocks', 13);
-    createBlocks('secBlocks', 6);
-    createBlocks('dateBlocks', 8);
-    createBlocks('subjCodeBlocks', 5);
-
     function fillBlocks(containerId, text) {
         if (!text) return;
         const inputs = document.querySelectorAll(`#${containerId} input`);
@@ -899,28 +914,37 @@
         }
     }
 
-    fillBlocks('idBlocks', studentId);
-    fillBlocks('secBlocks', secCode);
-    fillBlocks('subjCodeBlocks', '270001F');
-    document.getElementById('valSubjectName').value = "Mathematics";
-    document.getElementById('valCurriculum').value = "IFB-AE";
+    // Re-create block inputs dynamically (since they are wiped by innerHTML)
+    const idBlocks = document.getElementById('idBlocks');
+    const secBlocks = document.getElementById('secBlocks');
+    const dateBlocks = document.getElementById('dateBlocks');
+    const subjCodeBlocks = document.getElementById('subjCodeBlocks');
     
-    const today = new Date();
-    const dateStr = String(today.getDate()).padStart(2, '0') + String(today.getMonth() + 1).padStart(2, '0') + String(today.getFullYear());
-    fillBlocks('dateBlocks', dateStr);
+    if (idBlocks) { createBlocks('idBlocks', 13); fillBlocks('idBlocks', studentId); }
+    if (secBlocks) { createBlocks('secBlocks', 6); fillBlocks('secBlocks', secCode); }
+    if (dateBlocks) { createBlocks('dateBlocks', 8); fillBlocks('dateBlocks', String(new Date().getDate()).padStart(2, '0') + String(new Date().getMonth() + 1).padStart(2, '0') + String(new Date().getFullYear())); }
+    if (subjCodeBlocks) { createBlocks('subjCodeBlocks', 7); fillBlocks('subjCodeBlocks', '270001F'); }
+    
+    if (document.getElementById('valSubjectName')) document.getElementById('valSubjectName').value = "Mathematics";
+    if (document.getElementById('valCurriculum')) document.getElementById('valCurriculum').value = "IFB-AE";
 
     try { JsBarcode("#coverBarcode", `${studentId}-${scriptId}`, { format: "CODE128", width: 1.5, height: 40, displayValue: false, margin: 0 }); } catch(e) {}
     makeQRCodes();
     makeBarcodes();
   }
 
-  function updateSubmitButton() {
-    const btnSubmit = document.getElementById('btnSubmit');
-    if(!btnSubmit) return;
-    const total = captures.length;
-    btnSubmit.disabled = total === 0;
-    btnSubmit.innerHTML = total > 0 ? `<i data-lucide="send"></i> Submit All Scripts (${total} pages) & Finish` : `<i data-lucide="send"></i> Submit All Scripts & Finish`;
-    lucide.createIcons();
+  function createBlocks(containerId, count) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = ''; // clear existing
+    for (let i = 0; i < count; i++) {
+        const input = document.createElement('input');
+        input.type = 'text'; input.className = 'block'; input.maxLength = 1;
+        input.addEventListener('input', function() {
+            if (this.value.length === 1) { let next = this.nextElementSibling; if (next) next.focus(); }
+        });
+        container.appendChild(input);
+    }
   }
 
   async function submitExam(autoSubmit = false) {
@@ -930,13 +954,7 @@
         if (window.db) {
             const docRef = doc(window.db, "examLogs", studentId);
             await setDoc(docRef, { 
-                studentId, 
-                studentName,
-                scriptId, 
-                seqNum, 
-                status: "Submitted", 
-                submittedAt: serverTimestamp(),
-                scriptCount: captures.length
+                studentId, studentName, scriptId, seqNum, status: "Submitted", submittedAt: serverTimestamp(), scriptCount: captures.length
             }, { merge: true });
         }
     } catch(e) { console.error("Firebase Error: ", e); }
@@ -948,17 +966,12 @@
     document.getElementById('recScript').innerText = scriptId;
     document.getElementById('recDate').innerText = new Date().toLocaleString();
     document.getElementById('recPages').innerText = captures.length + " pages";
-    document.getElementById('modalInner').style.display = 'block';
+    document.getElementById('successModal').style.display = 'flex';
   }
 
   window.downloadReceipt = function() {
       const element = document.getElementById('receiptContent');
-      const opt = {
-          margin: 1, filename: `IFB_Receipt_${studentId}.pdf`,
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
+      const opt = { margin: 1, filename: `IFB_Receipt_${studentId}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
       html2pdf().set(opt).from(element).save();
   }
 
@@ -970,156 +983,70 @@
   /* ================= ADMIN LOGIC ================= */
   async function loadAdminData() {
       const tbody = document.getElementById('adminTableBody');
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">Fetching records from Firebase...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">Fetching records...</td></tr>';
       try {
-          if (!window.db) throw new Error("Firebase not initialized");
           const querySnapshot = await window.getDocs(window.collection(window.db, "examLogs"));
           tbody.innerHTML = '';
           if (querySnapshot.empty) {
-              tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">No active exam sessions found.</td></tr>';
+              tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">No sessions found.</td></tr>';
               return;
           }
           querySnapshot.forEach((doc) => {
               const data = doc.data();
               const tr = document.createElement('tr');
               const barcodeId = `bc-admin-${data.studentId}`;
-              
               const tabSwitches = data.tabSwitches ? data.tabSwitches.length : 0;
-              const tabSwitchText = tabSwitches > 0 ? `<span style="color: red; font-weight: bold;">${tabSwitches}</span>` : "0";
-              
-              let lastActiveTime = "N/A";
               let isActive = false;
+              let lastActiveTime = "N/A";
               if (data.lastActive) {
                   const d = new Date(data.lastActive.toDate());
                   lastActiveTime = d.toLocaleTimeString();
                   if ((new Date().getTime() - d.getTime()) < 10 * 60 * 1000) isActive = true;
               }
+              if (data.status === "Submitted") isActive = false; 
+              const indicator = isActive ? `<span style="color:green; font-weight:bold;">● Active</span>` : `<span style="color:red; font-weight:bold;">● Offline</span>`;
               
-              let statusText = data.status || "In Session";
-              if (statusText === "Submitted") isActive = false; 
-
-              const indicator = isActive 
-                  ? `<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--success); margin-right:6px;"></span> Active` 
-                  : `<span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--error); margin-right:6px;"></span> Offline`;
-
               tr.innerHTML = `
                   <td style="padding: 12px; border-bottom: 1px solid var(--silver);">${indicator}</td>
                   <td style="padding: 12px; border-bottom: 1px solid var(--silver);">${data.studentId || 'N/A'}</td>
                   <td style="padding: 12px; border-bottom: 1px solid var(--silver);">${data.studentName || 'Unknown'}</td>
                   <td style="padding: 12px; border-bottom: 1px solid var(--silver);"><svg id="${barcodeId}"></svg></td>
-                  <td style="padding: 12px; border-bottom: 1px solid var(--silver);">${tabSwitchText}</td>
+                  <td style="padding: 12px; border-bottom: 1px solid var(--silver);">${tabSwitches}</td>
                   <td style="padding: 12px; border-bottom: 1px solid var(--silver);">${lastActiveTime}</td>
-                  <td style="padding: 12px; border-bottom: 1px solid var(--silver);"><button class="btn-primary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; background: var(--maroon); color: white; cursor: pointer;" onclick="viewAdminScript('${doc.id}')">View Script</button></td>
+                  <td style="padding: 12px; border-bottom: 1px solid var(--silver);"><button onclick="viewAdminScript('${doc.id}')" style="padding: 6px 12px; background: var(--maroon); color: white; border: none; border-radius: 6px; cursor: pointer;">View</button></td>
               `;
               tbody.appendChild(tr);
-              
-              setTimeout(() => {
-                  try { 
-                      JsBarcode(`#${barcodeId}`, `${data.studentId}-${data.scriptId}`, { format: "CODE128", width: 1.5, height: 30, displayValue: false }); 
-                  } catch(e) {}
-              }, 100);
+              setTimeout(() => { try { JsBarcode(`#${barcodeId}`, `${data.studentId}-${data.scriptId}`, { format: "CODE128", width: 1.5, height: 30, displayValue: false }); } catch(e) {} }, 100);
           });
       } catch(e) {
-          console.error("[ADMIN] Error loading data:", e);
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: red; font-weight:bold;">Database Error: ${e.message}</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: red;">Error: ${e.message}</td></tr>`;
       }
-  }
-
-  window.printAdminRoster = function() {
-      const originalTitle = document.title;
-      document.title = `IFB_Admin_Roster_${new Date().toISOString().split('T')[0]}`;
-      window.print();
-      document.title = originalTitle;
   }
 
   async function viewAdminScript(docId) {
       document.getElementById('viewerTitle').innerText = `Script: ${docId}`;
       const container = document.getElementById('adminA4Container');
-      container.innerHTML = '<div style="text-align:center; color:white; font-size:20px;">Loading script...</div>';
+      container.innerHTML = '<div style="text-align:center; color:white; font-size:20px;">Loading...</div>';
       document.getElementById('adminScriptViewer').classList.add('active');
       try {
-          if (!window.db) throw new Error("Firebase not initialized");
-          const docRef = window.doc(window.db, "examLogs", docId);
-          const docSnap = await window.getDoc(docRef);
+          const docSnap = await window.getDoc(window.doc(window.db, "examLogs", docId));
           if (docSnap.exists()) {
               const data = docSnap.data();
-              container.innerHTML = '';
-              container.innerHTML += `
-                <div class="page" style="padding: 15mm 20mm 20mm 20mm;">
-                  <div class="security-pattern"></div>
-                  <div class="content-wrapper" style="padding-bottom: 0;">
-                    <div class="header">
-                      <div class="header-left">ADMIN A4 SUMMARY</div>
-                      <div class="header-center"><span class="page-num">1</span><span class="confidential">IFB / Confidential</span></div>
-                      <div class="header-right">2027</div>
-                    </div>
-                    <h2 style="font-family:'Inter'; font-size:24px; color:var(--maroon); margin-bottom:20px; text-align:center;">Examination Script Summary</h2>
-                    <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
-                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Student ID:</td><td style="padding:10px; border:1px solid #ccc;">${data.studentId}</td></tr>
-                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Name:</td><td style="padding:10px; border:1px solid #ccc;">${data.studentName || 'N/A'}</td></tr>
-                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Script ID:</td><td style="padding:10px; border:1px solid #ccc;">${data.scriptId}</td></tr>
-                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Sequence Number:</td><td style="padding:10px; border:1px solid #ccc;">${data.seqNum}</td></tr>
-                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Login Status:</td><td style="padding:10px; border:1px solid #ccc;">${data.status || 'Unknown'}</td></tr>
-                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Total Tab Switches:</td><td style="padding:10px; border:1px solid #ccc; color:red; font-weight:bold;">${data.tabSwitches ? data.tabSwitches.length : 0}</td></tr>
-                        <tr><td style="padding:10px; border:1px solid #ccc; font-weight:bold;">Total Pages:</td><td style="padding:10px; border:1px solid #ccc;">${data.scripts ? data.scripts.length : 0} (${Math.max(1, Math.ceil((data.scripts ? data.scripts.length : 0) / 23))} book${Math.max(1, Math.ceil((data.scripts ? data.scripts.length : 0) / 23)) > 1 ? 's' : ''})</td></tr>
-                    </table>
-                    <div style="margin-top:20px;">
-                        <h3 style="font-size:16px; margin-bottom:10px;">Student Signature:</h3>
-                        <img src="${data.signatureUrl || '#'}" style="max-height:150px; border:1px solid #ccc; padding:5px; display:block;">
-                        ${data.signatureUrl ? '' : '<p style="color:#999;">No signature registered.</p>'}
-                    </div>
-                  </div>
-                  <div class="footer">
-                    <div class="footer-left">
-                      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
-                      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-                    </div>
-                  </div>
-                </div>
-              `;
-              if (data.scripts && data.scripts.length > 0) {
+              container.innerHTML = `<div class="page"><div class="content-wrapper"><h2 style="color:var(--maroon);">Script Summary: ${data.studentId}</h2><p>Name: ${data.studentName}</p><p>Total Scans: ${data.scripts ? data.scripts.length : 0}</p></div></div>`;
+              if (data.scripts) {
                   data.scripts.forEach((cap, idx) => {
                       container.innerHTML += `
                         <div class="page">
-                          <div class="security-pattern"></div>
-                          <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-                            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-                            <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-                          </svg>
                           <div class="content-wrapper">
-                            <div class="header">
-                              <div class="header-left">Scanned Script</div>
-                              <div class="header-center"><span class="page-num">${idx + 1}</span><span class="confidential">IFB / Confidential</span></div>
-                              <div class="header-right">2027</div>
-                            </div>
-                            <div class="answer-page">
-                              <div class="left-margin"></div>
-                              <div class="writing-area">
-                                 <img src="${cap.src}" style="display:block; max-width:100%; max-height:100%;">
-                              </div>
-                              <div class="marks-area"><div class="marks-title">Marks</div></div>
-                            </div>
-                          </div>
-                          <div class="footer">
-                            <div class="footer-left">
-                              <span class="footer-qr" data-qr="https://nylwebdev.vercel.app"></span>
-                              <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-                            </div>
+                            <div class="header"><div class="header-left">Scanned Script</div><div class="header-center"><span class="page-num">${idx + 1}</span></div><div class="header-right">2027</div></div>
+                            <div class="answer-page"><div class="left-margin"></div><div class="writing-area"><img src="${cap.src}" style="display:block; max-width:100%; max-height:100%;"></div><div class="marks-area"><div class="marks-title">Marks</div></div></div>
                           </div>
                         </div>
                       `;
                   });
-              } else {
-                  container.innerHTML += '<div class="page" style="display:flex; justify-content:center; align-items:center; font-size:24px; color:#999;">No scripts uploaded yet for this student.</div>';
               }
-          } else {
-              container.innerHTML = '<div class="page" style="display:flex; justify-content:center; align-items:center; font-size:24px; color:#999;">Student record not found.</div>';
           }
-      } catch(e) {
-          console.error(e);
-          container.innerHTML = '<div style="text-align:center; color:red; font-size:20px;">Error loading script.</div>';
-      }
+      } catch(e) { container.innerHTML = `<div style="color:red;">Error: ${e.message}</div>`; }
   }
 
   function closeAdminViewer() { document.getElementById('adminScriptViewer').classList.remove('active'); }
@@ -1128,13 +1055,7 @@
     if (typeof JsBarcode !== "function") return;
     document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
       try {
-        JsBarcode(el, el.dataset.barcode || "270001F", {
-          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
-          height: parseInt(el.dataset.bcHeight || "30", 10),
-          displayValue: el.dataset.bcDisplay === "true",
-          font: "monospace", fontSize: parseInt(el.dataset.bcFontSize || "12", 10), textMargin: 2, margin: 0,
-          background: "#ffffff", lineColor: "#111111"
-        });
+        JsBarcode(el, el.dataset.barcode || "270001F", { format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"), height: parseInt(el.dataset.bcHeight || "30", 10), displayValue: el.dataset.bcDisplay === "true", margin: 0, background: "#ffffff", lineColor: "#111111" });
       } catch (e) { console.warn(e); }
     });
   }
@@ -1143,28 +1064,16 @@
     if (typeof qrcode !== "function") return;
     document.querySelectorAll(".footer-qr").forEach(function (el) {
       try {
-        var qr = qrcode(0, "M");
-        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app");
-        qr.make();
-        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+        var qr = qrcode(0, "M"); qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app"); qr.make(); el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
       } catch (e) { console.warn(e); }
     });
   }
 
   window.addEventListener("load", function () {
-    makeBarcodes();
-    makeQRCodes();
-    lucide.createIcons();
+    makeBarcodes(); makeQRCodes(); lucide.createIcons();
     renderAnswerBooks();
-    if (window.auth.currentUser && window.auth.currentUser.email === "n1nathaniel971@gmail.com") {
-        if (window.db) {
-            const docRef = doc(window.db, "examLogs", studentId);
-            setDoc(docRef, { studentId, studentName, scriptId, seqNum, lastActive: serverTimestamp(), status: "In Session" }, { merge: true }).catch(e => console.warn(e));
-        }
-    }
   });
 
-  // Disable Right Click & Copying
   document.addEventListener('copy', e => e.preventDefault());
   document.addEventListener('cut', e => e.preventDefault());
   document.addEventListener('contextmenu', e => e.preventDefault());
