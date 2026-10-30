@@ -50,6 +50,12 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .card-title { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 .card-title i { width: 20px; height: 20px; color: var(--maroon); }
 
+/* LOADING STATE */
+.loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; }
+.spinner { width: 48px; height: 48px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 14px; color: var(--gray); font-weight: 600; }
+
 /* ID CARD */
 .id-section { display: flex; flex-direction: column; align-items: center; gap: 24px; }
 .id-card-container { width: 100%; max-width: 520px; aspect-ratio: 1.586; perspective: 1000px; cursor: pointer; user-select: none; }
@@ -67,6 +73,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .card-id { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 12px; }
 .barcode-wrap-front { background: #fff; border-radius: 8px; width: 100%; height: 60px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 6px; }
 .barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
+.barcode-placeholder { font-size: 12px; color: var(--gray); font-weight: 600; }
 .card-back-text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 12px; }
 .card-sec-code { font-family: monospace; font-size: 20px; font-weight: 900; letter-spacing: 3px; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 8px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 110px; height: 110px; display: flex; justify-content: center; align-items: center; }
@@ -94,7 +101,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 14px; transition: 0.2s; text-align: center; }
 .action-btn:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
 .action-btn i { color: var(--maroon); width: 24px; height: 24px; }
-.action-btn.admin-btn { border-color: var(--maroon); background: #FFF5F6; display: none; }
+.action-btn.admin-btn { border-color: var(--maroon); background: #FFF5F6; display: none; grid-column: 1 / -1; }
 .action-btn.admin-btn.visible { display: flex; }
 
 /* ADMIN CARD */
@@ -108,16 +115,20 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .admin-card .btn-admin i { width: 16px; height: 16px; }
 
 /* ERROR */
-.alert-error { display: none; background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 16px; border-radius: 8px; margin-bottom: 24px; font-weight: 600; text-align: center; font-size: 14px; }
+.alert-error { display: none; background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 16px; border-radius: 8px; margin-bottom: 24px; font-weight: 600; font-size: 14px; }
+.alert-error strong { display: block; margin-bottom: 6px; }
+.alert-error code { font-family: monospace; font-size: 12px; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; }
 
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.1); order: 2; }
+    .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-around; padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.1); order: 2; }
     .sidebar-logo, .sidebar-footer { display: none; }
-    .sidebar-nav { flex-direction: row; padding: 0; gap: 0; width: 100%; justify-content: space-around; overflow: visible; }
-    .nav-item { flex-direction: column; gap: 4px; font-size: 10px; padding: 8px 12px; border-radius: 4px; }
+    .sidebar-nav { flex-direction: row; padding: 0 4px; gap: 0; width: 100%; justify-content: space-around; overflow: visible; }
+    .nav-item { flex: 1; flex-direction: column; gap: 3px; font-size: 9px; padding: 6px 4px; border-radius: 4px; text-align: center; min-width: 0; }
+    .nav-item i { width: 18px; height: 18px; }
     .nav-item.active { border-left: none; background: var(--sidebar-hover); }
-    .main-wrapper { order: 1; height: calc(100vh - 65px); }
+    .main-wrapper { order: 1; height: calc(100vh - 68px); }
     .topbar { padding: 0 16px; height: 64px; }
     .topbar-title { font-size: 16px; }
     .profile-info { display: none; }
@@ -126,6 +137,8 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
     .id-card-container { max-width: 100%; }
     .credentials-row { flex-direction: column; }
     .card { padding: 24px 20px; }
+    .card-name { font-size: 20px; }
+    .card-id { font-size: 16px; }
 }
 </style>
 </head>
@@ -137,9 +150,9 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
         <nav class="sidebar-nav">
             <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
             <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
-            <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam Portal</a>
-            <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Documents</a>
-            <a href="admin-resources.html" class="nav-item admin-only" id="adminNav"><i data-lucide="shield"></i> Admin Panel</a>
+            <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
+            <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Docs</a>
+            <a href="admin-resources.html" class="nav-item admin-only" id="adminNav"><i data-lucide="shield"></i> Admin</a>
         </nav>
         <div class="sidebar-footer">
             <button class="btn-logout" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
@@ -152,16 +165,26 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
             <div class="profile-menu">
                 <div class="profile-info">
                     <h4 id="topbarName">Loading...</h4>
-                    <p id="topbarRole"><i data-lucide="dot"></i> Applicant</p>
+                    <p><i data-lucide="dot"></i> <span id="topbarRoleText">Loading</span></p>
                 </div>
                 <div class="profile-avatar" id="topbarAvatar">--</div>
             </div>
         </header>
 
         <main class="dashboard-content">
-            <div class="alert-error" id="errorAlert">Failed to load dashboard data. Please refresh.</div>
+            <!-- Loading state -->
+            <div id="loadingState" class="card" style="text-align:center;">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Loading your dashboard...</div>
+                </div>
+            </div>
 
-            <div class="dashboard-grid">
+            <!-- Error state -->
+            <div class="alert-error" id="errorAlert"></div>
+
+            <!-- Main content (hidden until loaded) -->
+            <div class="dashboard-grid" id="mainContent" style="display:none;">
 
                 <!-- ID CARD -->
                 <div class="card">
@@ -178,11 +201,11 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                                             <div class="card-logo">∆ IFB</div>
                                             <div class="card-type">Student ID</div>
                                         </div>
-                                        <div class="card-name" id="userName">Loading...</div>
+                                        <div class="card-name" id="userName">—</div>
                                         <div class="card-role" id="userStatus">Applicant</div>
                                         <div style="flex-grow:1;"></div>
                                         <div class="card-id" id="userStudentId">---</div>
-                                        <div class="barcode-wrap-front"><svg id="barcodeSvg"></svg></div>
+                                        <div class="barcode-wrap-front" id="barcodeWrap"><svg id="barcodeSvg"></svg></div>
                                     </div>
                                 </div>
                                 <div class="id-card-back">
@@ -211,7 +234,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                     </div>
                 </div>
 
-                <!-- IMPORTANT LINKS (replaces hardcoded dates) -->
+                <!-- IMPORTANT LINKS -->
                 <div class="card">
                     <div class="card-header"><div class="card-title"><i data-lucide="bookmark"></i> Important Links</div></div>
                     <a href="ae-timetable.html" class="link-item">
@@ -255,7 +278,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                 <!-- ADMIN CARD -->
                 <div class="card admin-card" id="adminCard">
                     <div class="card-header"><div class="card-title"><i data-lucide="shield"></i> Administrator Access</div></div>
-                    <p>You are signed in as an administrator. Manage resources, upload new documents, and update the student-facing library.</p>
+                    <p>You are signed in as an administrator. Manage resources, upload documents, and update the student-facing library.</p>
                     <a href="admin-resources.html" class="btn-admin"><i data-lucide="upload-cloud"></i> Open Admin Panel</a>
                 </div>
 
@@ -276,13 +299,25 @@ const db = getFirestore(app);
 
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
-function showError(msg) {
-    const el = document.getElementById('errorAlert');
-    el.textContent = msg;
-    el.style.display = 'block';
+function refreshIcons() {
+    if (window.lucide) {
+        try { lucide.createIcons(); } catch(e) { console.warn("Icon render error", e); }
+    }
 }
 
-/* Fallback ID generation for legacy users missing studentId (correct 13-char format) */
+function showError(title, detail) {
+    const el = document.getElementById('errorAlert');
+    el.innerHTML = `<strong>${title}</strong><code>${detail || 'Unknown error'}</code>`;
+    el.style.display = 'block';
+    document.getElementById('loadingState').style.display = 'none';
+}
+
+function hideLoading() {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'grid';
+}
+
+/* Spec: 27 + NN + L + SSSSSS + CC = 13 chars */
 function generateStudentId() {
     const base = "27" + "01" + "X" + String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
     let sum = 0;
@@ -295,68 +330,105 @@ function generateSecurityCode() {
     for (let i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
     return out;
 }
+function isValidStudentId(id) {
+    return typeof id === 'string' && /^27\d{2}[A-Z]\d{8}$/.test(id);
+}
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
+
+    console.log("[Dashboard] Signed in:", user.email);
 
     try {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
 
-        if (!docSnap.exists()) { window.location.href = "admission.html"; return; }
-
-        let data = docSnap.data();
-
-        // Fallback for legacy accounts without a properly formatted studentId
-        const needsNewId = !data.studentId || !/^27\d{2}[A-Z]\d{8}$/.test(data.studentId);
-        if (needsNewId) {
-            const studentId = generateStudentId();
-            const securityCode = data.securityCode || generateSecurityCode();
-            await updateDoc(docRef, { studentId, securityCode });
-            data.studentId = studentId;
-            data.securityCode = securityCode;
+        if (!docSnap.exists()) {
+            console.log("[Dashboard] No user doc — redirecting to admission");
+            window.location.href = "admission.html";
+            return;
         }
 
-        // Display data
-        document.getElementById('topbarName').textContent = data.name || "Student";
-        document.getElementById('topbarRole').innerHTML = `<i data-lucide="dot"></i> ${data.status || "Applicant"}`;
-        document.getElementById('topbarAvatar').textContent = data.name ? data.name.charAt(0).toUpperCase() : "S";
+        let data = docSnap.data();
+        console.log("[Dashboard] User data loaded:", { hasId: !!data.studentId, status: data.status });
 
-        document.getElementById('userName').textContent = data.name || "Student";
-        document.getElementById('userStatus').textContent = data.status || "Applicant";
-        document.getElementById('userStudentId').textContent = data.studentId;
-        document.getElementById('userSecurityCode').textContent = data.securityCode;
-        document.getElementById('credStudentId').textContent = data.studentId;
-        document.getElementById('credSecCode').textContent = data.securityCode;
+        // Auto-migrate legacy ID format
+        if (!isValidStudentId(data.studentId)) {
+            console.log("[Dashboard] Regenerating ID — old format:", data.studentId);
+            const studentId = generateStudentId();
+            const securityCode = data.securityCode || generateSecurityCode();
+            try {
+                await updateDoc(docRef, { studentId, securityCode });
+                data.studentId = studentId;
+                data.securityCode = securityCode;
+            } catch (e) {
+                console.warn("[Dashboard] Failed to persist new ID, using in-memory only", e);
+                data.studentId = studentId;
+                data.securityCode = securityCode;
+            }
+        }
 
-        // Admin-only UI
-        if (user.email === ADMIN_EMAIL) {
+        // Populate student view
+        const displayName = data.name || user.displayName || "Student";
+        const status = data.status || "Applicant";
+
+        document.getElementById('topbarName').textContent = displayName;
+        document.getElementById('topbarRoleText').textContent = status;
+        document.getElementById('topbarAvatar').textContent = displayName.charAt(0).toUpperCase();
+
+        document.getElementById('userName').textContent = displayName;
+        document.getElementById('userStatus').textContent = status;
+        document.getElementById('userStudentId').textContent = data.studentId || '---';
+        document.getElementById('userSecurityCode').textContent = data.securityCode || '---';
+        document.getElementById('credStudentId').textContent = data.studentId || '---';
+        document.getElementById('credSecCode').textContent = data.securityCode || '---';
+
+        // Admin features
+        const isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        console.log("[Dashboard] Admin check:", { email: user.email, isAdmin });
+        if (isAdmin) {
             document.getElementById('adminNav').classList.add('visible');
             document.getElementById('adminCard').classList.add('visible');
             document.getElementById('adminQuickBtn').classList.add('visible');
         }
 
-        // Barcode + QR (after DOM has text)
+        // Show content
+        hideLoading();
+        refreshIcons();
+
+        // Barcode (guard against missing/undefined ID)
         setTimeout(() => {
-            try {
-                JsBarcode("#barcodeSvg", data.studentId, {
-                    format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0
-                });
-            } catch (e) { console.warn("Barcode error", e); }
+            if (data.studentId && typeof JsBarcode === 'function') {
+                try {
+                    JsBarcode("#barcodeSvg", data.studentId, {
+                        format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0
+                    });
+                } catch (e) {
+                    console.warn("[Dashboard] Barcode render failed", e);
+                    document.getElementById('barcodeWrap').innerHTML = '<span class="barcode-placeholder">ID pending</span>';
+                }
+            } else {
+                document.getElementById('barcodeWrap').innerHTML = '<span class="barcode-placeholder">ID pending</span>';
+            }
 
-            try {
-                const qr = qrcode(0, 'M');
-                qr.addData(`ID: ${data.studentId}\nName: ${data.name}`);
-                qr.make();
-                document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
-            } catch (e) { console.warn("QR error", e); }
+            // QR code
+            if (typeof qrcode === 'function') {
+                try {
+                    const qr = qrcode(0, 'M');
+                    qr.addData(`ID: ${data.studentId || 'pending'}\nName: ${displayName}`);
+                    qr.make();
+                    document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+                } catch (e) {
+                    console.warn("[Dashboard] QR render failed", e);
+                }
+            }
 
-            if (window.lucide) lucide.createIcons();
+            refreshIcons();
         }, 100);
 
     } catch (error) {
-        console.error("Dashboard Error:", error);
-        showError("Failed to load your data. Please refresh.");
+        console.error("[Dashboard] Load failed:", error);
+        showError("Failed to load your dashboard", error.message || String(error));
     }
 });
 
@@ -365,12 +437,12 @@ window.signOut = async function() {
         await firebaseSignOut(auth);
         window.location.href = "index.html";
     } catch (error) {
-        showError("Failed to sign out. Please refresh.");
+        showError("Sign out failed", error.message);
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons(); });
-window.addEventListener('load', () => { if (window.lucide) lucide.createIcons(); });
+document.addEventListener('DOMContentLoaded', refreshIcons);
+window.addEventListener('load', refreshIcons);
 </script>
 </body>
 </html>
