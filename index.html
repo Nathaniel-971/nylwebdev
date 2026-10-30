@@ -1,402 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Institute of Board | Non-Accredited Mathematics</title>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root {
-    --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; 
-    --maroon: #7A1F2B; --maroon-hover: #5A1620; --success: #15803D; --bg: #F8FAFC;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { 
-    width: 100%; max-width: 100vw; overflow-x: clip;
-    font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; 
-    opacity: 0; animation: fadeIn .4s ease forwards; 
-}
-@keyframes fadeIn { to { opacity: 1; } }
-a { text-decoration: none; color: inherit; }
-ul { list-style: none; }
-svg.lucide { stroke-width: 2.25; }
-
-.nav-container, .section-container, .hero-container, .footer-grid {
-    width: 100%; margin: 0 auto; padding-left: 24px; padding-right: 24px; box-sizing: border-box;
-}
-
-#loader { position: fixed; inset: 0; background: var(--white); z-index: 99999; display: flex; justify-content: center; align-items: center; transition: opacity .5s ease; }
-.loader-logo { font-size: 100px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(.9); opacity: .7; } }
-
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(6px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
-.modal-overlay.active { display: flex; }
-.modal-content { background: var(--white); border-radius: 20px; padding: 40px 24px; max-width: 440px; width: 100%; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,.2); text-align: center; }
-.modal-logo { display: flex; justify-content: center; margin-bottom: 16px; }
-.modal-logo i { width: 48px; height: 48px; color: var(--maroon); }
-
-/* TOP NOTICE */
-.top-notice-bar { 
-    background: var(--silver); 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    text-align: center; 
-    padding: 10px 16px; 
-    font-size: 13px; 
-    font-weight: 700; 
-    border-bottom: 1px solid #d1d5db; 
-    z-index: 1001; 
-    position: relative; 
-}
-.top-notice-bar .notice-icon { width: 15px; height: 15px; color: var(--maroon); flex-shrink: 0; }
-.top-notice-bar a { text-decoration: underline; color: var(--maroon); display: inline-flex; align-items: center; gap: 3px; }
-.top-notice-bar a:hover { color: var(--maroon-hover); }
-.top-notice-bar .sep { color: #94a3b8; }
-
-/* HEADER */
-.header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 72px; }
-.nav-container { max-width: 1300px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand-logo { font-size: 32px; font-weight: 900; color: var(--maroon); line-height: .8; }
-.brand-text h1 { font-size: 18px; font-weight: 900; letter-spacing: -.5px; }
-.menu-btn { display: flex; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; z-index: 2001; }
-.menu-btn span { display: block; width: 100%; height: 2px; background: var(--black); transition: 0.3s; }
-
-/* AUTH BUTTONS */
-.auth-buttons-header { display: flex; gap: 12px; align-items: center; }
-.btn-login { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; transition: 0.2s; color: var(--black); display: inline-flex; align-items: center; gap: 6px; }
-.btn-login:hover { border-color: var(--black); }
-.btn-logout { background: #FEE2E2; color: #B91C1C; border: 1.5px solid #FCA5A5; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; display: none; align-items: center; gap: 6px; }
-
-/* MOBILE MENU */
-.mobile-menu { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; flex-direction: column; transform: translateX(100%); opacity: 0; visibility: hidden; transition: .4s ease; overflow-y: auto; }
-.mobile-menu.active { transform: translateX(0); opacity: 1; visibility: visible; }
-.menu-header { display: flex; justify-content: space-between; align-items: center; padding: 24px; border-bottom: 1px solid var(--silver); height: 72px; }
-.close-btn { background: transparent; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
-.close-btn i { width: 24px; height: 24px; }
-.menu-content { padding: 0 32px 32px; flex-grow: 1; }
-.menu-item { border-bottom: 1px solid var(--silver); }
-.menu-link { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; font-size: 18px; font-weight: 600; cursor: pointer; }
-.menu-link i { width: 20px; height: 20px; color: var(--gray); transition: transform .3s ease; }
-.menu-item.active .menu-link i { transform: rotate(90deg); color: var(--maroon); }
-.submenu { max-height: 0; overflow: hidden; transition: max-height .4s ease-out; background: #FAFAFA; border-radius: 8px; }
-.submenu a { display: flex; align-items: center; gap: 10px; padding: 14px 24px; font-size: 15px; color: var(--gray); font-weight: 500; }
-.submenu a i { width: 16px; height: 16px; }
-.menu-footer { padding: 24px 32px; border-top: 1px solid var(--silver); display: flex; flex-direction: column; gap: 12px; }
-.btn-menu-apply { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; background: var(--maroon); color: var(--white); padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 700; }
-.btn-menu-apply i { width: 18px; height: 18px; }
-
-/* HERO */
-.hero-section { background-color: var(--maroon); color: var(--white); padding: 80px 0; position: relative; overflow: hidden; }
-.hero-container { max-width: 1200px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.hero-text h1 { font-size: clamp(40px, 5vw, 64px); font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px; }
-.hero-text p { font-size: 18px; color: rgba(255,255,255,0.85); margin-bottom: 40px; max-width: 500px; font-weight: 500; }
-.hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
-.btn-hero { padding: 16px 32px; font-size: 16px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 10px; transition: 0.2s; border: none; cursor: pointer; font-family: inherit; }
-.btn-hero i { width: 18px; height: 18px; }
-.btn-hero.primary { background: var(--white); color: var(--maroon); }
-.btn-hero.primary:hover { background: #f1f1f1; }
-.btn-hero.outline { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.3); }
-.btn-hero.outline:hover { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05); }
-
-.hero-visual { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; }
-.hero-img-wrapper { width: 100%; max-width: 440px; aspect-ratio: 1/1; border-radius: 50%; overflow: hidden; border: 8px solid rgba(255,255,255,0.1); position: relative; z-index: 2; background: #111; }
-.hero-img-wrapper img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; mix-blend-mode: luminosity; }
-.floating-card { position: absolute; background: var(--white); border-radius: 12px; padding: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); color: var(--black); z-index: 3; display: flex; flex-direction: column; gap: 4px; animation: float 6s ease-in-out infinite; width: max-content; max-width: 210px; }
-.floating-card .label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--gray); letter-spacing: 0.5px; }
-.floating-card .value { font-size: 16px; font-weight: 900; color: var(--maroon); font-family: monospace; display: flex; align-items: center; gap: 6px; }
-.floating-card .value i { width: 14px; height: 14px; }
-.floating-card .sub { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px; }
-.floating-card .sub i { width: 12px; height: 12px; }
-.card-1 { top: 10%; left: 0; }
-.card-2 { bottom: 15%; right: 0; animation-delay: -3s; }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-
-/* SECTIONS */
-.section { padding: 80px 0; border-bottom: 1px solid var(--silver); overflow: hidden; }
-.section.alt { background: #FAFAFA; }
-.section-header { text-align: center; margin-bottom: 48px; padding: 0 24px; }
-.section-header .section-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--maroon); background: #FFF5F6; border: 1px solid var(--maroon); padding: 6px 14px; border-radius: 100px; margin-bottom: 16px; }
-.section-header .section-eyebrow i { width: 14px; height: 14px; }
-.section-header h2 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px; }
-.section-header p { font-size: 16px; color: var(--gray); max-width: 600px; margin: 0 auto; }
-
-/* COURSE CARD */
-.carousel-container { 
-    display: flex; 
-    justify-content: center;
-    overflow-x: auto; 
-    scroll-snap-type: x mandatory; 
-    gap: 24px; 
-    padding: 10px 24px 30px 24px; 
-    max-width: 1000px;
-    margin: 0 auto;
-    scrollbar-width: none;
-}
-.carousel-container::-webkit-scrollbar { display: none; }
-.course-card { 
-    scroll-snap-align: center;
-    flex: 0 0 85%;
-    max-width: 400px;
-    background: var(--white); 
-    border: 1px solid var(--silver); 
-    border-radius: 16px; 
-    overflow: hidden; 
-    display: flex; 
-    flex-direction: column; 
-    transition: .3s; 
-}
-.course-card:hover { border-color: var(--maroon); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-.course-image-wrapper { width: 100%; height: 200px; background: var(--maroon); position: relative; }
-.course-image-wrapper img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; mix-blend-mode: luminosity; }
-.course-content { padding: 28px; display: flex; flex-direction: column; flex-grow: 1; }
-.course-code { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--maroon); background: #FFF5F6; border: 1px solid var(--maroon); padding: 4px 10px; border-radius: 100px; margin-bottom: 12px; align-self: flex-start; }
-.course-code i { width: 12px; height: 12px; }
-.course-content h3 { font-size: 22px; font-weight: 900; margin-bottom: 8px; letter-spacing: -.5px; }
-.course-content p { font-size: 14px; color: var(--gray); margin-bottom: 16px; flex-grow: 1; }
-.course-actions { display: flex; flex-direction: column; gap: 10px; }
-.btn-course-view, .btn-course-apply { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; transition: 0.2s; }
-.btn-course-view i, .btn-course-apply i { width: 16px; height: 16px; }
-.btn-course-view { background: var(--white); color: var(--black); border: 1.5px solid var(--silver); }
-.btn-course-view:hover { border-color: var(--black); }
-.btn-course-apply { background: var(--maroon); color: var(--white); border: 1.5px solid var(--maroon); }
-.btn-course-apply:hover { background: var(--maroon-hover); }
-
-/* FOOTER */
-.footer { background: #FAFAFA; padding: 64px 0 40px; border-top: 1px solid var(--silver); }
-.footer-grid { max-width: 1300px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
-.footer-brand h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-.footer-brand p { font-size: 13px; color: var(--gray); margin-bottom: 8px; }
-.footer-social { margin-top: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.footer-social i { width: 16px; height: 16px; color: var(--maroon); }
-.footer-col h4 { font-size: 13px; font-weight: 800; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .5px; color: var(--maroon); }
-.footer-col ul { display: flex; flex-direction: column; gap: 10px; }
-.footer-col a { font-size: 14px; color: var(--gray); display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
-.footer-col a:hover { color: var(--maroon); }
-.footer-col a i { width: 13px; height: 13px; color: var(--maroon); flex-shrink: 0; }
-.footer-bottom { max-width: 1300px; margin: 48px auto 0; padding: 24px 24px 0; border-top: 1px solid var(--silver); text-align: center; font-size: 12px; color: var(--gray); }
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .hero-container { grid-template-columns: 1fr; text-align: center; }
-    .hero-text p { margin: 0 auto 40px auto; }
-    .hero-buttons { justify-content: center; }
-    .hero-visual { margin-top: 40px; max-width: 400px; margin-left: auto; margin-right: auto; }
-    .card-1 { left: -10px; top: 0; }
-    .card-2 { right: -10px; bottom: 0; }
-    .footer-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 768px) {
-    .hero-section { padding: 60px 0; }
-    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-    .course-card { flex: 0 0 90%; }
-    .section-header h2 { font-size: 26px; }
-}
-</style>
-</head>
-<body>
-
-<div id="loader"><div class="loader-logo">∆</div></div>
-
-<!-- NON-ACCREDITED POPUP -->
-<div class="modal-overlay active" id="accreditationModal">
-    <div class="modal-content">
-        <div class="modal-logo"><i data-lucide="shield-alert"></i></div>
-        <h2 style="font-size: 24px; font-weight: 900; margin-bottom: 12px; color: var(--maroon);">Non-Accredited Institution</h2>
-        <p style="font-size: 15px; color: var(--gray); margin-bottom: 24px; line-height: 1.6;">
-            The Institute of Board (IFB) is an independent, non-accredited academic institution. We are not registered with DHET or Umalusi. Our programmes focus purely on rigorous technical and academic mastery.
-        </p>
-        <button class="btn-hero primary" style="width: 100%; justify-content: center; padding: 14px;" onclick="document.getElementById('accreditationModal').classList.remove('active')">
-            <i data-lucide="check"></i> I Understand
-        </button>
-    </div>
-</div>
-
-<div class="top-notice-bar">
-    <i data-lucide="bell" class="notice-icon"></i>
-    <span>2027 intake applications are open</span>
-    <span class="sep">·</span>
-    <a href="admission.html">Apply now <i data-lucide="arrow-right" style="width:12px;height:12px;"></i></a>
-    <span class="sep">·</span>
-    <a href="documents.html">All official documents <i data-lucide="arrow-up-right" style="width:12px;height:12px;"></i></a>
-</div>
-
-<header class="header">
-    <div class="nav-container">
-        <a href="index.html" class="brand">
-            <div class="brand-logo">∆</div>
-            <div class="brand-text"><h1>Institute of Board</h1></div>
-        </a>
-        <div class="auth-buttons-header">
-            <button class="btn-login" id="headerLoginBtn" onclick="document.getElementById('authModal').classList.add('active')">
-                <i data-lucide="log-in" style="width:14px;height:14px;"></i> Login
-            </button>
-            <button class="btn-logout" id="headerLogoutBtn" onclick="signOut()">
-                <i data-lucide="log-out" style="width:14px;height:14px;"></i> Log Out
-            </button>
-            <button class="menu-btn" id="menuBtn" aria-label="Menu"><span></span><span></span><span></span></button>
-        </div>
-    </div>
-</header>
-
-<div class="mobile-menu" id="mobileMenu">
-    <div class="menu-header">
-        <a href="index.html" class="brand"><div class="brand-logo">∆</div><div class="brand-text"><h1>IFB</h1></div></a>
-        <button class="close-btn" id="closeMenu" aria-label="Close"><i data-lucide="x"></i></button>
-    </div>
-    <div class="menu-content">
-        <ul>
-            <li class="menu-item">
-                <div class="menu-link" onclick="toggleSubmenu(this)">Public <i data-lucide="chevron-right"></i></div>
-                <div class="submenu">
-                    <a href="documents.html"><i data-lucide="file-text"></i> Documents</a>
-                    <a href="ae-timetable.html"><i data-lucide="calendar"></i> AE Timetable</a>
-                    <a href="courses-ifb.html"><i data-lucide="book-open"></i> Prospectus</a>
-                </div>
-            </li>
-            <li class="menu-item">
-                <div class="menu-link" onclick="toggleSubmenu(this)">Students <i data-lucide="chevron-right"></i></div>
-                <div class="submenu">
-                    <a href="student-dashboard.html"><i data-lucide="layout-dashboard"></i> Dashboard</a>
-                    <a href="resources.html"><i data-lucide="folder-open"></i> Resources</a>
-                </div>
-            </li>
-        </ul>
-    </div>
-    <div class="menu-footer" id="menuAuthArea">
-        <a href="admission.html" class="btn-menu-apply"><i data-lucide="user-plus"></i> Apply Now</a>
-    </div>
-</div>
-
-<section class="hero-section">
-    <div class="hero-container">
-        <div class="hero-text">
-            <h1 id="heroTitle">Master the discipline<br>that <span style="color:#E2E8F0">builds the future.</span></h1>
-            <p id="heroSubtitle">The Institute of Board provides rigorous, advanced instruction in Mathematics. We operate fee-free, allowing us to focus purely on modern, deep academic skills without administrative bureaucracy.</p>
-            
-            <!-- Hero Buttons (Logged Out) -->
-            <div class="hero-buttons" id="heroLoggedOut">
-                <a href="admission.html" class="btn-hero primary"><i data-lucide="user-plus"></i> Apply for Admission</a>
-                <a href="courses-ifb.html" class="btn-hero outline"><i data-lucide="book-open"></i> View Prospectus</a>
-            </div>
-
-            <!-- Hero Buttons (Logged In) -->
-            <div class="hero-buttons" id="heroLoggedIn" style="display:none;">
-                <a href="student-dashboard.html" class="btn-hero primary"><i data-lucide="layout-dashboard"></i> Go to Dashboard</a>
-                <a href="resources.html" class="btn-hero outline"><i data-lucide="folder-open"></i> Study Resources</a>
-            </div>
-        </div>
-        <div class="hero-visual">
-            <div class="hero-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop" alt="Mathematics">
-            </div>
-            <div class="floating-card card-1">
-                <span class="label">Curriculum</span>
-                <span class="value"><i data-lucide="award"></i> Advanced</span>
-                <span class="sub" style="color:var(--success);"><i data-lucide="check-circle-2"></i> Modern Skills</span>
-            </div>
-            <div class="floating-card card-2">
-                <span class="label">Tuition Balance</span>
-                <span class="value" style="color:var(--success);"><i data-lucide="badge-check"></i> R 0.00</span>
-                <span class="sub" style="color:var(--gray);"><i data-lucide="info"></i> Fee-Free</span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="section alt" id="coursesSection">
-    <div class="section-header">
-        <span class="section-eyebrow"><i data-lucide="graduation-cap"></i> Academic Programme</span>
-        <h2>What we teach</h2>
-        <p>Admission is strictly conditional on passing the Admission Examination (AE).</p>
-    </div>
-    
-    <div class="carousel-container">
-        <!-- MATHEMATICS -->
-        <div class="course-card">
-            <div class="course-image-wrapper">
-                <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=800&auto=format&fit=crop" alt="Mathematics">
-            </div>
-            <div class="course-content">
-                <span class="course-code"><i data-lucide="sigma"></i> IFB-S · MATHEMATICS</span>
-                <h3>IFB-S Mathematics</h3>
-                <p>Advanced Algebra, Calculus, Trigonometry, Geometry, Finance, and Probability. Rigorous assessments derived from first principles.</p>
-                <div class="course-actions">
-                    <a href="courses-ifb.html" class="btn-course-view"><i data-lucide="file-text"></i> Prospectus</a>
-                    <a href="admission.html" class="btn-course-apply"><i data-lucide="arrow-right"></i> Apply</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<footer class="footer">
-    <div class="footer-grid">
-        <div class="footer-brand">
-            <h2><span style="color:var(--maroon);font-size:28px;">∆</span> IFB</h2>
-            <p>Independent, non-accredited. Not affiliated with DHET or Umalusi.</p>
-            <p class="footer-social">
-                <i data-lucide="instagram"></i> 
-                <a href="https://www.instagram.com/institute_of_board?obrf=MW5jYXVhZ2RjOXYzbw==" target="_blank" style="color:var(--black);">@institute_of_board</a>
-            </p>
-            <p style="font-size:12px; margin-top:8px;">All inquiries via Instagram Direct Message.</p>
-        </div>
-        <div class="footer-col">
-            <h4>Public</h4>
-            <ul>
-                <li><a href="documents.html"><i data-lucide="file-text"></i> Documents</a></li>
-                <li><a href="ae-timetable.html"><i data-lucide="calendar"></i> AE Timetable</a></li>
-                <li><a href="courses-ifb.html"><i data-lucide="book-open"></i> Prospectus</a></li>
-                <li><a href="guidelines-general.html"><i data-lucide="shield-check"></i> Rules</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Students</h4>
-            <ul>
-                <li><a href="admission.html"><i data-lucide="user-plus"></i> Apply / Login</a></li>
-                <li><a href="student-dashboard.html"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
-                <li><a href="resources.html"><i data-lucide="folder-open"></i> Resources</a></li>
-            </ul>
-        </div>
-        <div class="footer-col">
-            <h4>Support</h4>
-            <ul>
-                <li><a href="fund-ifb.html"><i data-lucide="heart-handshake"></i> Sponsor Us</a></li>
-                <li><a href="https://www.instagram.com/institute_of_board?obrf=MW5jYXVhZ2RjOXYzbw==" target="_blank"><i data-lucide="message-circle"></i> Contact (Instagram)</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">&copy; 2026—2028 Institute of Board. Academic year 18 Feb 2027 → 4 Jan 2028.</div>
-</footer>
-
-<!-- AUTH MODAL -->
-<div class="modal-overlay" id="authModal">
-    <div class="modal-content" style="padding: 40px 24px;">
-        <button style="position:absolute;top:20px;right:20px;background:none;border:none;cursor:pointer;" onclick="document.getElementById('authModal').classList.remove('active')"><i data-lucide="x"></i></button>
-        <div class="modal-logo"><i data-lucide="log-in"></i></div>
-        <div style="font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px;">Sign In</div>
-        <div style="font-size: 14px; color: var(--gray); text-align: center; margin-bottom: 32px;">Use Google to access your student account.</div>
-        <div class="auth-buttons">
-            <button class="btn-login" style="display:flex; width:100%; justify-content:center; padding:14px;" onclick="googleLogin()">
-                <svg width="20" height="20" viewBox="0 0 48 48" style="margin-right:12px;"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
-                Continue with Google
-            </button>
-        </div>
-    </div>
-</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 window.googleLogin = async function(){ 
     try { 
@@ -411,24 +21,57 @@ window.signOut = async function() {
     window.location.reload();
 };
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     document.getElementById('loader').style.opacity = '0';
     setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
-    if (user) {
-        document.getElementById('headerLoginBtn').style.display = 'none';
-        document.getElementById('headerLogoutBtn').style.display = 'inline-flex';
-        document.getElementById('heroLoggedOut').style.display = 'none';
-        document.getElementById('heroLoggedIn').style.display = 'flex';
-        
-        document.getElementById('heroTitle').innerHTML = `Welcome back,<br><span style="color:#E2E8F0">${user.displayName ? user.displayName.split(' ')[0] : 'Student'}.</span>`;
-        document.getElementById('heroSubtitle').innerText = "Access your dashboard to view your latest updates, exam portals, and study resources.";
-    } else {
+    if (!user) {
+        // Not signed in — apply / prospectus
         document.getElementById('headerLoginBtn').style.display = 'inline-flex';
         document.getElementById('headerLogoutBtn').style.display = 'none';
         document.getElementById('heroLoggedOut').style.display = 'flex';
         document.getElementById('heroLoggedIn').style.display = 'none';
+        if (window.lucide) lucide.createIcons();
+        return;
     }
+
+    // Signed in — check if they've completed admission
+    let hasDoc = false;
+    try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        hasDoc = snap.exists();
+    } catch (e) {
+        console.warn("[Index] Could not check user doc:", e);
+    }
+
+    document.getElementById('headerLoginBtn').style.display = 'none';
+    document.getElementById('headerLogoutBtn').style.display = 'inline-flex';
+    document.getElementById('heroLoggedOut').style.display = 'none';
+    document.getElementById('heroLoggedIn').style.display = 'flex';
+
+    const heroTitle = document.getElementById('heroTitle');
+    const heroSubtitle = document.getElementById('heroSubtitle');
+    const primaryBtn = document.querySelector('#heroLoggedIn .btn-hero.primary');
+    const secondaryBtn = document.querySelector('#heroLoggedIn .btn-hero.outline');
+
+    if (hasDoc) {
+        // Full dashboard
+        heroTitle.innerHTML = `Welcome back,<br><span style="color:#E2E8F0">${user.displayName ? user.displayName.split(' ')[0] : 'Student'}.</span>`;
+        heroSubtitle.innerText = "Access your dashboard to view your Student Slip, Examination Number, and study resources.";
+        primaryBtn.href = "student-dashboard.html";
+        primaryBtn.innerHTML = '<i data-lucide="layout-dashboard"></i> Go to Dashboard';
+        secondaryBtn.href = "resources.html";
+        secondaryBtn.innerHTML = '<i data-lucide="folder-open"></i> Study Resources';
+    } else {
+        // Signed in but hasn't completed admission
+        heroTitle.innerHTML = `Almost there,<br><span style="color:#E2E8F0">${user.displayName ? user.displayName.split(' ')[0] : 'Applicant'}.</span>`;
+        heroSubtitle.innerText = "Complete your application to receive your 6-digit Student ID and sit the Admission Examination.";
+        primaryBtn.href = "admission.html";
+        primaryBtn.innerHTML = '<i data-lucide="arrow-right"></i> Complete Application';
+        secondaryBtn.href = "courses-ifb.html";
+        secondaryBtn.innerHTML = '<i data-lucide="book-open"></i> View Prospectus';
+    }
+
     if (window.lucide) lucide.createIcons();
 });
 
@@ -441,13 +84,5 @@ window.toggleSubmenu=function(el){
     parent.classList.toggle('active');
     sub.style.maxHeight=sub.style.maxHeight?null:sub.scrollHeight+"px";
 };
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.lucide) lucide.createIcons();
-});
-window.addEventListener('load', () => {
-    if (window.lucide) lucide.createIcons();
-});
+document.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons(); });
 </script>
-</body>
-</html>
