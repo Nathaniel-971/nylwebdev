@@ -3,190 +3,668 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Academic Resources — IFB</title>
+<title>Resources — Institute of Board</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { 
-    width: 100%; max-width: 100vw; overflow-x: hidden; 
-    font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); padding-bottom: 60px; 
+:root {
+    --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0;
+    --maroon: #7A1F2B; --maroon-hover: #5A1620;
+    --bg: #F8FAFC;
+    --sidebar-bg: #7A1F2B; --sidebar-hover: #5A1620;
+    --success: #15803D; --warning: #B45309; --error: #B91C1C;
 }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.5; }
 
-/* HEADER (Matches Dashboard) */
-.header { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 72px; position: sticky; top: 0; z-index: 100; }
-.brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; text-decoration: none; color: var(--black); }
-.brand-logo { font-size: 32px; color: var(--maroon); }
-.btn-back { display: flex; align-items: center; gap: 6px; background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; color: var(--black); }
-.btn-back:hover { border-color: var(--black); }
+/* ==================== SIDEBAR ==================== */
+.sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100dvh; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; z-index: 100; overflow-y: auto; }
+.sidebar-logo { padding: 24px 20px; font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.sidebar-logo .brand-mark { color: var(--white); font-size: 26px; background: rgba(0,0,0,0.25); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; flex-shrink: 0; }
+.sidebar-nav { padding: 20px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 8px; color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.15s; cursor: pointer; }
+.nav-item:hover, .nav-item.active { background: var(--sidebar-hover); color: var(--white); }
+.nav-item.active { box-shadow: inset 3px 0 0 var(--white); }
+.nav-item i { width: 18px; height: 18px; flex-shrink: 0; }
+.nav-item.admin-only { display: none; }
+.nav-item.admin-only.visible { display: flex; color: #FCA5A5; }
+.nav-item.admin-only.visible:hover { background: rgba(185,28,28,0.25); }
+.sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 8px; }
+.btn-sidebar { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 14px; background: rgba(0,0,0,0.15); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.15s; font-family: inherit; }
+.btn-sidebar:hover { background: rgba(0,0,0,0.3); color: var(--white); }
+.btn-sidebar i { width: 16px; height: 16px; flex-shrink: 0; }
 
-/* CENTRAL LAYOUT */
-.container { width: 100%; max-width: 900px; margin: 40px auto; padding: 0 24px; box-sizing: border-box; }
-.page-header { margin-bottom: 32px; }
-.page-header h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 8px; }
-.page-header p { font-size: 15px; color: var(--gray); }
+/* ==================== MAIN ==================== */
+.main-wrapper { margin-left: 260px; min-height: 100dvh; display: flex; flex-direction: column; }
+.topbar { position: sticky; top: 0; z-index: 50; height: 68px; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 28px; gap: 12px; flex-shrink: 0; }
+.topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar-back { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px; color: var(--maroon); text-decoration: none; flex-shrink: 0; transition: 0.15s; }
+.topbar-back:hover { background: #FFF5F6; }
+.topbar-back i { width: 20px; height: 20px; }
+.mobile-hamburger { display: none; background: transparent; border: none; cursor: pointer; padding: 8px; color: var(--maroon); border-radius: 8px; align-items: center; justify-content: center; flex-shrink: 0; }
+.mobile-hamburger:hover { background: #FFF5F6; }
+.mobile-hamburger i { width: 22px; height: 22px; }
+.topbar-title { font-weight: 900; font-size: 17px; color: var(--maroon); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-title i { width: 18px; height: 18px; flex-shrink: 0; }
+.profile-menu { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.profile-info h4 { font-size: 13px; font-weight: 800; text-align: right; }
+.profile-info p { font-size: 11px; color: var(--gray); font-weight: 600; text-align: right; display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+.profile-info p i { width: 9px; height: 9px; }
+.profile-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(122,31,43,0.3); flex-shrink: 0; }
 
-/* YEAR TABS */
-.year-tabs { display: flex; gap: 8px; margin-bottom: 32px; border-bottom: 2px solid var(--silver); padding-bottom: 8px; }
-.year-tab { padding: 8px 20px; font-size: 15px; font-weight: 800; color: var(--gray); cursor: pointer; border-radius: 6px; transition: 0.2s; }
-.year-tab:hover { background: #E2E8F0; }
-.year-tab.active { background: var(--maroon); color: var(--white); }
+.content { flex: 1; padding: 28px 28px 80px; width: 100%; }
+.content-inner { max-width: 900px; margin: 0 auto; }
 
-/* LIST GROUPS */
-.section-title { font-size: 13px; font-weight: 800; color: var(--maroon); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
-.list-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
-.list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--white); border: 1px solid var(--silver); border-radius: 8px; transition: 0.2s; }
-.list-item:hover { border-color: var(--maroon); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-.item-title { font-size: 15px; font-weight: 700; }
-.item-meta { font-size: 12px; color: var(--gray); margin-top: 2px; }
-.actions { display: flex; gap: 8px; flex-shrink: 0; }
-.btn-sm { padding: 6px 12px; font-size: 12px; font-weight: 700; border-radius: 6px; text-decoration: none; border: 1px solid var(--silver); color: var(--black); background: var(--white); transition: 0.2s; display: flex; align-items: center; gap: 4px;}
-.btn-sm:hover { border-color: var(--black); }
-.btn-sm.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
-.btn-sm.primary:hover { background: var(--maroon-hover); }
+/* ==================== PAGE HEADER ==================== */
+.page-header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.page-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; }
+.page-sub { font-size: 13px; color: var(--gray); margin-top: 4px; }
+.admin-manage-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--maroon); color: var(--white); padding: 10px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; flex-shrink: 0; border: 1.5px solid var(--maroon); }
+.admin-manage-btn:hover { background: var(--maroon-hover); }
+.admin-manage-btn i { width: 14px; height: 14px; }
 
-/* LOADER */
-#loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
-.loader-logo { font-size: 80px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.9); opacity: 0.7; } }
+/* ==================== SEARCH ==================== */
+.search-wrap { position: relative; margin-bottom: 24px; }
+.search-wrap input { width: 100%; padding: 14px 14px 14px 44px; font-size: 14px; border: 1.5px solid var(--silver); border-radius: 12px; outline: none; font-family: inherit; background: var(--white); color: var(--black); transition: 0.15s; }
+.search-wrap input:focus { border-color: var(--maroon); }
+.search-wrap > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--gray); pointer-events: none; }
 
-@media (max-width: 600px) {
-    .list-item { flex-direction: column; align-items: flex-start; gap: 12px; }
-    .actions { width: 100%; }
-    .btn-sm { flex: 1; justify-content: center; }
+/* ==================== ALERT ==================== */
+.info-banner { display: none; background: #FEF3C7; color: #78350F; border: 1px solid #FDE68A; padding: 12px 14px; border-radius: 10px; margin-bottom: 20px; font-size: 13px; font-weight: 600; align-items: flex-start; gap: 10px; line-height: 1.5; }
+.info-banner.visible { display: flex; }
+.info-banner i { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+.info-banner a { color: #78350F; font-weight: 800; text-decoration: underline; }
+
+/* ==================== SECTION ==================== */
+.resource-section { margin-bottom: 28px; }
+.section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--silver); }
+.section-head-icon { width: 36px; height: 36px; border-radius: 10px; background: #FFF5F6; color: var(--maroon); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.section-head-icon i { width: 18px; height: 18px; }
+.section-head-text { flex: 1; min-width: 0; }
+.section-head-title { font-size: 16px; font-weight: 900; }
+.section-head-sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
+.section-count { font-size: 11px; font-weight: 800; color: var(--maroon); background: #FFF5F6; border: 1px solid var(--maroon); padding: 3px 9px; border-radius: 100px; flex-shrink: 0; }
+.section-count.empty { color: var(--gray); background: var(--bg); border-color: var(--silver); }
+
+/* ==================== RESOURCE ITEM ==================== */
+.resource-list { display: flex; flex-direction: column; gap: 8px; }
+.resource-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); transition: 0.15s; cursor: pointer; }
+.resource-item:hover { border-color: var(--maroon); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+.resource-item.disabled { opacity: 0.55; cursor: not-allowed; }
+.resource-item.disabled:hover { border-color: var(--silver); transform: none; box-shadow: none; }
+.resource-file-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.resource-file-icon.pdf { background: #FEE2E2; color: #B91C1C; }
+.resource-file-icon.html { background: #DBEAFE; color: #1E40AF; }
+.resource-file-icon.external { background: #DCFCE7; color: #15803D; }
+.resource-file-icon i { width: 20px; height: 20px; }
+.resource-info { flex: 1; min-width: 0; }
+.resource-title { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+.resource-desc { font-size: 12px; color: var(--gray); margin-bottom: 4px; }
+.resource-filename { font-family: 'Courier New', monospace; font-size: 11px; color: var(--maroon); font-weight: 700; letter-spacing: 0.3px; word-break: break-all; }
+.resource-action { display: flex; align-items: center; gap: 8px; flex-shrink: 0; color: var(--maroon); }
+.resource-action-icon { width: 34px; height: 34px; border-radius: 8px; background: #FFF5F6; display: flex; align-items: center; justify-content: center; transition: 0.15s; }
+.resource-action-icon i { width: 16px; height: 16px; }
+.resource-item:hover .resource-action-icon { background: var(--maroon); color: var(--white); }
+
+/* ==================== EMPTY STATE ==================== */
+.empty-state { background: var(--white); border: 1.5px dashed var(--silver); border-radius: 12px; padding: 32px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.empty-state-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--bg); color: var(--gray); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+.empty-state-icon i { width: 22px; height: 22px; }
+.empty-title { font-size: 14px; font-weight: 800; color: var(--black); }
+.empty-desc { font-size: 12px; color: var(--gray); max-width: 400px; line-height: 1.5; }
+
+/* ==================== NO RESULTS ==================== */
+.no-results { text-align: center; padding: 60px 20px; color: var(--gray); display: none; }
+.no-results.visible { display: block; }
+.no-results i { width: 40px; height: 40px; color: var(--silver); margin-bottom: 12px; }
+.no-results h3 { font-size: 16px; font-weight: 800; color: var(--black); margin-bottom: 6px; }
+.no-results p { font-size: 13px; }
+
+/* ==================== NAMING CONVENTION ==================== */
+.naming-card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 24px; margin-top: 32px; }
+.naming-card h3 { font-size: 15px; font-weight: 900; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.naming-card h3 i { width: 18px; height: 18px; color: var(--maroon); }
+.naming-intro { font-size: 13px; color: var(--gray); margin-bottom: 16px; line-height: 1.55; }
+.naming-format { background: #FFF5F6; border: 1px solid var(--maroon); border-radius: 10px; padding: 12px 16px; font-family: 'Courier New', monospace; font-size: 13px; font-weight: 800; color: var(--maroon); text-align: center; margin-bottom: 16px; letter-spacing: 0.5px; }
+.naming-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.naming-block h4 { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--maroon); margin-bottom: 8px; }
+.naming-block table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.naming-block table td { padding: 4px 0; border-bottom: 1px solid var(--silver); }
+.naming-block table td:first-child { font-family: 'Courier New', monospace; font-weight: 800; color: var(--black); width: 60px; }
+.naming-block table td:last-child { color: var(--gray); }
+.naming-block table tr:last-child td { border-bottom: none; }
+.naming-examples { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--silver); }
+.naming-examples h4 { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--maroon); margin-bottom: 8px; }
+.naming-examples code { display: block; font-family: 'Courier New', monospace; font-size: 12px; color: var(--black); background: #FAFAFA; padding: 6px 10px; border-radius: 6px; margin-bottom: 4px; border: 1px solid var(--silver); }
+
+/* ==================== DRAWER ==================== */
+.mobile-drawer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; }
+.mobile-drawer.open { display: block; }
+.mobile-drawer-panel { width: 280px; height: 100dvh; background: var(--sidebar-bg); color: var(--white); padding: 20px 14px; display: flex; flex-direction: column; gap: 6px; box-shadow: 4px 0 24px rgba(0,0,0,0.3); animation: slideIn 0.22s ease-out; overflow-y: auto; }
+@keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+.mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.mobile-drawer-logo { font-size: 16px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
+.mobile-drawer-logo .brand-mark { background: rgba(0,0,0,0.25); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 18px; }
+.mobile-drawer-close { background: transparent; border: none; color: var(--white); cursor: pointer; padding: 6px; border-radius: 6px; }
+.mobile-drawer-close i { width: 20px; height: 20px; }
+.mobile-drawer-footer { margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 6px; }
+
+/* ==================== LOADING ==================== */
+.loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; }
+.spinner { width: 44px; height: 44px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 13px; color: var(--gray); font-weight: 600; }
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main-wrapper { margin-left: 0; }
+    .mobile-hamburger { display: flex; }
+    .topbar { padding: 0 16px; height: 64px; }
+    .topbar-title { font-size: 15px; }
+    .profile-info { display: none; }
+    .content { padding: 20px 16px 60px; }
+    .page-title { font-size: 22px; }
+    .naming-grid { grid-template-columns: 1fr; }
+    .resource-item { padding: 12px 14px; }
+    .resource-file-icon { width: 38px; height: 38px; }
+    .resource-filename { font-size: 10px; }
 }
 </style>
 </head>
 <body>
 
-<div id="loader"><div class="loader-logo">∆</div></div>
-
-<header class="header">
-    <a href="index.html" class="brand">
-        <div class="brand-logo">∆</div> 
-        <div class="brand-text">Resources</div>
-    </a>
-    <a href="student-dashboard.html" class="btn-back"><i data-lucide="arrow-left"></i> Dashboard</a>
-</header>
-
-<div class="container">
-    <div class="page-header">
-        <h1>Academic Resources</h1>
-        <p>Download practice papers, view memos, and read subject guidelines.</p>
+<!-- ==================== SIDEBAR ==================== -->
+<aside class="sidebar">
+    <div class="sidebar-logo"><div class="brand-mark">∆</div> IFB Portal</div>
+    <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item"><i data-lucide="home"></i> Home</a>
+        <a href="student-dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="resources.html" class="nav-item active"><i data-lucide="folder-open"></i> Resources</a>
+        <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
+        <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Docs</a>
+        <a href="admin-resources.html" class="nav-item admin-only" id="adminNav"><i data-lucide="shield"></i> Admin</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="student-dashboard.html" class="btn-sidebar" style="text-decoration:none;"><i data-lucide="arrow-left"></i> Back to Dashboard</a>
     </div>
+</aside>
 
-    <!-- YEAR TABS -->
-    <div class="year-tabs">
-        <div class="year-tab active">2027</div>
-        <!-- Future years can be added here -->
+<!-- ==================== MAIN ==================== -->
+<div class="main-wrapper">
+    <header class="topbar">
+        <div class="topbar-left">
+            <a href="student-dashboard.html" class="topbar-back" aria-label="Back to dashboard"><i data-lucide="arrow-left"></i></a>
+            <button class="mobile-hamburger" id="mobileMenuBtn" aria-label="Open menu"><i data-lucide="menu"></i></button>
+            <div class="topbar-title"><i data-lucide="folder-open"></i> Academic Resources</div>
+        </div>
+        <div class="profile-menu">
+            <div class="profile-info">
+                <h4 id="topbarName">Loading...</h4>
+                <p><i data-lucide="dot"></i> <span id="topbarRoleText">Loading</span></p>
+            </div>
+            <div class="profile-avatar" id="topbarAvatar">--</div>
+        </div>
+    </header>
+
+    <main class="content">
+        <div class="content-inner">
+
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <div>
+                    <div class="page-title">Academic Resources</div>
+                    <div class="page-sub">All documents follow the IFB naming convention. Search by year, subject, or filename.</div>
+                </div>
+                <a href="admin-resources.html" class="admin-manage-btn" id="adminManageBtn" style="display:none;">
+                    <i data-lucide="settings"></i> Manage
+                </a>
+            </div>
+
+            <!-- ADMIN BANNER -->
+            <div class="info-banner" id="adminBanner">
+                <i data-lucide="info"></i>
+                <span>Showing <strong>starter defaults</strong>. Upload new files via the <a href="admin-resources.html">Admin Panel</a> to replace them with your own.</span>
+            </div>
+
+            <!-- SEARCH -->
+            <div class="search-wrap">
+                <i data-lucide="search"></i>
+                <input type="text" id="searchInput" placeholder="Search by title, filename, or description…" autocomplete="off">
+            </div>
+
+            <!-- LOADING -->
+            <div class="loading-state" id="loadingState">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading resources…</div>
+            </div>
+
+            <!-- SECTIONS (populated by JS) -->
+            <div id="sectionsContainer" style="display:none;"></div>
+
+            <!-- NO RESULTS -->
+            <div class="no-results" id="noResults">
+                <i data-lucide="search-x"></i>
+                <h3>No matching resources</h3>
+                <p>Try searching by year, subject, or filename.</p>
+            </div>
+
+            <!-- NAMING CONVENTION -->
+            <div class="naming-card">
+                <h3><i data-lucide="file-signature"></i> Document Naming Convention</h3>
+                <p class="naming-intro">Every document on this page follows a strict naming pattern so you can always find what you're looking for. Search the filename in your device's Files app and it will appear immediately.</p>
+                <div class="naming-format">IFB-{YEAR}-{TRACK}-{TYPE}-{SESSION}-{PAPER}.{ext}</div>
+
+                <div class="naming-grid">
+                    <div class="naming-block">
+                        <h4>Track</h4>
+                        <table>
+                            <tr><td>MATH</td><td>Mathematics</td></tr>
+                        </table>
+                    </div>
+                    <div class="naming-block">
+                        <h4>Type</h4>
+                        <table>
+                            <tr><td>PP</td><td>Past Paper</td></tr>
+                            <tr><td>MEMO</td><td>Memorandum</td></tr>
+                            <tr><td>MOCK</td><td>Mock Paper</td></tr>
+                            <tr><td>GL</td><td>Subject Guidelines</td></tr>
+                            <tr><td>ATP</td><td>Annual Teaching Plan</td></tr>
+                            <tr><td>AB</td><td>Answer Book</td></tr>
+                            <tr><td>INFO</td><td>Information Sheet</td></tr>
+                        </table>
+                    </div>
+                    <div class="naming-block">
+                        <h4>Session (exams only)</h4>
+                        <table>
+                            <tr><td>JAN</td><td>January (AE)</td></tr>
+                            <tr><td>JUN</td><td>June (Interim)</td></tr>
+                            <tr><td>SEP</td><td>September (AQ-L)</td></tr>
+                            <tr><td>NOV</td><td>November (IFB/Q)</td></tr>
+                        </table>
+                    </div>
+                    <div class="naming-block">
+                        <h4>Paper (multi-paper only)</h4>
+                        <table>
+                            <tr><td>P1</td><td>Paper 1</td></tr>
+                            <tr><td>P2</td><td>Paper 2</td></tr>
+                            <tr><td>P3</td><td>Paper 3</td></tr>
+                            <tr><td>P4</td><td>Paper 4</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="naming-examples">
+                    <h4>Examples</h4>
+                    <code>IFB-2027-MATH-PP-JAN.pdf — Admission Exam question paper</code>
+                    <code>IFB-2027-MATH-MEMO-JAN.pdf — Admission Exam memo</code>
+                    <code>IFB-2027-MATH-PP-NOV-P1.pdf — November Q Examination, Paper 1</code>
+                    <code>IFB-2027-MATH-MEMO-NOV-P1.pdf — November Paper 1 memo</code>
+                    <code>IFB-2027-MATH-MOCK-P1.pdf — Mock Paper 1</code>
+                    <code>IFB-2027-MATH-GL-GENERAL.pdf — Subject guidelines</code>
+                    <code>IFB-2027-MATH-ATP.pdf — Annual Teaching Plan</code>
+                    <code>IFB-2027-MATH-AB-TEMPLATE.pdf — Answer Book template</code>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ==================== MOBILE DRAWER ==================== -->
+<div class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-drawer-panel">
+        <div class="mobile-drawer-header">
+            <div class="mobile-drawer-logo"><div class="brand-mark">∆</div> IFB Portal</div>
+            <button class="mobile-drawer-close" id="mobileDrawerClose"><i data-lucide="x"></i></button>
+        </div>
+        <a href="index.html" class="nav-item"><i data-lucide="home"></i> Home</a>
+        <a href="student-dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="resources.html" class="nav-item active"><i data-lucide="folder-open"></i> Resources</a>
+        <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
+        <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Docs</a>
+        <a href="admin-resources.html" class="nav-item admin-only" id="adminNavMobile"><i data-lucide="shield"></i> Admin</a>
+        <div class="mobile-drawer-footer">
+            <a href="student-dashboard.html" class="btn-sidebar" style="text-decoration:none;"><i data-lucide="arrow-left"></i> Back to Dashboard</a>
+        </div>
     </div>
-
-    <!-- MOCK PAPERS & MEMOS -->
-    <div class="section-title">Mock Papers & Memos</div>
-    <div class="list-group">
-        <div class="list-item">
-            <div>
-                <div class="item-title">Mathematics Mock Exam</div>
-                <div class="item-meta">X01-MATH-2027</div>
-            </div>
-            <div class="actions">
-                <a href="practice-paper-math.html" target="_blank" class="btn-sm">Paper</a>
-                <a href="memo-math.html" target="_blank" class="btn-sm primary">Memo</a>
-            </div>
-        </div>
-        <div class="list-item">
-            <div>
-                <div class="item-title">Web Development Mock Exam</div>
-                <div class="item-meta">X01-AEW-2027</div>
-            </div>
-            <div class="actions">
-                <a href="practice-paper-web.html" target="_blank" class="btn-sm">Paper</a>
-                <a href="memo-web.html" target="_blank" class="btn-sm primary">Memo</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- ANSWER BOOKS -->
-    <div class="section-title">Answer Books</div>
-    <div class="list-group">
-        <div class="list-item">
-            <div>
-                <div class="item-title">Standard Answer Book Template</div>
-                <div class="item-meta">Blank A4 format for practice</div>
-            </div>
-            <div class="actions">
-                <a href="answer-book.html" target="_blank" class="btn-sm">View / Print</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- SUBJECT GUIDELINES -->
-    <div class="section-title">Subject Guidelines</div>
-    <div class="list-group">
-        <div class="list-item">
-            <div>
-                <div class="item-title">IFB-S Mathematics Guidelines</div>
-                <div class="item-meta">Marking rubric and paper structure</div>
-            </div>
-            <div class="actions">
-                <a href="guidelines-math.html" target="_blank" class="btn-sm">View</a>
-            </div>
-        </div>
-        <div class="list-item">
-            <div>
-                <div class="item-title">IFB AQ-B Web Dev Guidelines</div>
-                <div class="item-meta">Project rules, code standards, plagiarism policy</div>
-            </div>
-            <div class="actions">
-                <a href="guidelines-web.html" target="_blank" class="btn-sm">View</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- ANNUAL TEACHING PLANS -->
-    <div class="section-title">Annual Teaching Plans (ATPs)</div>
-    <div class="list-group">
-        <div class="list-item">
-            <div>
-                <div class="item-title">ATP 2027: Mathematics</div>
-                <div class="item-meta">11 pillars over 40 weeks with weekly breakdown</div>
-            </div>
-            <div class="actions">
-                <a href="atp-math.html" target="_blank" class="btn-sm">View</a>
-            </div>
-        </div>
-        <div class="list-item">
-            <div>
-                <div class="item-title">ATP 2027: Web Development</div>
-                <div class="item-meta">Full-year module breakdown — HTML, CSS, JS, React</div>
-            </div>
-            <div class="actions">
-                <a href="atp-web.html" target="_blank" class="btn-sm">View</a>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
-// Protect Route: Must be logged in to view resources
-onAuthStateChanged(auth, (user) => {
-    document.getElementById('loader').style.opacity = '0';
-    setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-    
-    if (!user) { 
-        window.location.href = "admission.html"; 
+/* ==================== DEFAULT RESOURCES ==================== */
+/* These show only when Firestore is empty (first run).
+   Once the admin uploads via admin-resources.html, only Firestore items appear. */
+const DEFAULT_RESOURCES = [
+    {
+        id: 'default-mock',
+        category: 'mocks',
+        title: 'Mathematics Mock Paper',
+        description: 'Practice assessment, 100 marks, 2 hours',
+        filename: 'IFB-2027-MATH-MOCK-P1.html',
+        type: 'html',
+        fileUrl: 'practice-paper-math.html',
+        order: 1
+    },
+    {
+        id: 'default-answer-book',
+        category: 'answer-books',
+        title: 'Standard Answer Book',
+        description: 'Blank A4 template — 23-page format',
+        filename: 'IFB-2027-MATH-AB-TEMPLATE.html',
+        type: 'html',
+        fileUrl: 'answer-book.html',
+        order: 1
+    },
+    {
+        id: 'default-guidelines',
+        category: 'guidelines',
+        title: 'IFB-S Mathematics Guidelines',
+        description: 'Marking rubric and paper structure',
+        filename: 'IFB-2027-MATH-GL-GENERAL.html',
+        type: 'html',
+        fileUrl: 'guidelines-math.html',
+        order: 1
+    },
+    {
+        id: 'default-atp',
+        category: 'atps',
+        title: 'Annual Teaching Plan 2027',
+        description: '40-week curriculum — 11 pillars, 600 marks',
+        filename: 'IFB-2027-MATH-ATP.html',
+        type: 'html',
+        fileUrl: 'atp-math.html',
+        order: 1
     }
+];
+
+/* ==================== SECTION DEFINITIONS ==================== */
+const SECTIONS = [
+    {
+        key: 'past-papers',
+        title: 'Past Examination Question Papers',
+        subtitle: 'Every exam paper from previous sessions',
+        icon: 'file-clock',
+        emptyTitle: 'No past papers yet',
+        emptyDesc: 'The 2027 cohort will be the first to sit examinations. Past papers will appear here after each session concludes.'
+    },
+    {
+        key: 'memos',
+        title: 'Memoranda (Marking Guidelines)',
+        subtitle: 'Official marking guidelines for past papers',
+        icon: 'clipboard-check',
+        emptyTitle: 'No memoranda yet',
+        emptyDesc: 'Memoranda are published alongside past papers after each examination session.'
+    },
+    {
+        key: 'mocks',
+        title: 'Mock Papers',
+        subtitle: 'Practice assessments in exam format',
+        icon: 'file-edit',
+        emptyTitle: 'No mock papers yet',
+        emptyDesc: 'Mock papers will appear here once uploaded.'
+    },
+    {
+        key: 'guidelines',
+        title: 'Subject Guidelines',
+        subtitle: 'Marking rubrics and paper structure',
+        icon: 'book-open',
+        emptyTitle: 'No guidelines yet',
+        emptyDesc: 'Subject guidelines will appear here once uploaded.'
+    },
+    {
+        key: 'atps',
+        title: 'Annual Teaching Plans',
+        subtitle: 'Week-by-week curriculum schedule',
+        icon: 'calendar-range',
+        emptyTitle: 'No teaching plans yet',
+        emptyDesc: 'Annual Teaching Plans will appear here once uploaded.'
+    },
+    {
+        key: 'answer-books',
+        title: 'Answer Book Templates',
+        subtitle: 'Blank formats for practice writing',
+        icon: 'clipboard-list',
+        emptyTitle: 'No answer books yet',
+        emptyDesc: 'Answer book templates will appear here once uploaded.'
+    }
+];
+
+/* ==================== HELPERS ==================== */
+function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
+
+function escapeHtml(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+}
+
+function fileIconFor(type) {
+    if (type === 'pdf') return { class: 'pdf', icon: 'file-type-2' };
+    if (type === 'external') return { class: 'external', icon: 'external-link' };
+    return { class: 'html', icon: 'file-text' };
+}
+
+function actionIconFor(type) {
+    return type === 'pdf' ? 'download' : 'arrow-up-right';
+}
+
+/* Downloads PDFs with a proper filename; opens HTML/external in a new tab */
+async function handleResourceClick(resource, e) {
+    e.preventDefault();
+    if (!resource.fileUrl) return;
+
+    if (resource.type === 'pdf') {
+        try {
+            const response = await fetch(resource.fileUrl);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = resource.filename || 'IFB-document.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
+        } catch (err) {
+            console.warn('Download failed, opening in new tab', err);
+            window.open(resource.fileUrl, '_blank', 'noopener');
+        }
+    } else {
+        window.open(resource.fileUrl, '_blank', 'noopener');
+    }
+}
+
+/* ==================== RENDER ==================== */
+let allResources = [];
+let searchTerm = '';
+
+function filterResources(resources) {
+    if (!searchTerm) return resources;
+    const term = searchTerm.toLowerCase();
+    return resources.filter(r =>
+        (r.title || '').toLowerCase().includes(term) ||
+        (r.description || '').toLowerCase().includes(term) ||
+        (r.filename || '').toLowerCase().includes(term)
+    );
+}
+
+function renderSection(section, items) {
+    const count = items.length;
+    const countClass = count === 0 ? 'section-count empty' : 'section-count';
+
+    let bodyHtml;
+    if (count === 0) {
+        bodyHtml = `
+            <div class="empty-state">
+                <div class="empty-state-icon"><i data-lucide="inbox"></i></div>
+                <div class="empty-title">${escapeHtml(section.emptyTitle)}</div>
+                <div class="empty-desc">${escapeHtml(section.emptyDesc)}</div>
+            </div>`;
+    } else {
+        bodyHtml = '<div class="resource-list">' + items.map(r => {
+            const ficon = fileIconFor(r.type);
+            const actionIcon = actionIconFor(r.type);
+            const disabled = !r.fileUrl ? ' disabled' : '';
+            return `
+                <a class="resource-item${disabled}" data-id="${escapeHtml(r.id)}" href="${escapeHtml(r.fileUrl || '#')}"${r.fileUrl ? '' : ' onclick="return false;"'}>
+                    <div class="resource-file-icon ${ficon.class}"><i data-lucide="${ficon.icon}"></i></div>
+                    <div class="resource-info">
+                        <div class="resource-title">${escapeHtml(r.title || 'Untitled')}</div>
+                        ${r.description ? `<div class="resource-desc">${escapeHtml(r.description)}</div>` : ''}
+                        ${r.filename ? `<div class="resource-filename">${escapeHtml(r.filename)}</div>` : ''}
+                    </div>
+                    <div class="resource-action">
+                        <div class="resource-action-icon"><i data-lucide="${actionIcon}"></i></div>
+                    </div>
+                </a>`;
+        }).join('') + '</div>';
+    }
+
+    return `
+        <div class="resource-section" data-section="${escapeHtml(section.key)}">
+            <div class="section-head">
+                <div class="section-head-icon"><i data-lucide="${section.icon}"></i></div>
+                <div class="section-head-text">
+                    <div class="section-head-title">${escapeHtml(section.title)}</div>
+                    <div class="section-head-sub">${escapeHtml(section.subtitle)}</div>
+                </div>
+                <span class="${countClass}">${count}</span>
+            </div>
+            ${bodyHtml}
+        </div>`;
+}
+
+function renderAll() {
+    const filtered = filterResources(allResources);
+    const container = document.getElementById('sectionsContainer');
+    const noResults = document.getElementById('noResults');
+
+    if (searchTerm && filtered.length === 0) {
+        container.style.display = 'none';
+        noResults.classList.add('visible');
+        return;
+    }
+
+    noResults.classList.remove('visible');
+    container.style.display = 'block';
+
+    let html = '';
+    let totalRendered = 0;
+    for (const section of SECTIONS) {
+        const items = filtered
+            .filter(r => r.category === section.key)
+            .sort((a, b) => (a.order || 99) - (b.order || 99) || (a.title || '').localeCompare(b.title || ''));
+        // During search, hide sections that had no matches AND had items originally
+        if (searchTerm && items.length === 0 && allResources.some(r => r.category === section.key)) {
+            continue;
+        }
+        html += renderSection(section, items);
+        totalRendered += items.length;
+    }
+    container.innerHTML = html;
+    refreshIcons();
+
+    // Wire up click handlers
+    container.querySelectorAll('.resource-item').forEach(el => {
+        el.addEventListener('click', (e) => {
+            const id = el.getAttribute('data-id');
+            const resource = allResources.find(r => r.id === id);
+            if (resource) handleResourceClick(resource, e);
+        });
+    });
+}
+
+/* ==================== SEARCH ==================== */
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchTerm = e.target.value.trim();
+    if (allResources.length > 0) renderAll();
 });
-lucide.createIcons();
+
+/* ==================== LOAD RESOURCES ==================== */
+async function loadResources() {
+    try {
+        const q = query(collection(db, 'resources'), where('visible', '==', true));
+        const snap = await getDocs(q);
+        const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        if (items.length > 0) {
+            // Firestore has content — use that
+            allResources = items;
+            return { source: 'firestore', count: items.length };
+        } else {
+            // First time — show defaults
+            allResources = DEFAULT_RESOURCES.map(r => ({ ...r }));
+            return { source: 'defaults', count: DEFAULT_RESOURCES.length };
+        }
+    } catch (e) {
+        console.warn('[Resources] Firestore failed, falling back to defaults:', e);
+        allResources = DEFAULT_RESOURCES.map(r => ({ ...r }));
+        return { source: 'defaults', count: DEFAULT_RESOURCES.length, error: e.message };
+    }
+}
+
+/* ==================== AUTH ==================== */
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        // Not signed in — resources require login
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // Populate topbar
+    const name = user.displayName || 'Student';
+    document.getElementById('topbarName').textContent = name;
+    document.getElementById('topbarRoleText').textContent = 'Student';
+    document.getElementById('topbarAvatar').textContent = name.charAt(0).toUpperCase();
+
+    // Check user role + admin status
+    let isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+            const data = userDoc.data();
+            document.getElementById('topbarRoleText').textContent = data.status || 'Student';
+        }
+    } catch (e) { /* ignore */ }
+
+    if (isAdmin) {
+        document.getElementById('adminNav').classList.add('visible');
+        document.getElementById('adminNavMobile').classList.add('visible');
+        document.getElementById('adminManageBtn').style.display = 'inline-flex';
+    }
+
+    // Load and render
+    const result = await loadResources();
+    document.getElementById('loadingState').style.display = 'none';
+
+    // Show starter-defaults banner if applicable
+    if (result.source === 'defaults' && isAdmin) {
+        document.getElementById('adminBanner').classList.add('visible');
+    }
+
+    renderAll();
+    refreshIcons();
+});
+
+/* ==================== DRAWER ==================== */
+const drawer = document.getElementById('mobileDrawer');
+document.getElementById('mobileMenuBtn')?.addEventListener('click', () => drawer.classList.add('open'));
+document.getElementById('mobileDrawerClose')?.addEventListener('click', () => drawer.classList.remove('open'));
+drawer?.addEventListener('click', (e) => { if (e.target === drawer) drawer.classList.remove('open'); });
+
+/* ==================== INIT ==================== */
+document.addEventListener('DOMContentLoaded', refreshIcons);
+window.addEventListener('load', refreshIcons);
 </script>
 </body>
 </html>
