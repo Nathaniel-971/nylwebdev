@@ -37,7 +37,7 @@ ul { list-style: none; }
 
 .top-notice-bar { background: var(--silver); text-align: center; padding: 10px 16px; font-size: 13px; font-weight: 700; border-bottom: 1px solid #d1d5db; z-index: 1001; position: relative; }
 .top-notice-bar span { color: var(--maroon); }
-.top-notice-bar a { text-decoration: underline; }
+.top-notice-bar a { text-decoration: underline; color: var(--maroon); }
 
 .header { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); height: 72px; }
 .nav-container { max-width: 1300px; display: flex; justify-content: space-between; align-items: center; height: 100%; }
@@ -93,15 +93,16 @@ ul { list-style: none; }
 /* HORIZONTAL CAROUSEL */
 .carousel-container { 
     display: flex; 
+    justify-content: center;
     overflow-x: auto; 
     scroll-snap-type: x mandatory; 
     gap: 24px; 
     padding: 10px 24px 30px 24px; 
     max-width: 1000px;
     margin: 0 auto;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
 }
-.carousel-container::-webkit-scrollbar { display: none; /* Chrome/Safari */ }
+.carousel-container::-webkit-scrollbar { display: none; }
 .course-card { 
     scroll-snap-align: center;
     flex: 0 0 85%;
@@ -123,9 +124,6 @@ ul { list-style: none; }
 .course-actions { display: flex; flex-direction: column; gap: 10px; }
 .btn-course-view { background: var(--white); color: var(--black); border: 1.5px solid var(--silver); padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; }
 .btn-course-apply { background: var(--maroon); color: var(--white); border: 1.5px solid var(--maroon); padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; text-align: center; }
-
-.donate-box { background: var(--white); border: 2px dashed var(--maroon); border-radius: 20px; padding: 48px; text-align: center; max-width: 800px; margin: 0 auto; }
-.btn-donate { display: inline-flex; align-items: center; gap: 10px; background: var(--maroon); color: var(--white); padding: 16px 36px; border-radius: 12px; font-size: 16px; font-weight: 700; }
 
 .footer { background: #FAFAFA; padding: 64px 0 40px; border-top: 1px solid var(--silver); }
 .footer-grid { max-width: 1300px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; }
@@ -156,7 +154,7 @@ ul { list-style: none; }
 
 <div id="loader"><div class="loader-logo">∆</div></div>
 
-<!-- NON-ACCREDITED POPUP (Forced on every load) -->
+<!-- NON-ACCREDITED POPUP -->
 <div class="modal-overlay active" id="accreditationModal">
     <div class="modal-content">
         <div class="modal-logo">∆</div>
@@ -170,7 +168,7 @@ ul { list-style: none; }
 
 <div class="top-notice-bar">
     <i data-lucide="bell" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:5px;"></i>
-    2027 Applications Close: <span>13 January 2027</span> — <a href="ae-timetable.html">View AE Timetable</a>
+    2027 intake applications are open — <a href="admission.html">Apply now</a> · <a href="documents.html">All official documents</a>
 </div>
 
 <header class="header">
@@ -180,7 +178,6 @@ ul { list-style: none; }
             <div class="brand-text"><h1>Institute of Board</h1></div>
         </a>
         <div class="auth-buttons-header">
-            <!-- Auth buttons updated by JS -->
             <button class="btn-login" id="headerLoginBtn" onclick="document.getElementById('authModal').classList.add('active')">Login</button>
             <button class="btn-logout" id="headerLogoutBtn" onclick="signOut()">Log Out</button>
             <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
@@ -207,8 +204,8 @@ ul { list-style: none; }
 <section class="hero-section">
     <div class="hero-container">
         <div class="hero-text">
-            <h1 id="heroTitle">Master the disciplines<br>that <span style="color:#E2E8F0">build the future.</span></h1>
-            <p id="heroSubtitle">The Institute of Board provides university-level instruction in Mathematics and Physics. We operate fee-free, allowing us to focus purely on modern, rigorous academic skills without administrative bureaucracy.</p>
+            <h1 id="heroTitle">Master the discipline<br>that <span style="color:#E2E8F0">builds the future.</span></h1>
+            <p id="heroSubtitle">The Institute of Board provides university-level instruction in Mathematics. We operate fee-free, allowing us to focus purely on modern, rigorous academic skills without administrative bureaucracy.</p>
             
             <!-- Hero Buttons (Logged Out) -->
             <div class="hero-buttons" id="heroLoggedOut">
@@ -224,7 +221,7 @@ ul { list-style: none; }
         </div>
         <div class="hero-visual">
             <div class="hero-img-wrapper">
-                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop" alt="Physics and Math">
+                <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop" alt="Mathematics">
             </div>
             <div class="floating-card card-1">
                 <span class="label">Curriculum</span>
@@ -242,11 +239,10 @@ ul { list-style: none; }
 
 <section class="section alt" id="coursesSection">
     <div class="section-header">
-        <h2>Academic Programs</h2>
-        <p>Swipe to view. Admission to either track is strictly conditional on passing the Admission Examination (AE).</p>
+        <h2>Academic Programme</h2>
+        <p>Admission is strictly conditional on passing the Admission Examination (AE).</p>
     </div>
     
-    <!-- HORIZONTAL CAROUSEL -->
     <div class="carousel-container">
         <!-- MATHEMATICS -->
         <div class="course-card">
@@ -257,22 +253,6 @@ ul { list-style: none; }
                 <span class="course-code">IFB-S · MATHEMATICS</span>
                 <h3>IFB-S Mathematics</h3>
                 <p>Advanced Algebra, Calculus, Trigonometry, Geometry, Finance, and Probability. Rigorous assessments derived from first principles.</p>
-                <div class="course-actions">
-                    <a href="courses-ifb.html" class="btn-course-view">Prospectus</a>
-                    <a href="admission.html" class="btn-course-apply">Apply</a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- PHYSICS -->
-        <div class="course-card">
-            <div class="course-image-wrapper">
-                <img src="https://images.unsplash.com/photo-1614728263952-84ea256f9679?q=80&w=800&auto=format&fit=crop" alt="Physics">
-            </div>
-            <div class="course-content">
-                <span class="course-code">IFB-P · PHYSICS</span>
-                <h3>IFB-P Physics</h3>
-                <p>Mechanics, Electromagnetism, Waves, and Modern Physics. A mathematically rigorous approach to the laws of the universe.</p>
                 <div class="course-actions">
                     <a href="courses-ifb.html" class="btn-course-view">Prospectus</a>
                     <a href="admission.html" class="btn-course-apply">Apply</a>
@@ -354,17 +334,14 @@ onAuthStateChanged(auth, (user) => {
     setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
 
     if (user) {
-        // Logged In State
         document.getElementById('headerLoginBtn').style.display = 'none';
         document.getElementById('headerLogoutBtn').style.display = 'block';
         document.getElementById('heroLoggedOut').style.display = 'none';
         document.getElementById('heroLoggedIn').style.display = 'flex';
         
-        // Update hero text
         document.getElementById('heroTitle').innerHTML = `Welcome back,<br><span style="color:#E2E8F0">${user.displayName ? user.displayName.split(' ')[0] : 'Student'}.</span>`;
         document.getElementById('heroSubtitle').innerText = "Access your dashboard to view your latest updates, exam portals, and study resources.";
     } else {
-        // Logged Out State
         document.getElementById('headerLoginBtn').style.display = 'block';
         document.getElementById('headerLogoutBtn').style.display = 'none';
         document.getElementById('heroLoggedOut').style.display = 'flex';
