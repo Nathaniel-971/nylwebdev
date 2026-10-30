@@ -9,32 +9,47 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --sidebar-bg: #1E293B; --sidebar-hover: #334155; --success: #15803D; --error: #B91C1C; }
+:root {
+    --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0;
+    --maroon: #7A1F2B; --maroon-hover: #5A1620;
+    --bg: #F8FAFC;
+    --sidebar-bg: #7A1F2B; --sidebar-hover: #5A1620;
+    --success: #15803D; --error: #B91C1C;
+}
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); }
 .app-container { display: flex; height: 100vh; width: 100%; }
 
+/* SIDEBAR */
 .sidebar { width: 260px; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
 .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
-.sidebar-logo { padding: 24px; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.sidebar-logo .brand-mark { color: var(--white); font-size: 28px; background: var(--maroon); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+.sidebar-logo { padding: 24px; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.sidebar-logo .brand-mark { color: var(--white); font-size: 28px; background: rgba(0,0,0,0.25); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
 
 .sidebar-nav { padding: 24px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; color: #94A3B8; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; cursor: pointer; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; cursor: pointer; }
 .nav-item:hover, .nav-item.active { background: var(--sidebar-hover); color: var(--white); }
-.nav-item.active { border-left: 3px solid var(--maroon); }
+.nav-item.active { border-left: 3px solid var(--white); }
 .nav-item i { width: 18px; height: 18px; flex-shrink: 0; }
 .nav-item.admin-only { display: none; }
 .nav-item.admin-only.visible { display: flex; color: #FCA5A5; }
-.nav-item.admin-only.visible:hover { background: rgba(185, 28, 28, 0.15); }
+.nav-item.admin-only.visible:hover { background: rgba(185, 28, 28, 0.25); }
 
-.sidebar-footer { padding: 24px 16px; border-top: 1px solid rgba(255,255,255,0.05); }
-.btn-logout { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; background: rgba(255,0,0,0.1); color: #FCA5A5; border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: inherit; }
-.btn-logout:hover { background: #FEE2E2; color: #B91C1C; }
+.sidebar-footer { padding: 20px 16px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 8px; }
+.btn-logout { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.15); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: inherit; }
+.btn-logout:hover { background: rgba(0,0,0,0.3); color: var(--white); }
 .btn-logout i { width: 16px; height: 16px; }
+.btn-delete-account { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 16px; background: transparent; color: rgba(255,255,255,0.55); border: none; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; font-family: inherit; }
+.btn-delete-account:hover { background: rgba(0,0,0,0.25); color: #FCA5A5; }
+.btn-delete-account i { width: 14px; height: 14px; }
 
-.topbar { height: 72px; background: var(--white); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; flex-shrink: 0; }
+/* TOPBAR */
+.topbar { height: 72px; background: var(--white); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; flex-shrink: 0; gap: 12px; }
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.mobile-hamburger { display: none; background: transparent; border: none; cursor: pointer; padding: 8px; color: var(--maroon); align-items: center; justify-content: center; border-radius: 8px; }
+.mobile-hamburger:hover { background: #FFF5F6; }
+.mobile-hamburger i { width: 24px; height: 24px; }
 .topbar-title { font-weight: 900; font-size: 18px; color: var(--maroon); display: flex; align-items: center; gap: 8px; }
 .topbar-title i { width: 20px; height: 20px; }
 .profile-menu { display: flex; align-items: center; gap: 16px; }
@@ -43,6 +58,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .profile-info p i { width: 10px; height: 10px; }
 .profile-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; box-shadow: 0 4px 10px rgba(122,31,43,0.3); }
 
+/* CONTENT */
 .dashboard-content { flex: 1; padding: 32px; overflow-y: auto; }
 .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
 .card { background: var(--white); border-radius: 16px; padding: 32px; border: 1px solid var(--silver); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
@@ -50,7 +66,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .card-title { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 .card-title i { width: 20px; height: 20px; color: var(--maroon); }
 
-/* LOADING STATE */
+/* LOADING */
 .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; }
 .spinner { width: 48px; height: 48px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -62,18 +78,19 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
 .id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
 .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 1px solid var(--silver); background: var(--white); }
-.id-card-front { padding: 28px; text-align: left; }
-.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 28px; align-items: center; justify-content: center; }
+.id-card-front { padding: 24px; text-align: left; }
+.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 24px; align-items: center; justify-content: center; }
 .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 180px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; }
-.card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
-.card-logo { font-size: 24px; font-weight: 900; color: var(--maroon); }
-.card-type { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
-.card-name { font-size: 26px; font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-role { font-size: 11px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: auto; align-self: flex-start; }
-.card-id { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 12px; }
-.barcode-wrap-front { background: #fff; border-radius: 8px; width: 100%; height: 60px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 6px; }
-.barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
-.barcode-placeholder { font-size: 12px; color: var(--gray); font-weight: 600; }
+.card-content { position: relative; z-index: 1; height: 100%; min-height: 0; display: flex; flex-direction: column; width: 100%; }
+.card-logo { font-size: 22px; font-weight: 900; color: var(--maroon); }
+.card-type { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.card-name { font-size: 22px; font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.card-role { font-size: 10px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 3px 10px; border-radius: 4px; align-self: flex-start; flex-shrink: 0; }
+.card-spacer { flex: 1; min-height: 8px; }
+.card-id { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px; flex-shrink: 0; }
+.barcode-wrap-front { background: #fff; border-radius: 8px; width: 100%; height: 44px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 4px; overflow: hidden; flex-shrink: 0; }
+.barcode-wrap-front svg { display: block; max-width: 100%; max-height: 100%; height: 100%; width: auto; }
+.barcode-placeholder { font-size: 11px; color: var(--gray); font-weight: 600; }
 .card-back-text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 12px; }
 .card-sec-code { font-family: monospace; font-size: 20px; font-weight: 900; letter-spacing: 3px; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 8px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 110px; height: 110px; display: flex; justify-content: center; align-items: center; }
@@ -83,9 +100,9 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .cred-box { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 12px; text-align: center; }
 .cred-label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 4px; }
 .cred-label i { width: 11px; height: 11px; }
-.cred-value { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--black); }
+.cred-value { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); word-break: break-all; }
 
-/* LINK CARDS */
+/* LINK ITEMS */
 .link-item { display: flex; align-items: center; gap: 16px; padding: 18px; border-radius: 12px; border: 1px solid var(--silver); background: var(--white); text-decoration: none; color: var(--black); margin-bottom: 12px; transition: 0.2s; }
 .link-item:last-child { margin-bottom: 0; }
 .link-item:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
@@ -96,7 +113,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .link-item .link-text p { font-size: 13px; color: var(--gray); }
 .link-item > i { width: 18px; height: 18px; color: var(--gray); flex-shrink: 0; }
 
-/* ACTION GRID */
+/* ACTIONS */
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 14px; transition: 0.2s; text-align: center; }
 .action-btn:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
@@ -119,26 +136,59 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .alert-error strong { display: block; margin-bottom: 6px; }
 .alert-error code { font-family: monospace; font-size: 12px; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; }
 
+/* MOBILE DRAWER */
+.mobile-drawer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 3000; }
+.mobile-drawer.open { display: block; }
+.mobile-drawer-panel { width: 280px; height: 100vh; background: var(--sidebar-bg); color: var(--white); padding: 24px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 4px 0 24px rgba(0,0,0,0.3); animation: slideIn 0.25s ease-out; }
+@keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+.mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.mobile-drawer-logo { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
+.mobile-drawer-logo .brand-mark { background: rgba(0,0,0,0.25); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; }
+.mobile-drawer-close { background: transparent; border: none; color: var(--white); cursor: pointer; padding: 6px; border-radius: 6px; }
+.mobile-drawer-close:hover { background: rgba(255,255,255,0.1); }
+.mobile-drawer-close i { width: 22px; height: 22px; }
+.mobile-drawer-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 8px; }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 5000; display: none; justify-content: center; align-items: center; padding: 24px; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: var(--white); border-radius: 16px; max-width: 460px; width: 100%; padding: 32px 28px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+.modal-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+.modal-icon.danger { background: #FEF2F2; color: var(--error); }
+.modal-icon i { width: 32px; height: 32px; }
+.modal-box h2 { font-size: 22px; font-weight: 900; margin-bottom: 12px; color: var(--black); }
+.modal-box p { font-size: 14px; color: var(--gray); line-height: 1.6; margin-bottom: 20px; }
+.modal-field { text-align: left; margin-bottom: 20px; }
+.modal-field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--black); }
+.modal-field label strong { color: var(--error); font-family: monospace; letter-spacing: 1px; }
+.modal-field input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: monospace; font-weight: 700; text-align: center; letter-spacing: 3px; text-transform: uppercase; }
+.modal-field input:focus { border-color: var(--error); }
+.modal-actions { display: flex; gap: 12px; }
+.btn-modal { flex: 1; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: 0.2s; border: none; }
+.btn-modal.cancel { background: var(--white); border: 1.5px solid var(--silver); color: var(--black); }
+.btn-modal.cancel:hover { border-color: var(--black); }
+.btn-modal.delete { background: var(--error); color: var(--white); }
+.btn-modal.delete:hover:not(:disabled) { background: #991B1B; }
+.btn-modal:disabled { opacity: 0.6; cursor: wait; }
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-around; padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.1); order: 2; }
-    .sidebar-logo, .sidebar-footer { display: none; }
-    .sidebar-nav { flex-direction: row; padding: 0 4px; gap: 0; width: 100%; justify-content: space-around; overflow: visible; }
-    .nav-item { flex: 1; flex-direction: column; gap: 3px; font-size: 9px; padding: 6px 4px; border-radius: 4px; text-align: center; min-width: 0; }
-    .nav-item i { width: 18px; height: 18px; }
-    .nav-item.active { border-left: none; background: var(--sidebar-hover); }
-    .main-wrapper { order: 1; height: calc(100vh - 68px); }
-    .topbar { padding: 0 16px; height: 64px; }
-    .topbar-title { font-size: 16px; }
+    .sidebar { display: none; }
+    .main-wrapper { order: 1; height: 100vh; width: 100%; }
+    .mobile-hamburger { display: flex; }
+    .topbar { padding: 0 12px; height: 64px; }
+    .topbar-title { font-size: 15px; }
     .profile-info { display: none; }
     .dashboard-content { padding: 16px; }
     .action-grid { grid-template-columns: 1fr; }
     .id-card-container { max-width: 100%; }
     .credentials-row { flex-direction: column; }
     .card { padding: 24px 20px; }
-    .card-name { font-size: 20px; }
-    .card-id { font-size: 16px; }
+    .card-name { font-size: 18px; }
+    .card-id { font-size: 14px; }
+    .barcode-wrap-front { height: 38px; }
+    .card-logo { font-size: 18px; }
 }
 </style>
 </head>
@@ -156,12 +206,16 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
         </nav>
         <div class="sidebar-footer">
             <button class="btn-logout" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
+            <button class="btn-delete-account" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
         </div>
     </aside>
 
     <div class="main-wrapper">
         <header class="topbar">
-            <div class="topbar-title"><i data-lucide="layout-dashboard"></i> Student Dashboard</div>
+            <div class="topbar-left">
+                <button class="mobile-hamburger" id="mobileMenuBtn" aria-label="Open menu"><i data-lucide="menu"></i></button>
+                <div class="topbar-title"><i data-lucide="layout-dashboard"></i> Student Dashboard</div>
+            </div>
             <div class="profile-menu">
                 <div class="profile-info">
                     <h4 id="topbarName">Loading...</h4>
@@ -172,7 +226,6 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
         </header>
 
         <main class="dashboard-content">
-            <!-- Loading state -->
             <div id="loadingState" class="card" style="text-align:center;">
                 <div class="loading-state">
                     <div class="spinner"></div>
@@ -180,10 +233,8 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                 </div>
             </div>
 
-            <!-- Error state -->
             <div class="alert-error" id="errorAlert"></div>
 
-            <!-- Main content (hidden until loaded) -->
             <div class="dashboard-grid" id="mainContent" style="display:none;">
 
                 <!-- ID CARD -->
@@ -197,13 +248,13 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                                 <div class="id-card-front">
                                     <div class="watermark">∆</div>
                                     <div class="card-content">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                                             <div class="card-logo">∆ IFB</div>
                                             <div class="card-type">Student ID</div>
                                         </div>
                                         <div class="card-name" id="userName">—</div>
                                         <div class="card-role" id="userStatus">Applicant</div>
-                                        <div style="flex-grow:1;"></div>
+                                        <div class="card-spacer"></div>
                                         <div class="card-id" id="userStudentId">---</div>
                                         <div class="barcode-wrap-front" id="barcodeWrap"><svg id="barcodeSvg"></svg></div>
                                     </div>
@@ -287,10 +338,51 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
     </div>
 </div>
 
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-drawer-panel">
+        <div class="mobile-drawer-header">
+            <div class="mobile-drawer-logo"><div class="brand-mark">∆</div> IFB Portal</div>
+            <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close menu"><i data-lucide="x"></i></button>
+        </div>
+        <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
+        <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
+        <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Docs</a>
+        <a href="admin-resources.html" class="nav-item admin-only" id="adminNavMobile"><i data-lucide="shield"></i> Admin</a>
+        <div class="mobile-drawer-footer">
+            <button class="btn-logout" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
+            <button class="btn-delete-account" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box">
+        <div class="modal-icon danger"><i data-lucide="alert-triangle"></i></div>
+        <h2>Delete Account</h2>
+        <p>This permanently deletes your account, Student ID, exam history, and all associated data. <strong>This cannot be undone.</strong></p>
+        <div class="modal-field">
+            <label>Type <strong>DELETE</strong> to confirm:</label>
+            <input type="text" id="deleteConfirmInput" placeholder="DELETE" autocomplete="off">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn-modal delete" id="deleteConfirmBtn" onclick="deleteAccount()">Delete Permanently</button>
+        </div>
+    </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut as firebaseSignOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+    getAuth, onAuthStateChanged, signOut as firebaseSignOut,
+    reauthenticateWithPopup, GoogleAuthProvider
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+    getFirestore, doc, getDoc, updateDoc, deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
@@ -299,30 +391,32 @@ const db = getFirestore(app);
 
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
+/* ---------- Helpers ---------- */
 function refreshIcons() {
-    if (window.lucide) {
-        try { lucide.createIcons(); } catch(e) { console.warn("Icon render error", e); }
-    }
+    if (window.lucide) { try { lucide.createIcons(); } catch(e) { console.warn("Icon error", e); } }
 }
-
 function showError(title, detail) {
     const el = document.getElementById('errorAlert');
-    el.innerHTML = `<strong>${title}</strong><code>${detail || 'Unknown error'}</code>`;
+    el.innerHTML = `<strong>${title}</strong>${detail ? `<code>${detail}</code>` : ''}`;
     el.style.display = 'block';
     document.getElementById('loadingState').style.display = 'none';
 }
-
 function hideLoading() {
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('mainContent').style.display = 'grid';
 }
 
-/* Spec: 27 + NN + L + SSSSSS + CC = 13 chars */
+/* Spec: 27 + NN + L + SSSSSS + CC = 13 chars. L = letter (X placeholder or A–E tier). */
 function generateStudentId() {
-    const base = "27" + "01" + "X" + String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+    const intake = "27";
+    const center = "01";
+    const tier = "X";
+    const sequence = String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+    const base = intake + center + tier + sequence; // 11 chars
     let sum = 0;
     for (let i = 0; i < base.length; i++) sum += base.charCodeAt(i);
-    return base + String(sum % 100).padStart(2, '0');
+    const checksum = String(sum % 100).padStart(2, '0');
+    return base + checksum; // 13 chars
 }
 function generateSecurityCode() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -334,14 +428,49 @@ function isValidStudentId(id) {
     return typeof id === 'string' && /^27\d{2}[A-Z]\d{8}$/.test(id);
 }
 
+/* ---------- Render barcode + QR with safe sizing ---------- */
+function renderBarcodeAndQR(studentId, name) {
+    const wrap = document.getElementById('barcodeWrap');
+    if (studentId && typeof JsBarcode === 'function') {
+        try {
+            JsBarcode("#barcodeSvg", studentId, {
+                format: "CODE128",
+                width: 1.2,      // smaller module width — was 2 (too wide)
+                height: 32,      // smaller height
+                displayValue: false,
+                margin: 0,
+                background: "#ffffff",
+                lineColor: "#111111"
+            });
+        } catch (e) {
+            console.warn("[Dashboard] Barcode render failed:", e);
+            wrap.innerHTML = '<span class="barcode-placeholder">ID pending</span>';
+        }
+    } else {
+        wrap.innerHTML = '<span class="barcode-placeholder">ID pending</span>';
+    }
+
+    const qrEl = document.getElementById('qrCodeContainer');
+    if (typeof qrcode === 'function') {
+        try {
+            const qr = qrcode(0, 'M');
+            qr.addData(`ID: ${studentId || 'pending'}\nName: ${name}`);
+            qr.make();
+            qrEl.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+        } catch (e) {
+            console.warn("[Dashboard] QR render failed:", e);
+        }
+    }
+}
+
+/* ---------- Auth state / load ---------- */
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
-
     console.log("[Dashboard] Signed in:", user.email);
 
     try {
         const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
+        let docSnap = await getDoc(docRef);
 
         if (!docSnap.exists()) {
             console.log("[Dashboard] No user doc — redirecting to admission");
@@ -350,25 +479,49 @@ onAuthStateChanged(auth, async (user) => {
         }
 
         let data = docSnap.data();
-        console.log("[Dashboard] User data loaded:", { hasId: !!data.studentId, status: data.status });
 
-        // Auto-migrate legacy ID format
-        if (!isValidStudentId(data.studentId)) {
-            console.log("[Dashboard] Regenerating ID — old format:", data.studentId);
-            const studentId = generateStudentId();
-            const securityCode = data.securityCode || generateSecurityCode();
+        /* ---- ID MIGRATION (older accounts) ---- */
+        const originalId = data.studentId;
+        const needsMigration = !isValidStudentId(data.studentId);
+
+        if (needsMigration) {
+            console.log("[Dashboard] Migrating student ID. Old:", originalId);
+            const newId = generateStudentId();
+            const newCode = data.securityCode || generateSecurityCode();
+
             try {
-                await updateDoc(docRef, { studentId, securityCode });
-                data.studentId = studentId;
-                data.securityCode = securityCode;
+                await updateDoc(docRef, {
+                    studentId: newId,
+                    securityCode: newCode,
+                    studentIdVersion: 2,
+                    idMigratedAt: new Date()
+                });
+                // Verify persistence
+                const verify = await getDoc(docRef);
+                const vdata = verify.data();
+                if (vdata.studentId === newId) {
+                    console.log("[Dashboard] ✅ ID migrated and persisted:", newId);
+                    data.studentId = newId;
+                    data.securityCode = newCode;
+                } else {
+                    console.warn("[Dashboard] ⚠ ID write returned but did not persist.");
+                    showError("Could not save your new Student ID.",
+                        "Please refresh the page to try again.");
+                    data.studentId = newId; // in-memory fallback so UI isn't blank
+                    data.securityCode = newCode;
+                }
             } catch (e) {
-                console.warn("[Dashboard] Failed to persist new ID, using in-memory only", e);
-                data.studentId = studentId;
-                data.securityCode = securityCode;
+                console.error("[Dashboard] ID migration write failed:", e);
+                showError("Could not update your Student ID.",
+                    e.message || "Permission or network error. Please refresh.");
+                data.studentId = newId; // in-memory fallback
+                data.securityCode = newCode;
             }
+        } else {
+            console.log("[Dashboard] Student ID valid:", data.studentId);
         }
 
-        // Populate student view
+        /* ---- Populate UI ---- */
         const displayName = data.name || user.displayName || "Student";
         const status = data.status || "Applicant";
 
@@ -383,46 +536,22 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('credStudentId').textContent = data.studentId || '---';
         document.getElementById('credSecCode').textContent = data.securityCode || '---';
 
-        // Admin features
+        /* ---- Admin ---- */
         const isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-        console.log("[Dashboard] Admin check:", { email: user.email, isAdmin });
+        console.log("[Dashboard] Admin:", isAdmin);
         if (isAdmin) {
             document.getElementById('adminNav').classList.add('visible');
+            document.getElementById('adminNavMobile').classList.add('visible');
             document.getElementById('adminCard').classList.add('visible');
             document.getElementById('adminQuickBtn').classList.add('visible');
         }
 
-        // Show content
         hideLoading();
         refreshIcons();
 
-        // Barcode (guard against missing/undefined ID)
+        /* ---- Barcode + QR after paint ---- */
         setTimeout(() => {
-            if (data.studentId && typeof JsBarcode === 'function') {
-                try {
-                    JsBarcode("#barcodeSvg", data.studentId, {
-                        format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0
-                    });
-                } catch (e) {
-                    console.warn("[Dashboard] Barcode render failed", e);
-                    document.getElementById('barcodeWrap').innerHTML = '<span class="barcode-placeholder">ID pending</span>';
-                }
-            } else {
-                document.getElementById('barcodeWrap').innerHTML = '<span class="barcode-placeholder">ID pending</span>';
-            }
-
-            // QR code
-            if (typeof qrcode === 'function') {
-                try {
-                    const qr = qrcode(0, 'M');
-                    qr.addData(`ID: ${data.studentId || 'pending'}\nName: ${displayName}`);
-                    qr.make();
-                    document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
-                } catch (e) {
-                    console.warn("[Dashboard] QR render failed", e);
-                }
-            }
-
+            renderBarcodeAndQR(data.studentId, displayName);
             refreshIcons();
         }, 100);
 
@@ -432,6 +561,15 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+/* ---------- Mobile drawer ---------- */
+const drawer = document.getElementById('mobileDrawer');
+const drawerBtn = document.getElementById('mobileMenuBtn');
+const drawerClose = document.getElementById('mobileDrawerClose');
+if (drawerBtn) drawerBtn.addEventListener('click', () => drawer.classList.add('open'));
+if (drawerClose) drawerClose.addEventListener('click', () => drawer.classList.remove('open'));
+if (drawer) drawer.addEventListener('click', (e) => { if (e.target === drawer) drawer.classList.remove('open'); });
+
+/* ---------- Sign out ---------- */
 window.signOut = async function() {
     try {
         await firebaseSignOut(auth);
@@ -441,6 +579,66 @@ window.signOut = async function() {
     }
 };
 
+/* ---------- Delete account ---------- */
+window.confirmDeleteAccount = function() {
+    document.getElementById('deleteConfirmInput').value = '';
+    document.getElementById('deleteConfirmBtn').disabled = false;
+    document.getElementById('deleteConfirmBtn').textContent = 'Delete Permanently';
+    document.getElementById('deleteModal').classList.add('active');
+    if (drawer) drawer.classList.remove('open');
+};
+window.closeDeleteModal = function() {
+    document.getElementById('deleteModal').classList.remove('active');
+};
+
+window.deleteAccount = async function() {
+    const input = document.getElementById('deleteConfirmInput').value.trim();
+    if (input !== 'DELETE') {
+        alert('Type DELETE exactly (all capitals) to confirm.');
+        return;
+    }
+
+    const btn = document.getElementById('deleteConfirmBtn');
+    btn.disabled = true;
+    btn.textContent = 'Re-authenticating...';
+
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("You are not signed in.");
+
+        // 1. Re-authenticate (required by Firebase for sensitive ops)
+        const provider = new GoogleAuthProvider();
+        await reauthenticateWithPopup(user, provider);
+
+        btn.textContent = 'Deleting data...';
+
+        // 2. Delete Firestore user document
+        await deleteDoc(doc(db, "users", user.uid));
+
+        btn.textContent = 'Deleting account...';
+
+        // 3. Delete auth account
+        await user.delete();
+
+        // 4. Clear session and redirect
+        sessionStorage.clear();
+        window.location.href = "index.html";
+
+    } catch (e) {
+        console.error("[Dashboard] Delete failed:", e);
+        if (e.code === 'auth/popup-closed-by-user') {
+            alert('Re-authentication was cancelled. Your account was NOT deleted.');
+        } else if (e.code === 'auth/requires-recent-login') {
+            alert('For security, please sign out, sign back in, and try again.');
+        } else {
+            alert('Failed to delete account: ' + (e.message || 'Unknown error'));
+        }
+        btn.disabled = false;
+        btn.textContent = 'Delete Permanently';
+    }
+};
+
+/* ---------- Icon init ---------- */
 document.addEventListener('DOMContentLoaded', refreshIcons);
 window.addEventListener('load', refreshIcons);
 </script>
