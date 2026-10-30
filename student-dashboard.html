@@ -14,110 +14,231 @@
     --maroon: #7A1F2B; --maroon-hover: #5A1620;
     --bg: #F8FAFC;
     --sidebar-bg: #7A1F2B; --sidebar-hover: #5A1620;
-    --success: #15803D; --error: #B91C1C;
+    --success: #15803D; --warning: #B45309; --error: #B91C1C;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); }
-.app-container { display: flex; height: 100vh; width: 100%; }
 
-/* SIDEBAR */
-.sidebar { width: 260px; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
-.main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+/* BODY SCROLLS NATURALLY — no nested overflow traps */
+html, body {
+    width: 100%;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--black);
+    line-height: 1.5;
+}
 
-.sidebar-logo { padding: 24px; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-.sidebar-logo .brand-mark { color: var(--white); font-size: 28px; background: rgba(0,0,0,0.25); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
-
-.sidebar-nav { padding: 24px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-.nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; cursor: pointer; }
+/* SIDEBAR — FIXED, doesn't affect body scroll */
+.sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 260px;
+    height: 100dvh;
+    background: var(--sidebar-bg);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+}
+.sidebar-logo { padding: 24px 20px; font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.sidebar-logo .brand-mark { color: var(--white); font-size: 26px; background: rgba(0,0,0,0.25); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; flex-shrink: 0; }
+.sidebar-nav { padding: 20px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.nav-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 8px; color: rgba(255,255,255,0.75); text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.15s; cursor: pointer; }
 .nav-item:hover, .nav-item.active { background: var(--sidebar-hover); color: var(--white); }
-.nav-item.active { border-left: 3px solid var(--white); }
+.nav-item.active { box-shadow: inset 3px 0 0 var(--white); }
 .nav-item i { width: 18px; height: 18px; flex-shrink: 0; }
 .nav-item.admin-only { display: none; }
 .nav-item.admin-only.visible { display: flex; color: #FCA5A5; }
-.nav-item.admin-only.visible:hover { background: rgba(185, 28, 28, 0.25); }
+.nav-item.admin-only.visible:hover { background: rgba(185,28,28,0.25); }
+.sidebar-footer { padding: 16px 12px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 8px; }
+.btn-sidebar { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 14px; background: rgba(0,0,0,0.15); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.15s; font-family: inherit; }
+.btn-sidebar:hover { background: rgba(0,0,0,0.3); color: var(--white); }
+.btn-sidebar.danger { color: rgba(255,255,255,0.55); background: transparent; border: none; font-weight: 600; font-size: 12px; padding: 8px 14px; }
+.btn-sidebar.danger:hover { background: rgba(0,0,0,0.25); color: #FCA5A5; }
+.btn-sidebar i { width: 16px; height: 16px; flex-shrink: 0; }
 
-.sidebar-footer { padding: 20px 16px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 8px; }
-.btn-logout { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.15); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: inherit; }
-.btn-logout:hover { background: rgba(0,0,0,0.3); color: var(--white); }
-.btn-logout i { width: 16px; height: 16px; }
-.btn-delete-account { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 16px; background: transparent; color: rgba(255,255,255,0.55); border: none; border-radius: 8px; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; font-family: inherit; }
-.btn-delete-account:hover { background: rgba(0,0,0,0.25); color: #FCA5A5; }
-.btn-delete-account i { width: 14px; height: 14px; }
+/* MAIN WRAPPER — offset by sidebar */
+.main-wrapper {
+    margin-left: 260px;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
 
-/* TOPBAR */
-.topbar { height: 72px; background: var(--white); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; flex-shrink: 0; gap: 12px; }
-.topbar-left { display: flex; align-items: center; gap: 12px; }
-.mobile-hamburger { display: none; background: transparent; border: none; cursor: pointer; padding: 8px; color: var(--maroon); align-items: center; justify-content: center; border-radius: 8px; }
+/* TOPBAR — sticky inside main-wrapper */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 68px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--silver);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 28px;
+    gap: 12px;
+    flex-shrink: 0;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mobile-hamburger { display: none; background: transparent; border: none; cursor: pointer; padding: 8px; color: var(--maroon); border-radius: 8px; align-items: center; justify-content: center; flex-shrink: 0; }
 .mobile-hamburger:hover { background: #FFF5F6; }
-.mobile-hamburger i { width: 24px; height: 24px; }
-.topbar-title { font-weight: 900; font-size: 18px; color: var(--maroon); display: flex; align-items: center; gap: 8px; }
-.topbar-title i { width: 20px; height: 20px; }
-.profile-menu { display: flex; align-items: center; gap: 16px; }
-.profile-info h4 { font-size: 14px; font-weight: 800; text-align: right; }
-.profile-info p { font-size: 12px; color: var(--gray); font-weight: 600; text-align: right; display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
-.profile-info p i { width: 10px; height: 10px; }
-.profile-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; box-shadow: 0 4px 10px rgba(122,31,43,0.3); }
+.mobile-hamburger i { width: 22px; height: 22px; }
+.topbar-title { font-weight: 900; font-size: 17px; color: var(--maroon); display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-title i { width: 18px; height: 18px; flex-shrink: 0; }
+.profile-menu { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.profile-info h4 { font-size: 13px; font-weight: 800; text-align: right; }
+.profile-info p { font-size: 11px; color: var(--gray); font-weight: 600; text-align: right; display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+.profile-info p i { width: 9px; height: 9px; }
+.profile-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(122,31,43,0.3); flex-shrink: 0; }
 
-/* CONTENT */
-.dashboard-content { flex: 1; padding: 32px; overflow-y: auto; }
-.dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
-.card { background: var(--white); border-radius: 16px; padding: 32px; border: 1px solid var(--silver); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-.card-title { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
-.card-title i { width: 20px; height: 20px; color: var(--maroon); }
+/* DASHBOARD CONTENT — no overflow trap, body scrolls */
+.dashboard-content {
+    flex: 1;
+    padding: 32px 28px 80px;
+    width: 100%;
+}
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
 
-/* LOADING */
-.loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; }
-.spinner { width: 48px; height: 48px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 14px; color: var(--gray); font-weight: 600; }
+/* CARDS */
+.card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid var(--silver);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.card-title { font-size: 17px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.card-title i { width: 18px; height: 18px; color: var(--maroon); flex-shrink: 0; }
 
-/* ID CARD */
-.id-section { display: flex; flex-direction: column; align-items: center; gap: 24px; }
-.id-card-container { width: 100%; max-width: 520px; aspect-ratio: 1.586; perspective: 1000px; cursor: pointer; user-select: none; }
-.id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
-.id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
-.id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 1px solid var(--silver); background: var(--white); }
-.id-card-front { padding: 24px; text-align: left; }
-.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 24px; align-items: center; justify-content: center; }
-.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 180px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; }
-.card-content { position: relative; z-index: 1; height: 100%; min-height: 0; display: flex; flex-direction: column; width: 100%; }
-.card-logo { font-size: 22px; font-weight: 900; color: var(--maroon); }
-.card-type { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
-.card-name { font-size: 22px; font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
-.card-role { font-size: 10px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 3px 10px; border-radius: 4px; align-self: flex-start; flex-shrink: 0; }
-.card-spacer { flex: 1; min-height: 8px; }
-.card-id { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px; flex-shrink: 0; }
-.barcode-wrap-front { background: #fff; border-radius: 8px; width: 100%; height: 44px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 4px; overflow: hidden; flex-shrink: 0; }
-.barcode-wrap-front svg { display: block; max-width: 100%; max-height: 100%; height: 100%; width: auto; }
-.barcode-placeholder { font-size: 11px; color: var(--gray); font-weight: 600; }
-.card-back-text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 12px; }
-.card-sec-code { font-family: monospace; font-size: 20px; font-weight: 900; letter-spacing: 3px; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 8px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 110px; height: 110px; display: flex; justify-content: center; align-items: center; }
-.qr-wrap svg { width: 100%; height: 100%; display: block; }
-
-.credentials-row { display: flex; gap: 16px; width: 100%; max-width: 520px; }
-.cred-box { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 12px; text-align: center; }
-.cred-label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 4px; }
-.cred-label i { width: 11px; height: 11px; }
-.cred-value { font-family: monospace; font-size: 16px; font-weight: 800; color: var(--black); word-break: break-all; }
+/* SLIP (PORTRAIT) */
+.id-slip-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.id-slip {
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 34 / 54;
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    border: 1px solid var(--silver);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.slip-header {
+    background: var(--maroon);
+    color: var(--white);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+.slip-header .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 14px; }
+.slip-header .brand span { font-size: 18px; }
+.slip-header .year { font-size: 12px; font-weight: 700; opacity: 0.85; letter-spacing: 1px; }
+.slip-body {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+    overflow: hidden;
+}
+.slip-name {
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1.2;
+    color: var(--black);
+    word-break: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.slip-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 4px;
+    align-self: flex-start;
+}
+.slip-status.student { background: #DCFCE7; color: var(--success); }
+.slip-status.applicant { background: #FEF3C7; color: var(--warning); }
+.slip-status i { width: 8px; height: 8px; }
+.slip-divider { height: 1px; background: var(--silver); margin: 2px 0; flex-shrink: 0; }
+.slip-label { font-size: 9px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gray); }
+.slip-id-big { font-family: 'Courier New', monospace; font-size: 34px; font-weight: 900; color: var(--maroon); letter-spacing: 2px; line-height: 1; }
+.slip-exam-num {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--black);
+    letter-spacing: 1px;
+    word-break: break-all;
+    line-height: 1.3;
+}
+.slip-exam-num.pending { color: var(--warning); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+.slip-spacer { flex: 1; min-height: 4px; }
+.slip-barcode {
+    background: #fff;
+    border-radius: 6px;
+    height: 44px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.slip-barcode svg { display: block; max-width: 100%; max-height: 100%; height: 100%; width: auto; }
+.slip-barcode .pending { font-size: 10px; color: var(--gray); font-weight: 600; }
+.slip-footer-row { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.slip-qr { width: 44px; height: 44px; background: #fff; padding: 2px; border-radius: 6px; border: 1px solid #eee; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.slip-qr svg { display: block; width: 100%; height: 100%; }
+.slip-sec { flex: 1; min-width: 0; }
+.slip-sec .slip-label { margin-bottom: 3px; }
+.slip-sec .value { font-family: 'Courier New', monospace; font-size: 14px; font-weight: 900; letter-spacing: 2px; color: var(--black); }
+.slip-pending-hint { font-size: 10px; color: var(--warning); font-weight: 700; margin-top: 4px; }
 
 /* LINK ITEMS */
-.link-item { display: flex; align-items: center; gap: 16px; padding: 18px; border-radius: 12px; border: 1px solid var(--silver); background: var(--white); text-decoration: none; color: var(--black); margin-bottom: 12px; transition: 0.2s; }
+.link-item { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 12px; border: 1px solid var(--silver); background: var(--white); text-decoration: none; color: var(--black); margin-bottom: 10px; transition: 0.15s; }
 .link-item:last-child { margin-bottom: 0; }
-.link-item:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-.link-item .link-icon { width: 44px; height: 44px; border-radius: 10px; background: #FFF5F6; color: var(--maroon); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.link-item .link-icon i { width: 20px; height: 20px; }
-.link-item .link-text { flex: 1; }
-.link-item .link-text h4 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
-.link-item .link-text p { font-size: 13px; color: var(--gray); }
-.link-item > i { width: 18px; height: 18px; color: var(--gray); flex-shrink: 0; }
+.link-item:hover { border-color: var(--maroon); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+.link-item .link-icon { width: 42px; height: 42px; border-radius: 10px; background: #FFF5F6; color: var(--maroon); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.link-item .link-icon i { width: 18px; height: 18px; }
+.link-item .link-text { flex: 1; min-width: 0; }
+.link-item .link-text h4 { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+.link-item .link-text p { font-size: 12px; color: var(--gray); }
+.link-item > i { width: 16px; height: 16px; color: var(--gray); flex-shrink: 0; }
 
-/* ACTIONS */
-.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 14px; transition: 0.2s; text-align: center; }
-.action-btn:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-.action-btn i { color: var(--maroon); width: 24px; height: 24px; }
+/* ACTION GRID */
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px 12px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 13px; transition: 0.15s; text-align: center; }
+.action-btn:hover { border-color: var(--maroon); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+.action-btn i { color: var(--maroon); width: 22px; height: 22px; }
 .action-btn.admin-btn { border-color: var(--maroon); background: #FFF5F6; display: none; grid-column: 1 / -1; }
 .action-btn.admin-btn.visible { display: flex; }
 
@@ -126,216 +247,211 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .admin-card.visible { display: block; }
 .admin-card .card-title { color: var(--white); }
 .admin-card .card-title i { color: #FCA5A5; }
-.admin-card p { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px; line-height: 1.6; }
-.admin-card .btn-admin { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--maroon); padding: 12px 20px; border-radius: 8px; font-weight: 800; font-size: 14px; text-decoration: none; transition: 0.2s; }
-.admin-card .btn-admin:hover { background: #F8FAFC; transform: translateY(-1px); }
-.admin-card .btn-admin i { width: 16px; height: 16px; }
+.admin-card p { font-size: 13px; color: rgba(255,255,255,0.85); margin-bottom: 14px; line-height: 1.6; }
+.admin-card .btn-admin { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--maroon); padding: 11px 18px; border-radius: 8px; font-weight: 800; font-size: 13px; text-decoration: none; transition: 0.15s; }
+.admin-card .btn-admin:hover { background: #F8FAFC; }
+.admin-card .btn-admin i { width: 15px; height: 15px; }
+
+/* LOADING */
+.loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; }
+.spinner { width: 44px; height: 44px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 13px; color: var(--gray); font-weight: 600; }
 
 /* ERROR */
-.alert-error { display: none; background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 16px; border-radius: 8px; margin-bottom: 24px; font-weight: 600; font-size: 14px; }
-.alert-error strong { display: block; margin-bottom: 6px; }
-.alert-error code { font-family: monospace; font-size: 12px; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; }
+.alert-error { display: none; background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 14px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; font-size: 13px; }
+.alert-error strong { display: block; margin-bottom: 4px; }
+.alert-error code { font-family: monospace; font-size: 11px; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; word-break: break-all; }
 
 /* MOBILE DRAWER */
-.mobile-drawer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 3000; }
+.mobile-drawer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; }
 .mobile-drawer.open { display: block; }
-.mobile-drawer-panel { width: 280px; height: 100vh; background: var(--sidebar-bg); color: var(--white); padding: 24px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 4px 0 24px rgba(0,0,0,0.3); animation: slideIn 0.25s ease-out; }
+.mobile-drawer-panel { width: 280px; height: 100dvh; background: var(--sidebar-bg); color: var(--white); padding: 20px 14px; display: flex; flex-direction: column; gap: 6px; box-shadow: 4px 0 24px rgba(0,0,0,0.3); animation: slideIn 0.22s ease-out; overflow-y: auto; }
 @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
-.mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-.mobile-drawer-logo { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
-.mobile-drawer-logo .brand-mark { background: rgba(0,0,0,0.25); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 20px; }
+.mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.mobile-drawer-logo { font-size: 16px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
+.mobile-drawer-logo .brand-mark { background: rgba(0,0,0,0.25); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 18px; }
 .mobile-drawer-close { background: transparent; border: none; color: var(--white); cursor: pointer; padding: 6px; border-radius: 6px; }
 .mobile-drawer-close:hover { background: rgba(255,255,255,0.1); }
-.mobile-drawer-close i { width: 22px; height: 22px; }
-.mobile-drawer-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 8px; }
+.mobile-drawer-close i { width: 20px; height: 20px; }
+.mobile-drawer-footer { margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 6px; }
 
 /* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 5000; display: none; justify-content: center; align-items: center; padding: 24px; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
 .modal-overlay.active { display: flex; }
-.modal-box { background: var(--white); border-radius: 16px; max-width: 460px; width: 100%; padding: 32px 28px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
-.modal-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-.modal-icon.danger { background: #FEF2F2; color: var(--error); }
-.modal-icon i { width: 32px; height: 32px; }
-.modal-box h2 { font-size: 22px; font-weight: 900; margin-bottom: 12px; color: var(--black); }
-.modal-box p { font-size: 14px; color: var(--gray); line-height: 1.6; margin-bottom: 20px; }
-.modal-field { text-align: left; margin-bottom: 20px; }
-.modal-field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--black); }
+.modal-box { background: var(--white); border-radius: 16px; max-width: 440px; width: 100%; padding: 32px 24px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+.modal-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; background: #FEF2F2; color: var(--error); }
+.modal-icon i { width: 30px; height: 30px; }
+.modal-box h2 { font-size: 20px; font-weight: 900; margin-bottom: 10px; }
+.modal-box p { font-size: 13px; color: var(--gray); line-height: 1.6; margin-bottom: 20px; }
+.modal-field { text-align: left; margin-bottom: 18px; }
+.modal-field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
 .modal-field label strong { color: var(--error); font-family: monospace; letter-spacing: 1px; }
-.modal-field input { width: 100%; padding: 14px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: monospace; font-weight: 700; text-align: center; letter-spacing: 3px; text-transform: uppercase; }
+.modal-field input { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: monospace; font-weight: 700; text-align: center; letter-spacing: 3px; text-transform: uppercase; }
 .modal-field input:focus { border-color: var(--error); }
-.modal-actions { display: flex; gap: 12px; }
-.btn-modal { flex: 1; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: 0.2s; border: none; }
+.modal-actions { display: flex; gap: 10px; }
+.btn-modal { flex: 1; padding: 13px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: 0.15s; border: none; }
 .btn-modal.cancel { background: var(--white); border: 1.5px solid var(--silver); color: var(--black); }
 .btn-modal.cancel:hover { border-color: var(--black); }
 .btn-modal.delete { background: var(--error); color: var(--white); }
 .btn-modal.delete:hover:not(:disabled) { background: #991B1B; }
 .btn-modal:disabled { opacity: 0.6; cursor: wait; }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .app-container { flex-direction: column; }
+/* MOBILE */
+@media (max-width: 900px) {
     .sidebar { display: none; }
-    .main-wrapper { order: 1; height: 100vh; width: 100%; }
+    .main-wrapper { margin-left: 0; }
     .mobile-hamburger { display: flex; }
-    .topbar { padding: 0 12px; height: 64px; }
+    .topbar { padding: 0 16px; height: 64px; }
     .topbar-title { font-size: 15px; }
     .profile-info { display: none; }
-    .dashboard-content { padding: 16px; }
+    .dashboard-content { padding: 20px 16px 60px; }
+    .dashboard-grid { gap: 16px; }
+    .card { padding: 20px; }
     .action-grid { grid-template-columns: 1fr; }
-    .id-card-container { max-width: 100%; }
-    .credentials-row { flex-direction: column; }
-    .card { padding: 24px 20px; }
-    .card-name { font-size: 18px; }
-    .card-id { font-size: 14px; }
-    .barcode-wrap-front { height: 38px; }
-    .card-logo { font-size: 18px; }
+    .id-slip { max-width: 300px; }
+    .slip-id-big { font-size: 28px; }
+    .slip-exam-num { font-size: 13px; }
+    .slip-name { font-size: 18px; }
 }
 </style>
 </head>
 <body>
 
-<div class="app-container">
-    <aside class="sidebar">
-        <div class="sidebar-logo"><div class="brand-mark">∆</div> IFB Portal</div>
-        <nav class="sidebar-nav">
-            <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
-            <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
-            <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
-            <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Docs</a>
-            <a href="admin-resources.html" class="nav-item admin-only" id="adminNav"><i data-lucide="shield"></i> Admin</a>
-        </nav>
-        <div class="sidebar-footer">
-            <button class="btn-logout" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
-            <button class="btn-delete-account" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
-        </div>
-    </aside>
-
-    <div class="main-wrapper">
-        <header class="topbar">
-            <div class="topbar-left">
-                <button class="mobile-hamburger" id="mobileMenuBtn" aria-label="Open menu"><i data-lucide="menu"></i></button>
-                <div class="topbar-title"><i data-lucide="layout-dashboard"></i> Student Dashboard</div>
-            </div>
-            <div class="profile-menu">
-                <div class="profile-info">
-                    <h4 id="topbarName">Loading...</h4>
-                    <p><i data-lucide="dot"></i> <span id="topbarRoleText">Loading</span></p>
-                </div>
-                <div class="profile-avatar" id="topbarAvatar">--</div>
-            </div>
-        </header>
-
-        <main class="dashboard-content">
-            <div id="loadingState" class="card" style="text-align:center;">
-                <div class="loading-state">
-                    <div class="spinner"></div>
-                    <div class="loading-text">Loading your dashboard...</div>
-                </div>
-            </div>
-
-            <div class="alert-error" id="errorAlert"></div>
-
-            <div class="dashboard-grid" id="mainContent" style="display:none;">
-
-                <!-- ID CARD -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title"><i data-lucide="credit-card"></i> Student ID Card</div>
-                    </div>
-                    <div class="id-section">
-                        <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
-                            <div class="id-card-inner">
-                                <div class="id-card-front">
-                                    <div class="watermark">∆</div>
-                                    <div class="card-content">
-                                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                            <div class="card-logo">∆ IFB</div>
-                                            <div class="card-type">Student ID</div>
-                                        </div>
-                                        <div class="card-name" id="userName">—</div>
-                                        <div class="card-role" id="userStatus">Applicant</div>
-                                        <div class="card-spacer"></div>
-                                        <div class="card-id" id="userStudentId">---</div>
-                                        <div class="barcode-wrap-front" id="barcodeWrap"><svg id="barcodeSvg"></svg></div>
-                                    </div>
-                                </div>
-                                <div class="id-card-back">
-                                    <div class="card-content" style="align-items:center; justify-content:center;">
-                                        <div class="qr-wrap" id="qrCodeContainer"></div>
-                                        <div class="card-back-text">Security Code</div>
-                                        <div class="card-sec-code"><span id="userSecurityCode">---</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="font-size: 13px; color: var(--gray); text-align: center; display:flex; justify-content:center; align-items:center; gap:6px; margin-top:8px;">
-                            <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Tap card to flip
-                        </div>
-
-                        <div class="credentials-row">
-                            <div class="cred-box">
-                                <div class="cred-label"><i data-lucide="hash"></i> Student ID</div>
-                                <div class="cred-value" id="credStudentId">---</div>
-                            </div>
-                            <div class="cred-box">
-                                <div class="cred-label"><i data-lucide="key"></i> Security Code</div>
-                                <div class="cred-value" id="credSecCode">---</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- IMPORTANT LINKS -->
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i data-lucide="bookmark"></i> Important Links</div></div>
-                    <a href="ae-timetable.html" class="link-item">
-                        <div class="link-icon"><i data-lucide="calendar"></i></div>
-                        <div class="link-text">
-                            <h4>AE Timetable 2027</h4>
-                            <p>View your admission exam schedule</p>
-                        </div>
-                        <i data-lucide="arrow-right"></i>
-                    </a>
-                    <a href="documents.html" class="link-item">
-                        <div class="link-icon"><i data-lucide="file-text"></i></div>
-                        <div class="link-text">
-                            <h4>Official Documents</h4>
-                            <p>Circulars, prospectus, rules, and policies</p>
-                        </div>
-                        <i data-lucide="arrow-right"></i>
-                    </a>
-                    <a href="courses-ifb.html" class="link-item">
-                        <div class="link-icon"><i data-lucide="book-open"></i></div>
-                        <div class="link-text">
-                            <h4>Prospectus</h4>
-                            <p>Full programme overview and curriculum</p>
-                        </div>
-                        <i data-lucide="arrow-right"></i>
-                    </a>
-                </div>
-
-                <!-- QUICK ACTIONS -->
-                <div class="card">
-                    <div class="card-header"><div class="card-title"><i data-lucide="zap"></i> Quick Actions</div></div>
-                    <div class="action-grid">
-                        <a href="resources.html" class="action-btn"><i data-lucide="folder-open"></i> Resources</a>
-                        <a href="exam-gateway.html" class="action-btn" style="border-color: var(--maroon);"><i data-lucide="monitor-play"></i> Exam Portal</a>
-                        <a href="ae-timetable.html" class="action-btn"><i data-lucide="calendar"></i> Timetable</a>
-                        <a href="guidelines-general.html" class="action-btn"><i data-lucide="shield-check"></i> Rules</a>
-                        <a href="admin-resources.html" class="action-btn admin-btn" id="adminQuickBtn"><i data-lucide="shield"></i> Manage Resources</a>
-                    </div>
-                </div>
-
-                <!-- ADMIN CARD -->
-                <div class="card admin-card" id="adminCard">
-                    <div class="card-header"><div class="card-title"><i data-lucide="shield"></i> Administrator Access</div></div>
-                    <p>You are signed in as an administrator. Manage resources, upload documents, and update the student-facing library.</p>
-                    <a href="admin-resources.html" class="btn-admin"><i data-lucide="upload-cloud"></i> Open Admin Panel</a>
-                </div>
-
-            </div>
-        </main>
+<!-- FIXED SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-logo"><div class="brand-mark">∆</div> IFB Portal</div>
+    <nav class="sidebar-nav">
+        <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+        <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
+        <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
+        <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Docs</a>
+        <a href="admin-resources.html" class="nav-item admin-only" id="adminNav"><i data-lucide="shield"></i> Admin</a>
+    </nav>
+    <div class="sidebar-footer">
+        <button class="btn-sidebar" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
+        <button class="btn-sidebar danger" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
     </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-wrapper">
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="mobile-hamburger" id="mobileMenuBtn" aria-label="Open menu"><i data-lucide="menu"></i></button>
+            <div class="topbar-title"><i data-lucide="layout-dashboard"></i> Dashboard</div>
+        </div>
+        <div class="profile-menu">
+            <div class="profile-info">
+                <h4 id="topbarName">Loading...</h4>
+                <p><i data-lucide="dot"></i> <span id="topbarRoleText">Loading</span></p>
+            </div>
+            <div class="profile-avatar" id="topbarAvatar">--</div>
+        </div>
+    </header>
+
+    <main class="dashboard-content">
+        <div id="loadingState" class="card" style="text-align:center;">
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading your dashboard...</div>
+            </div>
+        </div>
+
+        <div class="alert-error" id="errorAlert"></div>
+
+        <div class="dashboard-grid" id="mainContent" style="display:none;">
+
+            <!-- SLIP CARD -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i data-lucide="ticket"></i> Student Slip</div>
+                </div>
+
+                <div class="id-slip-container">
+                    <div class="id-slip">
+                        <div class="slip-header">
+                            <div class="brand"><span>∆</span> STUDENT SLIP</div>
+                            <div class="year">2027</div>
+                        </div>
+                        <div class="slip-body">
+                            <div class="slip-name" id="slipName">—</div>
+                            <div class="slip-status applicant" id="slipStatus">
+                                <i data-lucide="dot"></i>
+                                <span id="slipStatusText">Applicant</span>
+                            </div>
+
+                            <div class="slip-divider"></div>
+
+                            <div>
+                                <div class="slip-label">Student ID (6-digit)</div>
+                                <div class="slip-id-big" id="slipStudentId">------</div>
+                            </div>
+
+                            <div>
+                                <div class="slip-label">Examination Number (13-digit)</div>
+                                <div class="slip-exam-num pending" id="slipExamNum">Pending — pass AE to receive</div>
+                            </div>
+
+                            <div class="slip-spacer"></div>
+
+                            <div class="slip-barcode" id="slipBarcode">
+                                <svg id="barcodeSvg"></svg>
+                            </div>
+
+                            <div class="slip-footer-row">
+                                <div class="slip-qr" id="slipQR"></div>
+                                <div class="slip-sec">
+                                    <div class="slip-label">Security Code</div>
+                                    <div class="value" id="slipSecCode">------</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LINKS -->
+            <div class="card">
+                <div class="card-header"><div class="card-title"><i data-lucide="bookmark"></i> Important Links</div></div>
+                <a href="ae-timetable.html" class="link-item">
+                    <div class="link-icon"><i data-lucide="calendar"></i></div>
+                    <div class="link-text"><h4>AE Timetable 2027</h4><p>View your admission exam schedule</p></div>
+                    <i data-lucide="arrow-right"></i>
+                </a>
+                <a href="documents.html" class="link-item">
+                    <div class="link-icon"><i data-lucide="file-text"></i></div>
+                    <div class="link-text"><h4>Official Documents</h4><p>Circulars, prospectus, rules, and policies</p></div>
+                    <i data-lucide="arrow-right"></i>
+                </a>
+                <a href="courses-ifb.html" class="link-item">
+                    <div class="link-icon"><i data-lucide="book-open"></i></div>
+                    <div class="link-text"><h4>Prospectus</h4><p>Full programme overview and curriculum</p></div>
+                    <i data-lucide="arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- QUICK ACTIONS -->
+            <div class="card">
+                <div class="card-header"><div class="card-title"><i data-lucide="zap"></i> Quick Actions</div></div>
+                <div class="action-grid">
+                    <a href="resources.html" class="action-btn"><i data-lucide="folder-open"></i> Resources</a>
+                    <a href="exam-gateway.html" class="action-btn"><i data-lucide="monitor-play"></i> Exam Portal</a>
+                    <a href="ae-timetable.html" class="action-btn"><i data-lucide="calendar"></i> Timetable</a>
+                    <a href="guidelines-general.html" class="action-btn"><i data-lucide="shield-check"></i> Rules</a>
+                    <a href="admin-resources.html" class="action-btn admin-btn" id="adminQuickBtn"><i data-lucide="shield"></i> Manage Resources</a>
+                </div>
+            </div>
+
+            <!-- ADMIN CARD -->
+            <div class="card admin-card" id="adminCard">
+                <div class="card-header"><div class="card-title"><i data-lucide="shield"></i> Administrator Access</div></div>
+                <p>You are signed in as an administrator. Manage resources, upload documents, and update the student-facing library.</p>
+                <a href="admin-resources.html" class="btn-admin"><i data-lucide="upload-cloud"></i> Open Admin Panel</a>
+            </div>
+
+        </div>
+    </main>
 </div>
 
 <!-- MOBILE DRAWER -->
@@ -343,7 +459,7 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
     <div class="mobile-drawer-panel">
         <div class="mobile-drawer-header">
             <div class="mobile-drawer-logo"><div class="brand-mark">∆</div> IFB Portal</div>
-            <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close menu"><i data-lucide="x"></i></button>
+            <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close"><i data-lucide="x"></i></button>
         </div>
         <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
         <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
@@ -351,8 +467,8 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
         <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Docs</a>
         <a href="admin-resources.html" class="nav-item admin-only" id="adminNavMobile"><i data-lucide="shield"></i> Admin</a>
         <div class="mobile-drawer-footer">
-            <button class="btn-logout" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
-            <button class="btn-delete-account" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
+            <button class="btn-sidebar" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
+            <button class="btn-sidebar danger" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
         </div>
     </div>
 </div>
@@ -360,9 +476,9 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 <!-- DELETE MODAL -->
 <div class="modal-overlay" id="deleteModal">
     <div class="modal-box">
-        <div class="modal-icon danger"><i data-lucide="alert-triangle"></i></div>
+        <div class="modal-icon"><i data-lucide="alert-triangle"></i></div>
         <h2>Delete Account</h2>
-        <p>This permanently deletes your account, Student ID, exam history, and all associated data. <strong>This cannot be undone.</strong></p>
+        <p>This permanently deletes your account, Student ID, Examination Number, exam history, and all associated data. <strong>This cannot be undone.</strong></p>
         <div class="modal-field">
             <label>Type <strong>DELETE</strong> to confirm:</label>
             <input type="text" id="deleteConfirmInput" placeholder="DELETE" autocomplete="off">
@@ -388,12 +504,11 @@ const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", auth
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
 /* ---------- Helpers ---------- */
 function refreshIcons() {
-    if (window.lucide) { try { lucide.createIcons(); } catch(e) { console.warn("Icon error", e); } }
+    if (window.lucide) { try { lucide.createIcons(); } catch(e) {} }
 }
 function showError(title, detail) {
     const el = document.getElementById('errorAlert');
@@ -406,17 +521,17 @@ function hideLoading() {
     document.getElementById('mainContent').style.display = 'grid';
 }
 
-/* Spec: 27 + NN + L + SSSSSS + CC = 13 chars. L = letter (X placeholder or A–E tier). */
-function generateStudentId() {
-    const intake = "27";
-    const center = "01";
-    const tier = "X";
-    const sequence = String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
-    const base = intake + center + tier + sequence; // 11 chars
+/* ---------- ID generators ---------- */
+// 6-digit Student ID (100000–999999, no leading zeros to avoid login typing errors)
+function generate6DigitStudentId() {
+    return String(Math.floor(Math.random() * 900000) + 100000);
+}
+// 13-digit Examination Number: 27 + 01 + X + [6-digit studentId] + [2-digit checksum]
+function generateExamNumber(studentId6) {
+    const base = "27" + "01" + "X" + studentId6;
     let sum = 0;
     for (let i = 0; i < base.length; i++) sum += base.charCodeAt(i);
-    const checksum = String(sum % 100).padStart(2, '0');
-    return base + checksum; // 13 chars
+    return base + String(sum % 100).padStart(2, '0');
 }
 function generateSecurityCode() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -424,46 +539,105 @@ function generateSecurityCode() {
     for (let i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
     return out;
 }
-function isValidStudentId(id) {
-    return typeof id === 'string' && /^27\d{2}[A-Z]\d{8}$/.test(id);
+function is6Digit(id) { return typeof id === 'string' && /^\d{6}$/.test(id); }
+function isOld13Digit(id) { return typeof id === 'string' && /^27\d{2}[A-Z]\d{8}$/.test(id); }
+
+/* ---------- Migration + promotion ---------- */
+async function migrateAndPromote(docRef, data) {
+    const updates = {};
+    let workingStudentId = data.studentId;
+    let workingExamNumber = data.examinationNumber;
+
+    // Case 1: Old 13-digit format in studentId field — this was the old ID scheme
+    if (isOld13Digit(workingStudentId) && !workingExamNumber) {
+        updates.examinationNumber = workingStudentId; // preserve as exam number
+        updates.studentId = generate6DigitStudentId();
+        workingExamNumber = workingStudentId;
+        workingStudentId = updates.studentId;
+        console.log("[Dashboard] Legacy 13-digit ID → moved to examNumber:", workingExamNumber);
+    }
+    // Case 2: No valid 6-digit studentId
+    else if (!is6Digit(workingStudentId)) {
+        updates.studentId = generate6DigitStudentId();
+        workingStudentId = updates.studentId;
+        console.log("[Dashboard] Generated new 6-digit studentId:", workingStudentId);
+    }
+
+    // Security code
+    if (!data.securityCode || data.securityCode.length !== 6) {
+        updates.securityCode = generateSecurityCode();
+    }
+
+    // Promotion: status Student OR aeResult "Pass" — ensure exam number exists
+    const isPromoted = data.status === "Student" || data.aeResult === "Pass";
+    if (isPromoted && !workingExamNumber) {
+        updates.examinationNumber = generateExamNumber(workingStudentId);
+        if (data.status !== "Student") updates.status = "Student";
+        console.log("[Dashboard] Promoted. New exam number:", updates.examinationNumber);
+    }
+
+    if (Object.keys(updates).length === 0) {
+        return data;
+    }
+
+    try {
+        await updateDoc(docRef, { ...updates, migratedAt: new Date() });
+        // Re-read to verify
+        const verify = await getDoc(docRef);
+        const vdata = verify.data();
+        if (updates.studentId && vdata.studentId !== updates.studentId) {
+            console.warn("[Dashboard] studentId write did not persist");
+        }
+        if (updates.examinationNumber && vdata.examinationNumber !== updates.examinationNumber) {
+            console.warn("[Dashboard] examNumber write did not persist");
+        }
+        return { ...data, ...updates };
+    } catch (e) {
+        console.error("[Dashboard] Migration write failed:", e);
+        // Apply to in-memory only so UI isn't blank
+        return { ...data, ...updates, _migrationFailed: true };
+    }
 }
 
-/* ---------- Render barcode + QR with safe sizing ---------- */
-function renderBarcodeAndQR(studentId, name) {
-    const wrap = document.getElementById('barcodeWrap');
+/* ---------- Render slip barcode + QR ---------- */
+function renderSlipBarcodeAndQR(studentId, examNumber, name) {
+    // Barcode encodes the 6-digit student ID (login credential)
+    const barcodeEl = document.getElementById('barcodeSvg');
     if (studentId && typeof JsBarcode === 'function') {
         try {
-            JsBarcode("#barcodeSvg", studentId, {
+            JsBarcode(barcodeEl, studentId, {
                 format: "CODE128",
-                width: 1.2,      // smaller module width — was 2 (too wide)
-                height: 32,      // smaller height
+                width: 1.4,
+                height: 36,
                 displayValue: false,
                 margin: 0,
                 background: "#ffffff",
                 lineColor: "#111111"
             });
         } catch (e) {
-            console.warn("[Dashboard] Barcode render failed:", e);
-            wrap.innerHTML = '<span class="barcode-placeholder">ID pending</span>';
+            console.warn("[Dashboard] Barcode failed:", e);
+            document.getElementById('slipBarcode').innerHTML = '<span class="pending">—</span>';
         }
-    } else {
-        wrap.innerHTML = '<span class="barcode-placeholder">ID pending</span>';
     }
 
-    const qrEl = document.getElementById('qrCodeContainer');
+    // QR encodes exam number when available, else student ID
+    const qrEl = document.getElementById('slipQR');
     if (typeof qrcode === 'function') {
         try {
             const qr = qrcode(0, 'M');
-            qr.addData(`ID: ${studentId || 'pending'}\nName: ${name}`);
+            const qrPayload = examNumber
+                ? `EXAM:${examNumber}\nSID:${studentId}\nNAME:${name}`
+                : `SID:${studentId}\nNAME:${name}\nSTATUS:Applicant`;
+            qr.addData(qrPayload);
             qr.make();
-            qrEl.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+            qrEl.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
         } catch (e) {
-            console.warn("[Dashboard] QR render failed:", e);
+            console.warn("[Dashboard] QR failed:", e);
         }
     }
 }
 
-/* ---------- Auth state / load ---------- */
+/* ---------- Load ---------- */
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     console.log("[Dashboard] Signed in:", user.email);
@@ -479,49 +653,9 @@ onAuthStateChanged(auth, async (user) => {
         }
 
         let data = docSnap.data();
+        data = await migrateAndPromote(docRef, data);
 
-        /* ---- ID MIGRATION (older accounts) ---- */
-        const originalId = data.studentId;
-        const needsMigration = !isValidStudentId(data.studentId);
-
-        if (needsMigration) {
-            console.log("[Dashboard] Migrating student ID. Old:", originalId);
-            const newId = generateStudentId();
-            const newCode = data.securityCode || generateSecurityCode();
-
-            try {
-                await updateDoc(docRef, {
-                    studentId: newId,
-                    securityCode: newCode,
-                    studentIdVersion: 2,
-                    idMigratedAt: new Date()
-                });
-                // Verify persistence
-                const verify = await getDoc(docRef);
-                const vdata = verify.data();
-                if (vdata.studentId === newId) {
-                    console.log("[Dashboard] ✅ ID migrated and persisted:", newId);
-                    data.studentId = newId;
-                    data.securityCode = newCode;
-                } else {
-                    console.warn("[Dashboard] ⚠ ID write returned but did not persist.");
-                    showError("Could not save your new Student ID.",
-                        "Please refresh the page to try again.");
-                    data.studentId = newId; // in-memory fallback so UI isn't blank
-                    data.securityCode = newCode;
-                }
-            } catch (e) {
-                console.error("[Dashboard] ID migration write failed:", e);
-                showError("Could not update your Student ID.",
-                    e.message || "Permission or network error. Please refresh.");
-                data.studentId = newId; // in-memory fallback
-                data.securityCode = newCode;
-            }
-        } else {
-            console.log("[Dashboard] Student ID valid:", data.studentId);
-        }
-
-        /* ---- Populate UI ---- */
+        /* Populate UI */
         const displayName = data.name || user.displayName || "Student";
         const status = data.status || "Applicant";
 
@@ -529,16 +663,33 @@ onAuthStateChanged(auth, async (user) => {
         document.getElementById('topbarRoleText').textContent = status;
         document.getElementById('topbarAvatar').textContent = displayName.charAt(0).toUpperCase();
 
-        document.getElementById('userName').textContent = displayName;
-        document.getElementById('userStatus').textContent = status;
-        document.getElementById('userStudentId').textContent = data.studentId || '---';
-        document.getElementById('userSecurityCode').textContent = data.securityCode || '---';
-        document.getElementById('credStudentId').textContent = data.studentId || '---';
-        document.getElementById('credSecCode').textContent = data.securityCode || '---';
+        // Slip
+        document.getElementById('slipName').textContent = displayName;
+        document.getElementById('slipStudentId').textContent = data.studentId || '------';
+        document.getElementById('slipSecCode').textContent = data.securityCode || '------';
 
-        /* ---- Admin ---- */
+        const slipStatusEl = document.getElementById('slipStatus');
+        const slipStatusText = document.getElementById('slipStatusText');
+        slipStatusText.textContent = status;
+        if (status === "Student") {
+            slipStatusEl.classList.remove('applicant');
+            slipStatusEl.classList.add('student');
+        } else {
+            slipStatusEl.classList.remove('student');
+            slipStatusEl.classList.add('applicant');
+        }
+
+        const examNumEl = document.getElementById('slipExamNum');
+        if (data.examinationNumber) {
+            examNumEl.textContent = data.examinationNumber;
+            examNumEl.classList.remove('pending');
+        } else {
+            examNumEl.textContent = "Pending — pass AE to receive";
+            examNumEl.classList.add('pending');
+        }
+
+        /* Admin */
         const isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-        console.log("[Dashboard] Admin:", isAdmin);
         if (isAdmin) {
             document.getElementById('adminNav').classList.add('visible');
             document.getElementById('adminNavMobile').classList.add('visible');
@@ -549,11 +700,17 @@ onAuthStateChanged(auth, async (user) => {
         hideLoading();
         refreshIcons();
 
-        /* ---- Barcode + QR after paint ---- */
+        /* Barcode + QR after paint */
         setTimeout(() => {
-            renderBarcodeAndQR(data.studentId, displayName);
+            renderSlipBarcodeAndQR(data.studentId, data.examinationNumber, displayName);
             refreshIcons();
-        }, 100);
+        }, 80);
+
+        /* Surface migration failure */
+        if (data._migrationFailed) {
+            showError("Could not save updated IDs to the server.",
+                "Your slip is showing temporary values. Please refresh or contact support.");
+        }
 
     } catch (error) {
         console.error("[Dashboard] Load failed:", error);
@@ -561,69 +718,45 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-/* ---------- Mobile drawer ---------- */
+/* ---------- Drawer ---------- */
 const drawer = document.getElementById('mobileDrawer');
-const drawerBtn = document.getElementById('mobileMenuBtn');
-const drawerClose = document.getElementById('mobileDrawerClose');
-if (drawerBtn) drawerBtn.addEventListener('click', () => drawer.classList.add('open'));
-if (drawerClose) drawerClose.addEventListener('click', () => drawer.classList.remove('open'));
-if (drawer) drawer.addEventListener('click', (e) => { if (e.target === drawer) drawer.classList.remove('open'); });
+document.getElementById('mobileMenuBtn')?.addEventListener('click', () => drawer.classList.add('open'));
+document.getElementById('mobileDrawerClose')?.addEventListener('click', () => drawer.classList.remove('open'));
+drawer?.addEventListener('click', (e) => { if (e.target === drawer) drawer.classList.remove('open'); });
 
 /* ---------- Sign out ---------- */
 window.signOut = async function() {
-    try {
-        await firebaseSignOut(auth);
-        window.location.href = "index.html";
-    } catch (error) {
-        showError("Sign out failed", error.message);
-    }
+    try { await firebaseSignOut(auth); window.location.href = "index.html"; }
+    catch (e) { showError("Sign out failed", e.message); }
 };
 
-/* ---------- Delete account ---------- */
+/* ---------- Delete ---------- */
 window.confirmDeleteAccount = function() {
     document.getElementById('deleteConfirmInput').value = '';
     document.getElementById('deleteConfirmBtn').disabled = false;
     document.getElementById('deleteConfirmBtn').textContent = 'Delete Permanently';
     document.getElementById('deleteModal').classList.add('active');
-    if (drawer) drawer.classList.remove('open');
+    drawer?.classList.remove('open');
 };
 window.closeDeleteModal = function() {
     document.getElementById('deleteModal').classList.remove('active');
 };
-
 window.deleteAccount = async function() {
     const input = document.getElementById('deleteConfirmInput').value.trim();
-    if (input !== 'DELETE') {
-        alert('Type DELETE exactly (all capitals) to confirm.');
-        return;
-    }
-
+    if (input !== 'DELETE') { alert('Type DELETE exactly to confirm.'); return; }
     const btn = document.getElementById('deleteConfirmBtn');
     btn.disabled = true;
     btn.textContent = 'Re-authenticating...';
-
     try {
         const user = auth.currentUser;
         if (!user) throw new Error("You are not signed in.");
-
-        // 1. Re-authenticate (required by Firebase for sensitive ops)
-        const provider = new GoogleAuthProvider();
-        await reauthenticateWithPopup(user, provider);
-
+        await reauthenticateWithPopup(user, new GoogleAuthProvider());
         btn.textContent = 'Deleting data...';
-
-        // 2. Delete Firestore user document
         await deleteDoc(doc(db, "users", user.uid));
-
         btn.textContent = 'Deleting account...';
-
-        // 3. Delete auth account
         await user.delete();
-
-        // 4. Clear session and redirect
         sessionStorage.clear();
         window.location.href = "index.html";
-
     } catch (e) {
         console.error("[Dashboard] Delete failed:", e);
         if (e.code === 'auth/popup-closed-by-user') {
@@ -638,7 +771,6 @@ window.deleteAccount = async function() {
     }
 };
 
-/* ---------- Icon init ---------- */
 document.addEventListener('DOMContentLoaded', refreshIcons);
 window.addEventListener('load', refreshIcons);
 </script>
