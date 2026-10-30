@@ -7,7 +7,7 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; }
+:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --success: #15803D; --error: #B91C1C; }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); min-height: 100dvh; display: flex; justify-content: center; align-items: center; padding: 24px 16px; }
 .container { width: 100%; max-width: 520px; }
@@ -27,6 +27,7 @@ body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--bla
 
 .btn-google { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; background: var(--white); border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: 0.2s; color: var(--black); }
 .btn-google:hover { background: #FAFAFA; border-color: var(--black); }
+.btn-google:disabled { opacity: 0.6; cursor: wait; }
 
 .form-fields { display: none; margin-top: 24px; }
 .form-group { margin-bottom: 20px; }
@@ -40,7 +41,7 @@ label.field-label i { width: 14px; height: 14px; color: var(--maroon); }
 
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-.course-block { display: flex; align-items: center; gap: 12px; padding: 16px; background: #FFF5F6; border: 1.5px solid var(--maroon); border-radius: 10px; cursor: default; }
+.course-block { display: flex; align-items: center; gap: 12px; padding: 16px; background: #FFF5F6; border: 1.5px solid var(--maroon); border-radius: 10px; }
 .course-block .course-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .course-block .course-icon i { width: 20px; height: 20px; }
 .course-block .course-info { flex: 1; }
@@ -56,13 +57,15 @@ label.field-label i { width: 14px; height: 14px; color: var(--maroon); }
 .checkbox-item span a { color: var(--maroon); font-weight: 700; }
 
 .btn-submit { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; font-family: inherit; }
-.btn-submit:hover { background: var(--maroon-hover); }
+.btn-submit:hover:not(:disabled) { background: var(--maroon-hover); }
 .btn-submit:disabled { opacity: 0.7; cursor: wait; }
 .btn-submit i { width: 18px; height: 18px; }
 
-.alert { display: none; padding: 12px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-top: 16px; align-items: center; gap: 8px; }
-.alert.error { background: #FEF2F2; color: #B91C1C; border: 1px solid #FECACA; }
-.alert i { width: 16px; height: 16px; flex-shrink: 0; }
+.alert { display: none; padding: 12px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-top: 16px; align-items: flex-start; gap: 8px; line-height: 1.5; }
+.alert.error { background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; }
+.alert.success { background: #F0FDF4; color: var(--success); border: 1px solid #BBF7D0; }
+.alert i { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert span { flex: 1; }
 
 @media (max-width: 768px) { .row { grid-template-columns: 1fr; } .form-card { padding: 28px 20px; } }
 </style>
@@ -86,6 +89,11 @@ label.field-label i { width: 14px; height: 14px; color: var(--maroon); }
             <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
             Continue with Google
         </button>
+
+        <div class="alert error" id="loginError">
+            <i data-lucide="alert-circle"></i>
+            <span id="loginErrorText"></span>
+        </div>
 
         <div class="form-fields" id="formFields">
             <form id="admissionForm" onsubmit="submitForm(event)">
@@ -170,19 +178,16 @@ const db = getFirestore(app);
 
 let currentUser = null;
 
-/* Student ID: 27 + 01 (center) + X (tier placeholder) + 6-digit seq + 2-digit checksum = 13 chars */
-function generateStudentId() {
-    const intake = "27";
-    const center = "01";
-    const tier = "X";
-    const sequence = String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
-    const base = intake + center + tier + sequence; // 11 chars
-    let sum = 0;
-    for (let i = 0; i < base.length; i++) sum += base.charCodeAt(i);
-    const checksum = String(sum % 100).padStart(2, '0');
-    return base + checksum; // 13 chars
+function refreshIcons() {
+    if (window.lucide) { try { lucide.createIcons(); } catch(e) {} }
 }
 
+function generateStudentId() {
+    const base = "27" + "01" + "X" + String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+    let sum = 0;
+    for (let i = 0; i < base.length; i++) sum += base.charCodeAt(i);
+    return base + String(sum % 100).padStart(2, '0');
+}
 function generateSecurityCode() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let out = "";
@@ -190,18 +195,35 @@ function generateSecurityCode() {
     return out;
 }
 
+function showError(id, msg) {
+    const box = document.getElementById(id);
+    const text = document.getElementById(id + 'Text');
+    if (text) text.textContent = msg;
+    if (box) box.style.display = 'flex';
+}
+function hideError(id) {
+    const box = document.getElementById(id);
+    if (box) box.style.display = 'none';
+}
+
 async function handleUser(user) {
     currentUser = user;
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-        // Already registered — send to dashboard
-        window.location.href = "student-dashboard.html";
-        return;
+    console.log("[Admission] Signed in:", user.email);
+    try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (snap.exists()) {
+            console.log("[Admission] User doc exists — redirecting to dashboard");
+            window.location.href = "student-dashboard.html";
+            return;
+        }
+        document.getElementById('googleBtn').style.display = 'none';
+        document.getElementById('formFields').style.display = 'block';
+        document.getElementById('emailAddress').value = user.email;
+        refreshIcons();
+    } catch (e) {
+        console.error("[Admission] Failed to check user:", e);
+        showError('loginError', "Could not check your account: " + e.message);
     }
-    document.getElementById('googleBtn').style.display = 'none';
-    document.getElementById('formFields').style.display = 'block';
-    document.getElementById('emailAddress').value = user.email;
-    if (window.lucide) lucide.createIcons();
 }
 
 onAuthStateChanged(auth, (user) => {
@@ -209,24 +231,25 @@ onAuthStateChanged(auth, (user) => {
 });
 
 window.googleLogin = async function() {
+    hideError('loginError');
+    const btn = document.getElementById('googleBtn');
+    btn.disabled = true;
     try {
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(auth, provider);
         await handleUser(result.user);
-    } catch(e) {
-        showError(e.message);
+    } catch (e) {
+        console.error("[Admission] Login failed:", e);
+        showError('loginError', e.message || "Sign-in failed. Please try again.");
+    } finally {
+        btn.disabled = false;
     }
 };
 
-function showError(msg) {
-    const box = document.getElementById('errorBox');
-    document.getElementById('errorText').textContent = msg;
-    box.style.display = 'flex';
-}
-
 window.submitForm = async function(e) {
     e.preventDefault();
-    if (!currentUser) return;
+    hideError('errorBox');
+    if (!currentUser) { showError('errorBox', "You must sign in with Google first."); return; }
 
     const fName = document.getElementById('firstName').value.trim();
     const sName = document.getElementById('surname').value.trim();
@@ -234,17 +257,19 @@ window.submitForm = async function(e) {
     const btn = document.getElementById('submitBtn');
 
     if (!fName || !sName || !dob) {
-        showError("Please fill in all required fields.");
+        showError('errorBox', "Please fill in all required fields.");
         return;
     }
 
     btn.disabled = true;
     btn.innerHTML = '<i data-lucide="loader"></i> Processing...';
-    if (window.lucide) lucide.createIcons();
+    refreshIcons();
 
     try {
         const studentId = generateStudentId();
         const securityCode = generateSecurityCode();
+
+        console.log("[Admission] Creating user doc:", { studentId });
 
         await setDoc(doc(db, "users", currentUser.uid), {
             firstName: fName,
@@ -259,18 +284,19 @@ window.submitForm = async function(e) {
             createdAt: new Date()
         });
 
+        console.log("[Admission] User created — redirecting to dashboard");
         window.location.href = "student-dashboard.html";
     } catch(err) {
-        showError(err.message);
+        console.error("[Admission] Submit failed:", err);
+        showError('errorBox', err.message || "Submission failed. Please try again.");
         btn.disabled = false;
         btn.innerHTML = '<i data-lucide="arrow-right"></i> Complete Application';
-        if (window.lucide) lucide.createIcons();
+        refreshIcons();
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.lucide) lucide.createIcons();
-});
+document.addEventListener('DOMContentLoaded', refreshIcons);
+window.addEventListener('load', refreshIcons);
 </script>
 </body>
 </html>
