@@ -3,38 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Dashboard — IFB</title>
+<title>Dashboard — Institute of Board</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { 
-    --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0; 
-    --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; 
-    --sidebar-bg: #1E293B; --sidebar-hover: #334155; --success: #15803D; --error: #B91C1C;
-}
+:root { --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --sidebar-bg: #1E293B; --sidebar-hover: #334155; --success: #15803D; --error: #B91C1C; }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); }
 .app-container { display: flex; height: 100vh; width: 100%; }
-.sidebar { width: 260px; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; transition: 0.3s; }
+
+.sidebar { width: 260px; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
 .main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 
 .sidebar-logo { padding: 24px; font-size: 20px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.sidebar-logo span { color: var(--white); font-size: 28px; background: var(--maroon); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
-.sidebar-nav { padding: 24px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.sidebar-logo .brand-mark { color: var(--white); font-size: 28px; background: var(--maroon); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+
+.sidebar-nav { padding: 24px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
 .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; color: #94A3B8; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; cursor: pointer; }
 .nav-item:hover, .nav-item.active { background: var(--sidebar-hover); color: var(--white); }
 .nav-item.active { border-left: 3px solid var(--maroon); }
+.nav-item i { width: 18px; height: 18px; flex-shrink: 0; }
+.nav-item.admin-only { display: none; }
+.nav-item.admin-only.visible { display: flex; color: #FCA5A5; }
+.nav-item.admin-only.visible:hover { background: rgba(185, 28, 28, 0.15); }
+
 .sidebar-footer { padding: 24px 16px; border-top: 1px solid rgba(255,255,255,0.05); }
 .btn-logout { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; background: rgba(255,0,0,0.1); color: #FCA5A5; border: 1px solid rgba(255,0,0,0.2); border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; font-family: inherit; }
 .btn-logout:hover { background: #FEE2E2; color: #B91C1C; }
+.btn-logout i { width: 16px; height: 16px; }
 
 .topbar { height: 72px; background: var(--white); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 32px; flex-shrink: 0; }
-.topbar-title { font-weight: 900; font-size: 18px; color: var(--maroon); }
+.topbar-title { font-weight: 900; font-size: 18px; color: var(--maroon); display: flex; align-items: center; gap: 8px; }
+.topbar-title i { width: 20px; height: 20px; }
 .profile-menu { display: flex; align-items: center; gap: 16px; }
 .profile-info h4 { font-size: 14px; font-weight: 800; text-align: right; }
-.profile-info p { font-size: 12px; color: var(--gray); font-weight: 600; text-align: right; }
+.profile-info p { font-size: 12px; color: var(--gray); font-weight: 600; text-align: right; display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+.profile-info p i { width: 10px; height: 10px; }
 .profile-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 18px; box-shadow: 0 4px 10px rgba(122,31,43,0.3); }
 
 .dashboard-content { flex: 1; padding: 32px; overflow-y: auto; }
@@ -42,73 +48,84 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 .card { background: var(--white); border-radius: 16px; padding: 32px; border: 1px solid var(--silver); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
 .card-title { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.card-title i { width: 20px; height: 20px; color: var(--maroon); }
 
 /* ID CARD */
 .id-section { display: flex; flex-direction: column; align-items: center; gap: 24px; }
-.id-card-container { 
-    width: 100%; 
-    max-width: 520px; 
-    aspect-ratio: 1.586; 
-    perspective: 1000px; 
-    cursor: pointer; 
-    user-select: none; 
-}
+.id-card-container { width: 100%; max-width: 520px; aspect-ratio: 1.586; perspective: 1000px; cursor: pointer; user-select: none; }
 .id-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
 .id-card-container.flipped .id-card-inner { transform: rotateY(180deg); }
 .id-card-front, .id-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 1px solid var(--silver); background: var(--white); }
-.id-card-front { padding: 24px; text-align: left; }
-.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 24px; align-items: center; justify-content: center; }
+.id-card-front { padding: 28px; text-align: left; }
+.id-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); padding: 28px; align-items: center; justify-content: center; }
 .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 180px; font-weight: 900; color: rgba(122,31,43,0.03); pointer-events: none; z-index: 0; }
 .card-content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; width: 100%; }
-.card-logo { font-size: clamp(18px, 4vw, 24px); font-weight: 900; color: var(--maroon); }
-.card-type { font-size: clamp(10px, 2vw, 12px); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
-.card-name { font-size: clamp(18px, 5vw, 26px); font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-role { font-size: clamp(9px, 2vw, 11px); font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: auto; align-self: flex-start;}
-.card-id { font-family: monospace; font-size: clamp(14px, 4vw, 20px); font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 8px; }
-.barcode-wrap-front { background: #fff; border-radius: 8px; width: 100%; height: clamp(40px, 10vw, 60px); border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 4px; }
+.card-logo { font-size: 24px; font-weight: 900; color: var(--maroon); }
+.card-type { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.card-name { font-size: 26px; font-weight: 900; margin-bottom: 4px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-role { font-size: 11px; font-weight: 700; color: var(--maroon); text-transform: uppercase; letter-spacing: 1px; background: #FFF5F6; display: inline-block; padding: 3px 10px; border-radius: 4px; margin-bottom: auto; align-self: flex-start; }
+.card-id { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--black); letter-spacing: 1px; margin-bottom: 12px; }
+.barcode-wrap-front { background: #fff; border-radius: 8px; width: 100%; height: 60px; border: 1px solid #eee; display: flex; justify-content: center; align-items: center; padding: 6px; }
 .barcode-wrap-front svg { width: 100%; height: 100%; display: block; }
-.card-back-text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 12px;}
-.card-sec-code { font-family: monospace; font-size: clamp(16px, 4vw, 20px); font-weight: 900; letter-spacing: 3px; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 8px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;}
-.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: clamp(80px, 20vw, 110px); height: clamp(80px, 20vw, 110px); display: flex; justify-content: center; align-items: center; }
+.card-back-text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-align: center; margin-top: 12px; }
+.card-sec-code { font-family: monospace; font-size: 20px; font-weight: 900; letter-spacing: 3px; margin-top: 6px; background: rgba(0,0,0,0.2); padding: 8px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.qr-wrap { background: #fff; padding: 8px; border-radius: 8px; margin-bottom: 12px; width: 110px; height: 110px; display: flex; justify-content: center; align-items: center; }
 .qr-wrap svg { width: 100%; height: 100%; display: block; }
 
 .credentials-row { display: flex; gap: 16px; width: 100%; max-width: 520px; }
 .cred-box { flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 16px; background: var(--bg); border: 1px solid var(--silver); border-radius: 12px; text-align: center; }
-.cred-label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; }
+.cred-label { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.cred-label i { width: 11px; height: 11px; }
 .cred-value { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--black); }
 
-/* EVENTS & ACTIONS */
-.event-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--silver); }
-.event-item:last-child { border-bottom: none; }
-.event-date { background: #FFF5F6; color: var(--maroon); border: 1px solid var(--maroon); padding: 8px 12px; border-radius: 8px; text-align: center; font-weight: 900; font-size: 20px; line-height: 1; min-width: 60px;}
-.event-date span { display: block; font-size: 11px; text-transform: uppercase; margin-top: 4px; }
-.event-info h4 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
-.event-info p { font-size: 14px; color: var(--gray); }
+/* LINK CARDS */
+.link-item { display: flex; align-items: center; gap: 16px; padding: 18px; border-radius: 12px; border: 1px solid var(--silver); background: var(--white); text-decoration: none; color: var(--black); margin-bottom: 12px; transition: 0.2s; }
+.link-item:last-child { margin-bottom: 0; }
+.link-item:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+.link-item .link-icon { width: 44px; height: 44px; border-radius: 10px; background: #FFF5F6; color: var(--maroon); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.link-item .link-icon i { width: 20px; height: 20px; }
+.link-item .link-text { flex: 1; }
+.link-item .link-text h4 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+.link-item .link-text p { font-size: 13px; color: var(--gray); }
+.link-item > i { width: 18px; height: 18px; color: var(--gray); flex-shrink: 0; }
 
+/* ACTION GRID */
 .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 15px; transition: 0.2s; text-align: center; }
+.action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 14px; transition: 0.2s; text-align: center; }
 .action-btn:hover { border-color: var(--maroon); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-.action-btn i { color: var(--maroon); width: 28px; height: 28px; }
+.action-btn i { color: var(--maroon); width: 24px; height: 24px; }
+.action-btn.admin-btn { border-color: var(--maroon); background: #FFF5F6; display: none; }
+.action-btn.admin-btn.visible { display: flex; }
 
-.alert-error { display: none; background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 16px; border-radius: 8px; margin-bottom: 24px; font-weight: 600; text-align: center; }
+/* ADMIN CARD */
+.admin-card { display: none; background: linear-gradient(135deg, #7A1F2B 0%, #5A1620 100%); color: var(--white); border: none; }
+.admin-card.visible { display: block; }
+.admin-card .card-title { color: var(--white); }
+.admin-card .card-title i { color: #FCA5A5; }
+.admin-card p { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px; line-height: 1.6; }
+.admin-card .btn-admin { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--maroon); padding: 12px 20px; border-radius: 8px; font-weight: 800; font-size: 14px; text-decoration: none; transition: 0.2s; }
+.admin-card .btn-admin:hover { background: #F8FAFC; transform: translateY(-1px); }
+.admin-card .btn-admin i { width: 16px; height: 16px; }
+
+/* ERROR */
+.alert-error { display: none; background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 16px; border-radius: 8px; margin-bottom: 24px; font-weight: 600; text-align: center; font-size: 14px; }
 
 @media (max-width: 768px) {
     .app-container { flex-direction: column; }
     .sidebar { width: 100%; height: auto; flex-direction: row; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(255,255,255,0.1); order: 2; }
     .sidebar-logo, .sidebar-footer { display: none; }
-    .sidebar-nav { flex-direction: row; padding: 0; gap: 0; width: 100%; justify-content: space-around; }
+    .sidebar-nav { flex-direction: row; padding: 0; gap: 0; width: 100%; justify-content: space-around; overflow: visible; }
     .nav-item { flex-direction: column; gap: 4px; font-size: 10px; padding: 8px 12px; border-radius: 4px; }
     .nav-item.active { border-left: none; background: var(--sidebar-hover); }
     .main-wrapper { order: 1; height: calc(100vh - 65px); }
     .topbar { padding: 0 16px; height: 64px; }
+    .topbar-title { font-size: 16px; }
     .profile-info { display: none; }
     .dashboard-content { padding: 16px; }
-    
-    /* Mobile ID Card Adjustments */
-    .card { padding: 16px; }
     .action-grid { grid-template-columns: 1fr; }
-    .id-card-front, .id-card-back { padding: 16px; }
+    .id-card-container { max-width: 100%; }
     .credentials-row { flex-direction: column; }
+    .card { padding: 24px 20px; }
 }
 </style>
 </head>
@@ -116,11 +133,13 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 
 <div class="app-container">
     <aside class="sidebar">
-        <div class="sidebar-logo"><span>∆</span> IFB Portal</div>
+        <div class="sidebar-logo"><div class="brand-mark">∆</div> IFB Portal</div>
         <nav class="sidebar-nav">
-            <a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
             <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
-            <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
+            <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam Portal</a>
+            <a href="documents.html" class="nav-item"><i data-lucide="file-text"></i> Documents</a>
+            <a href="admin-resources.html" class="nav-item admin-only" id="adminNav"><i data-lucide="shield"></i> Admin Panel</a>
         </nav>
         <div class="sidebar-footer">
             <button class="btn-logout" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
@@ -129,31 +148,29 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 
     <div class="main-wrapper">
         <header class="topbar">
-            <div class="topbar-title">Student Dashboard</div>
+            <div class="topbar-title"><i data-lucide="layout-dashboard"></i> Student Dashboard</div>
             <div class="profile-menu">
                 <div class="profile-info">
                     <h4 id="topbarName">Loading...</h4>
-                    <p id="topbarRole">Applicant</p>
+                    <p id="topbarRole"><i data-lucide="dot"></i> Applicant</p>
                 </div>
                 <div class="profile-avatar" id="topbarAvatar">--</div>
             </div>
         </header>
 
         <main class="dashboard-content">
-            <div class="alert-error" id="errorAlert">Failed to load dashboard data. Please try refreshing.</div>
-            
+            <div class="alert-error" id="errorAlert">Failed to load dashboard data. Please refresh.</div>
+
             <div class="dashboard-grid">
-                
+
                 <!-- ID CARD -->
                 <div class="card">
                     <div class="card-header">
                         <div class="card-title"><i data-lucide="credit-card"></i> Student ID Card</div>
                     </div>
-                    
                     <div class="id-section">
                         <div class="id-card-container" id="idCard" onclick="this.classList.toggle('flipped')">
                             <div class="id-card-inner">
-                                <!-- FRONT -->
                                 <div class="id-card-front">
                                     <div class="watermark">∆</div>
                                     <div class="card-content">
@@ -168,14 +185,11 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
                                         <div class="barcode-wrap-front"><svg id="barcodeSvg"></svg></div>
                                     </div>
                                 </div>
-                                <!-- BACK -->
                                 <div class="id-card-back">
                                     <div class="card-content" style="align-items:center; justify-content:center;">
                                         <div class="qr-wrap" id="qrCodeContainer"></div>
                                         <div class="card-back-text">Security Code</div>
-                                        <div class="card-sec-code">
-                                            <span id="userSecurityCode">---</span>
-                                        </div>
+                                        <div class="card-sec-code"><span id="userSecurityCode">---</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -186,49 +200,63 @@ html, body { width: 100%; height: 100vh; overflow: hidden; font-family: 'Inter',
 
                         <div class="credentials-row">
                             <div class="cred-box">
-                                <div class="cred-label">Student ID</div>
+                                <div class="cred-label"><i data-lucide="hash"></i> Student ID</div>
                                 <div class="cred-value" id="credStudentId">---</div>
                             </div>
                             <div class="cred-box">
-                                <div class="cred-label">Security Code</div>
+                                <div class="cred-label"><i data-lucide="key"></i> Security Code</div>
                                 <div class="cred-value" id="credSecCode">---</div>
                             </div>
                         </div>
-                        
-                        <a href="admissions-letter.html" target="_blank" class="btn-logout" style="background:var(--maroon); color:#fff; border:none; width:100%; max-width:520px; justify-content:center; padding:16px; margin-top:8px;">
-                            <i data-lucide="file-text"></i> View Admissions Letter
-                        </a>
                     </div>
                 </div>
 
-                <!-- UPDATES & EVENTS -->
+                <!-- IMPORTANT LINKS (replaces hardcoded dates) -->
                 <div class="card">
-                    <div class="card-header"><div class="card-title"><i data-lucide="bell"></i> Latest Updates</div></div>
-                    <div class="event-item">
-                        <div class="event-date">13<span>Jan</span></div>
-                        <div class="event-info">
-                            <h4>AE 2027 Examinations</h4>
-                            <p>Admission Examinations take place. Ensure you have your Student ID and Security Code ready.</p>
+                    <div class="card-header"><div class="card-title"><i data-lucide="bookmark"></i> Important Links</div></div>
+                    <a href="ae-timetable.html" class="link-item">
+                        <div class="link-icon"><i data-lucide="calendar"></i></div>
+                        <div class="link-text">
+                            <h4>AE Timetable 2027</h4>
+                            <p>View your admission exam schedule</p>
                         </div>
-                    </div>
-                    <div class="event-item">
-                        <div class="event-date">18<span>Feb</span></div>
-                        <div class="event-info">
-                            <h4>Academic Year Begins</h4>
-                            <p>Welcome to the Institute of Board. Classes officially commence for all enrolled students.</p>
+                        <i data-lucide="arrow-right"></i>
+                    </a>
+                    <a href="documents.html" class="link-item">
+                        <div class="link-icon"><i data-lucide="file-text"></i></div>
+                        <div class="link-text">
+                            <h4>Official Documents</h4>
+                            <p>Circulars, prospectus, rules, and policies</p>
                         </div>
-                    </div>
+                        <i data-lucide="arrow-right"></i>
+                    </a>
+                    <a href="courses-ifb.html" class="link-item">
+                        <div class="link-icon"><i data-lucide="book-open"></i></div>
+                        <div class="link-text">
+                            <h4>Prospectus</h4>
+                            <p>Full programme overview and curriculum</p>
+                        </div>
+                        <i data-lucide="arrow-right"></i>
+                    </a>
                 </div>
 
                 <!-- QUICK ACTIONS -->
                 <div class="card">
                     <div class="card-header"><div class="card-title"><i data-lucide="zap"></i> Quick Actions</div></div>
                     <div class="action-grid">
-                        <a href="resources.html" class="action-btn"><i data-lucide="book-open"></i> Resources</a>
-                        <a href="ae-timetable.html" class="action-btn"><i data-lucide="calendar"></i> Timetable</a>
+                        <a href="resources.html" class="action-btn"><i data-lucide="folder-open"></i> Resources</a>
                         <a href="exam-gateway.html" class="action-btn" style="border-color: var(--maroon);"><i data-lucide="monitor-play"></i> Exam Portal</a>
-                        <a href="courses-ifb.html" class="action-btn"><i data-lucide="file-text"></i> Prospectus</a>
+                        <a href="ae-timetable.html" class="action-btn"><i data-lucide="calendar"></i> Timetable</a>
+                        <a href="guidelines-general.html" class="action-btn"><i data-lucide="shield-check"></i> Rules</a>
+                        <a href="admin-resources.html" class="action-btn admin-btn" id="adminQuickBtn"><i data-lucide="shield"></i> Manage Resources</a>
                     </div>
+                </div>
+
+                <!-- ADMIN CARD -->
+                <div class="card admin-card" id="adminCard">
+                    <div class="card-header"><div class="card-title"><i data-lucide="shield"></i> Administrator Access</div></div>
+                    <p>You are signed in as an administrator. Manage resources, upload new documents, and update the student-facing library.</p>
+                    <a href="admin-resources.html" class="btn-admin"><i data-lucide="upload-cloud"></i> Open Admin Panel</a>
                 </div>
 
             </div>
@@ -246,65 +274,89 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
+
 function showError(msg) {
     const el = document.getElementById('errorAlert');
     el.textContent = msg;
     el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
+/* Fallback ID generation for legacy users missing studentId (correct 13-char format) */
+function generateStudentId() {
+    const base = "27" + "01" + "X" + String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
+    let sum = 0;
+    for (let i = 0; i < base.length; i++) sum += base.charCodeAt(i);
+    return base + String(sum % 100).padStart(2, '0');
+}
+function generateSecurityCode() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let out = "";
+    for (let i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return out;
 }
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
-    
+
     try {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-            let data = docSnap.data();
+        if (!docSnap.exists()) { window.location.href = "admission.html"; return; }
 
-            if (!data.studentId) {
-                const dobClean = (data.dob || "2000-01-01").replace(/-/g, '');
-                const yy = dobClean.substring(2,4), mm = dobClean.substring(4,6), dd = dobClean.substring(6,8);
-                const random3 = Math.floor(100 + Math.random()*900);
-                const studentId = `2701${yy}${mm}${dd}${random3}`;
-                const securityCode = Math.random().toString(36).substring(2,8).toUpperCase();
-                
-                await updateDoc(docRef, { studentId, securityCode });
-                data.studentId = studentId;
-                data.securityCode = securityCode;
-            }
+        let data = docSnap.data();
 
-            document.getElementById('topbarName').textContent = data.name || "Student";
-            document.getElementById('topbarRole').textContent = data.status || "Applicant";
-            document.getElementById('topbarAvatar').textContent = data.name ? data.name.charAt(0).toUpperCase() : "S";
-            
-            document.getElementById('userName').textContent = data.name || "Student";
-            document.getElementById('userStatus').textContent = data.status || "Applicant";
-            document.getElementById('userStudentId').textContent = data.studentId;
-            document.getElementById('userSecurityCode').textContent = data.securityCode;
-            document.getElementById('credStudentId').textContent = data.studentId;
-            document.getElementById('credSecCode').textContent = data.securityCode;
-
-            setTimeout(() => {
-                try { JsBarcode("#barcodeSvg", data.studentId, { format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0 }); } catch (e) { console.warn("Barcode error", e); }
-                try {
-                    const qr = qrcode(0, 'M');
-                    qr.addData(`ID: ${data.studentId}\nName: ${data.name}`);
-                    qr.make();
-                    document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
-                } catch (e) { console.warn("QR error", e); }
-            }, 100);
-
-            lucide.createIcons();
-        } else {
-            // User is authenticated but has NO database record yet.
-            alert("Your application is incomplete. Redirecting to the application form...");
-            window.location.href = "admission.html";
+        // Fallback for legacy accounts without a properly formatted studentId
+        const needsNewId = !data.studentId || !/^27\d{2}[A-Z]\d{8}$/.test(data.studentId);
+        if (needsNewId) {
+            const studentId = generateStudentId();
+            const securityCode = data.securityCode || generateSecurityCode();
+            await updateDoc(docRef, { studentId, securityCode });
+            data.studentId = studentId;
+            data.securityCode = securityCode;
         }
+
+        // Display data
+        document.getElementById('topbarName').textContent = data.name || "Student";
+        document.getElementById('topbarRole').innerHTML = `<i data-lucide="dot"></i> ${data.status || "Applicant"}`;
+        document.getElementById('topbarAvatar').textContent = data.name ? data.name.charAt(0).toUpperCase() : "S";
+
+        document.getElementById('userName').textContent = data.name || "Student";
+        document.getElementById('userStatus').textContent = data.status || "Applicant";
+        document.getElementById('userStudentId').textContent = data.studentId;
+        document.getElementById('userSecurityCode').textContent = data.securityCode;
+        document.getElementById('credStudentId').textContent = data.studentId;
+        document.getElementById('credSecCode').textContent = data.securityCode;
+
+        // Admin-only UI
+        if (user.email === ADMIN_EMAIL) {
+            document.getElementById('adminNav').classList.add('visible');
+            document.getElementById('adminCard').classList.add('visible');
+            document.getElementById('adminQuickBtn').classList.add('visible');
+        }
+
+        // Barcode + QR (after DOM has text)
+        setTimeout(() => {
+            try {
+                JsBarcode("#barcodeSvg", data.studentId, {
+                    format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0
+                });
+            } catch (e) { console.warn("Barcode error", e); }
+
+            try {
+                const qr = qrcode(0, 'M');
+                qr.addData(`ID: ${data.studentId}\nName: ${data.name}`);
+                qr.make();
+                document.getElementById('qrCodeContainer').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+            } catch (e) { console.warn("QR error", e); }
+
+            if (window.lucide) lucide.createIcons();
+        }, 100);
+
     } catch (error) {
         console.error("Dashboard Error:", error);
-        showError("Database connection error. Please check your internet and refresh.");
+        showError("Failed to load your data. Please refresh.");
     }
 });
 
@@ -313,11 +365,12 @@ window.signOut = async function() {
         await firebaseSignOut(auth);
         window.location.href = "index.html";
     } catch (error) {
-        showError("Failed to sign out. Please refresh the page.");
+        showError("Failed to sign out. Please refresh.");
     }
 };
 
-lucide.createIcons();
+document.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons(); });
+window.addEventListener('load', () => { if (window.lucide) lucide.createIcons(); });
 </script>
 </body>
 </html>
