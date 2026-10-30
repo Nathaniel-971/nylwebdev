@@ -7,7 +7,6 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -43,6 +42,9 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 .main-wrapper { margin-left: 260px; min-height: 100dvh; display: flex; flex-direction: column; }
 .topbar { position: sticky; top: 0; z-index: 50; height: 68px; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 28px; gap: 12px; flex-shrink: 0; }
 .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.topbar-back { display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px; color: var(--maroon); text-decoration: none; flex-shrink: 0; transition: 0.15s; }
+.topbar-back:hover { background: #FFF5F6; }
+.topbar-back i { width: 20px; height: 20px; }
 .mobile-hamburger { display: none; background: transparent; border: none; cursor: pointer; padding: 8px; color: var(--maroon); border-radius: 8px; align-items: center; justify-content: center; flex-shrink: 0; }
 .mobile-hamburger:hover { background: #FFF5F6; }
 .mobile-hamburger i { width: 22px; height: 22px; }
@@ -57,9 +59,9 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 .dashboard-content { flex: 1; padding: 28px 28px 80px; width: 100%; }
 .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 900px; margin: 0 auto; }
 
-/* WELCOME ROW */
+/* WELCOME */
 .welcome-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 4px; flex-wrap: wrap; }
-.welcome-greeting { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; color: var(--black); }
+.welcome-greeting { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; }
 .welcome-greeting span { color: var(--maroon); }
 .welcome-sub { font-size: 13px; color: var(--gray); margin-top: 4px; }
 .status-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 100px; flex-shrink: 0; }
@@ -67,7 +69,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 .status-pill.applicant { background: #FEF3C7; color: var(--warning); }
 .status-pill.student { background: #DCFCE7; color: var(--success); }
 
-/* STAT TILES */
+/* STATS */
 .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
 .stat-tile { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
 .stat-tile .stat-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); display: flex; align-items: center; gap: 5px; }
@@ -84,51 +86,61 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 .action-tile.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
 .action-tile.primary i { color: var(--white); }
 .action-tile.primary:hover { background: var(--maroon-hover); }
-.action-tile:disabled { opacity: 0.6; cursor: wait; }
 
-/* CARDS */
+/* CARD */
 .card { background: var(--white); border-radius: 16px; padding: 24px; border: 1px solid var(--silver); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 12px; }
 .card-title { font-size: 16px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 .card-title i { width: 18px; height: 18px; color: var(--maroon); flex-shrink: 0; }
-.card-action-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--maroon); text-decoration: none; padding: 6px 10px; border-radius: 6px; transition: 0.15s; }
-.card-action-link:hover { background: #FFF5F6; }
-.card-action-link i { width: 13px; height: 13px; }
+.card-hint { font-size: 11px; font-weight: 700; color: var(--gray); display: inline-flex; align-items: center; gap: 4px; }
+.card-hint i { width: 12px; height: 12px; }
 
-/* SLIP (PORTRAIT) */
-.id-slip-container { display: flex; justify-content: center; padding: 8px 0; }
-.id-slip { width: 100%; max-width: 320px; aspect-ratio: 34 / 54; background: var(--white); border-radius: 14px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.12); border: 1px solid var(--silver); display: flex; flex-direction: column; position: relative; }
-.slip-header { background: var(--maroon); color: var(--white); padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-.slip-header .brand { display: flex; align-items: center; gap: 7px; font-weight: 900; font-size: 13px; }
-.slip-header .brand span { font-size: 16px; }
-.slip-header .year { font-size: 11px; font-weight: 700; opacity: 0.85; letter-spacing: 1px; }
-.slip-body { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow: hidden; }
-.slip-name { font-size: 18px; font-weight: 900; line-height: 1.15; word-break: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.slip-status { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; align-self: flex-start; }
-.slip-status.student { background: #DCFCE7; color: var(--success); }
-.slip-status.applicant { background: #FEF3C7; color: var(--warning); }
-.slip-status i { width: 7px; height: 7px; }
-.slip-divider { height: 1px; background: var(--silver); flex-shrink: 0; }
-.slip-label { font-size: 8px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gray); }
-.slip-id-big { font-family: 'Courier New', monospace; font-size: 32px; font-weight: 900; color: var(--maroon); letter-spacing: 2px; line-height: 1; margin-top: 3px; }
-.slip-exam-num { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 800; letter-spacing: 1px; word-break: break-all; line-height: 1.3; margin-top: 3px; }
-.slip-exam-num.pending { color: var(--warning); font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; }
-.slip-spacer { flex: 1; min-height: 2px; }
-.slip-barcode { background: #fff; border-radius: 6px; height: 40px; padding: 4px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; flex-shrink: 0; overflow: hidden; }
-.slip-barcode canvas { display: block; max-width: 100%; max-height: 100%; height: 100%; width: auto; }
-.slip-barcode .pending { font-size: 9px; color: var(--gray); font-weight: 600; }
-.slip-footer-row { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.slip-qr { width: 40px; height: 40px; background: #fff; padding: 2px; border-radius: 6px; border: 1px solid #eee; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.slip-qr img { display: block; width: 100%; height: 100%; }
-.slip-sec { flex: 1; min-width: 0; }
-.slip-sec .value { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 900; letter-spacing: 2px; margin-top: 2px; }
-.slip-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: center; flex-wrap: wrap; }
-.btn-slip-action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.15s; font-family: inherit; border: 1.5px solid var(--maroon); background: var(--maroon); color: var(--white); }
-.btn-slip-action.secondary { background: var(--white); color: var(--maroon); }
-.btn-slip-action:hover:not(:disabled) { background: var(--maroon-hover); color: var(--white); }
-.btn-slip-action.secondary:hover:not(:disabled) { background: #FFF5F6; color: var(--maroon); }
-.btn-slip-action i { width: 15px; height: 15px; }
-.btn-slip-action:disabled { opacity: 0.6; cursor: wait; }
+/* ==================== ACCESS CARD (FLIP) ==================== */
+.access-card-wrapper { display: flex; justify-content: center; padding: 4px 0 16px; }
+.access-card { width: 100%; max-width: 360px; aspect-ratio: 90 / 54; perspective: 1400px; cursor: pointer; user-select: none; outline: none; }
+.access-card:focus-visible { box-shadow: 0 0 0 3px rgba(122,31,43,0.4); border-radius: 14px; }
+.access-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
+.access-card.flipped .access-card-inner { transform: rotateY(180deg); }
+.access-card-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 14px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.15); border: 1px solid var(--silver); background: var(--white); display: flex; flex-direction: column; }
+.access-card-front { background: var(--white); }
+.access-card-back { background: var(--maroon); color: var(--white); transform: rotateY(180deg); border-color: var(--maroon); }
+
+.ac-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; flex-shrink: 0; font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+.access-card-front .ac-header { background: var(--maroon); color: var(--white); }
+.access-card-back .ac-header { background: rgba(0,0,0,0.2); color: var(--white); }
+.ac-header .ac-year { opacity: 0.85; }
+
+.ac-body { flex: 1; padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+.ac-label { font-size: 8px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); }
+.access-card-back .ac-label { color: rgba(255,255,255,0.7); }
+.ac-name { font-size: 15px; font-weight: 900; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ac-id { font-family: 'Courier New', monospace; font-size: 24px; font-weight: 900; color: var(--maroon); letter-spacing: 2px; line-height: 1; }
+.ac-exam { font-family: 'Courier New', monospace; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; word-break: break-all; line-height: 1.2; color: var(--white); }
+.ac-exam.pending { font-family: 'Inter', sans-serif; font-size: 10px; color: #FDE68A; font-weight: 700; letter-spacing: 0; }
+.ac-sec { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 900; letter-spacing: 2px; color: var(--white); }
+.ac-barcode { background: #fff; border-radius: 4px; height: 38px; padding: 3px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; margin-top: auto; overflow: hidden; flex-shrink: 0; }
+.ac-barcode svg { display: block; height: 100%; width: auto; max-width: 100%; }
+.ac-hint { font-size: 8px; font-weight: 700; text-align: center; color: var(--gray); letter-spacing: 0.5px; margin-top: 2px; }
+.access-card-back .ac-hint { color: rgba(255,255,255,0.7); }
+.ac-row { display: flex; gap: 10px; align-items: flex-start; }
+.ac-row > div:first-child { flex: 1; min-width: 0; }
+.ac-qr { width: 44px; height: 44px; background: #fff; padding: 2px; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.ac-qr svg { width: 100%; height: 100%; display: block; }
+.ac-warning { font-size: 8px; line-height: 1.35; color: rgba(255,255,255,0.9); background: rgba(0,0,0,0.2); padding: 6px 8px; border-left: 2px solid #FCA5A5; border-radius: 3px; margin-top: auto; }
+.ac-warning strong { color: #FCA5A5; }
+
+/* Instructions under card */
+.ac-instructions { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; margin-bottom: 14px; }
+.ac-inst-row { display: flex; gap: 10px; align-items: flex-start; font-size: 12px; line-height: 1.5; color: var(--black); }
+.ac-inst-row i { width: 16px; height: 16px; color: var(--maroon); flex-shrink: 0; margin-top: 1px; }
+.ac-inst-row strong { font-weight: 800; }
+
+.ac-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-ac { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.15s; font-family: inherit; border: 1.5px solid var(--maroon); background: var(--maroon); color: var(--white); flex: 1; min-width: 130px; }
+.btn-ac.secondary { background: var(--white); color: var(--maroon); }
+.btn-ac:hover { background: var(--maroon-hover); color: var(--white); }
+.btn-ac.secondary:hover { background: #FFF5F6; color: var(--maroon); }
+.btn-ac i { width: 15px; height: 15px; }
 
 /* TIMETABLE */
 .timetable-list { display: flex; flex-direction: column; gap: 10px; }
@@ -183,30 +195,144 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 .mobile-drawer-close i { width: 20px; height: 20px; }
 .mobile-drawer-footer { margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 6px; }
 
-/* MODALS */
+/* DELETE MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
 .modal-overlay.active { display: flex; }
-.modal-box { background: var(--white); border-radius: 16px; max-width: 440px; width: 100%; padding: 28px 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
-.modal-box.slip-modal { max-width: 380px; text-align: center; }
-.modal-box h2 { font-size: 20px; font-weight: 900; margin-bottom: 8px; text-align: center; }
-.modal-box.slip-modal .id-slip { margin: 16px auto; }
-.modal-actions { display: flex; gap: 10px; margin-top: 18px; }
-.btn-modal { flex: 1; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; border: none; transition: 0.15s; }
-.btn-modal.cancel { background: var(--white); border: 1.5px solid var(--silver); color: var(--black); }
-.btn-modal.cancel:hover { border-color: var(--black); }
-.btn-modal.delete { background: var(--error); color: var(--white); }
-.btn-modal.delete:hover:not(:disabled) { background: #991B1B; }
-.btn-modal.primary { background: var(--maroon); color: var(--white); }
-.btn-modal.primary:hover { background: var(--maroon-hover); }
-.btn-modal:disabled { opacity: 0.6; cursor: wait; }
+.modal-box { background: var(--white); border-radius: 16px; max-width: 440px; width: 100%; padding: 28px 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); text-align: center; }
 .modal-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; background: #FEF2F2; color: var(--error); }
 .modal-icon i { width: 28px; height: 28px; }
-.modal-box p { font-size: 13px; color: var(--gray); line-height: 1.6; text-align: center; }
+.modal-box h2 { font-size: 20px; font-weight: 900; margin-bottom: 8px; }
+.modal-box p { font-size: 13px; color: var(--gray); line-height: 1.6; }
 .modal-field { text-align: left; margin: 16px 0; }
 .modal-field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
 .modal-field label strong { color: var(--error); font-family: monospace; letter-spacing: 1px; }
 .modal-field input { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: monospace; font-weight: 700; text-align: center; letter-spacing: 3px; text-transform: uppercase; }
 .modal-field input:focus { border-color: var(--error); }
+.modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+.btn-modal { flex: 1; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; border: none; transition: 0.15s; }
+.btn-modal.cancel { background: var(--white); border: 1.5px solid var(--silver); color: var(--black); }
+.btn-modal.cancel:hover { border-color: var(--black); }
+.btn-modal.delete { background: var(--error); color: var(--white); }
+.btn-modal.delete:hover:not(:disabled) { background: #991B1B; }
+.btn-modal:disabled { opacity: 0.6; cursor: wait; }
+
+/* ==================== PRINT AREA ==================== */
+.print-area { display: none; }
+
+@media print {
+    html, body { margin: 0; padding: 0; background: #fff; }
+    body > *:not(.print-area) { display: none !important; }
+    .print-area { display: block !important; padding: 12mm; font-family: 'Inter', sans-serif; color: #000; }
+    .print-sheet { max-width: 186mm; margin: 0 auto; }
+    
+    .print-block { margin-bottom: 8mm; page-break-inside: avoid; }
+    .print-block-label { font-size: 8pt; color: #666; margin-bottom: 2mm; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+    
+    .print-card {
+        width: 90mm;
+        height: 54mm;
+        border: 1.5px dashed #111;
+        border-radius: 3mm;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+    }
+    .print-card.pc-back { background: #7A1F2B; color: #fff; }
+    
+    .pc-header {
+        background: #7A1F2B;
+        color: white;
+        padding: 2mm 4mm;
+        display: flex;
+        justify-content: space-between;
+        font-size: 7pt;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    .pc-back .pc-header { background: rgba(0,0,0,0.2); }
+    
+    .pc-body {
+        flex: 1;
+        padding: 3mm 4mm;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2mm;
+    }
+    
+    .pc-label { font-size: 5.5pt; color: #666; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 800; }
+    .pc-back .pc-label { color: rgba(255,255,255,0.7); }
+    .pc-name { font-size: 10pt; font-weight: 900; line-height: 1.1; }
+    .pc-id { font-family: 'Courier New', monospace; font-size: 15pt; font-weight: 900; color: #7A1F2B; letter-spacing: 1px; line-height: 1; }
+    .pc-exam { font-family: 'Courier New', monospace; font-size: 7.5pt; font-weight: 800; letter-spacing: 0.3px; word-break: break-all; line-height: 1.2; color: #fff; }
+    .pc-sec { font-family: 'Courier New', monospace; font-size: 8.5pt; font-weight: 900; letter-spacing: 1.5px; color: #fff; }
+    
+    .pc-barcode {
+        background: #fff;
+        height: 10mm;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 0.3mm solid #ccc;
+        border-radius: 1mm;
+        padding: 1mm;
+        margin-top: auto;
+    }
+    .pc-barcode svg { height: 100%; width: auto; max-width: 100%; }
+    .pc-hint { font-size: 5.5pt; color: #666; text-align: center; margin-top: 0.5mm; font-weight: 700; }
+    .pc-back .pc-hint { color: rgba(255,255,255,0.7); }
+    
+    .pc-row { display: flex; gap: 3mm; align-items: flex-start; }
+    .pc-row > div:first-child { flex: 1; min-width: 0; }
+    .pc-qr {
+        width: 15mm;
+        height: 15mm;
+        background: #fff;
+        border: 0.3mm solid #ccc;
+        border-radius: 1mm;
+        padding: 1mm;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .pc-qr svg { width: 100%; height: 100%; display: block; }
+    
+    .pc-warning {
+        font-size: 5.5pt;
+        line-height: 1.3;
+        color: #fff;
+        background: rgba(0,0,0,0.25);
+        padding: 1.5mm 2mm;
+        border-left: 1mm solid #FCA5A5;
+        border-radius: 1mm;
+        margin-top: auto;
+    }
+    .pc-warning strong { color: #FCA5A5; }
+    
+    .print-instructions {
+        margin-top: 6mm;
+        padding-top: 4mm;
+        border-top: 1px dashed #999;
+        page-break-inside: avoid;
+    }
+    .print-instructions h3 { font-size: 11pt; margin-bottom: 2mm; font-weight: 900; }
+    .print-instructions ol { margin-left: 5mm; font-size: 8.5pt; line-height: 1.5; }
+    .print-instructions li { margin-bottom: 1mm; }
+    
+    .print-warning-box {
+        font-size: 8.5pt;
+        color: #7A1F2B;
+        font-weight: 700;
+        background: #FFF5F6;
+        padding: 2.5mm 3mm;
+        border-left: 1.5mm solid #7A1F2B;
+        border-radius: 1mm;
+        margin-top: 4mm;
+        line-height: 1.4;
+    }
+}
 
 /* MOBILE */
 @media (max-width: 900px) {
@@ -220,8 +346,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
     .dashboard-grid { gap: 14px; }
     .card { padding: 18px; }
     .welcome-greeting { font-size: 20px; }
-    .id-slip { max-width: 280px; }
-    .slip-id-big { font-size: 28px; }
+    .access-card { max-width: 320px; }
     .stat-tile { padding: 12px 14px; }
     .stat-tile .stat-value { font-size: 17px; }
     .action-tile { padding: 14px 8px; font-size: 11px; }
@@ -229,13 +354,20 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
     .timetable-date { min-width: 52px; padding: 6px 8px; }
     .timetable-date .day { font-size: 16px; }
 }
+@media (max-width: 480px) {
+    .ac-id { font-size: 20px; }
+    .ac-name { font-size: 13px; }
+    .ac-barcode { height: 32px; }
+}
 </style>
 </head>
 <body>
 
+<!-- SIDEBAR -->
 <aside class="sidebar">
     <div class="sidebar-logo"><div class="brand-mark">∆</div> IFB Portal</div>
     <nav class="sidebar-nav">
+        <a href="index.html" class="nav-item"><i data-lucide="home"></i> Home</a>
         <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
         <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
         <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
@@ -248,9 +380,11 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
     </div>
 </aside>
 
+<!-- MAIN -->
 <div class="main-wrapper">
     <header class="topbar">
         <div class="topbar-left">
+            <a href="index.html" class="topbar-back" aria-label="Back to home"><i data-lucide="arrow-left"></i></a>
             <button class="mobile-hamburger" id="mobileMenuBtn" aria-label="Open menu"><i data-lucide="menu"></i></button>
             <div class="topbar-title"><i data-lucide="layout-dashboard"></i> Dashboard</div>
         </div>
@@ -303,88 +437,113 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
                 </div>
             </div>
 
-            <!-- ACTION TILES -->
+            <!-- QUICK ACTIONS -->
             <div class="action-tiles">
-                <button class="action-tile" onclick="openSlipModal()"><i data-lucide="ticket"></i> View Card</button>
-                <button class="action-tile primary" id="btnDownloadSlipTop" onclick="downloadSlip()"><i data-lucide="download"></i> Download Slip</button>
+                <button class="action-tile" onclick="flipCard()"><i data-lucide="refresh-cw"></i> Flip Card</button>
+                <button class="action-tile primary" onclick="printCard()"><i data-lucide="printer"></i> Print Card</button>
                 <a href="ae-timetable.html" class="action-tile"><i data-lucide="calendar"></i> Timetable</a>
                 <a href="resources.html" class="action-tile"><i data-lucide="folder-open"></i> Resources</a>
                 <a href="exam-gateway.html" class="action-tile"><i data-lucide="monitor-play"></i> Exam</a>
             </div>
 
-            <!-- SLIP CARD -->
+            <!-- ACCESS CARD -->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><i data-lucide="ticket"></i> Student Slip</div>
-                    <button class="card-action-link" onclick="openSlipModal()" style="border:none;background:none;cursor:pointer;font-family:inherit;">
-                        Expand <i data-lucide="maximize-2"></i>
-                    </button>
+                    <div class="card-title"><i data-lucide="ticket"></i> Admissions Access Card</div>
+                    <span class="card-hint"><i data-lucide="mouse-pointer-click"></i> Tap to flip</span>
                 </div>
 
-                <div class="id-slip-container">
-                    <div class="id-slip" id="idSlip">
-                        <div class="slip-header">
-                            <div class="brand"><span>∆</span> STUDENT SLIP</div>
-                            <div class="year">2027</div>
-                        </div>
-                        <div class="slip-body">
-                            <div class="slip-name" id="slipName">—</div>
-                            <div class="slip-status applicant" id="slipStatus">
-                                <i data-lucide="dot"></i>
-                                <span id="slipStatusText">Applicant</span>
-                            </div>
+                <div class="access-card-wrapper">
+                    <div class="access-card" id="accessCard" tabindex="0" role="button" aria-label="Access card, tap to flip" onclick="flipCard()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipCard();}">
+                        <div class="access-card-inner">
 
-                            <div class="slip-divider"></div>
-
-                            <div>
-                                <div class="slip-label">Student ID (6-digit)</div>
-                                <div class="slip-id-big" id="slipStudentId">------</div>
-                            </div>
-
-                            <div>
-                                <div class="slip-label">Examination Number (13-digit)</div>
-                                <div class="slip-exam-num pending" id="slipExamNum">Pending — pass AE to receive</div>
-                            </div>
-
-                            <div class="slip-spacer"></div>
-
-                            <div class="slip-barcode" id="slipBarcode">
-                                <canvas id="barcodeCanvas"></canvas>
-                            </div>
-
-                            <div class="slip-footer-row">
-                                <div class="slip-qr" id="slipQR"></div>
-                                <div class="slip-sec">
-                                    <div class="slip-label">Security Code</div>
-                                    <div class="value" id="slipSecCode">------</div>
+                            <!-- FRONT -->
+                            <div class="access-card-face access-card-front">
+                                <div class="ac-header">
+                                    <div>∆ INSTITUTE OF BOARD</div>
+                                    <div class="ac-year">2027</div>
+                                </div>
+                                <div class="ac-body">
+                                    <div>
+                                        <div class="ac-label">Student</div>
+                                        <div class="ac-name" id="acName">—</div>
+                                    </div>
+                                    <div>
+                                        <div class="ac-label">Student ID (6-digit)</div>
+                                        <div class="ac-id" id="acStudentId">------</div>
+                                    </div>
+                                    <div class="ac-barcode">
+                                        <svg id="acBarcodeSvg"></svg>
+                                    </div>
+                                    <div class="ac-hint">SCAN AT EXAM ENTRY</div>
                                 </div>
                             </div>
+
+                            <!-- BACK -->
+                            <div class="access-card-face access-card-back">
+                                <div class="ac-header">
+                                    <div>∆ IFB</div>
+                                    <div class="ac-year">2027</div>
+                                </div>
+                                <div class="ac-body">
+                                    <div class="ac-row">
+                                        <div>
+                                            <div class="ac-label">Exam Number (13-digit)</div>
+                                            <div class="ac-exam pending" id="acExamNum">Pending — pass AE</div>
+                                        </div>
+                                        <div class="ac-qr" id="acQR"></div>
+                                    </div>
+                                    <div>
+                                        <div class="ac-label">Security Code</div>
+                                        <div class="ac-sec" id="acSecCode">------</div>
+                                    </div>
+                                    <div class="ac-warning">
+                                        <strong>DO NOT SHARE.</strong> Allowing another person to sit your examination results in immediate disqualification and permanent ban.
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
 
-                <div class="slip-actions">
-                    <button class="btn-slip-action" id="btnDownloadSlip" onclick="downloadSlip()">
-                        <i data-lucide="download"></i> Download Admissions Slip
+                <div class="ac-instructions">
+                    <div class="ac-inst-row">
+                        <i data-lucide="printer"></i>
+                        <span><strong>Print this card</strong> and bring it to your examination session.</span>
+                    </div>
+                    <div class="ac-inst-row">
+                        <i data-lucide="scan-line"></i>
+                        <span>At the exam portal, you'll be asked to <strong>scan the barcode</strong> on the front to verify your identity.</span>
+                    </div>
+                    <div class="ac-inst-row">
+                        <i data-lucide="shield-alert"></i>
+                        <span>A <strong>live selfie</strong> is captured at session start. Impersonation is detected and permanently disqualifies the candidate.</span>
+                    </div>
+                </div>
+
+                <div class="ac-actions">
+                    <button class="btn-ac" onclick="printCard()">
+                        <i data-lucide="printer"></i> Print Card
                     </button>
-                    <button class="btn-slip-action secondary" onclick="openSlipModal()">
-                        <i data-lucide="maximize-2"></i> View Full Size
+                    <button class="btn-ac secondary" onclick="flipCard()">
+                        <i data-lucide="refresh-cw"></i> Flip
                     </button>
                 </div>
             </div>
 
-            <!-- TIMETABLE CARD -->
+            <!-- TIMETABLE -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title"><i data-lucide="calendar"></i> Timetable</div>
-                    <a href="ae-timetable.html" class="card-action-link">View Full <i data-lucide="arrow-right"></i></a>
+                    <a href="ae-timetable.html" style="font-size:12px;font-weight:700;color:var(--maroon);text-decoration:none;display:inline-flex;align-items:center;gap:4px;">View Full <i data-lucide="arrow-right" style="width:13px;height:13px;"></i></a>
                 </div>
                 <div class="timetable-list" id="timetableList">
                     <div class="timetable-empty">Loading timetable…</div>
                 </div>
             </div>
 
-            <!-- LINKS -->
+            <!-- QUICK LINKS -->
             <div class="card">
                 <div class="card-header"><div class="card-title"><i data-lucide="bookmark"></i> Quick Links</div></div>
                 <a href="documents.html" class="link-item">
@@ -404,7 +563,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
                 </a>
             </div>
 
-            <!-- ADMIN CARD -->
+            <!-- ADMIN -->
             <div class="card admin-card" id="adminCard">
                 <div class="card-header"><div class="card-title"><i data-lucide="shield"></i> Administrator Access</div></div>
                 <p>You are signed in as an administrator. Manage resources, upload documents, and update the student-facing library.</p>
@@ -422,6 +581,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
             <div class="mobile-drawer-logo"><div class="brand-mark">∆</div> IFB Portal</div>
             <button class="mobile-drawer-close" id="mobileDrawerClose"><i data-lucide="x"></i></button>
         </div>
+        <a href="index.html" class="nav-item"><i data-lucide="home"></i> Home</a>
         <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
         <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
         <a href="exam-gateway.html" class="nav-item"><i data-lucide="monitor-play"></i> Exam</a>
@@ -430,53 +590,6 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
         <div class="mobile-drawer-footer">
             <button class="btn-sidebar" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
             <button class="btn-sidebar danger" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
-        </div>
-    </div>
-</div>
-
-<!-- SLIP MODAL -->
-<div class="modal-overlay" id="slipModal">
-    <div class="modal-box slip-modal">
-        <h2>Student Slip</h2>
-        <p style="margin-bottom:8px;font-size:12px;">View and download your official slip</p>
-        <div class="id-slip-container">
-            <div class="id-slip" id="idSlipModal">
-                <div class="slip-header">
-                    <div class="brand"><span>∆</span> STUDENT SLIP</div>
-                    <div class="year">2027</div>
-                </div>
-                <div class="slip-body">
-                    <div class="slip-name" id="slipNameM">—</div>
-                    <div class="slip-status applicant" id="slipStatusM">
-                        <i data-lucide="dot"></i>
-                        <span id="slipStatusTextM">Applicant</span>
-                    </div>
-                    <div class="slip-divider"></div>
-                    <div>
-                        <div class="slip-label">Student ID (6-digit)</div>
-                        <div class="slip-id-big" id="slipStudentIdM">------</div>
-                    </div>
-                    <div>
-                        <div class="slip-label">Examination Number (13-digit)</div>
-                        <div class="slip-exam-num pending" id="slipExamNumM">Pending — pass AE to receive</div>
-                    </div>
-                    <div class="slip-spacer"></div>
-                    <div class="slip-barcode" id="slipBarcodeM">
-                        <canvas id="barcodeCanvasM"></canvas>
-                    </div>
-                    <div class="slip-footer-row">
-                        <div class="slip-qr" id="slipQRM"></div>
-                        <div class="slip-sec">
-                            <div class="slip-label">Security Code</div>
-                            <div class="value" id="slipSecCodeM">------</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal-actions">
-            <button class="btn-modal cancel" onclick="closeSlipModal()">Close</button>
-            <button class="btn-modal primary" onclick="downloadSlip()"><i data-lucide="download" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Download</button>
         </div>
     </div>
 </div>
@@ -497,6 +610,9 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
         </div>
     </div>
 </div>
+
+<!-- PRINT AREA (populated on demand) -->
+<div class="print-area" id="printArea"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -521,6 +637,11 @@ function showError(title, detail) {
 function hideLoading() {
     document.getElementById('loadingState').style.display = 'none';
     document.getElementById('mainContent').style.display = 'grid';
+}
+function escapeHtml(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
 }
 
 /* --- ID generators --- */
@@ -572,94 +693,188 @@ async function migrateAndPromote(docRef, data) {
     }
 }
 
-/* --- Barcode + QR --- */
-function renderSlip(studentId, examNumber, name, canvasId, qrId) {
-    const canvasEl = document.getElementById(canvasId);
-    const qrEl = document.getElementById(qrId);
-    if (!canvasEl || !qrEl) return;
+/* --- Access card rendering --- */
+function populateAccessCard(data) {
+    const name = data.name || 'Student';
+    const studentId = data.studentId || '';
+    const examNum = data.examinationNumber;
+    const secCode = data.securityCode || '';
 
-    if (studentId && typeof JsBarcode === 'function') {
-        try {
-            JsBarcode(canvasEl, studentId, {
-                format: "CODE128", width: 1.6, height: 40, displayValue: false, margin: 0,
-                background: "#ffffff", lineColor: "#111111"
-            });
-        } catch (e) { console.warn("[Barcode] failed:", e); }
+    document.getElementById('acName').textContent = name;
+    document.getElementById('acStudentId').textContent = studentId || '------';
+    document.getElementById('acSecCode').textContent = secCode || '------';
+
+    const examEl = document.getElementById('acExamNum');
+    if (examNum) {
+        examEl.textContent = examNum;
+        examEl.classList.remove('pending');
+    } else {
+        examEl.textContent = 'Pending — pass AE';
+        examEl.classList.add('pending');
     }
 
+    // Barcode into SVG
+    if (studentId && typeof JsBarcode === 'function') {
+        try {
+            JsBarcode('#acBarcodeSvg', studentId, {
+                format: 'CODE128',
+                width: 1.4,
+                height: 40,
+                displayValue: false,
+                margin: 0,
+                background: '#ffffff',
+                lineColor: '#111111'
+            });
+        } catch(e) { console.warn('[Barcode] failed:', e); }
+    }
+
+    // QR
+    const qrEl = document.getElementById('acQR');
     if (typeof qrcode === 'function') {
         try {
             const qr = qrcode(0, 'M');
-            const payload = examNumber
-                ? `EXAM:${examNumber}\nSID:${studentId}\nNAME:${name}`
-                : `SID:${studentId}\nNAME:${name}\nSTATUS:Applicant`;
-            qr.addData(payload);
+            qr.addData(examNum
+                ? `EXAM:${examNum}\nSID:${studentId}\nNAME:${name}`
+                : `SID:${studentId}\nNAME:${name}`);
             qr.make();
-            qrEl.innerHTML = `<img src="${qr.createDataURL(4, 0)}" alt="QR" style="width:100%;height:100%;display:block;">`;
-        } catch (e) { console.warn("[QR] failed:", e); }
+            qrEl.innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
+        } catch(e) { console.warn('[QR] failed:', e); }
     }
 }
 
-function populateSlip(data, suffix = '') {
-    const displayName = data.name || "Student";
-    const status = data.status || "Applicant";
+/* --- Flip --- */
+window.flipCard = function() {
+    const el = document.getElementById('accessCard');
+    if (el) el.classList.toggle('flipped');
+};
 
-    document.getElementById(`slipName${suffix}`).textContent = displayName;
-    document.getElementById(`slipStudentId${suffix}`).textContent = data.studentId || '------';
-    document.getElementById(`slipSecCode${suffix}`).textContent = data.securityCode || '------';
+/* --- Print --- */
+window.printCard = function() {
+    if (!currentData) { alert('Card not loaded yet. Please wait.'); return; }
+    buildPrintArea(currentData);
+    // Wait for barcode/QR to render into the print area, then print
+    setTimeout(() => {
+        try {
+            const barcodeTarget = document.getElementById('printBarcodeSvg');
+            if (barcodeTarget && currentData.studentId && typeof JsBarcode === 'function') {
+                JsBarcode(barcodeTarget, currentData.studentId, {
+                    format: 'CODE128',
+                    width: 2,
+                    height: 50,
+                    displayValue: false,
+                    margin: 0,
+                    background: '#ffffff',
+                    lineColor: '#111111'
+                });
+            }
+            const qrTarget = document.getElementById('printQR');
+            if (qrTarget && typeof qrcode === 'function') {
+                const qr = qrcode(0, 'M');
+                qr.addData(currentData.examinationNumber
+                    ? `EXAM:${currentData.examinationNumber}\nSID:${currentData.studentId}\nNAME:${currentData.name}`
+                    : `SID:${currentData.studentId}\nNAME:${currentData.name}`);
+                qr.make();
+                qrTarget.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+            }
+            // Extra tick to ensure SVGs painted
+            setTimeout(() => window.print(), 120);
+        } catch(e) {
+            console.error('Print preparation failed:', e);
+            alert('Could not prepare the card for printing: ' + e.message);
+        }
+    }, 60);
+};
 
-    const slipStatus = document.getElementById(`slipStatus${suffix}`);
-    const slipStatusText = document.getElementById(`slipStatusText${suffix}`);
-    slipStatusText.textContent = status;
-    slipStatus.classList.remove('student', 'applicant');
-    slipStatus.classList.add(status === "Student" ? 'student' : 'applicant');
+function buildPrintArea(data) {
+    const name = data.name || 'Student';
+    const studentId = data.studentId || '';
+    const examNum = data.examinationNumber || '';
+    const secCode = data.securityCode || '';
 
-    const examNumEl = document.getElementById(`slipExamNum${suffix}`);
-    if (data.examinationNumber) {
-        examNumEl.textContent = data.examinationNumber;
-        examNumEl.classList.remove('pending');
-    } else {
-        examNumEl.textContent = "Pending — pass AE to receive";
-        examNumEl.classList.add('pending');
-    }
+    document.getElementById('printArea').innerHTML = `
+        <div class="print-sheet">
+            <div class="print-block">
+                <div class="print-block-label">Card Front</div>
+                <div class="print-card">
+                    <div class="pc-header">
+                        <div>∆ INSTITUTE OF BOARD</div>
+                        <div>2027</div>
+                    </div>
+                    <div class="pc-body">
+                        <div>
+                            <div class="pc-label">Student</div>
+                            <div class="pc-name">${escapeHtml(name)}</div>
+                        </div>
+                        <div>
+                            <div class="pc-label">Student ID (6-digit)</div>
+                            <div class="pc-id">${escapeHtml(studentId)}</div>
+                        </div>
+                        <div class="pc-barcode"><svg id="printBarcodeSvg"></svg></div>
+                        <div class="pc-hint">SCAN AT EXAM ENTRY</div>
+                    </div>
+                </div>
+            </div>
 
-    const canvasId = suffix === 'M' ? 'barcodeCanvasM' : 'barcodeCanvas';
-    const qrId = suffix === 'M' ? 'slipQRM' : 'slipQR';
-    renderSlip(data.studentId, data.examinationNumber, displayName, canvasId, qrId);
+            <div class="print-block">
+                <div class="print-block-label">Card Back</div>
+                <div class="print-card pc-back">
+                    <div class="pc-header">
+                        <div>∆ IFB</div>
+                        <div>2027</div>
+                    </div>
+                    <div class="pc-body">
+                        <div class="pc-row">
+                            <div>
+                                <div class="pc-label">Exam Number (13-digit)</div>
+                                <div class="pc-exam">${escapeHtml(examNum || 'PENDING — PASS AE')}</div>
+                                <div class="pc-label" style="margin-top:1.2mm;">Security Code</div>
+                                <div class="pc-sec">${escapeHtml(secCode)}</div>
+                            </div>
+                            <div class="pc-qr" id="printQR"></div>
+                        </div>
+                        <div class="pc-warning">
+                            <strong>DO NOT SHARE.</strong> Allowing another person to sit your examination results in immediate disqualification and permanent ban.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="print-instructions">
+                <h3>Examination Access Instructions</h3>
+                <ol>
+                    <li><strong>Bring this printed card</strong> to your examination session.</li>
+                    <li>At the exam portal, scan the <strong>barcode on the front</strong> to verify your identity.</li>
+                    <li>Enter your <strong>6-digit Student ID</strong> and <strong>6-character Security Code</strong> to unlock the exam.</li>
+                    <li>Your <strong>13-digit Examination Number</strong> appears on the back — it will be printed on your script header.</li>
+                    <li>The portal captures a <strong>live selfie</strong> at session start to confirm you are the person named above.</li>
+                </ol>
+                <div class="print-warning-box">
+                    ⚠ <strong>Impersonation Warning:</strong> Allowing another person to sit your examination is fraud. Identity is verified via live selfie and CV handwriting consistency analysis. Confirmed impersonation results in immediate disqualification and permanent ban from all Institute of Board programmes.
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 /* --- Timetable --- */
 function formatDateParts(dateStr) {
     try {
         const d = new Date(dateStr);
-        return {
-            day: d.getDate(),
-            month: d.toLocaleDateString('en-ZA', { month: 'short' })
-        };
-    } catch(e) {
-        return { day: '?', month: '?' };
-    }
+        return { day: d.getDate(), month: d.toLocaleDateString('en-ZA', { month: 'short' }) };
+    } catch(e) { return { day: '?', month: '?' }; }
 }
 function renderTimetable(exams) {
     const el = document.getElementById('timetableList');
     if (!exams.length) {
-        el.innerHTML = '<div class="timetable-empty">No exams scheduled. See the full timetable for details.</div>';
+        el.innerHTML = '<div class="timetable-empty">No exams scheduled.</div>';
         return;
     }
     el.innerHTML = exams.map(e => {
         const { day, month } = formatDateParts(e.date);
-        return `
-            <div class="timetable-row">
-                <div class="timetable-date">
-                    <div class="day">${day}</div>
-                    <div class="month">${month}</div>
-                </div>
-                <div class="timetable-info">
-                    <h4>${e.subject}</h4>
-                    <p>${e.code} · ${e.duration} · ${e.marks} marks</p>
-                </div>
-            </div>
-        `;
+        return `<div class="timetable-row">
+            <div class="timetable-date"><div class="day">${day}</div><div class="month">${month}</div></div>
+            <div class="timetable-info"><h4>${e.subject}</h4><p>${e.code} · ${e.duration} · ${e.marks} marks</p></div>
+        </div>`;
     }).join('');
 }
 async function loadTimetable() {
@@ -669,65 +884,18 @@ async function loadTimetable() {
         if (snap.exists() && Array.isArray(snap.data().exams)) exams = snap.data().exams;
     } catch(e) { /* ignore */ }
     if (!exams.length) {
-        exams = [
-            { code: 'AE-S MATH', subject: 'Mathematics', date: '2027-01-13', duration: '2 hours', marks: 100 }
-        ];
+        exams = [{ code: 'AE-S MATH', subject: 'Mathematics', date: '2027-01-13', duration: '2 hours', marks: 100 }];
     }
     renderTimetable(exams);
 }
 
-/* --- Download slip as PDF --- */
-window.downloadSlip = async function() {
-    if (typeof html2pdf === 'undefined') { alert('PDF library still loading — try again in a moment.'); return; }
-    if (!currentData) return;
-
-    const slipEl = document.getElementById('idSlip');
-    const btns = [document.getElementById('btnDownloadSlip'), document.getElementById('btnDownloadSlipTop')];
-    btns.forEach(b => { if (b) { b.disabled = true; b.dataset.original = b.innerHTML; b.innerHTML = '<i data-lucide="loader"></i> Generating...'; } });
-    refreshIcons();
-
-    try {
-        const filename = `IFB-Admissions-Slip-${currentData.studentId || 'student'}.pdf`;
-        await html2pdf().set({
-            margin: 0,
-            filename: filename,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2.5, backgroundColor: '#ffffff', useCORS: true, logging: false },
-            jsPDF: { unit: 'mm', format: [90, 143], orientation: 'portrait' }
-        }).from(slipEl).save();
-    } catch (e) {
-        console.error('[PDF] failed:', e);
-        alert('Could not generate PDF: ' + e.message);
-    } finally {
-        btns.forEach(b => { if (b) { b.disabled = false; if (b.dataset.original) b.innerHTML = b.dataset.original; } });
-        refreshIcons();
-    }
-};
-
-/* --- Slip modal --- */
-window.openSlipModal = function() {
-    if (!currentData) return;
-    populateSlip(currentData, 'M');
-    document.getElementById('slipModal').classList.add('active');
-    refreshIcons();
-};
-window.closeSlipModal = function() {
-    document.getElementById('slipModal').classList.remove('active');
-};
-
-/* --- Load user --- */
+/* --- Load --- */
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
-
     try {
         const docRef = doc(db, "users", user.uid);
         let docSnap = await getDoc(docRef);
-
-        if (!docSnap.exists()) {
-            window.location.href = "admission.html";
-            return;
-        }
-
+        if (!docSnap.exists()) { window.location.href = "admission.html"; return; }
         let data = docSnap.data();
         data = await migrateAndPromote(docRef, data);
         currentData = data;
@@ -735,24 +903,19 @@ onAuthStateChanged(auth, async (user) => {
         const displayName = data.name || user.displayName || "Student";
         const status = data.status || "Applicant";
 
-        // Topbar
         document.getElementById('topbarName').textContent = displayName;
         document.getElementById('topbarRoleText').textContent = status;
         document.getElementById('topbarAvatar').textContent = displayName.charAt(0).toUpperCase();
-
-        // Welcome row
         document.getElementById('welcomeName').textContent = displayName.split(' ')[0];
         document.getElementById('welcomeSub').textContent = status === "Student"
-            ? "You're enrolled. Access your slip, timetable, and resources below."
+            ? "You're enrolled. Access your access card, timetable, and resources below."
             : "Complete your admission exam to be issued your 13-digit Examination Number.";
 
-        // Status pill
         const statusPill = document.getElementById('statusPill');
         statusPill.classList.remove('student', 'applicant');
         statusPill.classList.add(status === "Student" ? 'student' : 'applicant');
         document.getElementById('statusPillText').textContent = status;
 
-        // Stats
         document.getElementById('statStudentId').textContent = data.studentId || '------';
         const statExam = document.getElementById('statExamNum');
         if (data.examinationNumber) {
@@ -764,10 +927,8 @@ onAuthStateChanged(auth, async (user) => {
         }
         document.getElementById('statSecCode').textContent = data.securityCode || '------';
 
-        // Slip preview
-        populateSlip(data, '');
+        populateAccessCard(data);
 
-        // Admin
         const isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
         if (isAdmin) {
             document.getElementById('adminNav').classList.add('visible');
@@ -777,12 +938,10 @@ onAuthStateChanged(auth, async (user) => {
 
         hideLoading();
         refreshIcons();
-
-        // Timetable (async, doesn't block)
         loadTimetable();
 
         if (data._migrationFailed) {
-            showError("Could not save updated IDs to the server.", "Your slip shows temporary values. Please refresh.");
+            showError("Could not save updated IDs to the server.", "Your card shows temporary values. Please refresh.");
         }
 
     } catch (error) {
@@ -797,7 +956,7 @@ document.getElementById('mobileMenuBtn')?.addEventListener('click', () => drawer
 document.getElementById('mobileDrawerClose')?.addEventListener('click', () => drawer.classList.remove('open'));
 drawer?.addEventListener('click', (e) => { if (e.target === drawer) drawer.classList.remove('open'); });
 
-/* --- Backdrop dismiss modals --- */
+/* --- Modal backdrop --- */
 document.querySelectorAll('.modal-overlay').forEach(m => {
     m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('active'); });
 });
