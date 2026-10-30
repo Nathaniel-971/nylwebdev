@@ -7,6 +7,7 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -17,31 +18,10 @@
     --success: #15803D; --warning: #B45309; --error: #B91C1C;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.5; }
 
-/* BODY SCROLLS NATURALLY — no nested overflow traps */
-html, body {
-    width: 100%;
-    min-height: 100dvh;
-    overflow-x: hidden;
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--black);
-    line-height: 1.5;
-}
-
-/* SIDEBAR — FIXED, doesn't affect body scroll */
-.sidebar {
-    position: fixed;
-    top: 0; left: 0;
-    width: 260px;
-    height: 100dvh;
-    background: var(--sidebar-bg);
-    color: var(--white);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    overflow-y: auto;
-}
+/* SIDEBAR */
+.sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100dvh; background: var(--sidebar-bg); color: var(--white); display: flex; flex-direction: column; z-index: 100; overflow-y: auto; }
 .sidebar-logo { padding: 24px 20px; font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .sidebar-logo .brand-mark { color: var(--white); font-size: 26px; background: rgba(0,0,0,0.25); width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 8px; flex-shrink: 0; }
 .sidebar-nav { padding: 20px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
@@ -59,30 +39,9 @@ html, body {
 .btn-sidebar.danger:hover { background: rgba(0,0,0,0.25); color: #FCA5A5; }
 .btn-sidebar i { width: 16px; height: 16px; flex-shrink: 0; }
 
-/* MAIN WRAPPER — offset by sidebar */
-.main-wrapper {
-    margin-left: 260px;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* TOPBAR — sticky inside main-wrapper */
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    height: 68px;
-    background: rgba(255,255,255,0.96);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--silver);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 28px;
-    gap: 12px;
-    flex-shrink: 0;
-}
+/* MAIN */
+.main-wrapper { margin-left: 260px; min-height: 100dvh; display: flex; flex-direction: column; }
+.topbar { position: sticky; top: 0; z-index: 50; height: 68px; background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 28px; gap: 12px; flex-shrink: 0; }
 .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .mobile-hamburger { display: none; background: transparent; border: none; cursor: pointer; padding: 8px; color: var(--maroon); border-radius: 8px; align-items: center; justify-content: center; flex-shrink: 0; }
 .mobile-hamburger:hover { background: #FFF5F6; }
@@ -95,152 +54,103 @@ html, body {
 .profile-info p i { width: 9px; height: 9px; }
 .profile-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px; box-shadow: 0 4px 12px rgba(122,31,43,0.3); flex-shrink: 0; }
 
-/* DASHBOARD CONTENT — no overflow trap, body scrolls */
-.dashboard-content {
-    flex: 1;
-    padding: 32px 28px 80px;
-    width: 100%;
-}
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
-    max-width: 900px;
-    margin: 0 auto;
-}
+.dashboard-content { flex: 1; padding: 28px 28px 80px; width: 100%; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 900px; margin: 0 auto; }
+
+/* WELCOME ROW */
+.welcome-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 4px; flex-wrap: wrap; }
+.welcome-greeting { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; color: var(--black); }
+.welcome-greeting span { color: var(--maroon); }
+.welcome-sub { font-size: 13px; color: var(--gray); margin-top: 4px; }
+.status-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 6px 12px; border-radius: 100px; flex-shrink: 0; }
+.status-pill i { width: 10px; height: 10px; }
+.status-pill.applicant { background: #FEF3C7; color: var(--warning); }
+.status-pill.student { background: #DCFCE7; color: var(--success); }
+
+/* STAT TILES */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.stat-tile { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
+.stat-tile .stat-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--gray); display: flex; align-items: center; gap: 5px; }
+.stat-tile .stat-label i { width: 11px; height: 11px; }
+.stat-tile .stat-value { font-family: 'Courier New', monospace; font-size: 20px; font-weight: 900; color: var(--maroon); letter-spacing: 0.5px; line-height: 1.1; }
+.stat-tile .stat-value.pending { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--warning); font-weight: 700; letter-spacing: 0; }
+.stat-tile .stat-value.small { font-size: 14px; letter-spacing: 0; font-family: 'Inter', sans-serif; }
+
+/* ACTION TILES */
+.action-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); gap: 10px; }
+.action-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 16px 10px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 12px; text-align: center; cursor: pointer; transition: 0.15s; font-family: inherit; line-height: 1.2; }
+.action-tile:hover { border-color: var(--maroon); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+.action-tile i { color: var(--maroon); width: 22px; height: 22px; }
+.action-tile.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
+.action-tile.primary i { color: var(--white); }
+.action-tile.primary:hover { background: var(--maroon-hover); }
+.action-tile:disabled { opacity: 0.6; cursor: wait; }
 
 /* CARDS */
-.card {
-    background: var(--white);
-    border-radius: 16px;
-    padding: 28px;
-    border: 1px solid var(--silver);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-}
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.card-title { font-size: 17px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.card { background: var(--white); border-radius: 16px; padding: 24px; border: 1px solid var(--silver); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 12px; }
+.card-title { font-size: 16px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 .card-title i { width: 18px; height: 18px; color: var(--maroon); flex-shrink: 0; }
+.card-action-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--maroon); text-decoration: none; padding: 6px 10px; border-radius: 6px; transition: 0.15s; }
+.card-action-link:hover { background: #FFF5F6; }
+.card-action-link i { width: 13px; height: 13px; }
 
 /* SLIP (PORTRAIT) */
-.id-slip-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-.id-slip {
-    width: 100%;
-    max-width: 340px;
-    aspect-ratio: 34 / 54;
-    background: var(--white);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-    border: 1px solid var(--silver);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-}
-.slip-header {
-    background: var(--maroon);
-    color: var(--white);
-    padding: 14px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
-.slip-header .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 14px; }
-.slip-header .brand span { font-size: 18px; }
-.slip-header .year { font-size: 12px; font-weight: 700; opacity: 0.85; letter-spacing: 1px; }
-.slip-body {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 0;
-    overflow: hidden;
-}
-.slip-name {
-    font-size: 20px;
-    font-weight: 900;
-    line-height: 1.2;
-    color: var(--black);
-    word-break: break-word;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-.slip-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 4px;
-    align-self: flex-start;
-}
+.id-slip-container { display: flex; justify-content: center; padding: 8px 0; }
+.id-slip { width: 100%; max-width: 320px; aspect-ratio: 34 / 54; background: var(--white); border-radius: 14px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.12); border: 1px solid var(--silver); display: flex; flex-direction: column; position: relative; }
+.slip-header { background: var(--maroon); color: var(--white); padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.slip-header .brand { display: flex; align-items: center; gap: 7px; font-weight: 900; font-size: 13px; }
+.slip-header .brand span { font-size: 16px; }
+.slip-header .year { font-size: 11px; font-weight: 700; opacity: 0.85; letter-spacing: 1px; }
+.slip-body { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow: hidden; }
+.slip-name { font-size: 18px; font-weight: 900; line-height: 1.15; word-break: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.slip-status { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; align-self: flex-start; }
 .slip-status.student { background: #DCFCE7; color: var(--success); }
 .slip-status.applicant { background: #FEF3C7; color: var(--warning); }
-.slip-status i { width: 8px; height: 8px; }
-.slip-divider { height: 1px; background: var(--silver); margin: 2px 0; flex-shrink: 0; }
-.slip-label { font-size: 9px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gray); }
-.slip-id-big { font-family: 'Courier New', monospace; font-size: 34px; font-weight: 900; color: var(--maroon); letter-spacing: 2px; line-height: 1; }
-.slip-exam-num {
-    font-family: 'Courier New', monospace;
-    font-size: 15px;
-    font-weight: 800;
-    color: var(--black);
-    letter-spacing: 1px;
-    word-break: break-all;
-    line-height: 1.3;
-}
-.slip-exam-num.pending { color: var(--warning); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
-.slip-spacer { flex: 1; min-height: 4px; }
-.slip-barcode {
-    background: #fff;
-    border-radius: 6px;
-    height: 44px;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #eee;
-    flex-shrink: 0;
-    overflow: hidden;
-}
-.slip-barcode svg { display: block; max-width: 100%; max-height: 100%; height: 100%; width: auto; }
-.slip-barcode .pending { font-size: 10px; color: var(--gray); font-weight: 600; }
+.slip-status i { width: 7px; height: 7px; }
+.slip-divider { height: 1px; background: var(--silver); flex-shrink: 0; }
+.slip-label { font-size: 8px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--gray); }
+.slip-id-big { font-family: 'Courier New', monospace; font-size: 32px; font-weight: 900; color: var(--maroon); letter-spacing: 2px; line-height: 1; margin-top: 3px; }
+.slip-exam-num { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 800; letter-spacing: 1px; word-break: break-all; line-height: 1.3; margin-top: 3px; }
+.slip-exam-num.pending { color: var(--warning); font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.3px; }
+.slip-spacer { flex: 1; min-height: 2px; }
+.slip-barcode { background: #fff; border-radius: 6px; height: 40px; padding: 4px; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; flex-shrink: 0; overflow: hidden; }
+.slip-barcode canvas { display: block; max-width: 100%; max-height: 100%; height: 100%; width: auto; }
+.slip-barcode .pending { font-size: 9px; color: var(--gray); font-weight: 600; }
 .slip-footer-row { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.slip-qr { width: 44px; height: 44px; background: #fff; padding: 2px; border-radius: 6px; border: 1px solid #eee; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.slip-qr svg { display: block; width: 100%; height: 100%; }
+.slip-qr { width: 40px; height: 40px; background: #fff; padding: 2px; border-radius: 6px; border: 1px solid #eee; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.slip-qr img { display: block; width: 100%; height: 100%; }
 .slip-sec { flex: 1; min-width: 0; }
-.slip-sec .slip-label { margin-bottom: 3px; }
-.slip-sec .value { font-family: 'Courier New', monospace; font-size: 14px; font-weight: 900; letter-spacing: 2px; color: var(--black); }
-.slip-pending-hint { font-size: 10px; color: var(--warning); font-weight: 700; margin-top: 4px; }
+.slip-sec .value { font-family: 'Courier New', monospace; font-size: 13px; font-weight: 900; letter-spacing: 2px; margin-top: 2px; }
+.slip-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-slip-action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.15s; font-family: inherit; border: 1.5px solid var(--maroon); background: var(--maroon); color: var(--white); }
+.btn-slip-action.secondary { background: var(--white); color: var(--maroon); }
+.btn-slip-action:hover:not(:disabled) { background: var(--maroon-hover); color: var(--white); }
+.btn-slip-action.secondary:hover:not(:disabled) { background: #FFF5F6; color: var(--maroon); }
+.btn-slip-action i { width: 15px; height: 15px; }
+.btn-slip-action:disabled { opacity: 0.6; cursor: wait; }
+
+/* TIMETABLE */
+.timetable-list { display: flex; flex-direction: column; gap: 10px; }
+.timetable-row { display: flex; gap: 14px; align-items: center; padding: 14px; border: 1px solid var(--silver); border-radius: 10px; background: #FAFAFA; }
+.timetable-date { background: var(--maroon); color: var(--white); border-radius: 8px; padding: 8px 10px; text-align: center; min-width: 60px; flex-shrink: 0; }
+.timetable-date .day { font-size: 18px; font-weight: 900; line-height: 1; }
+.timetable-date .month { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+.timetable-info { flex: 1; min-width: 0; }
+.timetable-info h4 { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+.timetable-info p { font-size: 12px; color: var(--gray); font-weight: 600; }
+.timetable-empty { padding: 20px; text-align: center; color: var(--gray); font-size: 13px; border: 1px dashed var(--silver); border-radius: 10px; }
 
 /* LINK ITEMS */
-.link-item { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 12px; border: 1px solid var(--silver); background: var(--white); text-decoration: none; color: var(--black); margin-bottom: 10px; transition: 0.15s; }
+.link-item { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 10px; border: 1px solid var(--silver); background: var(--white); text-decoration: none; color: var(--black); margin-bottom: 10px; transition: 0.15s; }
 .link-item:last-child { margin-bottom: 0; }
 .link-item:hover { border-color: var(--maroon); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-.link-item .link-icon { width: 42px; height: 42px; border-radius: 10px; background: #FFF5F6; color: var(--maroon); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.link-item .link-icon { width: 40px; height: 40px; border-radius: 10px; background: #FFF5F6; color: var(--maroon); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .link-item .link-icon i { width: 18px; height: 18px; }
 .link-item .link-text { flex: 1; min-width: 0; }
 .link-item .link-text h4 { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
 .link-item .link-text p { font-size: 12px; color: var(--gray); }
 .link-item > i { width: 16px; height: 16px; color: var(--gray); flex-shrink: 0; }
-
-/* ACTION GRID */
-.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.action-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px 12px; background: var(--white); border: 1px solid var(--silver); border-radius: 12px; text-decoration: none; color: var(--black); font-weight: 700; font-size: 13px; transition: 0.15s; text-align: center; }
-.action-btn:hover { border-color: var(--maroon); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-.action-btn i { color: var(--maroon); width: 22px; height: 22px; }
-.action-btn.admin-btn { border-color: var(--maroon); background: #FFF5F6; display: none; grid-column: 1 / -1; }
-.action-btn.admin-btn.visible { display: flex; }
 
 /* ADMIN CARD */
 .admin-card { display: none; background: linear-gradient(135deg, #7A1F2B 0%, #5A1620 100%); color: var(--white); border: none; }
@@ -248,22 +158,20 @@ html, body {
 .admin-card .card-title { color: var(--white); }
 .admin-card .card-title i { color: #FCA5A5; }
 .admin-card p { font-size: 13px; color: rgba(255,255,255,0.85); margin-bottom: 14px; line-height: 1.6; }
-.admin-card .btn-admin { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--maroon); padding: 11px 18px; border-radius: 8px; font-weight: 800; font-size: 13px; text-decoration: none; transition: 0.15s; }
+.admin-card .btn-admin { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--maroon); padding: 11px 18px; border-radius: 8px; font-weight: 800; font-size: 13px; text-decoration: none; }
 .admin-card .btn-admin:hover { background: #F8FAFC; }
 .admin-card .btn-admin i { width: 15px; height: 15px; }
 
-/* LOADING */
+/* LOADING / ERROR */
 .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; }
 .spinner { width: 44px; height: 44px; border: 4px solid var(--silver); border-top-color: var(--maroon); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-text { font-size: 13px; color: var(--gray); font-weight: 600; }
-
-/* ERROR */
 .alert-error { display: none; background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 14px 16px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; font-size: 13px; }
 .alert-error strong { display: block; margin-bottom: 4px; }
 .alert-error code { font-family: monospace; font-size: 11px; background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px; word-break: break-all; }
 
-/* MOBILE DRAWER */
+/* DRAWER */
 .mobile-drawer { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; }
 .mobile-drawer.open { display: block; }
 .mobile-drawer-panel { width: 280px; height: 100dvh; background: var(--sidebar-bg); color: var(--white); padding: 20px 14px; display: flex; flex-direction: column; gap: 6px; box-shadow: 4px 0 24px rgba(0,0,0,0.3); animation: slideIn 0.22s ease-out; overflow-y: auto; }
@@ -272,30 +180,33 @@ html, body {
 .mobile-drawer-logo { font-size: 16px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
 .mobile-drawer-logo .brand-mark { background: rgba(0,0,0,0.25); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 18px; }
 .mobile-drawer-close { background: transparent; border: none; color: var(--white); cursor: pointer; padding: 6px; border-radius: 6px; }
-.mobile-drawer-close:hover { background: rgba(255,255,255,0.1); }
 .mobile-drawer-close i { width: 20px; height: 20px; }
 .mobile-drawer-footer { margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 6px; }
 
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; }
+/* MODALS */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(6px); z-index: 1000; display: none; justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
 .modal-overlay.active { display: flex; }
-.modal-box { background: var(--white); border-radius: 16px; max-width: 440px; width: 100%; padding: 32px 24px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
-.modal-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; background: #FEF2F2; color: var(--error); }
-.modal-icon i { width: 30px; height: 30px; }
-.modal-box h2 { font-size: 20px; font-weight: 900; margin-bottom: 10px; }
-.modal-box p { font-size: 13px; color: var(--gray); line-height: 1.6; margin-bottom: 20px; }
-.modal-field { text-align: left; margin-bottom: 18px; }
-.modal-field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
-.modal-field label strong { color: var(--error); font-family: monospace; letter-spacing: 1px; }
-.modal-field input { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: monospace; font-weight: 700; text-align: center; letter-spacing: 3px; text-transform: uppercase; }
-.modal-field input:focus { border-color: var(--error); }
-.modal-actions { display: flex; gap: 10px; }
-.btn-modal { flex: 1; padding: 13px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: 0.15s; border: none; }
+.modal-box { background: var(--white); border-radius: 16px; max-width: 440px; width: 100%; padding: 28px 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.3); }
+.modal-box.slip-modal { max-width: 380px; text-align: center; }
+.modal-box h2 { font-size: 20px; font-weight: 900; margin-bottom: 8px; text-align: center; }
+.modal-box.slip-modal .id-slip { margin: 16px auto; }
+.modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+.btn-modal { flex: 1; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; border: none; transition: 0.15s; }
 .btn-modal.cancel { background: var(--white); border: 1.5px solid var(--silver); color: var(--black); }
 .btn-modal.cancel:hover { border-color: var(--black); }
 .btn-modal.delete { background: var(--error); color: var(--white); }
 .btn-modal.delete:hover:not(:disabled) { background: #991B1B; }
+.btn-modal.primary { background: var(--maroon); color: var(--white); }
+.btn-modal.primary:hover { background: var(--maroon-hover); }
 .btn-modal:disabled { opacity: 0.6; cursor: wait; }
+.modal-icon { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; background: #FEF2F2; color: var(--error); }
+.modal-icon i { width: 28px; height: 28px; }
+.modal-box p { font-size: 13px; color: var(--gray); line-height: 1.6; text-align: center; }
+.modal-field { text-align: left; margin: 16px 0; }
+.modal-field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+.modal-field label strong { color: var(--error); font-family: monospace; letter-spacing: 1px; }
+.modal-field input { width: 100%; padding: 12px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: monospace; font-weight: 700; text-align: center; letter-spacing: 3px; text-transform: uppercase; }
+.modal-field input:focus { border-color: var(--error); }
 
 /* MOBILE */
 @media (max-width: 900px) {
@@ -306,19 +217,22 @@ html, body {
     .topbar-title { font-size: 15px; }
     .profile-info { display: none; }
     .dashboard-content { padding: 20px 16px 60px; }
-    .dashboard-grid { gap: 16px; }
-    .card { padding: 20px; }
-    .action-grid { grid-template-columns: 1fr; }
-    .id-slip { max-width: 300px; }
+    .dashboard-grid { gap: 14px; }
+    .card { padding: 18px; }
+    .welcome-greeting { font-size: 20px; }
+    .id-slip { max-width: 280px; }
     .slip-id-big { font-size: 28px; }
-    .slip-exam-num { font-size: 13px; }
-    .slip-name { font-size: 18px; }
+    .stat-tile { padding: 12px 14px; }
+    .stat-tile .stat-value { font-size: 17px; }
+    .action-tile { padding: 14px 8px; font-size: 11px; }
+    .timetable-row { padding: 12px; }
+    .timetable-date { min-width: 52px; padding: 6px 8px; }
+    .timetable-date .day { font-size: 16px; }
 }
 </style>
 </head>
 <body>
 
-<!-- FIXED SIDEBAR -->
 <aside class="sidebar">
     <div class="sidebar-logo"><div class="brand-mark">∆</div> IFB Portal</div>
     <nav class="sidebar-nav">
@@ -334,7 +248,6 @@ html, body {
     </div>
 </aside>
 
-<!-- MAIN -->
 <div class="main-wrapper">
     <header class="topbar">
         <div class="topbar-left">
@@ -362,14 +275,54 @@ html, body {
 
         <div class="dashboard-grid" id="mainContent" style="display:none;">
 
+            <!-- WELCOME -->
+            <div class="welcome-row">
+                <div>
+                    <div class="welcome-greeting">Welcome back, <span id="welcomeName">—</span></div>
+                    <div class="welcome-sub" id="welcomeSub">Loading your student record…</div>
+                </div>
+                <div class="status-pill applicant" id="statusPill">
+                    <i data-lucide="dot"></i>
+                    <span id="statusPillText">Applicant</span>
+                </div>
+            </div>
+
+            <!-- STATS -->
+            <div class="stats-row">
+                <div class="stat-tile">
+                    <div class="stat-label"><i data-lucide="hash"></i> Student ID</div>
+                    <div class="stat-value" id="statStudentId">------</div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-label"><i data-lucide="file-badge"></i> Exam Number</div>
+                    <div class="stat-value pending" id="statExamNum">Pending</div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-label"><i data-lucide="key"></i> Security Code</div>
+                    <div class="stat-value small" id="statSecCode">------</div>
+                </div>
+            </div>
+
+            <!-- ACTION TILES -->
+            <div class="action-tiles">
+                <button class="action-tile" onclick="openSlipModal()"><i data-lucide="ticket"></i> View Card</button>
+                <button class="action-tile primary" id="btnDownloadSlipTop" onclick="downloadSlip()"><i data-lucide="download"></i> Download Slip</button>
+                <a href="ae-timetable.html" class="action-tile"><i data-lucide="calendar"></i> Timetable</a>
+                <a href="resources.html" class="action-tile"><i data-lucide="folder-open"></i> Resources</a>
+                <a href="exam-gateway.html" class="action-tile"><i data-lucide="monitor-play"></i> Exam</a>
+            </div>
+
             <!-- SLIP CARD -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-title"><i data-lucide="ticket"></i> Student Slip</div>
+                    <button class="card-action-link" onclick="openSlipModal()" style="border:none;background:none;cursor:pointer;font-family:inherit;">
+                        Expand <i data-lucide="maximize-2"></i>
+                    </button>
                 </div>
 
                 <div class="id-slip-container">
-                    <div class="id-slip">
+                    <div class="id-slip" id="idSlip">
                         <div class="slip-header">
                             <div class="brand"><span>∆</span> STUDENT SLIP</div>
                             <div class="year">2027</div>
@@ -396,7 +349,7 @@ html, body {
                             <div class="slip-spacer"></div>
 
                             <div class="slip-barcode" id="slipBarcode">
-                                <svg id="barcodeSvg"></svg>
+                                <canvas id="barcodeCanvas"></canvas>
                             </div>
 
                             <div class="slip-footer-row">
@@ -409,16 +362,31 @@ html, body {
                         </div>
                     </div>
                 </div>
+
+                <div class="slip-actions">
+                    <button class="btn-slip-action" id="btnDownloadSlip" onclick="downloadSlip()">
+                        <i data-lucide="download"></i> Download Admissions Slip
+                    </button>
+                    <button class="btn-slip-action secondary" onclick="openSlipModal()">
+                        <i data-lucide="maximize-2"></i> View Full Size
+                    </button>
+                </div>
+            </div>
+
+            <!-- TIMETABLE CARD -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i data-lucide="calendar"></i> Timetable</div>
+                    <a href="ae-timetable.html" class="card-action-link">View Full <i data-lucide="arrow-right"></i></a>
+                </div>
+                <div class="timetable-list" id="timetableList">
+                    <div class="timetable-empty">Loading timetable…</div>
+                </div>
             </div>
 
             <!-- LINKS -->
             <div class="card">
-                <div class="card-header"><div class="card-title"><i data-lucide="bookmark"></i> Important Links</div></div>
-                <a href="ae-timetable.html" class="link-item">
-                    <div class="link-icon"><i data-lucide="calendar"></i></div>
-                    <div class="link-text"><h4>AE Timetable 2027</h4><p>View your admission exam schedule</p></div>
-                    <i data-lucide="arrow-right"></i>
-                </a>
+                <div class="card-header"><div class="card-title"><i data-lucide="bookmark"></i> Quick Links</div></div>
                 <a href="documents.html" class="link-item">
                     <div class="link-icon"><i data-lucide="file-text"></i></div>
                     <div class="link-text"><h4>Official Documents</h4><p>Circulars, prospectus, rules, and policies</p></div>
@@ -429,18 +397,11 @@ html, body {
                     <div class="link-text"><h4>Prospectus</h4><p>Full programme overview and curriculum</p></div>
                     <i data-lucide="arrow-right"></i>
                 </a>
-            </div>
-
-            <!-- QUICK ACTIONS -->
-            <div class="card">
-                <div class="card-header"><div class="card-title"><i data-lucide="zap"></i> Quick Actions</div></div>
-                <div class="action-grid">
-                    <a href="resources.html" class="action-btn"><i data-lucide="folder-open"></i> Resources</a>
-                    <a href="exam-gateway.html" class="action-btn"><i data-lucide="monitor-play"></i> Exam Portal</a>
-                    <a href="ae-timetable.html" class="action-btn"><i data-lucide="calendar"></i> Timetable</a>
-                    <a href="guidelines-general.html" class="action-btn"><i data-lucide="shield-check"></i> Rules</a>
-                    <a href="admin-resources.html" class="action-btn admin-btn" id="adminQuickBtn"><i data-lucide="shield"></i> Manage Resources</a>
-                </div>
+                <a href="guidelines-general.html" class="link-item">
+                    <div class="link-icon"><i data-lucide="shield-check"></i></div>
+                    <div class="link-text"><h4>Rules & Policies</h4><p>Code of conduct, privacy, and terms</p></div>
+                    <i data-lucide="arrow-right"></i>
+                </a>
             </div>
 
             <!-- ADMIN CARD -->
@@ -459,7 +420,7 @@ html, body {
     <div class="mobile-drawer-panel">
         <div class="mobile-drawer-header">
             <div class="mobile-drawer-logo"><div class="brand-mark">∆</div> IFB Portal</div>
-            <button class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close"><i data-lucide="x"></i></button>
+            <button class="mobile-drawer-close" id="mobileDrawerClose"><i data-lucide="x"></i></button>
         </div>
         <a href="student-dashboard.html" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
         <a href="resources.html" class="nav-item"><i data-lucide="folder-open"></i> Resources</a>
@@ -469,6 +430,53 @@ html, body {
         <div class="mobile-drawer-footer">
             <button class="btn-sidebar" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
             <button class="btn-sidebar danger" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- SLIP MODAL -->
+<div class="modal-overlay" id="slipModal">
+    <div class="modal-box slip-modal">
+        <h2>Student Slip</h2>
+        <p style="margin-bottom:8px;font-size:12px;">View and download your official slip</p>
+        <div class="id-slip-container">
+            <div class="id-slip" id="idSlipModal">
+                <div class="slip-header">
+                    <div class="brand"><span>∆</span> STUDENT SLIP</div>
+                    <div class="year">2027</div>
+                </div>
+                <div class="slip-body">
+                    <div class="slip-name" id="slipNameM">—</div>
+                    <div class="slip-status applicant" id="slipStatusM">
+                        <i data-lucide="dot"></i>
+                        <span id="slipStatusTextM">Applicant</span>
+                    </div>
+                    <div class="slip-divider"></div>
+                    <div>
+                        <div class="slip-label">Student ID (6-digit)</div>
+                        <div class="slip-id-big" id="slipStudentIdM">------</div>
+                    </div>
+                    <div>
+                        <div class="slip-label">Examination Number (13-digit)</div>
+                        <div class="slip-exam-num pending" id="slipExamNumM">Pending — pass AE to receive</div>
+                    </div>
+                    <div class="slip-spacer"></div>
+                    <div class="slip-barcode" id="slipBarcodeM">
+                        <canvas id="barcodeCanvasM"></canvas>
+                    </div>
+                    <div class="slip-footer-row">
+                        <div class="slip-qr" id="slipQRM"></div>
+                        <div class="slip-sec">
+                            <div class="slip-label">Security Code</div>
+                            <div class="value" id="slipSecCodeM">------</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal cancel" onclick="closeSlipModal()">Close</button>
+            <button class="btn-modal primary" onclick="downloadSlip()"><i data-lucide="download" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Download</button>
         </div>
     </div>
 </div>
@@ -492,13 +500,8 @@ html, body {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-    getAuth, onAuthStateChanged, signOut as firebaseSignOut,
-    reauthenticateWithPopup, GoogleAuthProvider
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-    getFirestore, doc, getDoc, updateDoc, deleteDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut as firebaseSignOut, reauthenticateWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
@@ -506,10 +509,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
-/* ---------- Helpers ---------- */
-function refreshIcons() {
-    if (window.lucide) { try { lucide.createIcons(); } catch(e) {} }
-}
+let currentData = null;
+
+function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 function showError(title, detail) {
     const el = document.getElementById('errorAlert');
     el.innerHTML = `<strong>${title}</strong>${detail ? `<code>${detail}</code>` : ''}`;
@@ -521,12 +523,8 @@ function hideLoading() {
     document.getElementById('mainContent').style.display = 'grid';
 }
 
-/* ---------- ID generators ---------- */
-// 6-digit Student ID (100000–999999, no leading zeros to avoid login typing errors)
-function generate6DigitStudentId() {
-    return String(Math.floor(Math.random() * 900000) + 100000);
-}
-// 13-digit Examination Number: 27 + 01 + X + [6-digit studentId] + [2-digit checksum]
+/* --- ID generators --- */
+function generate6DigitStudentId() { return String(Math.floor(Math.random() * 900000) + 100000); }
 function generateExamNumber(studentId6) {
     const base = "27" + "01" + "X" + studentId6;
     let sum = 0;
@@ -542,174 +540,249 @@ function generateSecurityCode() {
 function is6Digit(id) { return typeof id === 'string' && /^\d{6}$/.test(id); }
 function isOld13Digit(id) { return typeof id === 'string' && /^27\d{2}[A-Z]\d{8}$/.test(id); }
 
-/* ---------- Migration + promotion ---------- */
 async function migrateAndPromote(docRef, data) {
     const updates = {};
     let workingStudentId = data.studentId;
     let workingExamNumber = data.examinationNumber;
 
-    // Case 1: Old 13-digit format in studentId field — this was the old ID scheme
     if (isOld13Digit(workingStudentId) && !workingExamNumber) {
-        updates.examinationNumber = workingStudentId; // preserve as exam number
+        updates.examinationNumber = workingStudentId;
         updates.studentId = generate6DigitStudentId();
         workingExamNumber = workingStudentId;
         workingStudentId = updates.studentId;
-        console.log("[Dashboard] Legacy 13-digit ID → moved to examNumber:", workingExamNumber);
-    }
-    // Case 2: No valid 6-digit studentId
-    else if (!is6Digit(workingStudentId)) {
+    } else if (!is6Digit(workingStudentId)) {
         updates.studentId = generate6DigitStudentId();
         workingStudentId = updates.studentId;
-        console.log("[Dashboard] Generated new 6-digit studentId:", workingStudentId);
     }
-
-    // Security code
     if (!data.securityCode || data.securityCode.length !== 6) {
         updates.securityCode = generateSecurityCode();
     }
-
-    // Promotion: status Student OR aeResult "Pass" — ensure exam number exists
     const isPromoted = data.status === "Student" || data.aeResult === "Pass";
     if (isPromoted && !workingExamNumber) {
         updates.examinationNumber = generateExamNumber(workingStudentId);
         if (data.status !== "Student") updates.status = "Student";
-        console.log("[Dashboard] Promoted. New exam number:", updates.examinationNumber);
     }
-
-    if (Object.keys(updates).length === 0) {
-        return data;
-    }
-
+    if (Object.keys(updates).length === 0) return data;
     try {
         await updateDoc(docRef, { ...updates, migratedAt: new Date() });
-        // Re-read to verify
-        const verify = await getDoc(docRef);
-        const vdata = verify.data();
-        if (updates.studentId && vdata.studentId !== updates.studentId) {
-            console.warn("[Dashboard] studentId write did not persist");
-        }
-        if (updates.examinationNumber && vdata.examinationNumber !== updates.examinationNumber) {
-            console.warn("[Dashboard] examNumber write did not persist");
-        }
         return { ...data, ...updates };
     } catch (e) {
-        console.error("[Dashboard] Migration write failed:", e);
-        // Apply to in-memory only so UI isn't blank
+        console.error("[Migrate] write failed:", e);
         return { ...data, ...updates, _migrationFailed: true };
     }
 }
 
-/* ---------- Render slip barcode + QR ---------- */
-function renderSlipBarcodeAndQR(studentId, examNumber, name) {
-    // Barcode encodes the 6-digit student ID (login credential)
-    const barcodeEl = document.getElementById('barcodeSvg');
+/* --- Barcode + QR --- */
+function renderSlip(studentId, examNumber, name, canvasId, qrId) {
+    const canvasEl = document.getElementById(canvasId);
+    const qrEl = document.getElementById(qrId);
+    if (!canvasEl || !qrEl) return;
+
     if (studentId && typeof JsBarcode === 'function') {
         try {
-            JsBarcode(barcodeEl, studentId, {
-                format: "CODE128",
-                width: 1.4,
-                height: 36,
-                displayValue: false,
-                margin: 0,
-                background: "#ffffff",
-                lineColor: "#111111"
+            JsBarcode(canvasEl, studentId, {
+                format: "CODE128", width: 1.6, height: 40, displayValue: false, margin: 0,
+                background: "#ffffff", lineColor: "#111111"
             });
-        } catch (e) {
-            console.warn("[Dashboard] Barcode failed:", e);
-            document.getElementById('slipBarcode').innerHTML = '<span class="pending">—</span>';
-        }
+        } catch (e) { console.warn("[Barcode] failed:", e); }
     }
 
-    // QR encodes exam number when available, else student ID
-    const qrEl = document.getElementById('slipQR');
     if (typeof qrcode === 'function') {
         try {
             const qr = qrcode(0, 'M');
-            const qrPayload = examNumber
+            const payload = examNumber
                 ? `EXAM:${examNumber}\nSID:${studentId}\nNAME:${name}`
                 : `SID:${studentId}\nNAME:${name}\nSTATUS:Applicant`;
-            qr.addData(qrPayload);
+            qr.addData(payload);
             qr.make();
-            qrEl.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
-        } catch (e) {
-            console.warn("[Dashboard] QR failed:", e);
-        }
+            qrEl.innerHTML = `<img src="${qr.createDataURL(4, 0)}" alt="QR" style="width:100%;height:100%;display:block;">`;
+        } catch (e) { console.warn("[QR] failed:", e); }
     }
 }
 
-/* ---------- Load ---------- */
+function populateSlip(data, suffix = '') {
+    const displayName = data.name || "Student";
+    const status = data.status || "Applicant";
+
+    document.getElementById(`slipName${suffix}`).textContent = displayName;
+    document.getElementById(`slipStudentId${suffix}`).textContent = data.studentId || '------';
+    document.getElementById(`slipSecCode${suffix}`).textContent = data.securityCode || '------';
+
+    const slipStatus = document.getElementById(`slipStatus${suffix}`);
+    const slipStatusText = document.getElementById(`slipStatusText${suffix}`);
+    slipStatusText.textContent = status;
+    slipStatus.classList.remove('student', 'applicant');
+    slipStatus.classList.add(status === "Student" ? 'student' : 'applicant');
+
+    const examNumEl = document.getElementById(`slipExamNum${suffix}`);
+    if (data.examinationNumber) {
+        examNumEl.textContent = data.examinationNumber;
+        examNumEl.classList.remove('pending');
+    } else {
+        examNumEl.textContent = "Pending — pass AE to receive";
+        examNumEl.classList.add('pending');
+    }
+
+    const canvasId = suffix === 'M' ? 'barcodeCanvasM' : 'barcodeCanvas';
+    const qrId = suffix === 'M' ? 'slipQRM' : 'slipQR';
+    renderSlip(data.studentId, data.examinationNumber, displayName, canvasId, qrId);
+}
+
+/* --- Timetable --- */
+function formatDateParts(dateStr) {
+    try {
+        const d = new Date(dateStr);
+        return {
+            day: d.getDate(),
+            month: d.toLocaleDateString('en-ZA', { month: 'short' })
+        };
+    } catch(e) {
+        return { day: '?', month: '?' };
+    }
+}
+function renderTimetable(exams) {
+    const el = document.getElementById('timetableList');
+    if (!exams.length) {
+        el.innerHTML = '<div class="timetable-empty">No exams scheduled. See the full timetable for details.</div>';
+        return;
+    }
+    el.innerHTML = exams.map(e => {
+        const { day, month } = formatDateParts(e.date);
+        return `
+            <div class="timetable-row">
+                <div class="timetable-date">
+                    <div class="day">${day}</div>
+                    <div class="month">${month}</div>
+                </div>
+                <div class="timetable-info">
+                    <h4>${e.subject}</h4>
+                    <p>${e.code} · ${e.duration} · ${e.marks} marks</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+async function loadTimetable() {
+    let exams = [];
+    try {
+        const snap = await getDoc(doc(db, 'config', 'timetable'));
+        if (snap.exists() && Array.isArray(snap.data().exams)) exams = snap.data().exams;
+    } catch(e) { /* ignore */ }
+    if (!exams.length) {
+        exams = [
+            { code: 'AE-S MATH', subject: 'Mathematics', date: '2027-01-13', duration: '2 hours', marks: 100 }
+        ];
+    }
+    renderTimetable(exams);
+}
+
+/* --- Download slip as PDF --- */
+window.downloadSlip = async function() {
+    if (typeof html2pdf === 'undefined') { alert('PDF library still loading — try again in a moment.'); return; }
+    if (!currentData) return;
+
+    const slipEl = document.getElementById('idSlip');
+    const btns = [document.getElementById('btnDownloadSlip'), document.getElementById('btnDownloadSlipTop')];
+    btns.forEach(b => { if (b) { b.disabled = true; b.dataset.original = b.innerHTML; b.innerHTML = '<i data-lucide="loader"></i> Generating...'; } });
+    refreshIcons();
+
+    try {
+        const filename = `IFB-Admissions-Slip-${currentData.studentId || 'student'}.pdf`;
+        await html2pdf().set({
+            margin: 0,
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2.5, backgroundColor: '#ffffff', useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: [90, 143], orientation: 'portrait' }
+        }).from(slipEl).save();
+    } catch (e) {
+        console.error('[PDF] failed:', e);
+        alert('Could not generate PDF: ' + e.message);
+    } finally {
+        btns.forEach(b => { if (b) { b.disabled = false; if (b.dataset.original) b.innerHTML = b.dataset.original; } });
+        refreshIcons();
+    }
+};
+
+/* --- Slip modal --- */
+window.openSlipModal = function() {
+    if (!currentData) return;
+    populateSlip(currentData, 'M');
+    document.getElementById('slipModal').classList.add('active');
+    refreshIcons();
+};
+window.closeSlipModal = function() {
+    document.getElementById('slipModal').classList.remove('active');
+};
+
+/* --- Load user --- */
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
-    console.log("[Dashboard] Signed in:", user.email);
 
     try {
         const docRef = doc(db, "users", user.uid);
         let docSnap = await getDoc(docRef);
 
         if (!docSnap.exists()) {
-            console.log("[Dashboard] No user doc — redirecting to admission");
             window.location.href = "admission.html";
             return;
         }
 
         let data = docSnap.data();
         data = await migrateAndPromote(docRef, data);
+        currentData = data;
 
-        /* Populate UI */
         const displayName = data.name || user.displayName || "Student";
         const status = data.status || "Applicant";
 
+        // Topbar
         document.getElementById('topbarName').textContent = displayName;
         document.getElementById('topbarRoleText').textContent = status;
         document.getElementById('topbarAvatar').textContent = displayName.charAt(0).toUpperCase();
 
-        // Slip
-        document.getElementById('slipName').textContent = displayName;
-        document.getElementById('slipStudentId').textContent = data.studentId || '------';
-        document.getElementById('slipSecCode').textContent = data.securityCode || '------';
+        // Welcome row
+        document.getElementById('welcomeName').textContent = displayName.split(' ')[0];
+        document.getElementById('welcomeSub').textContent = status === "Student"
+            ? "You're enrolled. Access your slip, timetable, and resources below."
+            : "Complete your admission exam to be issued your 13-digit Examination Number.";
 
-        const slipStatusEl = document.getElementById('slipStatus');
-        const slipStatusText = document.getElementById('slipStatusText');
-        slipStatusText.textContent = status;
-        if (status === "Student") {
-            slipStatusEl.classList.remove('applicant');
-            slipStatusEl.classList.add('student');
-        } else {
-            slipStatusEl.classList.remove('student');
-            slipStatusEl.classList.add('applicant');
-        }
+        // Status pill
+        const statusPill = document.getElementById('statusPill');
+        statusPill.classList.remove('student', 'applicant');
+        statusPill.classList.add(status === "Student" ? 'student' : 'applicant');
+        document.getElementById('statusPillText').textContent = status;
 
-        const examNumEl = document.getElementById('slipExamNum');
+        // Stats
+        document.getElementById('statStudentId').textContent = data.studentId || '------';
+        const statExam = document.getElementById('statExamNum');
         if (data.examinationNumber) {
-            examNumEl.textContent = data.examinationNumber;
-            examNumEl.classList.remove('pending');
+            statExam.textContent = data.examinationNumber;
+            statExam.classList.remove('pending');
         } else {
-            examNumEl.textContent = "Pending — pass AE to receive";
-            examNumEl.classList.add('pending');
+            statExam.textContent = 'Pending';
+            statExam.classList.add('pending');
         }
+        document.getElementById('statSecCode').textContent = data.securityCode || '------';
 
-        /* Admin */
+        // Slip preview
+        populateSlip(data, '');
+
+        // Admin
         const isAdmin = user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
         if (isAdmin) {
             document.getElementById('adminNav').classList.add('visible');
             document.getElementById('adminNavMobile').classList.add('visible');
             document.getElementById('adminCard').classList.add('visible');
-            document.getElementById('adminQuickBtn').classList.add('visible');
         }
 
         hideLoading();
         refreshIcons();
 
-        /* Barcode + QR after paint */
-        setTimeout(() => {
-            renderSlipBarcodeAndQR(data.studentId, data.examinationNumber, displayName);
-            refreshIcons();
-        }, 80);
+        // Timetable (async, doesn't block)
+        loadTimetable();
 
-        /* Surface migration failure */
         if (data._migrationFailed) {
-            showError("Could not save updated IDs to the server.",
-                "Your slip is showing temporary values. Please refresh or contact support.");
+            showError("Could not save updated IDs to the server.", "Your slip shows temporary values. Please refresh.");
         }
 
     } catch (error) {
@@ -718,19 +791,24 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-/* ---------- Drawer ---------- */
+/* --- Drawer --- */
 const drawer = document.getElementById('mobileDrawer');
 document.getElementById('mobileMenuBtn')?.addEventListener('click', () => drawer.classList.add('open'));
 document.getElementById('mobileDrawerClose')?.addEventListener('click', () => drawer.classList.remove('open'));
 drawer?.addEventListener('click', (e) => { if (e.target === drawer) drawer.classList.remove('open'); });
 
-/* ---------- Sign out ---------- */
+/* --- Backdrop dismiss modals --- */
+document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('active'); });
+});
+
+/* --- Sign out --- */
 window.signOut = async function() {
     try { await firebaseSignOut(auth); window.location.href = "index.html"; }
     catch (e) { showError("Sign out failed", e.message); }
 };
 
-/* ---------- Delete ---------- */
+/* --- Delete --- */
 window.confirmDeleteAccount = function() {
     document.getElementById('deleteConfirmInput').value = '';
     document.getElementById('deleteConfirmBtn').disabled = false;
@@ -758,14 +836,10 @@ window.deleteAccount = async function() {
         sessionStorage.clear();
         window.location.href = "index.html";
     } catch (e) {
-        console.error("[Dashboard] Delete failed:", e);
-        if (e.code === 'auth/popup-closed-by-user') {
-            alert('Re-authentication was cancelled. Your account was NOT deleted.');
-        } else if (e.code === 'auth/requires-recent-login') {
-            alert('For security, please sign out, sign back in, and try again.');
-        } else {
-            alert('Failed to delete account: ' + (e.message || 'Unknown error'));
-        }
+        console.error("[Delete] failed:", e);
+        if (e.code === 'auth/popup-closed-by-user') alert('Re-authentication was cancelled. Account NOT deleted.');
+        else if (e.code === 'auth/requires-recent-login') alert('Please sign out, sign back in, and try again.');
+        else alert('Failed to delete account: ' + (e.message || 'Unknown error'));
         btn.disabled = false;
         btn.textContent = 'Delete Permanently';
     }
