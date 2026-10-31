@@ -1,317 +1,1060 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>IFB Advanced Scanner</title>
-<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV Scanner — Handwriting Page Scanner</title>
 <style>
-  :root {
-    --maroon: #7A1F2B;
-    --bg: #0F172A;
-    --surface: #1E293B;
-    --text: #fff;
-    --success: #15803D;
+  *{box-sizing:border-box}
+  :root{
+    --bg:#070a0e;
+    --panel:#111823;
+    --panel-2:#0c131c;
+    --line:#1d2937;
+    --txt:#e7eef7;
+    --muted:#7d8fa3;
+    --accent:#25d6a4;
+    --accent-dim:#0e3d32;
+    --warn:#f5a524;
+    --fail:#ff5f6d;
+    --radius:14px;
   }
-  
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-  body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:radial-gradient(1200px 620px at 18% -12%, #14202c 0%, #070a0e 62%) fixed;
+    color:var(--txt);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  [hidden]{display:none !important}
 
-  /* HEADER */
-  .header { background: var(--maroon); padding: 15px 20px; text-align: center; font-size: 18px; font-weight: 900; letter-spacing: 1px; z-index: 10; }
-  
-  /* VIEWPORT */
-  .viewport { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: #000; overflow: hidden; }
-  video { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; }
-  video.active { opacity: 1; }
-  canvas { display: none; }
-  img.preview { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; background: #111; display: none; z-index: 5; }
-  img.preview.active { display: block; }
-  
-  /* LOADER */
-  #loader { position: absolute; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 20; display: flex; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); transition: opacity 0.5s; }
-  .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--maroon); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
-  @keyframes spin { 100% { transform: rotate(360deg); } }
+  .app{max-width:1440px;margin:0 auto;padding:20px 22px 40px}
 
-  /* CONTROLS */
-  .controls { background: var(--surface); padding: 24px 20px; border-top-left-radius: 24px; border-top-right-radius: 24px; display: flex; flex-direction: column; gap: 15px; z-index: 10; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); }
-  
-  .action-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
-  
-  .btn-circle { width: 60px; height: 60px; border-radius: 50%; background: #334155; border: none; color: white; font-size: 24px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; }
-  .btn-circle:active { transform: scale(0.9); }
-  
-  .btn-capture { width: 80px; height: 80px; border-radius: 50%; background: var(--maroon); border: 4px solid white; box-shadow: 0 4px 15px rgba(122,31,43,0.5); font-size: 32px; }
-  
-  .btn-main { flex: 1; padding: 16px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-  .btn-save { background: var(--success); color: #fff; }
-  .btn-retake { background: #334155; color: #fff; }
-  
-  .filter-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 5px; }
-  .filter-btn { padding: 10px 20px; border-radius: 100px; background: #334155; border: 2px solid transparent; color: #94A3B8; font-weight: 800; font-size: 13px; cursor: pointer; }
-  .filter-btn.active { background: rgba(122,31,43,0.2); border-color: var(--maroon); color: white; }
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{
+    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(145deg,#1d3a34,#0d1a18);
+    border:1px solid #1f4a40;color:var(--accent);font-weight:800;letter-spacing:.5px;font-size:15px;
+    box-shadow:0 0 22px rgba(37,214,164,.16);
+  }
+  .brand h1{margin:0;font-size:17px;font-weight:650;letter-spacing:.2px}
+  .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+  .engine{
+    display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted);
+    background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:9px 15px;
+  }
+  .engine.ready{color:var(--accent);border-color:#1c4a3f;background:#0b1a17}
+  .engine.error{color:var(--fail);border-color:#4a1f24;background:#1a0d0f}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.4s infinite}
+  .engine.ready .pulse{animation:none}
+  .engine.error .pulse{background:var(--fail);animation:none}
+  @keyframes pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
 
-  /* Hide elements initially */
-  #previewControls { display: none; flex-direction: column; gap: 15px; }
-  #btnFlash { display: none; }
+  /* ---------- layout ---------- */
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 396px;gap:20px;align-items:start}
+  @media (max-width:1080px){.layout{grid-template-columns:1fr}}
+
+  /* ---------- stage ---------- */
+  .stage{
+    background:linear-gradient(180deg,#0e151e,#0a1018);
+    border:1px solid var(--line);border-radius:18px;padding:16px;
+    box-shadow:0 24px 60px rgba(0,0,0,.45);
+  }
+  .viewport{
+    position:relative;width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;
+    background:
+      linear-gradient(#0a1016,#0a1016) padding-box,
+      repeating-linear-gradient(45deg,#0d141c 0 12px,#0b1219 12px 24px) border-box;
+    border:1px solid #16222f;
+    display:grid;place-items:center;
+  }
+  .canvas-stack{position:absolute;inset:0}
+  .canvas-stack canvas{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
+  }
+  #overlayCanvas{pointer-events:none}
+  #video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+
+  .placeholder{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;text-align:center;padding:24px;color:var(--muted);pointer-events:none;
+  }
+  .placeholder .ph-mark{
+    font-size:44px;line-height:1;color:#25404f;margin-bottom:4px;
+  }
+  .placeholder strong{color:#c8d6e5;font-size:15px;font-weight:600}
+  .placeholder span{font-size:12.5px;max-width:340px;line-height:1.5}
+
+  .scanline{
+    position:absolute;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+    filter:drop-shadow(0 0 10px var(--accent));
+    opacity:0;pointer-events:none;
+  }
+  .viewport.scanning .scanline{opacity:1;animation:sweep 1.5s ease-in-out infinite}
+  @keyframes sweep{0%{top:2%}50%{top:97%}100%{top:2%}}
+
+  .stage-bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .btn{
+    appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--txt);
+    padding:11px 18px;border-radius:11px;font-size:13.5px;font-weight:550;cursor:pointer;
+    transition:.16s ease;display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn:hover:not(:disabled){border-color:#2c3f52;background:#16202c;transform:translateY(-1px)}
+  .btn:disabled{opacity:.42;cursor:not-allowed}
+  .btn.primary{
+    background:linear-gradient(180deg,#22c99a,#15a97f);border-color:#1ba57e;color:#04120e;font-weight:700;
+    box-shadow:0 8px 22px rgba(37,214,164,.22);
+  }
+  .btn.primary:hover:not(:disabled){background:linear-gradient(180deg,#2ee3b0,#17b98b)}
+  .btn.ghost{background:transparent;color:var(--muted)}
+
+  /* ---------- panel ---------- */
+  .panel{display:flex;flex-direction:column;gap:16px}
+  .verdict{
+    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;
+    background:linear-gradient(180deg,#101823,#0c131c);
+    border:1px solid var(--line);border-radius:16px;padding:16px;
+    transition:.25s ease;
+  }
+  .verdict.pass{border-color:#1c5a49;background:linear-gradient(180deg,#0e211c,#0a1714);box-shadow:0 0 32px rgba(37,214,164,.12)}
+  .verdict.fail{border-color:#5c2229;background:linear-gradient(180deg,#201013,#150b0d);box-shadow:0 0 32px rgba(255,95,109,.12)}
+  .verdict.busy{border-color:#3a3520}
+  .verdict-icon{
+    width:46px;height:46px;border-radius:12px;display:grid;place-items:center;
+    background:#0e1720;border:1px solid var(--line);font-size:20px;font-weight:800;color:var(--muted);
+  }
+  .verdict.pass .verdict-icon{background:var(--accent-dim);border-color:#1c5a49;color:var(--accent)}
+  .verdict.fail .verdict-icon{background:#2a1114;border-color:#5c2229;color:var(--fail)}
+  .verdict-text strong{display:block;font-size:15px;font-weight:680}
+  .verdict-text span{display:block;font-size:12.3px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .verdict-score{text-align:right}
+  .verdict-score b{display:block;font-size:24px;font-weight:750;letter-spacing:-.5px}
+  .verdict-score small{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+
+  .block{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px 16px}
+  .block h2{
+    margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);
+  }
+
+  /* steps */
+  .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+  .steps li{
+    display:flex;align-items:center;gap:11px;font-size:13px;color:#5f7286;transition:.2s;
+  }
+  .steps li i{
+    width:17px;height:17px;border-radius:50%;border:1.6px solid #27374a;flex:0 0 auto;
+    display:grid;place-items:center;font-size:10px;font-style:normal;transition:.2s;
+  }
+  .steps li.active{color:#cfe0f0}
+  .steps li.active i{border-color:var(--accent);box-shadow:0 0 0 4px rgba(37,214,164,.1);animation:pulse 1.2s infinite}
+  .steps li.done{color:#8fa7bd}
+  .steps li.done i{background:var(--accent);border-color:var(--accent);color:#04120e}
+  .steps li.done i::after{content:"✓";font-weight:800}
+  .steps li.warn{color:var(--warn)}
+  .steps li.warn i{border-color:var(--warn);color:var(--warn)}
+  .steps li.warn i::after{content:"!";font-weight:800}
+  .steps li.fail{color:var(--fail)}
+  .steps li.fail i{border-color:var(--fail);background:#2a1114;color:var(--fail)}
+  .steps li.fail i::after{content:"×";font-weight:800}
+
+  /* metrics */
+  .metrics{display:flex;flex-direction:column;gap:11px}
+  .metric{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:12.6px}
+  .metric .name{color:#9fb2c6}
+  .metric .val{color:var(--muted);font-variant-numeric:tabular-nums;font-weight:600}
+  .metric .bar{grid-column:1/-1;height:5px;border-radius:99px;background:#131d28;overflow:hidden}
+  .metric .bar span{display:block;height:100%;width:0;border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .metric .bar span.good{background:linear-gradient(90deg,#17b98b,#25d6a4)}
+  .metric .bar span.mid{background:linear-gradient(90deg,#c98416,#f5a524)}
+  .metric .bar span.bad{background:linear-gradient(90deg,#c4323f,#ff5f6d)}
+
+  /* reasons */
+  .reasons{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  .reasons li{
+    font-size:12.6px;line-height:1.45;color:#f0b7bd;background:#1b0f11;border:1px solid #3a1b20;
+    border-radius:10px;padding:9px 11px;display:flex;gap:9px;
+  }
+  .reasons li.note{color:#c8b98a;background:#1a1710;border-color:#3a3320}
+  .reasons li::before{content:"!";font-weight:800;color:var(--fail);flex:0 0 auto}
+  .reasons li.note::before{content:"i";color:var(--warn)}
+
+  /* previews */
+  .previews{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .previews figure{margin:0;display:flex;flex-direction:column;gap:6px}
+  .previews canvas{
+    width:100%;height:112px;object-fit:contain;border-radius:9px;background:#0a1119;border:1px solid #17222f;
+  }
+  .previews figcaption{font-size:10.5px;color:var(--muted);text-align:center;letter-spacing:.4px}
+
+  .err{color:var(--fail);font-size:12.5px;margin-top:10px}
 </style>
 </head>
 <body>
 
-  <div class="header">∆ IFB SMART SCANNER</div>
-
-  <div class="viewport">
-    <div id="loader">
-      <div class="spinner"></div>
-      <div>Initializing OpenCV...</div>
-    </div>
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas"></canvas>
-    <img id="preview" class="preview" alt="Scanned Document">
-  </div>
-
-  <div class="controls">
-    
-    <!-- Camera Controls -->
-    <div id="cameraControls">
-      <div class="action-row">
-        <button class="btn-circle" id="btnFlash" title="Toggle Flash">⚡</button>
-        <button class="btn-circle btn-capture" id="btnCapture" title="Capture Document">📸</button>
-        <div style="width: 60px;"></div> <!-- Spacer to center the capture button -->
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">CV</div>
+      <div>
+        <h1>CV Scanner</h1>
+        <p>Handwriting capture · full page · clarity gate</p>
       </div>
     </div>
+    <div class="engine" id="engineState"><span class="pulse"></span> Loading engine…</div>
+  </header>
 
-    <!-- Preview Controls -->
-    <div id="previewControls">
-      <div class="filter-row">
-        <button class="filter-btn active" id="btnViewInk" onclick="toggleView('ink')">✍️ Ink Only</button>
-        <button class="filter-btn" id="btnViewOrig" onclick="toggleView('original')">🖼️ Original</button>
+  <main class="layout">
+    <section class="stage">
+      <div class="viewport" id="viewport">
+        <div class="canvas-stack">
+          <canvas id="srcCanvas"></canvas>
+          <canvas id="overlayCanvas"></canvas>
+        </div>
+        <video id="video" playsinline muted hidden></video>
+        <div class="placeholder" id="placeholder">
+          <div class="ph-mark">⌁</div>
+          <strong>Drop a CV page here</strong>
+          <span>The whole page is scanned. Borders, frames and shapes that are not black pen markings are ignored.</span>
+        </div>
+        <div class="scanline"></div>
       </div>
-      <button class="btn-main btn-save" id="btnSave">⬇️ Save Image to Device</button>
-      <button class="btn-main btn-retake" id="btnRetake">🔄 Retake Scan</button>
-    </div>
 
-  </div>
+      <div class="stage-bar">
+        <label class="btn primary" id="uploadLabel">
+          Upload page
+          <input type="file" id="fileInput" accept="image/*" hidden>
+        </label>
+        <button class="btn" id="cameraBtn">Camera</button>
+        <button class="btn" id="captureBtn" hidden>Capture</button>
+        <button class="btn" id="rescanBtn" disabled>Rescan</button>
+        <button class="btn ghost" id="resetBtn">Reset</button>
+      </div>
+    </section>
 
+    <aside class="panel">
+      <div class="verdict" id="verdict">
+        <div class="verdict-icon" id="verdictIcon">–</div>
+        <div class="verdict-text">
+          <strong id="verdictTitle">Awaiting page</strong>
+          <span id="verdictSub">Upload or capture a page to start</span>
+        </div>
+        <div class="verdict-score">
+          <b id="confidence">—</b>
+          <small>confidence</small>
+        </div>
+      </div>
+
+      <div class="block">
+        <h2>Pipeline</h2>
+        <ol class="steps" id="steps">
+          <li data-step="engine"><i></i>Engine ready</li>
+          <li data-step="page"><i></i>Page detected</li>
+          <li data-step="warp"><i></i>Perspective corrected</li>
+          <li data-step="ink"><i></i>Black pen ink isolated</li>
+          <li data-step="clarity"><i></i>Handwriting clarity checked</li>
+          <li data-step="verdict"><i></i>Verdict</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <h2>Quality metrics</h2>
+        <div class="metrics" id="metrics"></div>
+      </div>
+
+      <div class="block" id="reasonsBlock" hidden>
+        <h2 id="reasonsTitle">Rejection reasons</h2>
+        <ul class="reasons" id="reasons"></ul>
+      </div>
+
+      <div class="block">
+        <h2>Previews</h2>
+        <div class="previews">
+          <figure><canvas id="pagePreview"></canvas><figcaption>Corrected page</figcaption></figure>
+          <figure><canvas id="inkPreview"></canvas><figcaption>Isolated ink</figcaption></figure>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script async src="https://docs.opencv.org/4.8.0/opencv.js" onload="onOpenCvReady()"></script>
 <script>
-  let cvReady = false;
-  let stream = null;
-  let videoTrack = null;
-  let flashOn = false;
-  let originalImage = null;
-  let currentView = 'ink';
+/* =====================================================================
+   CV SCANNER — handwriting page scanner
+   Pipeline:
+     1. detect page quad  ->  2. perspective warp  ->  3. isolate black
+     pen ink (ignore background / frames / shapes)  ->  4. clarity +
+     handwriting analysis  ->  5. PASS / FAIL verdict
+   ===================================================================== */
 
-  const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  const preview = document.getElementById('preview');
-  const loader = document.getElementById('loader');
-  
-  const btnFlash = document.getElementById('btnFlash');
-  const btnCapture = document.getElementById('btnCapture');
-  const btnSave = document.getElementById('btnSave');
-  const btnRetake = document.getElementById('btnRetake');
-  
-  const cameraControls = document.getElementById('cameraControls');
-  const previewControls = document.getElementById('previewControls');
+/* ------------------------------ config ------------------------------ */
+const CONFIG = {
+  maxDimension:      1600,   // working resolution of the loaded image
+  pageMinAreaRatio:  0.18,   // a page must fill at least 18% of the frame
+  marginTrimRatio:   0.012,  // ignore a thin band at the page edge
+  minComponentArea:  12,     // smaller blobs = sensor noise
+  maxBlobAreaRatio:  0.05,   // blobs larger than 5% of page = shapes/logos
+  inkSatMax:         110,    // max HSV saturation for "black pen"
+  inkValueMax:       155,    // max HSV value for "black pen"
+  passThreshold:     0.72    // overall confidence needed to accept the scan
+};
 
-  // 1. Initialize OpenCV
-  function waitForOpenCV() {
-    const interval = setInterval(() => {
-      if (typeof cv !== 'undefined' && cv.Mat) {
-        cvReady = true;
-        clearInterval(interval);
-        loader.style.opacity = '0';
-        setTimeout(() => loader.style.display = 'none', 500);
-        startCamera();
-      }
-    }, 100);
+/* ------------------------------ helpers ----------------------------- */
+const $ = (s) => document.querySelector(s);
+const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const norm = (v, lo, hi) => clamp01((v - lo) / (hi - lo));
+const tick = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
+
+function median(arr) {
+  if (!arr.length) return 0;
+  const a = arr.slice().sort((x, y) => x - y);
+  const m = a.length >> 1;
+  return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
+}
+function stdev(arr) {
+  if (arr.length < 2) return 0;
+  const m = arr.reduce((s, v) => s + v, 0) / arr.length;
+  return Math.sqrt(arr.reduce((s, v) => s + (v - m) * (v - m), 0) / arr.length);
+}
+
+/* ------------------------------ state ------------------------------- */
+let engineReady = false;
+let currentSource = null;     // HTMLCanvasElement of the loaded image
+let stream = null;
+let scanning = false;
+
+/* ---------------------------- DOM refs ------------------------------ */
+const el = {
+  viewport:     $('#viewport'),
+  srcCanvas:    $('#srcCanvas'),
+  overlay:      $('#overlayCanvas'),
+  placeholder:  $('#placeholder'),
+  video:        $('#video'),
+  fileInput:    $('#fileInput'),
+  cameraBtn:    $('#cameraBtn'),
+  captureBtn:   $('#captureBtn'),
+  rescanBtn:    $('#rescanBtn'),
+  resetBtn:     $('#resetBtn'),
+  engineState:  $('#engineState'),
+  verdict:      $('#verdict'),
+  verdictIcon:  $('#verdictIcon'),
+  verdictTitle: $('#verdictTitle'),
+  verdictSub:   $('#verdictSub'),
+  confidence:   $('#confidence'),
+  metrics:      $('#metrics'),
+  reasonsBlock: $('#reasonsBlock'),
+  reasonsTitle: $('#reasonsTitle'),
+  reasons:      $('#reasons'),
+  pagePreview:  $('#pagePreview'),
+  inkPreview:   $('#inkPreview')
+};
+
+/* ============================ ENGINE BOOT =========================== */
+function onOpenCvReady() {
+  if (typeof cv === 'undefined') return;
+  if (cv.getBuildInformation) {
+    bootEngine();
+  } else {
+    cv['onRuntimeInitialized'] = bootEngine;
   }
-  waitForOpenCV();
+}
 
-  // 2. Start Camera
-  async function startCamera() {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } } 
-      });
-      video.srcObject = stream;
-      await video.play();
-      videoTrack = stream.getVideoTracks()[0];
-      video.classList.add('active');
+function bootEngine() {
+  engineReady = true;
+  el.engineState.className = 'engine ready';
+  el.engineState.innerHTML = '<span class="pulse"></span> Engine ready';
+  setStep('engine', 'done');
+}
 
-      // Check for Flash/Torch
-      if (videoTrack.getCapabilities().torch) {
-        btnFlash.style.display = 'flex';
-      }
-    } catch (err) {
-      alert("Camera Error: " + err.message + "\n(Make sure you are on HTTPS)");
-    }
-  }
+/* ============================== UI UTIL ============================= */
+function setStep(name, cls) {
+  const node = document.querySelector(`[data-step="${name}"]`);
+  if (node) node.className = cls || '';
+}
+function resetSteps() {
+  document.querySelectorAll('.steps li').forEach((li) => { li.className = ''; });
+  if (engineReady) setStep('engine', 'done');
+}
+function setScanning(on) {
+  scanning = on;
+  el.viewport.classList.toggle('scanning', on);
+  el.fileInput.disabled = on;
+  el.cameraBtn.disabled = on;
+  el.rescanBtn.disabled = on || !currentSource;
+}
+function showPlaceholder(show) {
+  el.placeholder.hidden = !show;
+}
 
-  // 3. Toggle Flash
-  btnFlash.addEventListener('click', async () => {
-    if (!videoTrack) return;
-    try {
-      flashOn = !flashOn;
-      await videoTrack.applyConstraints({ advanced: [{ torch: flashOn }] });
-      btnFlash.style.background = flashOn ? 'var(--maroon)' : '#334155';
-    } catch(e) { console.warn(e); }
+/* ============================ IMAGE INPUT =========================== */
+function fileToCanvas(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const max = CONFIG.maxDimension;
+      const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(img.naturalWidth * scale));
+      c.height = Math.max(1, Math.round(img.naturalHeight * scale));
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      resolve(c);
+    };
+    img.onerror = (e) => { URL.revokeObjectURL(url); reject(e); };
+    img.src = url;
   });
+}
 
-  // 4. Capture & Process
-  btnCapture.addEventListener('click', () => {
-    const w = video.videoWidth;
-    const h = video.videoHeight;
-    if (!w || !h) return;
+function setSource(canvas) {
+  currentSource = canvas;
+  el.srcCanvas.width = canvas.width;
+  el.srcCanvas.height = canvas.height;
+  el.srcCanvas.getContext('2d').drawImage(canvas, 0, 0);
+  el.overlay.width = canvas.width;
+  el.overlay.height = canvas.height;
+  el.overlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  showPlaceholder(false);
+  el.rescanBtn.disabled = false;
+}
 
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, w, h);
-    
-    originalImage = canvas.toDataURL('image/jpeg', 1.0);
+/* ============================ PAGE DETECTION ======================== */
+function orderCorners(pts) {
+  const sums = pts.map((p) => p[0] + p[1]);
+  const diffs = pts.map((p) => p[0] - p[1]);
+  const tl = pts[sums.indexOf(Math.min(...sums))];
+  const br = pts[sums.indexOf(Math.max(...sums))];
+  const tr = pts[diffs.indexOf(Math.max(...diffs))];
+  const bl = pts[diffs.indexOf(Math.min(...diffs))];
+  return [tl, tr, br, bl];
+}
 
-    // Run CV
-    const processedCanvas = processImage(canvas);
-    preview.src = processedCanvas.toDataURL('image/jpeg', 0.95);
-    
-    // Switch UI
-    video.classList.remove('active');
-    preview.classList.add('active');
-    cameraControls.style.display = 'none';
-    previewControls.style.display = 'flex';
-    currentView = 'ink';
-    updateFilterUI();
-  });
+function perspectiveWarp(src, corners) {
+  const [tl, tr, br, bl] = corners;
+  const wA = Math.hypot(tr[0] - tl[0], tr[1] - tl[1]);
+  const wB = Math.hypot(br[0] - bl[0], br[1] - bl[1]);
+  const hA = Math.hypot(bl[0] - tl[0], bl[1] - tl[1]);
+  const hB = Math.hypot(br[0] - tr[0], br[1] - tr[1]);
 
-  // 5. OpenCV Engine (Perspective Warp + Ink Extraction)
-  function processImage(sourceCanvas) {
-    if (!cvReady) return sourceCanvas;
+  let W = Math.round(Math.max(wA, wB));
+  let H = Math.round(Math.max(hA, hB));
+  W = Math.min(Math.max(W, 60), 4000);
+  H = Math.min(Math.max(H, 60), 4000);
 
-    let src = cv.imread(sourceCanvas);
-    let gray = new cv.Mat();
-    let edges = new cv.Mat();
-    let contours = new cv.MatVector();
-    let hierarchy = new cv.Mat();
-    
-    // Grayscale & Blur
-    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY, 0);
-    cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
-    
-    // Edge Detection
-    cv.Canny(gray, edges, 50, 150);
-    cv.dilate(edges, edges, cv.Mat.ones(3, 3, cv.CV_8U));
-    
-    // Find Contours
-    cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
-    
-    let maxArea = 0;
-    let bestContour = null;
-    
-    for (let i = 0; i < contours.size(); ++i) {
-        let cnt = contours.get(i);
-        let area = cv.contourArea(cnt);
-        if (area > maxArea && area > 5000) {
-            maxArea = area;
-            bestContour = cnt;
+  const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2,
+    [tl[0], tl[1], tr[0], tr[1], br[0], br[1], bl[0], bl[1]]);
+  const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2,
+    [0, 0, W, 0, W, H, 0, H]);
+
+  const M = cv.getPerspectiveTransform(srcTri, dstTri);
+  const out = new cv.Mat();
+  cv.warpPerspective(src, out, M, new cv.Size(W, H),
+    cv.INTER_CUBIC, cv.BORDER_REPLICATE, new cv.Scalar());
+
+  srcTri.delete(); dstTri.delete(); M.delete();
+  return out;
+}
+
+/**
+ * Finds the page inside the frame and crops/warps to it.
+ * Anything outside the detected page is discarded.
+ */
+function warpPage(srcCanvas) {
+  const src = cv.imread(srcCanvas);
+  const W = src.cols, H = src.rows;
+
+  const gray = new cv.Mat();
+  const blur = new cv.Mat();
+  const edges = new cv.Mat();
+  cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+  cv.GaussianBlur(gray, blur, new cv.Size(5, 5), 0);
+  cv.Canny(blur, edges, 40, 120);
+
+  const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(7, 7));
+  cv.morphologyEx(edges, edges, cv.MORPH_CLOSE, kernel);
+
+  const contours = new cv.MatVector();
+  const hierarchy = new cv.Mat();
+  cv.findContours(edges, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
+
+  const imgArea = W * H;
+  let best = null;
+
+  for (let i = 0; i < contours.size(); i++) {
+    const c = contours.get(i);
+    const area = cv.contourArea(c);
+
+    if (area >= imgArea * CONFIG.pageMinAreaRatio) {
+      const peri = cv.arcLength(c, true);
+      const approx = new cv.Mat();
+      cv.approxPolyDP(c, approx, 0.02 * peri, true);
+
+      if (approx.rows === 4 && cv.isContourConvex(approx)) {
+        const pts = [];
+        for (let j = 0; j < 4; j++) {
+          pts.push([approx.data32S[j * 2], approx.data32S[j * 2 + 1]]);
         }
+        if (!best || area > best.area) best = { pts, area };
+      }
+      approx.delete();
     }
-
-    let dst = new cv.Mat();
-    
-    if (bestContour) {
-        let peri = cv.arcLength(bestContour, true);
-        let approx = new cv.Mat();
-        cv.approxPolyDP(bestContour, approx, 0.02 * peri, true);
-        
-        if (approx.rows === 4) {
-            // Perspective Warp (Auto-Crop)
-            let pts = [];
-            for (let i = 0; i < 4; i++) pts.push({ x: approx.data32S[i * 2], y: approx.data32S[i * 2 + 1] });
-            pts.sort((a, b) => a.y - b.y);
-            let top = pts.slice(0, 2).sort((a, b) => a.x - b.x);
-            let bottom = pts.slice(2, 4).sort((a, b) => a.x - b.x);
-            let ordered = [top[0], top[1], bottom[1], bottom[0]];
-            
-            let width = Math.max(Math.hypot(ordered[0].x - ordered[1].x, ordered[0].y - ordered[1].y), Math.hypot(ordered[2].x - ordered[3].x, ordered[2].y - ordered[3].y));
-            let height = Math.max(Math.hypot(ordered[0].x - ordered[3].x, ordered[0].y - ordered[3].y), Math.hypot(ordered[1].x - ordered[2].x, ordered[1].y - ordered[2].y));
-            
-            let srcTri = cv.matFromArray(4, 1, cv.CV_32FC2, [ordered[0].x, ordered[0].y, ordered[1].x, ordered[1].y, ordered[2].x, ordered[2].y, ordered[3].x, ordered[3].y]);
-            let dstTri = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, width, 0, width, height, 0, height]);
-            
-            let M = cv.getPerspectiveTransform(srcTri, dstTri);
-            cv.warpPerspective(src, dst, M, new cv.Size(width, height));
-            
-            M.delete(); srcTri.delete(); dstTri.delete();
-        } else {
-            src.copyTo(dst);
-        }
-        approx.delete();
-    } else {
-        src.copyTo(dst);
-    }
-
-    // Ink Extraction
-    let finalDst = new cv.Mat();
-    cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
-    cv.adaptiveThreshold(gray, finalDst, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 21, 15);
-    
-    // Cleanup
-    src.delete(); gray.delete(); edges.delete(); contours.delete(); hierarchy.delete(); dst.delete();
-    
-    let outCanvas = document.createElement('canvas');
-    outCanvas.width = finalDst.cols;
-    outCanvas.height = finalDst.rows;
-    cv.imshow(outCanvas, finalDst);
-    finalDst.delete();
-    
-    return outCanvas;
+    c.delete();
   }
 
-  // 6. Toggle View
-  window.toggleView = function(type) {
-    currentView = type;
-    if (type === 'ink') {
-      const processedCanvas = processImage(canvas);
-      preview.src = processedCanvas.toDataURL('image/jpeg', 0.95);
-    } else {
-      preview.src = originalImage;
-    }
-    updateFilterUI();
+  hierarchy.delete(); contours.delete(); kernel.delete();
+  edges.delete(); blur.delete(); gray.delete();
+
+  let outCanvas = document.createElement('canvas');
+  let corners = null;
+
+  if (best) {
+    corners = orderCorners(best.pts);
+    const warped = perspectiveWarp(src, corners);
+    outCanvas.width = warped.cols;
+    outCanvas.height = warped.rows;
+    cv.imshow(outCanvas, warped);
+    warped.delete();
+  } else {
+    // No page quad found — fall back to the full frame so the whole
+    // visible page is still scanned.
+    outCanvas.width = W;
+    outCanvas.height = H;
+    outCanvas.getContext('2d').drawImage(srcCanvas, 0, 0);
   }
 
-  function updateFilterUI() {
-    if (currentView === 'ink') {
-      document.getElementById('btnViewInk').classList.add('active');
-      document.getElementById('btnViewOrig').classList.remove('active');
+  src.delete();
+  return { canvas: outCanvas, corners, found: !!best };
+}
+
+/* ============================ INK ANALYSIS ========================== */
+/**
+ * Isolates black pen markings, discards everything that is not ink
+ * (background, page frame, logos, ruled lines, coloured shapes, noise),
+ * then measures handwriting clarity.
+ */
+function analyzePage(pageCanvas) {
+  const src = cv.imread(pageCanvas);
+  const W = src.cols, H = src.rows, N = W * H;
+
+  const gray = new cv.Mat();
+  cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+
+  /* --- HSV planes (saturation tells us "coloured shape" vs "black pen") --- */
+  const rgb = new cv.Mat();
+  const hsv = new cv.Mat();
+  const planes = new cv.MatVector();
+  cv.cvtColor(src, rgb, cv.COLOR_RGBA2RGB);
+  cv.cvtColor(rgb, hsv, cv.COLOR_RGB2HSV);
+  cv.split(hsv, planes);
+
+  const sRef = planes.get(1), vRef = planes.get(2);
+  const S = sRef.clone(), V = vRef.clone();
+  sRef.delete(); vRef.delete();
+  planes.delete(); hsv.delete(); rgb.delete();
+
+  /* --- primary ink mask: dark + low saturation = black pen --- */
+  const mS = new cv.Mat();
+  const mV = new cv.Mat();
+  cv.threshold(S, mS, CONFIG.inkSatMax, 255, cv.THRESH_BINARY_INV);
+  cv.threshold(V, mV, CONFIG.inkValueMax, 255, cv.THRESH_BINARY_INV);
+
+  const ink = new cv.Mat();
+  cv.bitwise_and(mS, mV, ink);
+  cv.medianBlur(ink, ink, 3);   // kill salt noise, keep thin strokes
+
+  /* --- ignore the page edge band (frame lines, edge shadow) --- */
+  const mb = Math.max(2, Math.round(Math.min(W, H) * CONFIG.marginTrimRatio));
+  if (mb * 2 < Math.min(W, H)) {
+    const zero = new cv.Scalar(0);
+    cv.rectangle(ink, new cv.Point(0, 0), new cv.Point(W, mb), zero, -1);
+    cv.rectangle(ink, new cv.Point(0, H - mb), new cv.Point(W, H), zero, -1);
+    cv.rectangle(ink, new cv.Point(0, 0), new cv.Point(mb, H), zero, -1);
+    cv.rectangle(ink, new cv.Point(W - mb, 0), new cv.Point(W, H), zero, -1);
+  }
+
+  /* --- connected components --- */
+  const labels = new cv.Mat();
+  const stats = new cv.Mat();
+  const centroids = new cv.Mat();
+  cv.connectedComponentsWithStats(ink, labels, stats, centroids, 8, cv.CV_32S);
+
+  const nLab = stats.rows;
+  const lab = labels.data32S;
+  const gd = gray.data;
+  const sd = S.data;
+  const st = stats.data32S;
+
+  const sumG = new Float64Array(nLab);
+  const sumS = new Float64Array(nLab);
+  const cnt = new Float64Array(nLab);
+
+  for (let i = 0; i < N; i++) {
+    const l = lab[i];
+    if (l === 0) continue;
+    sumG[l] += gd[i];
+    sumS[l] += sd[i];
+    cnt[l]++;
+  }
+
+  const pageArea = N;
+  const keep = new Uint8Array(nLab);
+  const comps = [];
+  let tinyCount = 0;
+  let totalComps = 0;
+
+  for (let l = 1; l < nLab; l++) {
+    const a = st[l * 5 + 4];
+    if (a <= 0 || cnt[l] === 0) continue;
+    totalComps++;
+
+    const x = st[l * 5], y = st[l * 5 + 1], w = st[l * 5 + 2], h = st[l * 5 + 3];
+    const fill = a / Math.max(1, w * h);
+    const meanG = sumG[l] / cnt[l];
+    const meanS = sumS[l] / cnt[l];
+    const minSide = Math.min(w, h);
+    const maxSide = Math.max(w, h);
+
+    const isTiny    = a < CONFIG.minComponentArea;
+    const isBigBlob = a > pageArea * CONFIG.maxBlobAreaRatio;
+    const isFrame   = (w > W * 0.8 || h > H * 0.8) && fill < 0.25;
+    const isRuled   = maxSide / Math.max(1, minSide) > 16 && minSide <= 7;
+    const isFaint   = meanG > 178;
+    const isColored = meanS > 105;
+
+    if (isTiny) { tinyCount++; continue; }
+    if (isBigBlob || isFrame || isRuled || isFaint || isColored) continue;
+
+    keep[l] = 1;
+    comps.push({
+      x, y, w, h, a, fill,
+      cx: x + w / 2,
+      cy: y + h / 2,
+      meanG, meanS
+    });
+  }
+
+  /* --- rebuild a clean ink mask containing only kept components --- */
+  const clean = cv.Mat.zeros(H, W, cv.CV_8UC1);
+  const cd = clean.data;
+  for (let i = 0; i < N; i++) {
+    const l = lab[i];
+    if (l !== 0 && keep[l]) cd[i] = 255;
+  }
+
+  /* --- sharpness (Laplacian variance) --- */
+  const lap = new cv.Mat();
+  const meanM = new cv.Mat();
+  const sdM = new cv.Mat();
+  cv.Laplacian(gray, lap, cv.CV_64F);
+  cv.meanStdDev(lap, meanM, sdM);
+  const lapVar = Math.pow(sdM.doubleAt(0, 0), 2);
+
+  /* --- ink statistics: coverage, stroke width, contrast --- */
+  const dist = new cv.Mat();
+  cv.distanceTransform(clean, dist, cv.DIST_L2, 3);
+  const dd = dist.data32F;
+
+  let inkN = 0, dSum = 0, inkG = 0, bgG = 0, bgN = 0;
+  for (let i = 0; i < N; i++) {
+    if (cd[i]) { inkN++; dSum += dd[i]; inkG += gd[i]; }
+    else { bgG += gd[i]; bgN++; }
+  }
+
+  const inkRatio = inkN / N;
+  const strokeW = inkN ? (dSum / inkN) * 2 : 0;
+  const contrastDelta = (bgN ? bgG / bgN : 0) - (inkN ? inkG / inkN : 0);
+
+  /* --- handwriting heuristics: baseline jitter + height variance --- */
+  const heights = comps.map((c) => c.h);
+  const meanH = heights.length ? heights.reduce((s, v) => s + v, 0) / heights.length : 1;
+  const medH = median(heights) || 1;
+  const hCV = meanH ? stdev(heights) / meanH : 0;
+
+  const sorted = comps.slice().sort((a, b) => a.cy - b.cy);
+  const rows = [];
+  let cur = null;
+  for (const c of sorted) {
+    if (cur && Math.abs(c.cy - cur.cy) < medH * 0.9) {
+      cur.items.push(c);
+      cur.cy = cur.items.reduce((s, v) => s + v.cy, 0) / cur.items.length;
     } else {
-      document.getElementById('btnViewOrig').classList.add('active');
-      document.getElementById('btnViewInk').classList.remove('active');
+      cur = { cy: c.cy, items: [c] };
+      rows.push(cur);
     }
   }
 
-  // 7. Save Image
-  btnSave.addEventListener('click', () => {
-    if (!preview.src) return;
-    const link = document.createElement('a');
-    link.download = `IFB_Scan_${new Date().getTime()}.jpg`;
-    link.href = preview.src;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const jitters = [];
+  for (const r of rows) {
+    if (r.items.length < 5) continue;
+    const ys = r.items.map((c) => c.cy);
+    jitters.push(stdev(ys) / medH);
+  }
+  const jitter = jitters.length ? jitters.reduce((s, v) => s + v, 0) / jitters.length : 0;
+
+  /* --- normalised scores --- */
+  const sharpness  = norm(lapVar, 45, 420);
+  const contrast   = norm(contrastDelta, 40, 145);
+
+  let coverage = norm(inkRatio, 0.002, 0.016);
+  if (inkRatio > 0.34) coverage *= clamp01(1 - (inkRatio - 0.34) / 0.4);
+
+  const frag = 1 - norm(tinyCount / Math.max(1, totalComps), 0.12, 0.72);
+
+  let stroke = norm(strokeW, 0.45, 1.9);
+  if (strokeW > 10) stroke *= 0.4;
+
+  const jitterScore  = norm(jitter, 0.06, 0.34);
+  const hVarScore    = norm(hCV, 0.22, 0.75);
+  const densityScore = norm(comps.length, 25, 300);
+  const handwriting  = 0.45 * jitterScore + 0.30 * hVarScore + 0.25 * densityScore;
+
+  const confidence =
+      0.24 * sharpness +
+      0.19 * contrast  +
+      0.14 * coverage  +
+      0.16 * frag      +
+      0.11 * stroke    +
+      0.16 * handwriting;
+
+  /* --- ink preview --- */
+  const cleanRGBA = new cv.Mat();
+  cv.cvtColor(clean, cleanRGBA, cv.COLOR_GRAY2RGBA);
+  cv.imshow(el.inkPreview, cleanRGBA);
+
+  /* --- cleanup --- */
+  cleanRGBA.delete(); dist.delete(); lap.delete(); meanM.delete(); sdM.delete();
+  clean.delete(); labels.delete(); stats.delete(); centroids.delete();
+  ink.delete(); mS.delete(); mV.delete(); S.delete(); V.delete(); gray.delete(); src.delete();
+
+  return {
+    sharpness, contrast, coverage, frag, stroke, handwriting, confidence,
+    lapVar, contrastDelta, inkRatio, strokeW,
+    jitter, hCV,
+    components: comps.length,
+    tinyCount,
+    totalComps,
+    pageW: W, pageH: H
+  };
+}
+
+/* ============================== VERDICT ============================= */
+function computeVerdict(a, pageFound) {
+  const reasons = [];
+  let pass = true;
+
+  const fail = (text) => { pass = false; reasons.push({ text, note: false }); };
+  const note = (text) => { reasons.push({ text, note: true }); };
+
+  if (a.inkRatio < 0.004) {
+    fail('No black pen markings found on the page. The scan cannot be accepted.');
+  }
+  if (a.sharpness < 0.32) {
+    fail('Scan is too blurry — handwriting strokes cannot be resolved. Retake the photo in focus.');
+  }
+  if (a.contrast < 0.32) {
+    fail('Ink contrast is too low — strokes are faded or washed out by lighting.');
+  }
+  if (a.frag < 0.45) {
+    fail('Strokes are fragmented or smudged — the handwriting is unclear.');
+  }
+  if (a.stroke < 0.25) {
+    fail('Stroke weight is too thin or broken to read reliably.');
+  }
+  if (a.handwriting < 0.22) {
+    fail('No consistent handwriting pattern detected on this page.');
+  }
+  if (a.confidence < CONFIG.passThreshold) {
+    fail(`Overall clarity confidence ${(a.confidence * 100).toFixed(0)}% is below the ${Math.round(CONFIG.passThreshold * 100)}% acceptance threshold.`);
+  }
+
+  if (!pageFound) {
+    note('Page boundary not detected — the full frame was scanned instead of a cropped page.');
+  }
+
+  return { pass, reasons };
+}
+
+/* ============================== RENDERING =========================== */
+function drawCorners(corners, srcCanvas) {
+  const ctx = el.overlay.getContext('2d');
+  el.overlay.width = srcCanvas.width;
+  el.overlay.height = srcCanvas.height;
+  ctx.clearRect(0, 0, el.overlay.width, el.overlay.height);
+  if (!corners) return;
+
+  const lw = Math.max(3, el.overlay.width * 0.004);
+
+  ctx.beginPath();
+  corners.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
+  ctx.closePath();
+  ctx.strokeStyle = '#25d6a4';
+  ctx.lineWidth = lw;
+  ctx.shadowColor = 'rgba(37,214,164,.85)';
+  ctx.shadowBlur = 14;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  corners.forEach(([x, y]) => {
+    ctx.beginPath();
+    ctx.arc(x, y, lw * 1.9, 0, Math.PI * 2);
+    ctx.fillStyle = '#25d6a4';
+    ctx.fill();
   });
+}
 
-  // 8. Retake
-  btnRetake.addEventListener('click', () => {
-    preview.classList.remove('active');
-    preview.src = "";
-    video.classList.add('active');
-    previewControls.style.display = 'none';
-    cameraControls.style.display = 'block';
-    originalImage = null;
+function drawPagePreview(pageCanvas) {
+  const c = el.pagePreview;
+  c.width = pageCanvas.width;
+  c.height = pageCanvas.height;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.drawImage(pageCanvas, 0, 0);
+}
+
+function metricColor(v) {
+  if (v >= 0.72) return 'good';
+  if (v >= 0.5) return 'mid';
+  return 'bad';
+}
+
+function renderMetrics(res) {
+  const rows = [
+    ['Sharpness',         res.sharpness],
+    ['Ink contrast',      res.contrast],
+    ['Ink coverage',      res.coverage],
+    ['Stroke clarity',    res.frag],
+    ['Stroke weight',     res.stroke],
+    ['Handwriting pattern', res.handwriting],
+    ['Overall confidence', res.confidence]
+  ];
+
+  el.metrics.innerHTML = rows.map(([name, v]) => `
+    <div class="metric">
+      <span class="name">${name}</span>
+      <span class="val">${Math.round(v * 100)}%</span>
+      <span class="bar"><span class="${metricColor(v)}" style="width:${Math.round(v * 100)}%"></span></span>
+    </div>
+  `).join('');
+}
+
+function renderVerdict(res, verdict) {
+  el.verdict.classList.remove('pass', 'fail', 'busy');
+  el.verdict.classList.add(verdict.pass ? 'pass' : 'fail');
+
+  el.verdictIcon.textContent = verdict.pass ? '✓' : '✕';
+  el.verdictTitle.textContent = verdict.pass ? 'Scan accepted' : 'Scan rejected';
+  el.verdictSub.textContent = verdict.pass
+    ? `Handwriting detected and legible across the full page (${res.components} marks).`
+    : 'Handwriting could not be read reliably. Please rescan the page.';
+
+  el.confidence.textContent = Math.round(res.confidence * 100) + '%';
+
+  if (verdict.reasons.length) {
+    el.reasonsBlock.hidden = false;
+    el.reasonsTitle.textContent = verdict.pass ? 'Scan notes' : 'Rejection reasons';
+    el.reasons.innerHTML = verdict.reasons.map((r) =>
+      `<li class="${r.note ? 'note' : ''}">${r.text}</li>`
+    ).join('');
+  } else {
+    el.reasonsBlock.hidden = true;
+    el.reasons.innerHTML = '';
+  }
+}
+
+function renderBusy() {
+  el.verdict.classList.remove('pass', 'fail');
+  el.verdict.classList.add('busy');
+  el.verdictIcon.textContent = '…';
+  el.verdictTitle.textContent = 'Scanning page';
+  el.verdictSub.textContent = 'Detecting page, isolating ink and checking handwriting clarity…';
+  el.confidence.textContent = '—';
+  el.reasonsBlock.hidden = true;
+  el.metrics.innerHTML = '';
+}
+
+/* ============================== MAIN SCAN =========================== */
+async function runScan(sourceCanvas) {
+  if (!engineReady || scanning || !sourceCanvas) return;
+
+  setScanning(true);
+  resetSteps();
+  renderBusy();
+
+  try {
+    /* 1 — page detection */
+    setStep('page', 'active');
+    await tick();
+
+    const warped = warpPage(sourceCanvas);
+    drawCorners(warped.corners, sourceCanvas);
+    drawPagePreview(warped.canvas);
+
+    setStep('page', warped.found ? 'done' : 'warn');
+    setStep('warp', warped.found ? 'done' : 'warn');
+    await tick();
+
+    /* 2 — ink isolation */
+    setStep('ink', 'active');
+    await tick();
+
+    const res = analyzePage(warped.canvas);
+
+    setStep('ink', 'done');
+    await tick();
+
+    /* 3 — clarity analysis */
+    setStep('clarity', 'active');
+    await tick();
+
+    const verdict = computeVerdict(res, warped.found);
+
+    setStep('clarity', verdict.pass ? 'done' : 'fail');
+    setStep('verdict', verdict.pass ? 'done' : 'fail');
+
+    renderMetrics(res);
+    renderVerdict(res, verdict);
+
+  } catch (err) {
+    console.error(err);
+    el.verdict.classList.remove('pass', 'busy');
+    el.verdict.classList.add('fail');
+    el.verdictIcon.textContent = '!';
+    el.verdictTitle.textContent = 'Scanner error';
+    el.verdictSub.textContent = String(err && err.message ? err.message : err);
+    setStep('verdict', 'fail');
+  } finally {
+    setScanning(false);
+  }
+}
+
+/* =============================== CAMERA ============================= */
+async function startCamera() {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1440 } },
+      audio: false
+    });
+    el.video.srcObject = stream;
+    el.video.hidden = false;
+    el.srcCanvas.style.visibility = 'hidden';
+    el.overlay.style.visibility = 'hidden';
+    showPlaceholder(false);
+    await el.video.play();
+    el.cameraBtn.hidden = true;
+    el.captureBtn.hidden = false;
+  } catch (e) {
+    alert('Camera unavailable: ' + (e && e.message ? e.message : e));
+  }
+}
+
+function stopCamera() {
+  if (stream) {
+    stream.getTracks().forEach((t) => t.stop());
+    stream = null;
+  }
+  el.video.hidden = true;
+  el.video.srcObject = null;
+  el.srcCanvas.style.visibility = 'visible';
+  el.overlay.style.visibility = 'visible';
+  el.cameraBtn.hidden = false;
+  el.captureBtn.hidden = true;
+}
+
+function captureFrame() {
+  if (!el.video.videoWidth) return;
+  const c = document.createElement('canvas');
+  const max = CONFIG.maxDimension;
+  const scale = Math.min(1, max / Math.max(el.video.videoWidth, el.video.videoHeight));
+  c.width = Math.round(el.video.videoWidth * scale);
+  c.height = Math.round(el.video.videoHeight * scale);
+  c.getContext('2d').drawImage(el.video, 0, 0, c.width, c.height);
+  stopCamera();
+  setSource(c);
+  runScan(c);
+}
+
+/* =============================== EVENTS ============================= */
+el.fileInput.addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  try {
+    const c = await fileToCanvas(file);
+    setSource(c);
+    runScan(c);
+  } catch (err) {
+    console.error(err);
+  }
+  e.target.value = '';
+});
+
+el.cameraBtn.addEventListener('click', startCamera);
+el.captureBtn.addEventListener('click', captureFrame);
+
+el.rescanBtn.addEventListener('click', () => {
+  if (currentSource) runScan(currentSource);
+});
+
+el.resetBtn.addEventListener('click', () => {
+  stopCamera();
+  currentSource = null;
+  el.srcCanvas.width = 1;
+  el.srcCanvas.height = 1;
+  el.overlay.width = 1;
+  el.overlay.height = 1;
+  el.srcCanvas.getContext('2d').clearRect(0, 0, 1, 1);
+  el.overlay.getContext('2d').clearRect(0, 0, 1, 1);
+  el.pagePreview.getContext('2d').clearRect(0, 0, el.pagePreview.width, el.pagePreview.height);
+  el.inkPreview.getContext('2d').clearRect(0, 0, el.inkPreview.width, el.inkPreview.height);
+  showPlaceholder(true);
+  resetSteps();
+  setScanning(false);
+  el.rescanBtn.disabled = true;
+  el.verdict.classList.remove('pass', 'fail', 'busy');
+  el.verdictIcon.textContent = '–';
+  el.verdictTitle.textContent = 'Awaiting page';
+  el.verdictSub.textContent = 'Upload or capture a page to start';
+  el.confidence.textContent = '—';
+  el.metrics.innerHTML = '';
+  el.reasonsBlock.hidden = true;
+  el.reasons.innerHTML = '';
+});
+
+/* drag & drop */
+['dragenter', 'dragover'].forEach((evt) => {
+  el.viewport.addEventListener(evt, (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    el.viewport.style.borderColor = '#25d6a4';
   });
+});
+['dragleave', 'drop'].forEach((evt) => {
+  el.viewport.addEventListener(evt, (e) => {
+    e.preventDefault();
+    el.viewport.style.borderColor = '#16222f';
+  });
+});
+el.viewport.addEventListener('drop', async (e) => {
+  const file = e.dataTransfer.files && e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  try {
+    const c = await fileToCanvas(file);
+    setSource(c);
+    runScan(c);
+  } catch (err) {
+    console.error(err);
+  }
+});
 
+/* keep previews tidy if the page is huge */
+el.pagePreview.width = 240; el.pagePreview.height = 160;
+el.inkPreview.width = 240;  el.inkPreview.height = 160;
+
+/* expose for debugging */
+window.__cvScanner = { runScan, CONFIG };
 </script>
 </body>
 </html>
