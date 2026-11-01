@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IFB Interim 2027 - Mathematics (150 Marks)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
+  body { font-family: 'Times New Roman', Times, serif; font-size: 11.5pt; line-height: 1.6; color: #000; background: #F8FAFC; padding-top: 60px; }
+  
+  /* FLOATING CONTROL BAR */
+  .control-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px;
+    background: #FFF; border-bottom: 2px solid #7A1F2B;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 24px; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+  }
+  .control-bar .brand { font-size: 20px; font-weight: 900; color: #7A1F2B; display: flex; align-items: center; gap: 8px; }
+  .control-actions { display: flex; gap: 12px; }
+  .btn-nav {
+    padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 14px;
+    text-decoration: none; cursor: pointer; border: 1.5px solid #E2E8F0;
+    color: #111; background: #FFF; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-nav:hover { border-color: #111; }
+  .btn-nav.primary { background: #7A1F2B; color: #FFF; border-color: #7A1F2B; }
+  .btn-nav.primary:hover { background: #5A1620; }
+
+  /* A4 PAGE SETUP */
+  .page { width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm; margin: 15px auto; position: relative; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; }
+  
+  @media print { body { background: white; padding-top: 0; } .page { margin: 0; box-shadow: none; } .control-bar { display: none !important; } }
+  
+  /* SECURITY PATTERN & CONTENT WRAPPER */
+  .security-pattern { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
+  .content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; flex: 1; padding-bottom: 45mm; }
+  
+  /* HEADERS & FOOTERS */
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; }
+  .header-left { width: 30%; text-align: left; font-weight: bold; color: #000; }
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
+  .header-center .confidential { font-style: italic; font-weight: bold; color: #000; }
+  .header-right { width: 30%; text-align: right; font-weight: bold; color: #000; }
+
+  .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 35px; height: 35px; }
+  .footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .tag { font-size: 7pt; color: #000; }
+  .footer-right { color: #000; font-style: italic;}
+  .bottom-barcode { position: absolute; bottom: 10mm; left: 50%; transform: translateX(-50%); z-index: 2; }
+
+  /* COVER PAGE SPECIFIC */
+  .cover-page { padding: 15mm 20mm 20mm 20mm; }
+  .cover-confidential { text-align: center; font-style: italic; font-size: 12pt; margin-bottom: 30px; color: #111;}
+  .cover-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; margin-left: 10px;}
+  .ifb-logo-svg { width: 80px; height: 80px; }
+  .cover-header-text .title { font-size: 32px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: #7A1F2B; letter-spacing: -0.5px;}
+  .cover-header-text .sub { font-size: 12pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold;}
+  .cover-header-text .country { font-size: 10pt; font-family: Arial, sans-serif; margin-top: 5px; color: #555;}
+  
+  .cover-black-box { background: #111; color: white; border-radius: 10px; padding: 15px 30px; text-align: center; width: 80%; margin: 0 auto 20px auto; border: 3px solid #7A1F2B; }
+  .cover-black-box h1 { font-size: 22pt; font-weight: normal; line-height: 1.3; letter-spacing: 1px; }
+  .cover-grey-box { background: #f8f8f8; border: 3px solid #7A1F2B; border-radius: 8px; padding: 8px 40px; text-align: center; width: max-content; margin: 0 auto 30px auto; }
+  .cover-grey-box h2 { font-size: 20pt; font-weight: normal; letter-spacing: 1px; color: #111;}
+  .cover-dashed-box { border: 4px dashed #7A1F2B; border-radius: 10px; padding: 30px 20px; text-align: center; width: 85%; margin: 0 auto 40px auto; background: #FFF5F6; }
+  .cover-dashed-box h3 { font-size: 18pt; font-weight: bold; margin-bottom: 10px; color: #111;}
+  
+  .cover-marks { font-size: 13pt; font-weight: bold; margin-left: 10px; margin-bottom: 40px; font-family: Arial, sans-serif; color: #111; }
+  .cover-marks div { margin-bottom: 10px; }
+  .cover-barcode-section { margin-left: 10px; font-family: Arial, sans-serif; color: #111; }
+  .cover-barcode-section .code-x10 { font-size: 24pt; font-weight: bold; margin-bottom: 5px; letter-spacing: 2px;}
+  .cover-bottom-text { text-align: center; font-size: 11pt; font-weight: bold; margin-top: auto; margin-bottom: 20px; line-height: 1.5; color: #111; }
+  .cover-page .footer-brand .name, .cover-page .footer-brand .tag, .cover-page .footer-right, .cover-page .footer-left { color: #7A1F2B; }
+
+  /* INSTRUCTIONS & QUESTIONS */
+  .instructions h2 { font-size: 14pt; font-weight: bold; margin-bottom: 20px; font-family: Arial, sans-serif; color: #000;}
+  .instructions p { margin-bottom: 15px; font-size: 11pt; }
+  .instructions ol { margin-left: 20px; font-family: Arial, sans-serif; font-size: 11pt;}
+  .instructions li { margin-bottom: 12px; padding-left: 10px; }
+  
+  .question-header { margin: 0 0 20px 0; page-break-inside: avoid; flex-shrink: 0; }
+  .question-header h2 { font-size: 14pt; font-weight: bold; font-family: 'Times New Roman', serif; color: #000;}
+  
+  .sub-questions { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; }
+  .question-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; margin-bottom: 15px; }
+  .question-number { font-weight: bold; width: 50px; flex-shrink: 0; font-family: Arial, sans-serif; font-size: 11pt; color: #000;}
+  .question-content { flex: 1; min-width: 0; font-size: 11.5pt; }
+  .marks { font-weight: bold; width: 40px; flex-shrink: 0; text-align: right; font-family: Arial, sans-serif; font-size: 11pt;}
+  .nested-questions { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; margin-left: 30px; page-break-inside: avoid; }
+  .nested-item { display: flex; align-items: flex-start; gap: 15px; page-break-inside: avoid; }
+  .nested-item .question-number { width: 60px; }
+  .total-marks { text-align: right; font-weight: bold; margin-top: 10px; font-size: 12pt; font-family: Arial, sans-serif; page-break-inside: avoid; color: #000;}
+  .math-display { text-align: center; margin: 15px 0; font-size: 12pt; }
+
+  /* DIAGRAMS */
+  .diagram-container { display: flex; flex-direction: column; align-items: center; margin: 20px 0; page-break-inside: avoid; }
+  .diagram-container svg { border: none; background: #fff; width: 100%; max-width: 320px; height: auto; }
+  .diagram-container.large svg { max-width: 450px; }
+
+  /* INFO SHEET */
+  .info-title { text-align: center; font-weight: bold; font-size: 16pt; letter-spacing: 1px; margin: 10px 0 40px 0; font-family: Arial, sans-serif; color: #000;}
+  .formula-layout { display: flex; flex-direction: column; gap: 30px; font-size: 13pt; margin-top: 20px; }
+  .formula-center { text-align: center; }
+  .formula-row { display: flex; justify-content: space-around; align-items: center; width: 100%; }
+  .formula-item { text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="control-bar">
+    <div class="brand"><span>∆</span> IFB Interim 2027 - 150 Marks</div>
+    <div class="control-actions">
+        <a href="#" class="btn-nav">Back to Resources</a>
+        <button onclick="window.print()" class="btn-nav primary">Print / Save PDF</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
+<div class="page cover-page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper" style="padding-bottom: 0;">
+    <div class="cover-confidential">IFB/Confidential</div>
+    <div class="cover-header">
+      <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+      </svg>
+      <div class="cover-header-text">
+        <div class="title">Institute of Board</div>
+        <div class="sub">Department:<br>Academic Assessment</div>
+        <div class="country">NON-ACCREDITED ACADEMIC INSTITUTION</div>
+      </div>
+    </div>
+
+    <div class="cover-black-box">
+      <h1>Interim Examination</h1>
+    </div>
+
+    <div class="cover-grey-box">
+      <h2>2027</h2>
+    </div>
+
+    <div class="cover-dashed-box">
+      <h3>Mathematics</h3>
+    </div>
+
+    <div class="cover-marks">
+      <div>MARKS: 150</div>
+      <div>TIME: 3 hours</div>
+    </div>
+
+    <div class="cover-barcode-section">
+      <div class="code-x10">INT-2027</div>
+      <svg class="barcode-cover" data-barcode="102626INT" data-bc-width="2.4" data-bc-height="50" data-bc-display="true" data-bc-font-size="16"></svg>
+    </div>
+
+    <div class="cover-bottom-text">
+      This question paper consists of 14 pages.
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: INSTRUCTIONS ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">2</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="instructions">
+      <h2>INSTRUCTIONS TO CANDIDATES</h2>
+      <ol style="font-family: 'Times New Roman', serif; font-size: 11.5pt; margin-left: 15px;">
+        <li>Answer all questions.</li>
+        <li>Clearly show all necessary algebraic steps, intermediate workings, and formula substitutions.</li>
+        <li>Unless otherwise stated, answers should be left in exact form (simplified fractions or surds where applicable).</li>
+        <li>Diagrams are not necessarily drawn to scale.</li>
+        <li>An information sheet with formulae is included at the end of the question paper.</li>
+        <li>Write neatly and legibly.</li>
+      </ol>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 3: QUESTION 1 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">3</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 1</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">1.1</div>
+      <div class="question-content">
+        Solve for \(x\):
+        <div class="math-display">\(2x^2 - 7x + 3 = 0\)</div>
+      </div>
+      <div class="marks">(3)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">1.2</div>
+      <div class="question-content">
+        Consider the equation:
+        <div class="math-display">\(x^4 - 5x^3 + 5x^2 + 5x - 6 = 0\)</div>
+        1.2.1 Show that \(x = 3\) is a root of the equation. (2)
+        <br>1.2.2 Factorise the expression completely into linear factors. (6)
+        <br>1.2.3 Hence, determine all the roots of the equation. (2)
+      </div>
+      <div class="marks">(10)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">1.3</div>
+      <div class="question-content">
+        Solve for \(x\):
+        <div class="math-display">\(3^{2x} - 10(3^x) + 9 = 0\)</div>
+      </div>
+      <div class="marks">(2)</div>
+    </div>
+
+    <div class="total-marks">[15]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 4: QUESTION 2 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">4</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 2</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">2.1</div>
+      <div class="question-content">
+        Solve for \(x\): 
+        <div class="math-display">\(\dfrac{x-3}{x+2} \geq 2\)</div>
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.2</div>
+      <div class="question-content">
+        Solve for \(x\):
+        <div class="math-display">\(|2x - 5| \leq |x + 1|\)</div>
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">2.3</div>
+      <div class="question-content">
+        Given the equation \(x^2 + (k-3)x + 4 = 0\). Determine the values of \(k\) for which the roots are non-real.
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="total-marks">[15]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 5: QUESTION 3 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">5</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 3</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">3.1</div>
+      <div class="question-content">
+        The sketch below shows the graph of \(f(x) = 2^x\).
+        <div class="diagram-container" id="svg-q3-exp"></div>
+        3.1.1 Write down the equation of the inverse function \(f^{-1}(x)\). (1)
+        <br>3.1.2 Sketch the graph of \(f^{-1}(x)\) on the same set of axes in the ANSWER BOOK. (4)
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.2</div>
+      <div class="question-content">
+        The sketch below shows the graph of \(g(x) = \log_3(x - 2)\).
+        <div class="diagram-container" id="svg-q3-log"></div>
+        3.2.1 Write down the domain of \(g(x)\). (2)
+        <br>3.2.2 Determine the \(x\)-intercept of \(g(x)\). (3)
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">3.3</div>
+      <div class="question-content">
+        Solve for \(x\):
+        <div class="math-display">\(2^{2x} - 2^{x+2} + 3 = 0\)</div>
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="total-marks">[15]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 6: QUESTION 4 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">6</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 4</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">4.1</div>
+      <div class="question-content">
+        The sketch below shows the graph of \(h(x) = -\sqrt{x + 4} + 2\).
+        <div class="diagram-container" id="svg-q4-sqrt"></div>
+        4.1.1 Determine the domain of \(h(x)\). (2)
+        <br>4.1.2 Determine the equation of \(h^{-1}(x)\) and state its domain. (6)
+        <br>4.1.3 Write down the range of \(h(x)\). (4)
+      </div>
+      <div class="marks">(12)</div>
+    </div>
+
+    <div class="total-marks">[12]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 7: QUESTION 5 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">7</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 5</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">5.1</div>
+      <div class="question-content">
+        The first three terms of an arithmetic sequence are \(2k - 3\), \(k + 2\), and \(2k - 1\). 
+        <br>5.1.1 Calculate the value of \(k\). (3)
+        <br>5.1.2 Calculate the sum of the first 15 terms. (4)
+      </div>
+      <div class="marks">(7)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">5.2</div>
+      <div class="question-content">
+        Calculate the sum to infinity of the geometric series:
+        <div class="math-display">\(8 + 4 + 2 + 1 + ...\)</div>
+      </div>
+      <div class="marks">(3)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">5.3</div>
+      <div class="question-content">
+        Evaluate:
+        <div class="math-display">\(\sum_{n=1}^{20} (3n - 2)\)</div>
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="total-marks">[15]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 8: QUESTION 6 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">8</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 6</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">6.1</div>
+      <div class="question-content">
+        The sketch below shows the graph of the function \(f(x) = x^4 - 4x^2\).
+        <div class="diagram-container" id="svg-q6-quartic"></div>
+        
+        6.1.1 Determine the \(x\)- and \(y\)-intercepts of \(f(x)\). (3)
+        <br>6.1.2 Calculate the coordinates of the stationary points of \(f(x)\). (6)
+        <br>6.1.3 Determine the coordinates of the point(s) of inflection. (6)
+      </div>
+      <div class="marks">(15)</div>
+    </div>
+
+    <div class="total-marks">[15]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 9: QUESTION 7 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">9</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 7</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">7.1</div>
+      <div class="question-content">
+        Given the functions \(f(x) = \dfrac{2}{x-1} + 2\) and \(g(x) = x + 1\).
+      </div>
+    </div>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">7.1.1</div>
+        <div class="question-content">Write down the equations of the asymptotes of \(f(x)\).</div>
+        <div class="marks">(2)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">7.1.2</div>
+        <div class="question-content">Determine the coordinates of the points of intersection of \(f(x)\) and \(g(x)\).</div>
+        <div class="marks">(4)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">7.1.3</div>
+        <div class="question-content">
+          Sketch the graphs of \(f(x)\) and \(g(x)\) on the same set of axes in the ANSWER BOOK. Clearly show all intercepts with the axes, asymptotes, and points of intersection.
+        </div>
+        <div class="marks">(9)</div>
+      </div>
+    </div>
+
+    <div class="total-marks">[15]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 10: QUESTION 8 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">10</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 8</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">8.1</div>
+      <div class="question-content">
+        Determine \(f'(x)\) from first principles if \(f(x) = -3x^2 + 2x\).
+      </div>
+      <div class="marks">(5)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">8.2</div>
+      <div class="question-content">
+        Determine \(\dfrac{dy}{dx}\) if \(y = (x^2 - 3)(2x + 1)\). Leave your answer in simplified form.
+      </div>
+      <div class="marks">(4)</div>
+    </div>
+
+    <div class="question-item" style="margin-top: 20px;">
+      <div class="question-number">8.3</div>
+      <div class="question-content">
+        Determine \(\dfrac{dy}{dx}\) if \(y = \dfrac{x + 2}{x - 1}\). Leave your answer in simplified form.
+      </div>
+      <div class="marks">(6)</div>
+    </div>
+
+    <div class="total-marks">[15]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 11: QUESTION 9 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">11</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 9</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">9.1</div>
+      <div class="question-content">
+        A closed rectangular box with a square base has a volume of \(32 \text{ cm}^3\). The side length of the base is \(x\) cm and the height is \(h\) cm.
+      </div>
+    </div>
+    <div class="nested-questions">
+      <div class="nested-item">
+        <div class="question-number">9.1.1</div>
+        <div class="question-content">
+          Show that the surface area of the box is given by \(S(x) = 2x^2 + \dfrac{128}{x}\).
+        </div>
+        <div class="marks">(4)</div>
+      </div>
+      <div class="nested-item">
+        <div class="question-number">9.1.2</div>
+        <div class="question-content">
+          Calculate the dimensions of the box that will minimize the surface area.
+        </div>
+        <div class="marks">(8)</div>
+      </div>
+    </div>
+
+    <div class="total-marks">[12]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 12: QUESTION 10 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">12</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 10</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">10.1</div>
+      <div class="question-content">
+        The path of a ball is modeled by the function \(h(x) = -x^2 + 4x\), where \(h(x)\) is the height in metres and \(x\) is the horizontal distance in metres. The graph of \(h\) is shown below.
+        
+        <div class="diagram-container" id="svg-q10-ball"></div>
+        
+        10.1.1 Determine the maximum height reached by the ball. (4)
+        <br>10.1.2 Calculate the area bounded by the graph of \(h\), the \(x\)-axis, and the lines \(x=0\) and \(x=4\). (8)
+      </div>
+      <div class="marks">(12)</div>
+    </div>
+
+    <div class="total-marks">[12]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 13: QUESTION 11 ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">13</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="question-header"><h2>QUESTION 11</h2></div>
+
+    <div class="question-item">
+      <div class="question-number">11.1</div>
+      <div class="question-content">
+        The diagram below shows the surface defined by the equation:
+        <div class="math-display">\(z = x^2 + y^2 - 4\)</div>
+        
+        <div class="diagram-container large" id="svg-q11-cup"></div>
+        
+        Calculate the exact area of the intersection of the surface with the plane \(z = 0\).
+      </div>
+      <div class="marks">(9)</div>
+    </div>
+
+    <div class="total-marks">[9]</div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<!-- ==================== PAGE 14: INFORMATION SHEET ==================== -->
+<div class="page">
+  <div class="security-pattern"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Mathematics/Interim</div>
+      <div class="header-center">
+        <span class="page-num">14</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="info-title">INFORMATION SHEET</div>
+
+    <div class="formula-layout">
+      <div class="formula-center">\(x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}\)</div>
+      <div class="formula-center" style="margin-top: 10px;">\(\Delta = b^2 - 4ac\)</div>
+      
+      <div class="formula-center" style="margin-top: 20px;">
+        \(f'(x) = \lim_{h \to 0} \dfrac{f(x + h) - f(x)}{h}\)
+      </div>
+      <div class="formula-center">If \(f(x) = ax^n\), then \(f'(x) = anx^{n-1}\)</div>
+      
+      <div class="formula-row" style="margin-top: 20px;">
+        <div class="formula-item">\(y = mx + c\)</div>
+        <div class="formula-item">\(y - y_1 = m(x - x_1)\)</div>
+        <div class="formula-item">\(m = \dfrac{y_2 - y_1}{x_2 - x_1}\)</div>
+      </div>
+
+      <div class="formula-center" style="margin-top: 20px;">
+        \(S_n = \dfrac{n}{2}[2a + (n-1)d]\)
+      </div>
+      <div class="formula-center">
+        \(S_n = \dfrac{a(r^n - 1)}{r - 1}\)
+      </div>
+      <div class="formula-center">
+        \(S_\infty = \dfrac{a}{1-r} \quad \text{for } -1 < r < 1\)
+      </div>
+
+      <div class="formula-center" style="margin-top: 20px;">
+        Area of a circle = \(\pi r^2\)
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/interim-paper.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END</div>
+  </div>
+  <div class="bottom-barcode">
+    <svg class="barcode-footer" data-barcode="102626INT" data-bc-width="1.5" data-bc-height="30" data-bc-display="false"></svg>
+  </div>
+</div>
+
+<script>
+(function () {
+  // --- BARCODES & QR ---
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+    document.querySelectorAll(".barcode-cover, .barcode-footer").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "102626INT", {
+          format: "CODE128", width: parseFloat(el.dataset.bcWidth || "1.5"),
+          height: parseInt(el.dataset.bcHeight || "30", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace", fontSize: parseInt(el.dataset.bcFontSize || "12", 10), textMargin: 2, margin: 0,
+          background: "#ffffff", lineColor: "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+  
+  function makeQRCodes() {
+    if (typeof qrcode !== "function") return;
+    document.querySelectorAll(".footer-qr").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://nylwebdev.vercel.app/interim-paper.html");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+  
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+
+    // --- Q3.1 Diagram: Exp f(x) = 2^x ---
+    const svg3_exp = document.getElementById('svg-q3-exp');
+    if (svg3_exp) {
+        const width = 300, height = 200;
+        const xMin = -3, xMax = 3, yMin = -1, yMax = 8;
+        function mapX(x) { return ((x - xMin) / (xMax - xMin)) * width; }
+        function mapY(y) { return height - (((y - yMin) / (yMax - yMin)) * height); }
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="1.5"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="1.5"/>`;
+        let path = "";
+        for (let x = xMin; x <= xMax; x += 0.05) {
+            let y = Math.pow(2, x);
+            if (y >= yMin && y <= yMax) {
+                path += (path === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+            }
+        }
+        html += `<path d="${path}" fill="none" stroke="#000" stroke-width="2"/>`;
+        html += `<text x="${width - 15}" y="${mapY(0) - 5}" font-family="Arial" font-size="10">x</text>`;
+        html += `<text x="${mapX(0) + 5}" y="15" font-family="Arial" font-size="10">y</text>`;
+        html += `<text x="${mapX(2)}" y="${mapY(4)}" font-family="Times New Roman" font-size="12" font-style="italic">f</text>`;
+        html += `</svg>`;
+        svg3_exp.innerHTML = html;
+    }
+
+    // --- Q3.2 Diagram: Log g(x) = log_3(x-2) ---
+    const svg3_log = document.getElementById('svg-q3-log');
+    if (svg3_log) {
+        const width = 300, height = 200;
+        const xMin = 0, xMax = 11, yMin = -2, yMax = 3;
+        function mapX(x) { return ((x - xMin) / (xMax - xMin)) * width; }
+        function mapY(y) { return height - (((y - yMin) / (yMax - yMin)) * height); }
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="1.5"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="1.5"/>`;
+        
+        // Asymptote x=2
+        html += `<line x1="${mapX(2)}" y1="0" x2="${mapX(2)}" y2="${height}" stroke="#000" stroke-width="1.5" stroke-dasharray="4"/>`;
+        
+        let path = "";
+        for (let x = 2.1; x <= xMax; x += 0.05) {
+            let y = Math.log(x - 2) / Math.log(3);
+            if (y >= yMin && y <= yMax) {
+                path += (path === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+            }
+        }
+        html += `<path d="${path}" fill="none" stroke="#000" stroke-width="2"/>`;
+        html += `<text x="${width - 15}" y="${mapY(0) - 5}" font-family="Arial" font-size="10">x</text>`;
+        html += `<text x="${mapX(0) + 5}" y="15" font-family="Arial" font-size="10">y</text>`;
+        html += `<text x="${mapX(5)}" y="${mapY(1.5)}" font-family="Times New Roman" font-size="12" font-style="italic">g</text>`;
+        html += `</svg>`;
+        svg3_log.innerHTML = html;
+    }
+
+    // --- Q4 Diagram: Sqrt h(x) = -sqrt(x+4) + 2 ---
+    const svg4_sqrt = document.getElementById('svg-q4-sqrt');
+    if (svg4_sqrt) {
+        const width = 300, height = 200;
+        const xMin = -5, xMax = 6, yMin = -2, yMax = 4;
+        function mapX(x) { return ((x - xMin) / (xMax - xMin)) * width; }
+        function mapY(y) { return height - (((y - yMin) / (yMax - yMin)) * height); }
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="1.5"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="1.5"/>`;
+        let path = "";
+        for (let x = -4; x <= xMax; x += 0.05) {
+            let y = -Math.sqrt(x + 4) + 2;
+            if (y >= yMin && y <= yMax) {
+                path += (path === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+            }
+        }
+        html += `<path d="${path}" fill="none" stroke="#000" stroke-width="2"/>`;
+        html += `<text x="${width - 15}" y="${mapY(0) - 5}" font-family="Arial" font-size="10">x</text>`;
+        html += `<text x="${mapX(0) + 5}" y="15" font-family="Arial" font-size="10">y</text>`;
+        html += `<text x="${mapX(-2)}" y="${mapY(-1)}" font-family="Times New Roman" font-size="12" font-style="italic">h</text>`;
+        html += `</svg>`;
+        svg4_sqrt.innerHTML = html;
+    }
+
+    // --- Q6 Diagram: Quartic f(x) = x^4 - 4x^2 ---
+    const svg6_quartic = document.getElementById('svg-q6-quartic');
+    if (svg6_quartic) {
+        const width = 350, height = 250;
+        const xMin = -3, xMax = 3, yMin = -6, yMax = 6;
+        function mapX(x) { return ((x - xMin) / (xMax - xMin)) * width; }
+        function mapY(y) { return height - (((y - yMin) / (yMax - yMin)) * height); }
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="1.5"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="1.5"/>`;
+        
+        let path = "";
+        for (let x = xMin; x <= xMax; x += 0.05) {
+            let y = Math.pow(x, 4) - 4 * Math.pow(x, 2);
+            if (y >= yMin && y <= yMax) {
+                path += (path === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+            }
+        }
+        html += `<path d="${path}" fill="none" stroke="#000" stroke-width="2"/>`;
+        html += `<text x="${width - 15}" y="${mapY(0) - 5}" font-family="Arial" font-size="10">x</text>`;
+        html += `<text x="${mapX(0) + 5}" y="15" font-family="Arial" font-size="10">y</text>`;
+        html += `<text x="${mapX(-1.5)}" y="${mapY(-4)}" font-family="Times New Roman" font-size="12" font-style="italic">f</text>`;
+        html += `</svg>`;
+        svg6_quartic.innerHTML = html;
+    }
+
+    // --- Q10 Diagram: Ball Displacement h(x) = -x^2 + 4x ---
+    const svg_q10_ball = document.getElementById('svg-q10-ball');
+    if (svg_q10_ball) {
+        const width = 400, height = 250;
+        const xMin = -1, xMax = 5, yMin = -1, yMax = 5;
+        function mapX(x) { return ((x - xMin) / (xMax - xMin)) * width; }
+        function mapY(y) { return height - (((y - yMin) / (yMax - yMin)) * height); }
+        
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+        
+        // Shaded area
+        let shadePath = `M ${mapX(0)},${mapY(0)} `;
+        let linePath = "";
+        for (let x = 0; x <= 4; x += 0.05) {
+            let y = -x*x + 4*x;
+            shadePath += `L ${mapX(x)},${mapY(y)} `;
+            linePath += (linePath === "" ? "M" : "L") + `${mapX(x)},${mapY(y)} `;
+        }
+        shadePath += `L ${mapX(4)},${mapY(0)} Z`;
+        
+        html += `<path d="${shadePath}" fill="#e5e7eb" stroke="none"/>`;
+        
+        // Axes
+        html += `<line x1="0" y1="${mapY(0)}" x2="${width}" y2="${mapY(0)}" stroke="#000" stroke-width="2"/>`;
+        html += `<line x1="${mapX(0)}" y1="0" x2="${mapX(0)}" y2="${height}" stroke="#000" stroke-width="2"/>`;
+
+        // Curve
+        html += `<path d="${linePath}" fill="none" stroke="#000" stroke-width="2.5"/>`;
+        
+        // Dots
+        html += `<circle cx="${mapX(2)}" cy="${mapY(4)}" r="4" fill="#000"/>`;
+        html += `<circle cx="${mapX(0)}" cy="${mapY(0)}" r="4" fill="#000"/>`;
+        html += `<circle cx="${mapX(4)}" cy="${mapY(0)}" r="4" fill="#000"/>`;
+        
+        // Labels
+        html += `<text x="${mapX(2)}" y="${mapY(4)-10}" text-anchor="middle" font-family="Arial" font-size="12">(2, 4)</text>`;
+        html += `<text x="${mapX(2)}" y="${mapY(2)}" text-anchor="middle" font-family="Arial" font-size="14" font-style="italic" fill="#7A1F2B">Area</text>`;
+        
+        html += `<text x="${width - 15}" y="${mapY(0) - 10}" font-family="Arial" font-size="12">x</text>`;
+        html += `<text x="${mapX(0) + 10}" y="20" font-family="Arial" font-size="12">h(x)</text>`;
+
+        html += `</svg>`;
+        svg_q10_ball.innerHTML = html;
+    }
+
+    // --- Q11 Diagram: 3D Cup (Shaded) z = x^2 + y^2 - 4 ---
+    const svg_q11_cup = document.getElementById('svg-q11-cup');
+    if (svg_q11_cup) {
+        const width = 400, height = 300;
+        const scale = 22;
+        const cx = 200, cy = 140;
+
+        // Isometric projection angles
+        const cos30 = Math.cos(Math.PI / 6);
+        const sin30 = Math.sin(Math.PI / 6);
+
+        // Project 3D coordinates to 2D
+        function project(x, y, z) {
+            // Scale z slightly less to make the bowl look proportionate
+            let X = cx + (x - y) * cos30 * scale;
+            let Y = cy + (x + y) * sin30 * scale - z * scale * 0.8; 
+            return { X, Y };
+        }
+
+        let html = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`;
+
+        // Draw Axes (behind the surface)
+        let origin = project(0,0,0);
+        let xAxis = project(3.5,0,0);
+        let yAxis = project(0,3.5,0);
+        let zAxis = project(0,0,4);
+        
+        html += `<line x1="${origin.X}" y1="${origin.Y}" x2="${xAxis.X}" y2="${xAxis.Y}" stroke="#000" stroke-width="1.5" stroke-dasharray="4"/>`;
+        html += `<text x="${xAxis.X + 5}" y="${xAxis.Y}" font-family="Arial" font-size="12">x</text>`;
+        
+        html += `<line x1="${origin.X}" y1="${origin.Y}" x2="${yAxis.X}" y2="${yAxis.Y}" stroke="#000" stroke-width="1.5" stroke-dasharray="4"/>`;
+        html += `<text x="${yAxis.X}" y="${yAxis.Y + 12}" font-family="Arial" font-size="12">y</text>`;
+        
+        html += `<line x1="${origin.X}" y1="${origin.Y}" x2="${zAxis.X}" y2="${zAxis.Y}" stroke="#000" stroke-width="1.5" stroke-dasharray="4"/>`;
+        html += `<text x="${zAxis.X - 10}" y="${zAxis.Y - 5}" font-family="Arial" font-size="12">z</text>`;
+
+        // Generate Faces for shading (Higher resolution step for a smoother cup)
+        let faces = [];
+        let step = 0.15;
+        
+        for (let x = -2.2; x < 2.2; x += step) {
+            for (let y = -2.2; y < 2.2; y += step) {
+                let z1 = x*x + y*y - 4;
+                let z2 = (x+step)*(x+step) + y*y - 4;
+                let z3 = (x+step)*(x+step) + (y+step)*(y+step) - 4;
+                let z4 = x*x + (y+step)*(y+step) - 4;
+
+                let p1 = project(x, y, z1);
+                let p2 = project(x+step, y, z2);
+                let p3 = project(x+step, y+step, z3);
+                let p4 = project(x, y+step, z4);
+                
+                // Depth calculation for painter's algorithm (draw back to front)
+                let depth = (x + y) + (z1 + z2 + z3 + z4)/4;
+                faces.push({ p1, p2, p3, p4, depth, z: (z1+z2+z3+z4)/4 });
+            }
+        }
+
+        // Sort back-to-front
+        faces.sort((a, b) => b.depth - a.depth);
+
+        // Draw the shaded faces
+        faces.forEach(f => {
+            // Grayscale gradient: darker at the bottom (z=-4), lighter at the top (z=0)
+            let brightness = Math.floor(150 + (f.z + 4) * 25); 
+            if (brightness > 245) brightness = 245;
+            let fill = `rgb(${brightness}, ${brightness}, ${brightness})`;
+            
+            html += `<polygon points="${f.p1.X},${f.p1.Y} ${f.p2.X},${f.p2.Y} ${f.p3.X},${f.p3.Y} ${f.p4.X},${f.p4.Y}" fill="${fill}" stroke="#333" stroke-width="0.3"/>`;
+        });
+
+        // Highlight the level curve z=0 (the rim of the cup)
+        let levelPath = "";
+        for (let theta = 0; theta <= 2*Math.PI + 0.1; theta += 0.05) {
+            let x = 2 * Math.cos(theta);
+            let y = 2 * Math.sin(theta);
+            let p = project(x, y, 0);
+            levelPath += (levelPath === "" ? "M" : "L") + `${p.X},${p.Y} `;
+        }
+        html += `<path d="${levelPath}" fill="none" stroke="#000" stroke-width="2.5"/>`;
+
+        html += `</svg>`;
+        svg_q11_cup.innerHTML = html;
+    }
+  });
+  
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
+  });
+})();
+</script>
+</body>
+</html>
