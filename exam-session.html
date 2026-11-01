@@ -1,1060 +1,1027 @@
-<!doctype html>
+```html
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CV Scanner — Handwriting Page Scanner</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Scanner — Institute of Board</title>
 <style>
-  *{box-sizing:border-box}
-  :root{
-    --bg:#070a0e;
-    --panel:#111823;
-    --panel-2:#0c131c;
-    --line:#1d2937;
-    --txt:#e7eef7;
-    --muted:#7d8fa3;
-    --accent:#25d6a4;
-    --accent-dim:#0e3d32;
-    --warn:#f5a524;
-    --fail:#ff5f6d;
-    --radius:14px;
+  :root {
+    --crimson: #dc143c;
+    --crimson-dark: #a80f2d;
+    --crimson-tint: #fdecef;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --ok: #15803d;
+    --warn: #b45309;
   }
-  html,body{height:100%}
-  body{
-    margin:0;
-    background:radial-gradient(1200px 620px at 18% -12%, #14202c 0%, #070a0e 62%) fixed;
-    color:var(--txt);
-    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Inter,sans-serif;
-    -webkit-font-smoothing:antialiased;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #fff;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 1.5rem;
   }
-  [hidden]{display:none !important}
+  h1 { font-size: 1.35rem; margin-bottom: 1rem; text-align: center; color: var(--crimson); }
+  .view { width: 100%; max-width: 680px; display: none; }
+  .view.active { display: block; }
 
-  .app{max-width:1440px;margin:0 auto;padding:20px 22px 40px}
+  /* ---------- Capture stage ---------- */
+  .stage {
+    position: relative; width: 100%; aspect-ratio: 3/4;
+    background: #f3f4f6;
+    border: 1px solid var(--line);
+    border-radius: 14px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
+  video.active, canvas.active, img.preview.active { display:block; }
+  .placeholder { color:#9ca3af; text-align:center; padding:1rem; font-size:.95rem; }
 
-  /* ---------- top bar ---------- */
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
-  .brand{display:flex;align-items:center;gap:14px}
-  .logo{
-    width:44px;height:44px;border-radius:12px;display:grid;place-items:center;
-    background:linear-gradient(145deg,#1d3a34,#0d1a18);
-    border:1px solid #1f4a40;color:var(--accent);font-weight:800;letter-spacing:.5px;font-size:15px;
-    box-shadow:0 0 22px rgba(37,214,164,.16);
-  }
-  .brand h1{margin:0;font-size:17px;font-weight:650;letter-spacing:.2px}
-  .brand p{margin:2px 0 0;font-size:12px;color:var(--muted)}
-  .engine{
-    display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted);
-    background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:9px 15px;
-  }
-  .engine.ready{color:var(--accent);border-color:#1c4a3f;background:#0b1a17}
-  .engine.error{color:var(--fail);border-color:#4a1f24;background:#1a0d0f}
-  .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.4s infinite}
-  .engine.ready .pulse{animation:none}
-  .engine.error .pulse{background:var(--fail);animation:none}
-  @keyframes pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+  .framing-guide { position:absolute; inset:6%; pointer-events:none; display:none; z-index:4; }
+  .framing-guide.visible { display:block; }
+  .framing-guide .corner { position:absolute; width:36px; height:36px; border:3px solid var(--crimson); }
+  .framing-guide .tl { top:0; left:0; border-right:none; border-bottom:none; border-radius:8px 0 0 0; }
+  .framing-guide .tr { top:0; right:0; border-left:none; border-bottom:none; border-radius:0 8px 0 0; }
+  .framing-guide .bl { bottom:0; left:0; border-right:none; border-top:none; border-radius:0 0 0 8px; }
+  .framing-guide .br { bottom:0; right:0; border-left:none; border-top:none; border-radius:0 0 8px 0; }
 
-  /* ---------- layout ---------- */
-  .layout{display:grid;grid-template-columns:minmax(0,1fr) 396px;gap:20px;align-items:start}
-  @media (max-width:1080px){.layout{grid-template-columns:1fr}}
+  .flash-overlay {
+    position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none;
+    z-index:8; transition:opacity .28s ease-out;
+  }
+  .flash-overlay.fire { opacity:1; transition:none; }
 
-  /* ---------- stage ---------- */
-  .stage{
-    background:linear-gradient(180deg,#0e151e,#0a1018);
-    border:1px solid var(--line);border-radius:18px;padding:16px;
-    box-shadow:0 24px 60px rgba(0,0,0,.45);
+  .howto {
+    position:absolute; inset:0; z-index:10;
+    background:rgba(255,255,255,.97);
+    display:none; flex-direction:column;
+    align-items:center; justify-content:center; padding:1.5rem; text-align:center;
+    border-radius:14px;
   }
-  .viewport{
-    position:relative;width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;
-    background:
-      linear-gradient(#0a1016,#0a1016) padding-box,
-      repeating-linear-gradient(45deg,#0d141c 0 12px,#0b1219 12px 24px) border-box;
-    border:1px solid #16222f;
-    display:grid;place-items:center;
-  }
-  .canvas-stack{position:absolute;inset:0}
-  .canvas-stack canvas{
-    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
-  }
-  #overlayCanvas{pointer-events:none}
-  #video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+  .howto.visible { display:flex; }
+  .howto h2 { font-size:1.15rem; margin-bottom:1rem; color:var(--crimson); }
+  .howto ul { list-style:none; text-align:left; max-width:360px; margin-bottom:1.25rem; font-size:.92rem; line-height:1.55; color:#374151; }
+  .howto li { padding:.35rem 0 .35rem 1.8rem; position:relative; }
+  .howto li::before { content:"✓"; position:absolute; left:0; color:var(--crimson); font-weight:bold; }
+  .howto .dismiss { background:var(--crimson); color:#fff; border:none; border-radius:10px; padding:.85rem 1.5rem; font-weight:600; cursor:pointer; width:100%; max-width:260px; font-size:1rem; }
+  .howto .dismiss:hover { background:var(--crimson-dark); }
 
-  .placeholder{
-    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:8px;text-align:center;padding:24px;color:var(--muted);pointer-events:none;
+  .torch-btn {
+    position:absolute; top:.75rem; right:.75rem; width:48px; height:48px; border-radius:50%;
+    background:rgba(255,255,255,.92); color:var(--crimson); font-size:1.4rem;
+    border:2px solid var(--crimson); cursor:pointer; display:none;
+    align-items:center; justify-content:center; z-index:6;
+    transition:background .15s, color .15s;
   }
-  .placeholder .ph-mark{
-    font-size:44px;line-height:1;color:#25404f;margin-bottom:4px;
-  }
-  .placeholder strong{color:#c8d6e5;font-size:15px;font-weight:600}
-  .placeholder span{font-size:12.5px;max-width:340px;line-height:1.5}
+  .torch-btn.visible { display:flex; }
+  .torch-btn.on { background:var(--crimson); color:#fff; }
 
-  .scanline{
-    position:absolute;left:0;right:0;height:3px;
-    background:linear-gradient(90deg,transparent,var(--accent),transparent);
-    filter:drop-shadow(0 0 10px var(--accent));
-    opacity:0;pointer-events:none;
+  /* ---------- Question selector ---------- */
+  .q-selector {
+    margin-top:1rem; display:flex; align-items:center; gap:.5rem;
   }
-  .viewport.scanning .scanline{opacity:1;animation:sweep 1.5s ease-in-out infinite}
-  @keyframes sweep{0%{top:2%}50%{top:97%}100%{top:2%}}
+  .q-selector button {
+    background:#fff; border:1px solid var(--line); color:var(--crimson);
+    width:38px; height:38px; border-radius:8px; font-size:1rem; cursor:pointer;
+    font-weight:700;
+  }
+  .q-selector button:hover:not(:disabled) { background:var(--crimson-tint); border-color:var(--crimson); }
+  .q-selector button:disabled { opacity:.35; cursor:not-allowed; }
+  .q-selector select {
+    flex:1; background:#fff; color:var(--ink);
+    border:1px solid var(--line); border-radius:8px;
+    padding:.65rem .8rem; font-size:1rem;
+  }
+  .q-selector select:focus { outline:2px solid var(--crimson); outline-offset:1px; }
 
-  .stage-bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-  .btn{
-    appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--txt);
-    padding:11px 18px;border-radius:11px;font-size:13.5px;font-weight:550;cursor:pointer;
-    transition:.16s ease;display:inline-flex;align-items:center;gap:8px;
+  /* ---------- Pages captured for current Q ---------- */
+  .pages-strip { margin-top:1rem; }
+  .pages-strip h4 {
+    font-size:.78rem; color:var(--crimson); text-transform:uppercase;
+    letter-spacing:.06em; margin-bottom:.4rem; font-weight:700;
   }
-  .btn:hover:not(:disabled){border-color:#2c3f52;background:#16202c;transform:translateY(-1px)}
-  .btn:disabled{opacity:.42;cursor:not-allowed}
-  .btn.primary{
-    background:linear-gradient(180deg,#22c99a,#15a97f);border-color:#1ba57e;color:#04120e;font-weight:700;
-    box-shadow:0 8px 22px rgba(37,214,164,.22);
+  .pages-list { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .page-thumb {
+    position:relative; width:70px; background:#fafafa;
+    border:1px solid var(--line); border-radius:6px; padding:4px;
+    display:flex; flex-direction:column; align-items:center;
   }
-  .btn.primary:hover:not(:disabled){background:linear-gradient(180deg,#2ee3b0,#17b98b)}
-  .btn.ghost{background:transparent;color:var(--muted)}
+  .page-thumb img { width:100%; border-radius:3px; display:block; }
+  .page-thumb .num {
+    position:absolute; bottom:2px; right:2px;
+    background:var(--crimson); color:#fff; font-size:.65rem; font-weight:700;
+    padding:1px 5px; border-radius:6px;
+  }
+  .page-thumb .del {
+    position:absolute; top:-6px; right:-6px;
+    width:20px; height:20px; border-radius:50%;
+    background:#fff; border:1px solid var(--crimson); color:var(--crimson);
+    cursor:pointer; font-size:.7rem; line-height:1; padding:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .page-thumb .del:hover { background:var(--crimson); color:#fff; }
+  .pages-empty { font-size:.85rem; color:var(--muted); font-style:italic; }
 
-  /* ---------- panel ---------- */
-  .panel{display:flex;flex-direction:column;gap:16px}
-  .verdict{
-    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;
-    background:linear-gradient(180deg,#101823,#0c131c);
-    border:1px solid var(--line);border-radius:16px;padding:16px;
-    transition:.25s ease;
+  /* ---------- Controls ---------- */
+  .controls { display:flex; gap:.6rem; margin-top:1rem; flex-wrap:wrap; }
+  button.action {
+    padding:.85rem 1.2rem; font-size:.95rem; font-weight:600;
+    border:none; border-radius:10px; cursor:pointer;
+    transition:background .15s, opacity .15s; flex:1; min-width:130px;
   }
-  .verdict.pass{border-color:#1c5a49;background:linear-gradient(180deg,#0e211c,#0a1714);box-shadow:0 0 32px rgba(37,214,164,.12)}
-  .verdict.fail{border-color:#5c2229;background:linear-gradient(180deg,#201013,#150b0d);box-shadow:0 0 32px rgba(255,95,109,.12)}
-  .verdict.busy{border-color:#3a3520}
-  .verdict-icon{
-    width:46px;height:46px;border-radius:12px;display:grid;place-items:center;
-    background:#0e1720;border:1px solid var(--line);font-size:20px;font-weight:800;color:var(--muted);
-  }
-  .verdict.pass .verdict-icon{background:var(--accent-dim);border-color:#1c5a49;color:var(--accent)}
-  .verdict.fail .verdict-icon{background:#2a1114;border-color:#5c2229;color:var(--fail)}
-  .verdict-text strong{display:block;font-size:15px;font-weight:680}
-  .verdict-text span{display:block;font-size:12.3px;color:var(--muted);margin-top:3px;line-height:1.4}
-  .verdict-score{text-align:right}
-  .verdict-score b{display:block;font-size:24px;font-weight:750;letter-spacing:-.5px}
-  .verdict-score small{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+  button.action:disabled { opacity:.4; cursor:not-allowed; }
+  .btn-primary { background:var(--crimson); color:#fff; }
+  .btn-primary:hover:not(:disabled) { background:var(--crimson-dark); }
+  .btn-secondary { background:#fff; color:var(--crimson); border:2px solid var(--crimson); }
+  .btn-secondary:hover:not(:disabled) { background:var(--crimson-tint); }
+  .btn-success { background:var(--crimson-dark); color:#fff; }
+  .btn-success:hover:not(:disabled) { background:#8a0c25; }
+  .btn-save { background:#f3f4f6; color:#374151; border:2px solid #d1d5db; }
+  .btn-save:hover:not(:disabled) { background:#e5e7eb; }
 
-  .block{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px 16px}
-  .block h2{
-    margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted);
+  .options { display:flex; align-items:center; gap:.6rem; margin-top:1rem; font-size:.92rem; color:#374151; }
+  .options input { width:18px; height:18px; accent-color:var(--crimson); }
+
+  .status { margin-top:.9rem; font-size:.9rem; text-align:center; min-height:1.4em; color:var(--muted); }
+  .status.error { color:var(--crimson); font-weight:600; }
+  .status.success { color:var(--ok); font-weight:600; }
+  .status.warn { color:var(--warn); font-weight:600; }
+
+  /* ---------- Progress chips ---------- */
+  .progress { margin-top:1.5rem; }
+  .progress h3 {
+    font-size:.8rem; color:var(--crimson); text-transform:uppercase;
+    letter-spacing:.06em; margin-bottom:.5rem; font-weight:700;
+  }
+  .chips { display:flex; flex-wrap:wrap; gap:.5rem; }
+  .chip {
+    display:flex; align-items:center; gap:.4rem;
+    background:#fff; border:1px solid var(--line); border-radius:8px;
+    padding:.45rem .7rem; font-size:.85rem; color:#374151;
+    cursor:pointer;
+  }
+  .chip.done { border-color:var(--crimson); background:var(--crimson-tint); color:var(--crimson-dark); font-weight:600; }
+  .chip .count { font-size:.7rem; background:var(--crimson); color:#fff; padding:1px 6px; border-radius:10px; }
+
+  /* ================= ANSWER BOOK ================= */
+  #bookView {
+    background:#fff; color:var(--ink);
+    border:1px solid var(--line); border-radius:14px;
+    padding:1.5rem;
+  }
+  .book-toolbar { display:flex; gap:.75rem; margin-bottom:1.25rem; }
+  .book-toolbar button { flex:1; }
+
+  .exam-paper {
+    background:#fff;
+    font-family: 'Times New Roman', Georgia, serif;
+    color:#000;
+  }
+  .exam-header {
+    text-align:center; border-bottom:3px double #000; padding-bottom:.75rem; margin-bottom:1rem;
+  }
+  .exam-institute { font-size:1.15rem; font-weight:bold; letter-spacing:.08em; }
+  .exam-title { font-size:1rem; margin-top:.25rem; }
+  .exam-meta {
+    display:flex; justify-content:center; gap:1.5rem;
+    font-size:.82rem; margin-top:.4rem; color:#333;
+  }
+  .exam-student {
+    display:grid; grid-template-columns:1fr 1fr; gap:.5rem 1.5rem;
+    border:1px solid #000; padding:.6rem .8rem; margin-bottom:1rem; font-size:.88rem;
+  }
+  .exam-student .field { display:flex; align-items:baseline; gap:.4rem; }
+  .exam-student .field span:first-child { font-weight:bold; white-space:nowrap; }
+  .exam-student input {
+    flex:1; border:none; border-bottom:1px dotted #000; font:inherit;
+    padding:0 .2rem; background:transparent;
+  }
+  .exam-student input:focus { outline:none; background:#fffbe6; }
+
+  .exam-instructions {
+    border:1px solid #000; padding:.6rem .9rem; margin-bottom:1.25rem; font-size:.85rem;
+  }
+  .exam-instructions h4 { font-size:.85rem; margin-bottom:.4rem; letter-spacing:.04em; }
+  .exam-instructions ol { padding-left:1.2rem; line-height:1.5; }
+
+  .q-block { margin-bottom:1.75rem; }
+  .q-header { page-break-after:avoid; break-after:avoid; }
+  .q-top {
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:1px solid #000; padding-bottom:.3rem; margin-bottom:.4rem;
+  }
+  .q-num { font-weight:bold; font-size:.95rem; }
+  .q-marks { font-size:.85rem; font-weight:bold; }
+  .q-text { font-size:.9rem; line-height:1.45; margin-bottom:.6rem; }
+
+  .q-answer { display:flex; flex-direction:column; gap:.75rem; }
+  .q-scan {
+    page-break-inside:avoid; break-inside:avoid;
+    width:100%; border:1px solid #ccc; border-radius:3px; display:block;
+  }
+  .q-empty {
+    border:1px dashed #999; border-radius:4px; min-height:80px;
+    display:flex; align-items:center; justify-content:center;
+    color:#999; font-style:italic; font-size:.85rem;
+  }
+  .q-scan-caption {
+    font-size:.72rem; color:#666; text-align:right; margin-top:-.4rem;
+    font-family: system-ui, sans-serif;
   }
 
-  /* steps */
-  .steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
-  .steps li{
-    display:flex;align-items:center;gap:11px;font-size:13px;color:#5f7286;transition:.2s;
+  .exam-footer {
+    margin-top:2rem; padding-top:.5rem; border-top:1px solid #000;
+    font-size:.75rem; text-align:center; color:#555;
   }
-  .steps li i{
-    width:17px;height:17px;border-radius:50%;border:1.6px solid #27374a;flex:0 0 auto;
-    display:grid;place-items:center;font-size:10px;font-style:normal;transition:.2s;
+
+  @media print {
+    body { background:#fff; padding:0; }
+    .book-toolbar, .no-print { display:none !important; }
+    #bookView { border:none; border-radius:0; padding:0; }
+    .q-scan { border:none; }
+    .exam-paper { font-size:11pt; }
   }
-  .steps li.active{color:#cfe0f0}
-  .steps li.active i{border-color:var(--accent);box-shadow:0 0 0 4px rgba(37,214,164,.1);animation:pulse 1.2s infinite}
-  .steps li.done{color:#8fa7bd}
-  .steps li.done i{background:var(--accent);border-color:var(--accent);color:#04120e}
-  .steps li.done i::after{content:"✓";font-weight:800}
-  .steps li.warn{color:var(--warn)}
-  .steps li.warn i{border-color:var(--warn);color:var(--warn)}
-  .steps li.warn i::after{content:"!";font-weight:800}
-  .steps li.fail{color:var(--fail)}
-  .steps li.fail i{border-color:var(--fail);background:#2a1114;color:var(--fail)}
-  .steps li.fail i::after{content:"×";font-weight:800}
-
-  /* metrics */
-  .metrics{display:flex;flex-direction:column;gap:11px}
-  .metric{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:12.6px}
-  .metric .name{color:#9fb2c6}
-  .metric .val{color:var(--muted);font-variant-numeric:tabular-nums;font-weight:600}
-  .metric .bar{grid-column:1/-1;height:5px;border-radius:99px;background:#131d28;overflow:hidden}
-  .metric .bar span{display:block;height:100%;width:0;border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
-  .metric .bar span.good{background:linear-gradient(90deg,#17b98b,#25d6a4)}
-  .metric .bar span.mid{background:linear-gradient(90deg,#c98416,#f5a524)}
-  .metric .bar span.bad{background:linear-gradient(90deg,#c4323f,#ff5f6d)}
-
-  /* reasons */
-  .reasons{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-  .reasons li{
-    font-size:12.6px;line-height:1.45;color:#f0b7bd;background:#1b0f11;border:1px solid #3a1b20;
-    border-radius:10px;padding:9px 11px;display:flex;gap:9px;
-  }
-  .reasons li.note{color:#c8b98a;background:#1a1710;border-color:#3a3320}
-  .reasons li::before{content:"!";font-weight:800;color:var(--fail);flex:0 0 auto}
-  .reasons li.note::before{content:"i";color:var(--warn)}
-
-  /* previews */
-  .previews{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .previews figure{margin:0;display:flex;flex-direction:column;gap:6px}
-  .previews canvas{
-    width:100%;height:112px;object-fit:contain;border-radius:9px;background:#0a1119;border:1px solid #17222f;
-  }
-  .previews figcaption{font-size:10.5px;color:var(--muted);text-align:center;letter-spacing:.4px}
-
-  .err{color:var(--fail);font-size:12.5px;margin-top:10px}
 </style>
 </head>
 <body>
 
-<div class="app">
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">CV</div>
-      <div>
-        <h1>CV Scanner</h1>
-        <p>Handwriting capture · full page · clarity gate</p>
-      </div>
+<h1 class="no-print">Exam Scanner — Institute of Board</h1>
+
+<!-- ================= CAPTURE VIEW ================= -->
+<div class="view active" id="captureView">
+  <div class="stage">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+    <img id="preview" class="preview" alt="Scanned page">
+    <div class="placeholder" id="placeholder">Tap “Open Camera” to start scanning.</div>
+
+    <div class="framing-guide" id="framingGuide">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
     </div>
-    <div class="engine" id="engineState"><span class="pulse"></span> Loading engine…</div>
-  </header>
 
-  <main class="layout">
-    <section class="stage">
-      <div class="viewport" id="viewport">
-        <div class="canvas-stack">
-          <canvas id="srcCanvas"></canvas>
-          <canvas id="overlayCanvas"></canvas>
-        </div>
-        <video id="video" playsinline muted hidden></video>
-        <div class="placeholder" id="placeholder">
-          <div class="ph-mark">⌁</div>
-          <strong>Drop a CV page here</strong>
-          <span>The whole page is scanned. Borders, frames and shapes that are not black pen markings are ignored.</span>
-        </div>
-        <div class="scanline"></div>
-      </div>
+    <div class="flash-overlay" id="flashOverlay"></div>
 
-      <div class="stage-bar">
-        <label class="btn primary" id="uploadLabel">
-          Upload page
-          <input type="file" id="fileInput" accept="image/*" hidden>
-        </label>
-        <button class="btn" id="cameraBtn">Camera</button>
-        <button class="btn" id="captureBtn" hidden>Capture</button>
-        <button class="btn" id="rescanBtn" disabled>Rescan</button>
-        <button class="btn ghost" id="resetBtn">Reset</button>
-      </div>
-    </section>
+    <div class="howto" id="howto">
+      <h2>How to scan your answer pages</h2>
+      <ul>
+        <li>Select a <strong>question</strong>, then open the camera.</li>
+        <li>Fill the frame with <strong>one whole A4 page</strong>.</li>
+        <li>Hold steady, straight above the paper.</li>
+        <li>The <strong>flash fires automatically</strong> — no dark shots.</li>
+        <li>The page is <strong>straightened to A4</strong> and text is enhanced.</li>
+        <li>Add <strong>more pages</strong> for long answers — they stack.</li>
+      </ul>
+      <button class="dismiss" id="howtoDismiss">Got it</button>
+    </div>
 
-    <aside class="panel">
-      <div class="verdict" id="verdict">
-        <div class="verdict-icon" id="verdictIcon">–</div>
-        <div class="verdict-text">
-          <strong id="verdictTitle">Awaiting page</strong>
-          <span id="verdictSub">Upload or capture a page to start</span>
-        </div>
-        <div class="verdict-score">
-          <b id="confidence">—</b>
-          <small>confidence</small>
-        </div>
-      </div>
+    <button class="torch-btn" id="btnTorch" aria-label="Toggle flashlight">🔦</button>
+  </div>
 
-      <div class="block">
-        <h2>Pipeline</h2>
-        <ol class="steps" id="steps">
-          <li data-step="engine"><i></i>Engine ready</li>
-          <li data-step="page"><i></i>Page detected</li>
-          <li data-step="warp"><i></i>Perspective corrected</li>
-          <li data-step="ink"><i></i>Black pen ink isolated</li>
-          <li data-step="clarity"><i></i>Handwriting clarity checked</li>
-          <li data-step="verdict"><i></i>Verdict</li>
-        </ol>
-      </div>
+  <div class="q-selector">
+    <button id="btnPrevQ" title="Previous question">‹</button>
+    <select id="questionPick"></select>
+    <button id="btnNextQ" title="Next question">›</button>
+  </div>
 
-      <div class="block">
-        <h2>Quality metrics</h2>
-        <div class="metrics" id="metrics"></div>
-      </div>
+  <div class="pages-strip">
+    <h4 id="pagesTitle">Pages for this question</h4>
+    <div class="pages-list" id="pagesList"></div>
+  </div>
 
-      <div class="block" id="reasonsBlock" hidden>
-        <h2 id="reasonsTitle">Rejection reasons</h2>
-        <ul class="reasons" id="reasons"></ul>
-      </div>
+  <div class="options">
+    <input type="checkbox" id="enhanceToggle" checked>
+    <label for="enhanceToggle">Enhance text (adaptive threshold)</label>
+  </div>
 
-      <div class="block">
-        <h2>Previews</h2>
-        <div class="previews">
-          <figure><canvas id="pagePreview"></canvas><figcaption>Corrected page</figcaption></figure>
-          <figure><canvas id="inkPreview"></canvas><figcaption>Isolated ink</figcaption></figure>
-        </div>
-      </div>
-    </aside>
-  </main>
+  <div class="controls">
+    <button class="action btn-primary" id="btnOpen">Open Camera</button>
+    <button class="action btn-save" id="btnSaveProgress">Save</button>
+    <button class="action btn-secondary" id="btnCapture" disabled>Capture</button>
+    <button class="action btn-secondary" id="btnRetake" disabled>Retake</button>
+    <button class="action btn-secondary" id="btnAddPage" disabled>Add Page</button>
+    <button class="action btn-success" id="btnSaveNext" disabled>Save &amp; Next →</button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="progress">
+    <h3>Progress — all questions</h3>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="controls" style="margin-top:1.5rem;">
+    <button class="action btn-primary" id="btnOpenBook" disabled>Open Answer Book →</button>
+  </div>
 </div>
 
-<script async src="https://docs.opencv.org/4.8.0/opencv.js" onload="onOpenCvReady()"></script>
+<!-- ================= ANSWER BOOK VIEW ================= -->
+<div class="view" id="bookView">
+  <div class="book-toolbar no-print">
+    <button class="action btn-secondary" id="btnBack">← Back</button>
+    <button class="action btn-primary" id="btnDownload">Download PDF</button>
+  </div>
+
+  <div class="exam-paper" id="examPaper"></div>
+</div>
+
+<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
-/* =====================================================================
-   CV SCANNER — handwriting page scanner
-   Pipeline:
-     1. detect page quad  ->  2. perspective warp  ->  3. isolate black
-     pen ink (ignore background / frames / shapes)  ->  4. clarity +
-     handwriting analysis  ->  5. PASS / FAIL verdict
-   ===================================================================== */
-
-/* ------------------------------ config ------------------------------ */
-const CONFIG = {
-  maxDimension:      1600,   // working resolution of the loaded image
-  pageMinAreaRatio:  0.18,   // a page must fill at least 18% of the frame
-  marginTrimRatio:   0.012,  // ignore a thin band at the page edge
-  minComponentArea:  12,     // smaller blobs = sensor noise
-  maxBlobAreaRatio:  0.05,   // blobs larger than 5% of page = shapes/logos
-  inkSatMax:         110,    // max HSV saturation for "black pen"
-  inkValueMax:       155,    // max HSV value for "black pen"
-  passThreshold:     0.72    // overall confidence needed to accept the scan
+/* ═══════════════════════════════════════════════════════════════
+   EDIT THIS to match your exam paper
+   ═══════════════════════════════════════════════════════════════ */
+const EXAM = {
+  institute: 'INSTITUTE OF BOARD',
+  subject: 'Mathematics',
+  paper: 'Final Examination',
+  session: '2026',
+  duration: '3 hours',
+  totalMarks: 50,
+  instructions: [
+    'Answer ALL questions.',
+    'Write clearly in blue or black ink.',
+    'Show all working — marks are awarded for method.',
+    'Calculators are permitted.'
+  ],
+  questions: [
+    { no: 1, text: 'Solve for x: 2x² − 5x + 3 = 0. Show all working.', marks: 10 },
+    { no: 2, text: 'Differentiate f(x) = x³ + 2x² − 7x + 4 with respect to x.', marks: 10 },
+    { no: 3, text: 'Evaluate the definite integral ∫₀² (3x² + 2x) dx.', marks: 10 },
+    { no: 4, text: 'Find the determinant of the matrix A = [[2,3],[4,5]].', marks: 10 },
+    { no: 5, text: 'Prove that the sum of the angles of a triangle is 180°.', marks: 10 }
+  ]
 };
+/* ═══════════════════════════════════════════════════════════════ */
 
-/* ------------------------------ helpers ----------------------------- */
-const $ = (s) => document.querySelector(s);
-const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
-const norm = (v, lo, hi) => clamp01((v - lo) / (hi - lo));
-const tick = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
+const A4_W = 1240, A4_H = 1754; // ~150 DPI A4 portrait
+const QUESTION_SET = EXAM.questions;
 
-function median(arr) {
-  if (!arr.length) return 0;
-  const a = arr.slice().sort((x, y) => x - y);
-  const m = a.length >> 1;
-  return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
+/* ================= STATE ================= */
+const captures = {}; // { qNo: [dataURL, ...] }
+let stream = null, videoTrack = null;
+let pendingBlob = null; // the current un-saved capture
+let torchOn = false, torchSupported = false, howtoShown = false;
+let cvReady = false;
+
+/* ================= DOM ================= */
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const preview = document.getElementById('preview');
+const placeholder = document.getElementById('placeholder');
+const statusEl = document.getElementById('status');
+const enhanceToggle = document.getElementById('enhanceToggle');
+const btnTorch = document.getElementById('btnTorch');
+const framingGuide = document.getElementById('framingGuide');
+const flashOverlay = document.getElementById('flashOverlay');
+const howto = document.getElementById('howto');
+const howtoDismiss = document.getElementById('howtoDismiss');
+const questionPick = document.getElementById('questionPick');
+const pagesList = document.getElementById('pagesList');
+const pagesTitle = document.getElementById('pagesTitle');
+const chipsEl = document.getElementById('chips');
+
+const btnPrevQ = document.getElementById('btnPrevQ');
+const btnNextQ = document.getElementById('btnNextQ');
+const btnOpen = document.getElementById('btnOpen');
+const btnSaveProgress = document.getElementById('btnSaveProgress');
+const btnCapture = document.getElementById('btnCapture');
+const btnRetake = document.getElementById('btnRetake');
+const btnAddPage = document.getElementById('btnAddPage');
+const btnSaveNext = document.getElementById('btnSaveNext');
+const btnOpenBook = document.getElementById('btnOpenBook');
+const btnBack = document.getElementById('btnBack');
+const btnDownload = document.getElementById('btnDownload');
+
+/* ================= INIT ================= */
+QUESTION_SET.forEach(q => {
+  const o = document.createElement('option');
+  o.value = q.no; o.textContent = `Question ${q.no} — ${q.marks} marks`;
+  questionPick.appendChild(o);
+});
+
+document.getElementById('howtoDismiss').addEventListener('click', () => {
+  howto.classList.remove('visible');
+  btnCapture.disabled = false;
+  setStatus(`Scanning Q${questionPick.value}. The flash fires automatically.`);
+});
+
+function waitCv() {
+  const started = Date.now();
+  let attached = false;
+  const t = setInterval(() => {
+    if (typeof cv !== 'undefined') {
+      if (cv.Mat) { cvReady = true; clearInterval(t); return; }
+      if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
+        attached = true;
+        cv.onRuntimeInitialized = () => { cvReady = true; };
+      }
+    }
+    if (Date.now() - started > 20000) clearInterval(t);
+  }, 150);
 }
-function stdev(arr) {
-  if (arr.length < 2) return 0;
-  const m = arr.reduce((s, v) => s + v, 0) / arr.length;
-  return Math.sqrt(arr.reduce((s, v) => s + (v - m) * (v - m), 0) / arr.length);
+waitCv();
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function setStatus(msg, type = '') {
+  statusEl.textContent = msg;
+  statusEl.className = 'status' + (type ? ' ' + type : '');
 }
 
-/* ------------------------------ state ------------------------------- */
-let engineReady = false;
-let currentSource = null;     // HTMLCanvasElement of the loaded image
-let stream = null;
-let scanning = false;
+/* ================= SAVE PROGRESS ================= */
+btnSaveProgress.addEventListener('click', () => {
+  try {
+    localStorage.setItem('examScannerSaves', JSON.stringify(captures));
+    setStatus('All scans successfully saved to browser storage.', 'success');
+  } catch (e) {
+    setStatus('Failed to save: Storage limit reached or unavailable.', 'error');
+  }
+});
 
-/* ---------------------------- DOM refs ------------------------------ */
-const el = {
-  viewport:     $('#viewport'),
-  srcCanvas:    $('#srcCanvas'),
-  overlay:      $('#overlayCanvas'),
-  placeholder:  $('#placeholder'),
-  video:        $('#video'),
-  fileInput:    $('#fileInput'),
-  cameraBtn:    $('#cameraBtn'),
-  captureBtn:   $('#captureBtn'),
-  rescanBtn:    $('#rescanBtn'),
-  resetBtn:     $('#resetBtn'),
-  engineState:  $('#engineState'),
-  verdict:      $('#verdict'),
-  verdictIcon:  $('#verdictIcon'),
-  verdictTitle: $('#verdictTitle'),
-  verdictSub:   $('#verdictSub'),
-  confidence:   $('#confidence'),
-  metrics:      $('#metrics'),
-  reasonsBlock: $('#reasonsBlock'),
-  reasonsTitle: $('#reasonsTitle'),
-  reasons:      $('#reasons'),
-  pagePreview:  $('#pagePreview'),
-  inkPreview:   $('#inkPreview')
-};
+/* ================= CAMERA ================= */
+async function openCamera() {
+  setStatus('Requesting camera permission…');
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    });
+    video.srcObject = stream;
+    await video.play();
 
-/* ============================ ENGINE BOOT =========================== */
-function onOpenCvReady() {
-  if (typeof cv === 'undefined') return;
-  if (cv.getBuildInformation) {
-    bootEngine();
-  } else {
-    cv['onRuntimeInitialized'] = bootEngine;
+    videoTrack = stream.getVideoTracks()[0];
+    let caps = {};
+    try { caps = videoTrack.getCapabilities ? videoTrack.getCapabilities() : {}; } catch (e) {}
+    torchSupported = !!caps.torch;
+    if (torchSupported) btnTorch.classList.add('visible');
+
+    placeholder.style.display = 'none';
+    video.classList.add('active');
+    framingGuide.classList.add('visible');
+
+    btnOpen.disabled = true;
+    btnCapture.disabled = false;
+    btnRetake.disabled = true;
+    btnAddPage.disabled = true;
+    btnSaveNext.disabled = true;
+
+    if (!howtoShown) {
+      howto.classList.add('visible');
+      btnCapture.disabled = true;
+      howtoShown = true;
+      setStatus('Read the tips, then tap “Got it”.');
+    } else {
+      setStatus(`Scanning Q${questionPick.value}. The flash fires automatically.`);
+    }
+  } catch (err) {
+    console.error(err);
+    setStatus('Could not open camera: ' + (err.message || err.name) +
+      '. Requires HTTPS and camera permission.', 'error');
   }
 }
 
-function bootEngine() {
-  engineReady = true;
-  el.engineState.className = 'engine ready';
-  el.engineState.innerHTML = '<span class="pulse"></span> Engine ready';
-  setStep('engine', 'done');
+howtoDismiss.addEventListener('click', () => {
+  howto.classList.remove('visible');
+  btnCapture.disabled = false;
+  setStatus(`Scanning Q${questionPick.value}. The flash fires automatically.`);
+});
+
+btnTorch.addEventListener('click', async () => {
+  if (!videoTrack || !torchSupported) return;
+  try {
+    torchOn = !torchOn;
+    await videoTrack.applyConstraints({ advanced: [{ torch: torchOn }] });
+    btnTorch.classList.toggle('on', torchOn);
+  } catch (err) { torchOn = false; btnTorch.classList.remove('on'); }
+});
+
+/* ================= CAPTURE ================= */
+async function capture() {
+  if (!stream) return;
+  const w = video.videoWidth, h = video.videoHeight;
+  if (!w || !h) { setStatus('Camera not ready yet.', 'error'); return; }
+
+  btnCapture.disabled = true;
+  setStatus(torchSupported ? 'Flash firing — hold steady…' : 'Capturing…');
+
+  if (torchSupported && videoTrack) {
+    try { await videoTrack.applyConstraints({ advanced: [{ torch: true }] }); } catch (e) {}
+  }
+  fireScreenFlash();
+  await sleep(torchSupported ? 450 : 120);
+
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+
+  if (torchSupported && videoTrack) {
+    try { await videoTrack.applyConstraints({ advanced: [{ torch: false }] }); } catch (e) {}
+  }
+  torchOn = false; btnTorch.classList.remove('on');
+
+  stopCamera();
+
+  setStatus('Scanning & straightening A4 page…');
+  let a4Canvas = null, detected = false;
+  try {
+    if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
+      a4Canvas = detectAndWarpToA4(canvas);
+      if (a4Canvas) detected = true;
+    }
+  } catch (e) { console.warn('Page detection failed:', e); }
+  if (!a4Canvas) a4Canvas = fallbackA4(canvas);
+
+  if (enhanceToggle.checked) {
+    try { enhanceText(a4Canvas); } catch (e) { console.warn('Enhancement failed:', e); }
+  }
+
+  a4Canvas.toBlob(blob => {
+    pendingBlob = blob;
+    const url = URL.createObjectURL(blob);
+    preview.src = url;
+    preview.classList.add('active');
+    video.classList.remove('active');
+    framingGuide.classList.remove('visible');
+
+    btnCapture.disabled = true;
+    btnRetake.disabled = false;
+    btnAddPage.disabled = false;
+    btnSaveNext.disabled = false;
+    btnOpen.disabled = true;
+
+    const pageCount = (captures[questionPick.value] || []).length;
+    setStatus(
+      (detected ? 'Page detected & warped to A4' : 'Full frame used (page edge not found)') +
+      ` — ${pageCount ? 'Add to Q' + questionPick.value + ' (page ' + (pageCount + 1) + ')' : 'Add to answer'}.`,
+      detected ? 'success' : 'warn'
+    );
+  }, 'image/jpeg', 0.92);
 }
 
-/* ============================== UI UTIL ============================= */
-function setStep(name, cls) {
-  const node = document.querySelector(`[data-step="${name}"]`);
-  if (node) node.className = cls || '';
-}
-function resetSteps() {
-  document.querySelectorAll('.steps li').forEach((li) => { li.className = ''; });
-  if (engineReady) setStep('engine', 'done');
-}
-function setScanning(on) {
-  scanning = on;
-  el.viewport.classList.toggle('scanning', on);
-  el.fileInput.disabled = on;
-  el.cameraBtn.disabled = on;
-  el.rescanBtn.disabled = on || !currentSource;
-}
-function showPlaceholder(show) {
-  el.placeholder.hidden = !show;
+function fireScreenFlash() {
+  flashOverlay.classList.add('fire');
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    flashOverlay.classList.remove('fire');
+  }));
 }
 
-/* ============================ IMAGE INPUT =========================== */
-function fileToCanvas(file) {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      const max = CONFIG.maxDimension;
-      const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
-      const c = document.createElement('canvas');
-      c.width = Math.max(1, Math.round(img.naturalWidth * scale));
-      c.height = Math.max(1, Math.round(img.naturalHeight * scale));
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      URL.revokeObjectURL(url);
-      resolve(c);
-    };
-    img.onerror = (e) => { URL.revokeObjectURL(url); reject(e); };
-    img.src = url;
-  });
-}
-
-function setSource(canvas) {
-  currentSource = canvas;
-  el.srcCanvas.width = canvas.width;
-  el.srcCanvas.height = canvas.height;
-  el.srcCanvas.getContext('2d').drawImage(canvas, 0, 0);
-  el.overlay.width = canvas.width;
-  el.overlay.height = canvas.height;
-  el.overlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-  showPlaceholder(false);
-  el.rescanBtn.disabled = false;
-}
-
-/* ============================ PAGE DETECTION ======================== */
-function orderCorners(pts) {
-  const sums = pts.map((p) => p[0] + p[1]);
-  const diffs = pts.map((p) => p[0] - p[1]);
-  const tl = pts[sums.indexOf(Math.min(...sums))];
-  const br = pts[sums.indexOf(Math.max(...sums))];
-  const tr = pts[diffs.indexOf(Math.max(...diffs))];
-  const bl = pts[diffs.indexOf(Math.min(...diffs))];
-  return [tl, tr, br, bl];
-}
-
-function perspectiveWarp(src, corners) {
-  const [tl, tr, br, bl] = corners;
-  const wA = Math.hypot(tr[0] - tl[0], tr[1] - tl[1]);
-  const wB = Math.hypot(br[0] - bl[0], br[1] - bl[1]);
-  const hA = Math.hypot(bl[0] - tl[0], bl[1] - tl[1]);
-  const hB = Math.hypot(br[0] - tr[0], br[1] - tr[1]);
-
-  let W = Math.round(Math.max(wA, wB));
-  let H = Math.round(Math.max(hA, hB));
-  W = Math.min(Math.max(W, 60), 4000);
-  H = Math.min(Math.max(H, 60), 4000);
-
-  const srcTri = cv.matFromArray(4, 1, cv.CV_32FC2,
-    [tl[0], tl[1], tr[0], tr[1], br[0], br[1], bl[0], bl[1]]);
-  const dstTri = cv.matFromArray(4, 1, cv.CV_32FC2,
-    [0, 0, W, 0, W, H, 0, H]);
-
-  const M = cv.getPerspectiveTransform(srcTri, dstTri);
-  const out = new cv.Mat();
-  cv.warpPerspective(src, out, M, new cv.Size(W, H),
-    cv.INTER_CUBIC, cv.BORDER_REPLICATE, new cv.Scalar());
-
-  srcTri.delete(); dstTri.delete(); M.delete();
-  return out;
-}
-
-/**
- * Finds the page inside the frame and crops/warps to it.
- * Anything outside the detected page is discarded.
- */
-function warpPage(srcCanvas) {
+/* ================= PAGE DETECTION → A4 WARP ================= */
+function detectAndWarpToA4(srcCanvas) {
   const src = cv.imread(srcCanvas);
-  const W = src.cols, H = src.rows;
+
+  const maxDim = 600;
+  const scale = Math.min(1, maxDim / Math.max(src.cols, src.rows));
+  const small = new cv.Mat();
+  cv.resize(src, small, new cv.Size(Math.round(src.cols * scale), Math.round(src.rows * scale)), 0, 0, cv.INTER_AREA);
 
   const gray = new cv.Mat();
-  const blur = new cv.Mat();
-  const edges = new cv.Mat();
-  cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
-  cv.GaussianBlur(gray, blur, new cv.Size(5, 5), 0);
-  cv.Canny(blur, edges, 40, 120);
+  cv.cvtColor(small, gray, cv.COLOR_RGBA2GRAY);
+  cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0);
 
-  const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(7, 7));
-  cv.morphologyEx(edges, edges, cv.MORPH_CLOSE, kernel);
+  const edges = new cv.Mat();
+  cv.Canny(gray, edges, 50, 150);
+  const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
+  cv.dilate(edges, edges, kernel);
 
   const contours = new cv.MatVector();
   const hierarchy = new cv.Mat();
-  cv.findContours(edges, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
+  cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
 
-  const imgArea = W * H;
-  let best = null;
+  let best = null, bestArea = 0;
+  const minArea = small.rows * small.cols * 0.15;
 
   for (let i = 0; i < contours.size(); i++) {
-    const c = contours.get(i);
-    const area = cv.contourArea(c);
-
-    if (area >= imgArea * CONFIG.pageMinAreaRatio) {
-      const peri = cv.arcLength(c, true);
-      const approx = new cv.Mat();
-      cv.approxPolyDP(c, approx, 0.02 * peri, true);
-
-      if (approx.rows === 4 && cv.isContourConvex(approx)) {
-        const pts = [];
-        for (let j = 0; j < 4; j++) {
-          pts.push([approx.data32S[j * 2], approx.data32S[j * 2 + 1]]);
-        }
-        if (!best || area > best.area) best = { pts, area };
-      }
-      approx.delete();
+    const cnt = contours.get(i);
+    const peri = cv.arcLength(cnt, true);
+    const approx = new cv.Mat();
+    cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+    const area = cv.contourArea(approx);
+    if (approx.rows === 4 && area > bestArea && area > minArea) {
+      if (best) best.delete();
+      best = approx.clone();
+      bestArea = area;
     }
-    c.delete();
+    approx.delete();
   }
 
-  hierarchy.delete(); contours.delete(); kernel.delete();
-  edges.delete(); blur.delete(); gray.delete();
-
-  let outCanvas = document.createElement('canvas');
   let corners = null;
-
   if (best) {
-    corners = orderCorners(best.pts);
-    const warped = perspectiveWarp(src, corners);
-    outCanvas.width = warped.cols;
-    outCanvas.height = warped.rows;
-    cv.imshow(outCanvas, warped);
-    warped.delete();
-  } else {
-    // No page quad found — fall back to the full frame so the whole
-    // visible page is still scanned.
-    outCanvas.width = W;
-    outCanvas.height = H;
-    outCanvas.getContext('2d').drawImage(srcCanvas, 0, 0);
+    corners = [];
+    for (let i = 0; i < 4; i++) {
+      corners.push({ x: best.data32S[i * 2] / scale, y: best.data32S[i * 2 + 1] / scale });
+    }
+    best.delete();
   }
 
-  src.delete();
-  return { canvas: outCanvas, corners, found: !!best };
+  src.delete(); small.delete(); gray.delete(); edges.delete();
+  kernel.delete(); contours.delete(); hierarchy.delete();
+
+  if (!corners) return null;
+
+  corners = orderCorners(corners);
+
+  const srcFull = cv.imread(srcCanvas);
+  const srcQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [
+    corners[0].x, corners[0].y, corners[1].x, corners[1].y,
+    corners[2].x, corners[2].y, corners[3].x, corners[3].y
+  ]);
+  const dstQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [
+    0, 0, A4_W, 0, A4_W, A4_H, 0, A4_H
+  ]);
+  const M = cv.getPerspectiveTransform(srcQuad, dstQuad);
+  const warped = new cv.Mat();
+  cv.warpPerspective(srcFull, warped, M, new cv.Size(A4_W, A4_H));
+
+  const out = document.createElement('canvas');
+  out.width = A4_W; out.height = A4_H;
+  cv.imshow(out, warped);
+
+  srcFull.delete(); srcQuad.delete(); dstQuad.delete(); M.delete(); warped.delete();
+  return out;
 }
 
-/* ============================ INK ANALYSIS ========================== */
-/**
- * Isolates black pen markings, discards everything that is not ink
- * (background, page frame, logos, ruled lines, coloured shapes, noise),
- * then measures handwriting clarity.
- */
-function analyzePage(pageCanvas) {
-  const src = cv.imread(pageCanvas);
-  const W = src.cols, H = src.rows, N = W * H;
+function orderCorners(pts) {
+  const cx = pts.reduce((s, p) => s + p.x, 0) / 4;
+  const cy = pts.reduce((s, p) => s + p.y, 0) / 4;
+  pts.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
+  let minI = 0, minSum = Infinity;
+  for (let i = 0; i < 4; i++) { const s = pts[i].x + pts[i].y; if (s < minSum) { minSum = s; minI = i; } }
+  return [pts[minI], pts[(minI + 1) % 4], pts[(minI + 2) % 4], pts[(minI + 3) % 4]];
+}
 
-  const gray = new cv.Mat();
-  cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+function fallbackA4(srcCanvas) {
+  const out = document.createElement('canvas');
+  out.width = A4_W; out.height = A4_H;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, A4_W, A4_H);
+  const sw = srcCanvas.width, sh = srcCanvas.height;
+  const scale = Math.min(A4_W / sw, A4_H / sh);
+  const dw = sw * scale, dh = sh * scale;
+  ctx.drawImage(srcCanvas, (A4_W - dw) / 2, (A4_H - dh) / 2, dw, dh);
+  return out;
+}
 
-  /* --- HSV planes (saturation tells us "coloured shape" vs "black pen") --- */
-  const rgb = new cv.Mat();
-  const hsv = new cv.Mat();
-  const planes = new cv.MatVector();
-  cv.cvtColor(src, rgb, cv.COLOR_RGBA2RGB);
-  cv.cvtColor(rgb, hsv, cv.COLOR_RGB2HSV);
-  cv.split(hsv, planes);
+/* ================= TEXT ENHANCEMENT (adaptive threshold) ================= */
+function enhanceText(canvasEl) {
+  const W = canvasEl.width, H = canvasEl.height;
+  const ctx = canvasEl.getContext('2d');
+  const imgData = ctx.getImageData(0, 0, W, H);
+  const d = imgData.data;
 
-  const sRef = planes.get(1), vRef = planes.get(2);
-  const S = sRef.clone(), V = vRef.clone();
-  sRef.delete(); vRef.delete();
-  planes.delete(); hsv.delete(); rgb.delete();
-
-  /* --- primary ink mask: dark + low saturation = black pen --- */
-  const mS = new cv.Mat();
-  const mV = new cv.Mat();
-  cv.threshold(S, mS, CONFIG.inkSatMax, 255, cv.THRESH_BINARY_INV);
-  cv.threshold(V, mV, CONFIG.inkValueMax, 255, cv.THRESH_BINARY_INV);
-
-  const ink = new cv.Mat();
-  cv.bitwise_and(mS, mV, ink);
-  cv.medianBlur(ink, ink, 3);   // kill salt noise, keep thin strokes
-
-  /* --- ignore the page edge band (frame lines, edge shadow) --- */
-  const mb = Math.max(2, Math.round(Math.min(W, H) * CONFIG.marginTrimRatio));
-  if (mb * 2 < Math.min(W, H)) {
-    const zero = new cv.Scalar(0);
-    cv.rectangle(ink, new cv.Point(0, 0), new cv.Point(W, mb), zero, -1);
-    cv.rectangle(ink, new cv.Point(0, H - mb), new cv.Point(W, H), zero, -1);
-    cv.rectangle(ink, new cv.Point(0, 0), new cv.Point(mb, H), zero, -1);
-    cv.rectangle(ink, new cv.Point(W - mb, 0), new cv.Point(W, H), zero, -1);
+  const gray = new Uint8ClampedArray(W * H);
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+    gray[p] = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
   }
 
-  /* --- connected components --- */
-  const labels = new cv.Mat();
-  const stats = new cv.Mat();
-  const centroids = new cv.Mat();
-  cv.connectedComponentsWithStats(ink, labels, stats, centroids, 8, cv.CV_32S);
-
-  const nLab = stats.rows;
-  const lab = labels.data32S;
-  const gd = gray.data;
-  const sd = S.data;
-  const st = stats.data32S;
-
-  const sumG = new Float64Array(nLab);
-  const sumS = new Float64Array(nLab);
-  const cnt = new Float64Array(nLab);
-
-  for (let i = 0; i < N; i++) {
-    const l = lab[i];
-    if (l === 0) continue;
-    sumG[l] += gd[i];
-    sumS[l] += sd[i];
-    cnt[l]++;
-  }
-
-  const pageArea = N;
-  const keep = new Uint8Array(nLab);
-  const comps = [];
-  let tinyCount = 0;
-  let totalComps = 0;
-
-  for (let l = 1; l < nLab; l++) {
-    const a = st[l * 5 + 4];
-    if (a <= 0 || cnt[l] === 0) continue;
-    totalComps++;
-
-    const x = st[l * 5], y = st[l * 5 + 1], w = st[l * 5 + 2], h = st[l * 5 + 3];
-    const fill = a / Math.max(1, w * h);
-    const meanG = sumG[l] / cnt[l];
-    const meanS = sumS[l] / cnt[l];
-    const minSide = Math.min(w, h);
-    const maxSide = Math.max(w, h);
-
-    const isTiny    = a < CONFIG.minComponentArea;
-    const isBigBlob = a > pageArea * CONFIG.maxBlobAreaRatio;
-    const isFrame   = (w > W * 0.8 || h > H * 0.8) && fill < 0.25;
-    const isRuled   = maxSide / Math.max(1, minSide) > 16 && minSide <= 7;
-    const isFaint   = meanG > 178;
-    const isColored = meanS > 105;
-
-    if (isTiny) { tinyCount++; continue; }
-    if (isBigBlob || isFrame || isRuled || isFaint || isColored) continue;
-
-    keep[l] = 1;
-    comps.push({
-      x, y, w, h, a, fill,
-      cx: x + w / 2,
-      cy: y + h / 2,
-      meanG, meanS
-    });
-  }
-
-  /* --- rebuild a clean ink mask containing only kept components --- */
-  const clean = cv.Mat.zeros(H, W, cv.CV_8UC1);
-  const cd = clean.data;
-  for (let i = 0; i < N; i++) {
-    const l = lab[i];
-    if (l !== 0 && keep[l]) cd[i] = 255;
-  }
-
-  /* --- sharpness (Laplacian variance) --- */
-  const lap = new cv.Mat();
-  const meanM = new cv.Mat();
-  const sdM = new cv.Mat();
-  cv.Laplacian(gray, lap, cv.CV_64F);
-  cv.meanStdDev(lap, meanM, sdM);
-  const lapVar = Math.pow(sdM.doubleAt(0, 0), 2);
-
-  /* --- ink statistics: coverage, stroke width, contrast --- */
-  const dist = new cv.Mat();
-  cv.distanceTransform(clean, dist, cv.DIST_L2, 3);
-  const dd = dist.data32F;
-
-  let inkN = 0, dSum = 0, inkG = 0, bgG = 0, bgN = 0;
-  for (let i = 0; i < N; i++) {
-    if (cd[i]) { inkN++; dSum += dd[i]; inkG += gd[i]; }
-    else { bgG += gd[i]; bgN++; }
-  }
-
-  const inkRatio = inkN / N;
-  const strokeW = inkN ? (dSum / inkN) * 2 : 0;
-  const contrastDelta = (bgN ? bgG / bgN : 0) - (inkN ? inkG / inkN : 0);
-
-  /* --- handwriting heuristics: baseline jitter + height variance --- */
-  const heights = comps.map((c) => c.h);
-  const meanH = heights.length ? heights.reduce((s, v) => s + v, 0) / heights.length : 1;
-  const medH = median(heights) || 1;
-  const hCV = meanH ? stdev(heights) / meanH : 0;
-
-  const sorted = comps.slice().sort((a, b) => a.cy - b.cy);
-  const rows = [];
-  let cur = null;
-  for (const c of sorted) {
-    if (cur && Math.abs(c.cy - cur.cy) < medH * 0.9) {
-      cur.items.push(c);
-      cur.cy = cur.items.reduce((s, v) => s + v.cy, 0) / cur.items.length;
-    } else {
-      cur = { cy: c.cy, items: [c] };
-      rows.push(cur);
+  const IW = W + 1;
+  const integ = new Uint32Array(IW * (H + 1));
+  for (let y = 0; y < H; y++) {
+    let rowSum = 0;
+    for (let x = 0; x < W; x++) {
+      rowSum += gray[y * W + x];
+      integ[(y + 1) * IW + (x + 1)] = integ[y * IW + (x + 1)] + rowSum;
     }
   }
 
-  const jitters = [];
-  for (const r of rows) {
-    if (r.items.length < 5) continue;
-    const ys = r.items.map((c) => c.cy);
-    jitters.push(stdev(ys) / medH);
+  const block = 41;
+  const half = (block - 1) >> 1;
+  const C = 15;
+  const bin = new Uint8ClampedArray(W * H);
+
+  for (let y = 0; y < H; y++) {
+    const y0 = Math.max(0, y - half), y1 = Math.min(H - 1, y + half);
+    for (let x = 0; x < W; x++) {
+      const x0 = Math.max(0, x - half), x1 = Math.min(W - 1, x + half);
+      const area = (x1 - x0 + 1) * (y1 - y0 + 1);
+      const sum =
+        integ[(y1 + 1) * IW + (x1 + 1)] - integ[y0 * IW + (x1 + 1)] -
+        integ[(y1 + 1) * IW + x0] + integ[y0 * IW + x0];
+      const mean = sum / area;
+      bin[y * W + x] = gray[y * W + x] < (mean - C) ? 0 : 255;
+    }
   }
-  const jitter = jitters.length ? jitters.reduce((s, v) => s + v, 0) / jitters.length : 0;
 
-  /* --- normalised scores --- */
-  const sharpness  = norm(lapVar, 45, 420);
-  const contrast   = norm(contrastDelta, 40, 145);
+  const out = new Uint8ClampedArray(bin);
+  for (let y = 1; y < H - 1; y++) {
+    for (let x = 1; x < W - 1; x++) {
+      const idx = y * W + x;
+      if (bin[idx] === 0) continue;
+      if (bin[idx - 1] === 0 || bin[idx + 1] === 0 || bin[idx - W] === 0 || bin[idx + W] === 0) {
+        out[idx] = 0;
+      }
+    }
+  }
 
-  let coverage = norm(inkRatio, 0.002, 0.016);
-  if (inkRatio > 0.34) coverage *= clamp01(1 - (inkRatio - 0.34) / 0.4);
-
-  const frag = 1 - norm(tinyCount / Math.max(1, totalComps), 0.12, 0.72);
-
-  let stroke = norm(strokeW, 0.45, 1.9);
-  if (strokeW > 10) stroke *= 0.4;
-
-  const jitterScore  = norm(jitter, 0.06, 0.34);
-  const hVarScore    = norm(hCV, 0.22, 0.75);
-  const densityScore = norm(comps.length, 25, 300);
-  const handwriting  = 0.45 * jitterScore + 0.30 * hVarScore + 0.25 * densityScore;
-
-  const confidence =
-      0.24 * sharpness +
-      0.19 * contrast  +
-      0.14 * coverage  +
-      0.16 * frag      +
-      0.11 * stroke    +
-      0.16 * handwriting;
-
-  /* --- ink preview --- */
-  const cleanRGBA = new cv.Mat();
-  cv.cvtColor(clean, cleanRGBA, cv.COLOR_GRAY2RGBA);
-  cv.imshow(el.inkPreview, cleanRGBA);
-
-  /* --- cleanup --- */
-  cleanRGBA.delete(); dist.delete(); lap.delete(); meanM.delete(); sdM.delete();
-  clean.delete(); labels.delete(); stats.delete(); centroids.delete();
-  ink.delete(); mS.delete(); mV.delete(); S.delete(); V.delete(); gray.delete(); src.delete();
-
-  return {
-    sharpness, contrast, coverage, frag, stroke, handwriting, confidence,
-    lapVar, contrastDelta, inkRatio, strokeW,
-    jitter, hCV,
-    components: comps.length,
-    tinyCount,
-    totalComps,
-    pageW: W, pageH: H
-  };
+  for (let i = 0, p = 0; p < out.length; i += 4, p++) {
+    const v = out[p];
+    d[i] = d[i + 1] = d[i + 2] = v;
+    d[i + 3] = 255;
+  }
+  ctx.putImageData(imgData, 0, 0);
 }
 
-/* ============================== VERDICT ============================= */
-function computeVerdict(a, pageFound) {
-  const reasons = [];
-  let pass = true;
-
-  const fail = (text) => { pass = false; reasons.push({ text, note: false }); };
-  const note = (text) => { reasons.push({ text, note: true }); };
-
-  if (a.inkRatio < 0.004) {
-    fail('No black pen markings found on the page. The scan cannot be accepted.');
-  }
-  if (a.sharpness < 0.32) {
-    fail('Scan is too blurry — handwriting strokes cannot be resolved. Retake the photo in focus.');
-  }
-  if (a.contrast < 0.32) {
-    fail('Ink contrast is too low — strokes are faded or washed out by lighting.');
-  }
-  if (a.frag < 0.45) {
-    fail('Strokes are fragmented or smudged — the handwriting is unclear.');
-  }
-  if (a.stroke < 0.25) {
-    fail('Stroke weight is too thin or broken to read reliably.');
-  }
-  if (a.handwriting < 0.22) {
-    fail('No consistent handwriting pattern detected on this page.');
-  }
-  if (a.confidence < CONFIG.passThreshold) {
-    fail(`Overall clarity confidence ${(a.confidence * 100).toFixed(0)}% is below the ${Math.round(CONFIG.passThreshold * 100)}% acceptance threshold.`);
-  }
-
-  if (!pageFound) {
-    note('Page boundary not detected — the full frame was scanned instead of a cropped page.');
-  }
-
-  return { pass, reasons };
-}
-
-/* ============================== RENDERING =========================== */
-function drawCorners(corners, srcCanvas) {
-  const ctx = el.overlay.getContext('2d');
-  el.overlay.width = srcCanvas.width;
-  el.overlay.height = srcCanvas.height;
-  ctx.clearRect(0, 0, el.overlay.width, el.overlay.height);
-  if (!corners) return;
-
-  const lw = Math.max(3, el.overlay.width * 0.004);
-
-  ctx.beginPath();
-  corners.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)));
-  ctx.closePath();
-  ctx.strokeStyle = '#25d6a4';
-  ctx.lineWidth = lw;
-  ctx.shadowColor = 'rgba(37,214,164,.85)';
-  ctx.shadowBlur = 14;
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  corners.forEach(([x, y]) => {
-    ctx.beginPath();
-    ctx.arc(x, y, lw * 1.9, 0, Math.PI * 2);
-    ctx.fillStyle = '#25d6a4';
-    ctx.fill();
-  });
-}
-
-function drawPagePreview(pageCanvas) {
-  const c = el.pagePreview;
-  c.width = pageCanvas.width;
-  c.height = pageCanvas.height;
-  const ctx = c.getContext('2d');
-  ctx.clearRect(0, 0, c.width, c.height);
-  ctx.drawImage(pageCanvas, 0, 0);
-}
-
-function metricColor(v) {
-  if (v >= 0.72) return 'good';
-  if (v >= 0.5) return 'mid';
-  return 'bad';
-}
-
-function renderMetrics(res) {
-  const rows = [
-    ['Sharpness',         res.sharpness],
-    ['Ink contrast',      res.contrast],
-    ['Ink coverage',      res.coverage],
-    ['Stroke clarity',    res.frag],
-    ['Stroke weight',     res.stroke],
-    ['Handwriting pattern', res.handwriting],
-    ['Overall confidence', res.confidence]
-  ];
-
-  el.metrics.innerHTML = rows.map(([name, v]) => `
-    <div class="metric">
-      <span class="name">${name}</span>
-      <span class="val">${Math.round(v * 100)}%</span>
-      <span class="bar"><span class="${metricColor(v)}" style="width:${Math.round(v * 100)}%"></span></span>
-    </div>
-  `).join('');
-}
-
-function renderVerdict(res, verdict) {
-  el.verdict.classList.remove('pass', 'fail', 'busy');
-  el.verdict.classList.add(verdict.pass ? 'pass' : 'fail');
-
-  el.verdictIcon.textContent = verdict.pass ? '✓' : '✕';
-  el.verdictTitle.textContent = verdict.pass ? 'Scan accepted' : 'Scan rejected';
-  el.verdictSub.textContent = verdict.pass
-    ? `Handwriting detected and legible across the full page (${res.components} marks).`
-    : 'Handwriting could not be read reliably. Please rescan the page.';
-
-  el.confidence.textContent = Math.round(res.confidence * 100) + '%';
-
-  if (verdict.reasons.length) {
-    el.reasonsBlock.hidden = false;
-    el.reasonsTitle.textContent = verdict.pass ? 'Scan notes' : 'Rejection reasons';
-    el.reasons.innerHTML = verdict.reasons.map((r) =>
-      `<li class="${r.note ? 'note' : ''}">${r.text}</li>`
-    ).join('');
-  } else {
-    el.reasonsBlock.hidden = true;
-    el.reasons.innerHTML = '';
-  }
-}
-
-function renderBusy() {
-  el.verdict.classList.remove('pass', 'fail');
-  el.verdict.classList.add('busy');
-  el.verdictIcon.textContent = '…';
-  el.verdictTitle.textContent = 'Scanning page';
-  el.verdictSub.textContent = 'Detecting page, isolating ink and checking handwriting clarity…';
-  el.confidence.textContent = '—';
-  el.reasonsBlock.hidden = true;
-  el.metrics.innerHTML = '';
-}
-
-/* ============================== MAIN SCAN =========================== */
-async function runScan(sourceCanvas) {
-  if (!engineReady || scanning || !sourceCanvas) return;
-
-  setScanning(true);
-  resetSteps();
-  renderBusy();
-
-  try {
-    /* 1 — page detection */
-    setStep('page', 'active');
-    await tick();
-
-    const warped = warpPage(sourceCanvas);
-    drawCorners(warped.corners, sourceCanvas);
-    drawPagePreview(warped.canvas);
-
-    setStep('page', warped.found ? 'done' : 'warn');
-    setStep('warp', warped.found ? 'done' : 'warn');
-    await tick();
-
-    /* 2 — ink isolation */
-    setStep('ink', 'active');
-    await tick();
-
-    const res = analyzePage(warped.canvas);
-
-    setStep('ink', 'done');
-    await tick();
-
-    /* 3 — clarity analysis */
-    setStep('clarity', 'active');
-    await tick();
-
-    const verdict = computeVerdict(res, warped.found);
-
-    setStep('clarity', verdict.pass ? 'done' : 'fail');
-    setStep('verdict', verdict.pass ? 'done' : 'fail');
-
-    renderMetrics(res);
-    renderVerdict(res, verdict);
-
-  } catch (err) {
-    console.error(err);
-    el.verdict.classList.remove('pass', 'busy');
-    el.verdict.classList.add('fail');
-    el.verdictIcon.textContent = '!';
-    el.verdictTitle.textContent = 'Scanner error';
-    el.verdictSub.textContent = String(err && err.message ? err.message : err);
-    setStep('verdict', 'fail');
-  } finally {
-    setScanning(false);
-  }
-}
-
-/* =============================== CAMERA ============================= */
-async function startCamera() {
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1440 } },
-      audio: false
-    });
-    el.video.srcObject = stream;
-    el.video.hidden = false;
-    el.srcCanvas.style.visibility = 'hidden';
-    el.overlay.style.visibility = 'hidden';
-    showPlaceholder(false);
-    await el.video.play();
-    el.cameraBtn.hidden = true;
-    el.captureBtn.hidden = false;
-  } catch (e) {
-    alert('Camera unavailable: ' + (e && e.message ? e.message : e));
-  }
+/* ================= RETAKEE / STOP ================= */
+function retake() {
+  if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
+  pendingBlob = null;
+  preview.classList.remove('active');
+  btnRetake.disabled = true;
+  btnAddPage.disabled = true;
+  btnSaveNext.disabled = true;
+  btnOpen.disabled = false;
+  btnCapture.disabled = true;
+  btnTorch.classList.remove('visible', 'on');
+  torchOn = false;
+  setStatus('Discarded. Reopen the camera to try again.');
 }
 
 function stopCamera() {
-  if (stream) {
-    stream.getTracks().forEach((t) => t.stop());
-    stream = null;
+  if (videoTrack && torchOn) {
+    try { videoTrack.applyConstraints({ advanced: [{ torch: false }] }); } catch (e) {}
   }
-  el.video.hidden = true;
-  el.video.srcObject = null;
-  el.srcCanvas.style.visibility = 'visible';
-  el.overlay.style.visibility = 'visible';
-  el.cameraBtn.hidden = false;
-  el.captureBtn.hidden = true;
+  torchOn = false;
+  btnTorch.classList.remove('on', 'visible');
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  videoTrack = null;
+  video.srcObject = null;
+  video.classList.remove('active');
+  placeholder.style.display = '';
 }
 
-function captureFrame() {
-  if (!el.video.videoWidth) return;
-  const c = document.createElement('canvas');
-  const max = CONFIG.maxDimension;
-  const scale = Math.min(1, max / Math.max(el.video.videoWidth, el.video.videoHeight));
-  c.width = Math.round(el.video.videoWidth * scale);
-  c.height = Math.round(el.video.videoHeight * scale);
-  c.getContext('2d').drawImage(el.video, 0, 0, c.width, c.height);
-  stopCamera();
-  setSource(c);
-  runScan(c);
+/* ================= SAVE PAGE ================= */
+function saveCurrentPage(advance) {
+  if (!pendingBlob) return;
+  const q = questionPick.value;
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (!captures[q]) captures[q] = [];
+    captures[q].push(reader.result);
+
+    // reset preview
+    if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
+    pendingBlob = null;
+    preview.classList.remove('active');
+    btnRetake.disabled = true;
+    btnAddPage.disabled = true;
+    btnSaveNext.disabled = true;
+    btnCapture.disabled = true;
+    btnOpen.disabled = false;
+
+    renderPagesStrip();
+    renderChips();
+    updateOpenBookButton();
+
+    if (advance) {
+      const nextQ = findNextUnanswered(q);
+      if (nextQ) {
+        questionPick.value = nextQ;
+        renderPagesStrip();
+        setStatus(`Q${q} saved (${captures[q].length} page${captures[q].length > 1 ? 's' : ''}). Next: Q${nextQ}.`, 'success');
+      } else {
+        setStatus('All questions answered. Open your answer book →', 'success');
+      }
+    } else {
+      setStatus(`Page ${captures[q].length} added to Q${q}. Capture another page or Save & Next.`, 'success');
+    }
+  };
+  reader.readAsDataURL(pendingBlob);
 }
 
-/* =============================== EVENTS ============================= */
-el.fileInput.addEventListener('change', async (e) => {
-  const file = e.target.files && e.target.files[0];
-  if (!file) return;
-  try {
-    const c = await fileToCanvas(file);
-    setSource(c);
-    runScan(c);
-  } catch (err) {
-    console.error(err);
+function findNextUnanswered(currentQ) {
+  const order = QUESTION_SET.map(q => q.no);
+  const start = order.indexOf(Number(currentQ));
+  // search forward
+  for (let i = start + 1; i < order.length; i++) {
+    if (!captures[order[i]] || !captures[order[i]].length) return order[i];
   }
-  e.target.value = '';
-});
+  // wrap around
+  for (let i = 0; i < start; i++) {
+    if (!captures[order[i]] || !captures[order[i]].length) return order[i];
+  }
+  return null;
+}
 
-el.cameraBtn.addEventListener('click', startCamera);
-el.captureBtn.addEventListener('click', captureFrame);
+/* ================= RENDER: pages strip ================= */
+function renderPagesStrip() {
+  const q = questionPick.value;
+  const pages = captures[q] || [];
+  pagesTitle.textContent = pages.length
+    ? `Pages for Question ${q} (${pages.length})`
+    : `Pages for Question ${q} — none yet`;
+  pagesList.innerHTML = '';
 
-el.rescanBtn.addEventListener('click', () => {
-  if (currentSource) runScan(currentSource);
-});
+  if (!pages.length) {
+    const e = document.createElement('div');
+    e.className = 'pages-empty';
+    e.textContent = 'Scan your first page for this question.';
+    pagesList.appendChild(e);
+    return;
+  }
 
-el.resetBtn.addEventListener('click', () => {
-  stopCamera();
-  currentSource = null;
-  el.srcCanvas.width = 1;
-  el.srcCanvas.height = 1;
-  el.overlay.width = 1;
-  el.overlay.height = 1;
-  el.srcCanvas.getContext('2d').clearRect(0, 0, 1, 1);
-  el.overlay.getContext('2d').clearRect(0, 0, 1, 1);
-  el.pagePreview.getContext('2d').clearRect(0, 0, el.pagePreview.width, el.pagePreview.height);
-  el.inkPreview.getContext('2d').clearRect(0, 0, el.inkPreview.width, el.inkPreview.height);
-  showPlaceholder(true);
-  resetSteps();
-  setScanning(false);
-  el.rescanBtn.disabled = true;
-  el.verdict.classList.remove('pass', 'fail', 'busy');
-  el.verdictIcon.textContent = '–';
-  el.verdictTitle.textContent = 'Awaiting page';
-  el.verdictSub.textContent = 'Upload or capture a page to start';
-  el.confidence.textContent = '—';
-  el.metrics.innerHTML = '';
-  el.reasonsBlock.hidden = true;
-  el.reasons.innerHTML = '';
-});
-
-/* drag & drop */
-['dragenter', 'dragover'].forEach((evt) => {
-  el.viewport.addEventListener(evt, (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-    el.viewport.style.borderColor = '#25d6a4';
+  pages.forEach((src, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'page-thumb';
+    const img = document.createElement('img');
+    img.src = src;
+    wrap.appendChild(img);
+    const num = document.createElement('span');
+    num.className = 'num';
+    num.textContent = i + 1;
+    wrap.appendChild(num);
+    const del = document.createElement('button');
+    del.className = 'del';
+    del.title = 'Remove page';
+    del.textContent = '✕';
+    del.onclick = () => {
+      captures[q].splice(i, 1);
+      if (!captures[q].length) delete captures[q];
+      renderPagesStrip();
+      renderChips();
+      updateOpenBookButton();
+    };
+    wrap.appendChild(del);
+    pagesList.appendChild(wrap);
   });
-});
-['dragleave', 'drop'].forEach((evt) => {
-  el.viewport.addEventListener(evt, (e) => {
-    e.preventDefault();
-    el.viewport.style.borderColor = '#16222f';
+}
+
+/* ================= RENDER: chips ================= */
+function renderChips() {
+  chipsEl.innerHTML = '';
+  QUESTION_SET.forEach(qDef => {
+    const q = qDef.no;
+    const count = (captures[q] || []).length;
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (count ? ' done' : '');
+    chip.innerHTML = `Q${q}`;
+    if (count) {
+      const c = document.createElement('span');
+      c.className = 'count';
+      c.textContent = count;
+      chip.appendChild(c);
+    }
+    chip.onclick = () => {
+      questionPick.value = q;
+      renderPagesStrip();
+      setStatus(`Switched to Q${q}.`);
+    };
+    chipsEl.appendChild(chip);
   });
-});
-el.viewport.addEventListener('drop', async (e) => {
-  const file = e.dataTransfer.files && e.dataTransfer.files[0];
-  if (!file || !file.type.startsWith('image/')) return;
+}
+
+function updateOpenBookButton() {
+  const total = Object.values(captures).reduce((s, arr) => s + (arr?.length || 0), 0);
+  btnOpenBook.disabled = total === 0;
+}
+
+/* ================= QUESTION NAV ================= */
+function changeQuestion(delta) {
+  const order = QUESTION_SET.map(q => q.no);
+  const i = order.indexOf(Number(questionPick.value));
+  const ni = Math.max(0, Math.min(order.length - 1, i + delta));
+  if (ni !== i) {
+    questionPick.value = order[ni];
+    renderPagesStrip();
+  }
+}
+
+/* ================= ANSWER BOOK ================= */
+function buildExamPaper() {
+  const paper = document.getElementById('examPaper');
+  const totalMarks = EXAM.questions.reduce((s, q) => s + q.marks, 0);
+
+  let html = `
+    <div class="exam-header">
+      <div class="exam-institute">${escapeHtml(EXAM.institute)}</div>
+      <div class="exam-title">${escapeHtml(EXAM.subject)} — ${escapeHtml(EXAM.paper)}</div>
+      <div class="exam-meta">
+        <span>Session: ${escapeHtml(EXAM.session)}</span>
+        <span>Time: ${escapeHtml(EXAM.duration)}</span>
+        <span>Total: ${totalMarks} marks</span>
+      </div>
+    </div>
+
+    <div class="exam-student">
+      <div class="field"><span>Name:</span><input id="studentName" placeholder="……………………………"></div>
+      <div class="field"><span>Date:</span><input id="studentDate" value="${new Date().toLocaleDateString()}"></div>
+      <div class="field"><span>Candidate No:</span><input id="studentId" placeholder="……………………………"></div>
+      <div class="field"><span>Signature:</span><input placeholder="……………………………"></div>
+    </div>
+
+    <div class="exam-instructions">
+      <h4>INSTRUCTIONS TO CANDIDATES</h4>
+      <ol>${EXAM.instructions.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ol>
+    </div>
+  `;
+
+  EXAM.questions.forEach(qDef => {
+    const q = qDef.no;
+    const pages = captures[q] || [];
+    html += `
+      <div class="q-block">
+        <div class="q-header">
+          <div class="q-top">
+            <span class="q-num">Question ${q}</span>
+            <span class="q-marks">[${qDef.marks} marks]</span>
+          </div>
+          <div class="q-text">${escapeHtml(qDef.text)}</div>
+        </div>
+        <div class="q-answer">
+          ${pages.length
+            ? pages.map((src, i) => `
+                <img class="q-scan" src="${src}" alt="Q${q} page ${i + 1}">
+              `).join('')
+            : `<div class="q-empty">No answer submitted</div>`
+          }
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="exam-footer">
+      End of ${escapeHtml(EXAM.subject)} — ${escapeHtml(EXAM.paper)} · ${escapeHtml(EXAM.institute)}
+    </div>
+  `;
+
+  paper.innerHTML = html;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function openBook() {
+  buildExamPaper();
+  document.getElementById('captureView').classList.remove('active');
+  document.getElementById('bookView').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function backToCapture() {
+  document.getElementById('bookView').classList.remove('active');
+  document.getElementById('captureView').classList.add('active');
+}
+
+/* ================= PDF EXPORT ================= */
+btnDownload.addEventListener('click', async () => {
+  const book = document.getElementById('bookView');
+  const toolbar = book.querySelector('.book-toolbar');
+  toolbar.style.display = 'none';
+
+  await Promise.all([...book.querySelectorAll('img')].map(i =>
+    i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; })
+  ));
+
+  const name = (document.getElementById('studentName')?.value || 'student').replace(/\s+/g, '-');
   try {
-    const c = await fileToCanvas(file);
-    setSource(c);
-    runScan(c);
-  } catch (err) {
-    console.error(err);
+    await html2pdf().set({
+      margin: [10, 12, 12, 12],
+      filename: `answer-book-${name}.pdf`,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css'], avoid: ['.q-header', '.q-scan'] }
+    }).from(book.querySelector('.exam-paper')).save();
+  } finally {
+    toolbar.style.display = '';
   }
 });
 
-/* keep previews tidy if the page is huge */
-el.pagePreview.width = 240; el.pagePreview.height = 160;
-el.inkPreview.width = 240;  el.inkPreview.height = 160;
+/* ================= WIRING ================= */
+btnOpen.addEventListener('click', openCamera);
+btnCapture.addEventListener('click', capture);
+btnRetake.addEventListener('click', retake);
+btnAddPage.addEventListener('click', () => saveCurrentPage(false));
+btnSaveNext.addEventListener('click', () => saveCurrentPage(true));
+btnOpenBook.addEventListener('click', openBook);
+btnBack.addEventListener('click', backToCapture);
+btnPrevQ.addEventListener('click', () => changeQuestion(-1));
+btnNextQ.addEventListener('click', () => changeQuestion(1));
+questionPick.addEventListener('change', renderPagesStrip);
 
-/* expose for debugging */
-window.__cvScanner = { runScan, CONFIG };
+window.addEventListener('beforeunload', stopCamera);
+
+/* ================= BOOT ================= */
+try {
+  const saved = localStorage.getItem('examScannerSaves');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    Object.keys(parsed).forEach(k => {
+      captures[k] = parsed[k];
+    });
+  }
+} catch (e) { console.warn('Could not load saved data'); }
+
+renderChips();
+renderPagesStrip();
+updateOpenBookButton();
 </script>
+
 </body>
 </html>
