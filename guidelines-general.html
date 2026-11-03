@@ -2,105 +2,277 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>IFB General Rules & Policies 2027</title>
+<title>IFB General Rules &amp; Policies 2027</title>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
-@page { size: A4; margin: 0; }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-body { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-height: 1.55; color: #000; background: #F8FAFC; }
-:root { --maroon: #7A1F2B; --silver: #E2E8F0; --bg: #F8FAFC; --dark: #333; --white: #FFF; }
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
 
-.page { width: 210mm; height: 297mm; padding: 15mm 20mm 40mm 20mm; margin: 15px auto; position: relative; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; }
-@media print { body { background: #fff; } .page { margin: 0; box-shadow: none; } }
-.security-pattern { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(122,31,43,.02) 0, rgba(122,31,43,.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(122,31,43,.02) 0, rgba(122,31,43,.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
-.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 400px; height: 400px; opacity: .03; pointer-events: none; z-index: 0; }
-.content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16pt;
+    line-height: 1.6;
+    color: #000;
+    background: #F8FAFC;
+    padding-top: 60px;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 
-.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; border-bottom: 1px solid var(--silver); padding-bottom: 5px; }
-.header-left { width: 30%; text-align: left; font-weight: bold; color: var(--maroon); }
-.header-center { width: 40%; text-align: center; }
-.header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
-.header-center .confidential { font-style: italic; font-weight: bold; color: var(--maroon); }
-.header-right { width: 30%; text-align: right; font-weight: bold; color: var(--maroon); }
+  .control-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px;
+    background: #FFF; border-bottom: 2px solid #7A1F2B;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 24px; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+  }
+  .control-bar .brand { font-size: 20px; font-weight: 900; color: #7A1F2B; display: flex; align-items: center; gap: 8px; }
+  .control-actions { display: flex; gap: 12px; }
+  .btn-nav {
+    padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 14px;
+    text-decoration: none; cursor: pointer; border: 1.5px solid #E2E8F0;
+    color: #111; background: #FFF; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-nav:hover { border-color: #111; }
+  .btn-nav.primary { background: #7A1F2B; color: #FFF; border-color: #7A1F2B; }
+  .btn-nav.primary:hover { background: #5A1620; }
 
-.footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; }
-.footer-left { display: flex; align-items: center; gap: 10px; }
-.footer-qr { display: inline-block; width: 35px; height: 35px; }
-.footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
-.footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
-.footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
-.footer-brand .tag { font-size: 7pt; color: var(--dark); }
-.footer-right { color: var(--dark); font-style: italic; }
+  .page {
+    width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm;
+    margin: 15px auto; position: relative; background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden;
+    display: flex; flex-direction: column; page-break-after: always;
+  }
 
-.cover-page { padding: 20mm; display: flex; flex-direction: column; }
-.cover-header { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; text-align: center; }
-.ifb-logo-svg { width: 100px; height: 100px; margin-bottom: 20px; }
-.cover-header-text .title { font-size: 36px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: var(--maroon); letter-spacing: -.5px; line-height: 1; }
-.cover-header-text .sub { font-size: 14pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold; margin-bottom: 10px; }
-.cover-header-text .dept { font-size: 11pt; font-family: Arial, sans-serif; font-weight: bold; color: #555; }
-.title-box { border: 3px solid var(--maroon); border-radius: 10px; padding: 20px; text-align: center; margin: 80px auto 60px auto; width: 80%; background: #FFF5F6; }
-.title-box h1 { font-size: 26pt; font-weight: bold; color: #111; margin-bottom: 10px; }
-.title-box h2 { font-size: 16pt; font-weight: bold; color: var(--maroon); }
-.cover-meta { margin-top: auto; text-align: center; font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; }
+  @media print {
+    body { background: white; padding-top: 0; }
+    .page { margin: 0; box-shadow: none; page-break-inside: avoid; }
+    .control-bar { display: none !important; }
+    .footer { position: fixed; bottom: 10mm; }
+  }
 
-.doc-title { font-size: 14pt; font-weight: bold; color: var(--maroon); text-align: center; margin-bottom: 12px; font-family: Arial, sans-serif; border-bottom: 2px solid var(--maroon); padding-bottom: 5px; flex-shrink: 0; }
-.content h2 { color: var(--maroon); font-family: Arial, sans-serif; font-size: 12pt; margin: 12px 0 6px; }
-.content h3 { font-size: 11pt; font-weight: bold; margin: 8px 0 4px; }
-.content p { margin-bottom: 6px; text-align: justify; }
-.content ul { margin-left: 18px; margin-bottom: 8px; }
-.content li { margin-bottom: 4px; }
-.warning-box { background: #FFF5F6; border-left: 4px solid var(--maroon); padding: 10px 14px; margin: 10px 0; font-size: 10pt; }
-.summary-table { width: 100%; border-collapse: collapse; font-size: 9.5pt; font-family: Arial, sans-serif; margin: 8px 0 12px; }
-.summary-table th, .summary-table td { border: 1px solid var(--dark); padding: 5px 8px; text-align: left; vertical-align: top; }
-.summary-table th { background: var(--maroon); color: var(--white); font-weight: bold; text-align: center; }
+  /*
+    CRITICAL FIX:
+    The content-wrapper no longer relies on a fixed padding-bottom that can be
+    overrun by tall content. Instead the page is a flex column where the
+    content area is a scrollable/overflowing region that is HARD-STOPPED
+    at the footer boundary. Any excess is clipped (in print) and the author
+    must split content across pages. We also cap the wrapper height so it
+    physically cannot reach the footer.
+  */
+  .content-wrapper {
+    position: relative; z-index: 1; display: flex; flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;            /* allows flex children to shrink */
+    max-height: calc(297mm - 15mm - 55mm); /* 15mm top pad + 40mm header zone + 15mm footer clearance */
+    overflow: hidden;         /* hard stop: never bleed into footer */
+    padding-bottom: 0;
+  }
+
+  .header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 30px; flex-shrink: 0;
+  }
+
+  .header-left {
+    width: 30%; text-align: left; color: #000;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 14pt; font-weight: normal; font-style: italic;
+  }
+
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num {
+    display: block; font-family: Arial, sans-serif;
+    font-size: 14pt; margin-bottom: 2px; color: #000; font-weight: bold;
+  }
+  .header-center .confidential {
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic; font-weight: bold; color: #000; font-size: 12pt;
+  }
+
+  .header-right {
+    width: 30%; text-align: right; color: #000;
+    font-family: Arial, sans-serif; font-size: 16pt; font-weight: 900;
+  }
+
+  .footer {
+    position: absolute; bottom: 10mm; left: 20mm; right: 20mm;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    z-index: 2; font-size: 12pt; font-family: Arial, sans-serif; height: 15mm;
+  }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 40px; height: 40px; }
+  .footer-qr svg { display: block; width: 40px; height: 40px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 11pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .tag { font-size: 9pt; color: #000; }
+  .footer-right { color: #000; font-style: italic;}
+
+  /* COVER PAGE DESIGN */
+  .cover-page { padding: 0; }
+  .cover-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; overflow: hidden; }
+  .cover-bg-maroon { position: absolute; top: 0; left: 0; width: 75%; height: 65%; background: #7A1F2B; }
+  .cover-bg-grey { position: absolute; bottom: 0; left: 0; width: 75%; height: 35%; background: #F8F8F8; }
+  .cover-bg-checker {
+    position: absolute; bottom: 0; right: 0; width: 25%; height: 50%;
+    background-color: #fff;
+    background-image: linear-gradient(45deg, #D1D5DB 25%, transparent 25%, transparent 75%, #D1D5DB 75%, #D1D5DB), linear-gradient(45deg, #D1D5DB 25%, transparent 25%, transparent 75%, #D1D5DB 75%, #D1D5DB);
+    background-size: 24px 24px; background-position: 0 0, 12px 12px; clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 50%);
+  }
+  .cover-bg-circle { position: absolute; top: 8%; right: 10%; width: 140px; height: 140px; background: #FFFFFF; border-radius: 50%; z-index: 1; border: 4px solid #7A1F2B; }
+  .cover-bg-circle::after { content: ''; position: absolute; top: 50%; left: -5%; width: 110%; height: 25%; background: #7A1F2B; transform: translateY(-50%); z-index: 2; }
+  .cover-bg-line { position: absolute; top: calc(8% + 140px); right: calc(10% + 68px); width: 2px; height: 28%; background: #7A1F2B; z-index: 1; }
+  .cover-bg-line::after { content: ''; position: absolute; top: 40%; left: -6px; width: 14px; height: 30px; background: #7A1F2B; border: 2px solid #FFF; }
+  .cover-content { position: relative; z-index: 2; padding: 20mm 15mm; display: flex; flex-direction: column; height: 100%; }
+  .cover-logo-area { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+  .cover-logo-svg { width: 80px; height: 80px; background: #FFF; border-radius: 50%; padding: 5px; }
+  .cover-logo-text { display: flex; flex-direction: column; justify-content: center; }
+  .cover-logo-text .logo-title { font-family: Arial, sans-serif; font-size: 22pt; font-weight: 900; color: #FFF; line-height: 1.1; }
+  .cover-logo-text .logo-sub { font-family: Arial, sans-serif; font-size: 11pt; color: #FFF; letter-spacing: 2px; font-weight: bold; }
+  .cover-title { font-family: Arial, sans-serif; margin-bottom: 20px; margin-top: 15px; }
+  .cover-title .main-white { font-size: 46pt; font-weight: 900; color: #FFF; display: block; line-height: 1.1; text-shadow: 2px 2px 0px #7A1F2B, 4px 4px 0px rgba(0,0,0,0.2); }
+  .cover-highlight { background: #FFF; color: #7A1F2B; border-left: 6px solid #7A1F2B; font-family: Arial, sans-serif; font-weight: 900; font-size: 16pt; padding: 10px 15px; width: max-content; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+  .cover-text { color: #FFF; font-family: Arial, sans-serif; font-size: 14pt; max-width: 380px; line-height: 1.5; margin-bottom: 5px; border-left: 2px solid rgba(255,255,255,0.4); padding-left: 15px; }
+  .cover-ai-disclaimer { color: rgba(255,255,255,0.8); font-family: Arial, sans-serif; font-size: 11pt; font-style: italic; max-width: 380px; padding-left: 17px; margin-bottom: 15px; }
+  .cover-text-above-circle { position: absolute; bottom: 75mm; left: 20mm; z-index: 2; font-family: Arial, sans-serif; font-size: 18pt; font-weight: 900; color: #7A1F2B; letter-spacing: 1px; }
+  .cover-info-circle { position: absolute; bottom: 30mm; left: 20mm; z-index: 2; width: 170px; height: 170px; background: #7A1F2B; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FFF; font-family: Arial, sans-serif; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 4px solid #FFF; }
+  .cover-info-circle .details { font-size: 16pt; font-weight: 900; line-height: 1.4; }
+  .cover-barcode-a10 { margin-left: 17px; margin-top: 10px; }
+  .cover-barcode-270610a { position: absolute; right: 20mm; bottom: 15mm; z-index: 3; }
+  .cover-page .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; }
+  .cover-page .footer-brand .name, .cover-page .footer-brand .tag, .cover-page .footer-right { color: #000; }
+  .cover-page .footer-qr svg { filter: grayscale(100%); }
+
+  /* DOCUMENT CONTENT */
+  .doc-title-block { margin-bottom: 25px; border-left: 6px solid #7A1F2B; padding-left: 15px; flex-shrink: 0; }
+  .doc-title-block .title { font-family: Arial, sans-serif; font-size: 22pt; font-weight: 900; color: #7A1F2B; line-height: 1.2; }
+  .doc-title-block .sub { font-family: Arial, sans-serif; font-size: 12pt; color: #555; letter-spacing: 1px; margin-top: 5px; }
+
+  .content { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+  .content h2 { color: #7A1F2B; font-family: Arial, sans-serif; font-size: 15pt; margin: 18px 0 8px; }
+  .content h3 { font-size: 14pt; font-weight: bold; margin: 12px 0 5px; }
+  .content p { margin-bottom: 10px; text-align: justify; font-size: 14pt; }
+  .content ul { margin-left: 22px; margin-bottom: 12px; }
+  .content li { margin-bottom: 6px; font-size: 14pt; }
+
+  .warning-box { background: #F8F8F8; border-left: 4px solid #7A1F2B; padding: 10px 14px; margin: 12px 0; font-size: 13pt; }
+
+  .summary-table { width: 100%; border-collapse: collapse; font-size: 13pt; font-family: Arial, sans-serif; margin: 10px 0 16px; page-break-inside: avoid; }
+  .summary-table th, .summary-table td { border: 1px solid #000; padding: 6px 10px; text-align: left; vertical-align: top; }
+  .summary-table th { background: #7A1F2B; color: #FFF; font-weight: bold; text-align: center; }
+
+  /* FULL RED BACK COVER DESIGN */
+  .back-cover-red { background-color: #7A1F2B !important; color: #FFF; display: flex; flex-direction: column; position: relative; }
+  .back-cover-red .security-pattern { background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 22px); background-size: 20px 20px, auto; }
+  .back-cover-center { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: 20mm; }
+  .back-cover-logo-large { width: 120px; height: 120px; background: #FFF; border-radius: 50%; padding: 10px; margin-bottom: 20px; }
+  .back-cover-title-large { font-family: Arial, sans-serif; font-size: 30pt; font-weight: 900; color: #FFF; margin-bottom: 10px; }
+  .back-cover-subtitle { font-family: Arial, sans-serif; font-size: 15pt; color: #FFD1D6; margin-bottom: 30px; letter-spacing: 2px; }
+  .back-cover-info { font-family: Arial, sans-serif; font-size: 15pt; color: #FFF; max-width: 450px; line-height: 1.8; text-align: left; padding-left: 25px; border-left: 4px solid rgba(255,255,255,0.4); margin-top: 20px; }
+  .back-cover-ai-disclaimer { font-family: Arial, sans-serif; font-size: 12pt; color: rgba(255,255,255,0.7); max-width: 450px; text-align: left; padding-left: 25px; margin-top: 15px; font-style: italic; }
+  .back-cover-bottom-row { position: absolute; bottom: 20mm; left: 20mm; right: 20mm; z-index: 2; display: flex; justify-content: space-between; align-items: flex-end; }
+  .back-cover-barcode-box { display: flex; flex-direction: column; align-items: flex-start; }
+  .back-cover-qr-box { display: flex; flex-direction: column; align-items: flex-end; color: #FFF; font-family: Arial, sans-serif; text-align: right; }
+  .qr-wrapper { filter: invert(1); width: 80px; height: 80px; margin-bottom: 5px; }
+  .website-text { font-size: 12pt; color: #FFF; font-weight: bold; line-height: 1.2; }
+  .website-link-text { font-size: 11pt; color: #FFF; opacity: 0.9; text-decoration: none; display: block; white-space: nowrap; margin-top: 4px; }
+  .back-cover-footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; z-index: 1; display: flex; justify-content: center; align-items: flex-end; font-family: Arial, sans-serif; font-size: 11pt; color: rgba(255,255,255,0.6); }
 </style>
 </head>
 <body>
 
-<!-- COVER -->
+<div class="control-bar">
+    <div class="brand"><span>∆</span> IFB General Rules &amp; Policies</div>
+    <div class="control-actions">
+        <a href="#" class="btn-nav">Back to Resources</a>
+        <button onclick="window.print()" class="btn-nav primary">Print / Save PDF</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
 <div class="page cover-page">
-  <div class="security-pattern"></div>
-  <div class="cover-header">
-    <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/>
-      <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/>
-      <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/>
-    </svg>
-    <div class="cover-header-text">
-      <div class="title">Institute of Board</div>
-      <div class="sub">Department:<br>Institutional Governance</div>
-      <div class="dept">NON-ACCREDITED ACADEMIC INSTITUTION</div>
+  <div class="cover-bg">
+    <div class="cover-bg-maroon"></div>
+    <div class="cover-bg-grey"></div>
+    <div class="cover-bg-checker"></div>
+    <div class="cover-bg-circle"></div>
+    <div class="cover-bg-line"></div>
+  </div>
+
+  <div class="cover-content">
+    <div class="cover-logo-area">
+      <svg class="cover-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+      </svg>
+      <div class="cover-logo-text">
+        <div class="logo-title">INSTITUTE OF BOARD</div>
+        <div class="logo-sub">INSTITUTIONAL GOVERNANCE</div>
+      </div>
+    </div>
+
+    <div class="cover-title">
+      <span class="main-white">GENERAL RULES<br>&amp; POLICIES</span>
+    </div>
+
+    <div class="cover-highlight">
+      2027 Academic Year
+    </div>
+
+    <div class="cover-text">
+      Mission &middot; Admission &middot; Finance &middot; Conduct &middot; Privacy &middot; Terms. This document governs the relationship between the Institute of Board and every enrolled student.
+    </div>
+
+    <div class="cover-ai-disclaimer">
+      Institute of Board is a non-accredited academic institution.
+    </div>
+
+    <div class="cover-barcode-a10">
+      <svg class="barcode-cover" data-barcode="A10" data-bc-width="2.5" data-bc-height="50" data-bc-display="true" data-bc-font-size="16" data-bc-line-color="#FFFFFF"></svg>
     </div>
   </div>
-  <div class="title-box">
-    <h1>GENERAL RULES &amp; POLICIES</h1>
-    <h2>2027 ACADEMIC YEAR</h2>
+
+  <div class="cover-text-above-circle">
+    GOVERNANCE
   </div>
-  <div class="cover-meta">
-    <p>Mission · Admission · Finance</p>
-    <p>Conduct · Privacy · Terms</p>
+
+  <div class="cover-info-circle">
+    <div class="details">2027<br>Edition</div>
   </div>
+
+  <div class="cover-barcode-270610a">
+    <svg class="barcode-cover" data-barcode="270610A" data-bc-width="2.5" data-bc-height="50" data-bc-display="true" data-bc-font-size="16" data-bc-line-color="#111111"></svg>
+  </div>
+
   <div class="footer">
     <div class="footer-left">
       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/guidelines-general.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
-    <div class="footer-right">Copyright reserved</div>
+    <div class="footer-right">Please turn over</div>
   </div>
 </div>
 
-<!-- SECTIONS 1-3 -->
+<!-- ==================== PAGE 2: SECTIONS 1-2 ==================== -->
 <div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     <div class="header">
       <div class="header-left">General Rules</div>
-      <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-center">
+        <span class="page-num">2</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
-    <div class="doc-title">MISSION, ADMISSION &amp; FINANCE</div>
+
+    <div class="doc-title-block">
+      <div class="title">MISSION, ADMISSION &amp; FINANCE</div>
+      <div class="sub">SECTIONS 1 &ndash; 2</div>
+    </div>
+
     <div class="content">
       <h2>1. Mission &amp; Identity</h2>
       <p>The Institute of Board ("IFB") exists to provide <strong>elite, rigorous, university-level technical education</strong> to anyone who passes the entry requirements, completely <strong>100% fee-free</strong>.</p>
@@ -117,10 +289,6 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-hei
           <tr><td>Web Development AE (AE-W WEB)</td><td>18 January 2027</td><td>50</td><td>1 hour</td></tr>
         </tbody>
       </table>
-
-      <h2>3. Tuition &amp; Financial Model</h2>
-      <p>IFB charges <strong>zero tuition</strong>, <strong>zero application fees</strong>, <strong>zero exam fees</strong>, and <strong>zero graduation fees</strong>. The institution is funded entirely by sponsors and donors. If you are admitted, your education is free.</p>
-      <p>Sponsorships fund the IFB platform, including hosting, domain registration, examination portal maintenance, and direct student support.</p>
     </div>
   </div>
   <div class="footer">
@@ -132,18 +300,28 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-hei
   </div>
 </div>
 
-<!-- SECTIONS 4-7 -->
+<!-- ==================== PAGE 3: SECTION 3 + 4 ==================== -->
 <div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     <div class="header">
       <div class="header-left">General Rules</div>
-      <div class="header-center"><span class="page-num">3</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-center">
+        <span class="page-num">3</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
-    <div class="doc-title">CONDUCT, PRIVACY &amp; TERMS</div>
+
+    <div class="doc-title-block">
+      <div class="title">FINANCE &amp; CONDUCT</div>
+      <div class="sub">SECTIONS 3 &ndash; 4</div>
+    </div>
+
     <div class="content">
+      <h2>3. Tuition &amp; Financial Model</h2>
+      <p>IFB charges <strong>zero tuition</strong>, <strong>zero application fees</strong>, <strong>zero exam fees</strong>, and <strong>zero graduation fees</strong>. The institution is funded entirely by sponsors and donors. If you are admitted, your education is free.</p>
+      <p>Sponsorships fund the IFB platform, including hosting, domain registration, examination portal maintenance, and direct student support.</p>
+
       <h2>4. Code of Conduct</h2>
       <p>All enrolled students must maintain the highest standards of academic integrity. The following are strictly prohibited:</p>
       <ul>
@@ -154,7 +332,35 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-hei
         <li>Sharing your Student ID or Security Code with anyone else.</li>
       </ul>
       <p>Violations result in immediate script invalidation and potential permanent expulsion.</p>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/guidelines-general.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
 
+<!-- ==================== PAGE 4: SECTION 5 + 6 (part) ==================== -->
+<div class="page">
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">General Rules</div>
+      <div class="header-center">
+        <span class="page-num">4</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title-block">
+      <div class="title">PRIVACY &amp; TERMS</div>
+      <div class="sub">SECTIONS 5 &ndash; 6</div>
+    </div>
+
+    <div class="content">
       <h2>5. Privacy Policy</h2>
       <p>IFB collects only the minimum information necessary: <strong>full name, email, date of birth, phone number, country, and selected courses</strong>. All data is stored securely using Google Firebase, encrypted in transit and at rest. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
       <p>To request deletion of your account and all associated data, use the "Deregister &amp; Delete Account" option in your Student Dashboard. Data is permanently removed within 24 hours.</p>
@@ -170,11 +376,6 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-hei
       <p>Scripts are processed by the IFB AI Examination Board. Any script flagged for irregularity is escalated to the Chief Examiner for human review. The Chief Examiner's decision is final.</p>
       <h3>Intellectual Property</h3>
       <p>All question papers, answer books, teaching plans, and course materials are the intellectual property of IFB. Redistribution without permission is prohibited.</p>
-
-      <h2>7. Contact</h2>
-      <p><strong>Email:</strong> n1nathaniel971@gmail.com<br>
-      <strong>Phone:</strong> +27 60 958 3089</p>
-      <p>For all administrative inquiries, use the email above. Responses typically within 48 hours.</p>
     </div>
   </div>
   <div class="footer">
@@ -182,14 +383,132 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-hei
       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/guidelines-general.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
-    <div class="footer-right">END</div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 5: SECTION 7 ==================== -->
+<div class="page">
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">General Rules</div>
+      <div class="header-center">
+        <span class="page-num">5</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title-block">
+      <div class="title">CONTACT</div>
+      <div class="sub">SECTION 7</div>
+    </div>
+
+    <div class="content">
+      <h2>7. Contact</h2>
+      <p><strong>Email:</strong> n1nathaniel971@gmail.com<br>
+      <strong>Phone:</strong> +27 60 958 3089</p>
+      <p>For all administrative inquiries, use the email above. Responses typically within 48 hours.</p>
+
+      <h2>Document Control</h2>
+      <p>This document was last reviewed for the 2027 academic year. It supersedes all previous versions of the General Rules &amp; Policies. Any amendments will be published on the official IFB website and communicated to enrolled students by email.</p>
+      <p>Students are responsible for checking the official website for the most current version of this document before relying on any provision contained herein.</p>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/guidelines-general.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">END OF DOCUMENT</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 6: FULL RED BACK COVER ==================== -->
+<div class="page back-cover-red">
+  <div class="security-pattern"></div>
+
+  <div class="back-cover-center">
+    <svg class="back-cover-logo-large" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+        <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+        <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+    </svg>
+    <div class="back-cover-title-large">INSTITUTE OF BOARD</div>
+    <div class="back-cover-subtitle">INSTITUTIONAL GOVERNANCE</div>
+
+    <div class="back-cover-info">
+      <strong>General Rules &amp; Policies &mdash; 2027 Academic Year</strong><br><br>
+      This document governs the relationship between the Institute of Board and every enrolled student. It is the student's responsibility to read and understand these policies before accepting admission.
+    </div>
+
+    <div class="back-cover-ai-disclaimer">
+      Institute of Board is a non-accredited academic institution. Certificates are internal awards.
+    </div>
+  </div>
+
+  <div class="back-cover-bottom-row">
+    <div class="back-cover-barcode-box">
+      <svg class="barcode-back-final" data-barcode="102626F" data-bc-width="2" data-bc-height="50" data-bc-display="true" data-bc-font-size="14" data-bc-line-color="#FFFFFF"></svg>
+    </div>
+
+    <div class="back-cover-qr-box">
+      <div class="qr-wrapper">
+        <span class="footer-qr-white" data-qr="https://ifb-nmaz.onrender.com"></span>
+      </div>
+      <div class="website-text">
+        We are also<br>available at
+      </div>
+      <a href="https://ifb-nmaz.onrender.com" class="website-link-text" target="_blank">https://ifb-nmaz.onrender.com</a>
+    </div>
+  </div>
+
+  <div class="back-cover-footer">
+    <span>© 2027 Institute of Board. All rights reserved.</span>
   </div>
 </div>
 
 <script>
 (function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+
+    document.querySelectorAll(".barcode-cover").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "102626F", {
+          format: "CODE128",
+          width: parseFloat(el.dataset.bcWidth || "2.5"),
+          height: parseInt(el.dataset.bcHeight || "50", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace",
+          fontSize: parseInt(el.dataset.bcFontSize || "16", 10),
+          textMargin: 2, margin: 0,
+          background: "transparent",
+          lineColor: el.dataset.bcLineColor || "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+
+    document.querySelectorAll(".barcode-back-final").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "102626F", {
+          format: "CODE128",
+          width: parseFloat(el.dataset.bcWidth || "2"),
+          height: parseInt(el.dataset.bcHeight || "50", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace",
+          fontSize: parseInt(el.dataset.bcFontSize || "14", 10),
+          textMargin: 2, margin: 0,
+          background: "transparent",
+          lineColor: el.dataset.bcLineColor || "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
   function makeQRCodes() {
     if (typeof qrcode !== "function") return;
+
     document.querySelectorAll(".footer-qr").forEach(function (el) {
       try {
         var qr = qrcode(0, "M");
@@ -198,15 +517,35 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 10.5pt; line-hei
         el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
       } catch (e) { console.warn(e); }
     });
+
+    document.querySelectorAll(".footer-qr-white").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://ifb-nmaz.onrender.com");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
   }
-  var tries = 0;
-  (function attempt() {
-    tries++;
-    var okQ = typeof qrcode === "function";
-    if (okQ) makeQRCodes();
-    if (!okQ && tries < 40) setTimeout(attempt, 150);
-  })();
-  window.addEventListener("load", makeQRCodes);
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
+  });
 })();
 </script>
 </body>
