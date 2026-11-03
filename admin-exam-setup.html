@@ -4,102 +4,101 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Admin Exam Setup — IFB</title>
-<meta name="description" content="IFB Admin Exam Portal. Upload papers, set PINs, and monitor live student sessions." />
+<meta name="description" content="IFB Admin Exam Portal. Create sessions, upload papers, set PINs, and monitor live students." />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="theme-color" content="#7A1F2B">
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
   :root { 
-    --maroon: #7A1F2B; 
-    --maroon-hover: #5A1620; 
-    --bg: #F8FAFC; 
-    --white: #FFFFFF; 
-    --text: #111111; 
-    --gray: #64748B; 
-    --silver: #E2E8F0; 
-    --success: #15803D; 
-    --error: #B91C1C; 
-    --warning: #B45309; 
+    --maroon: #7A1F2B; --maroon-hover: #5A1620; 
+    --bg: #F8FAFC; --white: #FFFFFF; --text: #111111; 
+    --gray: #64748B; --silver: #E2E8F0; 
+    --success: #15803D; --error: #B91C1C; --warning: #B45309; 
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
   /* NAV BAR */
-  .nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 32px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); font-weight: 900; font-size: 18px; }
-  .brand span { font-size: 28px; color: var(--maroon); }
-  .nav-links { display: flex; gap: 12px; }
-  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; color: var(--text); font-family: inherit; }
+  .nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 900; font-size: 18px; }
+  .brand span { font-size: 26px; color: var(--maroon); }
+  .nav-links { display: flex; gap: 8px; }
+  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; color: var(--text); font-family: inherit; }
   .btn-nav:hover { border-color: var(--text); background: var(--bg); }
   .btn-logout { background: #FEF2F2; color: var(--error); border-color: #FECACA; }
   .btn-logout:hover { background: #FEE2E2; }
 
-  /* LAYOUT */
-  .container { max-width: 1100px; margin: 40px auto; padding: 0 32px; width: 100%; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  /* LAYOUT - MOBILE FIX */
+  .container { max-width: 1100px; margin: 32px auto; padding: 0 20px; width: 100%; box-sizing: border-box; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  
+  /* Force single column on mobile/tablet */
+  @media (max-width: 900px) { 
+    .grid { grid-template-columns: 1fr; gap: 20px; } 
+    .card { padding: 20px !important; }
+    .nav { padding: 0 16px; }
+    .btn-nav span { display: none; } /* Hide text on mobile nav */
+  }
 
   /* CARDS */
-  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-  .card h2 { font-size: 20px; font-weight: 900; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
-  .card h2 i { color: var(--maroon); width: 22px; height: 22px; }
+  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); box-sizing: border-box; overflow: hidden; }
+  .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
+  .card h2 i { color: var(--maroon); width: 20px; height: 20px; }
 
   /* FORM ELEMENTS */
-  .form-group { margin-bottom: 24px; }
-  .form-group label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-  .form-group input[type="text"] { width: 100%; padding: 14px 16px; border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; outline: none; font-family: inherit; transition: 0.2s; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .form-group input[type="text"] { width: 100%; padding: 12px 14px; border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; outline: none; font-family: inherit; transition: 0.2s; box-sizing: border-box; }
   .form-group input[type="text"]:focus { border-color: var(--maroon); }
   
   /* CUSTOM FILE UPLOAD */
   .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
   .file-upload-wrapper input[type="file"] { position: absolute; left: -9999px; }
-  .file-upload-label { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 24px; background: var(--bg); border: 2px dashed var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; text-align: center; color: var(--gray); font-weight: 600; }
+  .file-upload-label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 20px; background: var(--bg); border: 2px dashed var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; text-align: center; color: var(--gray); font-weight: 600; font-size: 13px; }
   .file-upload-label:hover { border-color: var(--maroon); background: #FFF5F6; color: var(--maroon); }
   .file-upload-label.has-file { border-color: var(--success); background: #F0FDF4; color: var(--success); }
-  .file-upload-label i { width: 24px; height: 24px; }
-  .file-name-display { font-size: 12px; margin-top: 6px; color: var(--gray); font-weight: 500; display: block; }
+  .file-upload-label i { width: 22px; height: 22px; }
+  .file-name-display { font-size: 11px; margin-top: 4px; color: var(--gray); font-weight: 500; display: block; word-break: break-all; }
 
-  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 16px 24px; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; transition: 0.2s; font-family: inherit; }
+  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 14px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: 0.2s; font-family: inherit; }
   .btn-primary:hover { background: var(--maroon-hover); }
   .btn-primary:disabled { opacity: 0.6; cursor: wait; }
 
   /* QR & PIN DISPLAY */
-  .code-display { background: #FFF5F6; border: 1px solid #FCA5A5; border-radius: 16px; padding: 32px; text-align: center; margin-top: 32px; }
-  .pin-display { font-family: monospace; font-size: 56px; font-weight: 900; color: var(--maroon); letter-spacing: 12px; margin: 12px 0; line-height: 1; }
-  .qr-container { display: flex; justify-content: center; margin: 24px 0 16px; }
-  .qr-container svg { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .code-display { background: #FFF5F6; border: 1px solid #FCA5A5; border-radius: 16px; padding: 24px; text-align: center; margin-top: 24px; }
+  .pin-display { font-family: monospace; font-size: 42px; font-weight: 900; color: var(--maroon); letter-spacing: 8px; margin: 8px 0; line-height: 1; }
+  .qr-container { display: flex; justify-content: center; margin: 16px 0; }
+  .qr-container svg { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); max-width: 100%; height: auto; }
 
   /* LIVE MONITOR TABLE */
-  .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
-  th, td { padding: 16px 20px; border-bottom: 1px solid var(--silver); }
-  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 12px; width: 100%; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 600px; /* Forces scroll on small screens */ }
+  th, td { padding: 12px 16px; border-bottom: 1px solid var(--silver); }
+  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #FAFAFA; }
   
-  .status-badge { padding: 6px 12px; border-radius: 100px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .status-badge { padding: 4px 10px; border-radius: 100px; font-weight: 800; font-size: 10px; display: inline-flex; align-items: center; gap: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
   .status-online { background: #DCFCE7; color: var(--success); }
   .status-offline { background: #FEE2E2; color: var(--error); }
-  .tab-count { font-weight: 900; color: var(--error); font-size: 16px; }
+  .tab-count { font-weight: 900; color: var(--error); font-size: 15px; }
 
   /* PROGRESS BAR */
-  .progress-bar { width: 100%; height: 8px; background: var(--silver); border-radius: 4px; overflow: hidden; margin-top: 16px; display: none; }
+  .progress-bar { width: 100%; height: 6px; background: var(--silver); border-radius: 4px; overflow: hidden; margin-top: 12px; display: none; }
   .progress-fill { height: 100%; background: var(--maroon); width: 0%; transition: width 0.3s; }
 
   /* ACTION BUTTONS */
-  .action-group { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; border-top: 1px solid var(--silver); padding-top: 24px; }
-  .btn-action { flex: 1; padding: 16px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-family: inherit; }
+  .action-group { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; border-top: 1px solid var(--silver); padding-top: 20px; }
+  .btn-action { flex: 1; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; font-family: inherit; min-width: 200px; }
   .btn-export { background: var(--maroon); color: white; }
   .btn-export:hover { background: var(--maroon-hover); }
   .btn-results { background: var(--bg); color: var(--text); border: 1.5px solid var(--silver); }
   .btn-results:hover { border-color: var(--text); }
 
-  /* ICONS */
   svg.lucide { stroke-width: 2.25; }
 </style>
 </head>
@@ -108,11 +107,11 @@
 <!-- NAV -->
 <nav class="nav">
   <a href="index.html" class="brand">
-    <span>∆</span> IFB Admin Portal
+    <span>∆</span> IFB Admin
   </a>
   <div class="nav-links">
-    <button class="btn-nav" onclick="window.location.href='student-dashboard.html'"><i data-lucide="layout-dashboard" style="width:16px;height:16px;"></i> Dashboard</button>
-    <button class="btn-nav btn-logout" onclick="logout()"><i data-lucide="log-out" style="width:16px;height:16px;"></i> Logout</button>
+    <button class="btn-nav" onclick="window.location.href='student-dashboard.html'"><i data-lucide="layout-dashboard" style="width:16px;height:16px;"></i> <span>Dashboard</span></button>
+    <button class="btn-nav btn-logout" onclick="logout()"><i data-lucide="log-out" style="width:16px;height:16px;"></i> <span>Logout</span></button>
   </div>
 </nav>
 
@@ -121,7 +120,7 @@
     
     <!-- SETUP PANEL -->
     <div class="card">
-      <h2><i data-lucide="settings"></i> Exam Configuration</h2>
+      <h2><i data-lucide="settings"></i> Create Exam Session</h2>
       
       <div class="form-group">
         <label>Question Paper (.html or .pdf)</label>
@@ -149,25 +148,25 @@
 
       <div class="form-group">
         <label>Examination Access PIN (6 digits)</label>
-        <input type="text" id="examPin" maxlength="6" placeholder="e.g. 847291" style="font-family: monospace; font-size: 24px; letter-spacing: 8px; text-align: center;">
+        <input type="text" id="examPin" maxlength="6" placeholder="e.g. 847291" style="font-family: monospace; font-size: 22px; letter-spacing: 6px; text-align: center;">
       </div>
 
       <button class="btn-primary" id="startSessionBtn" onclick="startSession()">
-        <i data-lucide="play-circle"></i> Generate Session & Unlock Portal
+        <i data-lucide="play-circle"></i> Create Session & Unlock Portal
       </button>
       
       <div class="progress-bar" id="uploadProgress"><div class="progress-fill" id="progressFill"></div></div>
-      <div id="setupStatus" style="margin-top: 16px; font-size: 14px; font-weight: 700; text-align: center; color: var(--gray);"></div>
+      <div id="setupStatus" style="margin-top: 12px; font-size: 13px; font-weight: 700; text-align: center; color: var(--gray);"></div>
 
       <!-- QR & PIN DISPLAY -->
       <div id="sessionCodeContainer" style="display: none;">
         <div class="code-display">
-          <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--gray); letter-spacing: 1px;">Live Session PIN</div>
+          <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--gray); letter-spacing: 1px;">Live Session PIN</div>
           <div class="pin-display" id="displayPin">------</div>
-          <div style="font-size: 13px; font-weight: 600; color: var(--gray); margin-bottom: 24px;">Students must enter this PIN to unlock the paper.</div>
+          <div style="font-size: 12px; font-weight: 600; color: var(--gray); margin-bottom: 16px;">Students must enter this PIN to unlock the paper.</div>
           
           <div class="qr-container" id="qrCodeContainer"></div>
-          <div style="font-size: 13px; font-weight: 600; color: var(--gray);">Scan this QR to join the mobile scanner portal.</div>
+          <div style="font-size: 12px; font-weight: 600; color: var(--gray);">Scan this QR to join the mobile scanner portal.</div>
         </div>
       </div>
     </div>
@@ -175,7 +174,7 @@
     <!-- LIVE MONITOR PANEL -->
     <div class="card" style="grid-column: span 2;">
       <h2><i data-lucide="activity"></i> Live Student Monitor</h2>
-      <p style="font-size: 14px; color: var(--gray); margin-bottom: 24px; font-weight: 500;">Students are identified strictly by their 13-digit Examination Number. Refresh the page to see new connections.</p>
+      <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px; font-weight: 500;">Students are identified by their 13-digit Examination Number. Refresh the page to see new connections.</p>
       
       <div class="table-wrap">
         <table>
@@ -196,7 +195,7 @@
 
       <div class="action-group">
         <button class="btn-action btn-export" onclick="downloadScripts()">
-          <i data-lucide="download-cloud"></i> Download ZIP for DeepSeek (Grouped by 10s)
+          <i data-lucide="download-cloud"></i> Download ZIP for DeepSeek
         </button>
         <button class="btn-action btn-results" onclick="window.location.href='admin-results.html'">
           <i data-lucide="bar-chart-2"></i> View AI Results & Flags
@@ -210,7 +209,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, orderBy, serverTimestamp, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
@@ -220,7 +219,6 @@
   const storage = getStorage(app);
 
   let unsubscribeMonitor = null;
-  let currentSessionId = "AE_2027_MATH_01";
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
@@ -253,7 +251,7 @@
     refreshIcons();
   };
 
-  // START SESSION
+  // CREATE SESSION (Generates a unique Session ID)
   window.startSession = async function() {
     const qFile = document.getElementById('questionFile').files[0];
     const aFile = document.getElementById('answerBookFile').files[0];
@@ -274,8 +272,11 @@
       statusEl.innerText = "Uploading Question Paper...";
       statusEl.style.color = "var(--maroon)";
 
+      // Generate a unique session ID
+      const sessionId = 'SESSION_' + Date.now();
+
       // Upload Question Paper
-      const qRef = ref(storage, `exams/${currentSessionId}/question_${qFile.name}`);
+      const qRef = ref(storage, `exams/${sessionId}/question_${qFile.name}`);
       const qUpload = uploadBytesResumable(qRef, qFile);
       
       qUpload.on('state_changed', (snap) => {
@@ -289,7 +290,7 @@
       statusEl.innerText = "Uploading Answer Book...";
       
       // Upload Answer Book
-      const aRef = ref(storage, `exams/${currentSessionId}/answerbook_${aFile.name}`);
+      const aRef = ref(storage, `exams/${sessionId}/answerbook_${aFile.name}`);
       const aUpload = uploadBytesResumable(aRef, aFile);
       
       aUpload.on('state_changed', (snap) => {
@@ -300,23 +301,30 @@
       await aUpload;
       const aUrl = await getDownloadURL(aRef);
 
-      statusEl.innerText = "Saving Session Config...";
+      statusEl.innerText = "Creating Session...";
 
-      // Save Config
-      await setDoc(doc(db, "config", "examSettings"), {
+      // Save Session Document to Firestore
+      await setDoc(doc(db, "examSessions", sessionId), {
+        sessionId: sessionId,
         examCode: pin,
         questionPaperUrl: qUrl,
         questionPaperType: qFile.name.endsWith('.pdf') ? 'pdf' : 'html',
         answerBookUrl: aUrl,
         answerBookType: aFile.name.endsWith('.pdf') ? 'pdf' : 'html',
-        sessionActive: true,
-        startedAt: serverTimestamp()
+        active: true,
+        createdAt: serverTimestamp(),
+        createdBy: auth.currentUser.email
       });
+
+      // Also save as the "Active" session so students can find it
+      await setDoc(doc(db, "config", "examSettings"), {
+        activeSessionId: sessionId
+      }, { merge: true });
 
       // Show PIN and QR
       document.getElementById('sessionCodeContainer').style.display = 'block';
       document.getElementById('displayPin').innerText = pin;
-      generateQR(pin);
+      generateQR(pin, sessionId);
       
       progressBar.style.display = 'none';
       statusEl.innerText = "Session is live!";
@@ -332,17 +340,18 @@
     }
   };
 
-  function generateQR(pin) {
+  function generateQR(pin, sessionId) {
     if (typeof qrcode !== "function") return;
     const qrContainer = document.getElementById('qrCodeContainer');
     qrContainer.innerHTML = '';
     
-    const mobileUrl = `${window.location.origin}/mobile-upload.html?pin=${pin}`;
+    // The mobile URL needs the sessionId and pin so it knows which exam to load
+    const mobileUrl = `${window.location.origin}/mobile-upload.html?session=${sessionId}&pin=${pin}`;
     
     var qr = qrcode(0, "M");
     qr.addData(mobileUrl);
     qr.make();
-    qrContainer.innerHTML = qr.createSvgTag({ cellSize: 5, margin: 0, scalable: true });
+    qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
   }
 
   // LIVE MONITOR
@@ -370,11 +379,11 @@
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="font-family: monospace; font-weight: 800; font-size: 15px;">${data.examNumber || doc.id}</td>
+          <td style="font-family: monospace; font-weight: 800; font-size: 14px;">${data.examNumber || doc.id}</td>
           <td><span class="status-badge ${badgeClass}">${isOnline ? 'Online' : 'Offline'}</span></td>
           <td class="${tabCount > 0 ? 'tab-count' : ''}">${tabCount}</td>
           <td style="font-weight: 600; color: var(--gray);">${lastActive}</td>
-          <td><button class="btn-nav" style="padding: 6px 12px; font-size: 12px;" onclick="viewStudentScript('${doc.id}')">View Script</button></td>
+          <td><button class="btn-nav" style="padding: 4px 10px; font-size: 11px;" onclick="viewStudentScript('${doc.id}')">View</button></td>
         `;
         tbody.appendChild(tr);
       });
@@ -382,7 +391,6 @@
   }
 
   window.viewStudentScript = function(studentId) {
-    // This will eventually open a modal with the embedded answer book and Cloudinary images
     alert("Next step: View embedded Answer Book for " + studentId);
   };
 
