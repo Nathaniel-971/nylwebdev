@@ -2,161 +2,686 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IFB Exam Session</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>IFB Live Examination</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#7A1F2B">
+
+<!-- Libraries -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script>window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$']]},svg:{fontCache:'global'}};</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script>
+  window.MathJax = { tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
+</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
-  :root { --maroon:#7A1F2B; --bg:#F8FAFC; --white:#FFF; --text:#111; --gray:#64748B; --silver:#E2E8F0; --success:#15803D; --error:#B91C1C; }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-  .header{background:white;border-bottom:1px solid var(--silver);padding:0 24px;height:72px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-  .brand{display:flex;align-items:center;gap:12px;font-weight:900;font-size:20px;}
-  .brand span{color:var(--maroon);font-size:28px;}
-  .clock{background:var(--bg);padding:8px 20px;border-radius:8px;border:1px solid var(--silver);font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--success);}
-  .clock.danger{color:var(--error);animation:pulse 1s infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-  .btn{background:transparent;border:1px solid var(--silver);color:var(--text);padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit;}
-  .btn-primary{background:var(--maroon);color:white;border:none;}
-  .btn-danger{border-color:var(--error);color:var(--error);}
-  .main{flex:1;display:flex;overflow:hidden;}
-  .left{flex:1;display:flex;flex-direction:column;background:#E2E8F0;overflow:hidden;}
-  .tabs{display:flex;background:white;border-bottom:1px solid var(--silver);}
-  .tab{flex:1;padding:12px;border:none;background:transparent;font-weight:700;font-size:14px;color:var(--gray);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border-bottom:2px solid transparent;}
-  .tab.active{color:var(--maroon);border-bottom-color:var(--maroon);background:var(--bg);}
-  .tc{flex:1;overflow-y:auto;padding:24px;display:none;}
-  .tc.active{display:block;}
-  .paper{background:white;max-width:900px;margin:0 auto;padding:40px;box-shadow:0 4px 15px rgba(0,0,0,0.1);border-radius:8px;}
-  .sidebar{width:320px;background:white;border-left:1px solid var(--silver);padding:24px;flex-shrink:0;overflow-y:auto;}
-  @media(max-width:900px){.main{flex-direction:column;}.left{height:60vh;flex:none;}.sidebar{width:100%;border-left:none;border-top:1px solid var(--silver);}}
-  .scard{background:var(--bg);padding:16px;border-radius:12px;border:1px solid var(--silver);text-align:center;margin-bottom:16px;}
-  .scard .num{font-family:monospace;font-size:18px;font-weight:900;color:var(--maroon);margin:8px 0;}
-  .scard svg{max-width:100%;height:40px;}
-  .overlay{position:fixed;inset:0;background:rgba(248,250,252,0.95);backdrop-filter:blur(10px);z-index:1000;display:none;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:24px;}
-  .overlay.active{display:flex;}
-  .overlay h2{font-size:32px;font-weight:900;margin-bottom:16px;}
-  .overlay p{font-size:16px;color:var(--gray);max-width:500px;margin-bottom:32px;}
-  .pin-input{background:white;border:2px solid var(--silver);font-size:42px;font-family:monospace;text-align:center;letter-spacing:12px;padding:16px 24px;border-radius:12px;outline:none;width:100%;max-width:300px;margin-bottom:24px;}
+  :root { 
+    --maroon: #7A1F2B; --maroon-hover: #5A1620; 
+    --bg: #F8FAFC; --panel: #FFFFFF; --text: #111111; 
+    --gray: #64748B; --silver: #E2E8F0; 
+    --success: #15803D; --error: #B91C1C; --warning: #B45309; 
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ========== VIEWS ========== */
+  .view { display: none; flex-direction: column; height: 100vh; width: 100%; }
+  .view.active { display: flex; }
+
+  /* ========== SHARED HEADER ========== */
+  .header { background: var(--panel); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; }
+  .brand span { color: var(--maroon); font-size: 28px; }
+  .clock-container { background: var(--bg); padding: 8px 20px; border-radius: 8px; border: 1px solid var(--silver); display: flex; align-items: center; gap: 12px; }
+  .clock { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; color: var(--success); }
+  .clock.danger { color: var(--error); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  
+  .btn { background: transparent; border: 1px solid var(--silver); color: var(--text); padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-family: inherit; transition: 0.2s; }
+  .btn:hover { background: var(--bg); }
+  .btn-primary { background: var(--maroon); color: #FFFFFF; border: none; }
+  .btn-primary:hover { background: var(--maroon-hover); }
+  .btn-danger { border-color: var(--error); color: var(--error); }
+  .btn-danger:hover { background: #FEF2F2; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ========== STUDENT SESSION ========== */
+  .main-content { flex: 1; display: flex; overflow: hidden; }
+  .left-panel { flex: 1; display: flex; flex-direction: column; background: #E2E8F0; overflow: hidden; }
+  .tabs { display: flex; background: var(--panel); border-bottom: 1px solid var(--silver); }
+  .tab-btn { flex: 1; padding: 12px; border: none; background: transparent; font-weight: 700; font-size: 14px; color: var(--gray); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; border-bottom: 2px solid transparent; transition: 0.2s; }
+  .tab-btn.active { color: var(--maroon); border-bottom-color: var(--maroon); background: var(--bg); }
+  .tab-content { flex: 1; overflow-y: auto; padding: 24px; display: none; }
+  .tab-content.active { display: block; }
+  .paper-wrapper { background: white; max-width: 900px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; }
+  .sidebar { width: 320px; background: var(--panel); border-left: 1px solid var(--silver); padding: 24px; flex-shrink: 0; overflow-y: auto; }
+  @media (max-width: 900px) { .main-content { flex-direction: column; } .left-panel { height: 60vh; flex: none; } .sidebar { width: 100%; border-left: none; border-top: 1px solid var(--silver); } }
+  .student-card { background: var(--bg); padding: 16px; border-radius: 12px; border: 1px solid var(--silver); text-align: center; margin-bottom: 16px; }
+  .student-card .exam-num { font-family: monospace; font-size: 18px; font-weight: 900; color: var(--maroon); margin: 8px 0; }
+  .student-card svg { max-width: 100%; height: 40px; }
+
+  /* ========== ADMIN SETUP ========== */
+  .admin-container { max-width: 1300px; margin: 24px auto; padding: 0 20px; width: 100%; overflow-y: auto; flex: 1; }
+  .admin-grid { display: grid; grid-template-columns: 380px 1fr; gap: 24px; }
+  @media (max-width: 900px) { .admin-grid { grid-template-columns: 1fr; } }
+  .card { background: #FFFFFF; border: 1px solid var(--silver); border-radius: 12px; padding: 20px; }
+  .card h2 { font-size: 16px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
+  .card h2 i { color: var(--maroon); width: 18px; height: 18px; }
+  .file-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .file-group label { font-size: 12px; font-weight: 700; }
+  .file-input { width: 100%; font-size: 12px; padding: 8px; border: 1px solid var(--silver); border-radius: 6px; }
+  .progress-bar { width: 100%; height: 6px; background: var(--silver); border-radius: 4px; overflow: hidden; margin-top: 12px; display: none; }
+  .progress-fill { height: 100%; background: var(--maroon); width: 0%; transition: width 0.3s; }
+  .pin-display { text-align: center; margin-top: 20px; display: none; background: var(--bg); padding: 16px; border-radius: 8px; border: 1px dashed var(--maroon); }
+  .pin-text { font-family: monospace; font-size: 32px; font-weight: 900; color: var(--maroon); letter-spacing: 6px; margin: 8px 0; }
+  .qr-box { margin-top: 16px; text-align: center; }
+  .qr-box svg { max-width: 180px; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 500px; }
+  th, td { padding: 10px 12px; border-bottom: 1px solid var(--silver); }
+  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; }
+  .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .status-online { background: #DCFCE7; color: var(--success); }
+  .status-offline { background: #FEE2E2; color: var(--error); }
+
+  /* ========== MODALS & OVERLAYS ========== */
+  .overlay { position: fixed; inset: 0; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
+  .overlay.active { display: flex; }
+  .overlay h2 { font-size: 32px; font-weight: 900; margin-bottom: 16px; }
+  .overlay p { font-size: 16px; color: var(--gray); max-width: 500px; margin-bottom: 32px; }
+  .pin-input { background: #FFFFFF; border: 2px solid var(--silver); font-size: 42px; font-family: monospace; text-align: center; letter-spacing: 12px; padding: 16px 24px; border-radius: 12px; outline: none; width: 100%; max-width: 300px; margin-bottom: 24px; }
+
+  /* Admin Script Viewer */
+  #viewerOverlay { position: fixed; inset: 0; background: rgba(15,23,42,0.95); backdrop-filter: blur(8px); z-index: 1000; display: none; flex-direction: column; padding: 20px; }
+  #viewerOverlay.active { display: flex; }
+  .viewer-header { display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 16px; }
+  .viewer-header h2 { font-size: 18px; font-weight: 900; }
+  .viewer-content { flex: 1; background: white; border-radius: 12px; overflow-y: auto; padding: 40px; position: relative; display: flex; align-items: center; justify-content: center; }
+  .viewer-content img { max-width: 100%; max-height: 100%; display: block; object-fit: contain; }
+  .viewer-nav { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: white; padding: 10px 20px; border-radius: 100px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; gap: 16px; align-items: center; z-index: 1001; }
+  .viewer-nav button { background: var(--maroon); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+  .viewer-nav button:disabled { opacity: 0.4; }
+  .viewer-nav span { font-weight: 800; font-size: 14px; color: var(--maroon); }
 </style>
 </head>
 <body>
-<header class="header">
-  <div class="brand"><span>∆</span> IFB Exam</div>
-  <div class="clock" id="clock">--:--:--</div>
-  <button class="btn btn-danger" onclick="exitExam()"><i data-lucide="log-out"></i> Exit</button>
-</header>
-<main class="main">
-  <div class="left">
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('paper')" id="tPaper"><i data-lucide="file-text"></i> Question Paper</button>
-      <button class="tab" onclick="switchTab('ab')" id="tAB"><i data-lucide="book-open"></i> Answer Book</button>
-    </div>
-    <div class="tc active" id="vPaper"><div class="paper" id="paperC">Loading...</div></div>
-    <div class="tc" id="vAB"><div class="paper" id="abC">Loading...</div></div>
-  </div>
-  <aside class="sidebar">
-    <h3 style="font-size:12px;text-transform:uppercase;color:var(--gray);margin-bottom:12px;font-weight:800;">Student Info</h3>
-    <div class="scard">
-      <div style="font-size:11px;color:var(--gray);text-transform:uppercase;font-weight:800;">Exam Number</div>
-      <div class="num" id="examNum">Loading...</div>
-      <svg id="barcode"></svg>
-    </div>
-    <div id="dlBox" style="display:none;margin-top:16px;">
-      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="downloadPaper()"><i data-lucide="download"></i> Download Paper</button>
-    </div>
-  </aside>
-</main>
 
-<div class="overlay active" id="pinOverlay">
-  <div style="background:white;padding:40px;border-radius:24px;border:1px solid var(--silver);">
-    <i data-lucide="shield-lock" style="width:64px;height:64px;color:var(--maroon);margin-bottom:24px;"></i>
-    <h2>Session Locked</h2>
-    <p style="margin-bottom:24px;font-size:15px;">Enter the 6-digit PIN from your Invigilator.</p>
-    <input type="text" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-    <button class="btn btn-primary" style="padding:16px 32px;font-size:16px;width:100%;justify-content:center;font-weight:700;" onclick="verifyPin()">Unlock</button>
-    <p id="pinErr" style="color:var(--error);font-size:14px;margin-top:12px;display:none;font-weight:700;">Incorrect PIN.</p>
+<!-- ============================================================ -->
+<!-- VIEW 1: STUDENT EXAM SESSION                                 -->
+<!-- ============================================================ -->
+<div class="view" id="studentView">
+  <header class="header">
+    <div class="brand"><span>∆</span> IFB Exam</div>
+    <div class="clock-container"><i data-lucide="timer" style="width: 20px; height: 20px; color: var(--gray);"></i><div class="clock" id="clockDisplay">--:--:--</div></div>
+    <div class="header-actions"><button class="btn btn-danger" onclick="exitExam()"><i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Exit</button></div>
+  </header>
+
+  <main class="main-content">
+    <div class="left-panel">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper"><i data-lucide="file-text"></i> Question Paper</button>
+        <button class="tab-btn" onclick="switchTab('answerbook')" id="tabAnswerBook"><i data-lucide="book-open"></i> Answer Book</button>
+      </div>
+      <div class="tab-content active" id="viewPaper">
+        <div class="paper-wrapper" id="paperContainer"><div style="text-align:center;color:var(--gray);margin-top:50px;">Loading...</div></div>
+      </div>
+      <div class="tab-content" id="viewAnswerBook">
+        <div class="paper-wrapper" id="answerBookContainer"><div style="text-align:center;color:var(--gray);margin-top:50px;">Loading...</div></div>
+      </div>
+    </div>
+    <aside class="sidebar">
+      <h3 style="font-size: 12px; text-transform: uppercase; color: var(--gray); margin-bottom: 12px; font-weight: 800;">Student Info</h3>
+      <div class="student-card">
+        <div style="font-size: 11px; color: var(--gray); text-transform: uppercase; font-weight: 800;">Examination Number</div>
+        <div class="exam-num" id="studentExamNumDisplay">Loading...</div>
+        <svg id="studentBarcodeDisplay"></svg>
+      </div>
+      <h3 style="font-size: 12px; text-transform: uppercase; color: var(--gray); margin-bottom: 12px; font-weight: 800;">Instructions</h3>
+      <ul style="list-style: none; font-size: 13px; line-height: 1.8;">
+        <li style="display:flex;gap:8px;margin-bottom:8px;"><i data-lucide="check-circle-2" style="width:14px;height:14px;color:var(--maroon);flex-shrink:0;margin-top:2px;"></i> Write answers on the physical Answer Book.</li>
+        <li style="display:flex;gap:8px;margin-bottom:8px;"><i data-lucide="check-circle-2" style="width:14px;height:14px;color:var(--maroon);flex-shrink:0;margin-top:2px;"></i> Scan each page on your mobile phone after finishing it.</li>
+        <li style="display:flex;gap:8px;margin-bottom:8px;"><i data-lucide="check-circle-2" style="width:14px;height:14px;color:var(--maroon);flex-shrink:0;margin-top:2px;"></i> Do not refresh or leave the tab.</li>
+      </ul>
+      <div id="downloadContainer" style="display:none; margin-top:16px;">
+        <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="downloadPaper()"><i data-lucide="download"></i> Download Question Paper</button>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<!-- ============================================================ -->
+<!-- VIEW 2: ADMIN PORTAL                                         -->
+<!-- ============================================================ -->
+<div class="view" id="adminView">
+  <nav class="header">
+    <div class="brand"><span>∆</span> IFB Admin</div>
+    <div class="nav-links">
+      <button class="btn" onclick="window.location.href='student-dashboard.html'"><i data-lucide="layout-dashboard"></i> Dashboard</button>
+      <button class="btn btn-danger" onclick="logout()"><i data-lucide="log-out"></i> Logout</button>
+    </div>
+  </nav>
+  
+  <div class="admin-container">
+    <div class="admin-grid">
+      <div class="card">
+        <h2><i data-lucide="settings"></i> Session Setup</h2>
+        <div class="file-group"><label>Question Paper (.html)</label><input type="file" id="questionFile" class="file-input" accept=".html"></div>
+        <div class="file-group"><label>Answer Book (.html)</label><input type="file" id="answerBookFile" class="file-input" accept=".html"></div>
+        <div class="file-group"><label>Exam PIN (6 digits)</label><input type="text" id="examPin" class="file-input" maxlength="6" placeholder="e.g. 847291" style="font-family: monospace; font-size: 16px; text-align: center;"></div>
+        <div class="file-group"><label>Duration (minutes)</label><input type="number" id="examDuration" class="file-input" value="120" min="1" max="300"></div>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;" id="startSessionBtn" onclick="startSession()"><i data-lucide="play-circle"></i> Create & Unlock Session</button>
+        <div class="progress-bar" id="uploadProgress"><div class="progress-fill" id="progressFill"></div></div>
+        <div id="setupStatus" style="margin-top: 8px; font-size: 12px; font-weight: 700; text-align: center; color: var(--gray);"></div>
+        
+        <div class="pin-display" id="sessionCodeContainer">
+          <div style="font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase;">Live Session PIN</div>
+          <div class="pin-text" id="displayPin">------</div>
+          <div class="qr-box" id="qrBox">
+            <div style="font-size: 11px; color: var(--gray); margin-bottom: 8px;">Scan with phone for mobile scanner</div>
+            <div id="qrCode"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h2><i data-lucide="activity"></i> Live Monitor</h2>
+        
+        <!-- EXPORT BUTTONS ADDED HERE -->
+        <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+          <button class="btn btn-primary" id="exportZipBtn" onclick="exportScriptsAsZip()">
+            <i data-lucide="download"></i> Download All Scripts (ZIP)
+          </button>
+          <button class="btn" id="deepSeekBtn" onclick="triggerDeepSeekMarking()">
+            <i data-lucide="cpu"></i> Mark with DeepSeek AI
+          </button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Exam Number</th><th>Status</th><th>Tab Switches</th><th>Last Active</th><th>Action</th></tr></thead>
+            <tbody id="monitorTable"><tr><td colspan="5" style="text-align: center; padding: 20px;">Waiting for students...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="overlay" id="tabWarn">
-  <i data-lucide="alert-triangle" style="width:80px;height:80px;color:var(--error);margin-bottom:24px;"></i>
-  <h2 style="color:var(--error);">Tab Switch Detected</h2>
-  <p>You left the exam window. This has been logged.</p>
-  <button class="btn btn-primary" style="padding:16px 32px;font-size:16px;font-weight:700;" onclick="document.getElementById('tabWarn').classList.remove('active')">I Understand</button>
+<!-- ============================================================ -->
+<!-- OVERLAYS                                                     -->
+<!-- ============================================================ -->
+
+<!-- PIN Unlock -->
+<div class="overlay" id="pinOverlay">
+  <div style="background: var(--panel); padding: 40px; border-radius: 24px; border: 1px solid var(--silver);">
+    <i data-lucide="shield-lock" style="width: 64px; height: 64px; color: var(--maroon); margin-bottom: 24px;"></i>
+    <h2>Session Locked</h2>
+    <p style="margin-bottom: 24px; font-size: 15px;">Enter the 6-digit PIN provided by your Invigilator.</p>
+    <input type="text" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+    <button class="btn btn-primary" style="padding: 16px 32px; font-size: 16px; width: 100%; justify-content: center; font-weight: 700;" onclick="verifyPin()">Unlock Exam</button>
+    <p id="pinError" style="color: var(--error); font-size: 14px; margin-top: 12px; display: none; font-weight: 700;">Incorrect PIN.</p>
+  </div>
+</div>
+
+<!-- Tab Switch Warning -->
+<div class="overlay" id="tabWarning">
+  <i data-lucide="alert-triangle" style="width: 80px; height: 80px; color: var(--error); margin-bottom: 24px;"></i>
+  <h2 style="color: var(--error);">Tab Switch Detected</h2>
+  <p>You have left the examination window. This has been logged and reported.</p>
+  <button class="btn btn-primary" style="padding: 16px 32px; font-size: 16px; font-weight: 700;" onclick="dismissWarning()">I Understand</button>
+</div>
+
+<!-- Admin Script Viewer -->
+<div id="viewerOverlay">
+  <div class="viewer-header">
+    <h2 id="viewerTitle">Student Script</h2>
+    <button class="btn" style="background:white;color:var(--maroon);" onclick="closeViewer()"><i data-lucide="x"></i> Close</button>
+  </div>
+  <div class="viewer-content" id="viewerContent"></div>
+  <div class="viewer-nav" id="viewerNav" style="display:none;">
+    <button onclick="prevPage()" id="btnPrevPage">◀ Previous</button>
+    <span id="pageIndicator">1 / 1</span>
+    <button onclick="nextPage()" id="btnNextPage">Next ▶</button>
+  </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, orderBy, serverTimestamp, arrayUnion, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const ADMIN = "n1nathaniel971@gmail.com";
+  // REPLACE WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = { 
+    apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", 
+    authDomain: "nyldevcourses.firebaseapp.com", 
+    projectId: "nyldevcourses", 
+    storageBucket: "nyldevcourses.firebasestorage.app", 
+    messagingSenderId: "16687006873", 
+    appId: "1:16687006873:web:b7d66ad1024ccd92722408" 
+  };
+  
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
-let sid=null, examNum=null, pin=null, pHtml=null, aHtml=null, dur=120, start=null, timer=null;
-function ri(){if(window.lucide)try{lucide.createIcons()}catch(e){}}
+  let currentUser = null, studentId = null, examNumber = null, currentSessionId = null, examPin = null, paperHtml = null, answerBookHtml = null;
+  let examStartTime = null, timerInterval = null, examDurationMins = 120;
+  let unsubscribeMonitor = null;
+  let currentViewerPages = [], currentPageIndex = 0;
 
-onAuthStateChanged(auth, async (u) => {
-  if(!u){window.location.href="index.html";return;}
-  try{
-    const ud=await getDoc(doc(db,"users",u.uid));
-    if(ud.exists()){sid=ud.data().studentId;examNum=ud.data().examNumber;
-      document.getElementById('examNum').innerText=examNum||'Pending';
-      try{JsBarcode("#barcode",examNum,{format:"CODE128",width:1.5,height:40,displayValue:false})}catch(e){}
+  function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
+
+  // ============================================================
+  // AUTH & VIEW SWITCHING
+  // ============================================================
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = "index.html"; return; }
+    currentUser = user;
+
+    if (user.email === ADMIN_EMAIL) {
+      document.getElementById('adminView').classList.add('active');
+      document.getElementById('studentView').classList.remove('active');
+      initMonitor();
+    } else {
+      document.getElementById('studentView').classList.add('active');
+      document.getElementById('adminView').classList.remove('active');
+      await initStudentSession(user);
     }
-    const cfg=await getDoc(doc(db,"config","examSettings"));
-    if(!cfg.exists()||!cfg.data().activeSessionId){document.getElementById('paperC').innerHTML='<div style="color:var(--error);">No active session.</div>';return;}
-    const sess=await getDoc(doc(db,"examSessions",cfg.data().activeSessionId));
-    if(sess.exists()){const s=sess.data();pin=s.examCode;pHtml=s.questionPaperHtml;aHtml=s.answerBookHtml;dur=s.durationMinutes||120;
-      document.getElementById('pinOverlay').classList.add('active');}
-  }catch(e){console.error(e)}
-  ri();
-});
+    refreshIcons();
+  });
 
-window.verifyPin = () => {
-  const e=document.getElementById('pinInput').value;
-  if(e.length!==6)return;
-  if(e===pin){document.getElementById('pinOverlay').classList.remove('active');loadP();loadAB();startT();}
-  else{document.getElementById('pinErr').style.display='block';document.getElementById('pinInput').value='';}
-};
+  // ============================================================
+  // ADMIN FUNCTIONS
+  // ============================================================
+  window.logout = async function() { await signOut(auth); window.location.href = "index.html"; };
 
-function loadP(){const c=document.getElementById('paperC');c.innerHTML=DOMPurify.sanitize(pHtml);if(window.MathJax)MathJax.typesetPromise([c]).catch(()=>{});}
-function loadAB(){const c=document.getElementById('abC');c.innerHTML=DOMPurify.sanitize(aHtml);if(window.MathJax)MathJax.typesetPromise([c]).catch(()=>{});}
+  function readFileAsText(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  }
 
-function startT(){start=Date.now();timer=setInterval(()=>{
-  const r=(dur*60*1000)-(Date.now()-start);
-  if(r<=0){clearInterval(timer);document.getElementById('clock').innerText="00:00:00";document.getElementById('clock').className="clock danger";alert("Time up! You may now download the paper.");document.getElementById('dlBox').style.display='block';ri();return;}
-  const h=Math.floor(r/3600000).toString().padStart(2,'0');
-  const m=Math.floor((r%3600000)/60000).toString().padStart(2,'0');
-  const s=Math.floor((r%60000)/1000).toString().padStart(2,'0');
-  const el=document.getElementById('clock');el.innerText=`${h}:${m}:${s}`;
-  if(r<300000)el.className="clock danger";
-},1000);
-log('login',{});}
+  window.startSession = async function() {
+    const qFile = document.getElementById('questionFile').files[0];
+    const aFile = document.getElementById('answerBookFile').files[0];
+    const pin = document.getElementById('examPin').value.trim();
+    const duration = parseInt(document.getElementById('examDuration').value);
+    const statusEl = document.getElementById('setupStatus');
+    const progressBar = document.getElementById('uploadProgress');
+    const progressFill = document.getElementById('progressFill');
+    const btn = document.getElementById('startSessionBtn');
 
-async function log(t,p){if(!sid)return;try{const r=doc(db,"examLogs",sid);
-if(t==='tab'){await setDoc(r,{examNumber:examNum,status:'In Session',lastActive:serverTimestamp(),tabSwitches:arrayUnion(new Date().toISOString())},{merge:true});}
-else{await setDoc(r,{examNumber:examNum,status:'In Session',lastActive:serverTimestamp()},{merge:true});}}catch(e){}}
+    if (!qFile || !aFile || pin.length !== 6 || !duration) { alert("Please upload both .html files, enter a 6-digit PIN, and set duration."); return; }
 
-document.addEventListener("visibilitychange",async()=>{
-if(document.hidden&&!document.getElementById('pinOverlay').classList.contains('active')){
-document.getElementById('tabWarn').classList.add('active');await log('tab',{});}});
+    try {
+      btn.disabled = true;
+      progressBar.style.display = 'block';
+      statusEl.innerText = "Reading files...";
+      progressFill.style.width = '30%';
 
-window.exitExam=async()=>{if(confirm("Exit exam?")){await log('logout',{});await signOut(auth);window.location.href="index.html";}};
-window.switchTab=(t)=>{document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-if(t==='paper'){document.getElementById('vPaper').classList.add('active');document.getElementById('tPaper').classList.add('active');}
-else{document.getElementById('vAB').classList.add('active');document.getElementById('tAB').classList.add('active');}};
-window.downloadPaper=async()=>{const el=document.getElementById('paperC');await html2pdf().set({margin:10,filename:`IFB-Paper-${examNum}.pdf`,image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true,backgroundColor:'#fff'},jsPDF:{unit:'mm',format:'a4'}}).from(el).save();};
-ri();
+      const qHtml = await readFileAsText(qFile);
+      progressFill.style.width = '60%';
+      const aHtml = await readFileAsText(aFile);
+      progressFill.style.width = '80%';
+
+      statusEl.innerText = "Saving to Database...";
+      const sessionId = 'SESSION_' + Date.now();
+
+      await setDoc(doc(db, "examSessions", sessionId), {
+        sessionId, examCode: pin, questionPaperHtml: qHtml, answerBookHtml: aHtml,
+        durationMinutes: duration,
+        active: true, createdAt: serverTimestamp(), createdBy: auth.currentUser.email
+      });
+
+      await setDoc(doc(db, "config", "examSettings"), { activeSessionId: sessionId }, { merge: true });
+      progressFill.style.width = '100%';
+
+      document.getElementById('sessionCodeContainer').style.display = 'block';
+      document.getElementById('displayPin').innerText = pin;
+      generateQR(sessionId, pin);
+
+      statusEl.innerText = "Session is live!";
+      statusEl.style.color = "var(--success)";
+      btn.innerHTML = '<i data-lucide="check-circle"></i> Session Active';
+      refreshIcons();
+    } catch (error) {
+      console.error(error);
+      statusEl.innerText = "Error: " + error.message;
+      statusEl.style.color = "var(--error)";
+      progressBar.style.display = 'none';
+      btn.disabled = false;
+    }
+  };
+
+  function generateQR(sessionId, pin) {
+    if (typeof qrcode !== "function") return;
+    const qrContainer = document.getElementById('qrCode');
+    qrContainer.innerHTML = '';
+    const mobileUrl = `${window.location.origin}/mobile-scanner.html?session=${sessionId}&pin=${pin}`;
+    var qr = qrcode(0, "M");
+    qr.addData(mobileUrl);
+    qr.make();
+    qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0 });
+  }
+
+  function initMonitor() {
+    if (unsubscribeMonitor) unsubscribeMonitor();
+    const q = query(collection(db, "examLogs"), orderBy("lastActive", "desc"));
+    unsubscribeMonitor = onSnapshot(q, (snapshot) => {
+      const tbody = document.getElementById('monitorTable');
+      tbody.innerHTML = '';
+      if (snapshot.empty) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Waiting for students...</td></tr>';
+        return;
+      }
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const tabCount = data.tabSwitches ? data.tabSwitches.length : 0;
+        const isOnline = data.status === 'In Session' || data.status === 'Online';
+        const lastActive = data.lastActive ? new Date(data.lastActive.toDate()).toLocaleTimeString() : 'N/A';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-family: monospace; font-weight: bold;">${data.examNumber || doc.id}</td>
+          <td><span class="status-badge ${isOnline ? 'status-online' : 'status-offline'}">${isOnline ? 'Online' : 'Offline'}</span></td>
+          <td style="color: ${tabCount > 0 ? 'var(--error)' : 'inherit'}; font-weight: bold;">${tabCount}</td>
+          <td>${lastActive}</td>
+          <td><button class="btn" style="padding: 4px 8px; font-size: 11px;" onclick="viewScript('${doc.id}')">View</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+  }
+
+  window.viewScript = async function(studentId) {
+    const docSnap = await getDoc(doc(db, "examLogs", studentId));
+    if (!docSnap.exists()) { alert("No script found."); return; }
+    const data = docSnap.data();
+    currentViewerPages = data.scripts || [];
+    currentPageIndex = 0;
+    document.getElementById('viewerTitle').innerText = `Script: ${data.examNumber || studentId}`;
+    document.getElementById('viewerOverlay').classList.add('active');
+    document.getElementById('viewerNav').style.display = currentViewerPages.length > 1 ? 'flex' : 'none';
+    renderViewerPage();
+    refreshIcons();
+  };
+
+  function renderViewerPage() {
+    const container = document.getElementById('viewerContent');
+    if (!currentViewerPages.length) {
+      container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);">No pages uploaded yet.</div>';
+      return;
+    }
+    container.innerHTML = `<img src="${currentViewerPages[currentPageIndex].url}" alt="Page">`;
+    document.getElementById('pageIndicator').innerText = `${currentPageIndex + 1} / ${currentViewerPages.length}`;
+    document.getElementById('btnPrevPage').disabled = currentPageIndex === 0;
+    document.getElementById('btnNextPage').disabled = currentPageIndex === currentViewerPages.length - 1;
+  }
+
+  window.prevPage = function() { if (currentPageIndex > 0) { currentPageIndex--; renderViewerPage(); } };
+  window.nextPage = function() { if (currentPageIndex < currentViewerPages.length - 1) { currentPageIndex++; renderViewerPage(); } };
+  window.closeViewer = function() { document.getElementById('viewerOverlay').classList.remove('active'); };
+
+  // ============================================================
+  // DEEPSEEK ZIP EXPORT & AI INTEGRATION
+  // ============================================================
+  window.exportScriptsAsZip = async function() {
+    const btn = document.getElementById('exportZipBtn');
+    btn.innerHTML = '<i data-lucide="loader"></i> Zipping...';
+    btn.disabled = true;
+
+    try {
+      const zip = new JSZip();
+      const logsSnap = await getDocs(collection(db, "examLogs"));
+      let studentIndex = 1;
+
+      for (const docSnap of logsSnap.docs) {
+        const data = docSnap.data();
+        if (data.sessionId !== currentSessionId && currentSessionId !== null) continue; 
+
+        const examNumber = data.examNumber || docSnap.id;
+        const packNum = Math.ceil(studentIndex / 10);
+        const packName = `Pack_${packNum.toString().padStart(2, '0')}`;
+        const folder = zip.folder(packName).folder(examNumber);
+
+        folder.file('logging_history.json', JSON.stringify(data, null, 2));
+
+        if (data.scripts && data.scripts.length > 0) {
+          for (let i = 0; i < data.scripts.length; i++) {
+            const imageUrl = data.scripts[i].url;
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            folder.file(`answerbook_page_${i + 1}.png`, blob);
+          }
+        }
+        studentIndex++;
+      }
+
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `IFB_Exam_Export_${Date.now()}.zip`);
+      
+      btn.innerHTML = '<i data-lucide="download"></i> Download All Scripts (ZIP)';
+      btn.disabled = false;
+      refreshIcons();
+
+    } catch (err) {
+      console.error(err);
+      alert("ZIP Export failed: " + err.message);
+      btn.innerHTML = '<i data-lucide="download"></i> Download All Scripts (ZIP)';
+      btn.disabled = false;
+      refreshIcons();
+    }
+  };
+
+  window.triggerDeepSeekMarking = async function() {
+    alert("To run DeepSeek AI, you must deploy the Cloud Function and pass the ZIP to it. This requires your DeepSeek API key to be set in the Firebase environment variables.");
+  };
+
+  // ============================================================
+  // STUDENT FUNCTIONS
+  // ============================================================
+  async function initStudentSession(user) {
+    try {
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        studentId = data.studentId;
+        examNumber = data.examNumber;
+        document.getElementById('studentExamNumDisplay').innerText = examNumber || 'Pending';
+        try { JsBarcode("#studentBarcodeDisplay", examNumber, { format: "CODE128", width: 1.5, height: 40, displayValue: false }); } catch(e) {}
+      }
+
+      const configDoc = await getDoc(doc(db, "config", "examSettings"));
+      if (!configDoc.exists() || !configDoc.data().activeSessionId) {
+        document.getElementById('paperContainer').innerHTML = `<div style="text-align:center;color:var(--error);margin-top:50px;font-weight:700;">No active session.</div>`;
+        return;
+      }
+      currentSessionId = configDoc.data().activeSessionId;
+
+      const sessionDoc = await getDoc(doc(db, "examSessions", currentSessionId));
+      if (sessionDoc.exists()) {
+        const sd = sessionDoc.data();
+        examPin = sd.examCode;
+        paperHtml = sd.questionPaperHtml;
+        answerBookHtml = sd.answerBookHtml;
+        examDurationMins = sd.durationMinutes || 120;
+        
+        document.getElementById('pinOverlay').classList.add('active');
+      }
+    } catch (e) { console.error(e); }
+    refreshIcons();
+  }
+
+  window.verifyPin = function() {
+    const enteredPin = document.getElementById('pinInput').value;
+    if (enteredPin.length !== 6) return;
+    if (enteredPin === examPin) {
+      document.getElementById('pinOverlay').classList.remove('active');
+      loadPaper();
+      loadAnswerBook();
+      startExam();
+    } else {
+      document.getElementById('pinError').style.display = 'block';
+      document.getElementById('pinInput').value = '';
+    }
+  };
+
+  function loadPaper() {
+    const container = document.getElementById('paperContainer');
+    if (!paperHtml) { container.innerHTML = '<div style="color:var(--error);">Paper missing.</div>'; return; }
+    const clean = DOMPurify.sanitize(paperHtml);
+    container.innerHTML = clean;
+    if (window.MathJax) { MathJax.typesetPromise([container]).catch(e => console.warn(e)); }
+  }
+
+  function loadAnswerBook() {
+    const container = document.getElementById('answerBookContainer');
+    if (!answerBookHtml) { container.innerHTML = '<div style="color:var(--error);">Answer Book missing.</div>'; return; }
+    const clean = DOMPurify.sanitize(answerBookHtml);
+    container.innerHTML = clean;
+    if (window.MathJax) { MathJax.typesetPromise([container]).catch(e => console.warn(e)); }
+  }
+
+  window.switchTab = function(tabName) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    
+    if (tabName === 'paper') {
+      document.getElementById('viewPaper').classList.add('active');
+      document.getElementById('tabPaper').classList.add('active');
+    } else {
+      document.getElementById('viewAnswerBook').classList.add('active');
+      document.getElementById('tabAnswerBook').classList.add('active');
+    }
+  };
+
+  function startExam() {
+    examStartTime = new Date();
+    const totalMs = examDurationMins * 60 * 1000;
+    const endTime = examStartTime.getTime() + totalMs;
+
+    if (examNumber) {
+      const logRef = doc(db, "examLogs", examNumber);
+      setDoc(logRef, {
+        examNumber: examNumber,
+        status: "Online",
+        lastActive: serverTimestamp(),
+        sessionId: currentSessionId,
+        tabSwitches: []
+      }, { merge: true });
+    }
+
+    timerInterval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = endTime - now;
+
+      if (distance < 0) {
+        clearInterval(timerInterval);
+        document.getElementById('clockDisplay').innerText = "00:00:00";
+        document.getElementById('clockDisplay').classList.add('danger');
+        document.getElementById('downloadContainer').style.display = 'block';
+        
+        setTimeout(() => {
+          alert("Exam time has expired. The portal is now locked.");
+          window.location.href = "student-dashboard.html";
+        }, 10 * 60 * 1000);
+        return;
+      }
+
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      const display = document.getElementById('clockDisplay');
+      display.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+      if (distance < 5 * 60 * 1000) {
+        display.classList.add('danger');
+      } else if (distance < 15 * 60 * 1000) {
+        display.style.color = "var(--warning)";
+      }
+    }, 1000);
+  }
+
+  let isWarningActive = false;
+  
+  window.addEventListener('blur', logTabSwitch);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) logTabSwitch();
+  });
+
+  async function logTabSwitch() {
+    if (!examNumber || isWarningActive) return;
+    isWarningActive = true;
+    
+    document.getElementById('tabWarning').classList.add('active');
+
+    const logRef = doc(db, "examLogs", examNumber);
+    const timestamp = new Date().toISOString();
+    
+    try {
+      await setDoc(logRef, {
+        lastActive: serverTimestamp(),
+        tabSwitches: arrayUnion({ timestamp: timestamp, type: "tab_switch" })
+      }, { merge: true });
+    } catch (err) {
+      console.error("Failed to log tab switch", err);
+    }
+  }
+
+  window.dismissWarning = function() {
+    document.getElementById('tabWarning').classList.remove('active');
+    isWarningActive = false;
+  };
+
+  window.exitExam = async function() {
+    if (!confirm("Are you sure you want to exit the exam session? Your timer will be cleared.")) return;
+    
+    clearInterval(timerInterval);
+    
+    if (examNumber) {
+      try {
+        await setDoc(doc(db, "examLogs", examNumber), {
+          status: "Offline",
+          lastActive: serverTimestamp()
+        }, { merge: true });
+      } catch(e) {}
+    }
+    
+    window.location.href = "student-dashboard.html";
+  };
+
+  window.downloadPaper = function() {
+    const element = document.getElementById('paperContainer');
+    const opt = {
+      margin: 1,
+      filename: `Question_Paper_${examNumber || 'IFB'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+  };
+
+  document.addEventListener('contextmenu', e => {
+    if (!currentUser || currentUser.email !== ADMIN_EMAIL) e.preventDefault();
+  });
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S')) {
+      if (!currentUser || currentUser.email !== ADMIN_EMAIL) e.preventDefault();
+    }
+  });
+
 </script>
 </body>
 </html>
