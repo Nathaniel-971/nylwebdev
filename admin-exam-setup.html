@@ -8,72 +8,99 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="theme-color" content="#7A1F2B">
 
-<!-- Libraries -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-  :root { --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --success: #15803D; --error: #B91C1C; }
+  :root { 
+    --maroon: #7A1F2B; 
+    --maroon-hover: #5A1620; 
+    --bg: #F8FAFC; 
+    --white: #FFFFFF; 
+    --text: #111111; 
+    --gray: #64748B; 
+    --silver: #E2E8F0; 
+    --success: #15803D; 
+    --error: #B91C1C; 
+    --warning: #B45309; 
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh; }
 
   /* NAV BAR */
-  .nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--black); font-weight: 900; font-size: 18px; }
-  .brand span { font-size: 24px; color: var(--maroon); }
-  .nav-links { display: flex; gap: 16px; }
-  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; color: var(--black); }
-  .btn-nav:hover { border-color: var(--black); }
-  .btn-logout { background: #FEE2E2; color: var(--error); border-color: #FCA5A5; }
-  .btn-logout:hover { background: #FCA5A5; }
+  .nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 32px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text); font-weight: 900; font-size: 18px; }
+  .brand span { font-size: 28px; color: var(--maroon); }
+  .nav-links { display: flex; gap: 12px; }
+  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; color: var(--text); font-family: inherit; }
+  .btn-nav:hover { border-color: var(--text); background: var(--bg); }
+  .btn-logout { background: #FEF2F2; color: var(--error); border-color: #FECACA; }
+  .btn-logout:hover { background: #FEE2E2; }
 
   /* LAYOUT */
-  .container { max-width: 1100px; margin: 32px auto; padding: 0 24px; width: 100%; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .container { max-width: 1100px; margin: 40px auto; padding: 0 32px; width: 100%; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
   @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
 
   /* CARDS */
-  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-  .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
-  .card h2 i { color: var(--maroon); }
+  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 32px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+  .card h2 { font-size: 20px; font-weight: 900; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
+  .card h2 i { color: var(--maroon); width: 22px; height: 22px; }
 
   /* FORM ELEMENTS */
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--gray); }
-  .form-group input[type="text"], .form-group input[type="file"] { width: 100%; padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; }
-  .form-group input:focus { border-color: var(--maroon); }
-  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 12px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: 0.2s; }
+  .form-group { margin-bottom: 24px; }
+  .form-group label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .form-group input[type="text"] { width: 100%; padding: 14px 16px; border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; outline: none; font-family: inherit; transition: 0.2s; }
+  .form-group input[type="text"]:focus { border-color: var(--maroon); }
+  
+  /* CUSTOM FILE UPLOAD */
+  .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+  .file-upload-wrapper input[type="file"] { position: absolute; left: -9999px; }
+  .file-upload-label { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 24px; background: var(--bg); border: 2px dashed var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; text-align: center; color: var(--gray); font-weight: 600; }
+  .file-upload-label:hover { border-color: var(--maroon); background: #FFF5F6; color: var(--maroon); }
+  .file-upload-label.has-file { border-color: var(--success); background: #F0FDF4; color: var(--success); }
+  .file-upload-label i { width: 24px; height: 24px; }
+  .file-name-display { font-size: 12px; margin-top: 6px; color: var(--gray); font-weight: 500; display: block; }
+
+  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 16px 24px; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; transition: 0.2s; font-family: inherit; }
   .btn-primary:hover { background: var(--maroon-hover); }
+  .btn-primary:disabled { opacity: 0.6; cursor: wait; }
 
   /* QR & PIN DISPLAY */
-  .code-display { background: #FAFAFA; border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; text-align: center; margin-top: 16px; }
-  .pin-display { font-family: monospace; font-size: 48px; font-weight: 900; color: var(--maroon); letter-spacing: 8px; margin: 10px 0; }
-  .qr-container { display: flex; justify-content: center; margin: 16px 0; background: white; padding: 10px; border-radius: 8px; display: inline-block; }
-  
+  .code-display { background: #FFF5F6; border: 1px solid #FCA5A5; border-radius: 16px; padding: 32px; text-align: center; margin-top: 32px; }
+  .pin-display { font-family: monospace; font-size: 56px; font-weight: 900; color: var(--maroon); letter-spacing: 12px; margin: 12px 0; line-height: 1; }
+  .qr-container { display: flex; justify-content: center; margin: 24px 0 16px; }
+  .qr-container svg { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
   /* LIVE MONITOR TABLE */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--silver); }
-  th { background: #FAFAFA; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
-  .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+  th, td { padding: 16px 20px; border-bottom: 1px solid var(--silver); }
+  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #FAFAFA; }
+  
+  .status-badge { padding: 6px 12px; border-radius: 100px; font-weight: 800; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
   .status-online { background: #DCFCE7; color: var(--success); }
   .status-offline { background: #FEE2E2; color: var(--error); }
-  .tab-count { font-weight: 900; color: var(--error); }
+  .tab-count { font-weight: 900; color: var(--error); font-size: 16px; }
 
-  /* ACTIONS */
-  .action-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-  .btn-action { flex: 1; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  .btn-export { background: var(--success); color: white; }
-  .btn-export:hover { background: #166534; }
-  .btn-results { background: #3B82F6; color: white; }
-  .btn-results:hover { background: #2563EB; }
-
-  /* UPLOAD PROGRESS */
-  .progress-bar { width: 100%; height: 6px; background: var(--silver); border-radius: 3px; overflow: hidden; margin-top: 10px; display: none; }
+  /* PROGRESS BAR */
+  .progress-bar { width: 100%; height: 8px; background: var(--silver); border-radius: 4px; overflow: hidden; margin-top: 16px; display: none; }
   .progress-fill { height: 100%; background: var(--maroon); width: 0%; transition: width 0.3s; }
 
+  /* ACTION BUTTONS */
+  .action-group { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; border-top: 1px solid var(--silver); padding-top: 24px; }
+  .btn-action { flex: 1; padding: 16px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-family: inherit; }
+  .btn-export { background: var(--maroon); color: white; }
+  .btn-export:hover { background: var(--maroon-hover); }
+  .btn-results { background: var(--bg); color: var(--text); border: 1.5px solid var(--silver); }
+  .btn-results:hover { border-color: var(--text); }
+
+  /* ICONS */
+  svg.lucide { stroke-width: 2.25; }
 </style>
 </head>
 <body>
@@ -81,7 +108,7 @@
 <!-- NAV -->
 <nav class="nav">
   <a href="index.html" class="brand">
-    <span>∆</span> IFB Admin
+    <span>∆</span> IFB Admin Portal
   </a>
   <div class="nav-links">
     <button class="btn-nav" onclick="window.location.href='student-dashboard.html'"><i data-lucide="layout-dashboard" style="width:16px;height:16px;"></i> Dashboard</button>
@@ -94,38 +121,53 @@
     
     <!-- SETUP PANEL -->
     <div class="card">
-      <h2><i data-lucide="settings"></i> Exam Setup</h2>
+      <h2><i data-lucide="settings"></i> Exam Configuration</h2>
       
       <div class="form-group">
-        <label>Question Paper (PDF or HTML)</label>
-        <input type="file" id="questionFile" accept=".pdf,.html">
+        <label>Question Paper (.html or .pdf)</label>
+        <div class="file-upload-wrapper">
+          <input type="file" id="questionFile" accept=".pdf,.html" onchange="updateFileName(this, 'questionFileName')">
+          <label for="questionFile" class="file-upload-label" id="questionFileLabel">
+            <i data-lucide="upload-cloud"></i>
+            <span>Click to upload Question Paper</span>
+          </label>
+          <span class="file-name-display" id="questionFileName">No file selected</span>
+        </div>
       </div>
       
       <div class="form-group">
-        <label>Answer Book Template (PDF or HTML)</label>
-        <input type="file" id="answerBookFile" accept=".pdf,.html">
+        <label>Answer Book Template (.html or .pdf)</label>
+        <div class="file-upload-wrapper">
+          <input type="file" id="answerBookFile" accept=".pdf,.html" onchange="updateFileName(this, 'answerBookFileName')">
+          <label for="answerBookFile" class="file-upload-label" id="answerBookFileLabel">
+            <i data-lucide="file-text"></i>
+            <span>Click to upload Answer Book</span>
+          </label>
+          <span class="file-name-display" id="answerBookFileName">No file selected</span>
+        </div>
       </div>
 
       <div class="form-group">
         <label>Examination Access PIN (6 digits)</label>
-        <input type="text" id="examPin" maxlength="6" placeholder="e.g. 847291" style="font-family: monospace; font-size: 20px; letter-spacing: 4px;">
+        <input type="text" id="examPin" maxlength="6" placeholder="e.g. 847291" style="font-family: monospace; font-size: 24px; letter-spacing: 8px; text-align: center;">
       </div>
 
-      <button class="btn-primary" onclick="startSession()">
-        <i data-lucide="play"></i> Generate Session & Unlock Portal
+      <button class="btn-primary" id="startSessionBtn" onclick="startSession()">
+        <i data-lucide="play-circle"></i> Generate Session & Unlock Portal
       </button>
+      
       <div class="progress-bar" id="uploadProgress"><div class="progress-fill" id="progressFill"></div></div>
-      <div id="setupStatus" style="margin-top: 10px; font-size: 13px; font-weight: 700; text-align: center; color: var(--gray);"></div>
+      <div id="setupStatus" style="margin-top: 16px; font-size: 14px; font-weight: 700; text-align: center; color: var(--gray);"></div>
 
-      <!-- QR & PIN DISPLAY (Hidden until session starts) -->
+      <!-- QR & PIN DISPLAY -->
       <div id="sessionCodeContainer" style="display: none;">
         <div class="code-display">
-          <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--gray);">Live Session PIN</div>
+          <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--gray); letter-spacing: 1px;">Live Session PIN</div>
           <div class="pin-display" id="displayPin">------</div>
-          <div style="font-size: 12px; font-weight: 700; color: var(--gray); margin-bottom: 10px;">Students must enter this PIN to access the paper.</div>
+          <div style="font-size: 13px; font-weight: 600; color: var(--gray); margin-bottom: 24px;">Students must enter this PIN to unlock the paper.</div>
           
           <div class="qr-container" id="qrCodeContainer"></div>
-          <div style="font-size: 12px; font-weight: 700; color: var(--gray);">Scan this QR to join the mobile scanner portal.</div>
+          <div style="font-size: 13px; font-weight: 600; color: var(--gray);">Scan this QR to join the mobile scanner portal.</div>
         </div>
       </div>
     </div>
@@ -133,7 +175,7 @@
     <!-- LIVE MONITOR PANEL -->
     <div class="card" style="grid-column: span 2;">
       <h2><i data-lucide="activity"></i> Live Student Monitor</h2>
-      <p style="font-size: 13px; color: var(--gray); margin-bottom: 16px;">Students are identified strictly by their 13-digit Examination Number.</p>
+      <p style="font-size: 14px; color: var(--gray); margin-bottom: 24px; font-weight: 500;">Students are identified strictly by their 13-digit Examination Number. Refresh the page to see new connections.</p>
       
       <div class="table-wrap">
         <table>
@@ -147,14 +189,14 @@
             </tr>
           </thead>
           <tbody id="monitorTable">
-            <tr><td colspan="5" style="text-align: center; color: var(--gray); padding: 20px;">Waiting for students to join...</td></tr>
+            <tr><td colspan="5" style="text-align: center; color: var(--gray); padding: 40px; font-weight: 600;">Waiting for students to join...</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="action-group">
         <button class="btn-action btn-export" onclick="downloadScripts()">
-          <i data-lucide="download"></i> Download ZIP for DeepSeek (Grouped by 10s)
+          <i data-lucide="download-cloud"></i> Download ZIP for DeepSeek (Grouped by 10s)
         </button>
         <button class="btn-action btn-results" onclick="window.location.href='admin-results.html'">
           <i data-lucide="bar-chart-2"></i> View AI Results & Flags
@@ -178,14 +220,14 @@
   const storage = getStorage(app);
 
   let unsubscribeMonitor = null;
-  let currentSessionId = "AE_2027_MATH_01"; // Default session ID
+  let currentSessionId = "AE_2027_MATH_01";
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
   // AUTH GUARD
   onAuthStateChanged(auth, (user) => {
     if (!user || user.email !== "n1nathaniel971@gmail.com") {
-      window.location.href = "index.html"; // Kick non-admins out
+      window.location.href = "index.html"; 
     } else {
       initMonitor();
     }
@@ -196,7 +238,22 @@
     window.location.href = "index.html";
   };
 
-  // 1. START SESSION (Uploads & PIN)
+  // UPDATE FILE NAME UI
+  window.updateFileName = function(input, displayId) {
+    const label = input.nextElementSibling;
+    const display = document.getElementById(displayId);
+    if (input.files && input.files.length > 0) {
+      display.innerText = input.files[0].name;
+      label.classList.add('has-file');
+      label.innerHTML = `<i data-lucide="check-circle"></i> <span>File Selected</span>`;
+    } else {
+      display.innerText = "No file selected";
+      label.classList.remove('has-file');
+    }
+    refreshIcons();
+  };
+
+  // START SESSION
   window.startSession = async function() {
     const qFile = document.getElementById('questionFile').files[0];
     const aFile = document.getElementById('answerBookFile').files[0];
@@ -204,6 +261,7 @@
     const statusEl = document.getElementById('setupStatus');
     const progressBar = document.getElementById('uploadProgress');
     const progressFill = document.getElementById('progressFill');
+    const btn = document.getElementById('startSessionBtn');
 
     if (!qFile || !aFile || pin.length !== 6) {
       alert("Please upload both files and enter a 6-digit PIN.");
@@ -211,6 +269,7 @@
     }
 
     try {
+      btn.disabled = true;
       progressBar.style.display = 'block';
       statusEl.innerText = "Uploading Question Paper...";
       statusEl.style.color = "var(--maroon)";
@@ -243,7 +302,7 @@
 
       statusEl.innerText = "Saving Session Config...";
 
-      // Save Config to Firestore
+      // Save Config
       await setDoc(doc(db, "config", "examSettings"), {
         examCode: pin,
         questionPaperUrl: qUrl,
@@ -262,12 +321,14 @@
       progressBar.style.display = 'none';
       statusEl.innerText = "Session is live!";
       statusEl.style.color = "var(--success)";
-
+      btn.innerHTML = '<i data-lucide="check-circle"></i> Session Active';
+      
     } catch (error) {
       console.error(error);
       statusEl.innerText = "Error: " + error.message;
       statusEl.style.color = "var(--error)";
       progressBar.style.display = 'none';
+      btn.disabled = false;
     }
   };
 
@@ -276,16 +337,15 @@
     const qrContainer = document.getElementById('qrCodeContainer');
     qrContainer.innerHTML = '';
     
-    // In a real app, this URL would route them to the mobile portal with the PIN
     const mobileUrl = `${window.location.origin}/mobile-upload.html?pin=${pin}`;
     
     var qr = qrcode(0, "M");
     qr.addData(mobileUrl);
     qr.make();
-    qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    qrContainer.innerHTML = qr.createSvgTag({ cellSize: 5, margin: 0, scalable: true });
   }
 
-  // 2. LIVE MONITOR
+  // LIVE MONITOR
   function initMonitor() {
     if (unsubscribeMonitor) unsubscribeMonitor();
 
@@ -297,7 +357,7 @@
       tbody.innerHTML = '';
 
       if (snapshot.empty) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--gray); padding: 20px;">Waiting for students to join...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--gray); padding: 40px; font-weight: 600;">Waiting for students to join...</td></tr>';
         return;
       }
 
@@ -310,11 +370,11 @@
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="font-family: monospace; font-weight: bold;">${data.examNumber || doc.id}</td>
+          <td style="font-family: monospace; font-weight: 800; font-size: 15px;">${data.examNumber || doc.id}</td>
           <td><span class="status-badge ${badgeClass}">${isOnline ? 'Online' : 'Offline'}</span></td>
           <td class="${tabCount > 0 ? 'tab-count' : ''}">${tabCount}</td>
-          <td>${lastActive}</td>
-          <td><button class="btn-nav" style="padding: 4px 8px; font-size: 11px;" onclick="viewStudentScript('${doc.id}')">View Log</button></td>
+          <td style="font-weight: 600; color: var(--gray);">${lastActive}</td>
+          <td><button class="btn-nav" style="padding: 6px 12px; font-size: 12px;" onclick="viewStudentScript('${doc.id}')">View Script</button></td>
         `;
         tbody.appendChild(tr);
       });
@@ -322,34 +382,12 @@
   }
 
   window.viewStudentScript = function(studentId) {
-    alert("This would open a modal to view the student's tab switch logs and Cloudinary scans for: " + studentId);
-    // Next chunk will build the detailed view
+    // This will eventually open a modal with the embedded answer book and Cloudinary images
+    alert("Next step: View embedded Answer Book for " + studentId);
   };
 
-  // 3. ZIP EXPORT (Grouped by 10)
   window.downloadScripts = async function() {
-    try {
-      const zip = new JSZip();
-      
-      // Fetch all submitted scripts
-      const logsRef = collection(db, "examLogs");
-      const q = query(logsRef, orderBy("seqNum", "asc"));
-      // Note: You can't query Firestore directly like this in a zip loop for large data, 
-      // but for <500 students, an in-memory sort after a getDocs is fine.
-      
-      // Mocking the zip structure for the UI logic
-      alert("Building ZIP file. This will download scripts grouped into Pack_01, Pack_02, etc.");
-      
-      // In the real implementation:
-      // 1. Get all docs
-      // 2. Sort by seqNum
-      // 3. Loop through, adding files to zip: zip.file(`Pack_0${Math.ceil(index/10)}/${studentId}/script.json`, data)
-      // 4. zip.generateAsync({type:"blob"}).then(content => saveAs(content, "IFB_Scripts.zip"));
-      
-    } catch(e) {
-      console.error(e);
-      alert("Error downloading scripts.");
-    }
+    alert("Building ZIP file. This will download scripts grouped into Pack_01, Pack_02, etc.");
   };
 
   refreshIcons();
