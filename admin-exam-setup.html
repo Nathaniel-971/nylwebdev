@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Admin Exam Setup — IFB</title>
+<meta name="description" content="IFB Admin Exam Portal. Upload papers, set PINs, and monitor live student sessions." />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#7A1F2B">
+
+<!-- Libraries -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  :root { --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --success: #15803D; --error: #B91C1C; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* NAV BAR */
+  .nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--black); font-weight: 900; font-size: 18px; }
+  .brand span { font-size: 24px; color: var(--maroon); }
+  .nav-links { display: flex; gap: 16px; }
+  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; color: var(--black); }
+  .btn-nav:hover { border-color: var(--black); }
+  .btn-logout { background: #FEE2E2; color: var(--error); border-color: #FCA5A5; }
+  .btn-logout:hover { background: #FCA5A5; }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 32px auto; padding: 0 24px; width: 100%; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  /* CARDS */
+  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+  .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
+  .card h2 i { color: var(--maroon); }
+
+  /* FORM ELEMENTS */
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--gray); }
+  .form-group input[type="text"], .form-group input[type="file"] { width: 100%; padding: 12px; border: 1.5px solid var(--silver); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; }
+  .form-group input:focus { border-color: var(--maroon); }
+  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 12px 20px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: 0.2s; }
+  .btn-primary:hover { background: var(--maroon-hover); }
+
+  /* QR & PIN DISPLAY */
+  .code-display { background: #FAFAFA; border: 2px dashed var(--maroon); border-radius: 12px; padding: 20px; text-align: center; margin-top: 16px; }
+  .pin-display { font-family: monospace; font-size: 48px; font-weight: 900; color: var(--maroon); letter-spacing: 8px; margin: 10px 0; }
+  .qr-container { display: flex; justify-content: center; margin: 16px 0; background: white; padding: 10px; border-radius: 8px; display: inline-block; }
+  
+  /* LIVE MONITOR TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--silver); }
+  th { background: #FAFAFA; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
+  .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
+  .status-online { background: #DCFCE7; color: var(--success); }
+  .status-offline { background: #FEE2E2; color: var(--error); }
+  .tab-count { font-weight: 900; color: var(--error); }
+
+  /* ACTIONS */
+  .action-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .btn-action { flex: 1; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .btn-export { background: var(--success); color: white; }
+  .btn-export:hover { background: #166534; }
+  .btn-results { background: #3B82F6; color: white; }
+  .btn-results:hover { background: #2563EB; }
+
+  /* UPLOAD PROGRESS */
+  .progress-bar { width: 100%; height: 6px; background: var(--silver); border-radius: 3px; overflow: hidden; margin-top: 10px; display: none; }
+  .progress-fill { height: 100%; background: var(--maroon); width: 0%; transition: width 0.3s; }
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="brand">
+    <span>∆</span> IFB Admin
+  </a>
+  <div class="nav-links">
+    <button class="btn-nav" onclick="window.location.href='student-dashboard.html'"><i data-lucide="layout-dashboard" style="width:16px;height:16px;"></i> Dashboard</button>
+    <button class="btn-nav btn-logout" onclick="logout()"><i data-lucide="log-out" style="width:16px;height:16px;"></i> Logout</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="grid">
+    
+    <!-- SETUP PANEL -->
+    <div class="card">
+      <h2><i data-lucide="settings"></i> Exam Setup</h2>
+      
+      <div class="form-group">
+        <label>Question Paper (PDF or HTML)</label>
+        <input type="file" id="questionFile" accept=".pdf,.html">
+      </div>
+      
+      <div class="form-group">
+        <label>Answer Book Template (PDF or HTML)</label>
+        <input type="file" id="answerBookFile" accept=".pdf,.html">
+      </div>
+
+      <div class="form-group">
+        <label>Examination Access PIN (6 digits)</label>
+        <input type="text" id="examPin" maxlength="6" placeholder="e.g. 847291" style="font-family: monospace; font-size: 20px; letter-spacing: 4px;">
+      </div>
+
+      <button class="btn-primary" onclick="startSession()">
+        <i data-lucide="play"></i> Generate Session & Unlock Portal
+      </button>
+      <div class="progress-bar" id="uploadProgress"><div class="progress-fill" id="progressFill"></div></div>
+      <div id="setupStatus" style="margin-top: 10px; font-size: 13px; font-weight: 700; text-align: center; color: var(--gray);"></div>
+
+      <!-- QR & PIN DISPLAY (Hidden until session starts) -->
+      <div id="sessionCodeContainer" style="display: none;">
+        <div class="code-display">
+          <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--gray);">Live Session PIN</div>
+          <div class="pin-display" id="displayPin">------</div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--gray); margin-bottom: 10px;">Students must enter this PIN to access the paper.</div>
+          
+          <div class="qr-container" id="qrCodeContainer"></div>
+          <div style="font-size: 12px; font-weight: 700; color: var(--gray);">Scan this QR to join the mobile scanner portal.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE MONITOR PANEL -->
+    <div class="card" style="grid-column: span 2;">
+      <h2><i data-lucide="activity"></i> Live Student Monitor</h2>
+      <p style="font-size: 13px; color: var(--gray); margin-bottom: 16px;">Students are identified strictly by their 13-digit Examination Number.</p>
+      
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exam Number</th>
+              <th>Status</th>
+              <th>Tab Switches</th>
+              <th>Last Active</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="monitorTable">
+            <tr><td colspan="5" style="text-align: center; color: var(--gray); padding: 20px;">Waiting for students to join...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="action-group">
+        <button class="btn-action btn-export" onclick="downloadScripts()">
+          <i data-lucide="download"></i> Download ZIP for DeepSeek (Grouped by 10s)
+        </button>
+        <button class="btn-action btn-results" onclick="window.location.href='admin-results.html'">
+          <i data-lucide="bar-chart-2"></i> View AI Results & Flags
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+  const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  let unsubscribeMonitor = null;
+  let currentSessionId = "AE_2027_MATH_01"; // Default session ID
+
+  function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
+
+  // AUTH GUARD
+  onAuthStateChanged(auth, (user) => {
+    if (!user || user.email !== "n1nathaniel971@gmail.com") {
+      window.location.href = "index.html"; // Kick non-admins out
+    } else {
+      initMonitor();
+    }
+  });
+
+  window.logout = async function() {
+    await signOut(auth);
+    window.location.href = "index.html";
+  };
+
+  // 1. START SESSION (Uploads & PIN)
+  window.startSession = async function() {
+    const qFile = document.getElementById('questionFile').files[0];
+    const aFile = document.getElementById('answerBookFile').files[0];
+    const pin = document.getElementById('examPin').value.trim();
+    const statusEl = document.getElementById('setupStatus');
+    const progressBar = document.getElementById('uploadProgress');
+    const progressFill = document.getElementById('progressFill');
+
+    if (!qFile || !aFile || pin.length !== 6) {
+      alert("Please upload both files and enter a 6-digit PIN.");
+      return;
+    }
+
+    try {
+      progressBar.style.display = 'block';
+      statusEl.innerText = "Uploading Question Paper...";
+      statusEl.style.color = "var(--maroon)";
+
+      // Upload Question Paper
+      const qRef = ref(storage, `exams/${currentSessionId}/question_${qFile.name}`);
+      const qUpload = uploadBytesResumable(qRef, qFile);
+      
+      qUpload.on('state_changed', (snap) => {
+        const p = (snap.bytesTransferred / snap.totalBytes) * 50;
+        progressFill.style.width = p + '%';
+      });
+
+      await qUpload;
+      const qUrl = await getDownloadURL(qRef);
+
+      statusEl.innerText = "Uploading Answer Book...";
+      
+      // Upload Answer Book
+      const aRef = ref(storage, `exams/${currentSessionId}/answerbook_${aFile.name}`);
+      const aUpload = uploadBytesResumable(aRef, aFile);
+      
+      aUpload.on('state_changed', (snap) => {
+        const p = 50 + (snap.bytesTransferred / snap.totalBytes) * 50;
+        progressFill.style.width = p + '%';
+      });
+
+      await aUpload;
+      const aUrl = await getDownloadURL(aRef);
+
+      statusEl.innerText = "Saving Session Config...";
+
+      // Save Config to Firestore
+      await setDoc(doc(db, "config", "examSettings"), {
+        examCode: pin,
+        questionPaperUrl: qUrl,
+        questionPaperType: qFile.name.endsWith('.pdf') ? 'pdf' : 'html',
+        answerBookUrl: aUrl,
+        answerBookType: aFile.name.endsWith('.pdf') ? 'pdf' : 'html',
+        sessionActive: true,
+        startedAt: serverTimestamp()
+      });
+
+      // Show PIN and QR
+      document.getElementById('sessionCodeContainer').style.display = 'block';
+      document.getElementById('displayPin').innerText = pin;
+      generateQR(pin);
+      
+      progressBar.style.display = 'none';
+      statusEl.innerText = "Session is live!";
+      statusEl.style.color = "var(--success)";
+
+    } catch (error) {
+      console.error(error);
+      statusEl.innerText = "Error: " + error.message;
+      statusEl.style.color = "var(--error)";
+      progressBar.style.display = 'none';
+    }
+  };
+
+  function generateQR(pin) {
+    if (typeof qrcode !== "function") return;
+    const qrContainer = document.getElementById('qrCodeContainer');
+    qrContainer.innerHTML = '';
+    
+    // In a real app, this URL would route them to the mobile portal with the PIN
+    const mobileUrl = `${window.location.origin}/mobile-upload.html?pin=${pin}`;
+    
+    var qr = qrcode(0, "M");
+    qr.addData(mobileUrl);
+    qr.make();
+    qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  }
+
+  // 2. LIVE MONITOR
+  function initMonitor() {
+    if (unsubscribeMonitor) unsubscribeMonitor();
+
+    const logsRef = collection(db, "examLogs");
+    const q = query(logsRef, orderBy("lastActive", "desc"));
+
+    unsubscribeMonitor = onSnapshot(q, (snapshot) => {
+      const tbody = document.getElementById('monitorTable');
+      tbody.innerHTML = '';
+
+      if (snapshot.empty) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--gray); padding: 20px;">Waiting for students to join...</td></tr>';
+        return;
+      }
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const tabCount = data.tabSwitches ? data.tabSwitches.length : 0;
+        const isOnline = data.status === 'In Session' || data.status === 'Online';
+        const badgeClass = isOnline ? 'status-online' : 'status-offline';
+        const lastActive = data.lastActive ? new Date(data.lastActive.toDate()).toLocaleTimeString() : 'N/A';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-family: monospace; font-weight: bold;">${data.examNumber || doc.id}</td>
+          <td><span class="status-badge ${badgeClass}">${isOnline ? 'Online' : 'Offline'}</span></td>
+          <td class="${tabCount > 0 ? 'tab-count' : ''}">${tabCount}</td>
+          <td>${lastActive}</td>
+          <td><button class="btn-nav" style="padding: 4px 8px; font-size: 11px;" onclick="viewStudentScript('${doc.id}')">View Log</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    });
+  }
+
+  window.viewStudentScript = function(studentId) {
+    alert("This would open a modal to view the student's tab switch logs and Cloudinary scans for: " + studentId);
+    // Next chunk will build the detailed view
+  };
+
+  // 3. ZIP EXPORT (Grouped by 10)
+  window.downloadScripts = async function() {
+    try {
+      const zip = new JSZip();
+      
+      // Fetch all submitted scripts
+      const logsRef = collection(db, "examLogs");
+      const q = query(logsRef, orderBy("seqNum", "asc"));
+      // Note: You can't query Firestore directly like this in a zip loop for large data, 
+      // but for <500 students, an in-memory sort after a getDocs is fine.
+      
+      // Mocking the zip structure for the UI logic
+      alert("Building ZIP file. This will download scripts grouped into Pack_01, Pack_02, etc.");
+      
+      // In the real implementation:
+      // 1. Get all docs
+      // 2. Sort by seqNum
+      // 3. Loop through, adding files to zip: zip.file(`Pack_0${Math.ceil(index/10)}/${studentId}/script.json`, data)
+      // 4. zip.generateAsync({type:"blob"}).then(content => saveAs(content, "IFB_Scripts.zip"));
+      
+    } catch(e) {
+      console.error(e);
+      alert("Error downloading scripts.");
+    }
+  };
+
+  refreshIcons();
+</script>
+
+</body>
+</html>
