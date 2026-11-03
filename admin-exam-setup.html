@@ -7,6 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="theme-color" content="#7A1F2B">
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root { --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --white: #FFF; --text: #111; --gray: #64748B; --silver: #E2E8F0; --success: #15803D; --error: #B91C1C; }
@@ -15,29 +16,28 @@
   .nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 64px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
   .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 900; font-size: 16px; }
   .brand span { font-size: 24px; color: var(--maroon); }
-  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; color: var(--text); font-family: inherit; }
-  .btn-nav:hover { border-color: var(--text); background: var(--bg); }
+  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--text); font-family: inherit; }
   .btn-logout { background: #FEF2F2; color: var(--error); border-color: #FECACA; }
   .container { max-width: 1200px; margin: 24px auto; padding: 0 20px; width: 100%; }
   .grid { display: grid; grid-template-columns: 350px 1fr; gap: 24px; }
   @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; }
   .card h2 { font-size: 16px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
   .card h2 i { color: var(--maroon); width: 18px; height: 18px; }
   .file-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
-  .file-group label { font-size: 12px; font-weight: 700; color: var(--text); }
-  .file-input { width: 100%; font-size: 12px; padding: 8px; border: 1px solid var(--silver); border-radius: 6px; outline: none; }
-  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: 0.2s; font-family: inherit; }
-  .btn-primary:hover { background: var(--maroon-hover); }
-  .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+  .file-group label { font-size: 12px; font-weight: 700; }
+  .file-input { width: 100%; font-size: 12px; padding: 8px; border: 1px solid var(--silver); border-radius: 6px; }
+  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+  .btn-primary:disabled { opacity: 0.6; }
   .progress-bar { width: 100%; height: 6px; background: var(--silver); border-radius: 4px; overflow: hidden; margin-top: 12px; display: none; }
   .progress-fill { height: 100%; background: var(--maroon); width: 0%; transition: width 0.3s; }
   .pin-display { text-align: center; margin-top: 20px; display: none; background: var(--bg); padding: 16px; border-radius: 8px; border: 1px dashed var(--maroon); }
   .pin-text { font-family: monospace; font-size: 32px; font-weight: 900; color: var(--maroon); letter-spacing: 6px; margin: 8px 0; }
+  .qr-box { margin-top: 16px; text-align: center; }
   .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 8px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 500px; }
   th, td { padding: 10px 12px; border-bottom: 1px solid var(--silver); }
-  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; }
   .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
   .status-online { background: #DCFCE7; color: var(--success); }
   .status-offline { background: #FEE2E2; color: var(--error); }
@@ -61,18 +61,22 @@
       <button class="btn-primary" id="startSessionBtn" onclick="startSession()"><i data-lucide="play-circle"></i> Create & Unlock Session</button>
       <div class="progress-bar" id="uploadProgress"><div class="progress-fill" id="progressFill"></div></div>
       <div id="setupStatus" style="margin-top: 8px; font-size: 12px; font-weight: 700; text-align: center; color: var(--gray);"></div>
+      
       <div class="pin-display" id="sessionCodeContainer">
         <div style="font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase;">Live Session PIN</div>
         <div class="pin-text" id="displayPin">------</div>
-        <p style="font-size: 12px; margin-top: 8px; color: var(--gray);">Students must enter this PIN to unlock the exam.</p>
+        <div class="qr-box" id="qrBox">
+          <div style="font-size: 11px; color: var(--gray); margin-bottom: 8px;">Scan with phone to upload answers</div>
+          <div id="qrCode"></div>
+        </div>
       </div>
     </div>
     <div class="card">
       <h2><i data-lucide="activity"></i> Live Monitor</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Exam Number</th><th>Status</th><th>Tab Switches</th><th>Last Active</th><th>Action</th></tr></thead>
-          <tbody id="monitorTable"><tr><td colspan="5" style="text-align: center; padding: 20px;">Waiting for students...</td></tr></tbody>
+          <thead><tr><th>Exam Number</th><th>Status</th><th>Tab Switches</th><th>Last Active</th></tr></thead>
+          <tbody id="monitorTable"><tr><td colspan="4" style="text-align: center; padding: 20px;">Waiting for students...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -90,6 +94,8 @@
   const db = getFirestore(app);
 
   let unsubscribeMonitor = null;
+  let currentSessionId = null;
+
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
   onAuthStateChanged(auth, (user) => {
@@ -101,12 +107,11 @@
 
   window.logout = async function() { await signOut(auth); window.location.href = "index.html"; };
 
-  // FUNCTION TO READ FILE CONTENT AS TEXT
   function readFileAsText(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => resolve(e.target.result);
-      reader.onerror = (e) => reject(e);
+      reader.onerror = reject;
       reader.readAsText(file);
     });
   }
@@ -125,34 +130,33 @@
     try {
       btn.disabled = true;
       progressBar.style.display = 'block';
-      statusEl.innerText = "Reading HTML files...";
-      progressFill.style.width = '20%';
+      statusEl.innerText = "Reading files...";
+      progressFill.style.width = '30%';
 
-      // Read the actual HTML content
       const qHtml = await readFileAsText(qFile);
-      progressFill.style.width = '40%';
-      const aHtml = await readFileAsText(aFile);
       progressFill.style.width = '60%';
+      const aHtml = await readFileAsText(aFile);
+      progressFill.style.width = '80%';
 
       statusEl.innerText = "Saving to Database...";
       const sessionId = 'SESSION_' + Date.now();
 
-      // Save the RAW HTML string directly to Firestore
       await setDoc(doc(db, "examSessions", sessionId), {
-        sessionId: sessionId, 
-        examCode: pin, 
-        questionPaperHtml: qHtml, 
-        answerBookHtml: aHtml, 
-        active: true, 
-        createdAt: serverTimestamp(), 
-        createdBy: auth.currentUser.email
+        sessionId, examCode: pin, questionPaperHtml: qHtml, answerBookHtml: aHtml,
+        active: true, createdAt: serverTimestamp(), createdBy: auth.currentUser.email
       });
 
       await setDoc(doc(db, "config", "examSettings"), { activeSessionId: sessionId }, { merge: true });
+      
+      currentSessionId = sessionId;
       progressFill.style.width = '100%';
-
+      
       document.getElementById('sessionCodeContainer').style.display = 'block';
       document.getElementById('displayPin').innerText = pin;
+      
+      // Generate QR for mobile scanner
+      generateQR(sessionId, pin);
+      
       statusEl.innerText = "Session is live!";
       statusEl.style.color = "var(--success)";
       btn.innerHTML = '<i data-lucide="check-circle"></i> Session Active';
@@ -167,6 +171,17 @@
     }
   };
 
+  function generateQR(sessionId, pin) {
+    if (typeof qrcode !== "function") return;
+    const qrContainer = document.getElementById('qrCode');
+    qrContainer.innerHTML = '';
+    const mobileUrl = `${window.location.origin}/mobile-scanner.html?session=${sessionId}&pin=${pin}`;
+    var qr = qrcode(0, "M");
+    qr.addData(mobileUrl);
+    qr.make();
+    qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0 });
+  }
+
   function initMonitor() {
     if (unsubscribeMonitor) unsubscribeMonitor();
     const q = query(collection(db, "examLogs"), orderBy("lastActive", "desc"));
@@ -174,7 +189,7 @@
       const tbody = document.getElementById('monitorTable');
       tbody.innerHTML = '';
       if (snapshot.empty) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Waiting for students...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">Waiting for students...</td></tr>';
         return;
       }
       snapshot.forEach((doc) => {
@@ -188,7 +203,6 @@
           <td><span class="status-badge ${isOnline ? 'status-online' : 'status-offline'}">${isOnline ? 'Online' : 'Offline'}</span></td>
           <td style="color: ${tabCount > 0 ? 'var(--error)' : 'inherit'}; font-weight: bold;">${tabCount}</td>
           <td>${lastActive}</td>
-          <td><button class="btn-nav" style="padding: 4px 8px; font-size: 11px;" onclick="alert('View Script')">View</button></td>
         `;
         tbody.appendChild(tr);
       });
