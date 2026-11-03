@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Admin Exam Setup — IFB</title>
-<meta name="description" content="IFB Admin Exam Portal. Create sessions, upload papers, set PINs, and monitor live students." />
+<meta name="description" content="IFB Admin Portal. Create sessions and monitor students." />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="theme-color" content="#7A1F2B">
 
@@ -13,203 +13,178 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-  :root { 
-    --maroon: #7A1F2B; --maroon-hover: #5A1620; 
-    --bg: #F8FAFC; --white: #FFFFFF; --text: #111111; 
-    --gray: #64748B; --silver: #E2E8F0; 
-    --success: #15803D; --error: #B91C1C; --warning: #B45309; 
-  }
+  :root { --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --white: #FFF; --text: #111; --gray: #64748B; --silver: #E2E8F0; --success: #15803D; --error: #B91C1C; --warning: #B45309; }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; display: flex; flex-direction: column; min-height: 100vh; }
 
-  /* NAV BAR */
-  .nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 900; font-size: 18px; }
-  .brand span { font-size: 26px; color: var(--maroon); }
-  .nav-links { display: flex; gap: 8px; }
-  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; color: var(--text); font-family: inherit; }
+  /* NAV */
+  .nav { background: var(--white); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 64px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 900; font-size: 16px; }
+  .brand span { font-size: 24px; color: var(--maroon); }
+  .btn-nav { background: transparent; border: 1.5px solid var(--silver); padding: 8px 14px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; color: var(--text); font-family: inherit; }
   .btn-nav:hover { border-color: var(--text); background: var(--bg); }
   .btn-logout { background: #FEF2F2; color: var(--error); border-color: #FECACA; }
-  .btn-logout:hover { background: #FEE2E2; }
 
-  /* LAYOUT - MOBILE FIX */
-  .container { max-width: 1100px; margin: 32px auto; padding: 0 20px; width: 100%; box-sizing: border-box; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-  
-  /* Force single column on mobile/tablet */
-  @media (max-width: 900px) { 
-    .grid { grid-template-columns: 1fr; gap: 20px; } 
-    .card { padding: 20px !important; }
-    .nav { padding: 0 16px; }
-    .btn-nav span { display: none; } /* Hide text on mobile nav */
-  }
+  /* LAYOUT */
+  .container { max-width: 1200px; margin: 24px auto; padding: 0 20px; width: 100%; }
+  .grid { display: grid; grid-template-columns: 350px 1fr; gap: 24px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
 
   /* CARDS */
-  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 28px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); box-sizing: border-box; overflow: hidden; }
-  .card h2 { font-size: 18px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 16px; }
-  .card h2 i { color: var(--maroon); width: 20px; height: 20px; }
+  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+  .card h2 { font-size: 16px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
+  .card h2 i { color: var(--maroon); width: 18px; height: 18px; }
 
-  /* FORM ELEMENTS */
-  .form-group { margin-bottom: 20px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-  .form-group input[type="text"] { width: 100%; padding: 12px 14px; border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; outline: none; font-family: inherit; transition: 0.2s; box-sizing: border-box; }
-  .form-group input[type="text"]:focus { border-color: var(--maroon); }
-  
-  /* CUSTOM FILE UPLOAD */
-  .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
-  .file-upload-wrapper input[type="file"] { position: absolute; left: -9999px; }
-  .file-upload-label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 20px; background: var(--bg); border: 2px dashed var(--silver); border-radius: 12px; cursor: pointer; transition: 0.2s; text-align: center; color: var(--gray); font-weight: 600; font-size: 13px; }
-  .file-upload-label:hover { border-color: var(--maroon); background: #FFF5F6; color: var(--maroon); }
-  .file-upload-label.has-file { border-color: var(--success); background: #F0FDF4; color: var(--success); }
-  .file-upload-label i { width: 22px; height: 22px; }
-  .file-name-display { font-size: 11px; margin-top: 4px; color: var(--gray); font-weight: 500; display: block; word-break: break-all; }
+  /* COMPACT FILE UPLOAD */
+  .file-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .file-group label { font-size: 12px; font-weight: 700; color: var(--text); }
+  .file-row { display: flex; align-items: center; gap: 8px; }
+  .file-input { flex: 1; font-size: 12px; padding: 8px; border: 1px solid var(--silver); border-radius: 6px; outline: none; }
+  .file-input:focus { border-color: var(--maroon); }
 
-  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 14px 20px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: 0.2s; font-family: inherit; }
+  /* BUTTONS */
+  .btn-primary { background: var(--maroon); color: var(--white); border: none; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: 0.2s; font-family: inherit; }
   .btn-primary:hover { background: var(--maroon-hover); }
   .btn-primary:disabled { opacity: 0.6; cursor: wait; }
-
-  /* QR & PIN DISPLAY */
-  .code-display { background: #FFF5F6; border: 1px solid #FCA5A5; border-radius: 16px; padding: 24px; text-align: center; margin-top: 24px; }
-  .pin-display { font-family: monospace; font-size: 42px; font-weight: 900; color: var(--maroon); letter-spacing: 8px; margin: 8px 0; line-height: 1; }
-  .qr-container { display: flex; justify-content: center; margin: 16px 0; }
-  .qr-container svg { background: white; padding: 10px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); max-width: 100%; height: auto; }
-
-  /* LIVE MONITOR TABLE */
-  .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 12px; width: 100%; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 600px; /* Forces scroll on small screens */ }
-  th, td { padding: 12px 16px; border-bottom: 1px solid var(--silver); }
-  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; font-size: 10px; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #FAFAFA; }
   
-  .status-badge { padding: 4px 10px; border-radius: 100px; font-weight: 800; font-size: 10px; display: inline-flex; align-items: center; gap: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .status-online { background: #DCFCE7; color: var(--success); }
-  .status-offline { background: #FEE2E2; color: var(--error); }
-  .tab-count { font-weight: 900; color: var(--error); font-size: 15px; }
-
-  /* PROGRESS BAR */
+  /* PROGRESS */
   .progress-bar { width: 100%; height: 6px; background: var(--silver); border-radius: 4px; overflow: hidden; margin-top: 12px; display: none; }
   .progress-fill { height: 100%; background: var(--maroon); width: 0%; transition: width 0.3s; }
 
-  /* ACTION BUTTONS */
-  .action-group { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; border-top: 1px solid var(--silver); padding-top: 20px; }
-  .btn-action { flex: 1; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; font-family: inherit; min-width: 200px; }
-  .btn-export { background: var(--maroon); color: white; }
-  .btn-export:hover { background: var(--maroon-hover); }
-  .btn-results { background: var(--bg); color: var(--text); border: 1.5px solid var(--silver); }
-  .btn-results:hover { border-color: var(--text); }
+  /* QR DISPLAY */
+  .code-display { text-align: center; margin-top: 20px; display: none; background: var(--bg); padding: 16px; border-radius: 8px; }
+  .pin-text { font-family: monospace; font-size: 28px; font-weight: 900; color: var(--maroon); letter-spacing: 4px; margin: 8px 0; }
+  .qr-box { background: white; padding: 8px; border-radius: 8px; display: inline-block; }
 
-  svg.lucide { stroke-width: 2.25; }
+  /* TABS (For Monitor / Chat) */
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab-btn { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--silver); background: var(--white); font-weight: 700; font-size: 13px; cursor: pointer; color: var(--gray); transition: 0.2s; }
+  .tab-btn.active { background: var(--maroon); color: white; border-color: var(--maroon); }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 500px; }
+  th, td { padding: 10px 12px; border-bottom: 1px solid var(--silver); }
+  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; }
+  .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .status-online { background: #DCFCE7; color: var(--success); }
+  .status-offline { background: #FEE2E2; color: var(--error); }
+  
+  /* CHAT */
+  .chat-container { display: flex; flex-direction: column; height: 400px; border: 1px solid var(--silver); border-radius: 8px; overflow: hidden; background: var(--bg); }
+  .chat-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+  .chat-msg.admin { background: var(--maroon); color: white; align-self: flex-end; }
+  .chat-msg.ai { background: var(--white); border: 1px solid var(--silver); color: var(--text); align-self: flex-start; }
+  .chat-input { display: flex; padding: 8px; background: var(--white); border-top: 1px solid var(--silver); }
+  .chat-input input { flex: 1; padding: 8px; border: 1px solid var(--silver); border-radius: 4px; outline: none; font-size: 13px; }
+  .chat-input button { background: var(--maroon); color: white; border: none; padding: 8px 16px; border-radius: 4px; margin-left: 8px; font-weight: 700; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
-  <a href="index.html" class="brand">
-    <span>∆</span> IFB Admin
-  </a>
+  <a href="index.html" class="brand"><span>∆</span> IFB Admin</a>
   <div class="nav-links">
-    <button class="btn-nav" onclick="window.location.href='student-dashboard.html'"><i data-lucide="layout-dashboard" style="width:16px;height:16px;"></i> <span>Dashboard</span></button>
-    <button class="btn-nav btn-logout" onclick="logout()"><i data-lucide="log-out" style="width:16px;height:16px;"></i> <span>Logout</span></button>
+    <button class="btn-nav" onclick="window.location.href='student-dashboard.html'"><i data-lucide="layout-dashboard"></i> Dashboard</button>
+    <button class="btn-nav btn-logout" onclick="logout()"><i data-lucide="log-out"></i> Logout</button>
   </div>
 </nav>
 
 <div class="container">
   <div class="grid">
     
-    <!-- SETUP PANEL -->
+    <!-- LEFT PANEL (UPLOAD) -->
     <div class="card">
-      <h2><i data-lucide="settings"></i> Create Exam Session</h2>
+      <h2><i data-lucide="settings"></i> Session Setup</h2>
       
-      <div class="form-group">
-        <label>Question Paper (.html or .pdf)</label>
-        <div class="file-upload-wrapper">
-          <input type="file" id="questionFile" accept=".pdf,.html" onchange="updateFileName(this, 'questionFileName')">
-          <label for="questionFile" class="file-upload-label" id="questionFileLabel">
-            <i data-lucide="upload-cloud"></i>
-            <span>Click to upload Question Paper</span>
-          </label>
-          <span class="file-name-display" id="questionFileName">No file selected</span>
+      <div class="file-group">
+        <label>Question Paper (.html)</label>
+        <div class="file-row">
+          <input type="file" id="questionFile" class="file-input" accept=".html">
         </div>
       </div>
       
-      <div class="form-group">
-        <label>Answer Book Template (.html or .pdf)</label>
-        <div class="file-upload-wrapper">
-          <input type="file" id="answerBookFile" accept=".pdf,.html" onchange="updateFileName(this, 'answerBookFileName')">
-          <label for="answerBookFile" class="file-upload-label" id="answerBookFileLabel">
-            <i data-lucide="file-text"></i>
-            <span>Click to upload Answer Book</span>
-          </label>
-          <span class="file-name-display" id="answerBookFileName">No file selected</span>
+      <div class="file-group">
+        <label>Answer Book (.html)</label>
+        <div class="file-row">
+          <input type="file" id="answerBookFile" class="file-input" accept=".html">
         </div>
       </div>
 
-      <div class="form-group">
-        <label>Examination Access PIN (6 digits)</label>
-        <input type="text" id="examPin" maxlength="6" placeholder="e.g. 847291" style="font-family: monospace; font-size: 22px; letter-spacing: 6px; text-align: center;">
+      <div class="file-group">
+        <label>Exam PIN (6 digits)</label>
+        <div class="file-row">
+          <input type="text" id="examPin" class="file-input" maxlength="6" placeholder="e.g. 847291" style="font-family: monospace; font-size: 16px; text-align: center;">
+        </div>
       </div>
 
       <button class="btn-primary" id="startSessionBtn" onclick="startSession()">
-        <i data-lucide="play-circle"></i> Create Session & Unlock Portal
+        <i data-lucide="play-circle"></i> Create & Unlock Session
       </button>
       
       <div class="progress-bar" id="uploadProgress"><div class="progress-fill" id="progressFill"></div></div>
-      <div id="setupStatus" style="margin-top: 12px; font-size: 13px; font-weight: 700; text-align: center; color: var(--gray);"></div>
+      <div id="setupStatus" style="margin-top: 8px; font-size: 12px; font-weight: 700; text-align: center; color: var(--gray);"></div>
 
-      <!-- QR & PIN DISPLAY -->
-      <div id="sessionCodeContainer" style="display: none;">
-        <div class="code-display">
-          <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--gray); letter-spacing: 1px;">Live Session PIN</div>
-          <div class="pin-display" id="displayPin">------</div>
-          <div style="font-size: 12px; font-weight: 600; color: var(--gray); margin-bottom: 16px;">Students must enter this PIN to unlock the paper.</div>
-          
-          <div class="qr-container" id="qrCodeContainer"></div>
-          <div style="font-size: 12px; font-weight: 600; color: var(--gray);">Scan this QR to join the mobile scanner portal.</div>
+      <div class="code-display" id="sessionCodeContainer">
+        <div style="font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase;">Session PIN</div>
+        <div class="pin-text" id="displayPin">------</div>
+        <div class="qr-box" id="qrCodeContainer"></div>
+        <p style="font-size: 11px; margin-top: 8px;">Scan to join mobile scanner</p>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL (MONITOR & CHAT) -->
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('monitor')" id="tabMonitor"><i data-lucide="activity"></i> Live Monitor</button>
+        <button class="tab-btn" onclick="switchTab('chat')" id="tabChat"><i data-lucide="message-square"></i> DeepSeek Chat</button>
+      </div>
+
+      <!-- LIVE MONITOR VIEW -->
+      <div id="viewMonitor">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Exam Number</th>
+                <th>Status</th>
+                <th>Tab Switches</th>
+                <th>Last Active</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="monitorTable">
+              <tr><td colspan="5" style="text-align: center; padding: 20px;">Waiting for students...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top: 16px; display: flex; gap: 12px;">
+          <button class="btn-primary" style="flex: 1;" onclick="downloadScripts()"><i data-lucide="download-cloud"></i> Download ZIP</button>
         </div>
       </div>
-    </div>
 
-    <!-- LIVE MONITOR PANEL -->
-    <div class="card" style="grid-column: span 2;">
-      <h2><i data-lucide="activity"></i> Live Student Monitor</h2>
-      <p style="font-size: 13px; color: var(--gray); margin-bottom: 20px; font-weight: 500;">Students are identified by their 13-digit Examination Number. Refresh the page to see new connections.</p>
-      
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Exam Number</th>
-              <th>Status</th>
-              <th>Tab Switches</th>
-              <th>Last Active</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="monitorTable">
-            <tr><td colspan="5" style="text-align: center; color: var(--gray); padding: 40px; font-weight: 600;">Waiting for students to join...</td></tr>
-          </tbody>
-        </table>
+      <!-- DEEPSEEK CHAT VIEW -->
+      <div id="viewChat" style="display: none;">
+        <div class="chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg ai">Hello Admin. I am DeepSeek. I am ready to receive the ZIP scripts for marking.</div>
+          </div>
+          <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Ask DeepSeek about marking..." onkeypress="if(event.key==='Enter') sendChat()">
+            <button onclick="sendChat()">Send</button>
+          </div>
+        </div>
       </div>
 
-      <div class="action-group">
-        <button class="btn-action btn-export" onclick="downloadScripts()">
-          <i data-lucide="download-cloud"></i> Download ZIP for DeepSeek
-        </button>
-        <button class="btn-action btn-results" onclick="window.location.href='admin-results.html'">
-          <i data-lucide="bar-chart-2"></i> View AI Results & Flags
-        </button>
-      </div>
     </div>
-
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, orderBy, serverTimestamp, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
@@ -222,36 +197,26 @@
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
-  // AUTH GUARD
+  // SECURITY: Block unauthorised access
   onAuthStateChanged(auth, (user) => {
     if (!user || user.email !== "n1nathaniel971@gmail.com") {
-      window.location.href = "index.html"; 
+      document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;"><h1>Access Denied. Authorised Personnel Only.</h1></div>';
+      return;
     } else {
       initMonitor();
     }
   });
 
-  window.logout = async function() {
-    await signOut(auth);
-    window.location.href = "index.html";
+  window.logout = async function() { await signOut(auth); window.location.href = "index.html"; };
+
+  window.switchTab = function(tab) {
+    document.getElementById('viewMonitor').style.display = tab === 'monitor' ? 'block' : 'none';
+    document.getElementById('viewChat').style.display = tab === 'chat' ? 'block' : 'none';
+    document.getElementById('tabMonitor').classList.toggle('active', tab === 'monitor');
+    document.getElementById('tabChat').classList.toggle('active', tab === 'chat');
   };
 
-  // UPDATE FILE NAME UI
-  window.updateFileName = function(input, displayId) {
-    const label = input.nextElementSibling;
-    const display = document.getElementById(displayId);
-    if (input.files && input.files.length > 0) {
-      display.innerText = input.files[0].name;
-      label.classList.add('has-file');
-      label.innerHTML = `<i data-lucide="check-circle"></i> <span>File Selected</span>`;
-    } else {
-      display.innerText = "No file selected";
-      label.classList.remove('has-file');
-    }
-    refreshIcons();
-  };
-
-  // CREATE SESSION (Generates a unique Session ID)
+  // START SESSION LOGIC
   window.startSession = async function() {
     const qFile = document.getElementById('questionFile').files[0];
     const aFile = document.getElementById('answerBookFile').files[0];
@@ -261,75 +226,56 @@
     const progressFill = document.getElementById('progressFill');
     const btn = document.getElementById('startSessionBtn');
 
-    if (!qFile || !aFile || pin.length !== 6) {
-      alert("Please upload both files and enter a 6-digit PIN.");
-      return;
-    }
+    if (!qFile || !aFile || pin.length !== 6) { alert("Please upload both .html files and enter a 6-digit PIN."); return; }
 
     try {
       btn.disabled = true;
       progressBar.style.display = 'block';
       statusEl.innerText = "Uploading Question Paper...";
-      statusEl.style.color = "var(--maroon)";
-
-      // Generate a unique session ID
+      
       const sessionId = 'SESSION_' + Date.now();
 
-      // Upload Question Paper
-      const qRef = ref(storage, `exams/${sessionId}/question_${qFile.name}`);
+      // Upload Q
+      const qRef = ref(storage, `exams/${sessionId}/question.html`);
       const qUpload = uploadBytesResumable(qRef, qFile);
-      
-      qUpload.on('state_changed', (snap) => {
-        const p = (snap.bytesTransferred / snap.totalBytes) * 50;
-        progressFill.style.width = p + '%';
-      });
-
+      qUpload.on('state_changed', (snap) => { progressFill.style.width = ((snap.bytesTransferred / snap.totalBytes) * 50) + '%'; });
       await qUpload;
       const qUrl = await getDownloadURL(qRef);
 
       statusEl.innerText = "Uploading Answer Book...";
       
-      // Upload Answer Book
-      const aRef = ref(storage, `exams/${sessionId}/answerbook_${aFile.name}`);
+      // Upload A
+      const aRef = ref(storage, `exams/${sessionId}/answerbook.html`);
       const aUpload = uploadBytesResumable(aRef, aFile);
-      
-      aUpload.on('state_changed', (snap) => {
-        const p = 50 + (snap.bytesTransferred / snap.totalBytes) * 50;
-        progressFill.style.width = p + '%';
-      });
-
+      aUpload.on('state_changed', (snap) => { progressFill.style.width = (50 + (snap.bytesTransferred / snap.totalBytes) * 50) + '%'; });
       await aUpload;
       const aUrl = await getDownloadURL(aRef);
 
       statusEl.innerText = "Creating Session...";
 
-      // Save Session Document to Firestore
       await setDoc(doc(db, "examSessions", sessionId), {
-        sessionId: sessionId,
-        examCode: pin,
-        questionPaperUrl: qUrl,
-        questionPaperType: qFile.name.endsWith('.pdf') ? 'pdf' : 'html',
-        answerBookUrl: aUrl,
-        answerBookType: aFile.name.endsWith('.pdf') ? 'pdf' : 'html',
-        active: true,
-        createdAt: serverTimestamp(),
-        createdBy: auth.currentUser.email
+        sessionId: sessionId, examCode: pin, questionPaperUrl: qUrl, questionPaperType: 'html', answerBookUrl: aUrl, answerBookType: 'html', active: true, createdAt: serverTimestamp(), createdBy: auth.currentUser.email
       });
 
-      // Also save as the "Active" session so students can find it
-      await setDoc(doc(db, "config", "examSettings"), {
-        activeSessionId: sessionId
-      }, { merge: true });
+      await setDoc(doc(db, "config", "examSettings"), { activeSessionId: sessionId }, { merge: true });
 
-      // Show PIN and QR
+      // SHOW PIN & QR
       document.getElementById('sessionCodeContainer').style.display = 'block';
       document.getElementById('displayPin').innerText = pin;
-      generateQR(pin, sessionId);
       
+      // FIXED QR GENERATION
+      const qrContainer = document.getElementById('qrCodeContainer');
+      qrContainer.innerHTML = '';
+      var qr = qrcode(0, "M");
+      qr.addData(`${window.location.origin}/mobile-upload.html?session=${sessionId}&pin=${pin}`);
+      qr.make();
+      qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0 });
+
       progressBar.style.display = 'none';
       statusEl.innerText = "Session is live!";
       statusEl.style.color = "var(--success)";
       btn.innerHTML = '<i data-lucide="check-circle"></i> Session Active';
+      refreshIcons();
       
     } catch (error) {
       console.error(error);
@@ -340,62 +286,52 @@
     }
   };
 
-  function generateQR(pin, sessionId) {
-    if (typeof qrcode !== "function") return;
-    const qrContainer = document.getElementById('qrCodeContainer');
-    qrContainer.innerHTML = '';
-    
-    // The mobile URL needs the sessionId and pin so it knows which exam to load
-    const mobileUrl = `${window.location.origin}/mobile-upload.html?session=${sessionId}&pin=${pin}`;
-    
-    var qr = qrcode(0, "M");
-    qr.addData(mobileUrl);
-    qr.make();
-    qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
-  }
-
   // LIVE MONITOR
   function initMonitor() {
     if (unsubscribeMonitor) unsubscribeMonitor();
-
-    const logsRef = collection(db, "examLogs");
-    const q = query(logsRef, orderBy("lastActive", "desc"));
+    const q = query(collection(db, "examLogs"), orderBy("lastActive", "desc"));
 
     unsubscribeMonitor = onSnapshot(q, (snapshot) => {
       const tbody = document.getElementById('monitorTable');
       tbody.innerHTML = '';
-
       if (snapshot.empty) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--gray); padding: 40px; font-weight: 600;">Waiting for students to join...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Waiting for students...</td></tr>';
         return;
       }
-
       snapshot.forEach((doc) => {
         const data = doc.data();
         const tabCount = data.tabSwitches ? data.tabSwitches.length : 0;
         const isOnline = data.status === 'In Session' || data.status === 'Online';
-        const badgeClass = isOnline ? 'status-online' : 'status-offline';
         const lastActive = data.lastActive ? new Date(data.lastActive.toDate()).toLocaleTimeString() : 'N/A';
-
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="font-family: monospace; font-weight: 800; font-size: 14px;">${data.examNumber || doc.id}</td>
-          <td><span class="status-badge ${badgeClass}">${isOnline ? 'Online' : 'Offline'}</span></td>
-          <td class="${tabCount > 0 ? 'tab-count' : ''}">${tabCount}</td>
-          <td style="font-weight: 600; color: var(--gray);">${lastActive}</td>
-          <td><button class="btn-nav" style="padding: 4px 10px; font-size: 11px;" onclick="viewStudentScript('${doc.id}')">View</button></td>
+          <td style="font-family: monospace; font-weight: bold;">${data.examNumber || doc.id}</td>
+          <td><span class="status-badge ${isOnline ? 'status-online' : 'status-offline'}">${isOnline ? 'Online' : 'Offline'}</span></td>
+          <td style="color: ${tabCount > 0 ? 'var(--error)' : 'inherit'}; font-weight: bold;">${tabCount}</td>
+          <td>${lastActive}</td>
+          <td><button class="btn-nav" style="padding: 4px 8px; font-size: 11px;" onclick="alert('Next step: View script for ' + '${doc.id}')">View</button></td>
         `;
         tbody.appendChild(tr);
       });
     });
   }
 
-  window.viewStudentScript = function(studentId) {
-    alert("Next step: View embedded Answer Book for " + studentId);
-  };
+  // DEEPSEEK CHAT (Placeholder)
+  window.sendChat = function() {
+    const input = document.getElementById('chatInput');
+    const msgs = document.getElementById('chatMessages');
+    if (!input.value.trim()) return;
+    
+    msgs.innerHTML += `<div class="chat-msg admin">${input.value}</div>`;
+    const userMsg = input.value;
+    input.value = '';
+    msgs.scrollTop = msgs.scrollHeight;
 
-  window.downloadScripts = async function() {
-    alert("Building ZIP file. This will download scripts grouped into Pack_01, Pack_02, etc.");
+    // Simulate AI response
+    setTimeout(() => {
+      msgs.innerHTML += `<div class="chat-msg ai">I have received your message: "${userMsg}". Please upload the ZIP file to begin marking.</div>`;
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 1000);
   };
 
   refreshIcons();
