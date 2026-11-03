@@ -84,7 +84,7 @@
   .qr-box { margin-top: 16px; text-align: center; }
   .qr-box svg { max-width: 180px; }
   .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 500px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 700px; }
   th, td { padding: 10px 12px; border-bottom: 1px solid var(--silver); }
   th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; }
   .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
@@ -98,9 +98,9 @@
   .overlay p { font-size: 16px; color: var(--gray); max-width: 500px; margin-bottom: 32px; }
   .pin-input { background: #FFFFFF; border: 2px solid var(--silver); font-size: 42px; font-family: monospace; text-align: center; letter-spacing: 12px; padding: 16px 24px; border-radius: 12px; outline: none; width: 100%; max-width: 300px; margin-bottom: 24px; }
 
-  /* Admin Script Viewer */
-  #viewerOverlay { position: fixed; inset: 0; background: rgba(15,23,42,0.95); backdrop-filter: blur(8px); z-index: 1000; display: none; flex-direction: column; padding: 20px; }
-  #viewerOverlay.active { display: flex; }
+  /* Admin Modals */
+  #viewerOverlay, #studentScreenOverlay { position: fixed; inset: 0; background: rgba(15,23,42,0.95); backdrop-filter: blur(8px); z-index: 1000; display: none; flex-direction: column; padding: 20px; }
+  #viewerOverlay.active, #studentScreenOverlay.active { display: flex; }
   .viewer-header { display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 16px; }
   .viewer-header h2 { font-size: 18px; font-weight: 900; }
   .viewer-content { flex: 1; background: white; border-radius: 12px; overflow-y: auto; padding: 40px; position: relative; display: flex; align-items: center; justify-content: center; }
@@ -193,7 +193,6 @@
       <div class="card">
         <h2><i data-lucide="activity"></i> Live Monitor</h2>
         
-        <!-- EXPORT BUTTONS ADDED HERE -->
         <div style="display: flex; gap: 12px; margin-bottom: 16px;">
           <button class="btn btn-primary" id="exportZipBtn" onclick="exportScriptsAsZip()">
             <i data-lucide="download"></i> Download All Scripts (ZIP)
@@ -205,8 +204,17 @@
 
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Exam Number</th><th>Status</th><th>Tab Switches</th><th>Last Active</th><th>Action</th></tr></thead>
-            <tbody id="monitorTable"><tr><td colspan="5" style="text-align: center; padding: 20px;">Waiting for students...</td></tr></tbody>
+            <thead>
+              <tr>
+                <th>Exam Number</th>
+                <th>Status</th>
+                <th>Activity</th>
+                <th>Tab Switches</th>
+                <th>Last Active</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="monitorTable"><tr><td colspan="6" style="text-align: center; padding: 20px;">Waiting for students...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -252,12 +260,29 @@
   </div>
 </div>
 
+<!-- Admin "View Screen" (God Mode) Modal -->
+<div id="studentScreenOverlay">
+  <div class="viewer-header">
+    <h2 id="screenViewerTitle">Student Screen Live View</h2>
+    <button class="btn" style="background:white;color:var(--maroon);" onclick="closeScreenViewer()"><i data-lucide="x"></i> Close</button>
+  </div>
+  <div style="flex: 1; background: #E2E8F0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;">
+    <div style="background: #FFFFFF; padding: 16px; border-bottom: 1px solid #CBD5E1; display: flex; justify-content: space-between; font-weight: 900;">
+      <span>IFB Exam View</span>
+      <span id="screenViewerTimer" style="color: var(--success); font-family: monospace;">Timer Active</span>
+    </div>
+    <div id="screenViewerContent" style="flex: 1; overflow-y: auto; padding: 40px; background: white; display: flex; justify-content: center;">
+      <!-- Student's paper will be injected here -->
+    </div>
+  </div>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, orderBy, serverTimestamp, arrayUnion, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // REPLACE WITH YOUR FIREBASE CONFIG
+  // Firebase Environment Configuration
   const firebaseConfig = { 
     apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", 
     authDomain: "nyldevcourses.firebaseapp.com", 
@@ -382,7 +407,7 @@
       const tbody = document.getElementById('monitorTable');
       tbody.innerHTML = '';
       if (snapshot.empty) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Waiting for students...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Waiting for students...</td></tr>';
         return;
       }
       snapshot.forEach((doc) => {
@@ -390,13 +415,23 @@
         const tabCount = data.tabSwitches ? data.tabSwitches.length : 0;
         const isOnline = data.status === 'In Session' || data.status === 'Online';
         const lastActive = data.lastActive ? new Date(data.lastActive.toDate()).toLocaleTimeString() : 'N/A';
+        
+        let currentState = "Logged Out";
+        if (data.currentState === 'paper') currentState = "Reading Paper";
+        if (data.currentState === 'answerbook') currentState = "Writing Answers";
+        if (isOnline && !data.currentState) currentState = "Waiting (PIN)";
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td style="font-family: monospace; font-weight: bold;">${data.examNumber || doc.id}</td>
           <td><span class="status-badge ${isOnline ? 'status-online' : 'status-offline'}">${isOnline ? 'Online' : 'Offline'}</span></td>
+          <td style="font-size: 11px; font-weight: bold; color: var(--gray);">${currentState}</td>
           <td style="color: ${tabCount > 0 ? 'var(--error)' : 'inherit'}; font-weight: bold;">${tabCount}</td>
           <td>${lastActive}</td>
-          <td><button class="btn" style="padding: 4px 8px; font-size: 11px;" onclick="viewScript('${doc.id}')">View</button></td>
+          <td style="display: flex; gap: 4px;">
+            <button class="btn" style="padding: 4px 8px; font-size: 11px;" onclick="viewScript('${doc.id}')">Script</button>
+            <button class="btn" style="padding: 4px 8px; font-size: 11px; background: var(--maroon); color: white; border: none;" onclick="viewStudentScreen('${data.examNumber || doc.id}')">Screen</button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -432,8 +467,53 @@
   window.nextPage = function() { if (currentPageIndex < currentViewerPages.length - 1) { currentPageIndex++; renderViewerPage(); } };
   window.closeViewer = function() { document.getElementById('viewerOverlay').classList.remove('active'); };
 
+  // Admin God Mode: View Student Screen
+  window.viewStudentScreen = async function(examNumber) {
+    const overlay = document.getElementById('studentScreenOverlay');
+    const content = document.getElementById('screenViewerContent');
+    document.getElementById('screenViewerTitle').innerText = `Live View: ${examNumber}`;
+    
+    overlay.classList.add('active');
+    content.innerHTML = '<div style="color: var(--gray);">Loading student data...</div>';
+
+    try {
+      const logDoc = await getDoc(doc(db, "examLogs", examNumber));
+      const data = logDoc.data();
+      
+      const configDoc = await getDoc(doc(db, "config", "examSettings"));
+      const sessionDoc = await getDoc(doc(db, "examSessions", configDoc.data().activeSessionId));
+      const sessionData = sessionDoc.data();
+
+      let htmlToShow = "";
+
+      if (!data.currentState) {
+        htmlToShow = `<div style="text-align:center; padding: 50px;">
+          <h2 style="color: var(--gray);">Student is on the PIN Screen</h2>
+          <p>They have not unlocked the exam yet.</p>
+        </div>`;
+      } else if (data.currentState === 'paper') {
+        htmlToShow = DOMPurify.sanitize(sessionData.questionPaperHtml);
+      } else if (data.currentState === 'answerbook') {
+        htmlToShow = DOMPurify.sanitize(sessionData.answerBookHtml);
+      }
+
+      content.innerHTML = `<div class="paper-wrapper" style="width:100%;">${htmlToShow}</div>`;
+      
+      if (window.MathJax) { MathJax.typesetPromise([content]).catch(e => console.warn(e)); }
+
+    } catch (e) {
+      console.error(e);
+      content.innerHTML = `<div style="color: var(--error);">Could not load student view.</div>`;
+    }
+    refreshIcons();
+  };
+
+  window.closeScreenViewer = function() {
+    document.getElementById('studentScreenOverlay').classList.remove('active');
+  };
+
   // ============================================================
-  // DEEPSEEK ZIP EXPORT & AI INTEGRATION
+  // DEEPSEEK ZIP EXPORT
   // ============================================================
   window.exportScriptsAsZip = async function() {
     const btn = document.getElementById('exportZipBtn');
@@ -563,6 +643,13 @@
       document.getElementById('viewAnswerBook').classList.add('active');
       document.getElementById('tabAnswerBook').classList.add('active');
     }
+
+    if (examNumber) {
+      setDoc(doc(db, "examLogs", examNumber), {
+        currentState: tabName,
+        lastActive: serverTimestamp()
+      }, { merge: true });
+    }
   };
 
   function startExam() {
@@ -575,6 +662,7 @@
       setDoc(logRef, {
         examNumber: examNumber,
         status: "Online",
+        currentState: "paper",
         lastActive: serverTimestamp(),
         sessionId: currentSessionId,
         tabSwitches: []
@@ -653,6 +741,7 @@
       try {
         await setDoc(doc(db, "examLogs", examNumber), {
           status: "Offline",
+          currentState: "logged_out",
           lastActive: serverTimestamp()
         }, { merge: true });
       } catch(e) {}
