@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Dashboard — Institute of Board</title>
+<meta name="description" content="IFB Student Dashboard. Access your Student ID, Examination Number, and study resources.">
+
+<!-- INLINE LOGO FAVICON (Triangle) -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L92 85 H8 L50 10 Z' fill='%237A1F2B'/%3E%3Cpath d='M50 32 L77 78 H23 L50 32 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
+
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
@@ -394,7 +399,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
     </nav>
     <div class="sidebar-footer">
         <button class="btn-sidebar" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
-        <button class="btn-sidebar danger" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
+        <button class="btn-sidebar danger" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Withdraw Consent & Delete Data</button>
     </div>
 </aside>
 
@@ -565,6 +570,16 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
                 </div>
             </div>
 
+            <!-- INVIGILATOR CHAT INFO -->
+            <div class="card">
+                <div class="card-header"><div class="card-title"><i data-lucide="message-square"></i> Exam Invigilation</div></div>
+                <p style="font-size: 13px; color: var(--gray); margin-bottom: 14px; line-height: 1.6;">
+                    During your live AE session, you can chat directly with the Admin (Invigilator) if you experience technical issues or need to report a leaked paper. 
+                    <br><br>
+                    <strong>Privacy Note:</strong> The Admin will not see your name or Student ID. They will only see you as your 13-digit Examination Number.
+                </p>
+            </div>
+
             <!-- QUICK LINKS -->
             <div class="card">
                 <div class="card-header"><div class="card-title"><i data-lucide="bookmark"></i> Quick Links</div></div>
@@ -611,7 +626,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
         <a href="admin-resources.html" class="nav-item admin-only" id="adminNavMobile"><i data-lucide="shield"></i> Admin</a>
         <div class="mobile-drawer-footer">
             <button class="btn-sidebar" onclick="signOut()"><i data-lucide="log-out"></i> Sign Out</button>
-            <button class="btn-sidebar danger" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Delete Account</button>
+            <button class="btn-sidebar danger" onclick="confirmDeleteAccount()"><i data-lucide="trash-2"></i> Withdraw Consent & Delete Data</button>
         </div>
     </div>
 </div>
@@ -689,8 +704,8 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 <div class="modal-overlay" id="deleteModal">
     <div class="modal-box">
         <div class="modal-icon"><i data-lucide="alert-triangle"></i></div>
-        <h2>Delete Account</h2>
-        <p>This permanently deletes your account, Student ID, Examination Number, exam history, and all associated data. <strong>This cannot be undone.</strong></p>
+        <h2>Withdraw Consent & Delete Data</h2>
+        <p>Under POPIA, you have the right to withdraw your consent and request the deletion of your personal information. This permanently deletes your account, Student ID, Examination Number, exam history, and all associated data. <strong>This cannot be undone.</strong></p>
         <div class="modal-field">
             <label>Type <strong>DELETE</strong> to confirm:</label>
             <input type="text" id="deleteConfirmInput" placeholder="DELETE" autocomplete="off">
@@ -708,7 +723,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut as firebaseSignOut, reauthenticateWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
@@ -736,14 +751,46 @@ function escapeHtml(str) {
     }[c]));
 }
 
-/* ==================== ID GENERATORS ==================== */
-function generate6DigitStudentId() { return String(Math.floor(Math.random() * 900000) + 100000); }
-function generateExamNumber(studentId6) {
-    const base = "27" + "01" + "X" + studentId6;
-    let sum = 0;
-    for (let i = 0; i < base.length; i++) sum += base.charCodeAt(i);
-    return base + String(sum % 100).padStart(2, '0');
+/* ==================== STRICT NUMERICAL ID GENERATORS ==================== */
+// Format: 2701XXXX (8 digits)
+async function generateStudentId() {
+    // Get the highest existing ID to increment
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, orderBy("studentId", "desc"), limit(1));
+    const snap = await getDocs(q);
+    let nextNum = 1;
+    
+    if (!snap.empty) {
+        const highestId = snap.docs[0].data().studentId;
+        if (highestId && highestId.startsWith("2701") && highestId.length === 8) {
+            const currentNum = parseInt(highestId.substring(4), 10);
+            if (!isNaN(currentNum)) nextNum = currentNum + 1;
+        }
+    }
+    
+    // Pad with zeros (e.g., 0001)
+    return "2701" + String(nextNum).padStart(4, '0');
 }
+
+// Format: 26012027XXXXX (13 digits)
+async function generateExamNumber() {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, orderBy("examinationNumber", "desc"), limit(1));
+    const snap = await getDocs(q);
+    let nextNum = 1;
+    
+    if (!snap.empty) {
+        const highestId = snap.docs[0].data().examinationNumber;
+        if (highestId && highestId.startsWith("26012027") && highestId.length === 13) {
+            const currentNum = parseInt(highestId.substring(8), 10);
+            if (!isNaN(currentNum)) nextNum = currentNum + 1;
+        }
+    }
+    
+    // Pad with zeros (e.g., 00001)
+    return "26012027" + String(nextNum).padStart(5, '0');
+}
+
 function generateSecurityCode() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let out = "";
@@ -753,40 +800,49 @@ function generateSecurityCode() {
 function generateSeatingNumber() {
     return String(Math.floor(Math.random() * 30) + 1).padStart(2, '0');
 }
-function is6Digit(id) { return typeof id === 'string' && /^\d{6}$/.test(id); }
-function isOld13Digit(id) { return typeof id === 'string' && /^27\d{2}[A-Z]\d{8}$/.test(id); }
+function isNewStudentId(id) { return typeof id === 'string' && /^2701\d{4}$/.test(id); }
+function isNewExamNumber(id) { return typeof id === 'string' && /^26012027\d{5}$/.test(id); }
 function buildAccessCode(studentId, seating) {
     if (!studentId) return '';
     return seating ? `${studentId}-${seating}` : studentId;
 }
 
-/* ==================== MIGRATION ==================== */
+/* ==================== FIREBASE MIGRATION & PROMOTION ==================== */
 async function migrateAndPromote(docRef, data) {
     const updates = {};
     let workingStudentId = data.studentId;
     let workingExamNumber = data.examinationNumber;
+    let needsUpdate = false;
 
-    if (isOld13Digit(workingStudentId) && !workingExamNumber) {
-        updates.examinationNumber = workingStudentId;
-        updates.studentId = generate6DigitStudentId();
-        workingExamNumber = workingStudentId;
+    // 1. Migrate Student ID to 2701XXXX
+    if (!isNewStudentId(workingStudentId)) {
+        updates.studentId = await generateStudentId();
         workingStudentId = updates.studentId;
-    } else if (!is6Digit(workingStudentId)) {
-        updates.studentId = generate6DigitStudentId();
-        workingStudentId = updates.studentId;
+        needsUpdate = true;
     }
+
+    // 2. Ensure Security Code exists
     if (!data.securityCode || data.securityCode.length !== 6) {
         updates.securityCode = generateSecurityCode();
+        needsUpdate = true;
     }
+
+    // 3. Ensure Seating Number exists
     if (!data.seatingNumber) {
         updates.seatingNumber = generateSeatingNumber();
+        needsUpdate = true;
     }
+
+    // 4. Exam Number Promotion (Only if they passed the AE)
     const isPromoted = data.status === "Student" || data.aeResult === "Pass";
-    if (isPromoted && !workingExamNumber) {
-        updates.examinationNumber = generateExamNumber(workingStudentId);
+    if (isPromoted && !isNewExamNumber(workingExamNumber)) {
+        updates.examinationNumber = await generateExamNumber();
         if (data.status !== "Student") updates.status = "Student";
+        needsUpdate = true;
     }
-    if (Object.keys(updates).length === 0) return data;
+
+    if (!needsUpdate) return data;
+
     try {
         await updateDoc(docRef, { ...updates, migratedAt: new Date() });
         return { ...data, ...updates };
@@ -818,7 +874,7 @@ function populateCardPair(data, suffix = '') {
     if (paperEl) paperEl.textContent = paper;
 
     const examEl = document.getElementById(`ac${suffix}ExamNum`);
-    if (examNum) {
+    if (examNum && isNewExamNumber(examNum)) {
         examEl.textContent = examNum;
         examEl.classList.remove('pending');
     } else {
@@ -853,7 +909,7 @@ function populateCardPair(data, suffix = '') {
                 `SID:${studentId}`,
                 `SEAT:${seating}`,
                 `CODE:${accessCode}`,
-                examNum ? `EXAM:${examNum}` : `EXAM:PENDING`
+                examNum && isNewExamNumber(examNum) ? `EXAM:${examNum}` : `EXAM:PENDING`
             ].join('\n');
             qr.addData(payload);
             qr.make();
@@ -997,7 +1053,7 @@ function buildPrintArea(data) {
                     <div class="pc-row">
                         <div>
                             <div class="pc-label">Exam Number</div>
-                            <div class="pc-exam ${examNum ? '' : 'pending'}">${escapeHtml(examNum || 'PENDING — PASS AE')}</div>
+                            <div class="pc-exam ${examNum && isNewExamNumber(examNum) ? '' : 'pending'}">${escapeHtml(examNum && isNewExamNumber(examNum) ? examNum : 'PENDING — PASS AE')}</div>
                         </div>
                         <div class="pc-qr" id="printQR"></div>
                     </div>
@@ -1016,10 +1072,10 @@ function buildPrintArea(data) {
             <div class="print-section-title">Candidate Information</div>
             <table class="print-info-table">
                 <tr><td>Full Name</td><td>${escapeHtml(name)}</td></tr>
-                <tr><td>Student ID</td><td>${escapeHtml(studentId)}</td></tr>
+                <tr><td>Student ID (8-digit)</td><td>${escapeHtml(studentId)}</td></tr>
                 <tr><td>Seating Number</td><td>${escapeHtml(seating)}</td></tr>
                 <tr><td>Access Code</td><td>${escapeHtml(accessCode)}</td></tr>
-                <tr><td>Examination Number</td><td>${escapeHtml(examNum || 'Not yet issued — pending AE result')}</td></tr>
+                <tr><td>Examination Number (13-digit)</td><td>${escapeHtml(examNum && isNewExamNumber(examNum) ? examNum : 'Not yet issued — pending AE result')}</td></tr>
                 <tr><td>Security Code</td><td>${escapeHtml(secCode)}</td></tr>
                 <tr><td>Subject</td><td>${escapeHtml(subject)}</td></tr>
                 <tr><td>Paper Code</td><td>${escapeHtml(paper)}</td></tr>
@@ -1139,7 +1195,7 @@ onAuthStateChanged(auth, async (user) => {
 
         document.getElementById('statStudentId').textContent = data.studentId || '------';
         const statExam = document.getElementById('statExamNum');
-        if (data.examinationNumber) {
+        if (data.examinationNumber && isNewExamNumber(data.examinationNumber)) {
             statExam.textContent = data.examinationNumber;
             statExam.classList.remove('pending');
         } else {
