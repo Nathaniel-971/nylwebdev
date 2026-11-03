@@ -10,19 +10,31 @@
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&family=Times+New+Roman&display=swap" rel="stylesheet">
 
 <style>
-  :root { --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #0F172A; --panel: #1E293B; --text: #F8FAFC; --gray: #94A3B8; --silver: #334155; --success: #10B981; --error: #EF4444; --warning: #F59E0B; }
+  :root { 
+    --maroon: #7A1F2B; 
+    --maroon-hover: #5A1620; 
+    --bg: #F8FAFC; 
+    --panel: #FFFFFF; 
+    --text: #111111; 
+    --gray: #64748B; 
+    --silver: #E2E8F0; 
+    --success: #15803D; 
+    --error: #B91C1C; 
+    --warning: #B45309; 
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
   /* HEADER */
   .header { background: var(--panel); border-bottom: 1px solid var(--silver); padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-  .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 20px; color: var(--text); }
   .brand span { color: var(--maroon); font-size: 28px; }
   
-  .clock-container { background: rgba(0,0,0,0.3); padding: 8px 24px; border-radius: 8px; border: 1px solid var(--silver); display: flex; align-items: center; gap: 12px; }
+  .clock-container { background: var(--bg); padding: 8px 24px; border-radius: 8px; border: 1px solid var(--silver); display: flex; align-items: center; gap: 12px; }
   .clock { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; letter-spacing: 2px; color: var(--success); }
   .clock.warning { color: var(--warning); }
   .clock.danger { color: var(--error); animation: pulse 1s infinite; }
@@ -30,9 +42,9 @@
 
   .header-actions { display: flex; gap: 12px; }
   .btn { background: transparent; border: 1px solid var(--silver); color: var(--text); padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; font-family: inherit; }
-  .btn:hover { background: rgba(255,255,255,0.05); }
+  .btn:hover { background: var(--bg); }
   .btn-danger { border-color: var(--error); color: var(--error); }
-  .btn-danger:hover { background: rgba(239, 68, 68, 0.1); }
+  .btn-danger:hover { background: #FEF2F2; }
 
   /* LAYOUT */
   .main-content { flex: 1; display: flex; overflow: hidden; }
@@ -40,19 +52,22 @@
   /* LEFT: PAPER VIEWER */
   .paper-viewer { flex: 1; background: #E2E8F0; display: flex; flex-direction: column; position: relative; }
   .paper-toolbar { background: var(--panel); padding: 8px 16px; border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; }
-  .paper-title { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-  .paper-iframe { width: 100%; height: 100%; border: none; background: white; }
+  .paper-title { font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 8px; color: var(--text); }
+  
+  /* The container for the injected HTML Paper */
+  .paper-content { width: 100%; height: 100%; overflow-y: auto; padding: 40px; background: #E2E8F0; }
+  .paper-content .page-wrapper { background: white; max-width: 800px; margin: 0 auto; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-radius: 8px; font-family: 'Times New Roman', Times, serif; }
 
   /* RIGHT: SIDEBAR (QR & RULES) */
   .sidebar { width: 340px; background: var(--panel); border-left: 1px solid var(--silver); display: flex; flex-direction: column; padding: 24px; overflow-y: auto; }
   .sidebar-section { margin-bottom: 32px; }
-  .sidebar-section h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .sidebar-section h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-weight: 800; }
   
   /* QR SCANNER BOX */
-  .qr-box { background: white; padding: 16px; border-radius: 12px; text-align: center; }
-  .qr-box h4 { color: var(--bg); font-weight: 900; font-size: 16px; margin-bottom: 4px; }
-  .qr-box p { color: #666; font-size: 12px; margin-bottom: 12px; line-height: 1.4; }
-  .qr-container { display: flex; justify-content: center; }
+  .qr-box { background: var(--bg); padding: 16px; border-radius: 12px; text-align: center; border: 1px dashed var(--silver); }
+  .qr-box h4 { color: var(--maroon); font-weight: 900; font-size: 16px; margin-bottom: 4px; }
+  .qr-box p { color: var(--gray); font-size: 12px; margin-bottom: 12px; line-height: 1.4; }
+  .qr-container { display: flex; justify-content: center; background: white; padding: 10px; border-radius: 8px; display: inline-block; }
   
   /* INSTRUCTIONS */
   .instruction-list { list-style: none; font-size: 13px; color: var(--text); line-height: 1.6; }
@@ -60,13 +75,13 @@
   .instruction-list li i { color: var(--maroon); flex-shrink: 0; margin-top: 2px; }
 
   /* OVERLAYS */
-  .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
+  .overlay { position: fixed; inset: 0; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
   .overlay.active { display: flex; }
-  .overlay h2 { font-size: 32px; font-weight: 900; margin-bottom: 16px; }
-  .overlay p { font-size: 18px; color: var(--gray); max-width: 500px; margin-bottom: 32px; }
+  .overlay h2 { font-size: 32px; font-weight: 900; margin-bottom: 16px; color: var(--text); }
+  .overlay p { font-size: 18px; color: var(--gray); max-width: 500px; margin-bottom: 32px; line-height: 1.5; }
   
   /* PIN MODAL */
-  .pin-input { background: var(--bg); border: 2px solid var(--silver); color: white; font-size: 48px; font-family: 'JetBrains Mono', monospace; text-align: center; letter-spacing: 12px; padding: 16px 32px; border-radius: 12px; outline: none; width: 100%; max-width: 320px; margin-bottom: 24px; }
+  .pin-input { background: var(--white); border: 2px solid var(--silver); color: var(--text); font-size: 48px; font-family: 'JetBrains Mono', monospace; text-align: center; letter-spacing: 12px; padding: 16px 32px; border-radius: 12px; outline: none; width: 100%; max-width: 320px; margin-bottom: 24px; }
   .pin-input:focus { border-color: var(--maroon); }
 
   /* 10 MIN WARNING */
@@ -79,13 +94,13 @@
 
 <!-- PIN UNLOCK OVERLAY -->
 <div class="overlay active" id="pinOverlay">
-  <div style="background: var(--panel); padding: 40px; border-radius: 24px; border: 1px solid var(--silver);">
+  <div style="background: var(--panel); padding: 40px; border-radius: 24px; border: 1px solid var(--silver); box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
     <i data-lucide="shield-lock" style="width: 64px; height: 64px; color: var(--maroon); margin-bottom: 24px;"></i>
     <h2>Session Locked</h2>
-    <p style="margin-bottom: 24px;">Enter the 6-digit PIN provided by your Invigilator to begin.</p>
+    <p style="margin-bottom: 24px; font-size: 15px;">Enter the 6-digit PIN provided by your Invigilator to begin.</p>
     <input type="text" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
-    <button class="btn" style="background: var(--maroon); color: white; border: none; padding: 16px 32px; font-size: 16px; width: 100%; justify-content: center;" onclick="verifyPin()">Unlock Exam</button>
-    <p id="pinError" style="color: var(--error); font-size: 14px; margin-top: 12px; display: none;">Incorrect PIN. Please try again.</p>
+    <button class="btn" style="background: var(--maroon); color: white; border: none; padding: 16px 32px; font-size: 16px; width: 100%; justify-content: center; font-weight: 700;" onclick="verifyPin()">Unlock Exam</button>
+    <p id="pinError" style="color: var(--error); font-size: 14px; margin-top: 12px; display: none; font-weight: 700;">Incorrect PIN. Please try again.</p>
   </div>
 </div>
 
@@ -94,7 +109,7 @@
   <i data-lucide="alert-triangle" style="width: 80px; height: 80px; color: var(--error); margin-bottom: 24px;"></i>
   <h2 style="color: var(--error);">Tab Switch Detected</h2>
   <p>You have left the examination window. This incident has been logged and reported to the Invigilator. Please return to the exam immediately.</p>
-  <button class="btn" style="background: var(--maroon); color: white; border: none; padding: 16px 32px; font-size: 16px;" onclick="dismissWarning()">I Understand</button>
+  <button class="btn" style="background: var(--maroon); color: white; border: none; padding: 16px 32px; font-size: 16px; font-weight: 700;" onclick="dismissWarning()">I Understand</button>
 </div>
 
 <!-- 10-MIN UPLOAD WARNING OVERLAY -->
@@ -103,7 +118,7 @@
   <h2>Time is Up!</h2>
   <p>You have 10 minutes remaining to upload your final scanned Answer Book pages. The portal will lock after this.</p>
   <div class="big-timer" id="uploadTimer">10:00</div>
-  <button class="btn" style="background: var(--maroon); color: white; border: none; padding: 16px 32px; font-size: 16px;" onclick="document.getElementById('uploadWarning').classList.remove('active')">Go to Answer Book</button>
+  <button class="btn" style="background: var(--maroon); color: white; border: none; padding: 16px 32px; font-size: 16px; font-weight: 700;" onclick="document.getElementById('uploadWarning').classList.remove('active')">Go to Answer Book</button>
 </div>
 
 <!-- HEADER -->
@@ -132,8 +147,13 @@
         <i data-lucide="maximize" style="width: 14px; height: 14px;"></i> Full View
       </button>
     </div>
-    <!-- The paper will load here dynamically -->
-    <iframe class="paper-iframe" id="paperFrame" src="about:blank"></iframe>
+    <!-- The paper is injected here -->
+    <div class="paper-content" id="paperContainer">
+      <div style="text-align: center; color: var(--gray); margin-top: 50px;">
+        <i data-lucide="loader" style="width: 32px; height: 32px; animation: spin 1s linear infinite;"></i>
+        <p style="margin-top: 10px;">Loading Question Paper...</p>
+      </div>
+    </div>
   </div>
 
   <!-- SIDEBAR -->
@@ -173,6 +193,7 @@
   let studentId = null;
   let examNumber = null;
   let paperUrl = null;
+  let paperType = null;
   
   let examDurationMins = 120; 
   let examStartTime = null;
@@ -187,18 +208,16 @@
     currentUser = user;
 
     try {
-      // Get Student Info
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (userDoc.exists()) {
         const data = userDoc.data();
         studentId = data.studentId;
         examNumber = data.examNumber;
         
-        // Load Exam Config
         const configDoc = await getDoc(doc(db, "config", "examSettings"));
         if (configDoc.exists() && configDoc.data().sessionActive) {
           paperUrl = configDoc.data().questionPaperUrl;
-          // Set timer duration if needed (configDoc.data().duration)
+          paperType = configDoc.data().questionPaperType;
         } else {
           alert("No active exam session found. Please contact your invigilator.");
           window.location.href = "student-dashboard.html";
@@ -210,7 +229,7 @@
     refreshIcons();
   });
 
-  // 2. PIN VERIFICATION
+  // 2. PIN VERIFICATION & PAPER INJECTION
   window.verifyPin = async function() {
     const enteredPin = document.getElementById('pinInput').value;
     if (enteredPin.length !== 6) return;
@@ -218,11 +237,10 @@
     try {
       const configDoc = await getDoc(doc(db, "config", "examSettings"));
       if (configDoc.exists() && configDoc.data().examCode === enteredPin) {
-        // Success
         document.getElementById('pinOverlay').classList.remove('active');
+        loadPaper();
         startExam();
       } else {
-        // Fail
         document.getElementById('pinError').style.display = 'block';
         document.getElementById('pinInput').value = '';
       }
@@ -231,26 +249,47 @@
     }
   };
 
-  // 3. START EXAM
-  function startExam() {
-    // Load Paper
-    if (paperUrl) {
-      if (paperUrl.includes('.pdf')) {
-        document.getElementById('paperFrame').src = paperUrl;
-      } else {
-        // If HTML, you might need to fetch and sanitize, or just render
-        document.getElementById('paperFrame').src = paperUrl;
+  // 3. DYNAMIC PAPER LOADING
+  async function loadPaper() {
+    const container = document.getElementById('paperContainer');
+    
+    if (paperType === 'html') {
+      try {
+        const response = await fetch(paperUrl);
+        const htmlText = await response.text();
+        
+        // Sanitize the HTML to prevent XSS attacks from a compromised admin upload
+        const cleanHtml = DOMPurify.sanitize(htmlText);
+        
+        // Inject the clean HTML into a page wrapper
+        container.innerHTML = `<div class="page-wrapper">${cleanHtml}</div>`;
+        
+        // Re-run MathJax if the paper has math equations
+        if (window.MathJax) { MathJax.typesetPromise([container]); }
+        
+      } catch (err) {
+        container.innerHTML = `<div style="text-align: center; color: var(--error); margin-top: 50px;">Failed to load HTML paper. Please contact the invigilator.</div>`;
       }
+    } else {
+      // It's a PDF. We can't iframe cross-origin PDFs from Firebase Storage securely without PDF.js.
+      // For now, we display a direct link and a warning.
+      container.innerHTML = `
+        <div style="text-align: center; margin-top: 50px;">
+          <i data-lucide="file-warning" style="width: 48px; height: 48px; color: var(--warning); margin-bottom: 16px;"></i>
+          <h3>PDF Question Paper</h3>
+          <p style="margin: 16px 0; color: var(--gray);">Your invigilator uploaded a PDF. Click below to view it securely.</p>
+          <a href="${paperUrl}" target="_blank" class="btn" style="background: var(--maroon); color: white; text-decoration: none; display: inline-flex;">Open PDF Paper</a>
+        </div>
+      `;
+      refreshIcons();
     }
+  }
 
-    // Generate QR for Mobile Scanner
+  // 4. START EXAM
+  function startExam() {
     generateMobileQR();
-
-    // Start Timer
     examStartTime = Date.now();
     startTimer();
-
-    // Log Login
     logEvent('login', { message: 'Student unlocked exam with PIN' });
   }
 
@@ -259,7 +298,6 @@
     const qrContainer = document.getElementById('qrCode');
     qrContainer.innerHTML = '';
     
-    // URL that the phone will open
     const mobileUrl = `${window.location.origin}/mobile-upload.html?sid=${studentId}&ex=${examNumber}`;
     
     var qr = qrcode(0, "M");
@@ -268,7 +306,7 @@
     qrContainer.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
   }
 
-  // 4. TIMER LOGIC
+  // 5. TIMER LOGIC
   function startTimer() {
     timerInterval = setInterval(() => {
       const now = Date.now();
@@ -277,7 +315,6 @@
       const remaining = totalDuration - elapsed;
 
       if (remaining <= 0 && !isUploadPhase) {
-        // Exam time is UP. Start 10-minute upload phase.
         isUploadPhase = true;
         document.getElementById('clockDisplay').innerText = "10:00";
         document.getElementById('clockDisplay').className = "clock danger";
@@ -319,7 +356,7 @@
     }, 1000);
   }
 
-  // 5. TAB SWITCH ANTI-CHEAT
+  // 6. TAB SWITCH ANTI-CHEAT
   document.addEventListener("visibilitychange", async () => {
     if (document.hidden) {
       document.getElementById('tabWarning').classList.add('active');
@@ -335,28 +372,15 @@
     if (!studentId) return;
     try {
       const logRef = doc(db, "examLogs", studentId);
-      
-      // Update the main log doc with tab switch array
       if (type === 'tab_switch') {
-        await setDoc(logRef, {
-          examNumber: examNumber,
-          status: 'In Session',
-          lastActive: serverTimestamp(),
-          tabSwitches: arrayUnion(new Date().toISOString())
-        }, { merge: true });
+        await setDoc(logRef, { examNumber: examNumber, status: 'In Session', lastActive: serverTimestamp(), tabSwitches: arrayUnion(new Date().toISOString()) }, { merge: true });
       } else {
-        await setDoc(logRef, {
-          examNumber: examNumber,
-          status: 'In Session',
-          lastActive: serverTimestamp()
-        }, { merge: true });
+        await setDoc(logRef, { examNumber: examNumber, status: 'In Session', lastActive: serverTimestamp() }, { merge: true });
       }
-    } catch (e) {
-      console.warn("Could not write log", e);
-    }
+    } catch (e) {}
   }
 
-  // 6. FULLSCREEN & EXIT
+  // 7. FULLSCREEN & EXIT
   window.toggleFullScreen = function() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
@@ -374,7 +398,6 @@
   };
 
   refreshIcons();
-
 </script>
 </body>
 </html>
