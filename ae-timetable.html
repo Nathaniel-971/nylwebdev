@@ -3,160 +3,361 @@
 <head>
 <meta charset="UTF-8">
 <title>IFB AE Timetable 2027</title>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
-@page { size: A4; margin: 0; }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.6; color: #000; background: #F8FAFC; }
-:root { --maroon: #7A1F2B; --silver: #E2E8F0; --bg: #F8FAFC; --dark: #333; --white: #FFF; }
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
 
-.page { width: 210mm; height: 297mm; padding: 15mm 20mm 40mm 20mm; margin: 15px auto; position: relative; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,.1); overflow: hidden; display: flex; flex-direction: column; page-break-after: always; }
-@media print { body { background: #fff; } .page { margin: 0; box-shadow: none; } }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16pt;
+    line-height: 1.6;
+    color: #000;
+    background: #F8FAFC;
+    padding-top: 60px;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 
-.security-pattern { position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(122,31,43,.02) 0, rgba(122,31,43,.02) 2px, transparent 2px, transparent 22px), repeating-linear-gradient(-45deg, rgba(122,31,43,.02) 0, rgba(122,31,43,.02) 2px, transparent 2px, transparent 22px); pointer-events: none; z-index: 0; }
-.watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 400px; height: 400px; opacity: .03; pointer-events: none; z-index: 0; }
-.content-wrapper { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+  .control-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px;
+    background: #FFF; border-bottom: 2px solid #7A1F2B;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 24px; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+  }
+  .control-bar .brand { font-size: 20px; font-weight: 900; color: #7A1F2B; display: flex; align-items: center; gap: 8px; }
+  .control-actions { display: flex; gap: 12px; }
+  .btn-nav {
+    padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 14px;
+    text-decoration: none; cursor: pointer; border: 1.5px solid #E2E8F0;
+    color: #111; background: #FFF; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-nav:hover { border-color: #111; }
+  .btn-nav.primary { background: #7A1F2B; color: #FFF; border-color: #7A1F2B; }
+  .btn-nav.primary:hover { background: #5A1620; }
 
-.header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; font-size: 10.5pt; font-family: Arial, sans-serif; flex-shrink: 0; border-bottom: 1px solid var(--silver); padding-bottom: 5px; }
-.header-left { width: 30%; text-align: left; font-weight: bold; color: var(--maroon); }
-.header-center { width: 40%; text-align: center; }
-.header-center .page-num { display: block; font-size: 12pt; margin-bottom: 2px; color: #000; }
-.header-center .confidential { font-style: italic; font-weight: bold; color: var(--maroon); }
-.header-right { width: 30%; text-align: right; font-weight: bold; color: var(--maroon); }
+  .page {
+    width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm;
+    margin: 15px auto; position: relative; background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden;
+    display: flex; flex-direction: column; page-break-after: always;
+  }
 
-.footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2; font-size: 10pt; font-family: Arial, sans-serif; height: 15mm; }
-.footer-left { display: flex; align-items: center; gap: 10px; }
-.footer-qr { display: inline-block; width: 35px; height: 35px; }
-.footer-qr svg { display: block; width: 35px; height: 35px; filter: grayscale(100%); }
-.footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
-.footer-brand .name { font-size: 9pt; font-weight: 900; letter-spacing: 1px; color: var(--maroon); }
-.footer-brand .tag { font-size: 7pt; color: var(--dark); }
-.footer-right { color: var(--dark); font-style: italic; }
+  @media print {
+    body { background: white; padding-top: 0; }
+    .page { margin: 0; box-shadow: none; page-break-inside: avoid; }
+    .control-bar { display: none !important; }
+    .footer { position: fixed; bottom: 10mm; }
+  }
 
-.cover-page { padding: 20mm; display: flex; flex-direction: column; }
-.cover-header { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px; text-align: center; }
-.ifb-logo-svg { width: 100px; height: 100px; margin-bottom: 20px; }
-.cover-header-text .title { font-size: 36px; font-weight: 900; font-family: Arial, sans-serif; margin-bottom: 5px; color: var(--maroon); letter-spacing: -.5px; line-height: 1; }
-.cover-header-text .sub { font-size: 14pt; font-family: Arial, sans-serif; line-height: 1.2; font-weight: bold; margin-bottom: 10px; }
-.cover-header-text .dept { font-size: 11pt; font-family: Arial, sans-serif; font-weight: bold; color: #555; }
-.title-box { border: 3px solid var(--maroon); border-radius: 10px; padding: 20px; text-align: center; margin: 80px auto 60px auto; width: 80%; background: #FFF5F6; }
-.title-box h1 { font-size: 26pt; font-weight: bold; color: #111; margin-bottom: 10px; }
-.title-box h2 { font-size: 18pt; font-weight: bold; color: var(--maroon); }
-.cover-meta { margin-top: auto; text-align: center; font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; }
+  /* HARD-STOP wrapper: content physically cannot reach the footer */
+  .content-wrapper {
+    position: relative; z-index: 1; display: flex; flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: calc(297mm - 15mm - 55mm);
+    overflow: hidden;
+  }
 
-.doc-title { font-size: 15pt; font-weight: bold; color: var(--maroon); text-align: center; margin-bottom: 15px; font-family: Arial, sans-serif; border-bottom: 2px solid var(--maroon); padding-bottom: 5px; flex-shrink: 0; }
+  .header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 30px; flex-shrink: 0;
+  }
 
-.notice-box { background: #FFF5F6; border-left: 4px solid var(--maroon); padding: 12px 16px; margin: 10px 0 15px; font-size: 10.5pt; }
+  .header-left {
+    width: 30%; text-align: left; color: #000;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 14pt; font-weight: normal; font-style: italic;
+  }
 
-.tt-table { width: 100%; border-collapse: collapse; font-size: 10pt; font-family: Arial, sans-serif; margin-bottom: 15px; }
-.tt-table th, .tt-table td { border: 1px solid var(--dark); padding: 10px 12px; vertical-align: top; }
-.tt-table th { background: var(--maroon); color: var(--white); font-weight: bold; text-align: center; font-size: 9.5pt; }
-.tt-table tbody tr:nth-child(even) { background: var(--bg); }
-.tt-table .date-cell { font-weight: bold; color: var(--maroon); font-size: 11pt; }
-.tt-table .date-cell small { display: block; font-size: 8pt; color: var(--dark); font-weight: normal; margin-top: 2px; letter-spacing: .5px; }
-.tt-table .subject-cell { font-weight: bold; }
-.tt-table .code-cell { font-family: monospace; font-weight: bold; }
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num {
+    display: block; font-family: Arial, sans-serif;
+    font-size: 14pt; margin-bottom: 2px; color: #000; font-weight: bold;
+  }
+  .header-center .confidential {
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic; font-weight: bold; color: #000; font-size: 12pt;
+  }
 
-.steps-list { list-style: none; margin: 10px 0; padding: 0; counter-reset: step; }
-.steps-list li { padding: 10px 0 10px 36px; position: relative; border-bottom: 1px solid var(--silver); font-size: 10.5pt; line-height: 1.5; }
-.steps-list li:last-child { border-bottom: none; }
-.steps-list li::before { content: counter(step); counter-increment: step; position: absolute; left: 0; top: 10px; width: 24px; height: 24px; background: var(--maroon); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: Arial, sans-serif; font-weight: bold; font-size: 9.5pt; }
+  .header-right {
+    width: 30%; text-align: right; color: #000;
+    font-family: Arial, sans-serif; font-size: 16pt; font-weight: 900;
+  }
 
-.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
-.info-box { background: var(--bg); border: 1px solid var(--silver); border-radius: 6px; padding: 10px 12px; }
-.info-box h4 { font-family: Arial, sans-serif; font-size: 10pt; color: var(--maroon); margin-bottom: 4px; }
-.info-box p { font-size: 9.5pt; line-height: 1.5; }
+  .footer {
+    position: absolute; bottom: 10mm; left: 20mm; right: 20mm;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    z-index: 2; font-size: 12pt; font-family: Arial, sans-serif; height: 15mm;
+  }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 40px; height: 40px; }
+  .footer-qr svg { display: block; width: 40px; height: 40px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 11pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .tag { font-size: 9pt; color: #000; }
+  .footer-right { color: #000; font-style: italic;}
 
-.roadmap { margin-top: 18px; }
-.roadmap-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--silver); }
-.roadmap-row:last-child { border-bottom: none; }
-.roadmap-when { width: 110px; flex-shrink: 0; font-family: Arial, sans-serif; font-weight: bold; color: var(--maroon); font-size: 10pt; }
-.roadmap-what h4 { font-family: Arial, sans-serif; font-size: 10.5pt; margin-bottom: 2px; }
-.roadmap-what p { font-size: 9.5pt; line-height: 1.5; color: var(--dark); }
+  /* COVER PAGE DESIGN */
+  .cover-page { padding: 0; }
+  .cover-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; overflow: hidden; }
+  .cover-bg-maroon { position: absolute; top: 0; left: 0; width: 75%; height: 65%; background: #7A1F2B; }
+  .cover-bg-grey { position: absolute; bottom: 0; left: 0; width: 75%; height: 35%; background: #F8F8F8; }
+  .cover-bg-checker {
+    position: absolute; bottom: 0; right: 0; width: 25%; height: 50%;
+    background-color: #fff;
+    background-image: linear-gradient(45deg, #D1D5DB 25%, transparent 25%, transparent 75%, #D1D5DB 75%, #D1D5DB), linear-gradient(45deg, #D1D5DB 25%, transparent 25%, transparent 75%, #D1D5DB 75%, #D1D5DB);
+    background-size: 24px 24px; background-position: 0 0, 12px 12px; clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 50%);
+  }
+  .cover-bg-circle { position: absolute; top: 8%; right: 10%; width: 140px; height: 140px; background: #FFFFFF; border-radius: 50%; z-index: 1; border: 4px solid #7A1F2B; }
+  .cover-bg-circle::after { content: ''; position: absolute; top: 50%; left: -5%; width: 110%; height: 25%; background: #7A1F2B; transform: translateY(-50%); z-index: 2; }
+  .cover-bg-line { position: absolute; top: calc(8% + 140px); right: calc(10% + 68px); width: 2px; height: 28%; background: #7A1F2B; z-index: 1; }
+  .cover-bg-line::after { content: ''; position: absolute; top: 40%; left: -6px; width: 14px; height: 30px; background: #7A1F2B; border: 2px solid #FFF; }
+  .cover-content { position: relative; z-index: 2; padding: 20mm 15mm; display: flex; flex-direction: column; height: 100%; }
+  .cover-logo-area { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
+  .cover-logo-svg { width: 80px; height: 80px; background: #FFF; border-radius: 50%; padding: 5px; }
+  .cover-logo-text { display: flex; flex-direction: column; justify-content: center; }
+  .cover-logo-text .logo-title { font-family: Arial, sans-serif; font-size: 22pt; font-weight: 900; color: #FFF; line-height: 1.1; }
+  .cover-logo-text .logo-sub { font-family: Arial, sans-serif; font-size: 11pt; color: #FFF; letter-spacing: 2px; font-weight: bold; }
+  .cover-title { font-family: Arial, sans-serif; margin-bottom: 20px; margin-top: 15px; }
+  .cover-title .main-white { font-size: 46pt; font-weight: 900; color: #FFF; display: block; line-height: 1.1; text-shadow: 2px 2px 0px #7A1F2B, 4px 4px 0px rgba(0,0,0,0.2); }
+  .cover-highlight { background: #FFF; color: #7A1F2B; border-left: 6px solid #7A1F2B; font-family: Arial, sans-serif; font-weight: 900; font-size: 16pt; padding: 10px 15px; width: max-content; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+  .cover-text { color: #FFF; font-family: Arial, sans-serif; font-size: 14pt; max-width: 380px; line-height: 1.5; margin-bottom: 5px; border-left: 2px solid rgba(255,255,255,0.4); padding-left: 15px; }
+  .cover-ai-disclaimer { color: rgba(255,255,255,0.8); font-family: Arial, sans-serif; font-size: 11pt; font-style: italic; max-width: 380px; padding-left: 17px; margin-bottom: 15px; }
+  .cover-text-above-circle { position: absolute; bottom: 75mm; left: 20mm; z-index: 2; font-family: Arial, sans-serif; font-size: 18pt; font-weight: 900; color: #7A1F2B; letter-spacing: 1px; }
+  .cover-info-circle { position: absolute; bottom: 30mm; left: 20mm; z-index: 2; width: 170px; height: 170px; background: #7A1F2B; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #FFF; font-family: Arial, sans-serif; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 4px solid #FFF; }
+  .cover-info-circle .details { font-size: 16pt; font-weight: 900; line-height: 1.4; }
+  .cover-barcode-a10 { margin-left: 17px; margin-top: 10px; }
+  .cover-barcode-270610a { position: absolute; right: 20mm; bottom: 15mm; z-index: 3; }
+  .cover-page .footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; }
+  .cover-page .footer-brand .name, .cover-page .footer-brand .tag, .cover-page .footer-right { color: #000; }
+  .cover-page .footer-qr svg { filter: grayscale(100%); }
+
+  /* DOCUMENT CONTENT */
+  .doc-title-block { margin-bottom: 25px; border-left: 6px solid #7A1F2B; padding-left: 15px; flex-shrink: 0; }
+  .doc-title-block .title { font-family: Arial, sans-serif; font-size: 22pt; font-weight: 900; color: #7A1F2B; line-height: 1.2; }
+  .doc-title-block .sub { font-family: Arial, sans-serif; font-size: 12pt; color: #555; letter-spacing: 1px; margin-top: 5px; }
+
+  .content { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+  .content h2 { color: #7A1F2B; font-family: Arial, sans-serif; font-size: 15pt; margin: 18px 0 8px; }
+  .content h3 { font-size: 14pt; font-weight: bold; margin: 12px 0 5px; }
+  .content p { margin-bottom: 10px; text-align: justify; font-size: 14pt; }
+
+  .notice-box { background: #F8F8F8; border-left: 4px solid #7A1F2B; padding: 12px 16px; margin: 10px 0 18px; font-size: 13pt; }
+
+  .tt-table { width: 100%; border-collapse: collapse; font-size: 13pt; font-family: Arial, sans-serif; margin-bottom: 16px; page-break-inside: avoid; }
+  .tt-table th, .tt-table td { border: 1px solid #000; padding: 10px 12px; vertical-align: top; }
+  .tt-table th { background: #7A1F2B; color: #FFF; font-weight: bold; text-align: center; font-size: 12pt; }
+  .tt-table tbody tr:nth-child(even) { background: #F8F8F8; }
+  .tt-table .date-cell { font-weight: bold; color: #7A1F2B; font-size: 13pt; }
+  .tt-table .date-cell small { display: block; font-size: 10pt; color: #333; font-weight: normal; margin-top: 2px; letter-spacing: .5px; }
+  .tt-table .subject-cell { font-weight: bold; }
+  .tt-table .code-cell { font-family: monospace; font-weight: bold; }
+
+  .steps-list { list-style: none; margin: 10px 0; padding: 0; counter-reset: step; }
+  .steps-list li { padding: 10px 0 10px 40px; position: relative; border-bottom: 1px solid #E2E8F0; font-size: 14pt; line-height: 1.5; }
+  .steps-list li:last-child { border-bottom: none; }
+  .steps-list li::before { content: counter(step); counter-increment: step; position: absolute; left: 0; top: 10px; width: 26px; height: 26px; background: #7A1F2B; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: Arial, sans-serif; font-weight: bold; font-size: 11pt; }
+
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; page-break-inside: avoid; }
+  .info-box { background: #F8F8F8; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px 14px; }
+  .info-box h4 { font-family: Arial, sans-serif; font-size: 13pt; color: #7A1F2B; margin-bottom: 6px; }
+  .info-box p { font-size: 12pt; line-height: 1.5; margin-bottom: 0; }
+
+  .roadmap { margin-top: 14px; }
+  .roadmap-row { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #E2E8F0; page-break-inside: avoid; }
+  .roadmap-row:last-child { border-bottom: none; }
+  .roadmap-when { width: 130px; flex-shrink: 0; font-family: Arial, sans-serif; font-weight: bold; color: #7A1F2B; font-size: 12pt; }
+  .roadmap-what h4 { font-family: Arial, sans-serif; font-size: 13pt; margin-bottom: 2px; }
+  .roadmap-what p { font-size: 12pt; line-height: 1.5; color: #333; margin-bottom: 0; }
+
+  /* FULL RED BACK COVER DESIGN */
+  .back-cover-red { background-color: #7A1F2B !important; color: #FFF; display: flex; flex-direction: column; position: relative; }
+  .back-cover-red .security-pattern { background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 22px); background-size: 20px 20px, auto; }
+  .back-cover-center { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; text-align: center; padding: 20mm; }
+  .back-cover-logo-large { width: 120px; height: 120px; background: #FFF; border-radius: 50%; padding: 10px; margin-bottom: 20px; }
+  .back-cover-title-large { font-family: Arial, sans-serif; font-size: 30pt; font-weight: 900; color: #FFF; margin-bottom: 10px; }
+  .back-cover-subtitle { font-family: Arial, sans-serif; font-size: 15pt; color: #FFD1D6; margin-bottom: 30px; letter-spacing: 2px; }
+  .back-cover-info { font-family: Arial, sans-serif; font-size: 15pt; color: #FFF; max-width: 450px; line-height: 1.8; text-align: left; padding-left: 25px; border-left: 4px solid rgba(255,255,255,0.4); margin-top: 20px; }
+  .back-cover-ai-disclaimer { font-family: Arial, sans-serif; font-size: 12pt; color: rgba(255,255,255,0.7); max-width: 450px; text-align: left; padding-left: 25px; margin-top: 15px; font-style: italic; }
+  .back-cover-bottom-row { position: absolute; bottom: 20mm; left: 20mm; right: 20mm; z-index: 2; display: flex; justify-content: space-between; align-items: flex-end; }
+  .back-cover-barcode-box { display: flex; flex-direction: column; align-items: flex-start; }
+  .back-cover-qr-box { display: flex; flex-direction: column; align-items: flex-end; color: #FFF; font-family: Arial, sans-serif; text-align: right; }
+  .qr-wrapper { filter: invert(1); width: 80px; height: 80px; margin-bottom: 5px; }
+  .website-text { font-size: 12pt; color: #FFF; font-weight: bold; line-height: 1.2; }
+  .website-link-text { font-size: 11pt; color: #FFF; opacity: 0.9; text-decoration: none; display: block; white-space: nowrap; margin-top: 4px; }
+  .back-cover-footer { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; z-index: 1; display: flex; justify-content: center; align-items: flex-end; font-family: Arial, sans-serif; font-size: 11pt; color: rgba(255,255,255,0.6); }
 </style>
 </head>
 <body>
 
-<!-- COVER -->
+<div class="control-bar">
+    <div class="brand"><span>∆</span> IFB AE Timetable</div>
+    <div class="control-actions">
+        <a href="#" class="btn-nav">Back to Resources</a>
+        <button onclick="window.print()" class="btn-nav primary">Print / Save PDF</button>
+    </div>
+</div>
+
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
 <div class="page cover-page">
-  <div class="security-pattern"></div>
-  <div class="cover-header">
-    <svg class="ifb-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/>
-      <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/>
-      <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/>
-    </svg>
-    <div class="cover-header-text">
-      <div class="title">Institute of Board</div>
-      <div class="sub">Department:<br>Admissions &amp; Assessment</div>
-      <div class="dept">NON-ACCREDITED ACADEMIC INSTITUTION</div>
+  <div class="cover-bg">
+    <div class="cover-bg-maroon"></div>
+    <div class="cover-bg-grey"></div>
+    <div class="cover-bg-checker"></div>
+    <div class="cover-bg-circle"></div>
+    <div class="cover-bg-line"></div>
+  </div>
+
+  <div class="cover-content">
+    <div class="cover-logo-area">
+      <svg class="cover-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+      </svg>
+      <div class="cover-logo-text">
+        <div class="logo-title">INSTITUTE OF BOARD</div>
+        <div class="logo-sub">ADMISSIONS &amp; ASSESSMENT</div>
+      </div>
+    </div>
+
+    <div class="cover-title">
+      <span class="main-white">AE TIMETABLE</span>
+    </div>
+
+    <div class="cover-highlight">
+      2027 Admissions Examination
+    </div>
+
+    <div class="cover-text">
+      Official Schedule. Two entrance sittings: Mathematics AE on 18 January 2027 and the BDE/Benchmark AE on 30 January 2027 for entry into Web Development / Back-end Development.
+    </div>
+
+    <div class="cover-ai-disclaimer">
+      Institute of Board is a non-accredited academic institution.
+    </div>
+
+    <div class="cover-barcode-a10">
+      <svg class="barcode-cover" data-barcode="A10" data-bc-width="2.5" data-bc-height="50" data-bc-display="true" data-bc-font-size="16" data-bc-line-color="#FFFFFF"></svg>
     </div>
   </div>
-  <div class="title-box">
-    <h1>AE TIMETABLE</h1>
-    <h2>2027 ADMISSIONS EXAMINATION</h2>
+
+  <div class="cover-text-above-circle">
+    ADMISSIONS
   </div>
-  <div class="cover-meta">
-    <p>Official Schedule</p>
-    <p>Mathematics · 13 January 2027</p>
-    <p style="margin-top:15px; font-size:10pt; font-weight:normal; color:#555;">Single programme. Single examination. One route in.</p>
+
+  <div class="cover-info-circle">
+    <div class="details">2 Sittings<br>2027</div>
+  </div>
+
+  <div class="cover-barcode-270610a">
+    <svg class="barcode-cover" data-barcode="270610A" data-bc-width="2.5" data-bc-height="50" data-bc-display="true" data-bc-font-size="16" data-bc-line-color="#111111"></svg>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ae-timetable.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: OFFICIAL SCHEDULE ==================== -->
+<div class="page">
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">AE Timetable</div>
+      <div class="header-center">
+        <span class="page-num">2</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title-block">
+      <div class="title">OFFICIAL EXAMINATION SCHEDULE</div>
+      <div class="sub">TWO ENTRANCE SITTINGS</div>
+    </div>
+
+    <div class="content">
+      <div class="notice-box">
+        <strong>Non-Accredited Notice:</strong> IFB is an independent, non-accredited institution. The AE is an internal entry assessment, not a government examination. Passing the AE is the only route to admission.
+      </div>
+
+      <table class="tt-table">
+        <thead>
+          <tr>
+            <th style="width:20%;">Date</th>
+            <th style="width:34%;">Subject</th>
+            <th style="width:24%;">Paper Code</th>
+            <th style="width:22%;">Duration / Marks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="date-cell">18 Jan 2027<small>MONDAY</small></td>
+            <td class="subject-cell">Mathematics AE<br><span style="font-weight:normal;font-size:11pt;color:#333;">Entrance Assessment</span></td>
+            <td class="code-cell">IFB/AE/MATH/2027<br><span style="font-weight:normal;font-size:11pt;">Paper 1 of 1</span></td>
+            <td>2 hours<br><strong>100 marks</strong></td>
+          </tr>
+          <tr>
+            <td class="date-cell">30 Jan 2027<small>SATURDAY</small></td>
+            <td class="subject-cell">BDE / Benchmark AE<br><span style="font-weight:normal;font-size:11pt;color:#333;">Entrance to Web Development / Back-end Development</span></td>
+            <td class="code-cell">IFB/AE/BDE/2027<br><span style="font-weight:normal;font-size:11pt;">Paper 1 of 1</span></td>
+            <td>2 hours<br><strong>100 marks</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-family:Arial,sans-serif;font-size:14pt;color:#7A1F2B;margin-bottom:8px;">Global Start Protocol</h3>
+      <p>Because IFB operates internationally, papers unlock simultaneously at the <strong>global start time (UTC)</strong>. Students in different time zones write at the same absolute moment to prevent question-paper sharing. Check your local equivalent time carefully. Late entries are not permitted.</p>
+    </div>
   </div>
   <div class="footer">
     <div class="footer-left">
       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ae-timetable.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
-    <div class="footer-right">Copyright reserved</div>
+    <div class="footer-right">Please turn over</div>
   </div>
 </div>
 
-<!-- TIMETABLE -->
+<!-- ==================== PAGE 3: WHAT TO BRING / NOT TO BRING ==================== -->
 <div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     <div class="header">
-      <div class="header-left">AE Timetable 2027</div>
-      <div class="header-center"><span class="page-num">2</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-left">AE Timetable</div>
+      <div class="header-center">
+        <span class="page-num">3</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
-    <div class="doc-title">OFFICIAL EXAMINATION SCHEDULE</div>
-    <div class="notice-box">
-      <strong>Non-Accredited Notice:</strong> IFB is an independent, non-accredited institution. The AE is an internal entry assessment, not a government examination. Passing the AE is the only route to admission.
-    </div>
-    <table class="tt-table">
-      <thead>
-        <tr>
-          <th style="width:20%;">Date</th>
-          <th style="width:32%;">Subject</th>
-          <th style="width:26%;">Paper Code</th>
-          <th style="width:22%;">Duration / Marks</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="date-cell">13 Jan 2027<small>WEDNESDAY</small></td>
-          <td class="subject-cell">Mathematics<br><span style="font-weight:normal;font-size:9pt;color:#333;">IFB-S Entrance Assessment</span></td>
-          <td class="code-cell">IFB/AE/MATH/2027<br><span style="font-weight:normal;font-size:9pt;">Paper 1 of 1</span></td>
-          <td>2 hours<br><strong>100 marks</strong></td>
-        </tr>
-      </tbody>
-    </table>
 
-    <div style="margin-top:20px;">
-      <h3 style="font-family:Arial,sans-serif;font-size:12pt;color:var(--maroon);margin-bottom:8px;">Global Start Protocol</h3>
-      <p style="font-size:10.5pt;line-height:1.6;">Because IFB operates internationally, papers unlock simultaneously at the <strong>global start time (UTC)</strong>. Students in different time zones write at the same absolute moment to prevent question-paper sharing. Check your local equivalent time carefully. Late entries are not permitted.</p>
+    <div class="doc-title-block">
+      <div class="title">EXAMINATION DAY</div>
+      <div class="sub">PREPARATION &amp; PROTOCOL</div>
     </div>
 
-    <div class="info-grid" style="margin-top:20px;">
-      <div class="info-box">
-        <h4>What to Bring</h4>
-        <p>Your 13-digit Student ID, 6-character Security Code, printed Question Paper, printed Answer Book, black or blue pens, and a non-programmable scientific calculator.</p>
+    <div class="content">
+      <div class="info-grid">
+        <div class="info-box">
+          <h4>What to Bring</h4>
+          <p>Your 13-digit Student ID, 6-character Security Code, printed Question Paper, printed Answer Book, black or blue pens, and a non-programmable scientific calculator.</p>
+        </div>
+        <div class="info-box">
+          <h4>What NOT to Bring</h4>
+          <p>No graphing calculators, no formula sheets, no phones (except as scanner), no name-writing on scripts. Only your Student ID barcode may appear on your work.</p>
+        </div>
       </div>
-      <div class="info-box">
-        <h4>What NOT to Bring</h4>
-        <p>No graphing calculators, no formula sheets, no phones (except as scanner), no name-writing on scripts. Only your Student ID barcode may appear on your work.</p>
+
+      <div class="notice-box" style="margin-top:20px;">
+        <strong>CRITICAL:</strong> You must upload your scanned pages within <strong>1 hour</strong> of the session ending. The portal locks after this window. Failure to upload results in an invalid script.
       </div>
     </div>
   </div>
@@ -169,30 +370,59 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-heigh
   </div>
 </div>
 
-<!-- PROTOCOL -->
+<!-- ==================== PAGE 4: HOW THE AE WORKS ==================== -->
 <div class="page">
-  <div class="security-pattern"></div>
-  <svg class="watermark" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B"/><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF"/><rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2"/></svg>
   <div class="content-wrapper">
     <div class="header">
-      <div class="header-left">AE Timetable 2027</div>
-      <div class="header-center"><span class="page-num">3</span><span class="confidential">IFB / Confidential</span></div>
+      <div class="header-left">AE Timetable</div>
+      <div class="header-center">
+        <span class="page-num">4</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
       <div class="header-right">2027</div>
     </div>
-    <div class="doc-title">HOW THE ADMISSION EXAMINATION WORKS</div>
-    <ol class="steps-list">
-      <li><strong>Register:</strong> Submit your details on admission.html. On submission, the system generates your <strong>13-digit Student ID</strong> and <strong>6-character Security Code</strong>. Screenshot both — you need them to enter the exam.</li>
-      <li><strong>Log in to Exam Gateway:</strong> On 13 January 2027, visit exam-gateway.html and enter your Student ID + Security Code. The secure timer starts the moment you enter — no late entries.</li>
-      <li><strong>Write &amp; Scan:</strong> Download the Question Paper and Answer Book. Write by hand, then photograph each page using the in-portal scanner. Uploads happen automatically.</li>
-      <li><strong>Anonymous Marking:</strong> Your name never appears on the script. Only your Student ID barcode is used. Scripts are AI-moderated, and any flagged script goes to the Chief Examiner.</li>
-    </ol>
 
-    <div style="margin-top:24px;padding:14px;background:#FFF5F6;border-left:4px solid var(--maroon);font-size:10.5pt;">
-      <strong>CRITICAL:</strong> You must upload your scanned pages within <strong>1 hour</strong> of the session ending. The portal locks after this window. Failure to upload results in an invalid script.
+    <div class="doc-title-block">
+      <div class="title">HOW THE ADMISSION EXAMINATION WORKS</div>
+      <div class="sub">FOUR STEPS</div>
     </div>
 
-    <div style="margin-top:20px;">
-      <h3 style="font-family:Arial,sans-serif;font-size:12pt;color:var(--maroon);margin-bottom:10px;">After the AE — The 2027 Academic Year</h3>
+    <div class="content">
+      <ol class="steps-list">
+        <li><strong>Register:</strong> Submit your details on admission.html. On submission, the system generates your <strong>13-digit Student ID</strong> and <strong>6-character Security Code</strong>. Screenshot both — you need them to enter the exam.</li>
+        <li><strong>Log in to Exam Gateway:</strong> On your scheduled date, visit exam-gateway.html and enter your Student ID + Security Code. The secure timer starts the moment you enter — no late entries.</li>
+        <li><strong>Write &amp; Scan:</strong> Download the Question Paper and Answer Book. Write by hand, then photograph each page using the in-portal scanner. Uploads happen automatically.</li>
+        <li><strong>Anonymous Marking:</strong> Your name never appears on the script. Only your Student ID barcode is used. Scripts are AI-moderated, and any flagged script goes to the Chief Examiner.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ae-timetable.html"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Please turn over</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 5: ROADMAP ==================== -->
+<div class="page">
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">AE Timetable</div>
+      <div class="header-center">
+        <span class="page-num">5</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="doc-title-block">
+      <div class="title">AFTER THE AE</div>
+      <div class="sub">THE 2027 ACADEMIC YEAR</div>
+    </div>
+
+    <div class="content">
       <div class="roadmap">
         <div class="roadmap-row">
           <div class="roadmap-when">May/June 2027</div>
@@ -230,14 +460,95 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-heigh
       <span class="footer-qr" data-qr="https://nylwebdev.vercel.app/ae-timetable.html"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
-    <div class="footer-right">END</div>
+    <div class="footer-right">END OF DOCUMENT</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 6: FULL RED BACK COVER ==================== -->
+<div class="page back-cover-red">
+  <div class="security-pattern"></div>
+
+  <div class="back-cover-center">
+    <svg class="back-cover-logo-large" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+        <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+        <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+    </svg>
+    <div class="back-cover-title-large">INSTITUTE OF BOARD</div>
+    <div class="back-cover-subtitle">ADMISSIONS &amp; ASSESSMENT</div>
+
+    <div class="back-cover-info">
+      <strong>AE Timetable &mdash; 2027 Admissions Examination</strong><br><br>
+      Two sittings: Mathematics AE (18 January 2027) and BDE/Benchmark AE (30 January 2027). Single programme. Single examination. One route in.
+    </div>
+
+    <div class="back-cover-ai-disclaimer">
+      Institute of Board is a non-accredited academic institution. Certificates are internal awards.
+    </div>
+  </div>
+
+  <div class="back-cover-bottom-row">
+    <div class="back-cover-barcode-box">
+      <svg class="barcode-back-final" data-barcode="102626F" data-bc-width="2" data-bc-height="50" data-bc-display="true" data-bc-font-size="14" data-bc-line-color="#FFFFFF"></svg>
+    </div>
+
+    <div class="back-cover-qr-box">
+      <div class="qr-wrapper">
+        <span class="footer-qr-white" data-qr="https://ifb-nmaz.onrender.com"></span>
+      </div>
+      <div class="website-text">
+        We are also<br>available at
+      </div>
+      <a href="https://ifb-nmaz.onrender.com" class="website-link-text" target="_blank">https://ifb-nmaz.onrender.com</a>
+    </div>
+  </div>
+
+  <div class="back-cover-footer">
+    <span>© 2027 Institute of Board. All rights reserved.</span>
   </div>
 </div>
 
 <script>
 (function () {
+  function makeBarcodes() {
+    if (typeof JsBarcode !== "function") return;
+
+    document.querySelectorAll(".barcode-cover").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "102626F", {
+          format: "CODE128",
+          width: parseFloat(el.dataset.bcWidth || "2.5"),
+          height: parseInt(el.dataset.bcHeight || "50", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace",
+          fontSize: parseInt(el.dataset.bcFontSize || "16", 10),
+          textMargin: 2, margin: 0,
+          background: "transparent",
+          lineColor: el.dataset.bcLineColor || "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+
+    document.querySelectorAll(".barcode-back-final").forEach(function (el) {
+      try {
+        JsBarcode(el, el.dataset.barcode || "102626F", {
+          format: "CODE128",
+          width: parseFloat(el.dataset.bcWidth || "2"),
+          height: parseInt(el.dataset.bcHeight || "50", 10),
+          displayValue: el.dataset.bcDisplay === "true",
+          font: "monospace",
+          fontSize: parseInt(el.dataset.bcFontSize || "14", 10),
+          textMargin: 2, margin: 0,
+          background: "transparent",
+          lineColor: el.dataset.bcLineColor || "#111111"
+        });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
   function makeQRCodes() {
     if (typeof qrcode !== "function") return;
+
     document.querySelectorAll(".footer-qr").forEach(function (el) {
       try {
         var qr = qrcode(0, "M");
@@ -246,15 +557,35 @@ body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-heigh
         el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
       } catch (e) { console.warn(e); }
     });
+
+    document.querySelectorAll(".footer-qr-white").forEach(function (el) {
+      try {
+        var qr = qrcode(0, "M");
+        qr.addData(el.dataset.qr || "https://ifb-nmaz.onrender.com");
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
   }
-  var tries = 0;
-  (function attempt() {
-    tries++;
-    var okQ = typeof qrcode === "function";
-    if (okQ) makeQRCodes();
-    if (!okQ && tries < 40) setTimeout(attempt, 150);
-  })();
-  window.addEventListener("load", makeQRCodes);
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okB = typeof JsBarcode === "function";
+      var okQ = typeof qrcode === "function";
+      if (okB) makeBarcodes();
+      if (okQ) makeQRCodes();
+      if ((!okB || !okQ) && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+
+  window.addEventListener("load", function () {
+    makeBarcodes();
+    makeQRCodes();
+  });
 })();
 </script>
 </body>
