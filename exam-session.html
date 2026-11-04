@@ -24,7 +24,7 @@
   /* ========== BASE ========== */
   :root { 
     --maroon: #7A1F2B; --bg: #F8FAFC; --panel: #FFFFFF; --text: #111111; 
-    --gray: #64748B; --silver: #E2E8F0; --success: #15803D; --error: #B91C1C; --crimson: #dc143c;
+    --gray: #64748B; --silver: #E2E8F0; --success: #15803D; --error: #B91C1C; 
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -107,7 +107,7 @@
   .viewer-nav button:disabled { opacity: 0.4; }
   .viewer-nav span { font-weight: 800; font-size: 14px; color: var(--maroon); }
 
-  /* ========== SCANNER UI (From your provided code) ========== */
+  /* ========== SCANNER UI ========== */
   .scanner-container { max-width: 600px; margin: 0 auto; }
   .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #f3f4f6; border: 1px solid var(--silver); border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
   video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
@@ -136,7 +136,7 @@
   .torch-btn.on { background:var(--maroon); color:#fff; }
 
   .q-selector { margin-top:1rem; display:flex; align-items:center; gap:.5rem; }
-  .q-selector select { flex:1; background:#fff; color:var(--ink); border:1px solid var(--silver); border-radius:8px; padding:.65rem .8rem; font-size:1rem; }
+  .q-selector select { flex:1; background:#fff; color:var(--text); border:1px solid var(--silver); border-radius:8px; padding:.65rem .8rem; font-size:1rem; font-family: inherit;}
   
   .pages-strip { margin-top:1rem; }
   .pages-strip h4 { font-size:.78rem; color:var(--maroon); text-transform:uppercase; letter-spacing:.06em; margin-bottom:.4rem; font-weight:700; }
@@ -147,7 +147,7 @@
   .page-thumb .del { position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#fff; border:1px solid var(--maroon); color:var(--maroon); cursor:pointer; font-size:.7rem; display:flex; align-items:center; justify-content:center; }
   
   .controls { display:flex; gap:.6rem; margin-top:1rem; flex-wrap:wrap; }
-  button.action { padding:.85rem 1.2rem; font-size:.95rem; font-weight:600; border:none; border-radius:10px; cursor:pointer; transition:background .15s, opacity .15s; flex:1; min-width:130px; }
+  button.action { padding:.85rem 1.2rem; font-size:.95rem; font-weight:600; border:none; border-radius:10px; cursor:pointer; transition:background .15s, opacity .15s; flex:1; min-width:130px; font-family: inherit;}
   button.action:disabled { opacity:.4; cursor:not-allowed; }
   .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
   .btn-success { background:var(--success); color:#fff; }
@@ -173,7 +173,10 @@
   <header class="header">
     <div class="brand"><span>∆</span> IFB Exam</div>
     <div class="clock-container"><i data-lucide="timer" style="width: 20px; height: 20px; color: var(--gray);"></i><div class="clock" id="clockDisplay">--:--:--</div></div>
-    <div class="header-actions"><button class="btn btn-danger" onclick="exitExam()"><i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Exit</button></div>
+    <div class="header-actions">
+      <button class="btn" id="adminReturnBtn" style="display:none; margin-right: 10px;" onclick="switchToAdminView()"><i data-lucide="shield"></i> Admin View</button>
+      <button class="btn btn-danger" onclick="exitExam()"><i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Exit</button>
+    </div>
   </header>
   <main class="main-content">
     <div class="left-panel">
@@ -264,6 +267,7 @@
   <header class="header">
     <div class="brand"><span>∆</span> IFB Admin</div>
     <div class="header-actions">
+      <button class="btn btn-primary" style="margin-right: 10px;" onclick="switchToStudentView()"><i data-lucide="user"></i> View as Student</button>
       <button class="btn" onclick="window.location.href='student-dashboard.html'"><i data-lucide="layout-dashboard"></i> Dashboard</button>
       <button class="btn btn-danger" onclick="logout()"><i data-lucide="log-out"></i> Logout</button>
     </div>
@@ -334,7 +338,6 @@
   const db = getFirestore(app);
   const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
   
-  // CLOUDINARY CONFIG
   const CLOUDINARY_CLOUD_NAME = "s6otjgim";
   const CLOUDINARY_UPLOAD_PRESET = "students_ifb_2027";
 
@@ -346,13 +349,36 @@
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
   // ============================================================
+  // VIEW SWITCHER
+  // ============================================================
+  window.switchToAdminView = function() {
+    document.getElementById('studentView').classList.remove('active');
+    document.getElementById('adminView').classList.add('active');
+    stopCamera();
+  };
+
+  window.switchToStudentView = function() {
+    document.getElementById('adminView').classList.remove('active');
+    document.getElementById('studentView').classList.add('active');
+    // If Admin bypasses PIN, load paper immediately
+    if (paperHtml) {
+      document.getElementById('pinOverlay').classList.remove('active');
+      loadPaper();
+      loadAnswerBook();
+      if (!examStartTime) startExam();
+    }
+  };
+
+  // ============================================================
   // AUTH & VIEW SWITCHING
   // ============================================================
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     currentUser = user;
 
+    // Show Admin return button if user is Admin
     if (user.email === ADMIN_EMAIL) {
+      document.getElementById('adminReturnBtn').style.display = 'block';
       document.getElementById('adminView').classList.add('active');
       document.getElementById('studentView').classList.remove('active');
       initMonitor();
@@ -421,6 +447,13 @@
       statusEl.style.color = "var(--success)";
       btn.innerHTML = '<i data-lucide="check-circle"></i> Session Active';
       refreshIcons();
+      
+      // Load for Admin preview
+      paperHtml = qHtml;
+      answerBookHtml = aHtml;
+      examPin = pin;
+      examDurationMins = duration;
+      
     } catch (error) {
       console.error(error);
       statusEl.innerText = "Error: " + error.message;
@@ -567,10 +600,11 @@
   }
 
   function startExam() {
+    if (examStartTime) return; // Prevent double start
     examStartTime = Date.now();
     startTimer();
     logEvent('login', { message: 'Student unlocked exam' });
-    initScanner(); // Initialize the CV scanner
+    initScanner(); 
   }
 
   function startTimer() {
@@ -635,7 +669,7 @@
   };
 
   // ============================================================
-  // CV SCANNER LOGIC (From your provided code)
+  // CV SCANNER LOGIC
   // ============================================================
   const A4_W = 1240, A4_H = 1754;
   const captures = {}; 
@@ -658,9 +692,7 @@
   const pagesTitle = document.getElementById('pagesTitle');
 
   function initScanner() {
-    // Populate Question dropdown based on the uploaded paper
     if (questionPick.options.length === 0) {
-      // For now, assume 5 questions. In a real scenario, parse the paper HTML to find <h2>QUESTION X</h2> tags.
       for(let i=1; i<=5; i++) {
         const o = document.createElement('option');
         o.value = i; o.textContent = `Question ${i}`;
