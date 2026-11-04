@@ -7,10 +7,13 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="theme-color" content="#7A1F2B">
 
+<!-- Libraries -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
   /* ========== BASE ========== */
   :root { 
@@ -32,29 +35,25 @@
   .btn-primary { background: var(--maroon); color: var(--white); border: none; }
   .btn-blue { background: #EFF6FF; color: var(--blue); border: 1px solid #BFDBFE; }
   .btn-danger { border-color: var(--error); color: var(--error); }
+  .btn-success { background: var(--success); color: var(--white); border: none; }
 
-  /* ========== DASHBOARD (Like the image) ========== */
+  /* ========== DASHBOARD ========== */
   .dashboard-container { padding: 24px; overflow-y: auto; height: 100%; display: none; }
   .dashboard-container.active { display: block; }
   
   .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
   .dash-header h2 { font-size: 20px; font-weight: 800; }
-  .dash-status { background: #DCFCE7; color: var(--success); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
   
   .exam-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
   @media(min-width: 768px) { .exam-grid { grid-template-columns: 1fr 1fr; } }
   
   .exam-card { background: var(--panel); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; }
   .exam-card .title { font-size: 16px; font-weight: 800; color: var(--maroon); margin-bottom: 4px; }
-  .exam-card .subtitle { font-size: 12px; color: var(--gray); margin-bottom: 16px; }
-  .exam-meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; border-top: 1px solid var(--silver); border-bottom: 1px solid var(--silver); padding: 12px 0; }
-  .exam-meta div { display: flex; flex-direction: column; gap: 4px; }
+  .exam-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; border-top: 1px solid var(--silver); padding: 12px 0; }
   .exam-meta span { font-size: 10px; color: var(--gray); text-transform: uppercase; font-weight: 700; }
-  .exam-meta strong { font-size: 13px; font-weight: 700; }
-  
-  .card-actions { display: flex; gap: 10px; }
+  .exam-meta strong { font-size: 13px; font-weight: 700; display: block; }
 
-  /* ========== EXAM WORKSPACE (Paper, Scanner, Answer Book) ========== */
+  /* ========== WORKSPACE ========== */
   .workspace { display: none; flex: 1; flex-direction: column; overflow: hidden; background: var(--bg); }
   .workspace.active { display: flex; }
   
@@ -71,7 +70,7 @@
   .ab-writing-page { border: 1.5px solid #000; min-height: 400px; position: relative; display: flex; align-items: center; justify-content: center; background: #FAFAFA; }
   .ab-writing-page img { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
   
-  /* Scanner UI */
+  /* Scanner */
   .scanner-ui { padding: 16px; display: flex; flex-direction: column; align-items: center; height: 100%; overflow-y: auto; }
   .scanner-box { width: 100%; max-width: 500px; background: white; border-radius: 16px; padding: 16px; border: 1px solid var(--silver); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
   .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
@@ -85,36 +84,47 @@
   .action-btn:disabled { opacity:0.5; }
   .status { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 600; color: var(--gray); }
 
-  /* Overlays & Admin */
+  /* ========== ADMIN PANEL ========== */
+  .admin-panel { display: none; padding: 20px; height: 100%; overflow-y: auto; }
+  .admin-panel.active { display: block; }
+  .admin-box { background: white; border: 1px solid var(--silver); border-radius: 12px; padding: 20px; margin-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+  .admin-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 16px; color: var(--maroon); border-bottom: 1px solid var(--silver); padding-bottom: 10px; }
+  .form-group { margin-bottom: 12px; }
+  .form-group label { font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; }
+  .form-group input { width: 100%; padding: 10px; border: 1px solid var(--silver); border-radius: 6px; font-family: inherit; }
+
+  .search-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .search-row input { flex: 1; padding: 12px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; font-size: 14px; }
+  .search-result { background: #FAFAFA; border: 1px solid var(--silver); border-radius: 8px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .search-result .info { font-weight: 700; font-size: 14px; }
+  .search-result .actions { display: flex; gap: 8px; }
+
   .overlay { position: fixed; inset: 0; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
   .overlay.active { display: flex; }
   .pin-input { background: var(--white); border: 2px solid var(--silver); font-size: 28px; font-family: monospace; text-align: center; letter-spacing: 6px; padding: 12px; border-radius: 12px; outline: none; width: 100%; max-width: 250px; margin-bottom: 20px; }
-  .admin-panel { display: none; padding: 20px; height: 100%; overflow-y: auto; }
-  .admin-panel.active { display: block; }
+  
+  /* Loader */
+  .loader { position: fixed; inset: 0; background: #F8FAFC; z-index: 99999; display: flex; justify-content: center; align-items: center; font-family: 'Inter', sans-serif; font-weight: 900; font-size: 40px; color: #7A1F2B; transition: opacity 0.4s; }
 </style>
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
+<div class="loader" id="loader">∆</div>
+
 <header class="header">
   <div class="brand"><span>∆</span> IFB Portal</div>
   <div class="clock-area" id="clockArea" style="display:none;">
     <div class="digital-clock" id="digitalClock">00:00:00</div>
   </div>
-  <div id="headerActions">
+  <div>
     <button class="btn btn-danger" id="btnExit" onclick="exitExam()" style="display:none;"><i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Exit Exam</button>
   </div>
 </header>
 
 <!-- ========== STUDENT DASHBOARD ========== -->
 <div class="dashboard-container active" id="viewDashboard">
-  <div class="dash-header">
-    <h2>Upcoming Exams to Write</h2>
-    <div class="dash-status"><i data-lucide="check-circle" style="width:14px; height:14px;"></i> Online</div>
-  </div>
-  
+  <div class="dash-header"><h2>Available Exams</h2></div>
   <div class="exam-grid" id="examList">
-    <!-- Sessions injected here by JS -->
     <p style="text-align:center; color:var(--gray); padding:40px;">Loading exams...</p>
   </div>
 </div>
@@ -128,11 +138,7 @@
       <option value="answerbook">📝 View Digital Answer Book</option>
     </select>
   </div>
-
-  <div class="tab-content" id="tabPaper">
-    <iframe class="iframe-container" id="paperFrame" src="about:blank"></iframe>
-  </div>
-
+  <div class="tab-content" id="tabPaper"><iframe class="iframe-container" id="paperFrame" src="about:blank"></iframe></div>
   <div class="tab-content" id="tabScanner">
     <div class="scanner-ui">
       <div class="scanner-box">
@@ -153,25 +159,32 @@
       </div>
     </div>
   </div>
-
   <div class="tab-content" id="tabAnswerBook">
-    <div id="answerBookContainer" style="padding: 16px;">
-      <!-- Pages injected here -->
-    </div>
+    <div id="answerBookContainer" style="padding: 16px;"></div>
   </div>
 </div>
 
 <!-- ========== ADMIN PANEL ========== -->
 <div class="admin-panel" id="viewAdmin">
-  <div style="max-width: 800px; margin: 0 auto;">
-    <h2 style="margin-bottom: 20px;">Admin: Create Session</h2>
-    <div class="scanner-box" style="max-width: 100%;">
-      <div style="margin-bottom: 12px;"><label style="font-size:12px; font-weight:700;">Exam Title</label><input type="text" id="adTitle" style="width:100%; padding:10px; border:1px solid var(--silver); border-radius:6px; margin-top:4px;"></div>
-      <div style="margin-bottom: 12px;"><label style="font-size:12px; font-weight:700;">Question Paper (.html)</label><input type="file" id="adPaper" accept=".html" style="width:100%; padding:10px; border:1px solid var(--silver); border-radius:6px; margin-top:4px;"></div>
-      <div style="margin-bottom: 12px;"><label style="font-size:12px; font-weight:700;">Exam PIN (6 digits)</label><input type="text" id="adPin" maxlength="6" style="width:100%; padding:10px; border:1px solid var(--silver); border-radius:6px; margin-top:4px;"></div>
-      <div style="margin-bottom: 12px;"><label style="font-size:12px; font-weight:700;">Duration (Mins)</label><input type="number" id="adDuration" value="120" style="width:100%; padding:10px; border:1px solid var(--silver); border-radius:6px; margin-top:4px;"></div>
-      <button class="btn btn-primary" style="width:100%; justify-content:center; padding:14px;" onclick="createSession()">Create & Publish</button>
+  <!-- Create Session -->
+  <div class="admin-box">
+    <h3><i data-lucide="settings"></i> Create Exam Session</h3>
+    <div class="form-group"><label>Exam Title</label><input type="text" id="adTitle" placeholder="e.g. AE Mathematics 2027"></div>
+    <div class="form-group"><label>Question Paper (.html)</label><input type="file" id="adPaper" accept=".html"></div>
+    <div class="form-group"><label>Exam PIN (6 digits)</label><input type="text" id="adPin" maxlength="6" placeholder="123456"></div>
+    <div class="form-group"><label>Duration (Mins)</label><input type="number" id="adDuration" value="120"></div>
+    <button class="btn btn-primary" style="width:100%; justify-content:center; padding:14px;" onclick="createSession()">Publish Session</button>
+    <div id="createStatus" style="margin-top:10px; font-size:12px; font-weight:700; text-align:center; color:var(--gray);"></div>
+  </div>
+
+  <!-- Search Scripts -->
+  <div class="admin-box">
+    <h3><i data-lucide="search"></i> Find & Download Scripts</h3>
+    <div class="search-row">
+      <input type="text" id="searchInput" placeholder="Enter Student ID or Exam Number...">
+      <button class="btn btn-primary" onclick="searchStudent()">Search</button>
     </div>
+    <div id="searchResults"></div>
   </div>
 </div>
 
@@ -188,7 +201,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
@@ -206,20 +219,24 @@
   let stream = null, pendingBlob = null, scriptCount = 0, torchOn = false;
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
+  
+  // Check URL for direct session link
   const urlParams = new URLSearchParams(window.location.search);
   currentSessionId = urlParams.get('session');
 
-  // 1. AUTH & ROUTING
+  // 1. AUTH
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     currentUser = user;
 
+    // Hide loader
+    const loader = document.getElementById('loader');
+    if (loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 400); }
+
     if (user.email === ADMIN_EMAIL) {
-      // Admin View
       document.getElementById('viewAdmin').classList.add('active');
       document.getElementById('viewDashboard').classList.remove('active');
     } else {
-      // Student View
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (userDoc.exists()) {
         studentId = userDoc.data().studentId || user.uid;
@@ -227,17 +244,15 @@
       }
       
       if (currentSessionId) {
-        // Direct link to session
         await loadSession(currentSessionId);
       } else {
-        // Load dashboard list
         loadDashboard();
       }
     }
     refreshIcons();
   });
 
-  // 2. DASHBOARD LIST (If no session link)
+  // 2. DASHBOARD
   async function loadDashboard() {
     const list = document.getElementById('examList');
     const q = query(collection(db, "examSessions"), orderBy("createdAt", "desc"));
@@ -254,17 +269,13 @@
       list.innerHTML += `
         <div class="exam-card">
           <div class="title">${data.title || "Examination"}</div>
-          <div class="subtitle">IFB-S Mathematics · Term 1</div>
           <div class="exam-meta">
-            <div><span>Date</span><strong>Today</strong></div>
             <div><span>Duration</span><strong>${data.durationMinutes || 120} Mins</strong></div>
             <div><span>Status</span><strong style="color:var(--success);">Open</strong></div>
           </div>
-          <div class="card-actions">
-            <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="window.location.href='exam-session.html?session=${docSnap.id}'">
-              Enter Exam
-            </button>
-          </div>
+          <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="window.location.href='exam-session.html?session=${docSnap.id}'">
+            Enter Exam
+          </button>
         </div>
       `;
     });
@@ -279,11 +290,8 @@
     const sd = sessionDoc.data();
     examPin = sd.examCode;
     examDurationMins = sd.durationMinutes || 120;
-    
-    // Store for PIN check
     window._sessionData = sd;
 
-    // Show PIN
     document.getElementById('pinOverlay').classList.add('active');
   }
 
@@ -296,15 +304,12 @@
       document.getElementById('btnExit').style.display = 'flex';
       
       const sd = window._sessionData;
-      // Load Paper
       if (sd.questionPaperHtml) {
         document.getElementById('paperFrame').srcdoc = DOMPurify.sanitize(sd.questionPaperHtml, { WHOLE_DOCUMENT: true });
       }
       
-      // Build Answer Book
       buildAnswerBook();
       startTimer(examDurationMins);
-      logEvent('login');
     } else {
       alert("Incorrect PIN.");
     }
@@ -330,14 +335,13 @@
     }, 1000);
   }
 
-  // 5. TABS
+  // 5. TABS & ANSWER BOOK
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
     document.getElementById('mobileTabSelect').value = tab;
   };
 
-  // 6. ANSWER BOOK & SCANNER
   function buildAnswerBook() {
     const container = document.getElementById('answerBookContainer');
     container.innerHTML = '';
@@ -352,7 +356,6 @@
         </div>
       `;
     }
-    // Load existing scans
     loadExistingScans();
   }
 
@@ -366,14 +369,12 @@
         const pNum = idx + 1;
         const img = document.getElementById(`img-page-${pNum}`);
         const msg = document.getElementById(`empty-msg-${pNum}`);
-        if(img && msg) {
-          img.src = sc.url; img.style.display = 'block'; msg.style.display = 'none';
-        }
+        if(img && msg) { img.src = sc.url; img.style.display = 'block'; msg.style.display = 'none'; }
       });
     }
   }
 
-  // Scanner Logic
+  // 6. SCANNER LOGIC
   const video = document.getElementById('video');
   const canvas = document.getElementById('canvas');
   const preview = document.getElementById('preview');
@@ -392,10 +393,8 @@
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
       video.srcObject = stream; await video.play();
       video.classList.add('active'); document.getElementById('framingGuide').classList.add('visible');
-      
       const track = stream.getVideoTracks()[0];
       if (track.getCapabilities().torch) btnTorch.style.display = 'flex';
-      
       btnOpen.disabled = true; btnCapture.disabled = false; btnRetake.disabled = true; btnUpload.disabled = true;
       setStatus('Position the A4 page inside the frame.');
     } catch (err) { setStatus('Camera error: ' + err.message, true); }
@@ -403,11 +402,7 @@
 
   btnTorch.addEventListener('click', async () => {
     if (!stream) return;
-    try {
-      torchOn = !torchOn;
-      await stream.getVideoTracks()[0].applyConstraints({ advanced: [{ torch: torchOn }] });
-      btnTorch.classList.toggle('on', torchOn);
-    } catch (err) {}
+    try { torchOn = !torchOn; await stream.getVideoTracks()[0].applyConstraints({ advanced: [{ torch: torchOn }] }); btnTorch.classList.toggle('on', torchOn); } catch (err) {}
   });
 
   btnCapture.addEventListener('click', async () => {
@@ -419,7 +414,6 @@
     video.classList.remove('active'); document.getElementById('framingGuide').classList.remove('visible');
     btnTorch.style.display = 'none'; torchOn = false;
     
-    // Binarization (Black & White)
     const ctx = canvas.getContext('2d');
     const imgData = ctx.getImageData(0, 0, w, h);
     const d = imgData.data;
@@ -464,12 +458,10 @@
       if (!res.ok) throw new Error("Cloudinary failed");
       const data = await res.json();
 
-      // Inject into view
       const img = document.getElementById(`img-page-${nextScript}`);
       const msg = document.getElementById(`empty-msg-${nextScript}`);
       if (img && msg) { img.src = data.secure_url; img.style.display = 'block'; msg.style.display = 'none'; }
       
-      // Save to DB
       await setDoc(doc(db, "examLogs", studentId), {
         examNumber, status: 'In Session', lastActive: serverTimestamp(),
         scripts: arrayUnion({ url: data.secure_url, filename: fileName, uploadedAt: new Date().toISOString() })
@@ -485,6 +477,107 @@
       btnUpload.innerHTML = 'Upload Page'; btnUpload.disabled = false;
     }
   });
+
+  // 7. ADMIN FUNCTIONS
+  window.createSession = async function() {
+    const title = document.getElementById('adTitle').value;
+    const paperFile = document.getElementById('adPaper').files[0];
+    const pin = document.getElementById('adPin').value;
+    const duration = document.getElementById('adDuration').value;
+    const statusEl = document.getElementById('createStatus');
+
+    if(!title || !paperFile || pin.length !== 6) return alert("Fill all fields. PIN must be 6 digits.");
+
+    statusEl.innerText = "Creating...";
+
+    try {
+      const html = await new Promise(r => { const fr = new FileReader(); fr.onload = e => r(e.target.result); fr.readAsText(paperFile); });
+      const sessionId = 'SESSION_' + Date.now();
+      
+      await setDoc(doc(db, "examSessions", sessionId), {
+        title, examCode: pin, questionPaperHtml: html, durationMinutes: Number(duration), createdAt: serverTimestamp()
+      });
+
+      statusEl.innerText = "Created! Reloading...";
+      window.location.href = `exam-session.html?session=${sessionId}`;
+    } catch (e) { statusEl.innerText = "Error: " + e.message; }
+  };
+
+  window.searchStudent = async function() {
+    const term = document.getElementById('searchInput').value.trim().toUpperCase();
+    const results = document.getElementById('searchResults');
+    if(!term) return;
+
+    results.innerHTML = '<p style="font-size:13px; color:gray;">Searching...</p>';
+    
+    try {
+      const q = query(collection(db, "examLogs"));
+      const snap = await getDocs(q);
+      results.innerHTML = '';
+      let found = false;
+
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        const sId = docSnap.id.toUpperCase();
+        const eNum = (data.examNumber || "").toUpperCase();
+
+        if (sId.includes(term) || eNum.includes(term)) {
+          found = true;
+          const scripts = data.scripts || [];
+          results.innerHTML += `
+            <div class="search-result">
+              <div class="info">
+                Student: ${data.examNumber || sId}<br>
+                <span style="font-size:12px; color:gray;">Pages Uploaded: ${scripts.length}</span>
+              </div>
+              <div class="actions">
+                <button class="btn btn-blue" onclick='viewScripts("${docSnap.id}", ${JSON.stringify(scripts).replace(/'/g, "&#39;")})'>View</button>
+                <button class="btn btn-success" onclick='downloadZip("${data.examNumber || sId}", ${JSON.stringify(scripts).replace(/'/g, "&#39;")})'>Download ZIP</button>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      if(!found) results.innerHTML = '<p style="font-size:13px; color:gray;">No student found.</p>';
+    } catch (e) { results.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`; }
+  };
+
+  window.viewScripts = function(sid, scripts) {
+    if(!scripts || scripts.length === 0) return alert("No scripts uploaded.");
+    document.getElementById('viewAdmin').classList.remove('active');
+    document.getElementById('viewWorkspace').classList.add('active');
+    document.getElementById('mobileTabSelect').innerHTML = '<option value="answerbook">Viewing Admin Script</option>';
+    
+    const container = document.getElementById('answerBookContainer');
+    container.innerHTML = '';
+    scripts.forEach((sc, idx) => {
+      container.innerHTML += `
+        <div class="ab-page">
+          <div class="ab-header"><span>Student: ${sid}</span><span>Page ${idx+1}</span></div>
+          <div class="ab-writing-page"><img src="${sc.url}" style="display:block;"></div>
+        </div>
+      `;
+    });
+    switchTab('answerbook');
+    document.getElementById('btnExit').style.display = 'flex';
+    document.getElementById('btnExit').onclick = () => window.location.reload();
+  };
+
+  window.downloadZip = async function(sid, scripts) {
+    if(!scripts || scripts.length === 0) return alert("No scripts to download.");
+    const zip = new JSZip();
+    const folder = zip.folder(sid);
+
+    for(let i=0; i<scripts.length; i++) {
+      const res = await fetch(scripts[i].url);
+      const blob = await res.blob();
+      folder.file(scripts[i].filename || `page_${i+1}.jpg`, blob);
+    }
+    zip.generateAsync({type:"blob"}).then(content => {
+      saveAs(content, `${sid}_Scripts.zip`);
+    });
+  };
 
   window.exitExam = async function() {
     if (confirm("Finish exam and return to dashboard?")) {
