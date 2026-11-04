@@ -3,269 +3,332 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apply — Institute of Board</title>
+<title>Admin — Manage Resources</title>
 <script src="https://unpkg.com/lucide@latest"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root { --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0; --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --success: #15803D; --error: #B91C1C; }
+:root {
+    --white: #FFF; --black: #111; --gray: #64748B; --silver: #E2E8F0;
+    --maroon: #7A1F2B; --maroon-hover: #5A1620;
+    --bg: #F8FAFC;
+    --success: #15803D;
+    --error: #B91C1C;
+}
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); min-height: 100dvh; display: flex; justify-content: center; align-items: flex-start; padding: 32px 20px 60px; }
-.container { width: 100%; max-width: 540px; }
-.nav-back { display: inline-flex; align-items: center; gap: 8px; color: var(--gray); text-decoration: none; font-weight: 600; margin-bottom: 24px; font-size: 14px; }
-.nav-back:hover { color: var(--maroon); }
-.nav-back i { width: 16px; height: 16px; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); min-height: 100dvh; display: flex; flex-direction: column; }
 
-.form-card { background: var(--white); border-radius: 24px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
-.header { text-align: center; margin-bottom: 28px; }
-.header .logo { display: flex; justify-content: center; margin-bottom: 16px; }
-.header .logo i { width: 48px; height: 48px; color: var(--maroon); }
-.header h1 { font-size: 24px; font-weight: 900; margin-bottom: 6px; letter-spacing: -0.5px; }
-.header p { font-size: 14px; color: var(--gray); }
+/* HEADER */
+.header { background: var(--white); height: 68px; border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; position: sticky; top: 0; z-index: 100; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--black); }
+.brand-logo { font-size: 28px; font-weight: 900; color: var(--maroon); }
+.brand-text { font-weight: 800; font-size: 16px; }
+.nav-actions { display: flex; gap: 12px; }
+.btn-nav { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.2s; border: 1.5px solid var(--silver); background: var(--white); color: var(--black); cursor: pointer; font-family: inherit; }
+.btn-nav:hover { border-color: var(--black); }
+.btn-nav.primary { background: var(--maroon); color: var(--white); border-color: var(--maroon); }
+.btn-nav.primary:hover { background: var(--maroon-hover); }
+.btn-nav i { width: 16px; height: 16px; }
 
-.notice-box { background: #FFF5F6; border-left: 4px solid var(--maroon); border-radius: 6px; padding: 12px 14px; margin-bottom: 24px; font-size: 13px; display: flex; gap: 10px; align-items: flex-start; line-height: 1.5; }
-.notice-box i { width: 16px; height: 16px; color: var(--maroon); flex-shrink: 0; margin-top: 2px; }
+/* MAIN LAYOUT */
+.container { max-width: 1000px; margin: 40px auto; padding: 0 24px; width: 100%; flex: 1; }
+.page-title { font-size: 28px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.5px; }
+.page-sub { font-size: 15px; color: var(--gray); margin-bottom: 32px; }
 
-.btn-google { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; background: var(--white); border: 1.5px solid var(--silver); border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; transition: 0.2s; color: var(--black); }
-.btn-google:hover { background: #FAFAFA; border-color: var(--black); }
-.btn-google:disabled { opacity: 0.6; cursor: wait; }
+/* GRID */
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
 
-.form-fields { display: none; margin-top: 20px; }
-.form-group { margin-bottom: 18px; }
-label.field-label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-label.field-label i { width: 14px; height: 14px; color: var(--maroon); }
-.input-wrap { position: relative; display: flex; align-items: center; }
-.input-wrap input { width: 100%; padding: 14px 14px 14px 42px; font-size: 15px; border: 1.5px solid var(--silver); border-radius: 10px; outline: none; font-family: inherit; color: var(--black); background: var(--white); }
-.input-wrap input:focus { border-color: var(--maroon); }
-.input-wrap input:disabled { background: #F8FAFC; color: var(--gray); cursor: not-allowed; }
-.input-wrap > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--gray); pointer-events: none; }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+/* CARDS */
+.card { background: var(--white); border-radius: 16px; border: 1px solid var(--silver); box-shadow: 0 4px 20px rgba(0,0,0,0.03); overflow: hidden; }
+.card-header { padding: 20px 24px; border-bottom: 1px solid var(--silver); background: #FAFAFA; display: flex; justify-content: space-between; align-items: center; }
+.card-header h2 { font-size: 18px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.card-header h2 i { width: 20px; height: 20px; color: var(--maroon); }
+.card-body { padding: 24px; }
 
-.course-block { display: flex; align-items: center; gap: 12px; padding: 16px; background: #FFF5F6; border: 1.5px solid var(--maroon); border-radius: 10px; }
-.course-block .course-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.course-block .course-icon i { width: 20px; height: 20px; }
-.course-block .course-info { flex: 1; }
-.course-block .course-info strong { display: block; font-size: 15px; font-weight: 900; }
-.course-block .course-info span { display: block; font-size: 12px; color: var(--maroon); font-weight: 700; margin-top: 2px; letter-spacing: 0.3px; }
-.course-block .course-check { color: var(--maroon); }
-.course-block .course-check i { width: 20px; height: 20px; }
+/* FORM */
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #333; }
+.form-control { width: 100%; padding: 12px 14px; font-size: 14px; border: 1.5px solid var(--silver); border-radius: 8px; outline: none; font-family: inherit; transition: 0.2s; background: var(--white); color: var(--black); }
+.form-control:focus { border-color: var(--maroon); box-shadow: 0 0 0 3px rgba(122,31,43,0.1); }
+select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; }
 
-.checkbox-group { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; padding: 16px; background: #FAFAFA; border: 1px solid var(--silver); border-radius: 10px; }
-.checkbox-item { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; }
-.checkbox-item input { width: 20px; height: 20px; accent-color: var(--maroon); cursor: pointer; margin-top: 1px; flex-shrink: 0; }
-.checkbox-item span { font-size: 13px; color: var(--gray); line-height: 1.5; }
-.checkbox-item span a { color: var(--maroon); font-weight: 700; text-decoration: underline; }
-
-.btn-submit { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; font-size: 15px; font-weight: 700; border-radius: 10px; border: none; background: var(--maroon); color: var(--white); cursor: pointer; transition: 0.2s; font-family: inherit; }
-.btn-submit:hover:not(:disabled) { background: var(--maroon-hover); }
-.btn-submit:disabled { opacity: 0.7; cursor: wait; }
+.btn-submit { width: 100%; padding: 14px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; font-family: inherit; }
+.btn-submit:hover { background: var(--maroon-hover); }
+.btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
 .btn-submit i { width: 18px; height: 18px; }
 
-.alert { display: none; padding: 12px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-top: 14px; align-items: flex-start; gap: 8px; line-height: 1.5; }
-.alert.error { background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; }
+.alert { display: none; padding: 12px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-bottom: 20px; align-items: flex-start; gap: 8px; line-height: 1.5; }
+.alert.success { background: #DCFCE7; color: #15803D; border: 1px solid #86EFAC; display: flex; }
+.alert.error { background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA; display: flex; }
 .alert i { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
-.alert span { flex: 1; }
 
-@media (max-width: 600px) { .row { grid-template-columns: 1fr; } .form-card { padding: 28px 20px; } body { padding: 20px 16px 40px; } }
+/* LIST */
+.list-group { display: flex; flex-direction: column; gap: 12px; max-height: 600px; overflow-y: auto; padding-right: 4px; }
+.list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--silver); border-radius: 10px; background: var(--white); transition: 0.2s; }
+.list-item:hover { border-color: var(--maroon); }
+.list-info h4 { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+.list-meta { display: flex; gap: 8px; align-items: center; }
+.badge { font-size: 10px; font-weight: 800; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: var(--bg); color: var(--gray); border: 1px solid var(--silver); }
+.badge.subject { background: #FFF5F6; color: var(--maroon); border-color: #FCA5A5; }
+.badge.video { background: #FEE2E2; color: #B91C1C; border-color: #FECACA; }
+.list-desc { font-size: 12px; color: var(--gray); margin-top: 6px; }
+.btn-delete { background: #FEF2F2; color: var(--error); border: 1px solid #FECACA; padding: 8px; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+.btn-delete:hover { background: #FEE2E2; }
+.btn-delete i { width: 16px; height: 16px; }
+
+/* LOADER */
+.spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: var(--white); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 900px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
-<div class="container">
-    <a href="index.html" class="nav-back"><i data-lucide="arrow-left"></i> Back to Home</a>
-    <div class="form-card">
-        <div class="header">
-            <div class="logo"><i data-lucide="graduation-cap"></i></div>
-            <h1>2027 Application</h1>
-            <p>Sign in with Google to begin.</p>
-        </div>
 
-        <div class="notice-box">
-            <i data-lucide="info"></i>
-            <span>Applications are open. Once you complete this form you'll receive a <strong>6-digit Student ID</strong> and a security code. After passing the Admission Examination (AE), you'll be issued a <strong>13-digit Examination Number</strong>.</span>
-        </div>
-
-        <button class="btn-google" id="googleBtn" onclick="googleLogin()">
-            <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
-            Continue with Google
-        </button>
-
-        <div class="alert error" id="loginError"><i data-lucide="alert-circle"></i><span id="loginErrorText"></span></div>
-
-        <div class="form-fields" id="formFields">
-            <form id="admissionForm" onsubmit="submitForm(event)">
-                <div class="row">
-                    <div class="form-group">
-                        <label class="field-label"><i data-lucide="user"></i> First Name</label>
-                        <div class="input-wrap"><i data-lucide="user"></i><input type="text" id="firstName" placeholder="Nathaniel" required></div>
-                    </div>
-                    <div class="form-group">
-                        <label class="field-label"><i data-lucide="user"></i> Surname</label>
-                        <div class="input-wrap"><i data-lucide="user"></i><input type="text" id="surname" placeholder="Nyl" required></div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="field-label"><i data-lucide="mail"></i> Email Address (Google)</label>
-                    <div class="input-wrap"><i data-lucide="mail"></i><input type="email" id="emailAddress" disabled></div>
-                </div>
-
-                <div class="form-group">
-                    <label class="field-label"><i data-lucide="calendar"></i> Date of Birth</label>
-                    <div class="input-wrap"><i data-lucide="calendar"></i><input type="date" id="dob" required></div>
-                </div>
-
-                <div class="form-group">
-                    <label class="field-label"><i data-lucide="graduation-cap"></i> Selected Programme</label>
-                    <div class="course-block">
-                        <div class="course-icon"><i data-lucide="sigma"></i></div>
-                        <div class="course-info">
-                            <strong>IFB-S Mathematics</strong>
-                            <span>Advanced Algebra · Calculus · Geometry · Statistics</span>
-                        </div>
-                        <div class="course-check"><i data-lucide="check-circle-2"></i></div>
-                    </div>
-                </div>
-
-                <!-- POPIA AND T&C CHECKBOXES -->
-                <div class="checkbox-group">
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="termsCheck" required>
-                        <span>I agree to the <a href="guidelines-general.html" target="_blank">Terms & Conditions</a> and rules of the Institute of Board.</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="accreditCheck" required>
-                        <span>I understand that the <strong>Institute of Board (IFB) is an independent, non-accredited academic institution</strong>. I acknowledge that my data will be collected, processed, and stored securely in accordance with <a href="privacy-policy.html" target="_blank">POPIA regulations</a> for the purpose of academic administration.</span>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn-submit" id="submitBtn"><i data-lucide="arrow-right"></i> Complete Application</button>
-
-                <div class="alert error" id="errorBox"><i data-lucide="alert-circle"></i><span id="errorText"></span></div>
-            </form>
-        </div>
+<!-- HEADER -->
+<header class="header">
+    <a href="index.html" class="brand">
+        <div class="brand-logo">∆</div>
+        <div class="brand-text">IFB Admin</div>
+    </a>
+    <div class="nav-actions">
+        <a href="resources.html" class="btn-nav"><i data-lucide="eye"></i> View Public Page</a>
+        <button class="btn-nav" onclick="logout()"><i data-lucide="log-out"></i> Log Out</button>
     </div>
-</div>
+</header>
+
+<!-- MAIN -->
+<main class="container">
+    <h1 class="page-title">Manage Resources</h1>
+    <p class="page-sub">Upload weekly modules, daily docs, and YouTube videos for Mathematics and Web Development.</p>
+
+    <div class="dashboard-grid">
+        
+        <!-- UPLOAD FORM -->
+        <div class="card">
+            <div class="card-header">
+                <h2><i data-lucide="upload-cloud"></i> Upload New Resource</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert error" id="errorBox"><i data-lucide="alert-circle"></i><span id="errorText"></span></div>
+                <div class="alert success" id="successBox"><i data-lucide="check-circle"></i><span id="successText"></span></div>
+
+                <form id="uploadForm" onsubmit="uploadResource(event)">
+                    
+                    <div class="form-group">
+                        <label>Resource Title</label>
+                        <input type="text" id="resTitle" class="form-control" placeholder="e.g. Week 1: Advanced Algebra" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <select id="resSubject" class="form-control" required>
+                            <option value="" disabled selected>Select a subject...</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Web Development">Web Development</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Resource Type</label>
+                        <select id="resType" class="form-control" required onchange="updateUrlPlaceholder()">
+                            <option value="" disabled selected>Select type...</option>
+                            <option value="module">Weekly Module</option>
+                            <option value="daily">Daily Document</option>
+                            <option value="video">YouTube Video</option>
+                            <option value="exam">Past Exam Paper</option>
+                            <option value="memo">Memorandum</option>
+                            <option value="mock">Mock Paper</option>
+                            <option value="guidelines">Subject Guidelines</option>
+                            <option value="answerbook">Answer Book Template</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>File / YouTube URL</label>
+                        <input type="url" id="resUrl" class="form-control" placeholder="https://..." required>
+                        <p style="font-size: 11px; color: var(--gray); margin-top: 6px;">For videos, paste the full YouTube link. For documents, paste the link to the HTML/PDF.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description (Optional)</label>
+                        <input type="text" id="resDesc" class="form-control" placeholder="Short description...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Filename / Reference</label>
+                        <input type="text" id="resFilename" class="form-control" placeholder="ifb-2027-math-w01-module.html" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <i data-lucide="plus-circle"></i> Publish Resource
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- CURRENT RESOURCES LIST -->
+        <div class="card">
+            <div class="card-header">
+                <h2><i data-lucide="database"></i> Published Resources</h2>
+                <span id="resourceCount" class="badge">0 Items</span>
+            </div>
+            <div class="card-body">
+                <div id="loadingList" style="text-align:center; padding: 20px; color: var(--gray);">Loading resources...</div>
+                <div class="list-group" id="resourceList" style="display:none;">
+                    <!-- Items injected here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-let currentUser = null;
+const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
 function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
-function showError(id, msg) {
-    const box = document.getElementById(id);
-    const text = document.getElementById(id + 'Text');
-    if (text) text.textContent = msg;
-    if (box) box.style.display = 'flex';
-}
-function hideError(id) {
-    const box = document.getElementById(id);
-    if (box) box.style.display = 'none';
+
+window.logout = async function() {
+    await signOut(auth);
+    window.location.href = "index.html";
 }
 
-// 6-digit Student ID (100000–999999)
-function generate6DigitStudentId() {
-    return String(Math.floor(Math.random() * 900000) + 100000);
-}
-function generateSecurityCode() {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let out = "";
-    for (let i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
-    return out;
+window.updateUrlPlaceholder = function() {
+    const type = document.getElementById('resType').value;
+    const urlInput = document.getElementById('resUrl');
+    if (type === 'video') {
+        urlInput.placeholder = "https://www.youtube.com/watch?v=...";
+    } else {
+        urlInput.placeholder = "https://ifb-nmaz.onrender.com/path-to-file.html";
+    }
 }
 
-async function handleUser(user) {
-    currentUser = user;
+// Show alerts
+function showAlert(type, msg) {
+    const box = document.getElementById(type + 'Box');
+    const text = document.getElementById(type + 'Text');
+    text.textContent = msg;
+    box.style.display = 'flex';
+    setTimeout(() => { box.style.display = 'none'; }, 5000);
+}
+
+// Load Resources
+async function loadResourceList() {
+    const list = document.getElementById('resourceList');
+    const loader = document.getElementById('loadingList');
+    const countBadge = document.getElementById('resourceCount');
+    
     try {
-        const snap = await getDoc(doc(db, "users", user.uid));
-        if (snap.exists()) {
-            window.location.href = "student-dashboard.html";
+        const q = query(collection(db, 'resources'), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        
+        loader.style.display = 'none';
+        list.style.display = 'flex';
+        list.innerHTML = '';
+        
+        countBadge.textContent = `${snap.size} Items`;
+
+        if (snap.empty) {
+            list.innerHTML = '<div style="text-align:center; color:var(--gray); font-size:13px;">No resources uploaded yet.</div>';
             return;
         }
-        document.getElementById('googleBtn').style.display = 'none';
-        document.getElementById('formFields').style.display = 'block';
-        document.getElementById('emailAddress').value = user.email;
+
+        snap.forEach(d => {
+            const data = d.data();
+            const item = document.createElement('div');
+            item.className = 'list-item';
+            
+            item.innerHTML = `
+                <div class="list-info">
+                    <h4>${data.title || 'Untitled'}</h4>
+                    <div class="list-meta">
+                        <span class="badge subject">${data.subject || 'General'}</span>
+                        <span class="badge ${data.type === 'video' ? 'video' : ''}">${data.type || 'doc'}</span>
+                        <span style="font-size:11px; color:var(--gray);">${data.filename || ''}</span>
+                    </div>
+                    ${data.description ? `<div class="list-desc">${data.description}</div>` : ''}
+                </div>
+                <button class="btn-delete" onclick="deleteResource('${d.id}')">
+                    <i data-lucide="trash-2"></i>
+                </button>
+            `;
+            list.appendChild(item);
+        });
         refreshIcons();
-    } catch (e) {
-        showError('loginError', "Could not check your account: " + e.message);
+    } catch(e) {
+        loader.textContent = "Failed to load resources.";
+        console.error(e);
     }
 }
 
-onAuthStateChanged(auth, (user) => { if (user) handleUser(user); });
-
-window.googleLogin = async function() {
-    hideError('loginError');
-    const btn = document.getElementById('googleBtn');
-    btn.disabled = true;
-    try {
-        const provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(auth, provider);
-        await handleUser(result.user);
-    } catch (e) {
-        showError('loginError', e.message || "Sign-in failed.");
-    } finally {
-        btn.disabled = false;
-    }
-};
-
-window.submitForm = async function(e) {
+window.uploadResource = async function(e) {
     e.preventDefault();
-    hideError('errorBox');
-    if (!currentUser) { showError('errorBox', "You must sign in with Google first."); return; }
-
-    const fName = document.getElementById('firstName').value.trim();
-    const sName = document.getElementById('surname').value.trim();
-    const dob = document.getElementById('dob').value;
     const btn = document.getElementById('submitBtn');
-
-    if (!fName || !sName || !dob) {
-        showError('errorBox', "Please fill in all required fields.");
-        return;
-    }
-
     btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader"></i> Processing...';
-    refreshIcons();
+    btn.innerHTML = '<div class="spinner"></div> Publishing...';
+
+    const title = document.getElementById('resTitle').value.trim();
+    const subject = document.getElementById('resSubject').value;
+    const type = document.getElementById('resType').value;
+    const fileUrl = document.getElementById('resUrl').value.trim();
+    const description = document.getElementById('resDesc').value.trim();
+    const filename = document.getElementById('resFilename').value.trim();
 
     try {
-        const studentId = generate6DigitStudentId();
-        const securityCode = generateSecurityCode();
-
-        await setDoc(doc(db, "users", currentUser.uid), {
-            firstName: fName,
-            surname: sName,
-            name: `${fName} ${sName}`,
-            email: currentUser.email,
-            dob: dob,
-            courses: ["Mathematics"],
-            status: "Applicant",
-            studentId: studentId,        // 6 digits
-            securityCode: securityCode,
-            examinationNumber: null,     // assigned after passing AE
-            aeResult: null,
-            // POPIA COMPLIANCE FIELDS
-            popiaConsent: true,
-            popiaConsentDate: new Date(),
+        await addDoc(collection(db, 'resources'), {
+            title,
+            subject,
+            type,
+            fileUrl,
+            description,
+            filename,
+            visible: true, // required by the public page
             createdAt: new Date()
         });
 
-        window.location.href = "student-dashboard.html";
+        showAlert('success', 'Resource published successfully!');
+        document.getElementById('uploadForm').reset();
+        await loadResourceList();
     } catch(err) {
-        showError('errorBox', err.message || "Submission failed.");
+        showAlert('error', 'Error: ' + err.message);
+    } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i data-lucide="arrow-right"></i> Complete Application';
+        btn.innerHTML = '<i data-lucide="plus-circle"></i> Publish Resource';
         refreshIcons();
     }
-};
+}
+
+window.deleteResource = async function(id) {
+    if (!confirm("Are you sure you want to delete this resource?")) return;
+    try {
+        await deleteDoc(doc(db, 'resources', id));
+        await loadResourceList();
+    } catch(e) {
+        alert("Failed to delete: " + e.message);
+    }
+}
+
+// Auth Guard
+onAuthStateChanged(auth, (user) => {
+    if (!user || user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        window.location.href = "index.html";
+        return;
+    }
+    loadResourceList();
+    refreshIcons();
+});
 
 document.addEventListener('DOMContentLoaded', refreshIcons);
-window.addEventListener('load', refreshIcons);
 </script>
 </body>
 </html>
