@@ -2,590 +2,215 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>IFB Proctor & Examination Portal</title>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<meta name="theme-color" content="#7A1F2B">
-
-<!-- Libraries -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Session</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d0d0d">
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
-  /* ========== BASE ========== */
-  :root { 
-    --maroon: #7A1F2B; --bg: #F4F6F9; --panel: #FFFFFF; --text: #111; 
-    --white: #FFF; --gray: #64748B; --silver: #E2E8F0; 
-    --success: #15803D; --error: #B91C1C; --blue: #3B82F6;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-  /* ========== HEADER ========== */
-  .header { background: var(--panel); border-bottom: 1px solid var(--silver); padding: 0 16px; height: 60px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 100; }
-  .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 18px; color: var(--maroon); }
-  
-  .clock-area { display: flex; align-items: center; gap: 12px; }
-  .digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--maroon); background: #FFF5F6; padding: 6px 10px; border-radius: 6px; border: 1px solid #FCA5A5; }
-
-  .btn { background: transparent; border: 1px solid var(--silver); color: var(--text); padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; font-family: inherit; }
-  .btn-primary { background: var(--maroon); color: var(--white); border: none; }
-  .btn-blue { background: #EFF6FF; color: var(--blue); border: 1px solid #BFDBFE; }
-  .btn-danger { border-color: var(--error); color: var(--error); }
-  .btn-success { background: var(--success); color: var(--white); border: none; }
-
-  /* ========== DASHBOARD ========== */
-  .dashboard-container { padding: 24px; overflow-y: auto; height: 100%; display: none; }
-  .dashboard-container.active { display: block; }
-  
-  .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-  .dash-header h2 { font-size: 20px; font-weight: 800; }
-  
-  .exam-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-  @media(min-width: 768px) { .exam-grid { grid-template-columns: 1fr 1fr; } }
-  
-  .exam-card { background: var(--panel); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; }
-  .exam-card .title { font-size: 16px; font-weight: 800; color: var(--maroon); margin-bottom: 4px; }
-  .exam-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; border-top: 1px solid var(--silver); padding: 12px 0; }
-  .exam-meta span { font-size: 10px; color: var(--gray); text-transform: uppercase; font-weight: 700; }
-  .exam-meta strong { font-size: 13px; font-weight: 700; display: block; }
-
-  /* ========== WORKSPACE ========== */
-  .workspace { display: none; flex: 1; flex-direction: column; overflow: hidden; background: var(--bg); }
-  .workspace.active { display: flex; }
-  
-  .mobile-nav { padding: 12px; background: var(--panel); border-bottom: 1px solid var(--silver); }
-  .mobile-nav select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--silver); font-family: inherit; font-weight: 700; font-size: 15px; background: #FAFAFA; }
-
-  .tab-content { display: none; height: 100%; overflow-y: auto; }
-  .tab-content.active { display: block; }
-  .iframe-container { width: 100%; height: 100%; border: none; }
-  
-  /* Answer Book Viewer */
-  .ab-page { background: white; max-width: 800px; margin: 16px auto; padding: 24px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
-  .ab-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; font-weight: bold; font-size: 12px; }
-  .ab-writing-page { border: 1.5px solid #000; min-height: 400px; position: relative; display: flex; align-items: center; justify-content: center; background: #FAFAFA; }
-  .ab-writing-page img { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
-  
-  /* Scanner */
-  .scanner-ui { padding: 16px; display: flex; flex-direction: column; align-items: center; height: 100%; overflow-y: auto; }
-  .scanner-box { width: 100%; max-width: 500px; background: white; border-radius: 16px; padding: 16px; border: 1px solid var(--silver); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
-  video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
-  video.active, canvas.active, img.preview.active { display:block; }
-  .framing-guide { position:absolute; inset:8%; pointer-events:none; display:none; border: 2px dashed rgba(255,255,255,0.5); border-radius: 8px; }
-  .framing-guide.visible { display:block; }
-  .torch-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 10; }
-  .scanner-controls { display:flex; gap:8px; flex-wrap:wrap; }
-  .action-btn { flex:1; padding:14px; border-radius:8px; font-weight:700; cursor:pointer; border:none; font-family:inherit; font-size:14px; display: flex; align-items: center; justify-content: center; gap: 8px;}
-  .action-btn:disabled { opacity:0.5; }
-  .status { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 600; color: var(--gray); }
-
-  /* ========== ADMIN PANEL ========== */
-  .admin-panel { display: none; padding: 20px; height: 100%; overflow-y: auto; }
-  .admin-panel.active { display: block; }
-  .admin-box { background: white; border: 1px solid var(--silver); border-radius: 12px; padding: 20px; margin-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
-  .admin-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 16px; color: var(--maroon); border-bottom: 1px solid var(--silver); padding-bottom: 10px; }
-  .form-group { margin-bottom: 12px; }
-  .form-group label { font-size: 12px; font-weight: 700; display: block; margin-bottom: 4px; }
-  .form-group input { width: 100%; padding: 10px; border: 1px solid var(--silver); border-radius: 6px; font-family: inherit; }
-
-  .search-row { display: flex; gap: 10px; margin-bottom: 20px; }
-  .search-row input { flex: 1; padding: 12px; border: 1px solid var(--silver); border-radius: 8px; font-family: inherit; font-size: 14px; }
-  .search-result { background: #FAFAFA; border: 1px solid var(--silver); border-radius: 8px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-  .search-result .info { font-weight: 700; font-size: 14px; }
-  .search-result .actions { display: flex; gap: 8px; }
-
-  .overlay { position: fixed; inset: 0; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
-  .overlay.active { display: flex; }
-  .pin-input { background: var(--white); border: 2px solid var(--silver); font-size: 28px; font-family: monospace; text-align: center; letter-spacing: 6px; padding: 12px; border-radius: 12px; outline: none; width: 100%; max-width: 250px; margin-bottom: 20px; }
-  
-  /* Loader */
-  .loader { position: fixed; inset: 0; background: #F8FAFC; z-index: 99999; display: flex; justify-content: center; align-items: center; font-family: 'Inter', sans-serif; font-weight: 900; font-size: 40px; color: #7A1F2B; transition: opacity 0.4s; }
+:root{--black:#0d0d0d;--white:#fff;--grey:#6b6b6b;--light:#f5f5f5;--line:#e5e5e5;--red:#dc2626;--green:#059669}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--white);color:var(--black);line-height:1.6;min-height:100vh}
+.watermark-bg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:120px;font-weight:900;color:rgba(0,0,0,.03);letter-spacing:20px;pointer-events:none;z-index:0;white-space:nowrap}
+.topbar{position:sticky;top:0;background:var(--black);color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;z-index:10}
+.topbar .left{display:flex;align-items:center;gap:12px}
+.topbar .mark{font-family:'Courier New',monospace;font-size:22px;font-weight:700;letter-spacing:-1px}
+.topbar .info{font-size:12.5px}
+.topbar .info .num{font-family:'Courier New',monospace;letter-spacing:1px}
+.timer{background:var(--white);color:var(--black);padding:8px 16px;border-radius:100px;font-family:'Courier New',monospace;font-weight:700;font-size:15px}
+.timer.warning{background:#fecaca;color:#991b1b}
+.container{max-width:900px;margin:0 auto;padding:32px 20px;position:relative;z-index:1}
+h1{font-size:26px;letter-spacing:-.5px;margin-bottom:6px}
+.sub{color:var(--grey);font-size:14px;margin-bottom:24px}
+.card{background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:24px;margin-bottom:16px}
+.card .label{font-size:11.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--grey);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.question{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.question:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.question .qnum{font-weight:700;font-size:14px;margin-bottom:8px}
+.question .qtext{font-size:14.5px;line-height:1.65;margin-bottom:12px}
+.answer-input{width:100%;padding:14px 16px;font-size:14.5px;font-family:'Courier New',monospace;border:1.5px solid var(--line);border-radius:10px;background:var(--white);color:var(--black);line-height:1.6}
+.answer-input:focus{outline:none;border-color:var(--black)}
+.btn{padding:14px 24px;font-size:14px;font-weight:600;border-radius:10px;border:1.5px solid var(--black);background:var(--black);color:var(--white);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:#333}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:var(--white);color:var(--black);border-color:var(--line)}
+.btn-ghost:hover{border-color:var(--black);background:var(--light)}
+.actions{display:flex;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-top:16px}
+.warning-banner{position:fixed;top:0;left:0;right:0;background:var(--red);color:#fff;padding:14px 20px;text-align:center;font-weight:600;font-size:14px;z-index:100;display:none}
+.warning-banner.show{display:block}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--white);border-radius:16px;padding:32px 28px;max-width:440px;width:100%;text-align:center}
+.modal h2{font-size:20px;margin-bottom:12px}
+.modal p{font-size:14px;color:var(--grey);margin-bottom:20px}
+.note{font-size:12px;color:var(--grey);text-align:center;margin-top:20px;line-height:1.6}
 </style>
 </head>
 <body>
 
-<div class="loader" id="loader">∆</div>
+<div class="watermark-bg">∆</div>
 
-<header class="header">
-  <div class="brand"><span>∆</span> IFB Portal</div>
-  <div class="clock-area" id="clockArea" style="display:none;">
-    <div class="digital-clock" id="digitalClock">00:00:00</div>
-  </div>
-  <div>
-    <button class="btn btn-danger" id="btnExit" onclick="exitExam()" style="display:none;"><i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Exit Exam</button>
-  </div>
-</header>
+<div class="warning-banner" id="warningBanner"><i data-lucide="alert-triangle" style="width:16px;height:16px;display:inline;vertical-align:middle;margin-right:6px"></i> Focus lost — please return to the exam window.</div>
 
-<!-- ========== STUDENT DASHBOARD ========== -->
-<div class="dashboard-container active" id="viewDashboard">
-  <div class="dash-header"><h2>Available Exams</h2></div>
-  <div class="exam-grid" id="examList">
-    <p style="text-align:center; color:var(--gray); padding:40px;">Loading exams...</p>
-  </div>
-</div>
-
-<!-- ========== EXAM WORKSPACE ========== -->
-<div class="workspace" id="viewWorkspace">
-  <div class="mobile-nav">
-    <select id="mobileTabSelect" onchange="switchTab(this.value)">
-      <option value="paper">📄 Question Paper</option>
-      <option value="scanner">📷 Scan Answer Page</option>
-      <option value="answerbook">📝 View Digital Answer Book</option>
-    </select>
-  </div>
-  <div class="tab-content" id="tabPaper"><iframe class="iframe-container" id="paperFrame" src="about:blank"></iframe></div>
-  <div class="tab-content" id="tabScanner">
-    <div class="scanner-ui">
-      <div class="scanner-box">
-        <div class="stage">
-          <video id="video" autoplay playsinline muted></video>
-          <canvas id="canvas"></canvas>
-          <img id="preview" class="preview" alt="Scan">
-          <div class="framing-guide" id="framingGuide"></div>
-          <button class="torch-btn" id="btnTorch"><i data-lucide="flashlight" style="width:20px; height:20px;"></i></button>
-        </div>
-        <div class="scanner-controls">
-          <button class="action-btn btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
-          <button class="action-btn btn-blue" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture Page</button>
-          <button class="action-btn btn-danger" id="btnRetake" disabled><i data-lucide="refresh-cw"></i> Retake</button>
-          <button class="action-btn btn-primary" id="btnUpload" disabled><i data-lucide="upload-cloud"></i> Upload Page</button>
-        </div>
-        <div class="status" id="status">Ready to scan.</div>
-      </div>
+<div class="topbar">
+  <div class="left">
+    <span class="mark">∆</span>
+    <div class="info">
+      <div>Exam Session</div>
+      <div class="num" id="candNum">— — —</div>
     </div>
   </div>
-  <div class="tab-content" id="tabAnswerBook">
-    <div id="answerBookContainer" style="padding: 16px;"></div>
-  </div>
+  <div class="timer" id="timer">--:--</div>
 </div>
 
-<!-- ========== ADMIN PANEL ========== -->
-<div class="admin-panel" id="viewAdmin">
-  <!-- Create Session -->
-  <div class="admin-box">
-    <h3><i data-lucide="settings"></i> Create Exam Session</h3>
-    <div class="form-group"><label>Exam Title</label><input type="text" id="adTitle" placeholder="e.g. AE Mathematics 2027"></div>
-    <div class="form-group"><label>Question Paper (.html)</label><input type="file" id="adPaper" accept=".html"></div>
-    <div class="form-group"><label>Exam PIN (6 digits)</label><input type="text" id="adPin" maxlength="6" placeholder="123456"></div>
-    <div class="form-group"><label>Duration (Mins)</label><input type="number" id="adDuration" value="120"></div>
-    <button class="btn btn-primary" style="width:100%; justify-content:center; padding:14px;" onclick="createSession()">Publish Session</button>
-    <div id="createStatus" style="margin-top:10px; font-size:12px; font-weight:700; text-align:center; color:var(--gray);"></div>
-  </div>
+<div class="container" id="app"><div class="sub">Loading exam…</div></div>
 
-  <!-- Search Scripts -->
-  <div class="admin-box">
-    <h3><i data-lucide="search"></i> Find & Download Scripts</h3>
-    <div class="search-row">
-      <input type="text" id="searchInput" placeholder="Enter Student ID or Exam Number...">
-      <button class="btn btn-primary" onclick="searchStudent()">Search</button>
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Confirm submit</h2>
+    <p id="modalMsg">Once submitted, your answers cannot be changed.</p>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-ghost" id="modalCancel">Cancel</button>
+      <button class="btn" id="modalConfirm">Submit</button>
     </div>
-    <div id="searchResults"></div>
   </div>
 </div>
 
-<!-- PIN MODAL -->
-<div class="overlay" id="pinOverlay">
-  <div style="background: var(--panel); padding: 24px; border-radius: 24px; border: 1px solid var(--silver); max-width:400px; width:100%;">
-    <i data-lucide="shield-lock" style="width: 40px; height: 40px; color: var(--maroon); margin-bottom: 12px;"></i>
-    <h2 style="margin-bottom: 8px;">Enter Exam PIN</h2>
-    <p style="font-size:13px; color:var(--gray); margin-bottom:16px;">Enter the 6-digit PIN provided by your invigilator.</p>
-    <input type="text" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••">
-    <button class="btn btn-primary" style="padding: 12px; width: 100%; justify-content: center;" onclick="verifyPin()">Unlock Exam</button>
-  </div>
-</div>
+<script>
+// Anti-cheat + timer setup
+(function(){
+  const verified = sessionStorage.getItem('verified_candidate');
+  if (!verified) { window.location.href = 'exam-gateway.html'; return; }
+  const candidate = JSON.parse(verified);
+  document.getElementById('candNum').textContent = candidate.examNumber;
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  // 90-minute exam
+  const EXAM_DURATION = 90 * 60;
+  const startTime = Date.now();
+  const endTime = startTime + EXAM_DURATION * 1000;
+  const timerEl = document.getElementById('timer');
+  let submitted = false;
 
-  const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
-  
-  const CLOUDINARY_CLOUD_NAME = "s6otjgim";
-  const CLOUDINARY_PRESET = "students_ifb_2027";
+  function tick(){
+    if (submitted) return;
+    const left = Math.max(0, endTime - Date.now());
+    const m = Math.floor(left / 60000);
+    const s = Math.floor((left % 60000) / 1000);
+    timerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    if (left < 5 * 60 * 1000) timerEl.classList.add('warning');
+    if (left <= 0) { submitExam(true); return; }
+  }
+  tick(); setInterval(tick, 1000);
 
-  let currentUser = null, studentId = null, examNumber = null;
-  let currentSessionId = null, examPin = null, examDurationMins = 120;
-  let timerInterval = null, endTime = null;
-  let stream = null, pendingBlob = null, scriptCount = 0, torchOn = false;
-
-  function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
-  
-  // Check URL for direct session link
-  const urlParams = new URLSearchParams(window.location.search);
-  currentSessionId = urlParams.get('session');
-
-  // 1. AUTH
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) { window.location.href = "index.html"; return; }
-    currentUser = user;
-
-    // Hide loader
-    const loader = document.getElementById('loader');
-    if (loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 400); }
-
-    if (user.email === ADMIN_EMAIL) {
-      document.getElementById('viewAdmin').classList.add('active');
-      document.getElementById('viewDashboard').classList.remove('active');
-    } else {
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      if (userDoc.exists()) {
-        studentId = userDoc.data().studentId || user.uid;
-        examNumber = userDoc.data().examNumber || "UNKNOWN";
-      }
-      
-      if (currentSessionId) {
-        await loadSession(currentSessionId);
-      } else {
-        loadDashboard();
+  // Anti-cheat: tab/window blur warning
+  let warnings = 0;
+  const banner = document.getElementById('warningBanner');
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && !submitted) {
+      warnings++;
+      banner.classList.add('show');
+      setTimeout(() => banner.classList.remove('show'), 4000);
+      if (warnings >= 3) {
+        alert('You have left the exam window 3 times. This session will be flagged for review.');
       }
     }
-    refreshIcons();
+  });
+  window.addEventListener('blur', () => { if (!submitted) { banner.classList.add('show'); setTimeout(()=>banner.classList.remove('show'), 3000); } });
+
+  // Block copy / paste / right-click
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('copy', e => e.preventDefault());
+  document.addEventListener('paste', e => e.preventDefault());
+  document.addEventListener('cut', e => e.preventDefault());
+
+  // Fullscreen
+  document.addEventListener('click', function goFS(){
+    if (!document.fullscreenElement && !submitted) document.documentElement.requestFullscreen().catch(()=>{});
+    document.removeEventListener('click', goFS);
   });
 
-  // 2. DASHBOARD
-  async function loadDashboard() {
-    const list = document.getElementById('examList');
-    const q = query(collection(db, "examSessions"), orderBy("createdAt", "desc"));
-    const snap = await getDocs(q);
-    list.innerHTML = '';
-    
-    if (snap.empty) {
-      list.innerHTML = '<p style="text-align:center; color:var(--gray);">No active exams available.</p>';
+  // Save answer
+  window.saveAnswer = function(id, val){
+    let saved = JSON.parse(localStorage.getItem('exam_answers') || '{}');
+    saved[id] = val;
+    localStorage.setItem('exam_answers', JSON.stringify(saved));
+  };
+
+  window.submitExam = async function(auto){
+    if (submitted) return;
+    if (!auto) {
+      document.getElementById('modalOverlay').classList.add('show');
       return;
     }
-
-    snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      list.innerHTML += `
-        <div class="exam-card">
-          <div class="title">${data.title || "Examination"}</div>
-          <div class="exam-meta">
-            <div><span>Duration</span><strong>${data.durationMinutes || 120} Mins</strong></div>
-            <div><span>Status</span><strong style="color:var(--success);">Open</strong></div>
-          </div>
-          <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="window.location.href='exam-session.html?session=${docSnap.id}'">
-            Enter Exam
-          </button>
-        </div>
-      `;
-    });
-  }
-
-  // 3. START EXAM
-  async function loadSession(sessionId) {
-    document.getElementById('viewDashboard').classList.remove('active');
-    const sessionDoc = await getDoc(doc(db, "examSessions", sessionId));
-    if (!sessionDoc.exists()) return alert("Session not found.");
-    
-    const sd = sessionDoc.data();
-    examPin = sd.examCode;
-    examDurationMins = sd.durationMinutes || 120;
-    window._sessionData = sd;
-
-    document.getElementById('pinOverlay').classList.add('active');
-  }
-
-  window.verifyPin = function() {
-    const entered = document.getElementById('pinInput').value;
-    if (entered === examPin) {
-      document.getElementById('pinOverlay').classList.remove('active');
-      document.getElementById('viewWorkspace').classList.add('active');
-      document.getElementById('clockArea').style.display = 'flex';
-      document.getElementById('btnExit').style.display = 'flex';
-      
-      const sd = window._sessionData;
-      if (sd.questionPaperHtml) {
-        document.getElementById('paperFrame').srcdoc = DOMPurify.sanitize(sd.questionPaperHtml, { WHOLE_DOCUMENT: true });
-      }
-      
-      buildAnswerBook();
-      startTimer(examDurationMins);
-    } else {
-      alert("Incorrect PIN.");
-    }
+    submitted = true;
+    localStorage.removeItem('exam_answers');
+    sessionStorage.removeItem('verified_candidate');
+    document.getElementById('modalTitle').textContent = 'Exam submitted';
+    document.getElementById('modalMsg').textContent = 'Your answers have been recorded. You may now close this window.';
+    document.getElementById('modalConfirm').style.display = 'none';
+    document.getElementById('modalCancel').textContent = 'Close';
+    document.getElementById('modalOverlay').classList.add('show');
+    try { if (document.fullscreenElement) document.exitFullscreen(); } catch(e){}
   };
 
-  // 4. TIMER
-  function startTimer(mins) {
-    if (timerInterval) clearInterval(timerInterval);
-    endTime = Date.now() + (mins * 60000);
-    timerInterval = setInterval(() => {
-      const remaining = endTime - Date.now();
-      if (remaining <= 0) {
-        clearInterval(timerInterval);
-        document.getElementById('digitalClock').innerText = "00:00:00";
-        alert("Time is up! Exam locked.");
-        document.getElementById('btnOpen').disabled = true;
-        return;
-      }
-      const h = Math.floor((remaining / (1000 * 60 * 60)) % 24);
-      const m = Math.floor((remaining / (1000 * 60)) % 60);
-      const s = Math.floor((remaining / 1000) % 60);
-      document.getElementById('digitalClock').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }, 1000);
-  }
-
-  // 5. TABS & ANSWER BOOK
-  window.switchTab = function(tab) {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-    document.getElementById('mobileTabSelect').value = tab;
-  };
-
-  function buildAnswerBook() {
-    const container = document.getElementById('answerBookContainer');
-    container.innerHTML = '';
-    for (let i = 1; i <= 10; i++) {
-      container.innerHTML += `
-        <div class="ab-page">
-          <div class="ab-header"><span>Answer Book</span><span>Page ${i}</span></div>
-          <div class="ab-writing-page" id="page-container-${i}">
-            <img id="img-page-${i}" alt="Scanned Page">
-            <span style="color:#999; font-size:12px;" id="empty-msg-${i}">— Awaiting scan for Page ${i} —</span>
-          </div>
-        </div>
-      `;
-    }
-    loadExistingScans();
-  }
-
-  async function loadExistingScans() {
-    if(!studentId) return;
-    const logDoc = await getDoc(doc(db, "examLogs", studentId));
-    if(logDoc.exists() && logDoc.data().scripts) {
-      const scripts = logDoc.data().scripts;
-      scriptCount = scripts.length;
-      scripts.forEach((sc, idx) => {
-        const pNum = idx + 1;
-        const img = document.getElementById(`img-page-${pNum}`);
-        const msg = document.getElementById(`empty-msg-${pNum}`);
-        if(img && msg) { img.src = sc.url; img.style.display = 'block'; msg.style.display = 'none'; }
-      });
-    }
-  }
-
-  // 6. SCANNER LOGIC
-  const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  const preview = document.getElementById('preview');
-  const btnOpen = document.getElementById('btnOpen');
-  const btnCapture = document.getElementById('btnCapture');
-  const btnRetake = document.getElementById('btnRetake');
-  const btnUpload = document.getElementById('btnUpload');
-  const btnTorch = document.getElementById('btnTorch');
-  const statusEl = document.getElementById('status');
-
-  function setStatus(msg, err=false) { statusEl.textContent = msg; statusEl.style.color = err ? 'var(--error)' : 'var(--gray)'; }
-
-  btnOpen.addEventListener('click', async () => {
-    setStatus('Opening camera...');
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-      video.srcObject = stream; await video.play();
-      video.classList.add('active'); document.getElementById('framingGuide').classList.add('visible');
-      const track = stream.getVideoTracks()[0];
-      if (track.getCapabilities().torch) btnTorch.style.display = 'flex';
-      btnOpen.disabled = true; btnCapture.disabled = false; btnRetake.disabled = true; btnUpload.disabled = true;
-      setStatus('Position the A4 page inside the frame.');
-    } catch (err) { setStatus('Camera error: ' + err.message, true); }
+  document.getElementById('modalCancel').addEventListener('click', () => {
+    document.getElementById('modalOverlay').classList.remove('show');
   });
+  document.getElementById('modalConfirm').addEventListener('click', () => submitExam(true));
+})();
+</script>
 
-  btnTorch.addEventListener('click', async () => {
-    if (!stream) return;
-    try { torchOn = !torchOn; await stream.getVideoTracks()[0].applyConstraints({ advanced: [{ torch: torchOn }] }); btnTorch.classList.toggle('on', torchOn); } catch (err) {}
-  });
+<script>
+// Render exam content
+(function(){
+  const verified = sessionStorage.getItem('verified_candidate');
+  if (!verified) return;
+  const candidate = JSON.parse(verified);
+  const container = document.getElementById('app');
+  container.innerHTML = `
+    <h1>Mathematics — First Certification Period</h1>
+    <p class="sub">Answer all questions. Show working in your uploaded file or in the answer fields below. Your session is being monitored.</p>
 
-  btnCapture.addEventListener('click', async () => {
-    const w = video.videoWidth, h = video.videoHeight;
-    canvas.width = w; canvas.height = h;
-    canvas.getContext('2d').drawImage(video, 0, 0, w, h);
-    
-    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-    video.classList.remove('active'); document.getElementById('framingGuide').classList.remove('visible');
-    btnTorch.style.display = 'none'; torchOn = false;
-    
-    const ctx = canvas.getContext('2d');
-    const imgData = ctx.getImageData(0, 0, w, h);
-    const d = imgData.data;
-    for (let i = 0; i < d.length; i += 4) {
-      const avg = (d[i] + d[i+1] + d[i+2]) / 3;
-      const val = avg > 128 ? 255 : 0;
-      d[i] = d[i+1] = d[i+2] = val;
-    }
-    ctx.putImageData(imgData, 0, 0);
+    <div class="card">
+      <div class="label"><i data-lucide="file-text"></i> Question 1</div>
+      <div class="question">
+        <div class="qnum">1.1</div>
+        <div class="qtext">Solve for x: x² − 5x + 6 = 0</div>
+        <textarea class="answer-input" rows="3" oninput="saveAnswer('1.1', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+      <div class="question">
+        <div class="qnum">1.2</div>
+        <div class="qtext">Solve for x: 2x² + 3x − 5 = 0. Leave answer in simplest surd form.</div>
+        <textarea class="answer-input" rows="4" oninput="saveAnswer('1.2', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+      <div class="question">
+        <div class="qnum">1.3</div>
+        <div class="qtext">Given x² − 4x + k = 0, determine the value(s) of k for which the equation has non-real roots.</div>
+        <textarea class="answer-input" rows="4" oninput="saveAnswer('1.3', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+      <div class="question">
+        <div class="qnum">1.4</div>
+        <div class="qtext">Solve simultaneously for x and y: x + y = 5 and x² − xy + y² = 13.</div>
+        <textarea class="answer-input" rows="5" oninput="saveAnswer('1.4', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+      <div class="question">
+        <div class="qnum">1.5</div>
+        <div class="qtext">Solve for x: 2^(2x) − 5·2^x + 4 = 0.</div>
+        <textarea class="answer-input" rows="4" oninput="saveAnswer('1.5', this.value)" placeholder="Type your working…"></textarea>
+      </div>
+    </div>
 
-    canvas.toBlob(blob => {
-      pendingBlob = blob;
-      preview.src = URL.createObjectURL(blob); preview.classList.add('active');
-      btnCapture.disabled = true; btnRetake.disabled = false; btnUpload.disabled = false;
-      setStatus('Captured. Click Upload.', false);
-    }, 'image/jpeg', 0.6);
-  });
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="alert('Answer progress saved locally.')"><i data-lucide="save"></i> Save progress</button>
+      <button class="btn" onclick="submitExam(false)"><i data-lucide="check-circle"></i> Submit exam</button>
+    </div>
 
-  btnRetake.addEventListener('click', () => {
-    if (preview.src) URL.revokeObjectURL(preview.src);
-    pendingBlob = null; preview.classList.remove('active');
-    btnRetake.disabled = true; btnUpload.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
-    setStatus('Retake ready.');
-  });
-
-  btnUpload.addEventListener('click', async () => {
-    if (!pendingBlob) return;
-    btnUpload.innerHTML = 'Uploading...'; btnUpload.disabled = true;
-    
-    try {
-      const nextScript = scriptCount + 1;
-      const fileName = `${studentId}_${examNumber}_Script${nextScript}.jpg`;
-      
-      const formData = new FormData();
-      formData.append("file", pendingBlob);
-      formData.append("upload_preset", CLOUDINARY_PRESET);
-      formData.append("public_id", fileName); 
-      
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-        method: "POST", body: formData
-      });
-      if (!res.ok) throw new Error("Cloudinary failed");
-      const data = await res.json();
-
-      const img = document.getElementById(`img-page-${nextScript}`);
-      const msg = document.getElementById(`empty-msg-${nextScript}`);
-      if (img && msg) { img.src = data.secure_url; img.style.display = 'block'; msg.style.display = 'none'; }
-      
-      await setDoc(doc(db, "examLogs", studentId), {
-        examNumber, status: 'In Session', lastActive: serverTimestamp(),
-        scripts: arrayUnion({ url: data.secure_url, filename: fileName, uploadedAt: new Date().toISOString() })
-      }, { merge: true });
-
-      scriptCount++;
-      setStatus('Uploaded successfully!', false);
-      btnUpload.innerHTML = 'Upload Page'; btnUpload.disabled = true; btnRetake.disabled = true; btnOpen.disabled = false;
-      
-      setTimeout(() => switchTab('answerbook'), 1000);
-    } catch (err) {
-      setStatus('Upload failed: ' + err.message, true);
-      btnUpload.innerHTML = 'Upload Page'; btnUpload.disabled = false;
-    }
-  });
-
-  // 7. ADMIN FUNCTIONS
-  window.createSession = async function() {
-    const title = document.getElementById('adTitle').value;
-    const paperFile = document.getElementById('adPaper').files[0];
-    const pin = document.getElementById('adPin').value;
-    const duration = document.getElementById('adDuration').value;
-    const statusEl = document.getElementById('createStatus');
-
-    if(!title || !paperFile || pin.length !== 6) return alert("Fill all fields. PIN must be 6 digits.");
-
-    statusEl.innerText = "Creating...";
-
-    try {
-      const html = await new Promise(r => { const fr = new FileReader(); fr.onload = e => r(e.target.result); fr.readAsText(paperFile); });
-      const sessionId = 'SESSION_' + Date.now();
-      
-      await setDoc(doc(db, "examSessions", sessionId), {
-        title, examCode: pin, questionPaperHtml: html, durationMinutes: Number(duration), createdAt: serverTimestamp()
-      });
-
-      statusEl.innerText = "Created! Reloading...";
-      window.location.href = `exam-session.html?session=${sessionId}`;
-    } catch (e) { statusEl.innerText = "Error: " + e.message; }
-  };
-
-  window.searchStudent = async function() {
-    const term = document.getElementById('searchInput').value.trim().toUpperCase();
-    const results = document.getElementById('searchResults');
-    if(!term) return;
-
-    results.innerHTML = '<p style="font-size:13px; color:gray;">Searching...</p>';
-    
-    try {
-      const q = query(collection(db, "examLogs"));
-      const snap = await getDocs(q);
-      results.innerHTML = '';
-      let found = false;
-
-      snap.forEach(docSnap => {
-        const data = docSnap.data();
-        const sId = docSnap.id.toUpperCase();
-        const eNum = (data.examNumber || "").toUpperCase();
-
-        if (sId.includes(term) || eNum.includes(term)) {
-          found = true;
-          const scripts = data.scripts || [];
-          results.innerHTML += `
-            <div class="search-result">
-              <div class="info">
-                Student: ${data.examNumber || sId}<br>
-                <span style="font-size:12px; color:gray;">Pages Uploaded: ${scripts.length}</span>
-              </div>
-              <div class="actions">
-                <button class="btn btn-blue" onclick='viewScripts("${docSnap.id}", ${JSON.stringify(scripts).replace(/'/g, "&#39;")})'>View</button>
-                <button class="btn btn-success" onclick='downloadZip("${data.examNumber || sId}", ${JSON.stringify(scripts).replace(/'/g, "&#39;")})'>Download ZIP</button>
-              </div>
-            </div>
-          `;
-        }
-      });
-
-      if(!found) results.innerHTML = '<p style="font-size:13px; color:gray;">No student found.</p>';
-    } catch (e) { results.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`; }
-  };
-
-  window.viewScripts = function(sid, scripts) {
-    if(!scripts || scripts.length === 0) return alert("No scripts uploaded.");
-    document.getElementById('viewAdmin').classList.remove('active');
-    document.getElementById('viewWorkspace').classList.add('active');
-    document.getElementById('mobileTabSelect').innerHTML = '<option value="answerbook">Viewing Admin Script</option>';
-    
-    const container = document.getElementById('answerBookContainer');
-    container.innerHTML = '';
-    scripts.forEach((sc, idx) => {
-      container.innerHTML += `
-        <div class="ab-page">
-          <div class="ab-header"><span>Student: ${sid}</span><span>Page ${idx+1}</span></div>
-          <div class="ab-writing-page"><img src="${sc.url}" style="display:block;"></div>
-        </div>
-      `;
-    });
-    switchTab('answerbook');
-    document.getElementById('btnExit').style.display = 'flex';
-    document.getElementById('btnExit').onclick = () => window.location.reload();
-  };
-
-  window.downloadZip = async function(sid, scripts) {
-    if(!scripts || scripts.length === 0) return alert("No scripts to download.");
-    const zip = new JSZip();
-    const folder = zip.folder(sid);
-
-    for(let i=0; i<scripts.length; i++) {
-      const res = await fetch(scripts[i].url);
-      const blob = await res.blob();
-      folder.file(scripts[i].filename || `page_${i+1}.jpg`, blob);
-    }
-    zip.generateAsync({type:"blob"}).then(content => {
-      saveAs(content, `${sid}_Scripts.zip`);
-    });
-  };
-
-  window.exitExam = async function() {
-    if (confirm("Finish exam and return to dashboard?")) {
-      if (timerInterval) clearInterval(timerInterval);
-      if (studentId) await setDoc(doc(db, "examLogs", studentId), { status: 'Exited' }, { merge: true });
-      window.location.href = "index.html";
-    }
-  };
+    <p class="note">
+      Anti-cheat is active: copying, pasting, right-clicking, and window switching are monitored. Three focus-loss events will flag your session for review.<br>
+      Non-accredited. Quality assured internally.
+    </p>
+  `;
+  if (window.lucide) lucide.createIcons();
+})();
 </script>
 </body>
 </html>
