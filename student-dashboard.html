@@ -7,7 +7,6 @@
 <meta name="description" content="IFB Student Dashboard. Access your Student ID, Examination Number, and study resources.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L92 85 H8 L50 10 Z' fill='%237A1F2B'/%3E%3Cpath d='M50 32 L77 78 H23 L50 32 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
 <meta name="theme-color" content="#7A1F2B">
-
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
@@ -173,7 +172,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 .admin-card .card-title { color: var(--white); }
 .admin-card .card-title i { color: #FCA5A5; }
 .admin-card p { font-size: 13px; color: rgba(255,255,255,0.85); margin-bottom: 14px; line-height: 1.6; }
-.admin-card .btn-admin { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--maroon); padding: 11px 18px; border-radius: 8px; font-weight: 800; font-size: 13px; text-decoration: none; }
+.admin-card .btn-admin { display: inline-flex; align-items: center; gap: 8px; background: var(--white); color: var(--maroon); padding: 11px 18px; border-radius: 8px; font-weight: 800; font-size: 13px; text-decoration: none; margin-right: 8px; margin-bottom: 6px; }
 .admin-card .btn-admin:hover { background: #F8FAFC; }
 .admin-card .btn-admin i { width: 15px; height: 15px; }
 
@@ -366,7 +365,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
                                         <span id="acPaper">AE-S MATH</span>
                                     </div>
                                     <div>
-                                        <div class="ac-label">Student ID (6-digit)</div>
+                                        <div class="ac-label">Student ID (2701XX)</div>
                                         <div class="ac-id" id="acStudentId">------</div>
                                     </div>
                                     <div>
@@ -387,7 +386,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
                                 <div class="ac-body">
                                     <div class="ac-row">
                                         <div>
-                                            <div class="ac-label">Examination Number (13-digit)</div>
+                                            <div class="ac-label">Examination Number (2701XXXXXXXXX)</div>
                                             <div class="ac-exam pending" id="acExamNum">Pending — pass AE</div>
                                         </div>
                                         <div class="ac-qr" id="acQR"></div>
@@ -452,7 +451,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
             <div class="card admin-card" id="adminCard">
                 <div class="card-header"><div class="card-title"><i data-lucide="shield"></i> Administrator Access</div></div>
                 <p>You are signed in as administrator. Manage exam sessions, ID migration, and student records.</p>
-                <a href="admin-exam-setup.html" class="btn-admin" style="margin-right:8px;"><i data-lucide="settings"></i> Exam Setup</a>
+                <a href="admin-exam-setup.html" class="btn-admin"><i data-lucide="settings"></i> Exam Setup</a>
                 <a href="admin-migrate.html" class="btn-admin"><i data-lucide="database"></i> ID Migration</a>
             </div>
         </div>
@@ -489,7 +488,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
                         <div class="ac-body">
                             <div><div class="ac-label">Student</div><div class="ac-name" id="acFullName">—</div></div>
                             <div class="ac-subject-line"><span id="acFullSubject">Mathematics</span><span class="ac-sep">·</span><span id="acFullPaper">AE-S MATH</span></div>
-                            <div><div class="ac-label">Student ID (6-digit)</div><div class="ac-id" id="acFullStudentId">------</div></div>
+                            <div><div class="ac-label">Student ID (2701XX)</div><div class="ac-id" id="acFullStudentId">------</div></div>
                             <div><div class="ac-label">Access Code</div><div class="ac-code" id="acFullCode">------</div></div>
                             <div class="ac-barcode"><svg id="acFullBarcodeSvg"></svg></div>
                             <div class="ac-hint">SCAN AT EXAM ENTRY</div>
@@ -537,13 +536,19 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut as firebaseSignOut, reauthenticateWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, deleteDoc, collection, getDocs, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, deleteDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
+
+// 2027 Intake 01 — Student ID '2701XX' (270100-270199) · Exam Number '2701XXXXXXXXX'
+const ID_PREFIX       = '2701';
+const SID_SEQ_START   = 0;
+const SID_SEQ_END     = 99;
+const EXAM_SEQ_START  = 1;
 
 let currentData = null;
 
@@ -562,31 +567,32 @@ function escapeHtml(str) {
     return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ==================== NEW 6-DIGIT STUDENT ID (COUNTER-BACKED) ==================== */
+/* ==================== 6-DIGIT SID GENERATOR (2701XX) ==================== */
 async function generateStudentId() {
     const counterRef = doc(db, "counters", "studentId");
     try {
         return await runTransaction(db, async (tx) => {
             const snap = await tx.get(counterRef);
-            const next = snap.exists() && typeof snap.data().value === 'number' ? snap.data().value : 270001;
+            const next = snap.exists() && typeof snap.data().value === 'number' ? snap.data().value : SID_SEQ_START;
+            if (next > SID_SEQ_END) throw new Error("Intake 01 is full (270100–270199). Admin must open intake 02.");
             tx.set(counterRef, { value: next + 1 }, { merge: true });
-            return String(next).padStart(6, '0');
+            return ID_PREFIX + String(next).padStart(2, '0');
         });
     } catch (e) {
         console.error('[ID Gen] transaction failed:', e);
-        throw new Error("Could not allocate a Student ID. Please try again.");
+        throw new Error(e.message || "Could not allocate a Student ID. Please try again.");
     }
 }
 
-/* ==================== 13-DIGIT EXAM NUMBER (COUNTER-BACKED) ==================== */
+/* ==================== 13-DIGIT EXAM NUMBER (2701 + 9 digits) ==================== */
 async function generateExamNumber() {
     const counterRef = doc(db, "counters", "examinationNumber");
     try {
         return await runTransaction(db, async (tx) => {
             const snap = await tx.get(counterRef);
-            const next = snap.exists() && typeof snap.data().value === 'number' ? snap.data().value : 1;
+            const next = snap.exists() && typeof snap.data().value === 'number' ? snap.data().value : EXAM_SEQ_START;
             tx.set(counterRef, { value: next + 1 }, { merge: true });
-            return "26012027" + String(next).padStart(5, '0');
+            return ID_PREFIX + String(next).padStart(9, '0');
         });
     } catch (e) {
         console.error('[Exam Num Gen] transaction failed:', e);
@@ -603,21 +609,24 @@ function generateSecurityCode() {
 function generateSeatingNumber() {
     return String(Math.floor(Math.random() * 30) + 1).padStart(2, '0');
 }
-function isNewStudentId(id) { return typeof id === 'string' && /^\d{6}$/.test(id); }
-function isLegacyStudentId(id) { return typeof id === 'string' && /^2701\d{4}$/.test(id); }
-function isNewExamNumber(id) { return typeof id === 'string' && /^26012027\d{5}$/.test(id); }
+
+// Format validators (2027 intake 01)
+function isNewStudentId(id)      { return typeof id === 'string' && /^2701\d{2}$/.test(id); }
+function isLegacyStudentId(id)   { return typeof id === 'string' && /^2701\d{4}$/.test(id); }
+function isNewExamNumber(id)     { return typeof id === 'string' && /^2701\d{9}$/.test(id); }
+function isLegacyExamNumber(id)  { return typeof id === 'string' && /^26012027\d{5}$/.test(id); }
+
 function buildAccessCode(studentId, seating) {
     if (!studentId) return '';
     return seating ? `${studentId}-${seating}` : studentId;
 }
 
-/* ==================== MIGRATION / BACKFILL FOR EXISTING USERS ==================== */
+/* ==================== BACKFILL (pre-migration users) ==================== */
 async function backfillIfNeeded(docRef, data) {
     const updates = {};
     let working = { ...data };
     let needsWrite = false;
 
-    // If studentId is legacy 8-digit and not yet migrated, generate a 6-digit
     if (!isNewStudentId(working.studentId)) {
         updates.studentId = await generateStudentId();
         updates.legacyStudentId = working.studentId || null;
@@ -681,6 +690,9 @@ function populateCardPair(data, suffix = '') {
     if (examNum && isNewExamNumber(examNum)) {
         examEl.textContent = examNum;
         examEl.classList.remove('pending');
+    } else if (examNum && isLegacyExamNumber(examNum)) {
+        examEl.textContent = examNum;
+        examEl.classList.remove('pending');
     } else {
         examEl.textContent = 'Pending — pass AE';
         examEl.classList.add('pending');
@@ -709,7 +721,7 @@ function populateCardPair(data, suffix = '') {
                 `SID:${studentId}`,
                 `SEAT:${seating}`,
                 `CODE:${accessCode}`,
-                examNum && isNewExamNumber(examNum) ? `EXAM:${examNum}` : `EXAM:PENDING`
+                (examNum && (isNewExamNumber(examNum) || isLegacyExamNumber(examNum))) ? `EXAM:${examNum}` : `EXAM:PENDING`
             ].join('\n');
             qr.addData(payload);
             qr.make();
@@ -732,7 +744,7 @@ window.closeCardView = function() {
     document.getElementById('cardViewModal').classList.remove('active');
 };
 
-/* ==================== REAL PRINT SLIP (NOT A STUB) ==================== */
+/* ==================== PRINT SLIP ==================== */
 window.printSlip = function() {
     if (!currentData) { alert('Please wait for your card to load.'); return; }
     buildPrintArea(currentData);
@@ -744,20 +756,18 @@ window.printSlip = function() {
 
     setTimeout(() => {
         try {
-            // Barcode — 6-digit Student ID
             const sidTarget = document.getElementById('printSidBarcode');
             if (sidTarget && currentData.studentId && typeof JsBarcode === 'function') {
                 JsBarcode(sidTarget, currentData.studentId, { format: 'CODE128', width: 2, height: 55, displayValue: true, font: 'monospace', fontSize: 14, textMargin: 4, margin: 0, background: '#ffffff', lineColor: '#111111' });
             }
-            // Barcode — 13-digit Exam Number (or placeholder if pending)
             const examTarget = document.getElementById('printExamBarcode');
             if (examTarget && typeof JsBarcode === 'function') {
-                const val = isNewExamNumber(currentData.examinationNumber) ? currentData.examinationNumber : 'PENDING';
+                const val = (currentData.examinationNumber && (isNewExamNumber(currentData.examinationNumber) || isLegacyExamNumber(currentData.examinationNumber)))
+                    ? currentData.examinationNumber : 'PENDING';
                 try {
                     JsBarcode(examTarget, val, { format: 'CODE128', width: 1.6, height: 45, displayValue: true, font: 'monospace', fontSize: 12, textMargin: 4, margin: 0, background: '#ffffff', lineColor: '#111111' });
-                } catch (e) { /* PENDING may still encode */ }
+                } catch (e) { /* PENDING still encodes */ }
             }
-            // QR
             const qrTarget = document.getElementById('printQR');
             if (qrTarget && typeof qrcode === 'function') {
                 const accessCode = buildAccessCode(currentData.studentId, currentData.seatingNumber);
@@ -789,7 +799,8 @@ window.printSlip = function() {
 
 function buildPrintArea(data) {
     const safe = escapeHtml;
-    const examNumDisplay = isNewExamNumber(data.examinationNumber) ? safe(data.examinationNumber) : 'PENDING — Pass the AE';
+    const hasExam = data.examinationNumber && (isNewExamNumber(data.examinationNumber) || isLegacyExamNumber(data.examinationNumber));
+    const examNumDisplay = hasExam ? safe(data.examinationNumber) : 'PENDING — Pass the AE';
     const dateIssued = new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' });
     const accessCode = buildAccessCode(data.studentId, data.seatingNumber);
     const subject = (data.courses && data.courses[0]) || 'Mathematics';
@@ -804,7 +815,7 @@ function buildPrintArea(data) {
                     </svg>
                     <div>
                         <div style="font-size: 20pt; font-weight: 900; color: #7A1F2B; letter-spacing: -0.5px; line-height: 1.1;">INSTITUTE OF BOARD</div>
-                        <div style="font-size: 9pt; letter-spacing: 2px; color: #333; font-weight: 700;">ADMISSIONS · 2027</div>
+                        <div style="font-size: 9pt; letter-spacing: 2px; color: #333; font-weight: 700;">ADMISSIONS · 2027 · INTAKE 01</div>
                     </div>
                 </div>
                 <div style="text-align: right; font-size: 9pt; color: #555;">
@@ -830,13 +841,13 @@ function buildPrintArea(data) {
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
                 <div style="background: #fff; border: 2px solid #7A1F2B; padding: 10px 12px; text-align: center;">
-                    <div style="font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; color: #7A1F2B; font-weight: 800; margin-bottom: 4px;">Student ID</div>
+                    <div style="font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; color: #7A1F2B; font-weight: 800; margin-bottom: 4px;">Student ID (2701XX)</div>
                     <div style="font-family: 'Courier New', monospace; font-size: 22pt; font-weight: 900; letter-spacing: 4px; color: #7A1F2B; line-height: 1.1;">${safe(data.studentId || '------')}</div>
                     <div style="margin-top: 8px;"><svg id="printSidBarcode"></svg></div>
                 </div>
                 <div style="background: #fff; border: 2px solid #7A1F2B; padding: 10px 12px; text-align: center;">
-                    <div style="font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; color: #7A1F2B; font-weight: 800; margin-bottom: 4px;">Examination Number</div>
-                    <div style="font-family: 'Courier New', monospace; font-size: ${isNewExamNumber(data.examinationNumber) ? '14pt' : '11pt'}; font-weight: 900; letter-spacing: 1px; color: #7A1F2B; line-height: 1.1;">${examNumDisplay}</div>
+                    <div style="font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; color: #7A1F2B; font-weight: 800; margin-bottom: 4px;">Examination Number (13-digit)</div>
+                    <div style="font-family: 'Courier New', monospace; font-size: ${hasExam ? '12pt' : '11pt'}; font-weight: 900; letter-spacing: 1px; color: #7A1F2B; line-height: 1.1;">${examNumDisplay}</div>
                     <div style="margin-top: 8px;"><svg id="printExamBarcode"></svg></div>
                 </div>
             </div>
@@ -875,7 +886,6 @@ onAuthStateChanged(auth, async (user) => {
         if (!docSnap.exists()) { window.location.href = "admission.html"; return; }
         let data = docSnap.data();
 
-        // Backfill: if this is a pre-migration user, ensure they have 6-digit IDs
         data = await backfillIfNeeded(docRef, data);
         currentData = data;
 
@@ -897,7 +907,7 @@ onAuthStateChanged(auth, async (user) => {
 
         document.getElementById('statStudentId').textContent = data.studentId || '------';
         const statExam = document.getElementById('statExamNum');
-        if (data.examinationNumber && isNewExamNumber(data.examinationNumber)) {
+        if (data.examinationNumber && (isNewExamNumber(data.examinationNumber) || isLegacyExamNumber(data.examinationNumber))) {
             statExam.textContent = data.examinationNumber;
             statExam.classList.remove('pending');
         } else {
