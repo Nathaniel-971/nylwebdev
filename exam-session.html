@@ -10,17 +10,17 @@
 <!-- Libraries -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&family=Times+New+Roman&display=swap" rel="stylesheet">
 <style>
-  /* ========== BASE ========== */
+  /* ========== BASE (MOBILE FIRST) ========== */
   :root { 
     --maroon: #7A1F2B; --bg: #F8FAFC; --panel: #FFFFFF; --text: #111111; 
     --gray: #64748B; --silver: #E2E8F0; --success: #15803D; --error: #B91C1C; 
@@ -29,17 +29,19 @@
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
   /* ========== HEADER ========== */
-  .header { background: var(--panel); border-bottom: 1px solid var(--silver); padding: 0 16px; height: 64px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 100; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; }
-  .brand span { color: var(--maroon); font-size: 24px; }
+  .header { background: var(--panel); border-bottom: 1px solid var(--silver); padding: 0 12px; height: 60px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 100; }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 16px; }
+  .brand span { color: var(--maroon); font-size: 22px; }
   
-  /* Analog Clock */
-  .analog-clock { width: 40px; height: 40px; border: 2px solid var(--maroon); border-radius: 50%; position: relative; background: white; }
+  /* Clocks */
+  .clock-area { display: flex; align-items: center; gap: 12px; }
+  .digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--maroon); background: #FFF5F6; padding: 4px 8px; border-radius: 6px; border: 1px solid #FCA5A5; }
+  .analog-clock { width: 36px; height: 36px; border: 2px solid var(--maroon); border-radius: 50%; position: relative; background: white; }
   .clock-hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: var(--text); border-radius: 2px; }
-  .hour-hand { width: 2px; height: 10px; margin-left: -1px; background: var(--maroon); }
-  .minute-hand { width: 2px; height: 14px; margin-left: -1px; }
-  .second-hand { width: 1px; height: 16px; margin-left: -0.5px; background: var(--error); }
-  
+  .hour-hand { width: 2px; height: 8px; margin-left: -1px; background: var(--maroon); }
+  .minute-hand { width: 2px; height: 12px; margin-left: -1px; }
+  .second-hand { width: 1px; height: 14px; margin-left: -0.5px; background: var(--error); }
+
   .btn { background: transparent; border: 1px solid var(--silver); color: var(--text); padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; font-family: inherit; }
   .btn:hover { background: var(--bg); }
   .btn-primary { background: var(--maroon); color: var(--white); border: none; }
@@ -49,8 +51,8 @@
   .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
   
   /* Mobile Dropdown */
-  .mobile-nav { padding: 8px 16px; background: var(--panel); border-bottom: 1px solid var(--silver); display: flex; align-items: center; gap: 10px; }
-  .mobile-nav select { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--silver); font-family: inherit; font-weight: 600; font-size: 14px; }
+  .mobile-nav { padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--silver); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .mobile-nav select { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--silver); font-family: inherit; font-weight: 600; font-size: 14px; background: white; color: var(--text); }
   @media (min-width: 900px) { .mobile-nav { display: none; } }
 
   /* Desktop Tabs */
@@ -61,48 +63,74 @@
 
   /* Content Area */
   .content-area { flex: 1; position: relative; display: flex; overflow: hidden; }
-  .tab-content { display: none; width: 100%; height: 100%; position: absolute; inset: 0; }
+  .tab-content { display: none; width: 100%; height: 100%; position: absolute; inset: 0; overflow-y: auto; }
   .tab-content.active { display: block; }
   .doc-frame { width: 100%; height: 100%; border: none; background: #E2E8F0; }
 
+  /* ========== THE EMBEDDED ANSWER BOOK (Styled) ========== */
+  .answer-book-wrapper { padding: 12px; background: #E2E8F0; }
+  .ab-page { background: white; max-width: 800px; margin: 0 auto 20px; padding: 24px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; position: relative; }
+  .ab-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: bold; }
+  .ab-title { text-align: center; font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
+  .ab-cover-logo { text-align: center; margin-bottom: 10px; }
+  .ab-cover-logo svg { width: 60px; height: 60px; }
+  .ab-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .ab-row { display: flex; gap: 10px; }
+  .ab-box { border: 1px solid #000; padding: 6px; flex: 1; }
+  .ab-box label { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: bold; text-transform: uppercase; color: var(--maroon); display: block; margin-bottom: 4px; }
+  .ab-value { font-family: monospace; font-size: 14px; font-weight: bold; border-bottom: 1px dotted #000; padding-bottom: 2px; min-height: 20px; }
+  .ab-table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 10px; margin-bottom: 16px; }
+  .ab-table th, .ab-table td { border: 1px solid #000; padding: 6px; text-align: center; }
+  .ab-table th { background: var(--maroon); color: white; }
+  .ab-table td.q-col { background: #FFF5F6; font-weight: bold; }
+  
+  .ab-writing-page { border: 1px solid #000; min-height: 500px; position: relative; margin-bottom: 16px; }
+  .ab-writing-page .left-margin { width: 30px; border-right: 1px solid #000; position: absolute; top: 0; bottom: 0; left: 0; background: #FAFAFA; }
+  .ab-writing-page .marks-col { width: 50px; border-left: 1px solid #000; position: absolute; top: 0; bottom: 0; right: 0; background: #FAFAFA; padding-top: 10px; text-align: center; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: bold; }
+  .ab-writing-page .content { position: absolute; top: 0; bottom: 0; left: 30px; right: 50px; padding: 10px; }
+  .ab-writing-page .scanned-img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto; }
+
   /* ========== ADMIN UI ========== */
-  .admin-container { padding: 16px; overflow-y: auto; height: 100%; width: 100%; }
+  .admin-container { padding: 16px; height: 100%; overflow-y: auto; background: var(--bg); }
   .admin-grid { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 800px; margin: 0 auto; }
   @media (min-width: 768px) { .admin-grid { grid-template-columns: 350px 1fr; } }
-  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; }
-  .card h2 { font-size: 16px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
+  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 16px; }
+  .card h2 { font-size: 15px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
   .file-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
   .file-group label { font-size: 12px; font-weight: 700; }
   .file-input { width: 100%; font-size: 12px; padding: 8px; border: 1px solid var(--silver); border-radius: 6px; }
   .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; min-width: 400px; }
-  th, td { padding: 10px 12px; border-bottom: 1px solid var(--silver); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; min-width: 400px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--silver); }
   th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; }
-  .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+  .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+  .status-online { background: #DCFCE7; color: var(--success); }
 
   /* ========== SCANNER UI ========== */
-  .scanner-ui { padding: 16px; display: flex; flex-direction: column; align-items: center; height: 100%; overflow-y: auto; background: var(--bg); }
-  .scanner-container { width: 100%; max-width: 600px; background: white; border-radius: 16px; padding: 20px; border: 1px solid var(--silver); }
-  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #f3f4f6; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .scanner-ui { padding: 16px; display: flex; flex-direction: column; align-items: center; height: 100%; background: var(--bg); overflow-y: auto; }
+  .scanner-container { width: 100%; max-width: 500px; background: white; border-radius: 16px; padding: 16px; border: 1px solid var(--silver); }
+  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
   video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
   video.active, canvas.active, img.preview.active { display:block; }
-  .framing-guide { position:absolute; inset:6%; pointer-events:none; display:none; border: 2px dashed var(--maroon); border-radius: 8px; }
+  .framing-guide { position:absolute; inset:8%; pointer-events:none; display:none; border: 2px dashed rgba(255,255,255,0.5); border-radius: 8px; }
   .framing-guide.visible { display:block; }
+  .torch-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
+  .torch-btn.on { background: var(--maroon); border-color: var(--maroon); }
   .controls { display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
-  .action-btn { flex:1; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; border:none; font-family:inherit; }
+  .action-btn { flex:1; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; border:none; font-family:inherit; font-size:13px; display: flex; align-items: center; justify-content: center; gap: 6px;}
   .btn-primary { background:var(--maroon); color:white; }
   .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
-  .btn:disabled { opacity:0.5; cursor:not-allowed; }
-  .status { margin-top: 10px; font-size: 13px; text-align: center; font-weight: 600; color: var(--gray); }
+  .action-btn:disabled { opacity:0.5; cursor:not-allowed; }
+  .status { margin-top: 10px; font-size: 12px; text-align: center; font-weight: 600; color: var(--gray); }
 
   /* ========== OVERLAYS ========== */
   .overlay { position: fixed; inset: 0; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
   .overlay.active { display: flex; }
-  .overlay h2 { font-size: 28px; font-weight: 900; margin-bottom: 16px; }
-  .overlay p { font-size: 15px; color: var(--gray); max-width: 400px; margin-bottom: 24px; }
-  .pin-input { background: var(--white); border: 2px solid var(--silver); font-size: 32px; font-family: monospace; text-align: center; letter-spacing: 8px; padding: 16px; border-radius: 12px; outline: none; width: 100%; max-width: 300px; margin-bottom: 24px; }
+  .overlay h2 { font-size: 24px; font-weight: 900; margin-bottom: 12px; }
+  .overlay p { font-size: 14px; color: var(--gray); max-width: 300px; margin-bottom: 20px; }
+  .pin-input { background: var(--white); border: 2px solid var(--silver); font-size: 28px; font-family: monospace; text-align: center; letter-spacing: 6px; padding: 12px; border-radius: 12px; outline: none; width: 100%; max-width: 250px; margin-bottom: 20px; }
 
-  /* Loading Spinner */
+  /* Loader */
   .loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg); position: fixed; inset: 0; z-index: 9999; transition: opacity 0.5s; }
   .loader-logo { font-size: 80px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.7; } }
@@ -113,19 +141,22 @@
 <!-- LOADING OVERLAY -->
 <div class="loader" id="loader">
   <div class="loader-logo">∆</div>
-  <p style="margin-top: 20px; font-weight: 700; color: var(--gray);">Loading Session...</p>
+  <p style="margin-top: 16px; font-weight: 700; color: var(--gray); font-size: 14px;">Loading Session...</p>
 </div>
 
 <!-- HEADER -->
 <header class="header">
-  <div class="brand"><span>∆</span> IFB Exam</div>
-  <div class="analog-clock" id="analogClock" style="display:none;">
-    <div class="clock-hand hour-hand" id="hourHand"></div>
-    <div class="clock-hand minute-hand" id="minuteHand"></div>
-    <div class="clock-hand second-hand" id="secondHand"></div>
+  <div class="brand"><span>∆</span> IFB</div>
+  <div class="clock-area" id="clockArea" style="display:none;">
+    <div class="digital-clock" id="digitalClock">00:00:00</div>
+    <div class="analog-clock">
+      <div class="clock-hand hour-hand" id="hourHand"></div>
+      <div class="clock-hand minute-hand" id="minuteHand"></div>
+      <div class="clock-hand second-hand" id="secondHand"></div>
+    </div>
   </div>
   <div class="header-actions">
-    <button class="btn btn-danger" onclick="exitExam()"><i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Exit</button>
+    <button class="btn btn-danger" onclick="exitExam()"><i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Exit</button>
   </div>
 </header>
 
@@ -134,13 +165,12 @@
   
   <!-- Mobile Dropdown -->
   <div class="mobile-nav">
-    <i data-lucide="menu" style="color:var(--maroon);"></i>
+    <i data-lucide="menu" style="color:var(--maroon); width:20px; height:20px;"></i>
     <select id="mobileTabSelect" onchange="switchTab(this.value)">
       <option value="paper">Question Paper</option>
       <option value="answerbook">Answer Book</option>
       <option value="guidelines">Guidelines</option>
       <option value="scanner">Scan Pages</option>
-      <option value="student">Student Details</option>
       <option value="admin" id="optAdmin" style="display:none;">Admin Panel</option>
     </select>
   </div>
@@ -151,7 +181,6 @@
     <button class="tab-btn" onclick="switchTab('answerbook')" id="tabAnswerBook"><i data-lucide="book-open"></i> Answer Book</button>
     <button class="tab-btn" onclick="switchTab('guidelines')" id="tabGuidelines"><i data-lucide="shield-check"></i> Guidelines</button>
     <button class="tab-btn" onclick="switchTab('scanner')" id="tabScanner"><i data-lucide="camera"></i> Scan Pages</button>
-    <button class="tab-btn" onclick="switchTab('student')" id="tabStudent"><i data-lucide="user"></i> Student Details</button>
     <button class="tab-btn" onclick="switchTab('admin')" id="tabAdmin" style="display:none;"><i data-lucide="settings"></i> Admin</button>
   </div>
 
@@ -161,9 +190,51 @@
       <iframe class="doc-frame" id="paperFrame" src="about:blank"></iframe>
     </div>
 
-    <!-- ANSWER BOOK -->
+    <!-- EMBEDDED ANSWER BOOK -->
     <div class="tab-content" id="viewAnswerBook">
-      <iframe class="doc-frame" id="answerBookFrame" src="about:blank"></iframe>
+      <div class="answer-book-wrapper">
+        <!-- Page 1: Cover -->
+        <div class="ab-page">
+          <div class="ab-header"><span>INSTITUTE OF BOARD</span><span>2027</span></div>
+          <div class="ab-cover-logo">
+            <svg viewBox="0 0 100 100" fill="none"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" /><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" /></svg>
+          </div>
+          <div class="ab-title">ANSWER BOOK</div>
+          <div class="ab-form">
+            <div class="ab-row">
+              <div class="ab-box"><label>Student ID</label><div class="ab-value" id="abStudentId">—</div></div>
+              <div class="ab-box"><label>Security Code</label><div class="ab-value" id="abSecCode">—</div></div>
+            </div>
+            <div class="ab-row">
+              <div class="ab-box"><label>Full Name</label><div class="ab-value" id="abStudentName">—</div></div>
+            </div>
+            <div class="ab-row">
+              <div class="ab-box"><label>Exam Number</label><div class="ab-value" id="abExamNum">—</div></div>
+              <div class="ab-box"><label>Sequence No.</label><div class="ab-value" id="abSeqNum">—</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page 2: Marking Grid -->
+        <div class="ab-page">
+          <div class="ab-header"><span>Answer Book</span><span>Page 2</span></div>
+          <div class="ab-title" style="font-size: 16px;">MARKING GRID</div>
+          <table class="ab-table">
+            <thead><tr><th>Q No.</th><th>Marker</th><th>Moderator</th><th>Re-Mark</th></tr></thead>
+            <tbody>
+              <tr><td class="q-col">1</td><td></td><td></td><td></td></tr>
+              <tr><td class="q-col">2</td><td></td><td></td><td></td></tr>
+              <tr><td class="q-col">3</td><td></td><td></td><td></td></tr>
+              <tr><td class="q-col">4</td><td></td><td></td><td></td></tr>
+              <tr><td class="q-col">5</td><td></td><td></td><td></td></tr>
+              <tr><td class="q-col">6</td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pages 3-10: Writing Areas -->
+        <div id="abWritingPages"></div>
+      </div>
     </div>
 
     <!-- GUIDELINES -->
@@ -171,41 +242,25 @@
       <iframe class="doc-frame" id="guidelinesFrame" src="about:blank"></iframe>
     </div>
 
-    <!-- SCANNER (Inside Session) -->
+    <!-- SCANNER -->
     <div class="tab-content" id="viewScanner">
       <div class="scanner-ui">
         <div class="scanner-container">
-          <h2 style="font-size:18px; font-weight:900; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i data-lucide="camera" style="color:var(--maroon);"></i> Scan Answer Page</h2>
-          <p style="font-size:12px; color:var(--gray); margin-bottom:12px;">Fill the frame with a full A4 page. The scanner will straighten and enhance the text.</p>
+          <h2 style="font-size:16px; font-weight:900; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i data-lucide="camera" style="color:var(--maroon); width:18px; height:18px;"></i> Scan Answer Page</h2>
           <div class="stage">
             <video id="video" autoplay playsinline muted></video>
             <canvas id="canvas"></canvas>
             <img id="preview" class="preview" alt="Scanned page">
             <div class="framing-guide" id="framingGuide"></div>
+            <button class="torch-btn" id="btnTorch"><i data-lucide="flashlight" style="width:20px; height:20px;"></i></button>
           </div>
           <div class="controls">
-            <button class="action-btn btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
+            <button class="action-btn btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open</button>
             <button class="action-btn btn-secondary" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture</button>
             <button class="action-btn btn-secondary" id="btnRetake" disabled><i data-lucide="refresh-cw"></i> Retake</button>
-            <button class="action-btn btn-secondary" id="btnUpload" disabled><i data-lucide="upload-cloud"></i> Upload to Book</button>
+            <button class="action-btn btn-secondary" id="btnUpload" disabled><i data-lucide="upload-cloud"></i> Upload</button>
           </div>
           <div class="status" id="status">Ready to scan.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STUDENT DETAILS (Barcode Auto-fill) -->
-    <div class="tab-content" id="viewStudent">
-      <div style="padding: 24px; max-width: 500px; margin: 0 auto; text-align: center;">
-        <h2 style="font-size: 20px; font-weight: 900; color: var(--maroon); margin-bottom: 16px;">Student Verification</h2>
-        <p style="font-size: 14px; color: var(--gray); margin-bottom: 24px;">Scan the barcode on your Admission Letter to verify your identity and auto-fill your Answer Book.</p>
-        
-        <div id="barcodeReader" style="width: 100%; max-width: 400px; margin: 0 auto 20px; border-radius: 12px; overflow: hidden;"></div>
-        
-        <div id="studentVerifiedBox" style="display:none; background: #DCFCE7; border: 1px solid var(--success); padding: 16px; border-radius: 12px; margin-top: 20px;">
-          <i data-lucide="check-circle" style="width: 48px; height: 48px; color: var(--success); margin-bottom: 8px;"></i>
-          <h3 style="color: var(--success); font-weight: 900;">Verified</h3>
-          <p id="verifiedDetails" style="font-family: monospace; font-size: 14px; margin-top: 8px;"></p>
         </div>
       </div>
     </div>
@@ -217,19 +272,18 @@
           <div class="card">
             <h2><i data-lucide="settings"></i> Create Session</h2>
             <div class="file-group"><label>Question Paper (.html)</label><input type="file" id="qFile" class="file-input" accept=".html"></div>
-            <div class="file-group"><label>Answer Book (.html)</label><input type="file" id="aFile" class="file-input" accept=".html"></div>
             <div class="file-group"><label>Guidelines (.html)</label><input type="file" id="gFile" class="file-input" accept=".html"></div>
             <div class="file-group"><label>Exam Title</label><input type="text" id="examTitle" class="file-input" placeholder="e.g. AE Mathematics 2027"></div>
             <div class="file-group"><label>Exam PIN (6 digits)</label><input type="text" id="examPin" class="file-input" maxlength="6" placeholder="123456" style="font-family:monospace; font-size:16px; text-align:center;"></div>
             <div class="file-group"><label>Duration (minutes)</label><input type="number" id="examDuration" class="file-input" value="120"></div>
-            <button class="btn btn-primary" style="width:100%; justify-content:center;" id="startBtn" onclick="createSession()"><i data-lucide="play-circle"></i> Create & Publish</button>
+            <button class="btn btn-primary" style="width:100%; justify-content:center; padding: 12px;" id="startBtn" onclick="createSession()"><i data-lucide="play-circle"></i> Create & Publish</button>
             <div id="setupStatus" style="margin-top: 8px; font-size: 12px; font-weight: 700; text-align: center; color: var(--gray);"></div>
           </div>
           <div class="card">
             <h2><i data-lucide="activity"></i> Live Monitor</h2>
             <div class="table-wrap">
-              <table><thead><tr><th>Exam No</th><th>Status</th><th>Tabs</th><th>Action</th></tr></thead>
-              <tbody id="monitorTable"><tr><td colspan="4" style="text-align:center;padding:20px;">Waiting...</td></tr></tbody></table>
+              <table><thead><tr><th>Exam No</th><th>Status</th><th>Tabs</th></tr></thead>
+              <tbody id="monitorTable"><tr><td colspan="3" style="text-align:center;padding:20px;">Waiting...</td></tr></tbody></table>
             </div>
           </div>
         </div>
@@ -240,22 +294,22 @@
 
 <!-- PIN OVERLAY -->
 <div class="overlay" id="pinOverlay">
-  <div style="background: var(--panel); padding: 32px; border-radius: 24px; border: 1px solid var(--silver);">
-    <i data-lucide="shield-lock" style="width: 48px; height: 48px; color: var(--maroon); margin-bottom: 16px;"></i>
+  <div style="background: var(--panel); padding: 24px; border-radius: 24px; border: 1px solid var(--silver);">
+    <i data-lucide="shield-lock" style="width: 40px; height: 40px; color: var(--maroon); margin-bottom: 12px;"></i>
     <h2>Session Locked</h2>
-    <p style="margin-bottom: 20px;">Enter the 6-digit PIN sent to your email to begin.</p>
+    <p>Enter the 6-digit PIN sent to your email.</p>
     <input type="text" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••">
-    <button class="btn btn-primary" style="padding: 14px 24px; font-size: 15px; width: 100%; justify-content: center; font-weight: 700;" onclick="verifyPin()">Unlock Exam</button>
-    <p id="pinError" style="color: var(--error); font-size: 13px; margin-top: 12px; display: none; font-weight: 700;">Incorrect PIN.</p>
+    <button class="btn btn-primary" style="padding: 12px 20px; font-size: 14px; width: 100%; justify-content: center; font-weight: 700;" onclick="verifyPin()">Unlock Exam</button>
+    <p id="pinError" style="color: var(--error); font-size: 12px; margin-top: 8px; display: none; font-weight: 700;">Incorrect PIN.</p>
   </div>
 </div>
 
 <!-- TAB WARNING -->
 <div class="overlay" id="tabWarning">
-  <i data-lucide="alert-triangle" style="width: 64px; height: 64px; color: var(--error); margin-bottom: 16px;"></i>
-  <h2 style="color: var(--error);">Tab Switch Detected</h2>
+  <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: var(--error); margin-bottom: 12px;"></i>
+  <h2 style="color: var(--error); font-size: 20px;">Tab Switch Detected</h2>
   <p>You have left the examination window. This has been logged.</p>
-  <button class="btn btn-primary" style="padding: 14px 24px; font-size: 15px;" onclick="document.getElementById('tabWarning').classList.remove('active')">I Understand</button>
+  <button class="btn btn-primary" style="padding: 12px 20px; font-size: 14px;" onclick="document.getElementById('tabWarning').classList.remove('active')">I Understand</button>
 </div>
 
 <script type="module">
@@ -269,23 +323,19 @@
   const db = getFirestore(app);
   const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
-  // State variables
-  let currentUser = null, studentId = null, examNumber = null;
+  let currentUser = null, studentId = null, examNumber = null, securityCode = null;
   let currentSessionId = null, examPin = null, examDurationMins = 120;
   let sessionStartTime = null, timerInterval = null, unsubMonitor = null;
-  let isStudentVerified = false;
   
-  // Scanner variables
-  let stream = null, videoTrack = null, pendingBlob = null, cvReady = false;
-  let captures = {}; // Stores captured URLs
+  let stream = null, pendingBlob = null, cvReady = false;
+  let torchOn = false;
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
-  // 1. Get Session ID from URL
   const urlParams = new URLSearchParams(window.location.search);
   currentSessionId = urlParams.get('session');
 
-  // 2. Auth Check
+  // 1. Auth Check
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     currentUser = user;
@@ -303,12 +353,28 @@
     refreshIcons();
   });
 
-  // ============================================================
-  // ADMIN FUNCTIONS
-  // ============================================================
+  // 2. Generate Embedded Answer Book Pages
+  function generateAnswerBookPages() {
+    const container = document.getElementById('abWritingPages');
+    container.innerHTML = '';
+    for (let i = 3; i <= 10; i++) {
+      container.innerHTML += `
+        <div class="ab-page">
+          <div class="ab-header"><span>Answer Book</span><span>Page ${i}</span></div>
+          <div class="ab-writing-page">
+            <div class="left-margin"></div>
+            <div class="content"><img class="scanned-img" id="img-page-${i}" style="display:none;"></div>
+            <div class="marks-col">Marks</div>
+          </div>
+        </div>
+      `;
+    }
+  }
+  generateAnswerBookPages();
+
+  // 3. Admin Functions
   window.createSession = async function() {
     const qFile = document.getElementById('qFile').files[0];
-    const aFile = document.getElementById('aFile').files[0];
     const gFile = document.getElementById('gFile').files[0];
     const title = document.getElementById('examTitle').value.trim();
     const pin = document.getElementById('examPin').value.trim();
@@ -316,19 +382,19 @@
     const statusEl = document.getElementById('setupStatus');
     const btn = document.getElementById('startBtn');
 
-    if (!qFile || !aFile || !gFile || !title || pin.length !== 6) { alert("Please fill all fields."); return; }
+    if (!qFile || !gFile || !title || pin.length !== 6) { alert("Please fill all fields."); return; }
 
     try {
       btn.disabled = true; statusEl.innerText = "Reading files...";
       const readText = (f) => new Promise(r => { const rd = new FileReader(); rd.onload = e => r(e.target.result); rd.readAsText(f); });
-      const qHtml = await readText(qFile); const aHtml = await readText(aFile); const gHtml = await readText(gFile);
+      const qHtml = await readText(qFile); const gHtml = await readText(gFile);
 
       statusEl.innerText = "Saving to Database...";
       const sessionId = 'SESSION_' + Date.now();
 
       await setDoc(doc(db, "examSessions", sessionId), {
         sessionId, title, examCode: pin, 
-        questionPaperHtml: qHtml, answerBookHtml: aHtml, guidelinesHtml: gHtml,
+        questionPaperHtml: qHtml, guidelinesHtml: gHtml,
         durationMinutes: duration, active: true, createdAt: serverTimestamp()
       });
 
@@ -344,7 +410,7 @@
     unsubMonitor = onSnapshot(q, (snapshot) => {
       const tbody = document.getElementById('monitorTable');
       tbody.innerHTML = '';
-      if (snapshot.empty) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;">Waiting...</td></tr>'; return; }
+      if (snapshot.empty) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;">Waiting...</td></tr>'; return; }
       snapshot.forEach((doc) => {
         const data = doc.data();
         const tabCount = data.tabSwitches ? data.tabSwitches.length : 0;
@@ -354,21 +420,18 @@
           <td style="font-family:monospace;font-weight:bold;">${data.examNumber || doc.id}</td>
           <td><span class="status-badge ${isOnline?'status-online':''}">${isOnline?'Online':'Offline'}</span></td>
           <td style="color:${tabCount>0?'var(--error)':'inherit'};font-weight:bold;">${tabCount}</td>
-          <td><button class="btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Viewer coming soon')">View</button></td>
         `;
         tbody.appendChild(tr);
       });
     });
   }
 
-  // ============================================================
-  // STUDENT FUNCTIONS
-  // ============================================================
+  // 4. Student Functions
   async function initStudentSession(user) {
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       const data = userDoc.data();
-      studentId = data.studentId; examNumber = data.examNumber;
+      studentId = data.studentId; examNumber = data.examNumber; securityCode = data.securityCode || "ABC123";
     }
 
     if (!currentSessionId) {
@@ -388,7 +451,7 @@
 
     if (isAdmin) {
       document.getElementById('pinOverlay').classList.remove('active');
-      document.getElementById('analogClock').style.display = 'block';
+      document.getElementById('clockArea').style.display = 'flex';
       renderContent(sd);
       startTimer();
     } else {
@@ -400,7 +463,7 @@
     const entered = document.getElementById('pinInput').value;
     if (entered === examPin) {
       document.getElementById('pinOverlay').classList.remove('active');
-      document.getElementById('analogClock').style.display = 'block';
+      document.getElementById('clockArea').style.display = 'flex';
       renderContent(window._pendingHtml);
       startTimer();
       logEvent('login', {});
@@ -412,40 +475,47 @@
 
   function renderContent(sd) {
     if (sd.questionPaperHtml) document.getElementById('paperFrame').srcdoc = sd.questionPaperHtml;
-    if (sd.answerBookHtml) document.getElementById('answerBookFrame').srcdoc = sd.answerBookHtml;
     if (sd.guidelinesHtml) document.getElementById('guidelinesFrame').srcdoc = sd.guidelinesHtml;
-    initBarcodeScanner();
+    
+    // Autofill Embedded Answer Book
+    if (studentId) {
+      document.getElementById('abStudentId').innerText = studentId;
+      document.getElementById('abSecCode').innerText = securityCode;
+      document.getElementById('abStudentName').innerText = currentUser.displayName || "Student";
+      document.getElementById('abExamNum').innerText = examNumber;
+      document.getElementById('abSeqNum').innerText = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+    }
   }
 
-  // ============================================================
-  // ANALOG CLOCK
-  // ============================================================
+  // 5. Timer & Clocks
   function startTimer() {
     sessionStartTime = Date.now();
-    
-    // Initial Clock Hands
-    updateClock();
-    setInterval(updateClock, 1000);
+    updateClocks();
+    setInterval(updateClocks, 1000);
   }
 
-  function updateClock() {
+  function updateClocks() {
     const now = new Date();
-    const h = now.getHours() % 12;
-    const m = now.getMinutes();
-    const s = now.getSeconds();
+    
+    // Digital Clock
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('digitalClock').innerText = `${h}:${m}:${s}`;
 
-    const hDeg = (h * 30) + (m * 0.5);
-    const mDeg = (m * 6) + (s * 0.1);
-    const sDeg = s * 6;
-
+    // Analog Clock
+    const ah = now.getHours() % 12;
+    const am = now.getMinutes();
+    const as = now.getSeconds();
+    const hDeg = (ah * 30) + (am * 0.5);
+    const mDeg = (am * 6) + (as * 0.1);
+    const sDeg = as * 6;
     document.getElementById('hourHand').style.transform = `rotate(${hDeg}deg)`;
     document.getElementById('minuteHand').style.transform = `rotate(${mDeg}deg)`;
     document.getElementById('secondHand').style.transform = `rotate(${sDeg}deg)`;
   }
 
-  // ============================================================
-  // MOBILE NAVIGATION
-  // ============================================================
+  // 6. Navigation
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -455,9 +525,7 @@
     document.getElementById('mobileTabSelect').value = tab;
   };
 
-  // ============================================================
-  // SCANNER LOGIC (Embedded)
-  // ============================================================
+  // 7. Scanner (Fixed with Torch)
   function initScanner() {
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -466,24 +534,38 @@
     const btnCapture = document.getElementById('btnCapture');
     const btnRetake = document.getElementById('btnRetake');
     const btnUpload = document.getElementById('btnUpload');
+    const btnTorch = document.getElementById('btnTorch');
     const statusEl = document.getElementById('status');
     const framingGuide = document.getElementById('framingGuide');
 
     function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? 'var(--error)' : (type === 'success' ? 'var(--success)' : 'var(--gray)'); }
 
-    // Open Camera
     btnOpen.addEventListener('click', async () => {
       setStatus('Requesting camera...');
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
         video.srcObject = stream; await video.play();
         video.classList.add('active'); framingGuide.classList.add('visible');
+        
+        const track = stream.getVideoTracks()[0];
+        const caps = track.getCapabilities();
+        if (caps.torch) { btnTorch.style.display = 'flex'; } else { btnTorch.style.display = 'none'; }
+
         btnOpen.disabled = true; btnCapture.disabled = false; btnRetake.disabled = true; btnUpload.disabled = true;
         setStatus('Position A4 page inside the frame.');
       } catch (err) { setStatus('Camera error: ' + err.message, 'error'); }
     });
 
-    // Capture
+    btnTorch.addEventListener('click', async () => {
+      if (!stream) return;
+      const track = stream.getVideoTracks()[0];
+      try {
+        torchOn = !torchOn;
+        await track.applyConstraints({ advanced: [{ torch: torchOn }] });
+        btnTorch.classList.toggle('on', torchOn);
+      } catch (err) { console.warn(err); }
+    });
+
     btnCapture.addEventListener('click', async () => {
       const w = video.videoWidth, h = video.videoHeight;
       canvas.width = w; canvas.height = h;
@@ -491,8 +573,9 @@
       
       if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
       video.classList.remove('active'); framingGuide.classList.remove('visible');
-      
-      // Enhance (Black & White)
+      btnTorch.style.display = 'none'; torchOn = false; btnTorch.classList.remove('on');
+
+      // Binarization
       const ctx = canvas.getContext('2d');
       const imgData = ctx.getImageData(0, 0, w, h);
       const d = imgData.data;
@@ -511,7 +594,6 @@
       }, 'image/jpeg', 0.9);
     });
 
-    // Retake
     btnRetake.addEventListener('click', () => {
       if (preview.src) URL.revokeObjectURL(preview.src);
       pendingBlob = null; preview.classList.remove('active');
@@ -519,50 +601,33 @@
       setStatus('Retake ready.');
     });
 
-    // Upload (Simulated Cloudinary)
     btnUpload.addEventListener('click', async () => {
       if (!pendingBlob || !studentId) return;
       btnUpload.innerHTML = 'Uploading...'; btnUpload.disabled = true;
-      
-      // Simulate upload delay
       await new Promise(r => setTimeout(r, 1000));
       
-      if (!captures[studentId]) captures[studentId] = [];
-      captures[studentId].push(URL.createObjectURL(pendingBlob));
+      // Inject image into the Embedded Answer Book dynamically
+      const pages = document.querySelectorAll('.scanned-img');
+      for (let img of pages) {
+        if (img.style.display === 'none') {
+          img.src = URL.createObjectURL(pendingBlob);
+          img.style.display = 'block';
+          break;
+        }
+      }
       
       await setDoc(doc(db, "examLogs", studentId), {
         examNumber, status: 'In Session', lastActive: serverTimestamp(),
         scripts: arrayUnion({ url: 'placeholder_url', uploadedAt: new Date().toISOString() })
       }, { merge: true });
 
-      setStatus('Uploaded!', 'success');
+      setStatus('Uploaded and injected into Answer Book!', 'success');
       btnUpload.innerHTML = 'Upload'; btnUpload.disabled = true;
       btnRetake.disabled = true; btnOpen.disabled = false;
     });
   }
 
-  // ============================================================
-  // BARCODE SCANNER (Student Verification)
-  // ============================================================
-  function initBarcodeScanner() {
-    const reader = new Html5Qrcode("barcodeReader");
-    reader.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 250, height: 150 } },
-      (decodedText) => {
-        // Barcode scanned
-        document.getElementById('studentVerifiedBox').style.display = 'block';
-        document.getElementById('verifiedDetails').innerText = `Verified Student: ${decodedText}`;
-        isStudentVerified = true;
-        reader.stop();
-      },
-      (error) => {}
-    ).catch(err => console.warn("Barcode scanner error", err));
-  }
-
-  // ============================================================
-  // ANTI-CHEAT
-  // ============================================================
+  // 8. Anti-Cheat
   document.addEventListener("visibilitychange", async () => {
     if (document.hidden && !document.getElementById('pinOverlay').classList.contains('active') && !document.getElementById('viewAdmin').classList.contains('active')) {
       document.getElementById('tabWarning').classList.add('active');
@@ -589,8 +654,8 @@
     }
   };
 
-  // Initialize Scanner when session starts
-  setTimeout(initScanner, 2000);
+  // Initialize Scanner
+  setTimeout(initScanner, 1000);
 
   refreshIcons();
 </script>
