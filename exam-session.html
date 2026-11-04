@@ -3,276 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>IFB Live Examination</title>
+<title>IFB Proctor & Examination Portal</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="theme-color" content="#7A1F2B">
 
-<!-- Libraries -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+
 <style>
   /* ========== BASE ========== */
   :root { 
-    --maroon: #7A1F2B; --bg: #F8FAFC; --panel: #FFFFFF; --text: #111111; 
-    --white: #FFFFFF; --gray: #64748B; --silver: #E2E8F0; 
-    --success: #15803D; --error: #B91C1C; 
+    --maroon: #7A1F2B; --bg: #F4F6F9; --panel: #FFFFFF; --text: #111; 
+    --white: #FFF; --gray: #64748B; --silver: #E2E8F0; 
+    --success: #15803D; --error: #B91C1C; --blue: #3B82F6;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
   /* ========== HEADER ========== */
-  .header { background: var(--panel); border-bottom: 1px solid var(--silver); padding: 0 12px; height: 60px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 100; }
-  .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 16px; }
-  .brand span { color: var(--maroon); font-size: 22px; }
+  .header { background: var(--panel); border-bottom: 1px solid var(--silver); padding: 0 16px; height: 60px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 100; }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 18px; color: var(--maroon); }
   
   .clock-area { display: flex; align-items: center; gap: 12px; }
-  .digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--maroon); background: #FFF5F6; padding: 4px 8px; border-radius: 6px; border: 1px solid #FCA5A5; }
-  .analog-clock { width: 36px; height: 36px; border: 2px solid var(--maroon); border-radius: 50%; position: relative; background: white; }
-  .clock-hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: var(--text); border-radius: 2px; }
-  .hour-hand { width: 2px; height: 8px; margin-left: -1px; background: var(--maroon); }
-  .minute-hand { width: 2px; height: 12px; margin-left: -1px; }
-  .second-hand { width: 1px; height: 14px; margin-left: -0.5px; background: var(--error); }
+  .digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--maroon); background: #FFF5F6; padding: 6px 10px; border-radius: 6px; border: 1px solid #FCA5A5; }
 
   .btn { background: transparent; border: 1px solid var(--silver); color: var(--text); padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; font-family: inherit; }
-  .btn:hover { background: var(--bg); }
   .btn-primary { background: var(--maroon); color: var(--white); border: none; }
+  .btn-blue { background: #EFF6FF; color: var(--blue); border: 1px solid #BFDBFE; }
   .btn-danger { border-color: var(--error); color: var(--error); }
-  .btn-success { background: var(--success); color: var(--white); border: none; }
 
-  /* ========== MAIN LAYOUT ========== */
-  .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  /* ========== DASHBOARD (Like the image) ========== */
+  .dashboard-container { padding: 24px; overflow-y: auto; height: 100%; display: none; }
+  .dashboard-container.active { display: block; }
   
-  .mobile-nav { padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--silver); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .mobile-nav select { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--silver); font-family: inherit; font-weight: 600; font-size: 14px; background: white; color: var(--text); outline: none; }
-  @media (min-width: 900px) { .mobile-nav { display: none; } }
+  .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .dash-header h2 { font-size: 20px; font-weight: 800; }
+  .dash-status { background: #DCFCE7; color: var(--success); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  
+  .exam-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media(min-width: 768px) { .exam-grid { grid-template-columns: 1fr 1fr; } }
+  
+  .exam-card { background: var(--panel); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; }
+  .exam-card .title { font-size: 16px; font-weight: 800; color: var(--maroon); margin-bottom: 4px; }
+  .exam-card .subtitle { font-size: 12px; color: var(--gray); margin-bottom: 16px; }
+  .exam-meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; border-top: 1px solid var(--silver); border-bottom: 1px solid var(--silver); padding: 12px 0; }
+  .exam-meta div { display: flex; flex-direction: column; gap: 4px; }
+  .exam-meta span { font-size: 10px; color: var(--gray); text-transform: uppercase; font-weight: 700; }
+  .exam-meta strong { font-size: 13px; font-weight: 700; }
+  
+  .card-actions { display: flex; gap: 10px; }
 
-  .tabs { display: none; background: var(--panel); border-bottom: 1px solid var(--silver); overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
-  @media (min-width: 900px) { .tabs { display: flex; } }
-  .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; font-weight: 700; font-size: 13px; color: var(--gray); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border-bottom: 2px solid transparent; white-space: nowrap; transition: 0.2s; font-family: inherit; }
-  .tab-btn.active { color: var(--maroon); border-bottom-color: var(--maroon); background: var(--bg); }
+  /* ========== EXAM WORKSPACE (Paper, Scanner, Answer Book) ========== */
+  .workspace { display: none; flex: 1; flex-direction: column; overflow: hidden; background: var(--bg); }
+  .workspace.active { display: flex; }
+  
+  .mobile-nav { padding: 12px; background: var(--panel); border-bottom: 1px solid var(--silver); }
+  .mobile-nav select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--silver); font-family: inherit; font-weight: 700; font-size: 15px; background: #FAFAFA; }
 
-  .content-area { flex: 1; position: relative; display: flex; overflow: hidden; }
-  .tab-content { display: none; width: 100%; height: 100%; position: absolute; inset: 0; overflow-y: auto; }
+  .tab-content { display: none; height: 100%; overflow-y: auto; }
   .tab-content.active { display: block; }
-  .doc-frame { width: 100%; height: 100%; border: none; background: #E2E8F0; }
-
-  /* ========== ANSWER BOOK ========== */
-  .answer-book-wrapper { padding: 12px; background: #E2E8F0; }
-  .ab-page { background: white; max-width: 800px; margin: 0 auto 20px; padding: 24px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; position: relative; }
-  .ab-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: bold; }
-  .ab-title { text-align: center; font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 900; color: var(--maroon); margin-bottom: 16px; }
-  .ab-cover-logo { text-align: center; margin-bottom: 10px; }
-  .ab-cover-logo svg { width: 60px; height: 60px; }
-  .ab-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-  .ab-row { display: flex; gap: 10px; }
-  .ab-box { border: 1px solid #000; padding: 6px; flex: 1; }
-  .ab-box label { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: bold; text-transform: uppercase; color: var(--maroon); display: block; margin-bottom: 4px; }
-  .ab-value { font-family: monospace; font-size: 14px; font-weight: bold; border-bottom: 1px dotted #000; padding-bottom: 2px; min-height: 20px; }
-  .ab-writing-page { border: 1px solid #000; min-height: 500px; position: relative; margin-bottom: 16px; }
-  .ab-writing-page .left-margin { width: 30px; border-right: 1px solid #000; position: absolute; top: 0; bottom: 0; left: 0; background: #FAFAFA; }
-  .ab-writing-page .marks-col { width: 50px; border-left: 1px solid #000; position: absolute; top: 0; bottom: 0; right: 0; background: #FAFAFA; padding-top: 10px; text-align: center; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: bold; }
-  .ab-writing-page .content { position: absolute; top: 0; bottom: 0; left: 30px; right: 50px; padding: 10px; }
-  .ab-writing-page .scanned-img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto; }
-  .typed-text-box { width: 100%; height: 80px; border: 1px solid var(--silver); border-radius: 4px; padding: 6px; font-family: inherit; font-size: 12px; margin-top: 10px; display: none; }
-
-  /* ========== ADMIN ========== */
-  .admin-container { padding: 16px; height: 100%; overflow-y: auto; background: var(--bg); }
-  .admin-grid { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 900px; margin: 0 auto; }
-  @media (min-width: 768px) { .admin-grid { grid-template-columns: 350px 1fr; } }
-  .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 16px; }
-  .card h2 { font-size: 15px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
-  .file-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
-  .file-group label { font-size: 12px; font-weight: 700; }
-  .file-input { width: 100%; font-size: 12px; padding: 8px; border: 1px solid var(--silver); border-radius: 6px; }
-  .table-wrap { overflow-x: auto; border: 1px solid var(--silver); border-radius: 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; min-width: 400px; }
-  th, td { padding: 8px 10px; border-bottom: 1px solid var(--silver); }
-  th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; }
-  .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; }
-  .status-online { background: #DCFCE7; color: var(--success); }
-
-  /* ========== SCANNER ========== */
-  .scanner-ui { padding: 16px; display: flex; flex-direction: column; align-items: center; height: 100%; background: var(--bg); overflow-y: auto; }
-  .scanner-container { width: 100%; max-width: 500px; background: white; border-radius: 16px; padding: 16px; border: 1px solid var(--silver); }
-  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .iframe-container { width: 100%; height: 100%; border: none; }
+  
+  /* Answer Book Viewer */
+  .ab-page { background: white; max-width: 800px; margin: 16px auto; padding: 24px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid var(--silver); }
+  .ab-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; font-weight: bold; font-size: 12px; }
+  .ab-writing-page { border: 1.5px solid #000; min-height: 400px; position: relative; display: flex; align-items: center; justify-content: center; background: #FAFAFA; }
+  .ab-writing-page img { max-width: 100%; max-height: 100%; object-fit: contain; display: none; }
+  
+  /* Scanner UI */
+  .scanner-ui { padding: 16px; display: flex; flex-direction: column; align-items: center; height: 100%; overflow-y: auto; }
+  .scanner-box { width: 100%; max-width: 500px; background: white; border-radius: 16px; padding: 16px; border: 1px solid var(--silver); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
   video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
   video.active, canvas.active, img.preview.active { display:block; }
   .framing-guide { position:absolute; inset:8%; pointer-events:none; display:none; border: 2px dashed rgba(255,255,255,0.5); border-radius: 8px; }
   .framing-guide.visible { display:block; }
-  .torch-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 10; cursor: pointer; }
-  .torch-btn.on { background: var(--maroon); border-color: var(--maroon); }
-  .controls { display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
-  .action-btn { flex:1; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; border:none; font-family:inherit; font-size:13px; display: flex; align-items: center; justify-content: center; gap: 6px;}
-  .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
-  .action-btn:disabled { opacity:0.5; cursor:not-allowed; }
-  .status { margin-top: 10px; font-size: 12px; text-align: center; font-weight: 600; color: var(--gray); }
+  .torch-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border: 1px solid white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; z-index: 10; }
+  .scanner-controls { display:flex; gap:8px; flex-wrap:wrap; }
+  .action-btn { flex:1; padding:14px; border-radius:8px; font-weight:700; cursor:pointer; border:none; font-family:inherit; font-size:14px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+  .action-btn:disabled { opacity:0.5; }
+  .status { margin-top: 12px; font-size: 13px; text-align: center; font-weight: 600; color: var(--gray); }
 
-  /* ========== OVERLAYS ========== */
+  /* Overlays & Admin */
   .overlay { position: fixed; inset: 0; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
   .overlay.active { display: flex; }
-  .overlay h2 { font-size: 24px; font-weight: 900; margin-bottom: 12px; }
-  .overlay p { font-size: 14px; color: var(--gray); max-width: 300px; margin-bottom: 20px; }
   .pin-input { background: var(--white); border: 2px solid var(--silver); font-size: 28px; font-family: monospace; text-align: center; letter-spacing: 6px; padding: 12px; border-radius: 12px; outline: none; width: 100%; max-width: 250px; margin-bottom: 20px; }
-  .loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg); position: fixed; inset: 0; z-index: 9999; transition: opacity 0.5s; }
-  .loader-logo { font-size: 80px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.7; } }
+  .admin-panel { display: none; padding: 20px; height: 100%; overflow-y: auto; }
+  .admin-panel.active { display: block; }
 </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-<div class="loader" id="loader">
-  <div class="loader-logo">∆</div>
-  <p style="margin-top: 16px; font-weight: 700; color: var(--gray); font-size: 14px;">Loading Session...</p>
-</div>
-
+<!-- ========== HEADER ========== -->
 <header class="header">
-  <div class="brand"><span>∆</span> IFB</div>
+  <div class="brand"><span>∆</span> IFB Portal</div>
   <div class="clock-area" id="clockArea" style="display:none;">
     <div class="digital-clock" id="digitalClock">00:00:00</div>
-    <div class="analog-clock">
-      <div class="clock-hand hour-hand" id="hourHand"></div>
-      <div class="clock-hand minute-hand" id="minuteHand"></div>
-      <div class="clock-hand second-hand" id="secondHand"></div>
-    </div>
   </div>
-  <div class="header-actions">
-    <button class="btn btn-danger" onclick="exitExam()"><i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Exit</button>
+  <div id="headerActions">
+    <button class="btn btn-danger" id="btnExit" onclick="exitExam()" style="display:none;"><i data-lucide="log-out" style="width: 14px; height: 14px;"></i> Exit Exam</button>
   </div>
 </header>
 
-<main class="main-content">
-  <div class="mobile-nav">
-    <i data-lucide="menu" style="color:var(--maroon); width:20px; height:20px;"></i>
-    <select id="mobileTabSelect" onchange="switchTab(this.value)">
-      <option value="paper">Question Paper</option>
-      <option value="answerbook">Answer Book</option>
-      <option value="guidelines">Guidelines</option>
-      <option value="scanner">Scan Pages</option>
-      <option value="admin" id="optAdmin" style="display:none;">Admin Panel</option>
-    </select>
+<!-- ========== STUDENT DASHBOARD ========== -->
+<div class="dashboard-container active" id="viewDashboard">
+  <div class="dash-header">
+    <h2>Upcoming Exams to Write</h2>
+    <div class="dash-status"><i data-lucide="check-circle" style="width:14px; height:14px;"></i> Online</div>
   </div>
-
-  <div class="tabs" id="mainTabs">
-    <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper"><i data-lucide="file-text"></i> Paper</button>
-    <button class="tab-btn" onclick="switchTab('answerbook')" id="tabAnswerBook"><i data-lucide="book-open"></i> Answer Book</button>
-    <button class="tab-btn" onclick="switchTab('guidelines')" id="tabGuidelines"><i data-lucide="shield-check"></i> Guidelines</button>
-    <button class="tab-btn" onclick="switchTab('scanner')" id="tabScanner"><i data-lucide="camera"></i> Scan Pages</button>
-    <button class="tab-btn" onclick="switchTab('admin')" id="tabAdmin" style="display:none;"><i data-lucide="settings"></i> Admin</button>
-  </div>
-
-  <div class="content-area">
-    <div class="tab-content active" id="viewPaper">
-      <iframe class="doc-frame" id="paperFrame" src="about:blank"></iframe>
-    </div>
-
-    <div class="tab-content" id="viewAnswerBook">
-      <div class="answer-book-wrapper">
-        <div class="ab-page">
-          <div class="ab-header"><span>INSTITUTE OF BOARD</span><span>2027</span></div>
-          <div class="ab-cover-logo">
-            <svg viewBox="0 0 100 100" fill="none"><path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" /><path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" /></svg>
-          </div>
-          <div class="ab-title">ANSWER BOOK</div>
-          <div class="ab-form">
-            <div class="ab-row">
-              <div class="ab-box"><label>Student ID</label><div class="ab-value" id="abStudentId">—</div></div>
-              <div class="ab-box"><label>Security Code</label><div class="ab-value" id="abSecCode">—</div></div>
-            </div>
-            <div class="ab-row">
-              <div class="ab-box"><label>Full Name</label><div class="ab-value" id="abStudentName">—</div></div>
-            </div>
-            <div class="ab-row">
-              <div class="ab-box"><label>Exam Number</label><div class="ab-value" id="abExamNum">—</div></div>
-              <div class="ab-box"><label>Sequence No.</label><div class="ab-value" id="abSeqNum">—</div></div>
-            </div>
-          </div>
-        </div>
-
-        <div id="abWritingPages"></div>
-      </div>
-    </div>
-
-    <div class="tab-content" id="viewGuidelines">
-      <iframe class="doc-frame" id="guidelinesFrame" src="about:blank"></iframe>
-    </div>
-
-    <div class="tab-content" id="viewScanner">
-      <div class="scanner-ui">
-        <div class="scanner-container">
-          <h2 style="font-size:16px; font-weight:900; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i data-lucide="camera" style="color:var(--maroon); width:18px; height:18px;"></i> Scan Answer Page</h2>
-          <div class="stage">
-            <video id="video" autoplay playsinline muted></video>
-            <canvas id="canvas"></canvas>
-            <img id="preview" class="preview" alt="Scanned page">
-            <div class="framing-guide" id="framingGuide"></div>
-            <button class="torch-btn" id="btnTorch"><i data-lucide="flashlight" style="width:20px; height:20px;"></i></button>
-          </div>
-          <div class="controls">
-            <button class="action-btn btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open</button>
-            <button class="action-btn btn-secondary" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture</button>
-            <button class="action-btn btn-secondary" id="btnRetake" disabled><i data-lucide="refresh-cw"></i> Retake</button>
-            <button class="action-btn btn-secondary" id="btnUpload" disabled><i data-lucide="upload-cloud"></i> Upload</button>
-          </div>
-          <div style="margin-top: 12px;">
-             <label style="font-size:12px; font-weight:700; color:var(--gray);">Bad Handwriting? Type answer here for AI:</label>
-             <textarea id="typedText" class="typed-text-box" placeholder="Type your answer here if your handwriting is hard to read..."></textarea>
-          </div>
-          <div class="status" id="status">Ready to scan.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tab-content" id="viewAdmin">
-      <div class="admin-container">
-        <div class="admin-grid">
-          <div class="card">
-            <h2><i data-lucide="settings"></i> Create Session</h2>
-            <div class="file-group"><label>Question Paper (.html)</label><input type="file" id="qFile" class="file-input" accept=".html"></div>
-            <div class="file-group"><label>Guidelines (.html)</label><input type="file" id="gFile" class="file-input" accept=".html"></div>
-            <div class="file-group"><label>Exam Title</label><input type="text" id="examTitle" class="file-input" placeholder="e.g. AE Mathematics 2027"></div>
-            <div class="file-group"><label>Exam PIN (6 digits)</label><input type="text" id="examPin" class="file-input" maxlength="6" placeholder="123456" style="font-family:monospace; font-size:16px; text-align:center;"></div>
-            <div class="file-group"><label>Duration (minutes)</label><input type="number" id="examDuration" class="file-input" value="120"></div>
-            <button class="btn btn-primary" style="width:100%; justify-content:center; padding: 12px;" id="startBtn" onclick="createSession()"><i data-lucide="play-circle"></i> Create & Publish</button>
-            <div id="setupStatus" style="margin-top: 8px; font-size: 12px; font-weight: 700; text-align: center; color: var(--gray);"></div>
-          </div>
-          <div class="card">
-            <h2><i data-lucide="activity"></i> Live Monitor <button class="btn" style="margin-left:auto; padding: 4px 8px; font-size:11px;" onclick="refreshMonitor()"><i data-lucide="refresh-cw" style="width:12px; height:12px;"></i> Refresh</button></h2>
-            <div class="table-wrap">
-              <table><thead><tr><th>Exam No</th><th>Status</th><th>Tabs</th></tr></thead>
-              <tbody id="monitorTable"><tr><td colspan="3" style="text-align:center;padding:20px;">Click Refresh...</td></tr></tbody></table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</main>
-
-<div class="overlay" id="pinOverlay">
-  <div style="background: var(--panel); padding: 24px; border-radius: 24px; border: 1px solid var(--silver);">
-    <i data-lucide="shield-lock" style="width: 40px; height: 40px; color: var(--maroon); margin-bottom: 12px;"></i>
-    <h2>Session Locked</h2>
-    <p>Enter the 6-digit PIN sent to your email.</p>
-    <input type="text" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••">
-    <button class="btn btn-primary" style="padding: 12px 20px; font-size: 14px; width: 100%; justify-content: center; font-weight: 700;" onclick="verifyPin()">Unlock Exam</button>
-    <p id="pinError" style="color: var(--error); font-size: 12px; margin-top: 8px; display: none; font-weight: 700;">Incorrect PIN.</p>
+  
+  <div class="exam-grid" id="examList">
+    <!-- Sessions injected here by JS -->
+    <p style="text-align:center; color:var(--gray); padding:40px;">Loading exams...</p>
   </div>
 </div>
 
-<div class="overlay" id="tabWarning">
-  <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: var(--error); margin-bottom: 12px;"></i>
-  <h2 style="color: var(--error); font-size: 20px;">Tab Switch Detected</h2>
-  <p>You have left the examination window. This has been logged.</p>
-  <button class="btn btn-primary" style="padding: 12px 20px; font-size: 14px;" onclick="document.getElementById('tabWarning').classList.remove('active')">I Understand</button>
+<!-- ========== EXAM WORKSPACE ========== -->
+<div class="workspace" id="viewWorkspace">
+  <div class="mobile-nav">
+    <select id="mobileTabSelect" onchange="switchTab(this.value)">
+      <option value="paper">📄 Question Paper</option>
+      <option value="scanner">📷 Scan Answer Page</option>
+      <option value="answerbook">📝 View Digital Answer Book</option>
+    </select>
+  </div>
+
+  <div class="tab-content" id="tabPaper">
+    <iframe class="iframe-container" id="paperFrame" src="about:blank"></iframe>
+  </div>
+
+  <div class="tab-content" id="tabScanner">
+    <div class="scanner-ui">
+      <div class="scanner-box">
+        <div class="stage">
+          <video id="video" autoplay playsinline muted></video>
+          <canvas id="canvas"></canvas>
+          <img id="preview" class="preview" alt="Scan">
+          <div class="framing-guide" id="framingGuide"></div>
+          <button class="torch-btn" id="btnTorch"><i data-lucide="flashlight" style="width:20px; height:20px;"></i></button>
+        </div>
+        <div class="scanner-controls">
+          <button class="action-btn btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
+          <button class="action-btn btn-blue" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture Page</button>
+          <button class="action-btn btn-danger" id="btnRetake" disabled><i data-lucide="refresh-cw"></i> Retake</button>
+          <button class="action-btn btn-primary" id="btnUpload" disabled><i data-lucide="upload-cloud"></i> Upload Page</button>
+        </div>
+        <div class="status" id="status">Ready to scan.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tabAnswerBook">
+    <div id="answerBookContainer" style="padding: 16px;">
+      <!-- Pages injected here -->
+    </div>
+  </div>
+</div>
+
+<!-- ========== ADMIN PANEL ========== -->
+<div class="admin-panel" id="viewAdmin">
+  <div style="max-width: 800px; margin: 0 auto;">
+    <h2 style="margin-bottom: 20px;">Admin: Create Session</h2>
+    <div class="scanner-box" style="max-width: 100%;">
+      <div style="margin-bottom: 12px;"><label style="font-size:12px; font-weight:700;">Exam Title</label><input type="text" id="adTitle" style="width:100%; padding:10px; border:1px solid var(--silver); border-radius:6px; margin-top:4px;"></div>
+      <div style="margin-bottom: 12px;"><label style="font-size:12px; font-weight:700;">Question Paper (.html)</label><input type="file" id="adPaper" accept=".html" style="width:100%; padding:10px; border:1px solid var(--silver); border-radius:6px; margin-top:4px;"></div>
+      <div style="margin-bottom: 12px;"><label style="font-size:12px; font-weight:700;">Exam PIN (6 digits)</label><input type="text" id="adPin" maxlength="6" style="width:100%; padding:10px; border:1px solid var(--silver); border-radius:6px; margin-top:4px;"></div>
+      <div style="margin-bottom: 12px;"><label style="font-size:12px; font-weight:700;">Duration (Mins)</label><input type="number" id="adDuration" value="120" style="width:100%; padding:10px; border:1px solid var(--silver); border-radius:6px; margin-top:4px;"></div>
+      <button class="btn btn-primary" style="width:100%; justify-content:center; padding:14px;" onclick="createSession()">Create & Publish</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN MODAL -->
+<div class="overlay" id="pinOverlay">
+  <div style="background: var(--panel); padding: 24px; border-radius: 24px; border: 1px solid var(--silver); max-width:400px; width:100%;">
+    <i data-lucide="shield-lock" style="width: 40px; height: 40px; color: var(--maroon); margin-bottom: 12px;"></i>
+    <h2 style="margin-bottom: 8px;">Enter Exam PIN</h2>
+    <p style="font-size:13px; color:var(--gray); margin-bottom:16px;">Enter the 6-digit PIN provided by your invigilator.</p>
+    <input type="text" class="pin-input" id="pinInput" maxlength="6" placeholder="••••••">
+    <button class="btn btn-primary" style="padding: 12px; width: 100%; justify-content: center;" onclick="verifyPin()">Unlock Exam</button>
+  </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, orderBy, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
   const app = initializeApp(firebaseConfig);
@@ -283,396 +200,299 @@
   const CLOUDINARY_CLOUD_NAME = "s6otjgim";
   const CLOUDINARY_PRESET = "students_ifb_2027";
 
-  let currentUser = null, studentId = null, examNumber = null, securityCode = null;
+  let currentUser = null, studentId = null, examNumber = null;
   let currentSessionId = null, examPin = null, examDurationMins = 120;
-  let sessionStartTime = null, timerInterval = null, endTime = null;
-  let stream = null, pendingBlob = null, pendingTypedText = "";
-  let torchOn = false;
-  let lastTabSwitchLog = 0;
-  let scriptCount = 0;
+  let timerInterval = null, endTime = null;
+  let stream = null, pendingBlob = null, scriptCount = 0, torchOn = false;
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
-
   const urlParams = new URLSearchParams(window.location.search);
   currentSessionId = urlParams.get('session');
 
+  // 1. AUTH & ROUTING
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     currentUser = user;
 
     if (user.email === ADMIN_EMAIL) {
-      document.getElementById('tabAdmin').style.display = 'flex';
-      document.getElementById('optAdmin').style.display = 'block';
-      document.getElementById('pinOverlay').classList.remove('active');
-      document.getElementById('clockArea').style.display = 'flex';
-      if (currentSessionId) await loadSessionData(currentSessionId, true);
+      // Admin View
+      document.getElementById('viewAdmin').classList.add('active');
+      document.getElementById('viewDashboard').classList.remove('active');
     } else {
-      await initStudentSession(user);
+      // Student View
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        studentId = userDoc.data().studentId || user.uid;
+        examNumber = userDoc.data().examNumber || "UNKNOWN";
+      }
+      
+      if (currentSessionId) {
+        // Direct link to session
+        await loadSession(currentSessionId);
+      } else {
+        // Load dashboard list
+        loadDashboard();
+      }
     }
-    
-    setTimeout(() => { document.getElementById('loader').style.opacity = '0'; setTimeout(() => document.getElementById('loader').style.display = 'none', 500); }, 1000);
     refreshIcons();
   });
 
-  function generateAnswerBookPages() {
-    const container = document.getElementById('abWritingPages');
-    container.innerHTML = '';
-    for (let i = 3; i <= 10; i++) {
-      container.innerHTML += `
-        <div class="ab-page">
-          <div class="ab-header"><span>Answer Book</span><span>Page ${i}</span></div>
-          <div class="ab-writing-page">
-            <div class="left-margin"></div>
-            <div class="content"><img class="scanned-img" id="img-page-${i}" style="display:none;"></div>
-            <div class="marks-col">Marks</div>
-          </div>
-          <textarea class="typed-text-box" id="text-page-${i}" style="display:none;" readonly></textarea>
-        </div>
-      `;
-    }
-  }
-  generateAnswerBookPages();
-
-  window.createSession = async function() {
-    const qFile = document.getElementById('qFile').files[0];
-    const gFile = document.getElementById('gFile').files[0];
-    const title = document.getElementById('examTitle').value.trim();
-    const pin = document.getElementById('examPin').value.trim();
-    const duration = parseInt(document.getElementById('examDuration').value);
-    const statusEl = document.getElementById('setupStatus');
-    const btn = document.getElementById('startBtn');
-
-    if (!qFile || !gFile || !title || pin.length !== 6) { alert("Please fill all fields."); return; }
-
-    try {
-      btn.disabled = true; statusEl.innerText = "Reading files...";
-      const readText = (f) => new Promise(r => { const rd = new FileReader(); rd.onload = e => r(e.target.result); rd.readAsText(f); });
-      const qHtml = await readText(qFile); const gHtml = await readText(gFile);
-
-      statusEl.innerText = "Saving to Database...";
-      const sessionId = 'SESSION_' + Date.now();
-
-      await setDoc(doc(db, "examSessions", sessionId), {
-        sessionId, title, examCode: pin, 
-        questionPaperHtml: qHtml, guidelinesHtml: gHtml,
-        durationMinutes: duration, active: true, createdAt: serverTimestamp(),
-        sequenceCounter: 0
-      });
-
-      await setDoc(doc(db, "config", "examSettings"), { activeSessionId: sessionId }, { merge: true });
-      window.location.href = `exam-session.html?session=${sessionId}`;
-
-    } catch (error) { statusEl.innerText = "Error: " + error.message; btn.disabled = false; }
-  };
-
-  window.refreshMonitor = async function() {
-    const tbody = document.getElementById('monitorTable');
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Fetching...</td></tr>';
-    try {
-      const q = query(collection(db, "examLogs"), orderBy("lastActive", "desc"));
-      const snapshot = await getDocs(q);
-      tbody.innerHTML = '';
-      if (snapshot.empty) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;">No students yet.</td></tr>'; return; }
-      
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const tabCount = data.tabSwitches ? data.tabSwitches.length : 0;
-        const isOnline = data.status === 'In Session' || data.status === 'Online';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td style="font-family:monospace;font-weight:bold;">${data.examNumber || doc.id}</td>
-          <td><span class="status-badge ${isOnline?'status-online':''}">${isOnline?'Online':'Offline'}</span></td>
-          <td style="color:${tabCount>0?'var(--error)':'inherit'};font-weight:bold;">${tabCount}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    } catch(e) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:red;">Error loading.</td></tr>'; }
-  };
-
-  async function initStudentSession(user) {
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      const data = userDoc.data();
-      studentId = data.studentId || user.uid; 
-      examNumber = data.examNumber || "UNKNOWN"; 
-      securityCode = data.securityCode || "ABC123";
-    }
-
-    if (!currentSessionId) {
-      document.getElementById('paperFrame').srcdoc = `<html><body style="font-family:sans-serif;text-align:center;padding:50px;"><h1 style="color:red;">No session selected.</h1></body></html>`;
+  // 2. DASHBOARD LIST (If no session link)
+  async function loadDashboard() {
+    const list = document.getElementById('examList');
+    const q = query(collection(db, "examSessions"), orderBy("createdAt", "desc"));
+    const snap = await getDocs(q);
+    list.innerHTML = '';
+    
+    if (snap.empty) {
+      list.innerHTML = '<p style="text-align:center; color:var(--gray);">No active exams available.</p>';
       return;
     }
 
-    await loadSessionData(currentSessionId, false);
-    document.getElementById('pinOverlay').classList.add('active');
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      list.innerHTML += `
+        <div class="exam-card">
+          <div class="title">${data.title || "Examination"}</div>
+          <div class="subtitle">IFB-S Mathematics · Term 1</div>
+          <div class="exam-meta">
+            <div><span>Date</span><strong>Today</strong></div>
+            <div><span>Duration</span><strong>${data.durationMinutes || 120} Mins</strong></div>
+            <div><span>Status</span><strong style="color:var(--success);">Open</strong></div>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="window.location.href='exam-session.html?session=${docSnap.id}'">
+              Enter Exam
+            </button>
+          </div>
+        </div>
+      `;
+    });
   }
 
-  async function loadSessionData(sessionId, isAdmin) {
+  // 3. START EXAM
+  async function loadSession(sessionId) {
+    document.getElementById('viewDashboard').classList.remove('active');
     const sessionDoc = await getDoc(doc(db, "examSessions", sessionId));
-    if (!sessionDoc.exists()) return;
-    const sd = sessionDoc.data();
+    if (!sessionDoc.exists()) return alert("Session not found.");
     
-    examPin = sd.examCode; 
+    const sd = sessionDoc.data();
+    examPin = sd.examCode;
     examDurationMins = sd.durationMinutes || 120;
     
-    // Assign sequence number via transaction
-    if (!isAdmin && studentId) {
-      const logRef = doc(db, "examLogs", studentId);
-      const logSnap = await getDoc(logRef);
-      if (!logSnap.exists() || !logSnap.data().sequenceNumber) {
-         // Simple fallback: increment session counter
-         const sessionRef = doc(db, "examSessions", sessionId);
-         const sessionSnap = await getDoc(sessionRef);
-         const currentSeq = (sessionSnap.data().sequenceCounter || 0) + 1;
-         await setDoc(sessionRef, { sequenceCounter: currentSeq }, { merge: true });
-         await setDoc(logRef, { sequenceNumber: currentSeq }, { merge: true });
-         scriptCount = 0;
-      } else {
-         scriptCount = logSnap.data().scripts ? logSnap.data().scripts.length : 0;
-      }
-    }
+    // Store for PIN check
+    window._sessionData = sd;
 
-    if (isAdmin) {
-      document.getElementById('clockArea').style.display = 'flex';
-      if (sd.questionPaperHtml) document.getElementById('paperFrame').srcdoc = DOMPurify.sanitize(sd.questionPaperHtml, { WHOLE_DOCUMENT: true });
-      if (sd.guidelinesHtml) document.getElementById('guidelinesFrame').srcdoc = DOMPurify.sanitize(sd.guidelinesHtml, { WHOLE_DOCUMENT: true });
-      startTimer(sd.durationMinutes || 120);
-    } else {
-      window._pendingHtml = sd;
-    }
+    // Show PIN
+    document.getElementById('pinOverlay').classList.add('active');
   }
 
   window.verifyPin = function() {
     const entered = document.getElementById('pinInput').value;
     if (entered === examPin) {
       document.getElementById('pinOverlay').classList.remove('active');
+      document.getElementById('viewWorkspace').classList.add('active');
       document.getElementById('clockArea').style.display = 'flex';
+      document.getElementById('btnExit').style.display = 'flex';
       
-      const sd = window._pendingHtml;
-      if (sd.questionPaperHtml) document.getElementById('paperFrame').srcdoc = DOMPurify.sanitize(sd.questionPaperHtml, { WHOLE_DOCUMENT: true });
-      if (sd.guidelinesHtml) document.getElementById('guidelinesFrame').srcdoc = DOMPurify.sanitize(sd.guidelinesHtml, { WHOLE_DOCUMENT: true });
+      const sd = window._sessionData;
+      // Load Paper
+      if (sd.questionPaperHtml) {
+        document.getElementById('paperFrame').srcdoc = DOMPurify.sanitize(sd.questionPaperHtml, { WHOLE_DOCUMENT: true });
+      }
       
-      document.getElementById('abStudentId').innerText = studentId;
-      document.getElementById('abSecCode').innerText = securityCode;
-      document.getElementById('abStudentName').innerText = currentUser.displayName || "Student";
-      document.getElementById('abExamNum').innerText = examNumber;
-      
-      startTimer(sd.durationMinutes || 120);
+      // Build Answer Book
+      buildAnswerBook();
+      startTimer(examDurationMins);
       logEvent('login');
     } else {
-      document.getElementById('pinError').style.display = 'block';
-      document.getElementById('pinInput').value = '';
+      alert("Incorrect PIN.");
     }
   };
 
-  function startTimer(durationMins) {
+  // 4. TIMER
+  function startTimer(mins) {
     if (timerInterval) clearInterval(timerInterval);
-    endTime = Date.now() + (durationMins * 60000);
-    updateClocks();
-    timerInterval = setInterval(updateClocks, 1000);
+    endTime = Date.now() + (mins * 60000);
+    timerInterval = setInterval(() => {
+      const remaining = endTime - Date.now();
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('digitalClock').innerText = "00:00:00";
+        alert("Time is up! Exam locked.");
+        document.getElementById('btnOpen').disabled = true;
+        return;
+      }
+      const h = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((remaining / (1000 * 60)) % 60);
+      const s = Math.floor((remaining / 1000) % 60);
+      document.getElementById('digitalClock').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }, 1000);
   }
 
-  function updateClocks() {
-    const now = new Date();
-    const remaining = endTime - now.getTime();
-
-    if (remaining <= 0) {
-      clearInterval(timerInterval);
-      document.getElementById('digitalClock').innerText = "00:00:00";
-      alert("Time is up! The exam has locked.");
-      document.getElementById('btnOpen').disabled = true;
-      return;
-    }
-
-    const h = Math.floor((remaining / (1000 * 60 * 60)) % 24);
-    const m = Math.floor((remaining / (1000 * 60)) % 60);
-    const s = Math.floor((remaining / 1000) % 60);
-    document.getElementById('digitalClock').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-
-    const ah = now.getHours() % 12;
-    const am = now.getMinutes();
-    const as = now.getSeconds();
-    document.getElementById('hourHand').style.transform = `rotate(${(ah * 30) + (am * 0.5)}deg)`;
-    document.getElementById('minuteHand').style.transform = `rotate(${(am * 6) + (as * 0.1)}deg)`;
-    document.getElementById('secondHand').style.transform = `rotate(${as * 6}deg)`;
-  }
-
+  // 5. TABS
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('view' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-    const desktopBtn = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
-    if (desktopBtn) desktopBtn.classList.add('active');
+    document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
     document.getElementById('mobileTabSelect').value = tab;
   };
 
-  // SCANNER LOGIC
-  function initScanner() {
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const preview = document.getElementById('preview');
-    const btnOpen = document.getElementById('btnOpen');
-    const btnCapture = document.getElementById('btnCapture');
-    const btnRetake = document.getElementById('btnRetake');
-    const btnUpload = document.getElementById('btnUpload');
-    const btnTorch = document.getElementById('btnTorch');
-    const statusEl = document.getElementById('status');
-    const framingGuide = document.getElementById('framingGuide');
-    const typedTextBox = document.getElementById('typedText');
-
-    function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? 'var(--error)' : (type === 'success' ? 'var(--success)' : 'var(--gray)'); }
-
-    btnOpen.addEventListener('click', async () => {
-      setStatus('Requesting camera...');
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-        video.srcObject = stream; await video.play();
-        video.classList.add('active'); framingGuide.classList.add('visible');
-        
-        const track = stream.getVideoTracks()[0];
-        const caps = track.getCapabilities();
-        if (caps.torch) { btnTorch.style.display = 'flex'; } else { btnTorch.style.display = 'none'; }
-
-        btnOpen.disabled = true; btnCapture.disabled = false; btnRetake.disabled = true; btnUpload.disabled = true;
-        typedTextBox.style.display = 'none';
-        setStatus('Position A4 page inside the frame.');
-      } catch (err) { setStatus('Camera error: ' + err.message, 'error'); }
-    });
-
-    btnTorch.addEventListener('click', async () => {
-      if (!stream) return;
-      const track = stream.getVideoTracks()[0];
-      try {
-        torchOn = !torchOn;
-        await track.applyConstraints({ advanced: [{ torch: torchOn }] });
-        btnTorch.classList.toggle('on', torchOn);
-      } catch (err) { console.warn(err); }
-    });
-
-    btnCapture.addEventListener('click', async () => {
-      // 1. Draw to canvas
-      const w = video.videoWidth, h = video.videoHeight;
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(video, 0, 0, w, h);
-      
-      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-      video.classList.remove('active'); framingGuide.classList.remove('visible');
-      btnTorch.style.display = 'none'; torchOn = false; btnTorch.classList.remove('on');
-
-      // 2. Binarization (Black & White)
-      const ctx = canvas.getContext('2d');
-      const imgData = ctx.getImageData(0, 0, w, h);
-      const d = imgData.data;
-      for (let i = 0; i < d.length; i += 4) {
-        const avg = (d[i] + d[i+1] + d[i+2]) / 3;
-        const val = avg > 128 ? 255 : 0;
-        d[i] = d[i+1] = d[i+2] = val;
-      }
-      ctx.putImageData(imgData, 0, 0);
-
-      // 3. Compress before upload (Crucial for 1000+ students)
-      canvas.toBlob(blob => {
-        pendingBlob = blob;
-        preview.src = URL.createObjectURL(blob); preview.classList.add('active');
-        btnCapture.disabled = true; btnRetake.disabled = false; btnUpload.disabled = false;
-        typedTextBox.style.display = 'block';
-        typedTextBox.value = ''; // Reset
-        setStatus('Captured. Type text if needed, then Upload.', 'success');
-      }, 'image/jpeg', 0.6); // 60% quality
-    });
-
-    btnRetake.addEventListener('click', () => {
-      if (preview.src) URL.revokeObjectURL(preview.src);
-      pendingBlob = null; preview.classList.remove('active');
-      btnRetake.disabled = true; btnUpload.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
-      typedTextBox.style.display = 'none';
-      setStatus('Retake ready.');
-    });
-
-    btnUpload.addEventListener('click', async () => {
-      if (!pendingBlob || !studentId) return;
-      btnUpload.innerHTML = 'Uploading...'; btnUpload.disabled = true;
-      pendingTypedText = typedTextBox.value;
-      
-      try {
-        scriptCount++;
-        const fileExt = 'jpg';
-        const fileName = `${studentId}_${examNumber}_Script${scriptCount}.${fileExt}`;
-        
-        const formData = new FormData();
-        formData.append("file", pendingBlob);
-        formData.append("upload_preset", CLOUDINARY_PRESET);
-        formData.append("public_id", fileName); 
-        
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-          method: "POST", body: formData
-        });
-        if (!res.ok) throw new Error("Cloudinary upload failed");
-        const data = await res.json();
-
-        // Inject into Answer Book
-        const img = document.getElementById(`img-page-${scriptCount + 2}`);
-        const txt = document.getElementById(`text-page-${scriptCount + 2}`);
-        if (img) { img.src = data.secure_url; img.style.display = 'block'; }
-        if (txt && pendingTypedText) { txt.value = pendingTypedText; txt.style.display = 'block'; }
-        
-        await setDoc(doc(db, "examLogs", studentId), {
-          examNumber, status: 'In Session', lastActive: serverTimestamp(),
-          scripts: arrayUnion({ 
-            url: data.secure_url, 
-            text: pendingTypedText, 
-            scriptNum: scriptCount,
-            filename: fileName,
-            uploadedAt: new Date().toISOString() 
-          })
-        }, { merge: true });
-
-        setStatus('Uploaded successfully!', 'success');
-        btnUpload.innerHTML = 'Upload'; btnUpload.disabled = true;
-        btnRetake.disabled = true; btnOpen.disabled = false;
-        
-        setTimeout(() => switchTab('answerbook'), 1000);
-      } catch (err) {
-        setStatus('Upload failed: ' + err.message, 'error');
-        btnUpload.innerHTML = 'Upload'; btnUpload.disabled = false;
-        scriptCount--; // rollback
-      }
-    });
+  // 6. ANSWER BOOK & SCANNER
+  function buildAnswerBook() {
+    const container = document.getElementById('answerBookContainer');
+    container.innerHTML = '';
+    for (let i = 1; i <= 10; i++) {
+      container.innerHTML += `
+        <div class="ab-page">
+          <div class="ab-header"><span>Answer Book</span><span>Page ${i}</span></div>
+          <div class="ab-writing-page" id="page-container-${i}">
+            <img id="img-page-${i}" alt="Scanned Page">
+            <span style="color:#999; font-size:12px;" id="empty-msg-${i}">— Awaiting scan for Page ${i} —</span>
+          </div>
+        </div>
+      `;
+    }
+    // Load existing scans
+    loadExistingScans();
   }
 
-  // ANTI-CHEAT
-  document.addEventListener("visibilitychange", async () => {
-    if (document.hidden && !document.getElementById('pinOverlay').classList.contains('active') && !document.getElementById('viewAdmin').classList.contains('active')) {
-      document.getElementById('tabWarning').classList.add('active');
-      const now = Date.now();
-      if (now - lastTabSwitchLog > 5000) {
-        lastTabSwitchLog = now;
-        await logEvent('tab_switch');
-      }
+  async function loadExistingScans() {
+    if(!studentId) return;
+    const logDoc = await getDoc(doc(db, "examLogs", studentId));
+    if(logDoc.exists() && logDoc.data().scripts) {
+      const scripts = logDoc.data().scripts;
+      scriptCount = scripts.length;
+      scripts.forEach((sc, idx) => {
+        const pNum = idx + 1;
+        const img = document.getElementById(`img-page-${pNum}`);
+        const msg = document.getElementById(`empty-msg-${pNum}`);
+        if(img && msg) {
+          img.src = sc.url; img.style.display = 'block'; msg.style.display = 'none';
+        }
+      });
+    }
+  }
+
+  // Scanner Logic
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const preview = document.getElementById('preview');
+  const btnOpen = document.getElementById('btnOpen');
+  const btnCapture = document.getElementById('btnCapture');
+  const btnRetake = document.getElementById('btnRetake');
+  const btnUpload = document.getElementById('btnUpload');
+  const btnTorch = document.getElementById('btnTorch');
+  const statusEl = document.getElementById('status');
+
+  function setStatus(msg, err=false) { statusEl.textContent = msg; statusEl.style.color = err ? 'var(--error)' : 'var(--gray)'; }
+
+  btnOpen.addEventListener('click', async () => {
+    setStatus('Opening camera...');
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+      video.srcObject = stream; await video.play();
+      video.classList.add('active'); document.getElementById('framingGuide').classList.add('visible');
+      
+      const track = stream.getVideoTracks()[0];
+      if (track.getCapabilities().torch) btnTorch.style.display = 'flex';
+      
+      btnOpen.disabled = true; btnCapture.disabled = false; btnRetake.disabled = true; btnUpload.disabled = true;
+      setStatus('Position the A4 page inside the frame.');
+    } catch (err) { setStatus('Camera error: ' + err.message, true); }
+  });
+
+  btnTorch.addEventListener('click', async () => {
+    if (!stream) return;
+    try {
+      torchOn = !torchOn;
+      await stream.getVideoTracks()[0].applyConstraints({ advanced: [{ torch: torchOn }] });
+      btnTorch.classList.toggle('on', torchOn);
+    } catch (err) {}
+  });
+
+  btnCapture.addEventListener('click', async () => {
+    const w = video.videoWidth, h = video.videoHeight;
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+    
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    video.classList.remove('active'); document.getElementById('framingGuide').classList.remove('visible');
+    btnTorch.style.display = 'none'; torchOn = false;
+    
+    // Binarization (Black & White)
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.getImageData(0, 0, w, h);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const avg = (d[i] + d[i+1] + d[i+2]) / 3;
+      const val = avg > 128 ? 255 : 0;
+      d[i] = d[i+1] = d[i+2] = val;
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    canvas.toBlob(blob => {
+      pendingBlob = blob;
+      preview.src = URL.createObjectURL(blob); preview.classList.add('active');
+      btnCapture.disabled = true; btnRetake.disabled = false; btnUpload.disabled = false;
+      setStatus('Captured. Click Upload.', false);
+    }, 'image/jpeg', 0.6);
+  });
+
+  btnRetake.addEventListener('click', () => {
+    if (preview.src) URL.revokeObjectURL(preview.src);
+    pendingBlob = null; preview.classList.remove('active');
+    btnRetake.disabled = true; btnUpload.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
+    setStatus('Retake ready.');
+  });
+
+  btnUpload.addEventListener('click', async () => {
+    if (!pendingBlob) return;
+    btnUpload.innerHTML = 'Uploading...'; btnUpload.disabled = true;
+    
+    try {
+      const nextScript = scriptCount + 1;
+      const fileName = `${studentId}_${examNumber}_Script${nextScript}.jpg`;
+      
+      const formData = new FormData();
+      formData.append("file", pendingBlob);
+      formData.append("upload_preset", CLOUDINARY_PRESET);
+      formData.append("public_id", fileName); 
+      
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+        method: "POST", body: formData
+      });
+      if (!res.ok) throw new Error("Cloudinary failed");
+      const data = await res.json();
+
+      // Inject into view
+      const img = document.getElementById(`img-page-${nextScript}`);
+      const msg = document.getElementById(`empty-msg-${nextScript}`);
+      if (img && msg) { img.src = data.secure_url; img.style.display = 'block'; msg.style.display = 'none'; }
+      
+      // Save to DB
+      await setDoc(doc(db, "examLogs", studentId), {
+        examNumber, status: 'In Session', lastActive: serverTimestamp(),
+        scripts: arrayUnion({ url: data.secure_url, filename: fileName, uploadedAt: new Date().toISOString() })
+      }, { merge: true });
+
+      scriptCount++;
+      setStatus('Uploaded successfully!', false);
+      btnUpload.innerHTML = 'Upload Page'; btnUpload.disabled = true; btnRetake.disabled = true; btnOpen.disabled = false;
+      
+      setTimeout(() => switchTab('answerbook'), 1000);
+    } catch (err) {
+      setStatus('Upload failed: ' + err.message, true);
+      btnUpload.innerHTML = 'Upload Page'; btnUpload.disabled = false;
     }
   });
 
-  async function logEvent(type) {
-    if (!studentId) return;
-    try {
-      const logRef = doc(db, "examLogs", studentId);
-      const updates = { examNumber, status: 'In Session', lastActive: serverTimestamp() };
-      if (type === 'tab_switch') updates.tabSwitches = arrayUnion(new Date().toISOString());
-      await setDoc(logRef, updates, { merge: true });
-    } catch (e) {}
-  }
-
   window.exitExam = async function() {
-    if (confirm("Are you sure? You will not be able to re-enter.")) {
+    if (confirm("Finish exam and return to dashboard?")) {
       if (timerInterval) clearInterval(timerInterval);
       if (studentId) await setDoc(doc(db, "examLogs", studentId), { status: 'Exited' }, { merge: true });
-      await signOut(auth);
-      window.location.href = "student-dashboard.html";
+      window.location.href = "index.html";
     }
   };
-
-  setTimeout(initScanner, 1000);
-  refreshIcons();
 </script>
 </body>
 </html>
