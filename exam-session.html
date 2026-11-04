@@ -118,6 +118,10 @@
     width:16px; height:16px; border-radius:50%; background:var(--crimson);
     cursor:pointer; border:2px solid #fff;
   }
+  .bw-hint {
+    font-size:.72rem; color:#6b7280; margin-top:.5rem; line-height:1.4;
+    padding-top:.5rem; border-top:1px dashed #e5e7eb;
+  }
 
   /* ---------- Question selector ---------- */
   .q-selector { margin-top:1rem; display:flex; align-items:center; gap:.5rem; }
@@ -281,7 +285,7 @@
         <li>Hold steady, straight above the paper.</li>
         <li>The <strong>flash fires automatically</strong> — no dark shots.</li>
         <li>The page is <strong>straightened to A4</strong> and text is enhanced.</li>
-        <li><strong>B&amp;W mode</strong> turns the page pure black &amp; white — tune threshold for best detail.</li>
+        <li><strong>B&amp;W mode</strong> uses adaptive thresholding — text stays clear even with uneven light.</li>
         <li>Add <strong>more pages</strong> for long answers — they stack.</li>
       </ul>
       <button class="dismiss" id="howtoDismiss">Got it</button>
@@ -306,17 +310,22 @@
     </div>
     <div class="bw-row" id="thresholdRow">
       <div class="bw-label">
-        <span>Threshold (black/white cutoff)</span>
-        <span class="val" id="thresholdVal">140</span>
+        <span>Detail level (higher = more text kept)</span>
+        <span class="val" id="thresholdVal">180</span>
       </div>
-      <input type="range" id="thresholdSlider" min="0" max="255" value="140">
+      <input type="range" id="thresholdSlider" min="30" max="250" value="180">
     </div>
     <div class="bw-row" id="contrastRow">
       <div class="bw-label">
-        <span>Contrast boost</span>
-        <span class="val" id="contrastVal">1.40</span>
+        <span>Faint text boost</span>
+        <span class="val" id="contrastVal">1.60</span>
       </div>
-      <input type="range" id="contrastSlider" min="0.5" max="3" step="0.05" value="1.4">
+      <input type="range" id="contrastSlider" min="1" max="3" step="0.05" value="1.6">
+    </div>
+    <div class="bw-hint">
+      If text is missing → raise <strong>Detail level</strong>.<br>
+      If page is too noisy/dark → lower <strong>Detail level</strong>.<br>
+      For pencil or light ink → raise <strong>Faint text boost</strong>.
     </div>
   </div>
 
@@ -566,7 +575,7 @@ async function capture() {
   } catch (e) { console.warn('Page detection failed:', e); }
   if (!a4Canvas) a4Canvas = fallbackA4(canvas);
 
-  // ===== Black & White conversion (the converter) =====
+  // ===== Adaptive Black & White conversion =====
   let bwApplied = false;
   if (bwToggle.checked) {
     try {
@@ -601,7 +610,7 @@ async function capture() {
       ` — ${pageCount ? 'Add to Q' + questionPick.value + ' (page ' + (pageCount + 1) + ')' : 'Add to answer'}.`,
       detected ? 'success' : 'warn'
     );
-  }, 'image/jpeg', 0.92);
+  }, 'image/jpeg', 0.95);
 }
 
 function fireScreenFlash() {
@@ -708,35 +717,119 @@ function fallbackA4(srcCanvas) {
 }
 
 /* =================================================================
-   BLACK & WHITE CONVERTER
-   - grayscale (perceptual luminance)
-   - contrast boost around midpoint
-   - hard threshold → pure black (0,0,0) or pure white (255,255,255)
-   Result: every pixel is 1-bit black or white. Text stands out sharply.
+   ADAPTIVE BLACK & WHITE CONVERTER (Sauvola-style local threshold)
+
+   Why the old global-threshold version failed:
+   - One cutoff for the whole page → shadows darken half the page,
+     glare whitens the other half → text vanishes or page goes solid.
+   - Hard cutoff amplified JPEG noise into black blobs.
+
+   This version:
+   1. Grayscale (perceptual luminance)
+   2. Integral-image local mean & variance (O(1) per pixel)
+   3. Sauvola threshold: compares each pixel to its own neighbourhood,
+      not the whole page — shadows/glare don't affect far regions.
+   4. Speckle cleanup — remove isolated pixels that don't match neighbours.
    ================================================================= */
-function applyBlackWhite(canvasEl, threshold, contrast) {
+function applyBlackWhite(canvasEl, userThreshold, userContrast) {
   const W = canvasEl.width, H = canvasEl.height;
   const ctx = canvasEl.getContext('2d', { willReadFrequently: true });
   const imgData = ctx.getImageData(0, 0, W, H);
   const d = imgData.data;
 
-  for (let i = 0; i < d.length; i += 4) {
-    // Perceptual grayscale
-    let g = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+  // ---- Step 1: Grayscale ----
+  const gray = new Float32Array(W * H);
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+    gray[p] = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+  }
 
-    // Contrast boost around midpoint (128)
-    g = (g - 128) * contrast + 128;
-    if (g < 0) g = 0;
-    else if (g > 255) g = 255;
+  // ---- Step 2: Integral images (prefix sums) ----
+  // Allows O(1) local mean & variance regardless of window size.
+  const IW = W + 1;
+  const integral = new Float64Array(IW * (H + 1));
+  const integralSq = new Float64Array(IW * (H + 1));
 
-    // Hard threshold → pure black or pure white
-    const v = g < threshold ? 0 : 255;
+  for (let y = 0; y < H; y++) {
+    let rowSum = 0, rowSumSq = 0;
+    for (let x = 0; x < W; x++) {
+      const v = gray[y * W + x];
+      rowSum += v;
+      rowSumSq += v * v;
+      integral[(y + 1) * IW + (x + 1)] = integral[y * IW + (x + 1)] + rowSum;
+      integralSq[(y + 1) * IW + (x + 1)] = integralSq[y * IW + (x + 1)] + rowSumSq;
+    }
+  }
+
+  // ---- Step 3: Sauvola adaptive threshold ----
+  // Window size scales with the image so it works at any resolution.
+  const win = Math.max(15, (Math.round(Math.min(W, H) / 25) | 1));
+  const half = (win - 1) >> 1;
+
+  // Map user "detail level" (30-250) to Sauvola k.
+  //   Lower k  → threshold hugs the mean → keeps MORE text (sensitive)
+  //   Higher k → threshold drops below mean → only very dark text kept
+  // Default 180 → moderate.
+  const k = (userThreshold / 255) * 0.45 + 0.05; // ~0.10 at 30, ~0.49 at 250
+
+  const R = 128;              // dynamic range constant for Sauvola
+  const contrastBoost = userContrast;
+
+  const bin = new Uint8ClampedArray(W * H);
+
+  for (let y = 0; y < H; y++) {
+    const y0 = Math.max(0, y - half);
+    const y1 = Math.min(H - 1, y + half);
+    for (let x = 0; x < W; x++) {
+      const x0 = Math.max(0, x - half);
+      const x1 = Math.min(W - 1, x + half);
+      const area = (x1 - x0 + 1) * (y1 - y0 + 1);
+
+      const sum =
+        integral[(y1 + 1) * IW + (x1 + 1)] - integral[y0 * IW + (x1 + 1)] -
+        integral[(y1 + 1) * IW + x0] + integral[y0 * IW + x0];
+      const sumSq =
+        integralSq[(y1 + 1) * IW + (x1 + 1)] - integralSq[y0 * IW + (x1 + 1)] -
+        integralSq[(y1 + 1) * IW + x0] + integralSq[y0 * IW + x0];
+
+      const mean = sum / area;
+      const variance = Math.max(0, sumSq / area - mean * mean);
+      const std = Math.sqrt(variance);
+
+      // Sauvola: T = mean * (1 + k * (std/R - 1))
+      // Flat region (std≈0) → T ≈ mean*(1-k) < mean → background stays WHITE.
+      // Text region (std high) → T ≈ mean → text darker than mean → BLACK.
+      // Contrast boost stretches std → pulls out faint strokes.
+      const boostedStd = std * contrastBoost;
+      const T = mean * (1 + k * (boostedStd / R - 1));
+
+      bin[y * W + x] = gray[y * W + x] < T ? 0 : 255;
+    }
+  }
+
+  // ---- Step 4: Speckle cleanup ----
+  // Flip isolated pixels that don't match their neighbours (scan noise).
+  const out = new Uint8ClampedArray(bin);
+  for (let y = 1; y < H - 1; y++) {
+    for (let x = 1; x < W - 1; x++) {
+      const idx = y * W + x;
+      const c = bin[idx];
+      let same = 0;
+      if (bin[idx - 1] === c) same++;
+      if (bin[idx + 1] === c) same++;
+      if (bin[idx - W] === c) same++;
+      if (bin[idx + W] === c) same++;
+      if (same <= 1) out[idx] = c === 0 ? 255 : 0;
+    }
+  }
+
+  // ---- Step 5: Write back ----
+  for (let i = 0, p = 0; p < out.length; i += 4, p++) {
+    const v = out[p];
     d[i] = v;
     d[i + 1] = v;
     d[i + 2] = v;
     d[i + 3] = 255;
   }
-
   ctx.putImageData(imgData, 0, 0);
 }
 
