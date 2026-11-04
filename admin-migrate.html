@@ -35,29 +35,32 @@
   .confirm-input { width:100%; padding:12px; border:1.5px solid var(--silver); border-radius:8px; font-family:monospace; font-size:14px; text-align:center; letter-spacing:2px; margin-bottom:10px; }
   .confirm-input:focus { border-color:var(--maroon); outline:none; }
   .hidden { display:none !important; }
-  .rollback-list { max-height:400px; overflow-y:auto; }
+  .intake-badge { display:inline-block; padding:4px 10px; background:#FFF5F6; color:var(--maroon); border:1px solid var(--maroon); border-radius:6px; font-family:monospace; font-weight:900; font-size:12px; }
+  .capacity-warn { background:#FEF3C7; border:1px solid #FDE68A; color:#78350F; padding:10px 14px; border-radius:8px; font-size:12px; line-height:1.5; margin-bottom:14px; }
+  .capacity-warn strong { color:#B45309; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>IFB — Student ID Migration</h1>
-  <div class="sub">One-time migration: 8-digit <code>2701XXXX</code> → 6-digit <code>27XXXX</code>. Existing 13-digit Examination Numbers are preserved. Every change is logged to <code>migrations/2027-01-6digit</code>.</div>
+  <div class="sub">One-time migration for 2027 intake 1. Format: <span class="intake-badge">2701 + XX</span> Student ID · <span class="intake-badge">2701 + XXXXXXXXX</span> Exam Number.</div>
 
   <div class="card">
-    <h2><i data-lucide="shield-check"></i> Step 1 — Dry Run (safe, reads only)</h2>
+    <h2><i data-lucide="shield-check"></i> Step 1 — Dry Run</h2>
     <div class="row">
       <button class="btn" id="btnScan" onclick="runScan()">Scan Users</button>
-      <button class="btn-ghost" id="btnReset" onclick="location.reload()">Reset</button>
+      <button class="btn-ghost" onclick="location.reload()">Reset</button>
     </div>
     <div class="status hidden" id="scanStatus"></div>
   </div>
 
   <div class="card hidden" id="previewCard">
     <h2><i data-lucide="list-checks"></i> Step 2 — Preview Changes</h2>
+    <div id="capacityWarn" class="capacity-warn hidden"></div>
     <div id="previewSummary" class="status info"></div>
-    <div style="max-height:400px; overflow-y:auto; margin-top:12px; border:1px solid var(--silver); border-radius:8px;">
+    <div style="max-height:420px; overflow-y:auto; margin-top:12px; border:1px solid var(--silver); border-radius:8px;">
       <table>
-        <thead><tr><th>Name</th><th>Email</th><th>Old Student ID</th><th>New Student ID</th><th>Exam Number</th><th>Status</th></tr></thead>
+        <thead><tr><th>#</th><th>Name</th><th>Old SID</th><th>New SID (6)</th><th>New Exam (13)</th><th>Status</th></tr></thead>
         <tbody id="previewBody"></tbody>
       </table>
     </div>
@@ -65,7 +68,7 @@
 
   <div class="card hidden" id="confirmCard">
     <h2><i data-lucide="alert-triangle"></i> Step 3 — Confirm Write</h2>
-    <p style="font-size:13px; color:#666; margin-bottom:12px;">This will modify <strong>live student records</strong>. Every write is atomic and logged. Type <code style="background:#FEE2E2; padding:2px 6px; border-radius:4px;">MIGRATE-100-USERS</code> to enable the button.</p>
+    <p style="font-size:13px; color:#666; margin-bottom:12px;">This modifies <strong>live records</strong>. All writes are atomic and logged to <code>migrations/2027-01</code>. Type <code style="background:#FEE2E2; padding:2px 6px; border-radius:4px;">MIGRATE-100-USERS</code> to enable.</p>
     <input type="text" class="confirm-input" id="confirmInput" placeholder="MIGRATE-100-USERS" autocomplete="off">
     <div class="row">
       <button class="btn btn-danger" id="btnCommit" onclick="commitMigration()" disabled>Run Migration</button>
@@ -76,25 +79,26 @@
   <div class="card hidden" id="resultCard">
     <h2><i data-lucide="check-circle-2"></i> Migration Complete</h2>
     <div class="status ok" id="resultStatus"></div>
-    <div class="rollback-list hidden" id="rollbackListWrap" style="margin-top:14px;">
-      <h3 style="font-size:13px; font-weight:900; margin-bottom:8px;">Rollback Log (also stored at <code>migrations/2027-01-6digit</code>)</h3>
-      <div id="rollbackList"></div>
-    </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, writeBatch, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, setDoc, collection, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const ADMIN = "n1nathaniel971@gmail.com";
-const MIGRATION_ID = "2027-01-6digit";
-const START_ID = 270001;
+const MIGRATION_ID = "2027-01";
+const YEAR = '27';
+const INTAKE = '01';
+const ID_PREFIX = YEAR + INTAKE;    // '2701'
+const SID_SEQ_START = 0;            // 270100 is first student
+const SID_SEQ_END = 99;             // 270199 is hundredth
+const EXAM_SEQ_START = 1;           // 2701000000001 is first exam
 
 let previewData = null;
 let isAdmin = false;
@@ -106,12 +110,11 @@ function setStatus(el, msg, type) {
   e.className = 'status ' + type;
   e.classList.remove('hidden');
 }
-function hideStatus(el) { document.getElementById(el).classList.add('hidden'); }
 
 onAuthStateChanged(auth, async (user) => {
-  if (!user) { document.body.innerHTML = '<div style="padding:60px;text-align:center;font-family:sans-serif;"><h1>Sign in required</h1><p><a href="index.html">Go to home</a></p></div>'; return; }
+  if (!user) { document.body.innerHTML = '<div style="padding:60px;text-align:center;font-family:sans-serif;"><h1>Sign in required</h1><p><a href="index.html">Home</a></p></div>'; return; }
   if (user.email?.toLowerCase() !== ADMIN.toLowerCase()) {
-    document.body.innerHTML = '<div style="padding:60px;text-align:center;font-family:sans-serif;"><h1 style="color:#B91C1C;">Access Denied</h1><p>Only the administrator can run migrations.</p></div>';
+    document.body.innerHTML = '<div style="padding:60px;text-align:center;font-family:sans-serif;"><h1 style="color:#B91C1C;">Access Denied</h1><p>Administrator only.</p></div>';
     return;
   }
   isAdmin = true;
@@ -119,82 +122,98 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 window.runScan = async function() {
-  if (!isAdmin) { alert("Admin sign-in required."); return; }
+  if (!isAdmin) return;
   const btn = document.getElementById('btnScan');
   btn.disabled = true;
   setStatus('scanStatus', 'Reading users from Firestore…', 'info');
 
   try {
-    // 1. Load all users
     const usersSnap = await getDocs(collection(db, "users"));
     const users = usersSnap.docs.map(d => ({ uid: d.id, ...d.data() }));
 
-    // 2. Filter out already-migrated (idempotent)
     const pending = users.filter(u => !u.idMigratedAt);
     const alreadyMigrated = users.length - pending.length;
 
-    // 3. Deterministic ordering: by createdAt ascending (missing createdAt last)
     pending.sort((a, b) => {
-      const ta = a.createdAt?.toMillis?.() || (a.createdAt instanceof Date ? a.createdAt.getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : Number.MAX_SAFE_INTEGER));
-      const tb = b.createdAt?.toMillis?.() || (b.createdAt instanceof Date ? b.createdAt.getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : Number.MAX_SAFE_INTEGER));
+      const ta = a.createdAt?.toMillis?.() || (a.createdAt ? new Date(a.createdAt).getTime() : Number.MAX_SAFE_INTEGER);
+      const tb = b.createdAt?.toMillis?.() || (b.createdAt ? new Date(b.createdAt).getTime() : Number.MAX_SAFE_INTEGER);
       return ta - tb;
     });
 
-    // 4. Read counter (current next ID); fallback START_ID
-    const counterSnap = await getDoc(doc(db, "counters", "studentId"));
-    let nextId = counterSnap.exists() && typeof counterSnap.data().value === 'number' ? counterSnap.data().value : START_ID;
+    // Counter reads
+    const sidCounterSnap = await getDoc(doc(db, "counters", "studentId"));
+    let nextSidSeq = sidCounterSnap.exists() && typeof sidCounterSnap.data().value === 'number'
+      ? sidCounterSnap.data().value : SID_SEQ_START;
 
-    // 5. Read exam-number counter
     const examCounterSnap = await getDoc(doc(db, "counters", "examinationNumber"));
-    let nextExamSeq = examCounterSnap.exists() && typeof examCounterSnap.data().value === 'number' ? examCounterSnap.data().value : 1;
+    let nextExamSeq = examCounterSnap.exists() && typeof examCounterSnap.data().value === 'number'
+      ? examCounterSnap.data().value : EXAM_SEQ_START;
 
-    // 6. Build assignments
-    const assignments = pending.map(u => {
-      const newStudentId = String(nextId++).padStart(6, '0');
-      const hasValidExamNum = typeof u.examinationNumber === 'string' && /^26012027\d{5}$/.test(u.examinationNumber);
-      const newExamNum = hasValidExamNum
-        ? u.examinationNumber
-        : "26012027" + String(nextExamSeq++).padStart(5, '0');
+    // Build assignments
+    const assignments = pending.map((u, idx) => {
+      const sidSeq = nextSidSeq + idx;
+      const newStudentId = ID_PREFIX + String(sidSeq).padStart(2, '0');   // '270100'..'270199'
+      const examSeq = nextExamSeq + idx;
+      const newExamNum = ID_PREFIX + String(examSeq).padStart(9, '0');    // '2701000000001'
       return {
+        idx: idx + 1,
         uid: u.uid,
         name: u.name || [u.firstName, u.surname].filter(Boolean).join(' ') || '(no name)',
-        email: u.email || '(no email)',
-        oldStudentId: u.studentId || null,
+        oldSid: u.studentId || null,
         oldExamNum: u.examinationNumber || null,
         newStudentId,
-        newExamNum,
-        preservesExamNum: hasValidExamNum
+        newExamNum
       };
     });
 
-    previewData = { assignments, nextIdAfter: nextId, nextExamSeqAfter: nextExamSeq, alreadyMigrated, totalUsers: users.length };
+    const sidCapacity = SID_SEQ_END - SID_SEQ_START + 1;
+    const overflow = assignments.length > sidCapacity;
+    const nextAfter = nextSidSeq + assignments.length;
 
-    // 7. Render preview
+    previewData = {
+      assignments,
+      nextSidAfter: nextAfter,
+      nextExamAfter: nextExamSeq + assignments.length,
+      alreadyMigrated,
+      totalUsers: users.length,
+      overflow
+    };
+
+    // Render preview
     const body = document.getElementById('previewBody');
     body.innerHTML = '';
     assignments.forEach(a => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
+        <td>${a.idx}</td>
         <td>${escapeHtml(a.name)}</td>
-        <td style="font-size:11px;color:#666;">${escapeHtml(a.email)}</td>
-        <td class="mono">${a.oldStudentId || '—'}</td>
+        <td class="mono" style="color:#999;">${a.oldSid || '—'}</td>
         <td class="mono" style="color:#15803D;">${a.newStudentId}</td>
-        <td class="mono">${a.preservesExamNum ? a.newExamNum + ' ✓' : a.newExamNum + ' (new)'}</td>
-        <td style="font-size:11px;color:#B45309;">Will migrate</td>
-      `;
+        <td class="mono">${a.newExamNum}</td>
+        <td style="font-size:11px;color:#B45309;">Will migrate</td>`;
       body.appendChild(tr);
     });
 
-    document.getElementById('previewSummary').textContent =
-      `${assignments.length} user${assignments.length===1?'':'s'} will be migrated · ${alreadyMigrated} already migrated (skipped) · ${users.length} total · New ID range: ${assignments[0]?.newStudentId || '—'} to ${assignments[assignments.length-1]?.newStudentId || '—'}`;
+    const summaryEl = document.getElementById('previewSummary');
+    summaryEl.textContent = `${assignments.length} users · ${alreadyMigrated} already migrated · ${users.length} total · SID range ${assignments[0]?.newStudentId || '—'} to ${assignments[assignments.length-1]?.newStudentId || '—'}`;
+
+    const warnEl = document.getElementById('capacityWarn');
+    if (overflow) {
+      warnEl.classList.remove('hidden');
+      warnEl.innerHTML = `<strong>⚠ Capacity exceeded.</strong> You have ${assignments.length} users but intake ${INTAKE} only holds ${sidCapacity} Student IDs (${ID_PREFIX}00–${ID_PREFIX}${String(SID_SEQ_END).padStart(2,'0')}). Contact the admin to open intake 2 before running this.`;
+    } else if (assignments.length >= sidCapacity - 5) {
+      warnEl.classList.remove('hidden');
+      warnEl.innerHTML = `<strong>⚠ Nearly full.</strong> ${sidCapacity - assignments.length} Student ID slots remain in intake ${INTAKE} after this migration. Next student will use intake 2.`;
+    } else {
+      warnEl.classList.add('hidden');
+    }
 
     document.getElementById('previewCard').classList.remove('hidden');
     document.getElementById('confirmCard').classList.remove('hidden');
-
-    setStatus('scanStatus', `Scan complete. ${assignments.length} users ready to migrate.`, 'ok');
+    if (overflow) document.getElementById('btnCommit').disabled = true;
+    setStatus('scanStatus', `Scan complete. ${assignments.length} users ready.`, 'ok');
     btn.disabled = false;
     refreshIcons();
-
   } catch (e) {
     console.error(e);
     setStatus('scanStatus', 'Scan failed: ' + e.message, 'err');
@@ -204,40 +223,37 @@ window.runScan = async function() {
 
 document.addEventListener('input', (e) => {
   if (e.target.id === 'confirmInput') {
-    const ok = e.target.value.trim() === 'MIGRATE-100-USERS';
-    document.getElementById('btnCommit').disabled = !ok;
+    document.getElementById('btnCommit').disabled = e.target.value.trim() !== 'MIGRATE-100-USERS';
   }
 });
 
 window.commitMigration = async function() {
-  if (!previewData || !previewData.assignments.length) { alert("Nothing to migrate."); return; }
-  if (document.getElementById('confirmInput').value.trim() !== 'MIGRATE-100-USERS') { alert("Confirmation mismatch."); return; }
+  if (!previewData || !previewData.assignments.length) return;
+  if (previewData.overflow) { alert("Capacity exceeded. Aborting."); return; }
+  if (document.getElementById('confirmInput').value.trim() !== 'MIGRATE-100-USERS') return;
 
   const btn = document.getElementById('btnCommit');
   btn.disabled = true;
   setStatus('commitStatus', 'Writing to Firestore…', 'info');
 
   try {
-    const { assignments, nextIdAfter, nextExamSeqAfter } = previewData;
-
-    // One batch: all user updates + audit log entries + counter updates
-    // Total writes: N user updates + N audit docs + 2 counters = 2N + 2. For N=100, 202 writes. Under 500 limit.
+    const { assignments, nextSidAfter, nextExamAfter } = previewData;
     const batch = writeBatch(db);
 
     assignments.forEach(a => {
-      // 1. Update the user
       batch.update(doc(db, "users", a.uid), {
         studentId: a.newStudentId,
         examinationNumber: a.newExamNum,
-        legacyStudentId: a.oldStudentId,          // preserve old 8-digit
-        legacyExaminationNumber: a.oldExamNum,    // preserve if it existed
+        legacyStudentId: a.oldSid,
+        legacyExaminationNumber: a.oldExamNum,
         idMigratedAt: serverTimestamp(),
-        migrationId: MIGRATION_ID
+        migrationId: MIGRATION_ID,
+        intake: INTAKE,
+        year: YEAR
       });
-      // 2. Write an audit record (rollback source)
       batch.set(doc(db, "migrations", MIGRATION_ID, "changes", a.uid), {
         uid: a.uid,
-        oldStudentId: a.oldStudentId,
+        oldStudentId: a.oldSid,
         oldExamNum: a.oldExamNum,
         newStudentId: a.newStudentId,
         newExamNum: a.newExamNum,
@@ -246,28 +262,17 @@ window.commitMigration = async function() {
       });
     });
 
-    // 3. Advance counters LAST
-    batch.set(doc(db, "counters", "studentId"), { value: nextIdAfter }, { merge: true });
-    batch.set(doc(db, "counters", "examinationNumber"), { value: nextExamSeqAfter }, { merge: true });
+    batch.set(doc(db, "counters", "studentId"), { value: nextSidAfter }, { merge: true });
+    batch.set(doc(db, "counters", "examinationNumber"), { value: nextExamAfter }, { merge: true });
 
     await batch.commit();
-
     setStatus('commitStatus', `✓ Migration committed. ${assignments.length} users updated.`, 'ok');
     document.getElementById('resultCard').classList.remove('hidden');
-    setStatus('resultStatus', `Success. Students should now see their 6-digit Student ID on the dashboard. Legacy 8-digit IDs remain valid at the Exam Gateway for transition.`);
-
-    // Show rollback list
-    const rbWrap = document.getElementById('rollbackListWrap');
-    const rbList = document.getElementById('rollbackList');
-    rbWrap.classList.remove('hidden');
-    rbList.innerHTML = '<table><thead><tr><th>Name</th><th>Old ID (restore)</th><th>New ID (current)</th></tr></thead><tbody>' +
-      assignments.map(a => `<tr><td>${escapeHtml(a.name)}</td><td class="mono">${a.oldStudentId || '—'}</td><td class="mono" style="color:#15803D;">${a.newStudentId}</td></tr>`).join('') +
-      '</tbody></table>';
-
+    setStatus('resultStatus', `Success. Students now have IDs ${ID_PREFIX}00–${ID_PREFIX}${String(SID_SEQ_END).padStart(2,'0')} · Exam numbers ${ID_PREFIX}000000001+.`);
     refreshIcons();
   } catch (e) {
     console.error(e);
-    setStatus('commitStatus', 'Commit failed: ' + e.message + ' — no data was changed (Firestore batches are atomic).', 'err');
+    setStatus('commitStatus', 'Commit failed: ' + e.message + ' — atomic rollback, no data changed.', 'err');
     btn.disabled = false;
   }
 };
