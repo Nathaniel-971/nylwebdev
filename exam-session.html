@@ -7,10 +7,11 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="theme-color" content="#7A1F2B">
 
+<!-- Libraries -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
 </script>
@@ -41,36 +42,21 @@
 
   /* ========== MAIN LAYOUT ========== */
   .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  
-  /* Tabs (Mobile First) */
   .tabs { display: flex; background: var(--panel); border-bottom: 1px solid var(--silver); overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; font-weight: 700; font-size: 13px; color: var(--gray); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border-bottom: 2px solid transparent; white-space: nowrap; transition: 0.2s; font-family: inherit; }
   .tab-btn.active { color: var(--maroon); border-bottom-color: var(--maroon); background: var(--bg); }
 
-  /* Content Area */
-  .content-area { flex: 1; overflow-y: auto; padding: 16px; position: relative; }
-  .tab-content { display: none; animation: fadeIn 0.3s; }
+  /* IFRAME WRAPPER */
+  .content-area { flex: 1; position: relative; display: flex; }
+  .tab-content { display: none; width: 100%; height: 100%; }
   .tab-content.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-  .paper-wrapper { background: white; max-width: 900px; margin: 0 auto; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; }
-
-  /* Sidebar (Moves below on mobile) */
-  .sidebar { width: 100%; background: var(--panel); border-top: 1px solid var(--silver); padding: 16px; flex-shrink: 0; display: none; }
-  @media (min-width: 900px) {
-    .main-content { flex-direction: row; }
-    .content-area { padding: 24px; }
-    .sidebar { display: block; width: 320px; border-top: none; border-left: 1px solid var(--silver); overflow-y: auto; }
-    .tab-btn { font-size: 14px; }
-  }
-
-  /* Student Info Card */
-  .student-card { background: var(--bg); padding: 16px; border-radius: 12px; border: 1px solid var(--silver); text-align: center; margin-bottom: 16px; }
-  .student-card .exam-num { font-family: monospace; font-size: 18px; font-weight: 900; color: var(--maroon); margin: 8px 0; }
-  .student-card svg { max-width: 100%; height: 40px; }
+  
+  /* The iframe takes up 100% of the space */
+  .doc-frame { width: 100%; height: 100%; border: none; background: #E2E8F0; }
 
   /* ========== ADMIN UI ========== */
+  .admin-container { padding: 16px; overflow-y: auto; height: 100%; width: 100%; }
   .admin-grid { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 800px; margin: 0 auto; }
   @media (min-width: 768px) { .admin-grid { grid-template-columns: 350px 1fr; } }
   .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; }
@@ -83,7 +69,6 @@
   th, td { padding: 10px 12px; border-bottom: 1px solid var(--silver); }
   th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; }
   .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
-  .status-online { background: #DCFCE7; color: var(--success); }
 
   /* ========== OVERLAYS ========== */
   .overlay { position: fixed; inset: 0; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
@@ -91,12 +76,6 @@
   .overlay h2 { font-size: 28px; font-weight: 900; margin-bottom: 16px; }
   .overlay p { font-size: 15px; color: var(--gray); max-width: 400px; margin-bottom: 24px; }
   .pin-input { background: var(--white); border: 2px solid var(--silver); font-size: 32px; font-family: monospace; text-align: center; letter-spacing: 8px; padding: 16px; border-radius: 12px; outline: none; width: 100%; max-width: 300px; margin-bottom: 24px; }
-
-  /* Answer Book Wrapper */
-  #answerBookContainer { background: #F8FAFC; padding: 10px; }
-  #answerBookContainer .page { transform-origin: top center; margin: 15px auto !important; }
-  @media (max-width: 900px) { #answerBookContainer .page { transform: scale(0.85); margin-bottom: -40mm !important; } }
-  @media (max-width: 500px) { #answerBookContainer .page { transform: scale(0.6); margin-bottom: -100mm !important; } }
 </style>
 </head>
 <body oncontextmenu="return false;">
@@ -115,32 +94,30 @@
 
 <!-- MAIN -->
 <main class="main-content">
-  <div style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
-    <div class="tabs" id="mainTabs">
-      <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper"><i data-lucide="file-text"></i> Paper</button>
-      <button class="tab-btn" onclick="switchTab('answerbook')" id="tabAnswerBook"><i data-lucide="book-open"></i> Answer Book</button>
-      <button class="tab-btn" onclick="switchTab('guidelines')" id="tabGuidelines"><i data-lucide="shield-check"></i> Guidelines</button>
-      <button class="tab-btn" onclick="switchTab('admin')" id="tabAdmin" style="display:none;"><i data-lucide="settings"></i> Admin</button>
+  <div class="tabs" id="mainTabs">
+    <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper"><i data-lucide="file-text"></i> Paper</button>
+    <button class="tab-btn" onclick="switchTab('answerbook')" id="tabAnswerBook"><i data-lucide="book-open"></i> Answer Book</button>
+    <button class="tab-btn" onclick="switchTab('guidelines')" id="tabGuidelines"><i data-lucide="shield-check"></i> Guidelines</button>
+    <button class="tab-btn" onclick="switchTab('admin')" id="tabAdmin" style="display:none;"><i data-lucide="settings"></i> Admin</button>
+  </div>
+
+  <div class="content-area">
+    <!-- The iframes will render the EXACT uploaded HTML -->
+    <div class="tab-content active" id="viewPaper">
+      <iframe class="doc-frame" id="paperFrame" src="about:blank"></iframe>
     </div>
 
-    <div class="content-area">
-      <!-- PAPER -->
-      <div class="tab-content active" id="viewPaper">
-        <div class="paper-wrapper" id="paperContainer"><div style="text-align:center;color:var(--gray);margin-top:50px;">Loading Paper...</div></div>
-      </div>
+    <div class="tab-content" id="viewAnswerBook">
+      <iframe class="doc-frame" id="answerBookFrame" src="about:blank"></iframe>
+    </div>
 
-      <!-- ANSWER BOOK -->
-      <div class="tab-content" id="viewAnswerBook">
-        <div id="answerBookContainer"><div style="text-align:center;color:var(--gray);margin-top:50px;">Loading Answer Book...</div></div>
-      </div>
+    <div class="tab-content" id="viewGuidelines">
+      <iframe class="doc-frame" id="guidelinesFrame" src="about:blank"></iframe>
+    </div>
 
-      <!-- GUIDELINES -->
-      <div class="tab-content" id="viewGuidelines">
-        <div class="paper-wrapper" id="guidelinesContainer"><div style="text-align:center;color:var(--gray);margin-top:50px;">Loading Guidelines...</div></div>
-      </div>
-
-      <!-- ADMIN -->
-      <div class="tab-content" id="viewAdmin">
+    <!-- ADMIN TAB (No iframe, just UI) -->
+    <div class="tab-content" id="viewAdmin">
+      <div class="admin-container">
         <div class="admin-grid">
           <div class="card">
             <h2><i data-lucide="settings"></i> Create Session</h2>
@@ -164,16 +141,6 @@
       </div>
     </div>
   </div>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <h3 style="font-size: 11px; text-transform: uppercase; color: var(--gray); margin-bottom: 8px; font-weight: 800;">Student Info</h3>
-    <div class="student-card">
-      <div style="font-size: 10px; color: var(--gray); text-transform: uppercase; font-weight: 800;">Exam Number</div>
-      <div class="exam-num" id="studentExamNumDisplay">Loading...</div>
-      <svg id="studentBarcodeDisplay"></svg>
-    </div>
-  </aside>
 </main>
 
 <!-- PIN OVERLAY -->
@@ -208,16 +175,16 @@
   const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
   let currentUser = null, studentId = null, examNumber = null;
-  let currentSessionId = null, examPin = null, paperHtml = null, answerBookHtml = null, guidelinesHtml = null, examDurationMins = 120;
+  let currentSessionId = null, examPin = null, examDurationMins = 120;
   let examStartTime = null, timerInterval = null, unsubMonitor = null;
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
-  // 1. Get Session ID from URL (e.g., exam-session.html?session=SESSION_123)
+  // Get Session ID from URL
   const urlParams = new URLSearchParams(window.location.search);
   currentSessionId = urlParams.get('session');
 
-  // 2. Auth & Role Check
+  // Auth Check
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     currentUser = user;
@@ -225,7 +192,6 @@
     if (user.email === ADMIN_EMAIL) {
       document.getElementById('tabAdmin').style.display = 'flex';
       initMonitor();
-      // If Admin created a session, they can see the paper immediately
       if (currentSessionId) await loadSessionData(currentSessionId, true);
     } else {
       await initStudentSession(user);
@@ -273,7 +239,6 @@
       statusEl.style.color = "var(--success)";
       btn.innerHTML = '<i data-lucide="check-circle"></i> Published';
       
-      // Redirect admin to the live session
       window.location.href = `exam-session.html?session=${sessionId}`;
 
     } catch (error) {
@@ -299,20 +264,12 @@
           <td style="font-family:monospace;font-weight:bold;">${data.examNumber || doc.id}</td>
           <td><span class="status-badge ${isOnline?'status-online':''}">${isOnline?'Online':'Offline'}</span></td>
           <td style="color:${tabCount>0?'var(--error)':'inherit'};font-weight:bold;">${tabCount}</td>
-          <td><button class="btn" style="padding:4px 8px;font-size:11px;" onclick="viewScript('${doc.id}')">View</button></td>
+          <td><button class="btn" style="padding:4px 8px;font-size:11px;" onclick="alert('Viewer coming soon')">View</button></td>
         `;
         tbody.appendChild(tr);
       });
     });
   }
-
-  window.viewScript = async function(sid) {
-    const d = await getDoc(doc(db, "examLogs", sid));
-    if(d.exists()) {
-        const scripts = d.data().scripts || [];
-        alert(`This student has uploaded ${scripts.length} pages. Viewer coming soon.`);
-    }
-  };
 
   // ============================================================
   // STUDENT FUNCTIONS
@@ -323,12 +280,10 @@
       const data = userDoc.data();
       studentId = data.studentId;
       examNumber = data.examNumber;
-      document.getElementById('studentExamNumDisplay').innerText = examNumber || 'Pending';
-      try { JsBarcode("#studentBarcodeDisplay", examNumber, { format: "CODE128", width: 1.5, height: 40, displayValue: false }); } catch(e) {}
     }
 
     if (!currentSessionId) {
-      document.getElementById('paperContainer').innerHTML = `<div style="text-align:center;color:var(--error);margin-top:50px;font-weight:700;">No session selected. Please go back to the Portal.</div>`;
+      document.getElementById('paperFrame').srcdoc = `<html><body style="font-family:sans-serif;text-align:center;padding:50px;"><h1 style="color:red;">No session selected.</h1></body></html>`;
       return;
     }
 
@@ -339,22 +294,21 @@
   async function loadSessionData(sessionId, isAdmin) {
     const sessionDoc = await getDoc(doc(db, "examSessions", sessionId));
     if (!sessionDoc.exists()) {
-      document.getElementById('paperContainer').innerHTML = `<div style="text-align:center;color:var(--error);margin-top:50px;font-weight:700;">Session not found.</div>`;
+      document.getElementById('paperFrame').srcdoc = `<html><body style="font-family:sans-serif;text-align:center;padding:50px;"><h1 style="color:red;">Session not found.</h1></body></html>`;
       return;
     }
     const sd = sessionDoc.data();
     examPin = sd.examCode;
-    paperHtml = sd.questionPaperHtml;
-    answerBookHtml = sd.answerBookHtml;
-    guidelinesHtml = sd.guidelinesHtml;
     examDurationMins = sd.durationMinutes || 120;
 
     if (isAdmin) {
-      // Admin bypasses PIN
       document.getElementById('pinOverlay').classList.remove('active');
       document.getElementById('clockContainer').style.display = 'flex';
-      renderContent();
+      renderContent(sd);
       startTimer();
+    } else {
+      // Store the HTML in window variables so we can render it after PIN verification
+      window._pendingHtml = sd;
     }
   }
 
@@ -363,7 +317,7 @@
     if (entered === examPin) {
       document.getElementById('pinOverlay').classList.remove('active');
       document.getElementById('clockContainer').style.display = 'flex';
-      renderContent();
+      renderContent(window._pendingHtml);
       startTimer();
       logEvent('login', {});
     } else {
@@ -372,23 +326,18 @@
     }
   };
 
-  function renderContent() {
-    // Render Paper
-    if (paperHtml) {
-      const clean = DOMPurify.sanitize(paperHtml);
-      document.getElementById('paperContainer').innerHTML = clean;
-      if (window.MathJax) MathJax.typesetPromise([document.getElementById('paperContainer')]);
+  // ============================================================
+  // THE CRITICAL FIX: Render HTML via iframe.srcdoc
+  // ============================================================
+  function renderContent(sd) {
+    if (sd.questionPaperHtml) {
+      document.getElementById('paperFrame').srcdoc = sd.questionPaperHtml;
     }
-    // Render Answer Book
-    if (answerBookHtml) {
-      const clean = DOMPurify.sanitize(answerBookHtml);
-      document.getElementById('answerBookContainer').innerHTML = clean;
-      if (window.MathJax) MathJax.typesetPromise([document.getElementById('answerBookContainer')]);
+    if (sd.answerBookHtml) {
+      document.getElementById('answerBookFrame').srcdoc = sd.answerBookHtml;
     }
-    // Render Guidelines
-    if (guidelinesHtml) {
-      const clean = DOMPurify.sanitize(guidelinesHtml);
-      document.getElementById('guidelinesContainer').innerHTML = clean;
+    if (sd.guidelinesHtml) {
+      document.getElementById('guidelinesFrame').srcdoc = sd.guidelinesHtml;
     }
   }
 
