@@ -13,6 +13,7 @@
     --bg: #F8FAFC;
     --sidebar-bg: #7A1F2B; --sidebar-hover: #5A1620;
     --success: #15803D; --warning: #B45309; --error: #B91C1C;
+    --youtube: #FF0000;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black); line-height: 1.5; }
@@ -93,6 +94,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 .resource-file-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #DBEAFE; color: #1E40AF; }
 .resource-file-icon.pdf { background: #FEE2E2; color: #B91C1C; }
 .resource-file-icon.external { background: #DCFCE7; color: #15803D; }
+.resource-file-icon.video { background: #FEE2E2; color: var(--youtube); }
 .resource-file-icon i { width: 20px; height: 20px; }
 .resource-info { flex: 1; min-width: 0; }
 .resource-title { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
@@ -213,7 +215,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
 
             <div class="info-banner" id="adminBanner">
                 <i data-lucide="info"></i>
-                <span>No documents have been uploaded yet. <a href="admin-resources.html">Upload via the Admin Panel</a> to publish resources here.</span>
+                <span>No documents or videos have been uploaded yet. <a href="admin-resources.html">Upload via the Admin Panel</a> to publish resources here.</span>
             </div>
 
             <div class="search-wrap">
@@ -249,7 +251,7 @@ html, body { width: 100%; min-height: 100dvh; overflow-x: hidden; font-family: '
                     <dd><code>jan</code><code>jun</code><code>sep</code><code>nov</code> for exam periods, <code>w01</code>–<code>w40</code> for weekly tests</dd>
 
                     <dt>type</dt>
-                    <dd><code>exam</code><code>memo</code><code>test</code><code>mock</code><code>guidelines</code><code>atp</code><code>answerbook</code></dd>
+                    <dd><code>exam</code><code>memo</code><code>test</code><code>mock</code><code>guidelines</code><code>atp</code><code>answerbook</code><code>video</code></dd>
                 </dl>
             </div>
 
@@ -289,6 +291,14 @@ const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
 /* ==================== SECTIONS ==================== */
 const SECTIONS = [
+    {
+        key: 'video-lessons',
+        title: 'Video Lessons',
+        subtitle: 'Recorded lectures from IFB Academy',
+        icon: 'youtube',
+        emptyTitle: 'No videos uploaded yet',
+        emptyDesc: 'Video lessons from our YouTube channel will appear here once added.'
+    },
     {
         key: 'past-papers',
         title: 'Past Examination Question Papers',
@@ -360,6 +370,7 @@ function escapeHtml(str) {
 function resolveCategory(r) {
     if (r.category) return r.category;
     const fn = (r.filename || '').toLowerCase();
+    if (r.type === 'video' || fn.endsWith('-video.html') || fn.endsWith('-video')) return 'video-lessons';
     if (fn.endsWith('-exam.html') || fn.endsWith('-exam.pdf')) return 'past-papers';
     if (fn.endsWith('-memo.html') || fn.endsWith('-memo.pdf')) return 'memos';
     if (fn.endsWith('-test.html') || fn.endsWith('-test.pdf')) return 'weekly-tests';
@@ -373,6 +384,7 @@ function resolveCategory(r) {
 function fileIconFor(type) {
     if (type === 'pdf') return { class: 'pdf', icon: 'file-type-2' };
     if (type === 'external') return { class: 'external', icon: 'external-link' };
+    if (type === 'video') return { class: 'video', icon: 'play-circle' };
     return { class: '', icon: 'file-text' };
 }
 
