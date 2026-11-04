@@ -10,8 +10,9 @@
 <!-- Libraries -->
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
 <script>
   window.MathJax = { tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
 </script>
@@ -31,28 +32,37 @@
   .header { background: var(--panel); border-bottom: 1px solid var(--silver); padding: 0 16px; height: 64px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 100; }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; }
   .brand span { color: var(--maroon); font-size: 24px; }
-  .clock-container { background: var(--bg); padding: 6px 14px; border-radius: 8px; border: 1px solid var(--silver); display: flex; align-items: center; gap: 8px; }
-  .clock { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: var(--success); }
-  .clock.danger { color: var(--error); animation: pulse 1s infinite; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  
+  /* Analog Clock */
+  .analog-clock { width: 40px; height: 40px; border: 2px solid var(--maroon); border-radius: 50%; position: relative; background: white; }
+  .clock-hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom center; background: var(--text); border-radius: 2px; }
+  .hour-hand { width: 2px; height: 10px; margin-left: -1px; background: var(--maroon); }
+  .minute-hand { width: 2px; height: 14px; margin-left: -1px; }
+  .second-hand { width: 1px; height: 16px; margin-left: -0.5px; background: var(--error); }
+  
   .btn { background: transparent; border: 1px solid var(--silver); color: var(--text); padding: 8px 12px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; font-family: inherit; }
   .btn:hover { background: var(--bg); }
   .btn-primary { background: var(--maroon); color: var(--white); border: none; }
   .btn-danger { border-color: var(--error); color: var(--error); }
 
   /* ========== MAIN LAYOUT ========== */
-  .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .tabs { display: flex; background: var(--panel); border-bottom: 1px solid var(--silver); overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
-  .tabs::-webkit-scrollbar { display: none; }
+  .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  
+  /* Mobile Dropdown */
+  .mobile-nav { padding: 8px 16px; background: var(--panel); border-bottom: 1px solid var(--silver); display: flex; align-items: center; gap: 10px; }
+  .mobile-nav select { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--silver); font-family: inherit; font-weight: 600; font-size: 14px; }
+  @media (min-width: 900px) { .mobile-nav { display: none; } }
+
+  /* Desktop Tabs */
+  .tabs { display: none; background: var(--panel); border-bottom: 1px solid var(--silver); overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
+  @media (min-width: 900px) { .tabs { display: flex; } }
   .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; font-weight: 700; font-size: 13px; color: var(--gray); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border-bottom: 2px solid transparent; white-space: nowrap; transition: 0.2s; font-family: inherit; }
   .tab-btn.active { color: var(--maroon); border-bottom-color: var(--maroon); background: var(--bg); }
 
-  /* IFRAME WRAPPER */
-  .content-area { flex: 1; position: relative; display: flex; }
-  .tab-content { display: none; width: 100%; height: 100%; }
+  /* Content Area */
+  .content-area { flex: 1; position: relative; display: flex; overflow: hidden; }
+  .tab-content { display: none; width: 100%; height: 100%; position: absolute; inset: 0; }
   .tab-content.active { display: block; }
-  
-  /* The iframe takes up 100% of the space */
   .doc-frame { width: 100%; height: 100%; border: none; background: #E2E8F0; }
 
   /* ========== ADMIN UI ========== */
@@ -70,22 +80,49 @@
   th { background: var(--bg); font-weight: 800; color: var(--gray); text-transform: uppercase; font-size: 10px; }
   .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
 
+  /* ========== SCANNER UI ========== */
+  .scanner-ui { padding: 16px; display: flex; flex-direction: column; align-items: center; height: 100%; overflow-y: auto; background: var(--bg); }
+  .scanner-container { width: 100%; max-width: 600px; background: white; border-radius: 16px; padding: 20px; border: 1px solid var(--silver); }
+  .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #f3f4f6; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
+  video.active, canvas.active, img.preview.active { display:block; }
+  .framing-guide { position:absolute; inset:6%; pointer-events:none; display:none; border: 2px dashed var(--maroon); border-radius: 8px; }
+  .framing-guide.visible { display:block; }
+  .controls { display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
+  .action-btn { flex:1; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; border:none; font-family:inherit; }
+  .btn-primary { background:var(--maroon); color:white; }
+  .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
+  .btn:disabled { opacity:0.5; cursor:not-allowed; }
+  .status { margin-top: 10px; font-size: 13px; text-align: center; font-weight: 600; color: var(--gray); }
+
   /* ========== OVERLAYS ========== */
   .overlay { position: fixed; inset: 0; background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); z-index: 1000; display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 24px; }
   .overlay.active { display: flex; }
   .overlay h2 { font-size: 28px; font-weight: 900; margin-bottom: 16px; }
   .overlay p { font-size: 15px; color: var(--gray); max-width: 400px; margin-bottom: 24px; }
   .pin-input { background: var(--white); border: 2px solid var(--silver); font-size: 32px; font-family: monospace; text-align: center; letter-spacing: 8px; padding: 16px; border-radius: 12px; outline: none; width: 100%; max-width: 300px; margin-bottom: 24px; }
+
+  /* Loading Spinner */
+  .loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg); position: fixed; inset: 0; z-index: 9999; transition: opacity 0.5s; }
+  .loader-logo { font-size: 80px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.7; } }
 </style>
 </head>
 <body oncontextmenu="return false;">
 
+<!-- LOADING OVERLAY -->
+<div class="loader" id="loader">
+  <div class="loader-logo">∆</div>
+  <p style="margin-top: 20px; font-weight: 700; color: var(--gray);">Loading Session...</p>
+</div>
+
 <!-- HEADER -->
 <header class="header">
   <div class="brand"><span>∆</span> IFB Exam</div>
-  <div class="clock-container" id="clockContainer" style="display:none;">
-    <i data-lucide="timer" style="width: 16px; height: 16px; color: var(--gray);"></i>
-    <div class="clock" id="clockDisplay">--:--:--</div>
+  <div class="analog-clock" id="analogClock" style="display:none;">
+    <div class="clock-hand hour-hand" id="hourHand"></div>
+    <div class="clock-hand minute-hand" id="minuteHand"></div>
+    <div class="clock-hand second-hand" id="secondHand"></div>
   </div>
   <div class="header-actions">
     <button class="btn btn-danger" onclick="exitExam()"><i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Exit</button>
@@ -94,28 +131,86 @@
 
 <!-- MAIN -->
 <main class="main-content">
+  
+  <!-- Mobile Dropdown -->
+  <div class="mobile-nav">
+    <i data-lucide="menu" style="color:var(--maroon);"></i>
+    <select id="mobileTabSelect" onchange="switchTab(this.value)">
+      <option value="paper">Question Paper</option>
+      <option value="answerbook">Answer Book</option>
+      <option value="guidelines">Guidelines</option>
+      <option value="scanner">Scan Pages</option>
+      <option value="student">Student Details</option>
+      <option value="admin" id="optAdmin" style="display:none;">Admin Panel</option>
+    </select>
+  </div>
+
+  <!-- Desktop Tabs -->
   <div class="tabs" id="mainTabs">
     <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper"><i data-lucide="file-text"></i> Paper</button>
     <button class="tab-btn" onclick="switchTab('answerbook')" id="tabAnswerBook"><i data-lucide="book-open"></i> Answer Book</button>
     <button class="tab-btn" onclick="switchTab('guidelines')" id="tabGuidelines"><i data-lucide="shield-check"></i> Guidelines</button>
+    <button class="tab-btn" onclick="switchTab('scanner')" id="tabScanner"><i data-lucide="camera"></i> Scan Pages</button>
+    <button class="tab-btn" onclick="switchTab('student')" id="tabStudent"><i data-lucide="user"></i> Student Details</button>
     <button class="tab-btn" onclick="switchTab('admin')" id="tabAdmin" style="display:none;"><i data-lucide="settings"></i> Admin</button>
   </div>
 
   <div class="content-area">
-    <!-- The iframes will render the EXACT uploaded HTML -->
+    <!-- PAPER -->
     <div class="tab-content active" id="viewPaper">
       <iframe class="doc-frame" id="paperFrame" src="about:blank"></iframe>
     </div>
 
+    <!-- ANSWER BOOK -->
     <div class="tab-content" id="viewAnswerBook">
       <iframe class="doc-frame" id="answerBookFrame" src="about:blank"></iframe>
     </div>
 
+    <!-- GUIDELINES -->
     <div class="tab-content" id="viewGuidelines">
       <iframe class="doc-frame" id="guidelinesFrame" src="about:blank"></iframe>
     </div>
 
-    <!-- ADMIN TAB (No iframe, just UI) -->
+    <!-- SCANNER (Inside Session) -->
+    <div class="tab-content" id="viewScanner">
+      <div class="scanner-ui">
+        <div class="scanner-container">
+          <h2 style="font-size:18px; font-weight:900; margin-bottom:12px; display:flex; align-items:center; gap:8px;"><i data-lucide="camera" style="color:var(--maroon);"></i> Scan Answer Page</h2>
+          <p style="font-size:12px; color:var(--gray); margin-bottom:12px;">Fill the frame with a full A4 page. The scanner will straighten and enhance the text.</p>
+          <div class="stage">
+            <video id="video" autoplay playsinline muted></video>
+            <canvas id="canvas"></canvas>
+            <img id="preview" class="preview" alt="Scanned page">
+            <div class="framing-guide" id="framingGuide"></div>
+          </div>
+          <div class="controls">
+            <button class="action-btn btn-primary" id="btnOpen"><i data-lucide="camera"></i> Open Camera</button>
+            <button class="action-btn btn-secondary" id="btnCapture" disabled><i data-lucide="aperture"></i> Capture</button>
+            <button class="action-btn btn-secondary" id="btnRetake" disabled><i data-lucide="refresh-cw"></i> Retake</button>
+            <button class="action-btn btn-secondary" id="btnUpload" disabled><i data-lucide="upload-cloud"></i> Upload to Book</button>
+          </div>
+          <div class="status" id="status">Ready to scan.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STUDENT DETAILS (Barcode Auto-fill) -->
+    <div class="tab-content" id="viewStudent">
+      <div style="padding: 24px; max-width: 500px; margin: 0 auto; text-align: center;">
+        <h2 style="font-size: 20px; font-weight: 900; color: var(--maroon); margin-bottom: 16px;">Student Verification</h2>
+        <p style="font-size: 14px; color: var(--gray); margin-bottom: 24px;">Scan the barcode on your Admission Letter to verify your identity and auto-fill your Answer Book.</p>
+        
+        <div id="barcodeReader" style="width: 100%; max-width: 400px; margin: 0 auto 20px; border-radius: 12px; overflow: hidden;"></div>
+        
+        <div id="studentVerifiedBox" style="display:none; background: #DCFCE7; border: 1px solid var(--success); padding: 16px; border-radius: 12px; margin-top: 20px;">
+          <i data-lucide="check-circle" style="width: 48px; height: 48px; color: var(--success); margin-bottom: 8px;"></i>
+          <h3 style="color: var(--success); font-weight: 900;">Verified</h3>
+          <p id="verifiedDetails" style="font-family: monospace; font-size: 14px; margin-top: 8px;"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
     <div class="tab-content" id="viewAdmin">
       <div class="admin-container">
         <div class="admin-grid">
@@ -174,28 +269,37 @@
   const db = getFirestore(app);
   const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
 
+  // State variables
   let currentUser = null, studentId = null, examNumber = null;
   let currentSessionId = null, examPin = null, examDurationMins = 120;
-  let examStartTime = null, timerInterval = null, unsubMonitor = null;
+  let sessionStartTime = null, timerInterval = null, unsubMonitor = null;
+  let isStudentVerified = false;
+  
+  // Scanner variables
+  let stream = null, videoTrack = null, pendingBlob = null, cvReady = false;
+  let captures = {}; // Stores captured URLs
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
-  // Get Session ID from URL
+  // 1. Get Session ID from URL
   const urlParams = new URLSearchParams(window.location.search);
   currentSessionId = urlParams.get('session');
 
-  // Auth Check
+  // 2. Auth Check
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     currentUser = user;
 
     if (user.email === ADMIN_EMAIL) {
       document.getElementById('tabAdmin').style.display = 'flex';
+      document.getElementById('optAdmin').style.display = 'block';
       initMonitor();
       if (currentSessionId) await loadSessionData(currentSessionId, true);
     } else {
       await initStudentSession(user);
     }
+    
+    setTimeout(() => { document.getElementById('loader').style.opacity = '0'; setTimeout(() => document.getElementById('loader').style.display = 'none', 500); }, 1000);
     refreshIcons();
   });
 
@@ -215,14 +319,9 @@
     if (!qFile || !aFile || !gFile || !title || pin.length !== 6) { alert("Please fill all fields."); return; }
 
     try {
-      btn.disabled = true;
-      statusEl.innerText = "Reading files...";
-
+      btn.disabled = true; statusEl.innerText = "Reading files...";
       const readText = (f) => new Promise(r => { const rd = new FileReader(); rd.onload = e => r(e.target.result); rd.readAsText(f); });
-      
-      const qHtml = await readText(qFile);
-      const aHtml = await readText(aFile);
-      const gHtml = await readText(gFile);
+      const qHtml = await readText(qFile); const aHtml = await readText(aFile); const gHtml = await readText(gFile);
 
       statusEl.innerText = "Saving to Database...";
       const sessionId = 'SESSION_' + Date.now();
@@ -234,18 +333,9 @@
       });
 
       await setDoc(doc(db, "config", "examSettings"), { activeSessionId: sessionId }, { merge: true });
-      
-      statusEl.innerText = "Session Published!";
-      statusEl.style.color = "var(--success)";
-      btn.innerHTML = '<i data-lucide="check-circle"></i> Published';
-      
       window.location.href = `exam-session.html?session=${sessionId}`;
 
-    } catch (error) {
-      statusEl.innerText = "Error: " + error.message;
-      statusEl.style.color = "var(--error)";
-      btn.disabled = false;
-    }
+    } catch (error) { statusEl.innerText = "Error: " + error.message; btn.disabled = false; }
   };
 
   function initMonitor() {
@@ -278,8 +368,7 @@
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       const data = userDoc.data();
-      studentId = data.studentId;
-      examNumber = data.examNumber;
+      studentId = data.studentId; examNumber = data.examNumber;
     }
 
     if (!currentSessionId) {
@@ -293,21 +382,16 @@
 
   async function loadSessionData(sessionId, isAdmin) {
     const sessionDoc = await getDoc(doc(db, "examSessions", sessionId));
-    if (!sessionDoc.exists()) {
-      document.getElementById('paperFrame').srcdoc = `<html><body style="font-family:sans-serif;text-align:center;padding:50px;"><h1 style="color:red;">Session not found.</h1></body></html>`;
-      return;
-    }
+    if (!sessionDoc.exists()) return;
     const sd = sessionDoc.data();
-    examPin = sd.examCode;
-    examDurationMins = sd.durationMinutes || 120;
+    examPin = sd.examCode; examDurationMins = sd.durationMinutes || 120;
 
     if (isAdmin) {
       document.getElementById('pinOverlay').classList.remove('active');
-      document.getElementById('clockContainer').style.display = 'flex';
+      document.getElementById('analogClock').style.display = 'block';
       renderContent(sd);
       startTimer();
     } else {
-      // Store the HTML in window variables so we can render it after PIN verification
       window._pendingHtml = sd;
     }
   }
@@ -316,7 +400,7 @@
     const entered = document.getElementById('pinInput').value;
     if (entered === examPin) {
       document.getElementById('pinOverlay').classList.remove('active');
-      document.getElementById('clockContainer').style.display = 'flex';
+      document.getElementById('analogClock').style.display = 'block';
       renderContent(window._pendingHtml);
       startTimer();
       logEvent('login', {});
@@ -326,52 +410,161 @@
     }
   };
 
-  // ============================================================
-  // THE CRITICAL FIX: Render HTML via iframe.srcdoc
-  // ============================================================
   function renderContent(sd) {
-    if (sd.questionPaperHtml) {
-      document.getElementById('paperFrame').srcdoc = sd.questionPaperHtml;
-    }
-    if (sd.answerBookHtml) {
-      document.getElementById('answerBookFrame').srcdoc = sd.answerBookHtml;
-    }
-    if (sd.guidelinesHtml) {
-      document.getElementById('guidelinesFrame').srcdoc = sd.guidelinesHtml;
-    }
+    if (sd.questionPaperHtml) document.getElementById('paperFrame').srcdoc = sd.questionPaperHtml;
+    if (sd.answerBookHtml) document.getElementById('answerBookFrame').srcdoc = sd.answerBookHtml;
+    if (sd.guidelinesHtml) document.getElementById('guidelinesFrame').srcdoc = sd.guidelinesHtml;
+    initBarcodeScanner();
   }
 
+  // ============================================================
+  // ANALOG CLOCK
+  // ============================================================
   function startTimer() {
-    examStartTime = Date.now();
-    timerInterval = setInterval(() => {
-      const remaining = (examDurationMins * 60 * 1000) - (Date.now() - examStartTime);
-      if (remaining <= 0) {
-        clearInterval(timerInterval);
-        document.getElementById('clockDisplay').innerText = "00:00:00";
-        document.getElementById('clockDisplay').className = "clock danger";
-        alert("Time is up! The portal is now locked.");
-        return;
-      }
-      const h = Math.floor(remaining / 3600000).toString().padStart(2, '0');
-      const m = Math.floor((remaining % 3600000) / 60000).toString().padStart(2, '0');
-      const s = Math.floor((remaining % 60000) / 1000).toString().padStart(2, '0');
-      const clockEl = document.getElementById('clockDisplay');
-      clockEl.innerText = `${h}:${m}:${s}`;
-      if (remaining < 5 * 60 * 1000) clockEl.className = "clock danger";
-    }, 1000);
+    sessionStartTime = Date.now();
+    
+    // Initial Clock Hands
+    updateClock();
+    setInterval(updateClock, 1000);
   }
 
+  function updateClock() {
+    const now = new Date();
+    const h = now.getHours() % 12;
+    const m = now.getMinutes();
+    const s = now.getSeconds();
+
+    const hDeg = (h * 30) + (m * 0.5);
+    const mDeg = (m * 6) + (s * 0.1);
+    const sDeg = s * 6;
+
+    document.getElementById('hourHand').style.transform = `rotate(${hDeg}deg)`;
+    document.getElementById('minuteHand').style.transform = `rotate(${mDeg}deg)`;
+    document.getElementById('secondHand').style.transform = `rotate(${sDeg}deg)`;
+  }
+
+  // ============================================================
+  // MOBILE NAVIGATION
+  // ============================================================
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    if (tab === 'paper') { document.getElementById('viewPaper').classList.add('active'); document.getElementById('tabPaper').classList.add('active'); }
-    else if (tab === 'answerbook') { document.getElementById('viewAnswerBook').classList.add('active'); document.getElementById('tabAnswerBook').classList.add('active'); }
-    else if (tab === 'guidelines') { document.getElementById('viewGuidelines').classList.add('active'); document.getElementById('tabGuidelines').classList.add('active'); }
-    else if (tab === 'admin') { document.getElementById('viewAdmin').classList.add('active'); document.getElementById('tabAdmin').classList.add('active'); }
+    document.getElementById('view' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    const desktopBtn = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+    if (desktopBtn) desktopBtn.classList.add('active');
+    document.getElementById('mobileTabSelect').value = tab;
   };
 
+  // ============================================================
+  // SCANNER LOGIC (Embedded)
+  // ============================================================
+  function initScanner() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const preview = document.getElementById('preview');
+    const btnOpen = document.getElementById('btnOpen');
+    const btnCapture = document.getElementById('btnCapture');
+    const btnRetake = document.getElementById('btnRetake');
+    const btnUpload = document.getElementById('btnUpload');
+    const statusEl = document.getElementById('status');
+    const framingGuide = document.getElementById('framingGuide');
+
+    function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? 'var(--error)' : (type === 'success' ? 'var(--success)' : 'var(--gray)'); }
+
+    // Open Camera
+    btnOpen.addEventListener('click', async () => {
+      setStatus('Requesting camera...');
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        video.srcObject = stream; await video.play();
+        video.classList.add('active'); framingGuide.classList.add('visible');
+        btnOpen.disabled = true; btnCapture.disabled = false; btnRetake.disabled = true; btnUpload.disabled = true;
+        setStatus('Position A4 page inside the frame.');
+      } catch (err) { setStatus('Camera error: ' + err.message, 'error'); }
+    });
+
+    // Capture
+    btnCapture.addEventListener('click', async () => {
+      const w = video.videoWidth, h = video.videoHeight;
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+      
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+      video.classList.remove('active'); framingGuide.classList.remove('visible');
+      
+      // Enhance (Black & White)
+      const ctx = canvas.getContext('2d');
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const d = imgData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const avg = (d[i] + d[i+1] + d[i+2]) / 3;
+        const val = avg > 128 ? 255 : 0;
+        d[i] = d[i+1] = d[i+2] = val;
+      }
+      ctx.putImageData(imgData, 0, 0);
+
+      canvas.toBlob(blob => {
+        pendingBlob = blob;
+        preview.src = URL.createObjectURL(blob); preview.classList.add('active');
+        btnCapture.disabled = true; btnRetake.disabled = false; btnUpload.disabled = false;
+        setStatus('Captured. Click Upload.', 'success');
+      }, 'image/jpeg', 0.9);
+    });
+
+    // Retake
+    btnRetake.addEventListener('click', () => {
+      if (preview.src) URL.revokeObjectURL(preview.src);
+      pendingBlob = null; preview.classList.remove('active');
+      btnRetake.disabled = true; btnUpload.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
+      setStatus('Retake ready.');
+    });
+
+    // Upload (Simulated Cloudinary)
+    btnUpload.addEventListener('click', async () => {
+      if (!pendingBlob || !studentId) return;
+      btnUpload.innerHTML = 'Uploading...'; btnUpload.disabled = true;
+      
+      // Simulate upload delay
+      await new Promise(r => setTimeout(r, 1000));
+      
+      if (!captures[studentId]) captures[studentId] = [];
+      captures[studentId].push(URL.createObjectURL(pendingBlob));
+      
+      await setDoc(doc(db, "examLogs", studentId), {
+        examNumber, status: 'In Session', lastActive: serverTimestamp(),
+        scripts: arrayUnion({ url: 'placeholder_url', uploadedAt: new Date().toISOString() })
+      }, { merge: true });
+
+      setStatus('Uploaded!', 'success');
+      btnUpload.innerHTML = 'Upload'; btnUpload.disabled = true;
+      btnRetake.disabled = true; btnOpen.disabled = false;
+    });
+  }
+
+  // ============================================================
+  // BARCODE SCANNER (Student Verification)
+  // ============================================================
+  function initBarcodeScanner() {
+    const reader = new Html5Qrcode("barcodeReader");
+    reader.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 250, height: 150 } },
+      (decodedText) => {
+        // Barcode scanned
+        document.getElementById('studentVerifiedBox').style.display = 'block';
+        document.getElementById('verifiedDetails').innerText = `Verified Student: ${decodedText}`;
+        isStudentVerified = true;
+        reader.stop();
+      },
+      (error) => {}
+    ).catch(err => console.warn("Barcode scanner error", err));
+  }
+
+  // ============================================================
+  // ANTI-CHEAT
+  // ============================================================
   document.addEventListener("visibilitychange", async () => {
-    if (document.hidden && !document.getElementById('pinOverlay').classList.contains('active')) {
+    if (document.hidden && !document.getElementById('pinOverlay').classList.contains('active') && !document.getElementById('viewAdmin').classList.contains('active')) {
       document.getElementById('tabWarning').classList.add('active');
       await logEvent('tab_switch', {});
     }
@@ -395,6 +588,9 @@
       window.location.href = "student-dashboard.html";
     }
   };
+
+  // Initialize Scanner when session starts
+  setTimeout(initScanner, 2000);
 
   refreshIcons();
 </script>
