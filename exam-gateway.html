@@ -34,11 +34,11 @@ input:focus { border-color: var(--maroon); }
     <div class="logo">∆</div>
     <h1>Examination Gateway</h1>
     <p class="sub">Verify your credentials to enter the live exam session.</p>
-    
+
     <div class="input-group">
         <label>Student ID or Examination Number</label>
-        <input type="text" id="studentId" placeholder="270045 or 2601202700001" maxlength="13" autocomplete="off">
-        <div class="hint">Enter your 6-digit Student ID, legacy 8-digit ID, or 13-digit Examination Number.</div>
+        <input type="text" id="studentId" placeholder="270100 or 2701000000001" maxlength="13" autocomplete="off">
+        <div class="hint">6-digit Student ID (2701XX) or 13-digit Examination Number (2701XXXXXXXXX).</div>
     </div>
     <div class="input-group">
         <label>6-Character Security Code</label>
@@ -48,10 +48,10 @@ input:focus { border-color: var(--maroon); }
         <label>Examination Access Code</label>
         <input type="text" id="examCode" placeholder="Provided by Invigilator" maxlength="10" autocomplete="off" style="text-transform: uppercase;">
     </div>
-    
+
     <button class="btn" id="enterBtn" onclick="verifyAndEnter()">Verify &amp; Enter Session</button>
     <div class="error" id="errorBox"></div>
-    
+
     <a href="student-dashboard.html" class="back-link"><i data-lucide="arrow-left" style="width:14px; height:14px; vertical-align:middle;"></i> Back to Dashboard</a>
 </div>
 
@@ -66,35 +66,36 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const ADMIN = "n1nathaniel971@gmail.com";
 
+// 2027 Intake 01 format
+const SID_REGEX         = /^2701\d{2}$/;       // 270100–270199
+const SID_LEGACY_REGEX  = /^2701\d{4}$/;       // 27010001–27019999
+const EXAM_REGEX        = /^2701\d{9}$/;       // 2701000000001–2701999999999
+const EXAM_LEGACY_REGEX = /^26012027\d{5}$/;   // 2601202700001–2601202799999
+
 let isCurrentUserAdmin = false;
 let currentUserDoc = null;
-let currentUserRef = null;
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
-    
+
     if (user.email === ADMIN) {
         isCurrentUserAdmin = true;
-        document.getElementById('examCodeGroup').style.display = 'none'; 
+        document.getElementById('examCodeGroup').style.display = 'none';
     }
 
-    currentUserRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(currentUserRef);
-    if (docSnap.exists()) {
-        currentUserDoc = docSnap.data();
-    }
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    if (docSnap.exists()) currentUserDoc = docSnap.data();
 });
 
 window.verifyAndEnter = async function() {
     const id = document.getElementById('studentId').value.trim();
     const code = document.getElementById('securityCode').value.trim().toUpperCase();
     const examCodeInput = document.getElementById('examCode').value.trim().toUpperCase();
-    
+
     const errorBox = document.getElementById('errorBox');
     const btn = document.getElementById('enterBtn');
     errorBox.style.display = 'none';
 
-    // Admin bypass
     if (isCurrentUserAdmin) {
         sessionStorage.setItem("examStudentId", "ADMIN");
         sessionStorage.setItem("examSecurityCode", "ADMIN");
@@ -105,13 +106,13 @@ window.verifyAndEnter = async function() {
         return;
     }
 
-    // Accept 6-digit new, 8-digit legacy, 13-digit exam number
-    const is6 = /^\d{6}$/.test(id);
-    const is8 = /^\d{8}$/.test(id);
-    const is13 = /^\d{13}$/.test(id);
+    const validSid       = SID_REGEX.test(id);
+    const validLegacySid = SID_LEGACY_REGEX.test(id);
+    const validExam      = EXAM_REGEX.test(id);
+    const validLegacyEx  = EXAM_LEGACY_REGEX.test(id);
 
-    if (!is6 && !is8 && !is13) {
-        errorBox.innerText = "Invalid format. Enter your 6-digit Student ID or 13-digit Examination Number.";
+    if (!validSid && !validLegacySid && !validExam && !validLegacyEx) {
+        errorBox.innerText = "Invalid format. Enter your 6-digit Student ID (2701XX) or 13-digit Examination Number (2701XXXXXXXXX).";
         errorBox.style.display = 'block';
         return;
     }
@@ -131,13 +132,10 @@ window.verifyAndEnter = async function() {
             return;
         }
 
-        // Check exam access code
         const configSnap = await getDoc(doc(db, "config", "examSettings"));
         let correctCode = "IFB2027";
-        if (configSnap.exists()) {
-            correctCode = configSnap.data().examCode || "IFB2027";
-        }
-        
+        if (configSnap.exists()) correctCode = configSnap.data().examCode || "IFB2027";
+
         if (examCodeInput !== correctCode) {
             errorBox.innerText = "Invalid Examination Access Code. Please ask the invigilator.";
             errorBox.style.display = 'block';
@@ -145,11 +143,11 @@ window.verifyAndEnter = async function() {
             return;
         }
 
-        // Match against any of: new studentId, legacy studentId, examinationNumber
         const idMatches =
             currentUserDoc.studentId === id ||
             currentUserDoc.legacyStudentId === id ||
-            currentUserDoc.examinationNumber === id;
+            currentUserDoc.examinationNumber === id ||
+            currentUserDoc.legacyExaminationNumber === id;
 
         if (idMatches && currentUserDoc.securityCode === code) {
             sessionStorage.setItem("examStudentId", currentUserDoc.studentId || id);
@@ -157,12 +155,11 @@ window.verifyAndEnter = async function() {
             sessionStorage.setItem("examStudentName", currentUserDoc.name || 'Student');
             sessionStorage.setItem("examExaminationNumber", currentUserDoc.examinationNumber || '');
             sessionStorage.setItem("isAdmin", "false");
-            
-            const examCodeVal = (currentUserDoc.courses && currentUserDoc.courses.includes("Mathematics")) 
-                ? "AE-S-MATH" 
-                : (currentUserDoc.courses && currentUserDoc.courses.includes("Physics"))
-                    ? "AE-S-PHYS"
-                    : "AE-W-AEW";
+
+            const courses = currentUserDoc.courses || [];
+            let examCodeVal = "AE-W-AEW";
+            if (courses.includes("Mathematics")) examCodeVal = "AE-S-MATH";
+            else if (courses.includes("Physics")) examCodeVal = "AE-S-PHYS";
             sessionStorage.setItem("examCode", examCodeVal);
 
             window.location.href = "exam-session.html";
