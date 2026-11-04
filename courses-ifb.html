@@ -2,14 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Prospectus | Institute of Board</title>
-<meta name="description" content="View the 2027 Prospectus for the Institute of Board. Explore the Mathematics and Web Development programmes.">
-
-<!-- INLINE LOGO FAVICON (Triangle) -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L92 85 H8 L50 10 Z' fill='%237A1F2B'/%3E%3Cpath d='M50 32 L77 78 H23 L50 32 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
-
-<!-- MathJax for rendering math formulas if needed -->
+<title>IFB Prospectus 2027</title>
 <script>
   window.MathJax = {
     tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']], packages: {'[+]': ['ams']} },
@@ -17,386 +10,371 @@
   };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-
-<script src="https://unpkg.com/lucide@latest"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
-:root {
-    --white: #FFF;
-    --black: #111;
-    --gray: #666;
-    --silver: #E2E8F0;
-    --maroon: #7A1F2B;
-    --maroon-hover: #5A1620;
-    --success: #15803D;
-    --bg: #F8FAFC;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body {
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: clip;
-    font-family: 'Inter', sans-serif;
-    background: var(--white);
-    color: var(--black);
-    line-height: 1.6;
-    opacity: 0;
-    animation: fadeIn .4s ease forwards;
-}
-@keyframes fadeIn { to { opacity: 1; } }
-a { text-decoration: none; color: inherit; }
-ul { list-style: none; }
-svg.lucide { stroke-width: 2.25; }
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
 
-/* HEADER */
-.header {
-    position: sticky; top: 0; z-index: 1000;
-    background: rgba(255,255,255,.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--silver);
-    height: 72px;
-}
-.nav-container {
-    width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 24px;
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16pt; line-height: 1.6; color: #000;
+    background: #F8FAFC; padding-top: 60px;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .control-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px;
+    background: #FFF; border-bottom: 2px solid #7A1F2B;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 24px; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-family: 'Inter', sans-serif;
+  }
+  .control-bar .brand { font-size: 20px; font-weight: 900; color: #7A1F2B; display: flex; align-items: center; gap: 8px; }
+  .control-actions { display: flex; gap: 12px; }
+  .btn-nav {
+    padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 14px;
+    text-decoration: none; cursor: pointer; border: 1.5px solid #E2E8F0;
+    color: #111; background: #FFF; transition: 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-nav:hover { border-color: #111; }
+  .btn-nav.primary { background: #7A1F2B; color: #FFF; border-color: #7A1F2B; }
+  .btn-nav.primary:hover { background: #5A1620; }
+
+  .page {
+    width: 210mm; height: 297mm; padding: 15mm 20mm 0 20mm;
+    margin: 15px auto; position: relative; background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden;
+    display: flex; flex-direction: column; page-break-after: always;
+  }
+
+  @media print {
+    body { background: white; padding-top: 0; }
+    .page { margin: 0; box-shadow: none; page-break-inside: avoid; }
+    .control-bar { display: none !important; }
+    .footer { position: fixed; bottom: 10mm; }
+  }
+
+  .bg-watermark {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 450px; height: 450px; opacity: 0.03; pointer-events: none; z-index: 0;
+  }
+  .bg-red-patch {
+    position: absolute; border-radius: 50%; pointer-events: none; z-index: 0;
+    background: rgba(122, 31, 43, 0.05); filter: blur(30px);
+  }
+  .patch-1 { width: 400px; height: 400px; top: -5%; right: -10%; }
+  .patch-2 { width: 350px; height: 350px; bottom: 0%; left: -10%; }
+
+  .content-wrapper {
+    position: relative; z-index: 1; display: flex; flex-direction: column;
+    flex: 1 1 auto; min-height: 0;
+    max-height: calc(297mm - 15mm - 40mm);
+    overflow: hidden;
+  }
+
+  .header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 25px; flex-shrink: 0;
+  }
+  .header-left {
+    width: 30%; text-align: left; color: #000;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 14pt; font-weight: normal; font-style: italic;
+  }
+  .header-center { width: 40%; text-align: center; }
+  .header-center .page-num {
+    display: block; font-family: Arial, sans-serif;
+    font-size: 14pt; margin-bottom: 2px; color: #000; font-weight: bold;
+  }
+  .header-center .confidential {
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic; font-weight: bold; color: #000; font-size: 12pt;
+  }
+  .header-right {
+    width: 30%; text-align: right; color: #000;
+    font-family: Arial, sans-serif; font-size: 16pt; font-weight: 900;
+  }
+
+  .footer {
+    position: absolute; bottom: 10mm; left: 20mm; right: 20mm;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    z-index: 2; font-size: 12pt; font-family: Arial, sans-serif; height: 15mm;
+  }
+  .footer-left { display: flex; align-items: center; gap: 10px; }
+  .footer-qr { display: inline-block; width: 40px; height: 40px; }
+  .footer-qr svg { display: block; width: 40px; height: 40px; filter: grayscale(100%); }
+  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
+  .footer-brand .name { font-size: 11pt; font-weight: 900; letter-spacing: 1px; color: #000; }
+  .footer-brand .tag { font-size: 9pt; color: #000; }
+  .footer-right { color: #000; font-style: italic;}
+
+  /* PROSPECTUS SPECIFIC STYLES */
+  .prospectus-title-block {
+    margin-bottom: 20px;
+    border-left: 6px solid #7A1F2B;
+    padding-left: 15px;
+    flex-shrink: 0;
+  }
+  .prospectus-title-block .title {
+    font-family: Arial, sans-serif; font-size: 26pt; font-weight: 900; color: #7A1F2B;
+    line-height: 1.1;
+  }
+  .prospectus-title-block .sub {
+    font-family: Arial, sans-serif; font-size: 12pt; color: #555; letter-spacing: 1px; margin-top: 5px;
+    text-transform: uppercase;
+  }
+
+  .legal-banner {
+    background: #FFF5F6;
+    border: 1.5px solid #7A1F2B;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+    color: #333;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    flex-shrink: 0;
+  }
+  .legal-banner svg {
+    width: 20px; height: 20px; color: #7A1F2B; flex-shrink: 0; margin-top: 2px;
+  }
+  .legal-banner strong { color: #7A1F2B; }
+
+  .course-box {
+    border: 1.5px solid #000;
+    background: #FFF;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+  }
+  .course-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
-    box-sizing: border-box;
-}
-.brand { display: flex; align-items: center; gap: 12px; }
-.brand-logo { font-size: 32px; font-weight: 900; color: var(--maroon); line-height: .8; }
-.brand-text h1 { font-size: 18px; font-weight: 900; letter-spacing: -.5px; }
-
-/* BACK BUTTON */
-.btn-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent;
-    border: none;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    color: var(--gray);
-    font-family: inherit;
-    transition: 0.2s;
-}
-.btn-back:hover { color: var(--maroon); }
-.btn-back i { width: 16px; height: 16px; }
-
-/* HERO SECTION */
-.hero-prospectus {
-    background-color: var(--maroon);
-    color: var(--white);
-    padding: 60px 24px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-.hero-prospectus::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 20px;
-    background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px);
-}
-.hero-prospectus h1 { font-size: 42px; font-weight: 900; letter-spacing: -1px; margin-bottom: 16px; }
-.hero-prospectus p { font-size: 18px; color: rgba(255,255,255,0.85); max-width: 600px; margin: 0 auto; }
-
-/* MAIN CONTENT LAYOUT */
-.prospectus-container {
-    width: 100%;
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 24px;
+    border-bottom: 2px solid #7A1F2B;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  .course-header h2 {
+    font-family: Arial, sans-serif;
+    font-size: 18pt;
+    color: #7A1F2B;
+    font-weight: 900;
+    margin: 0;
+  }
+  .course-header .code {
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+    font-weight: bold;
+    background: #7A1F2B;
+    color: #FFF;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  .course-overview {
+    font-size: 13pt;
+    margin-bottom: 15px;
+    line-height: 1.5;
+  }
+  .course-modules {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
-}
-
-/* NOTICE BOX */
-.legal-notice {
-    background: #FFF5F6;
-    border: 1px solid var(--maroon);
-    border-left: 6px solid var(--maroon);
-    padding: 20px 24px;
-    border-radius: 8px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  .module-item {
     display: flex;
-    gap: 16px;
+    gap: 8px;
+    font-size: 12pt;
     align-items: flex-start;
-}
-.legal-notice i { width: 24px; height: 24px; color: var(--maroon); flex-shrink: 0; margin-top: 2px; }
-.legal-notice p { font-size: 14px; color: #333; margin: 0; }
-.legal-notice strong { color: var(--maroon); }
-
-/* COURSE DETAIL CARD */
-.course-detail {
-    background: var(--white);
-    border: 1px solid var(--silver);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-}
-.course-detail-header {
-    background: var(--bg);
-    padding: 30px;
-    border-bottom: 1px solid var(--silver);
+  }
+  .module-item::before {
+    content: '▪';
+    color: #7A1F2B;
+    font-weight: bold;
+  }
+  .course-meta {
     display: flex;
-    align-items: center;
     gap: 20px;
-}
-.course-detail-icon {
-    width: 60px; height: 60px;
-    background: var(--maroon); color: var(--white);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-}
-.course-detail-icon i { width: 30px; height: 30px; }
-.course-detail-header h2 { font-size: 28px; font-weight: 900; color: var(--maroon); margin-bottom: 4px; }
-.course-detail-header span { font-size: 13px; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+    background: #F8FAFC;
+    padding: 10px 15px;
+    border: 1px solid #E2E8F0;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .meta-item { display: flex; flex-direction: column; }
+  .meta-item span {
+    font-size: 9pt; color: #666; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;
+  }
+  .meta-item strong {
+    font-size: 12pt; color: #111; font-weight: 900;
+  }
+  .meta-item strong.free { color: #15803D; }
 
-.course-detail-body { padding: 30px; }
-.course-detail-body h3 {
-    font-size: 18px; font-weight: 900; margin-bottom: 12px;
-    color: var(--black); border-bottom: 2px solid var(--silver); padding-bottom: 8px;
-}
-.course-detail-body p { font-size: 15px; color: var(--gray); margin-bottom: 24px; line-height: 1.7; }
-
-.module-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
-    margin-bottom: 30px;
-}
-.module-item {
-    display: flex; gap: 12px; align-items: flex-start;
-    background: var(--bg); padding: 16px; border-radius: 8px;
-}
-.module-item i { width: 18px; height: 18px; color: var(--success); flex-shrink: 0; margin-top: 3px; }
-.module-item div h4 { font-size: 15px; font-weight: 800; margin-bottom: 4px; color: var(--black); }
-.module-item div p { font-size: 13px; margin: 0; line-height: 1.4; }
-
-.course-meta {
-    display: flex; flex-wrap: wrap; gap: 24px;
-    background: var(--bg); padding: 20px; border-radius: 8px;
-    border: 1px solid var(--silver);
-}
-.meta-item { display: flex; flex-direction: column; gap: 4px; }
-.meta-item span { font-size: 11px; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
-.meta-item strong { font-size: 16px; color: var(--black); font-weight: 900; }
-.meta-item strong.success { color: var(--success); }
-
-/* CTA FOOTER */
-.prospectus-cta {
-    background: var(--bg);
-    border: 1px solid var(--silver);
-    border-radius: 16px;
-    padding: 40px;
+  .cta-box {
+    background: #7A1F2B;
+    color: #FFF;
+    padding: 20px;
     text-align: center;
-    margin-top: 20px;
-}
-.prospectus-cta h2 { font-size: 26px; font-weight: 900; margin-bottom: 12px; }
-.prospectus-cta p { font-size: 15px; color: var(--gray); margin-bottom: 24px; }
-.btn-apply-large {
-    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    background: var(--maroon); color: var(--white);
-    padding: 16px 40px; border-radius: 8px;
-    font-size: 16px; font-weight: 800; transition: 0.2s;
-}
-.btn-apply-large:hover { background: var(--maroon-hover); }
-.btn-apply-large i { width: 18px; height: 18px; }
-
-/* FOOTER */
-.footer { background: #FAFAFA; padding: 40px 0; border-top: 1px solid var(--silver); text-align: center; }
-.footer p { font-size: 13px; color: var(--gray); }
-
-@media (max-width: 768px) {
-    .hero-prospectus h1 { font-size: 32px; }
-    .course-detail-header { flex-direction: column; text-align: center; gap: 12px; }
-    .prospectus-cta { padding: 30px 20px; }
-}
+    border-radius: 8px;
+    margin-top: auto;
+    flex-shrink: 0;
+  }
+  .cta-box h3 {
+    font-family: Arial, sans-serif; font-size: 18pt; margin-bottom: 8px; font-weight: 900;
+  }
+  .cta-box p {
+    font-family: Arial, sans-serif; font-size: 12pt; margin-bottom: 15px; opacity: 0.9;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: #FFF;
+    color: #7A1F2B;
+    font-family: Arial, sans-serif;
+    font-weight: 900;
+    font-size: 14pt;
+    padding: 10px 30px;
+    text-decoration: none;
+    border-radius: 4px;
+  }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
-    <div class="nav-container">
-        <a href="index.html" class="brand">
-            <div class="brand-logo">∆</div>
-            <div class="brand-text"><h1>Institute of Board</h1></div>
-        </a>
-        <a href="index.html" class="btn-back">
-            <i data-lucide="arrow-left"></i> Back to Home
-        </a>
+<div class="control-bar">
+    <div class="brand"><span>∆</span> IFB Prospectus</div>
+    <div class="control-actions" id="navActions">
+      <a href="index.html" class="btn-nav">Back to Home</a>
+      <button onclick="window.print()" class="btn-nav primary">Download / Print PDF</button>
     </div>
-</header>
-
-<!-- HERO -->
-<section class="hero-prospectus">
-    <h1>Academic Prospectus 2027</h1>
-    <p>Explore the rigorous, fee-free programmes offered by the Institute of Board.</p>
-</section>
-
-<!-- CONTENT -->
-<div class="prospectus-container">
-    
-    <!-- LEGAL NOTICE -->
-    <div class="legal-notice">
-        <i data-lucide="shield-alert"></i>
-        <p><strong>Non-Accredited Status:</strong> The Institute of Board is an independent, non-accredited academic institution. We are not registered with the DHET or Umalusi. Our programmes focus purely on rigorous technical and academic mastery, portfolio building, and university preparation.</p>
-    </div>
-
-    <!-- MATHEMATICS COURSE -->
-    <div class="course-detail">
-        <div class="course-detail-header">
-            <div class="course-detail-icon"><i data-lucide="sigma"></i></div>
-            <div>
-                <h2>IFB— Mathematics</h2>
-                <span>Programme Code: IFB-MATH</span>
-            </div>
-        </div>
-        <div class="course-detail-body">
-            <h3>Programme Overview</h3>
-            <p>This is a high-cognitive curriculum designed for students who want to master mathematics beyond the standard high school level. It requires absolute focus and a willingness to engage with complex problem-solving. Entry is assessed entirely via the AE Paper.</p>
-            
-            <h3>Core Modules</h3>
-            <div class="module-list">
-                <div class="module-item">
-                    <i data-lucide="check-circle-2"></i>
-                    <div>
-                        <h4>Advanced Algebra & Functions</h4>
-                        <p>Equations, inequalities, polynomials, and the behavior of functions.</p>
-                    </div>
-                </div>
-                <div class="module-item">
-                    <i data-lucide="check-circle-2"></i>
-                    <div>
-                        <h4>Calculus</h4>
-                        <p>Limits, derivatives, integration, and optimization.</p>
-                    </div>
-                </div>
-                <div class="module-item">
-                    <i data-lucide="check-circle-2"></i>
-                    <div>
-                        <h4>Trigonometry & Geometry</h4>
-                        <p>Identities, solving triangles, Euclidean geometry, and analytical geometry.</p>
-                    </div>
-                </div>
-                <div class="module-item">
-                    <i data-lucide="check-circle-2"></i>
-                    <div>
-                        <h4>Finance & Probability</h4>
-                        <p>Compound interest, annuities, and statistical probability models.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="course-meta">
-                <div class="meta-item">
-                    <span>Duration</span>
-                    <strong>1 Year</strong>
-                </div>
-                <div class="meta-item">
-                    <span>Admission Requirement</span>
-                    <strong>AE Paper (100 Marks)</strong>
-                </div>
-                <div class="meta-item">
-                    <span>Tuition</span>
-                    <strong class="success">Fee-Free</strong>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- WEB DEVELOPMENT COURSE -->
-    <div class="course-detail">
-        <div class="course-detail-header">
-            <div class="course-detail-icon"><i data-lucide="code"></i></div>
-            <div>
-                <h2>IFB— Web Development</h2>
-                <span>Programme Code: IFB-WEB</span>
-            </div>
-        </div>
-        <div class="course-detail-body">
-            <h3>Programme Overview</h3>
-            <p>A practical, project-based programme focusing on back-end web development and website management. You will learn how to build, deploy, and manage real web applications, moving beyond theory into practical execution.</p>
-            
-            <h3>Core Modules</h3>
-            <div class="module-list">
-                <div class="module-item">
-                    <i data-lucide="check-circle-2"></i>
-                    <div>
-                        <h4>Back-End Development</h4>
-                        <p>Server-side logic, databases, and handling data securely.</p>
-                    </div>
-                </div>
-                <div class="module-item">
-                    <i data-lucide="check-circle-2"></i>
-                    <div>
-                        <h4>API Handling</h4>
-                        <p>Connecting applications to third-party services and managing data flow.</p>
-                    </div>
-                </div>
-                <div class="module-item">
-                    <i data-lucide="check-circle-2"></i>
-                    <div>
-                        <h4>Design & Deployment</h4>
-                        <p>UI design principles, deploying to production servers, and website management.</p>
-                    </div>
-                </div>
-                <div class="module-item">
-                    <i data-lucide="check-circle-2"></i>
-                    <div>
-                        <h4>Data Collection</h4>
-                        <p>Understanding how to structure, store, and retrieve data effectively.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="course-meta">
-                <div class="meta-item">
-                    <span>Duration</span>
-                    <strong>1 Year</strong>
-                </div>
-                <div class="meta-item">
-                    <span>Admission Requirement</span>
-                    <strong>AE Paper (100 Marks)</strong>
-                </div>
-                <div class="meta-item">
-                    <span>Tuition</span>
-                    <strong class="success">Fee-Free</strong>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CALL TO ACTION -->
-    <div class="prospectus-cta">
-        <h2>Ready to apply?</h2>
-        <p>Complete your application to register as a student, then sit the AE Paper.</p>
-        <a href="admission.html" class="btn-apply-large">
-            <i data-lucide="user-plus"></i> Start Application
-        </a>
-    </div>
-
 </div>
 
-<!-- FOOTER -->
-<footer class="footer">
-    <p>&copy; 2026—2028 Institute of Board. Independent, non-accredited. Not affiliated with DHET or Umalusi.</p>
-</footer>
+<!-- ==================== PAGE 1: PROSPECTUS COVER ==================== -->
+<div class="page">
+  <div class="bg-red-patch patch-1"></div>
+  <div class="bg-red-patch patch-2"></div>
+  
+  <div class="bg-watermark" style="width: 600px; height: 600px; opacity: 0.04;">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+        <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    </svg>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Prospectus</div>
+      <div class="header-center">
+        <span class="page-num">1</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="prospectus-title-block">
+      <div class="title">ACADEMIC PROSPECTUS</div>
+      <div class="sub">Institute of Board (IFB)</div>
+    </div>
+
+    <div class="legal-banner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      <div>
+        <strong>Non-Accredited Institution:</strong> The Institute of Board is an independent, non-accredited academic institution. We are not registered with the DHET or Umalusi. Our programmes focus purely on rigorous technical and academic mastery, portfolio building, and university preparation.
+      </div>
+    </div>
+
+    <div class="course-box">
+      <div class="course-header">
+        <h2>IFB— Mathematics</h2>
+        <span class="code">IFB-MATH</span>
+      </div>
+      <div class="course-overview">
+        This is a high-cognitive curriculum designed for students who want to master mathematics beyond the standard high school level. It requires absolute focus and a willingness to engage with complex problem-solving. Entry is assessed entirely via the AE Paper.
+      </div>
+      <div class="course-modules">
+        <div class="module-item">Advanced Algebra & Functions</div>
+        <div class="module-item">Calculus (Derivatives & Integrals)</div>
+        <div class="module-item">Trigonometry & Geometry</div>
+        <div class="module-item">Finance & Probability</div>
+      </div>
+      <div class="course-meta">
+        <div class="meta-item"><span>Duration</span><strong>1 Year</strong></div>
+        <div class="meta-item"><span>Admission</span><strong>AE Paper (100 Marks)</strong></div>
+        <div class="meta-item"><span>Tuition</span><strong class="free">Fee-Free</strong></div>
+      </div>
+    </div>
+
+    <div class="course-box">
+      <div class="course-header">
+        <h2>IFB— Web Development</h2>
+        <span class="code">IFB-WEB</span>
+      </div>
+      <div class="course-overview">
+        A practical, project-based programme focusing on back-end web development and website management. You will learn how to build, deploy, and manage real web applications, moving beyond theory into practical execution.
+      </div>
+      <div class="course-modules">
+        <div class="module-item">Back-End Development</div>
+        <div class="module-item">API Handling & Data</div>
+        <div class="module-item">Design & Deployment</div>
+        <div class="module-item">Website Management</div>
+      </div>
+      <div class="course-meta">
+        <div class="meta-item"><span>Duration</span><strong>1 Year</strong></div>
+        <div class="meta-item"><span>Admission</span><strong>AE Paper (100 Marks)</strong></div>
+        <div class="meta-item"><span>Tuition</span><strong class="free">Fee-Free</strong></div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h3>Ready to Apply?</h3>
+      <p>Complete your application to register as a student, then sit the AE Paper.</p>
+      <a href="admission.html" class="cta-btn">Start Application</a>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb-nmaz.onrender.com"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">© 2027 Institute of Board</div>
+  </div>
+</div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.lucide) {
-        lucide.createIcons();
-    }
-});
+(function () {
+  function makeQRCodes() {
+    if (typeof qrcode !== 'function') return;
+    document.querySelectorAll('.footer-qr').forEach(function (el) {
+      try {
+        var qr = qrcode(0, 'M');
+        qr.addData(el.dataset.qr || 'https://ifb-nmaz.onrender.com');
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+      } catch (e) { console.warn(e); }
+    });
+  }
+
+  function ready(fn){ if (document.readyState!=="loading") fn(); else document.addEventListener("DOMContentLoaded", fn); }
+  
+  ready(function () {
+    var tries = 0;
+    (function attempt() {
+      tries++;
+      var okQ = typeof qrcode === "function";
+      if (okQ) makeQRCodes();
+      if (!okQ && tries < 40) setTimeout(attempt, 150);
+    })();
+  });
+  
+  window.addEventListener("load", makeQRCodes);
+})();
 </script>
 </body>
 </html>
