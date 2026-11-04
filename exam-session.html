@@ -9,21 +9,16 @@
 
 <!-- Libraries -->
 <script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
-<script>
-  window.MathJax = { tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']] }, svg: { fontCache: 'global' } };
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&family=Times+New+Roman&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
-  /* ========== BASE (MOBILE FIRST) ========== */
+  /* ========== BASE ========== */
   :root { 
     --maroon: #7A1F2B; --bg: #F8FAFC; --panel: #FFFFFF; --text: #111111; 
-    --gray: #64748B; --silver: #E2E8F0; --success: #15803D; --error: #B91C1C; 
+    --white: #FFFFFF; --gray: #64748B; --silver: #E2E8F0; 
+    --success: #15803D; --error: #B91C1C; 
   }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -33,7 +28,6 @@
   .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 16px; }
   .brand span { color: var(--maroon); font-size: 22px; }
   
-  /* Clocks */
   .clock-area { display: flex; align-items: center; gap: 12px; }
   .digital-clock { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; color: var(--maroon); background: #FFF5F6; padding: 4px 8px; border-radius: 6px; border: 1px solid #FCA5A5; }
   .analog-clock { width: 36px; height: 36px; border: 2px solid var(--maroon); border-radius: 50%; position: relative; background: white; }
@@ -46,28 +40,26 @@
   .btn:hover { background: var(--bg); }
   .btn-primary { background: var(--maroon); color: var(--white); border: none; }
   .btn-danger { border-color: var(--error); color: var(--error); }
+  .btn-success { background: var(--success); color: var(--white); border: none; }
 
   /* ========== MAIN LAYOUT ========== */
   .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
   
-  /* Mobile Dropdown */
   .mobile-nav { padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--silver); display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .mobile-nav select { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--silver); font-family: inherit; font-weight: 600; font-size: 14px; background: white; color: var(--text); }
+  .mobile-nav select { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--silver); font-family: inherit; font-weight: 600; font-size: 14px; background: white; color: var(--text); outline: none; }
   @media (min-width: 900px) { .mobile-nav { display: none; } }
 
-  /* Desktop Tabs */
   .tabs { display: none; background: var(--panel); border-bottom: 1px solid var(--silver); overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
   @media (min-width: 900px) { .tabs { display: flex; } }
   .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; font-weight: 700; font-size: 13px; color: var(--gray); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; border-bottom: 2px solid transparent; white-space: nowrap; transition: 0.2s; font-family: inherit; }
   .tab-btn.active { color: var(--maroon); border-bottom-color: var(--maroon); background: var(--bg); }
 
-  /* Content Area */
   .content-area { flex: 1; position: relative; display: flex; overflow: hidden; }
   .tab-content { display: none; width: 100%; height: 100%; position: absolute; inset: 0; overflow-y: auto; }
   .tab-content.active { display: block; }
   .doc-frame { width: 100%; height: 100%; border: none; background: #E2E8F0; }
 
-  /* ========== THE EMBEDDED ANSWER BOOK (Styled) ========== */
+  /* ========== ANSWER BOOK ========== */
   .answer-book-wrapper { padding: 12px; background: #E2E8F0; }
   .ab-page { background: white; max-width: 800px; margin: 0 auto 20px; padding: 24px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: 'Times New Roman', serif; position: relative; }
   .ab-header { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: bold; }
@@ -79,20 +71,16 @@
   .ab-box { border: 1px solid #000; padding: 6px; flex: 1; }
   .ab-box label { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: bold; text-transform: uppercase; color: var(--maroon); display: block; margin-bottom: 4px; }
   .ab-value { font-family: monospace; font-size: 14px; font-weight: bold; border-bottom: 1px dotted #000; padding-bottom: 2px; min-height: 20px; }
-  .ab-table { width: 100%; border-collapse: collapse; font-family: 'Inter', sans-serif; font-size: 10px; margin-bottom: 16px; }
-  .ab-table th, .ab-table td { border: 1px solid #000; padding: 6px; text-align: center; }
-  .ab-table th { background: var(--maroon); color: white; }
-  .ab-table td.q-col { background: #FFF5F6; font-weight: bold; }
-  
   .ab-writing-page { border: 1px solid #000; min-height: 500px; position: relative; margin-bottom: 16px; }
   .ab-writing-page .left-margin { width: 30px; border-right: 1px solid #000; position: absolute; top: 0; bottom: 0; left: 0; background: #FAFAFA; }
   .ab-writing-page .marks-col { width: 50px; border-left: 1px solid #000; position: absolute; top: 0; bottom: 0; right: 0; background: #FAFAFA; padding-top: 10px; text-align: center; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: bold; }
   .ab-writing-page .content { position: absolute; top: 0; bottom: 0; left: 30px; right: 50px; padding: 10px; }
   .ab-writing-page .scanned-img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; margin: auto; }
+  .typed-text-box { width: 100%; height: 80px; border: 1px solid var(--silver); border-radius: 4px; padding: 6px; font-family: inherit; font-size: 12px; margin-top: 10px; display: none; }
 
-  /* ========== ADMIN UI ========== */
+  /* ========== ADMIN ========== */
   .admin-container { padding: 16px; height: 100%; overflow-y: auto; background: var(--bg); }
-  .admin-grid { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 800px; margin: 0 auto; }
+  .admin-grid { display: grid; grid-template-columns: 1fr; gap: 16px; max-width: 900px; margin: 0 auto; }
   @media (min-width: 768px) { .admin-grid { grid-template-columns: 350px 1fr; } }
   .card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 16px; }
   .card h2 { font-size: 15px; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--silver); padding-bottom: 12px; }
@@ -106,7 +94,7 @@
   .status-badge { padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 10px; }
   .status-online { background: #DCFCE7; color: var(--success); }
 
-  /* ========== SCANNER UI ========== */
+  /* ========== SCANNER ========== */
   .scanner-ui { padding: 16px; display: flex; flex-direction: column; align-items: center; height: 100%; background: var(--bg); overflow-y: auto; }
   .scanner-container { width: 100%; max-width: 500px; background: white; border-radius: 16px; padding: 16px; border: 1px solid var(--silver); }
   .stage { position: relative; width: 100%; aspect-ratio: 3/4; background: #000; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
@@ -118,7 +106,6 @@
   .torch-btn.on { background: var(--maroon); border-color: var(--maroon); }
   .controls { display:flex; gap:8px; flex-wrap:wrap; margin-top: 10px; }
   .action-btn { flex:1; padding:12px; border-radius:8px; font-weight:700; cursor:pointer; border:none; font-family:inherit; font-size:13px; display: flex; align-items: center; justify-content: center; gap: 6px;}
-  .btn-primary { background:var(--maroon); color:white; }
   .btn-secondary { background:#fff; color:var(--maroon); border:2px solid var(--maroon); }
   .action-btn:disabled { opacity:0.5; cursor:not-allowed; }
   .status { margin-top: 10px; font-size: 12px; text-align: center; font-weight: 600; color: var(--gray); }
@@ -129,8 +116,6 @@
   .overlay h2 { font-size: 24px; font-weight: 900; margin-bottom: 12px; }
   .overlay p { font-size: 14px; color: var(--gray); max-width: 300px; margin-bottom: 20px; }
   .pin-input { background: var(--white); border: 2px solid var(--silver); font-size: 28px; font-family: monospace; text-align: center; letter-spacing: 6px; padding: 12px; border-radius: 12px; outline: none; width: 100%; max-width: 250px; margin-bottom: 20px; }
-
-  /* Loader */
   .loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg); position: fixed; inset: 0; z-index: 9999; transition: opacity 0.5s; }
   .loader-logo { font-size: 80px; font-weight: 900; color: var(--maroon); animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.7; } }
@@ -138,13 +123,11 @@
 </head>
 <body oncontextmenu="return false;">
 
-<!-- LOADING OVERLAY -->
 <div class="loader" id="loader">
   <div class="loader-logo">∆</div>
   <p style="margin-top: 16px; font-weight: 700; color: var(--gray); font-size: 14px;">Loading Session...</p>
 </div>
 
-<!-- HEADER -->
 <header class="header">
   <div class="brand"><span>∆</span> IFB</div>
   <div class="clock-area" id="clockArea" style="display:none;">
@@ -160,10 +143,7 @@
   </div>
 </header>
 
-<!-- MAIN -->
 <main class="main-content">
-  
-  <!-- Mobile Dropdown -->
   <div class="mobile-nav">
     <i data-lucide="menu" style="color:var(--maroon); width:20px; height:20px;"></i>
     <select id="mobileTabSelect" onchange="switchTab(this.value)">
@@ -175,7 +155,6 @@
     </select>
   </div>
 
-  <!-- Desktop Tabs -->
   <div class="tabs" id="mainTabs">
     <button class="tab-btn active" onclick="switchTab('paper')" id="tabPaper"><i data-lucide="file-text"></i> Paper</button>
     <button class="tab-btn" onclick="switchTab('answerbook')" id="tabAnswerBook"><i data-lucide="book-open"></i> Answer Book</button>
@@ -185,15 +164,12 @@
   </div>
 
   <div class="content-area">
-    <!-- PAPER -->
     <div class="tab-content active" id="viewPaper">
       <iframe class="doc-frame" id="paperFrame" src="about:blank"></iframe>
     </div>
 
-    <!-- EMBEDDED ANSWER BOOK -->
     <div class="tab-content" id="viewAnswerBook">
       <div class="answer-book-wrapper">
-        <!-- Page 1: Cover -->
         <div class="ab-page">
           <div class="ab-header"><span>INSTITUTE OF BOARD</span><span>2027</span></div>
           <div class="ab-cover-logo">
@@ -215,34 +191,14 @@
           </div>
         </div>
 
-        <!-- Page 2: Marking Grid -->
-        <div class="ab-page">
-          <div class="ab-header"><span>Answer Book</span><span>Page 2</span></div>
-          <div class="ab-title" style="font-size: 16px;">MARKING GRID</div>
-          <table class="ab-table">
-            <thead><tr><th>Q No.</th><th>Marker</th><th>Moderator</th><th>Re-Mark</th></tr></thead>
-            <tbody>
-              <tr><td class="q-col">1</td><td></td><td></td><td></td></tr>
-              <tr><td class="q-col">2</td><td></td><td></td><td></td></tr>
-              <tr><td class="q-col">3</td><td></td><td></td><td></td></tr>
-              <tr><td class="q-col">4</td><td></td><td></td><td></td></tr>
-              <tr><td class="q-col">5</td><td></td><td></td><td></td></tr>
-              <tr><td class="q-col">6</td><td></td><td></td><td></td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pages 3-10: Writing Areas -->
         <div id="abWritingPages"></div>
       </div>
     </div>
 
-    <!-- GUIDELINES -->
     <div class="tab-content" id="viewGuidelines">
       <iframe class="doc-frame" id="guidelinesFrame" src="about:blank"></iframe>
     </div>
 
-    <!-- SCANNER -->
     <div class="tab-content" id="viewScanner">
       <div class="scanner-ui">
         <div class="scanner-container">
@@ -260,12 +216,15 @@
             <button class="action-btn btn-secondary" id="btnRetake" disabled><i data-lucide="refresh-cw"></i> Retake</button>
             <button class="action-btn btn-secondary" id="btnUpload" disabled><i data-lucide="upload-cloud"></i> Upload</button>
           </div>
+          <div style="margin-top: 12px;">
+             <label style="font-size:12px; font-weight:700; color:var(--gray);">Bad Handwriting? Type answer here for AI:</label>
+             <textarea id="typedText" class="typed-text-box" placeholder="Type your answer here if your handwriting is hard to read..."></textarea>
+          </div>
           <div class="status" id="status">Ready to scan.</div>
         </div>
       </div>
     </div>
 
-    <!-- ADMIN PANEL -->
     <div class="tab-content" id="viewAdmin">
       <div class="admin-container">
         <div class="admin-grid">
@@ -280,10 +239,10 @@
             <div id="setupStatus" style="margin-top: 8px; font-size: 12px; font-weight: 700; text-align: center; color: var(--gray);"></div>
           </div>
           <div class="card">
-            <h2><i data-lucide="activity"></i> Live Monitor</h2>
+            <h2><i data-lucide="activity"></i> Live Monitor <button class="btn" style="margin-left:auto; padding: 4px 8px; font-size:11px;" onclick="refreshMonitor()"><i data-lucide="refresh-cw" style="width:12px; height:12px;"></i> Refresh</button></h2>
             <div class="table-wrap">
               <table><thead><tr><th>Exam No</th><th>Status</th><th>Tabs</th></tr></thead>
-              <tbody id="monitorTable"><tr><td colspan="3" style="text-align:center;padding:20px;">Waiting...</td></tr></tbody></table>
+              <tbody id="monitorTable"><tr><td colspan="3" style="text-align:center;padding:20px;">Click Refresh...</td></tr></tbody></table>
             </div>
           </div>
         </div>
@@ -292,7 +251,6 @@
   </div>
 </main>
 
-<!-- PIN OVERLAY -->
 <div class="overlay" id="pinOverlay">
   <div style="background: var(--panel); padding: 24px; border-radius: 24px; border: 1px solid var(--silver);">
     <i data-lucide="shield-lock" style="width: 40px; height: 40px; color: var(--maroon); margin-bottom: 12px;"></i>
@@ -304,7 +262,6 @@
   </div>
 </div>
 
-<!-- TAB WARNING -->
 <div class="overlay" id="tabWarning">
   <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: var(--error); margin-bottom: 12px;"></i>
   <h2 style="color: var(--error); font-size: 20px;">Tab Switch Detected</h2>
@@ -315,27 +272,30 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query, orderBy, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, query, orderBy, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
   const ADMIN_EMAIL = "n1nathaniel971@gmail.com";
+  
+  const CLOUDINARY_CLOUD_NAME = "s6otjgim";
+  const CLOUDINARY_PRESET = "students_ifb_2027";
 
   let currentUser = null, studentId = null, examNumber = null, securityCode = null;
   let currentSessionId = null, examPin = null, examDurationMins = 120;
-  let sessionStartTime = null, timerInterval = null, unsubMonitor = null;
-  
-  let stream = null, pendingBlob = null, cvReady = false;
+  let sessionStartTime = null, timerInterval = null, endTime = null;
+  let stream = null, pendingBlob = null, pendingTypedText = "";
   let torchOn = false;
+  let lastTabSwitchLog = 0;
+  let scriptCount = 0;
 
   function refreshIcons() { if (window.lucide) { try { lucide.createIcons(); } catch(e) {} } }
 
   const urlParams = new URLSearchParams(window.location.search);
   currentSessionId = urlParams.get('session');
 
-  // 1. Auth Check
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = "index.html"; return; }
     currentUser = user;
@@ -343,7 +303,8 @@
     if (user.email === ADMIN_EMAIL) {
       document.getElementById('tabAdmin').style.display = 'flex';
       document.getElementById('optAdmin').style.display = 'block';
-      initMonitor();
+      document.getElementById('pinOverlay').classList.remove('active');
+      document.getElementById('clockArea').style.display = 'flex';
       if (currentSessionId) await loadSessionData(currentSessionId, true);
     } else {
       await initStudentSession(user);
@@ -353,7 +314,6 @@
     refreshIcons();
   });
 
-  // 2. Generate Embedded Answer Book Pages
   function generateAnswerBookPages() {
     const container = document.getElementById('abWritingPages');
     container.innerHTML = '';
@@ -366,13 +326,13 @@
             <div class="content"><img class="scanned-img" id="img-page-${i}" style="display:none;"></div>
             <div class="marks-col">Marks</div>
           </div>
+          <textarea class="typed-text-box" id="text-page-${i}" style="display:none;" readonly></textarea>
         </div>
       `;
     }
   }
   generateAnswerBookPages();
 
-  // 3. Admin Functions
   window.createSession = async function() {
     const qFile = document.getElementById('qFile').files[0];
     const gFile = document.getElementById('gFile').files[0];
@@ -395,7 +355,8 @@
       await setDoc(doc(db, "examSessions", sessionId), {
         sessionId, title, examCode: pin, 
         questionPaperHtml: qHtml, guidelinesHtml: gHtml,
-        durationMinutes: duration, active: true, createdAt: serverTimestamp()
+        durationMinutes: duration, active: true, createdAt: serverTimestamp(),
+        sequenceCounter: 0
       });
 
       await setDoc(doc(db, "config", "examSettings"), { activeSessionId: sessionId }, { merge: true });
@@ -404,13 +365,15 @@
     } catch (error) { statusEl.innerText = "Error: " + error.message; btn.disabled = false; }
   };
 
-  function initMonitor() {
-    if (unsubMonitor) unsubMonitor();
-    const q = query(collection(db, "examLogs"), orderBy("lastActive", "desc"));
-    unsubMonitor = onSnapshot(q, (snapshot) => {
-      const tbody = document.getElementById('monitorTable');
+  window.refreshMonitor = async function() {
+    const tbody = document.getElementById('monitorTable');
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Fetching...</td></tr>';
+    try {
+      const q = query(collection(db, "examLogs"), orderBy("lastActive", "desc"));
+      const snapshot = await getDocs(q);
       tbody.innerHTML = '';
-      if (snapshot.empty) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;">Waiting...</td></tr>'; return; }
+      if (snapshot.empty) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;">No students yet.</td></tr>'; return; }
+      
       snapshot.forEach((doc) => {
         const data = doc.data();
         const tabCount = data.tabSwitches ? data.tabSwitches.length : 0;
@@ -423,15 +386,16 @@
         `;
         tbody.appendChild(tr);
       });
-    });
-  }
+    } catch(e) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:red;">Error loading.</td></tr>'; }
+  };
 
-  // 4. Student Functions
   async function initStudentSession(user) {
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       const data = userDoc.data();
-      studentId = data.studentId; examNumber = data.examNumber; securityCode = data.securityCode || "ABC123";
+      studentId = data.studentId || user.uid; 
+      examNumber = data.examNumber || "UNKNOWN"; 
+      securityCode = data.securityCode || "ABC123";
     }
 
     if (!currentSessionId) {
@@ -447,13 +411,32 @@
     const sessionDoc = await getDoc(doc(db, "examSessions", sessionId));
     if (!sessionDoc.exists()) return;
     const sd = sessionDoc.data();
-    examPin = sd.examCode; examDurationMins = sd.durationMinutes || 120;
+    
+    examPin = sd.examCode; 
+    examDurationMins = sd.durationMinutes || 120;
+    
+    // Assign sequence number via transaction
+    if (!isAdmin && studentId) {
+      const logRef = doc(db, "examLogs", studentId);
+      const logSnap = await getDoc(logRef);
+      if (!logSnap.exists() || !logSnap.data().sequenceNumber) {
+         // Simple fallback: increment session counter
+         const sessionRef = doc(db, "examSessions", sessionId);
+         const sessionSnap = await getDoc(sessionRef);
+         const currentSeq = (sessionSnap.data().sequenceCounter || 0) + 1;
+         await setDoc(sessionRef, { sequenceCounter: currentSeq }, { merge: true });
+         await setDoc(logRef, { sequenceNumber: currentSeq }, { merge: true });
+         scriptCount = 0;
+      } else {
+         scriptCount = logSnap.data().scripts ? logSnap.data().scripts.length : 0;
+      }
+    }
 
     if (isAdmin) {
-      document.getElementById('pinOverlay').classList.remove('active');
       document.getElementById('clockArea').style.display = 'flex';
-      renderContent(sd);
-      startTimer();
+      if (sd.questionPaperHtml) document.getElementById('paperFrame').srcdoc = DOMPurify.sanitize(sd.questionPaperHtml, { WHOLE_DOCUMENT: true });
+      if (sd.guidelinesHtml) document.getElementById('guidelinesFrame').srcdoc = DOMPurify.sanitize(sd.guidelinesHtml, { WHOLE_DOCUMENT: true });
+      startTimer(sd.durationMinutes || 120);
     } else {
       window._pendingHtml = sd;
     }
@@ -464,58 +447,56 @@
     if (entered === examPin) {
       document.getElementById('pinOverlay').classList.remove('active');
       document.getElementById('clockArea').style.display = 'flex';
-      renderContent(window._pendingHtml);
-      startTimer();
-      logEvent('login', {});
+      
+      const sd = window._pendingHtml;
+      if (sd.questionPaperHtml) document.getElementById('paperFrame').srcdoc = DOMPurify.sanitize(sd.questionPaperHtml, { WHOLE_DOCUMENT: true });
+      if (sd.guidelinesHtml) document.getElementById('guidelinesFrame').srcdoc = DOMPurify.sanitize(sd.guidelinesHtml, { WHOLE_DOCUMENT: true });
+      
+      document.getElementById('abStudentId').innerText = studentId;
+      document.getElementById('abSecCode').innerText = securityCode;
+      document.getElementById('abStudentName').innerText = currentUser.displayName || "Student";
+      document.getElementById('abExamNum').innerText = examNumber;
+      
+      startTimer(sd.durationMinutes || 120);
+      logEvent('login');
     } else {
       document.getElementById('pinError').style.display = 'block';
       document.getElementById('pinInput').value = '';
     }
   };
 
-  function renderContent(sd) {
-    if (sd.questionPaperHtml) document.getElementById('paperFrame').srcdoc = sd.questionPaperHtml;
-    if (sd.guidelinesHtml) document.getElementById('guidelinesFrame').srcdoc = sd.guidelinesHtml;
-    
-    // Autofill Embedded Answer Book
-    if (studentId) {
-      document.getElementById('abStudentId').innerText = studentId;
-      document.getElementById('abSecCode').innerText = securityCode;
-      document.getElementById('abStudentName').innerText = currentUser.displayName || "Student";
-      document.getElementById('abExamNum').innerText = examNumber;
-      document.getElementById('abSeqNum').innerText = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-    }
-  }
-
-  // 5. Timer & Clocks
-  function startTimer() {
-    sessionStartTime = Date.now();
+  function startTimer(durationMins) {
+    if (timerInterval) clearInterval(timerInterval);
+    endTime = Date.now() + (durationMins * 60000);
     updateClocks();
-    setInterval(updateClocks, 1000);
+    timerInterval = setInterval(updateClocks, 1000);
   }
 
   function updateClocks() {
     const now = new Date();
-    
-    // Digital Clock
-    const h = String(now.getHours()).padStart(2, '0');
-    const m = String(now.getMinutes()).padStart(2, '0');
-    const s = String(now.getSeconds()).padStart(2, '0');
-    document.getElementById('digitalClock').innerText = `${h}:${m}:${s}`;
+    const remaining = endTime - now.getTime();
 
-    // Analog Clock
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById('digitalClock').innerText = "00:00:00";
+      alert("Time is up! The exam has locked.");
+      document.getElementById('btnOpen').disabled = true;
+      return;
+    }
+
+    const h = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((remaining / (1000 * 60)) % 60);
+    const s = Math.floor((remaining / 1000) % 60);
+    document.getElementById('digitalClock').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
     const ah = now.getHours() % 12;
     const am = now.getMinutes();
     const as = now.getSeconds();
-    const hDeg = (ah * 30) + (am * 0.5);
-    const mDeg = (am * 6) + (as * 0.1);
-    const sDeg = as * 6;
-    document.getElementById('hourHand').style.transform = `rotate(${hDeg}deg)`;
-    document.getElementById('minuteHand').style.transform = `rotate(${mDeg}deg)`;
-    document.getElementById('secondHand').style.transform = `rotate(${sDeg}deg)`;
+    document.getElementById('hourHand').style.transform = `rotate(${(ah * 30) + (am * 0.5)}deg)`;
+    document.getElementById('minuteHand').style.transform = `rotate(${(am * 6) + (as * 0.1)}deg)`;
+    document.getElementById('secondHand').style.transform = `rotate(${as * 6}deg)`;
   }
 
-  // 6. Navigation
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -525,7 +506,7 @@
     document.getElementById('mobileTabSelect').value = tab;
   };
 
-  // 7. Scanner (Fixed with Torch)
+  // SCANNER LOGIC
   function initScanner() {
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
@@ -537,6 +518,7 @@
     const btnTorch = document.getElementById('btnTorch');
     const statusEl = document.getElementById('status');
     const framingGuide = document.getElementById('framingGuide');
+    const typedTextBox = document.getElementById('typedText');
 
     function setStatus(msg, type = '') { statusEl.textContent = msg; statusEl.style.color = type === 'error' ? 'var(--error)' : (type === 'success' ? 'var(--success)' : 'var(--gray)'); }
 
@@ -552,6 +534,7 @@
         if (caps.torch) { btnTorch.style.display = 'flex'; } else { btnTorch.style.display = 'none'; }
 
         btnOpen.disabled = true; btnCapture.disabled = false; btnRetake.disabled = true; btnUpload.disabled = true;
+        typedTextBox.style.display = 'none';
         setStatus('Position A4 page inside the frame.');
       } catch (err) { setStatus('Camera error: ' + err.message, 'error'); }
     });
@@ -567,6 +550,7 @@
     });
 
     btnCapture.addEventListener('click', async () => {
+      // 1. Draw to canvas
       const w = video.videoWidth, h = video.videoHeight;
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(video, 0, 0, w, h);
@@ -575,7 +559,7 @@
       video.classList.remove('active'); framingGuide.classList.remove('visible');
       btnTorch.style.display = 'none'; torchOn = false; btnTorch.classList.remove('on');
 
-      // Binarization
+      // 2. Binarization (Black & White)
       const ctx = canvas.getContext('2d');
       const imgData = ctx.getImageData(0, 0, w, h);
       const d = imgData.data;
@@ -586,77 +570,108 @@
       }
       ctx.putImageData(imgData, 0, 0);
 
+      // 3. Compress before upload (Crucial for 1000+ students)
       canvas.toBlob(blob => {
         pendingBlob = blob;
         preview.src = URL.createObjectURL(blob); preview.classList.add('active');
         btnCapture.disabled = true; btnRetake.disabled = false; btnUpload.disabled = false;
-        setStatus('Captured. Click Upload.', 'success');
-      }, 'image/jpeg', 0.9);
+        typedTextBox.style.display = 'block';
+        typedTextBox.value = ''; // Reset
+        setStatus('Captured. Type text if needed, then Upload.', 'success');
+      }, 'image/jpeg', 0.6); // 60% quality
     });
 
     btnRetake.addEventListener('click', () => {
       if (preview.src) URL.revokeObjectURL(preview.src);
       pendingBlob = null; preview.classList.remove('active');
       btnRetake.disabled = true; btnUpload.disabled = true; btnOpen.disabled = false; btnCapture.disabled = true;
+      typedTextBox.style.display = 'none';
       setStatus('Retake ready.');
     });
 
     btnUpload.addEventListener('click', async () => {
       if (!pendingBlob || !studentId) return;
       btnUpload.innerHTML = 'Uploading...'; btnUpload.disabled = true;
-      await new Promise(r => setTimeout(r, 1000));
+      pendingTypedText = typedTextBox.value;
       
-      // Inject image into the Embedded Answer Book dynamically
-      const pages = document.querySelectorAll('.scanned-img');
-      for (let img of pages) {
-        if (img.style.display === 'none') {
-          img.src = URL.createObjectURL(pendingBlob);
-          img.style.display = 'block';
-          break;
-        }
-      }
-      
-      await setDoc(doc(db, "examLogs", studentId), {
-        examNumber, status: 'In Session', lastActive: serverTimestamp(),
-        scripts: arrayUnion({ url: 'placeholder_url', uploadedAt: new Date().toISOString() })
-      }, { merge: true });
+      try {
+        scriptCount++;
+        const fileExt = 'jpg';
+        const fileName = `${studentId}_${examNumber}_Script${scriptCount}.${fileExt}`;
+        
+        const formData = new FormData();
+        formData.append("file", pendingBlob);
+        formData.append("upload_preset", CLOUDINARY_PRESET);
+        formData.append("public_id", fileName); 
+        
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: "POST", body: formData
+        });
+        if (!res.ok) throw new Error("Cloudinary upload failed");
+        const data = await res.json();
 
-      setStatus('Uploaded and injected into Answer Book!', 'success');
-      btnUpload.innerHTML = 'Upload'; btnUpload.disabled = true;
-      btnRetake.disabled = true; btnOpen.disabled = false;
+        // Inject into Answer Book
+        const img = document.getElementById(`img-page-${scriptCount + 2}`);
+        const txt = document.getElementById(`text-page-${scriptCount + 2}`);
+        if (img) { img.src = data.secure_url; img.style.display = 'block'; }
+        if (txt && pendingTypedText) { txt.value = pendingTypedText; txt.style.display = 'block'; }
+        
+        await setDoc(doc(db, "examLogs", studentId), {
+          examNumber, status: 'In Session', lastActive: serverTimestamp(),
+          scripts: arrayUnion({ 
+            url: data.secure_url, 
+            text: pendingTypedText, 
+            scriptNum: scriptCount,
+            filename: fileName,
+            uploadedAt: new Date().toISOString() 
+          })
+        }, { merge: true });
+
+        setStatus('Uploaded successfully!', 'success');
+        btnUpload.innerHTML = 'Upload'; btnUpload.disabled = true;
+        btnRetake.disabled = true; btnOpen.disabled = false;
+        
+        setTimeout(() => switchTab('answerbook'), 1000);
+      } catch (err) {
+        setStatus('Upload failed: ' + err.message, 'error');
+        btnUpload.innerHTML = 'Upload'; btnUpload.disabled = false;
+        scriptCount--; // rollback
+      }
     });
   }
 
-  // 8. Anti-Cheat
+  // ANTI-CHEAT
   document.addEventListener("visibilitychange", async () => {
     if (document.hidden && !document.getElementById('pinOverlay').classList.contains('active') && !document.getElementById('viewAdmin').classList.contains('active')) {
       document.getElementById('tabWarning').classList.add('active');
-      await logEvent('tab_switch', {});
+      const now = Date.now();
+      if (now - lastTabSwitchLog > 5000) {
+        lastTabSwitchLog = now;
+        await logEvent('tab_switch');
+      }
     }
   });
 
-  async function logEvent(type, payload) {
+  async function logEvent(type) {
     if (!studentId) return;
     try {
       const logRef = doc(db, "examLogs", studentId);
-      if (type === 'tab_switch') {
-        await setDoc(logRef, { examNumber, status: 'In Session', lastActive: serverTimestamp(), tabSwitches: arrayUnion(new Date().toISOString()) }, { merge: true });
-      } else {
-        await setDoc(logRef, { examNumber, status: 'In Session', lastActive: serverTimestamp() }, { merge: true });
-      }
+      const updates = { examNumber, status: 'In Session', lastActive: serverTimestamp() };
+      if (type === 'tab_switch') updates.tabSwitches = arrayUnion(new Date().toISOString());
+      await setDoc(logRef, updates, { merge: true });
     } catch (e) {}
   }
 
   window.exitExam = async function() {
     if (confirm("Are you sure? You will not be able to re-enter.")) {
+      if (timerInterval) clearInterval(timerInterval);
+      if (studentId) await setDoc(doc(db, "examLogs", studentId), { status: 'Exited' }, { merge: true });
       await signOut(auth);
       window.location.href = "student-dashboard.html";
     }
   };
 
-  // Initialize Scanner
   setTimeout(initScanner, 1000);
-
   refreshIcons();
 </script>
 </body>
