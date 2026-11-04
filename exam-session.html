@@ -6,9 +6,9 @@
 <title>Exam Scanner — Institute of Board</title>
 <style>
   :root {
-    --crimson: #dc143c;
-    --crimson-dark: #a80f2d;
-    --crimson-tint: #fdecef;
+    --crimson: #7A1F2B;
+    --crimson-dark: #5A1620;
+    --crimson-tint: #fdf2f4;
     --ink: #1a1a1a;
     --muted: #6b7280;
     --line: #e5e7eb;
@@ -17,14 +17,50 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background: #fff;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #F8FAFC;
     color: var(--ink);
     min-height: 100vh;
     display: flex; flex-direction: column; align-items: center;
     padding: 1.5rem;
   }
-  h1 { font-size: 1.35rem; margin-bottom: 1rem; text-align: center; color: var(--crimson); }
+
+  /* ---------- Control bar (IFB style) ---------- */
+  .control-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 60px;
+    background: #FFF; border-bottom: 2px solid var(--crimson);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 24px; z-index: 9999; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  .control-bar .brand {
+    font-size: 20px; font-weight: 900; color: var(--crimson);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .control-bar .brand span { font-size: 22px; }
+  .control-actions { display: flex; gap: 12px; }
+  .btn-nav {
+    padding: 8px 16px; border-radius: 6px; font-weight: 700; font-size: 14px;
+    text-decoration: none; cursor: pointer; border: 1.5px solid #E2E8F0;
+    color: #111; background: #FFF; transition: 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-nav:hover { border-color: #111; }
+  .btn-nav.primary { background: var(--crimson); color: #FFF; border-color: var(--crimson); }
+  .btn-nav.primary:hover { background: var(--crimson-dark); }
+
+  body { padding-top: 80px; }
+
+  h1 {
+    font-size: 1.5rem; margin-bottom: 1rem; text-align: center;
+    color: var(--crimson); font-weight: 900; letter-spacing: -0.3px;
+  }
+  h1 .tag {
+    display: inline-block; background: var(--crimson); color: #fff;
+    font-size: .65rem; padding: 3px 10px; border-radius: 20px;
+    font-weight: 700; letter-spacing: 1px; margin-left: 8px;
+    vertical-align: middle;
+  }
+
   .view { width: 100%; max-width: 680px; display: none; }
   .view.active { display: block; }
 
@@ -32,7 +68,7 @@
   .stage {
     position: relative; width: 100%; aspect-ratio: 3/4;
     background: #f3f4f6;
-    border: 1px solid var(--line);
+    border: 1.5px solid var(--line);
     border-radius: 14px; overflow: hidden;
     display: flex; align-items: center; justify-content: center;
   }
@@ -62,11 +98,11 @@
     border-radius:14px;
   }
   .howto.visible { display:flex; }
-  .howto h2 { font-size:1.15rem; margin-bottom:1rem; color:var(--crimson); }
+  .howto h2 { font-size:1.15rem; margin-bottom:1rem; color:var(--crimson); font-weight:900; }
   .howto ul { list-style:none; text-align:left; max-width:360px; margin-bottom:1.25rem; font-size:.92rem; line-height:1.55; color:#374151; }
   .howto li { padding:.35rem 0 .35rem 1.8rem; position:relative; }
   .howto li::before { content:"✓"; position:absolute; left:0; color:var(--crimson); font-weight:bold; }
-  .howto .dismiss { background:var(--crimson); color:#fff; border:none; border-radius:10px; padding:.85rem 1.5rem; font-weight:600; cursor:pointer; width:100%; max-width:260px; font-size:1rem; }
+  .howto .dismiss { background:var(--crimson); color:#fff; border:none; border-radius:10px; padding:.85rem 1.5rem; font-weight:700; cursor:pointer; width:100%; max-width:260px; font-size:1rem; }
   .howto .dismiss:hover { background:var(--crimson-dark); }
 
   .torch-btn {
@@ -92,7 +128,7 @@
     margin-bottom:.6rem;
   }
   .bw-controls .bw-head label {
-    font-size:.88rem; font-weight:600; color:var(--crimson);
+    font-size:.88rem; font-weight:700; color:var(--crimson);
     display:flex; align-items:center; gap:.45rem; cursor:pointer;
   }
   .bw-controls .bw-head input[type=checkbox] {
@@ -102,7 +138,7 @@
   .bw-row:last-child { margin-bottom:0; }
   .bw-row.disabled { opacity:.4; pointer-events:none; }
   .bw-label {
-    display:flex; justify-content:space-between; font-size:.78rem; color:#4b5563; font-weight:500;
+    display:flex; justify-content:space-between; font-size:.78rem; color:#4b5563; font-weight:600;
   }
   .bw-label .val { color:var(--crimson); font-family:'Courier New', monospace; font-weight:700; }
   input[type=range] {
@@ -165,9 +201,9 @@
   /* ---------- Controls ---------- */
   .controls { display:flex; gap:.6rem; margin-top:1rem; flex-wrap:wrap; }
   button.action {
-    padding:.85rem 1.2rem; font-size:.95rem; font-weight:600; border:none;
+    padding:.85rem 1.2rem; font-size:.95rem; font-weight:700; border:none;
     border-radius:10px; cursor:pointer; transition:background .15s, opacity .15s;
-    flex:1; min-width:130px;
+    flex:1; min-width:130px; font-family:inherit;
   }
   button.action:disabled { opacity:.4; cursor:not-allowed; }
   .btn-primary { background:var(--crimson); color:#fff; }
@@ -175,7 +211,7 @@
   .btn-secondary { background:#fff; color:var(--crimson); border:2px solid var(--crimson); }
   .btn-secondary:hover:not(:disabled) { background:var(--crimson-tint); }
   .btn-success { background:var(--crimson-dark); color:#fff; }
-  .btn-success:hover:not(:disabled) { background:#8a0c25; }
+  .btn-success:hover:not(:disabled) { background:#3f0f16; }
 
   .status { margin-top:.9rem; font-size:.9rem; text-align:center; min-height:1.4em; color:var(--muted); }
   .status.error { color:var(--crimson); font-weight:600; }
@@ -192,19 +228,19 @@
   .chip {
     display:flex; align-items:center; gap:.4rem; background:#fff;
     border:1px solid var(--line); border-radius:8px; padding:.45rem .7rem;
-    font-size:.85rem; color:#374151; cursor:pointer;
+    font-size:.85rem; color:#374151; cursor:pointer; font-weight:600;
   }
-  .chip.done { border-color:var(--crimson); background:var(--crimson-tint); color:var(--crimson-dark); font-weight:600; }
+  .chip.done { border-color:var(--crimson); background:var(--crimson-tint); color:var(--crimson-dark); font-weight:700; }
   .chip .count { font-size:.7rem; background:var(--crimson); color:#fff; padding:1px 6px; border-radius:10px; }
 
   /* ================= ANSWER BOOK ================= */
-  #bookView { background:#fff; color:var(--ink); border:1px solid var(--line); border-radius:14px; padding:1.5rem; }
+  #bookView { background:#fff; color:var(--ink); border:1.5px solid var(--line); border-radius:14px; padding:1.5rem; }
   .book-toolbar { display:flex; gap:.75rem; margin-bottom:1.25rem; }
   .book-toolbar button { flex:1; }
 
   .exam-paper { background:#fff; font-family: 'Times New Roman', Georgia, serif; color:#000; }
   .exam-header { text-align:center; border-bottom:3px double #000; padding-bottom:.75rem; margin-bottom:1rem; }
-  .exam-institute { font-size:1.15rem; font-weight:bold; letter-spacing:.08em; }
+  .exam-institute { font-size:1.15rem; font-weight:bold; letter-spacing:.08em; font-family:Arial, sans-serif; color:var(--crimson); }
   .exam-title { font-size:1rem; margin-top:.25rem; }
   .exam-meta { display:flex; justify-content:center; gap:1.5rem; font-size:.82rem; margin-top:.4rem; color:#333; }
   .exam-student {
@@ -229,7 +265,7 @@
     display:flex; justify-content:space-between; align-items:baseline;
     border-bottom:1px solid #000; padding-bottom:.3rem; margin-bottom:.4rem;
   }
-  .q-num { font-weight:bold; font-size:.95rem; }
+  .q-num { font-weight:bold; font-size:.95rem; color:var(--crimson); }
   .q-marks { font-size:.85rem; font-weight:bold; }
   .q-text { font-size:.9rem; line-height:1.45; margin-bottom:.6rem; }
 
@@ -251,7 +287,7 @@
 
   @media print {
     body { background:#fff; padding:0; }
-    .book-toolbar, .no-print { display:none !important; }
+    .control-bar, .book-toolbar, .no-print { display:none !important; }
     #bookView { border:none; border-radius:0; padding:0; }
     .q-scan { border:none; }
     .exam-paper { font-size:11pt; }
@@ -260,7 +296,15 @@
 </head>
 <body>
 
-<h1 class="no-print">Exam Scanner — Institute of Board</h1>
+<div class="control-bar">
+  <div class="brand"><span>∆</span> IFB Exam Scanner</div>
+  <div class="control-actions" id="navActions">
+    <a href="resources.html" class="btn-nav">Back to Resources</a>
+    <button onclick="window.print()" class="btn-nav primary">Print / Save PDF</button>
+  </div>
+</div>
+
+<h1>Answer Book Scanner <span class="tag">2027</span></h1>
 
 <!-- ================= CAPTURE VIEW ================= -->
 <div class="view active" id="captureView">
@@ -373,7 +417,7 @@ const EXAM = {
   institute: 'INSTITUTE OF BOARD',
   subject: 'Mathematics',
   paper: 'Final Examination',
-  session: '2026',
+  session: '2027',
   duration: '3 hours',
   totalMarks: 50,
   instructions: [
@@ -396,7 +440,7 @@ const A4_W = 1240, A4_H = 1754; // ~150 DPI A4 portrait
 const QUESTION_SET = EXAM.questions;
 
 /* ================= STATE ================= */
-const captures = {}; // { qNo: [dataURL, ...] }
+const captures = {};
 let stream = null, videoTrack = null;
 let pendingBlob = null;
 let torchOn = false, torchSupported = false, howtoShown = false;
@@ -717,19 +761,7 @@ function fallbackA4(srcCanvas) {
 }
 
 /* =================================================================
-   ADAPTIVE BLACK & WHITE CONVERTER (Sauvola-style local threshold)
-
-   Why the old global-threshold version failed:
-   - One cutoff for the whole page → shadows darken half the page,
-     glare whitens the other half → text vanishes or page goes solid.
-   - Hard cutoff amplified JPEG noise into black blobs.
-
-   This version:
-   1. Grayscale (perceptual luminance)
-   2. Integral-image local mean & variance (O(1) per pixel)
-   3. Sauvola threshold: compares each pixel to its own neighbourhood,
-      not the whole page — shadows/glare don't affect far regions.
-   4. Speckle cleanup — remove isolated pixels that don't match neighbours.
+   ADAPTIVE BLACK & WHITE CONVERTER (Sauvola local threshold)
    ================================================================= */
 function applyBlackWhite(canvasEl, userThreshold, userContrast) {
   const W = canvasEl.width, H = canvasEl.height;
@@ -737,14 +769,13 @@ function applyBlackWhite(canvasEl, userThreshold, userContrast) {
   const imgData = ctx.getImageData(0, 0, W, H);
   const d = imgData.data;
 
-  // ---- Step 1: Grayscale ----
+  // Grayscale
   const gray = new Float32Array(W * H);
   for (let i = 0, p = 0; i < d.length; i += 4, p++) {
     gray[p] = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
   }
 
-  // ---- Step 2: Integral images (prefix sums) ----
-  // Allows O(1) local mean & variance regardless of window size.
+  // Integral images
   const IW = W + 1;
   const integral = new Float64Array(IW * (H + 1));
   const integralSq = new Float64Array(IW * (H + 1));
@@ -760,20 +791,11 @@ function applyBlackWhite(canvasEl, userThreshold, userContrast) {
     }
   }
 
-  // ---- Step 3: Sauvola adaptive threshold ----
-  // Window size scales with the image so it works at any resolution.
   const win = Math.max(15, (Math.round(Math.min(W, H) / 25) | 1));
   const half = (win - 1) >> 1;
-
-  // Map user "detail level" (30-250) to Sauvola k.
-  //   Lower k  → threshold hugs the mean → keeps MORE text (sensitive)
-  //   Higher k → threshold drops below mean → only very dark text kept
-  // Default 180 → moderate.
-  const k = (userThreshold / 255) * 0.45 + 0.05; // ~0.10 at 30, ~0.49 at 250
-
-  const R = 128;              // dynamic range constant for Sauvola
+  const k = (userThreshold / 255) * 0.45 + 0.05;
+  const R = 128;
   const contrastBoost = userContrast;
-
   const bin = new Uint8ClampedArray(W * H);
 
   for (let y = 0; y < H; y++) {
@@ -795,10 +817,6 @@ function applyBlackWhite(canvasEl, userThreshold, userContrast) {
       const variance = Math.max(0, sumSq / area - mean * mean);
       const std = Math.sqrt(variance);
 
-      // Sauvola: T = mean * (1 + k * (std/R - 1))
-      // Flat region (std≈0) → T ≈ mean*(1-k) < mean → background stays WHITE.
-      // Text region (std high) → T ≈ mean → text darker than mean → BLACK.
-      // Contrast boost stretches std → pulls out faint strokes.
       const boostedStd = std * contrastBoost;
       const T = mean * (1 + k * (boostedStd / R - 1));
 
@@ -806,8 +824,7 @@ function applyBlackWhite(canvasEl, userThreshold, userContrast) {
     }
   }
 
-  // ---- Step 4: Speckle cleanup ----
-  // Flip isolated pixels that don't match their neighbours (scan noise).
+  // Speckle cleanup
   const out = new Uint8ClampedArray(bin);
   for (let y = 1; y < H - 1; y++) {
     for (let x = 1; x < W - 1; x++) {
@@ -822,7 +839,6 @@ function applyBlackWhite(canvasEl, userThreshold, userContrast) {
     }
   }
 
-  // ---- Step 5: Write back ----
   for (let i = 0, p = 0; p < out.length; i += 4, p++) {
     const v = out[p];
     d[i] = v;
