@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — IFB</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L92 85 H8 L50 10 Z' fill='%237A1F2B'/%3E%3Cpath d='M50 32 L77 78 H23 L50 32 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+    --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0;
+    --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC;
+    --success: #15803D; --warning: #B45309;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+    font-family: 'Inter', sans-serif; background: var(--bg); color: var(--black);
+    min-height: 100vh; line-height: 1.5; opacity: 0; animation: fadeIn .4s ease forwards;
+}
+@keyframes fadeIn { to { opacity: 1; } }
+a { text-decoration: none; color: inherit; }
+
+/* ================= LAYOUT ================= */
+.app-layout { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { width: 260px; background: var(--maroon); color: var(--white); display: flex; flex-direction: column; position: fixed; inset: 0 auto 0 0; z-index: 100; }
+.sidebar-brand { padding: 24px; display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 900; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-brand .logo { font-size: 32px; line-height: 0.8; }
+.sidebar-nav { padding: 20px 16px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.nav-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; color: rgba(255,255,255,0.7); font-weight: 600; font-size: 14px; transition: 0.2s; cursor: pointer; }
+.nav-link:hover, .nav-link.active { background: rgba(0,0,0,0.2); color: var(--white); }
+.nav-link.active { box-shadow: inset 4px 0 0 var(--white); }
+.nav-link i { width: 18px; height: 18px; }
+.sidebar-footer { padding: 20px 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+.btn-sidebar { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: rgba(255,255,255,0.1); color: var(--white); border: none; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; transition: 0.2s; }
+.btn-sidebar:hover { background: rgba(255,255,255,0.2); }
+.btn-sidebar.danger { color: #FCA5A5; margin-top: 12px; background: transparent; }
+.btn-sidebar.danger:hover { background: rgba(185,28,28,0.3); }
+
+/* MAIN CONTENT */
+.main-content { flex: 1; margin-left: 260px; padding: 32px; }
+.top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+.welcome-text h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
+.welcome-text p { font-size: 14px; color: var(--gray); margin-top: 4px; }
+
+/* PROFILE BADGE */
+.profile-badge { display: flex; align-items: center; gap: 12px; background: var(--white); padding: 8px 16px 8px 8px; border-radius: 100px; border: 1px solid var(--silver); }
+.profile-avatar { width: 40px; height: 40px; background: var(--maroon); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 18px; }
+.profile-info h4 { font-size: 14px; font-weight: 800; }
+.profile-info p { font-size: 12px; color: var(--gray); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* GRID */
+.dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 1000px; margin: 0 auto; }
+
+/* CARDS */
+.card { background: var(--white); border: 1px solid var(--silver); border-radius: 16px; padding: 24px; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.card-title { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+.card-title i { color: var(--maroon); width: 20px; height: 20px; }
+
+/* STATS ROW */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.stat-box { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 6px; }
+.stat-label { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--gray); display: flex; align-items: center; gap: 6px; }
+.stat-label i { width: 14px; height: 14px; }
+.stat-value { font-size: 22px; font-weight: 900; color: var(--maroon); font-family: monospace; letter-spacing: 1px; }
+.stat-value.small { font-size: 16px; font-family: 'Inter', sans-serif; letter-spacing: 0; }
+.stat-value.pending { color: var(--warning); font-family: 'Inter', sans-serif; font-size: 15px; }
+
+/* ACCESS CARD (Print Layout) */
+.access-card-wrapper { display: flex; justify-content: center; margin: 10px 0 20px; }
+.access-card { width: 100%; max-width: 460px; background: var(--white); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid var(--silver); overflow: hidden; }
+.access-header { background: var(--maroon); color: var(--white); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+.access-header .brand { font-weight: 900; font-size: 14px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+.access-header .year { font-weight: 800; font-size: 12px; opacity: 0.8; }
+.access-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.access-name { font-size: 24px; font-weight: 900; }
+.access-row { display: flex; justify-content: space-between; gap: 16px; }
+.access-field { display: flex; flex-direction: column; gap: 4px; }
+.access-label { font-size: 10px; font-weight: 800; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+.access-val { font-size: 16px; font-weight: 800; font-family: monospace; color: var(--black); }
+.access-barcode { background: #FAFAFA; padding: 12px; border-radius: 8px; display: flex; justify-content: center; margin-top: 8px; border: 1px dashed var(--silver); }
+.access-barcode svg { max-width: 100%; height: 50px; }
+
+/* ACTIONS */
+.action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.btn-action { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: var(--maroon); color: var(--white); border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; border: none; transition: 0.2s; }
+.btn-action:hover { background: var(--maroon-hover); }
+.btn-action.outline { background: var(--white); color: var(--black); border: 1.5px solid var(--silver); }
+.btn-action.outline:hover { border-color: var(--black); }
+
+/* NOTICE LIST */
+.notice-list { display: flex; flex-direction: column; gap: 12px; }
+.notice-item { display: flex; gap: 16px; padding: 16px; border-radius: 12px; background: #FAFAFA; border: 1px solid var(--silver); align-items: flex-start; }
+.notice-item i { color: var(--maroon); width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; }
+.notice-item h4 { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+.notice-item p { font-size: 13px; color: var(--gray); line-height: 1.5; }
+
+/* PRINT ONLY STYLES */
+@media print {
+    body { background: #FFF; }
+    .sidebar, .top-header, .card-header, .action-grid, .stats-row, .notice-list { display: none !important; }
+    .main-content { margin: 0; padding: 0; }
+    .dashboard-grid { display: block; }
+    .card { border: none; padding: 0; }
+    .access-card-wrapper { margin: 0; display: block; }
+    .access-card { box-shadow: none; border: 2px solid var(--maroon); max-width: 100%; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); transition: 0.3s; }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 20px; }
+    .top-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .profile-badge { width: 100%; }
+    .action-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="logo">∆</div> IFB Portal
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="resources.html" class="nav-link"><i data-lucide="folder-open"></i> Resources</a>
+            <a href="#" class="nav-link" onclick="alert('Exam Gateway opens 1 hour before the AE session.')"><i data-lucide="monitor-play"></i> Exam Gateway</a>
+            <a href="index.html" class="nav-link"><i data-lucide="home"></i> Public Home</a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="btn-sidebar" onclick="window.print()"><i data-lucide="printer" style="width:16px;height:16px;"></i> Print Card</button>
+            <button class="btn-sidebar danger" onclick="logout()"><i data-lucide="log-out" style="width:16px;height:16px;"></i> Sign Out</button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- TOP HEADER -->
+        <div class="top-header">
+            <div class="welcome-text">
+                <h1 id="welcomeMsg">Welcome back, Student</h1>
+                <p id="statusMsg">Loading your record...</p>
+            </div>
+            <div class="profile-badge">
+                <div class="profile-avatar" id="avatar">S</div>
+                <div class="profile-info">
+                    <h4 id="profileName">Loading...</h4>
+                    <p id="profileStatus">Applicant</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            
+            <!-- STATS ROW -->
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-label"><i data-lucide="hash"></i> Student ID</div>
+                    <div class="stat-value" id="statStudentId">------</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label"><i data-lucide="file-badge"></i> Exam Number</div>
+                    <div class="stat-value pending" id="statExamNum">Pending AE</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label"><i data-lucide="award"></i> Programme</div>
+                    <div class="stat-value small" id="statCourse">Loading</div>
+                </div>
+            </div>
+
+            <!-- ACCESS CARD -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i data-lucide="ticket"></i> Student Access Card</div>
+                </div>
+                
+                <div class="access-card-wrapper">
+                    <div class="access-card" id="printableCard">
+                        <div class="access-header">
+                            <div class="brand"><span>∆</span> INSTITUTE OF BOARD</div>
+                            <div class="year">2027</div>
+                        </div>
+                        <div class="access-body">
+                            <div class="access-name" id="cardName">Loading...</div>
+                            <div class="access-row">
+                                <div class="access-field">
+                                    <span class="access-label">Student ID</span>
+                                    <span class="access-val" id="cardStudentId">------</span>
+                                </div>
+                                <div class="access-field">
+                                    <span class="access-label">Application ID</span>
+                                    <span class="access-val" id="cardAppId">------</span>
+                                </div>
+                            </div>
+                            <div class="access-row">
+                                <div class="access-field">
+                                    <span class="access-label">Exam Number</span>
+                                    <span class="access-val" id="cardExamNum" style="color: var(--warning);">Pending AE</span>
+                                </div>
+                                <div class="access-field">
+                                    <span class="access-label">Status</span>
+                                    <span class="access-val" id="cardStatus">Applicant</span>
+                                </div>
+                            </div>
+                            <div class="access-barcode">
+                                <svg id="barcodeSvg"></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-grid">
+                    <button class="btn-action" onclick="window.print()">
+                        <i data-lucide="printer"></i> Print / Save Card
+                    </button>
+                    <a href="resources.html" class="btn-action outline">
+                        <i data-lucide="folder-open"></i> Go to Resources
+                    </a>
+                </div>
+            </div>
+
+            <!-- NOTICES -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title"><i data-lucide="bell"></i> Campus Notices</div>
+                </div>
+                <div class="notice-list">
+                    <div class="notice-item">
+                        <i data-lucide="file-check-2"></i>
+                        <div>
+                            <h4>AE 2027 Timetable Released</h4>
+                            <p>The official dates for the January 2027 Admission Examinations are now available. Check the Resources tab for the PDF timetable.</p>
+                        </div>
+                    </div>
+                    <div class="notice-item">
+                        <i data-lucide="book-open"></i>
+                        <div>
+                            <h4>Study Material Uploaded</h4>
+                            <p>New formula sheets and past papers have been added to the Resource Library. You can access them now.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Init Icons
+if (window.lucide) lucide.createIcons();
+
+// Logout
+window.logout = async function() {
+    await signOut(auth);
+    window.location.href = "index.html";
+};
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = "apply.html";
+        return;
+    }
+
+    try {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            // They logged in but haven't applied yet
+            window.location.href = "apply.html";
+            return;
+        }
+
+        const data = docSnap.data();
+        const name = data.name || user.displayName || "Student";
+        const firstName = name.split(' ')[0];
+        
+        // Update Text
+        document.getElementById('welcomeMsg').innerText = `Welcome back, ${firstName}`;
+        document.getElementById('statusMsg').innerText = data.status === "Student" 
+            ? "Your admission is confirmed. Good luck with your studies." 
+            : "Your application is received. Prepare for your Admission Examination (AE).";
+        
+        document.getElementById('profileName').innerText = name;
+        document.getElementById('profileStatus').innerText = data.status;
+        document.getElementById('avatar').innerText = firstName.charAt(0).toUpperCase();
+
+        // Update Stats
+        document.getElementById('statStudentId').innerText = data.studentId || "Pending";
+        document.getElementById('statCourse').innerText = data.course || "IFB";
+        
+        const examNum = data.examinationNumber;
+        if (examNum) {
+            document.getElementById('statExamNum').innerText = examNum;
+            document.getElementById('statExamNum').classList.remove('pending');
+        }
+
+        // Update Card
+        document.getElementById('cardName').innerText = name;
+        document.getElementById('cardStudentId').innerText = data.studentId || "------";
+        document.getElementById('cardAppId').innerText = data.applicationId || "------";
+        
+        if (examNum) {
+            document.getElementById('cardExamNum').innerText = examNum;
+            document.getElementById('cardExamNum').style.color = "var(--maroon)";
+        }
+        
+        document.getElementById('cardStatus').innerText = data.status;
+
+        // Generate Barcode (uses Student ID or App ID as fallback)
+        const barcodeData = data.studentId || data.applicationId || "000000";
+        if (typeof JsBarcode === "function") {
+            JsBarcode("#barcodeSvg", barcodeData, {
+                format: "CODE128",
+                width: 2,
+                height: 50,
+                displayValue: true,
+                font: "monospace",
+                textMargin: 4,
+                margin: 0,
+                background: "transparent",
+                lineColor: "#111111"
+            });
+        }
+
+    } catch (err) {
+        console.error("Dashboard load error:", err);
+        alert("Could not load your profile. Please refresh.");
+    }
+});
+</script>
+</body>
+</html>
