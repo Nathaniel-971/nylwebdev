@@ -21,6 +21,7 @@
     --bg: #F8FAFC;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
 body {
     font-family: 'Inter', sans-serif;
     background: var(--white);
@@ -42,18 +43,21 @@ ul { list-style: none; }
     font-size: 13px;
     font-weight: 700;
     border-bottom: 1px solid #d1d5db;
+    position: relative;
+    z-index: 1001;
 }
 .top-bar a { color: var(--maroon); text-decoration: underline; }
 
 /* ============ HEADER ============ */
 .header {
-    position: absolute;
-    top: 40px; /* Below top bar */
-    left: 0; right: 0;
+    position: sticky;
+    top: 0;
     z-index: 1000;
+    background: var(--maroon); /* Solid background so it doesn't overlap hero on mobile */
     height: 80px;
     display: flex;
     align-items: center;
+    border-bottom: 1px solid var(--maroon-hover);
 }
 .nav-container {
     width: 100%; max-width: 1200px;
@@ -78,10 +82,34 @@ ul { list-style: none; }
 }
 .btn-nav-login:hover { background: var(--white); color: var(--maroon); }
 
+/* Hamburger Menu */
+.menu-btn {
+    display: none; flex-direction: column; justify-content: space-around;
+    width: 30px; height: 24px; background: transparent; border: none; cursor: pointer;
+}
+.menu-btn span { display: block; width: 100%; height: 2px; background: var(--white); transition: 0.3s; }
+
+/* Mobile Drawer */
+.mobile-drawer {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    z-index: 2000; display: none; backdrop-filter: blur(4px);
+}
+.mobile-drawer.open { display: block; }
+.mobile-drawer-panel {
+    width: 280px; height: 100%; background: var(--maroon);
+    padding: 30px 24px; display: flex; flex-direction: column; gap: 20px;
+    animation: slideIn 0.3s ease-out;
+}
+@keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+.mobile-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.mobile-drawer-close { background: none; border: none; color: var(--white); cursor: pointer; }
+.mobile-drawer-close i { width: 28px; height: 28px; }
+.mobile-drawer a { color: var(--white); font-size: 18px; font-weight: 700; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
 /* ============ HERO ============ */
 .hero {
     position: relative;
-    height: 90vh;
+    height: 80vh;
     min-height: 600px;
     background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop');
     background-size: cover;
@@ -91,13 +119,12 @@ ul { list-style: none; }
 }
 .hero-overlay {
     position: absolute; inset: 0;
-    background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+    background: linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 100%);
 }
 .hero-content {
     position: relative; z-index: 2;
     width: 100%; max-width: 1200px;
     margin: 0 auto; padding: 0 24px;
-    padding-top: 80px;
 }
 .hero-content h1 {
     font-size: clamp(40px, 5vw, 64px);
@@ -176,6 +203,29 @@ ul { list-style: none; }
 }
 .btn-course:hover { background: var(--maroon); color: var(--white); }
 
+/* ============ APPLY CTA ============ */
+.apply-cta {
+    background: var(--white);
+    border-top: 1px solid var(--silver);
+    padding: 80px 24px;
+    display: flex; justify-content: center;
+}
+.apply-box {
+    max-width: 900px; width: 100%;
+    display: flex; align-items: center; justify-content: space-between; gap: 40px;
+    background: #FFF5F6; border: 2px solid var(--maroon); border-radius: 16px;
+    padding: 40px;
+}
+.apply-content h2 { font-size: 32px; font-weight: 900; color: var(--maroon); margin-bottom: 12px; }
+.apply-note { font-size: 14px; color: var(--var(--gray)); line-height: 1.6; margin-bottom: 24px; }
+.apply-qr { width: 140px; height: 140px; flex-shrink: 0; background: var(--white); padding: 8px; border: 1px solid var(--silver); border-radius: 8px; }
+.apply-qr svg { width: 100%; height: 100%; }
+.btn-apply-big {
+    display: inline-block; background: var(--maroon); color: var(--white);
+    padding: 14px 32px; border-radius: 6px; font-weight: 700; font-size: 15px;
+}
+.btn-apply-big:hover { background: var(--maroon-hover); }
+
 /* ============ FOOTER ============ */
 .footer { background: #111; color: var(--white); padding: 80px 24px 30px; }
 .footer-grid {
@@ -186,34 +236,23 @@ ul { list-style: none; }
 .footer-brand h2 { font-size: 24px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
 .footer-brand p { font-size: 14px; color: #A1A1AA; line-height: 1.8; }
 .footer-col h4 { font-size: 16px; font-weight: 700; margin-bottom: 24px; color: var(--white); }
-.footer-col ul { display: flex; flex-direction: column; gap: 12px; }
-.footer-col a { color: #A1A1AA; font-size: 14px; transition: 0.2s; }
+.footer-col ul { display: flex; flex-direction: column; gap: 16px; }
+.footer-col a { color: #A1A1AA; font-size: 14px; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
 .footer-col a:hover { color: var(--white); }
+.footer-col a i { width: 16px; height: 16px; color: var(--maroon); }
 .footer-bottom {
     text-align: center; padding-top: 30px; border-top: 1px solid #333;
     font-size: 13px; color: #666;
 }
 
-/* ============ MODALS (Kept from previous) ============ */
-.modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.8); backdrop-filter: blur(4px);
-    z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px;
-}
-.modal-overlay.active { display: flex; }
-.modal-content {
-    background: var(--white); border-radius: 8px; padding: 40px;
-    max-width: 440px; width: 100%; position: relative; text-align: center;
-}
-.modal-logo { margin-bottom: 20px; }
-.modal-logo i { width: 48px; height: 48px; color: var(--maroon); }
-
 /* ============ RESPONSIVE ============ */
 @media (max-width: 900px) {
-    .header { background: rgba(0,0,0,0.8); top: 0; height: 72px; position: fixed; }
     .nav-links { display: none; }
+    .menu-btn { display: flex; }
     .about-section { grid-template-columns: 1fr; }
     .about-image { min-height: 300px; order: -1; }
     .courses-grid { grid-template-columns: 1fr; }
+    .apply-box { flex-direction: column; text-align: center; padding: 32px 24px; }
     .footer-grid { grid-template-columns: 1fr; gap: 40px; }
 }
 </style>
@@ -235,16 +274,33 @@ ul { list-style: none; }
             <a href="resources.html">Documents</a>
             <a href="#courses">Courses</a>
             <a href="apply.html" class="btn-nav-login" id="loginBtnNav">Login</a>
-            <a href="apply.html" style="display:none; color:var(--white);" id="dashBtnNav">Dashboard</a>
+            <a href="apply.html" style="display:none; color:var(--white); font-weight:bold;" id="dashBtnNav">Dashboard</a>
         </div>
+        <button class="menu-btn" id="menuBtn" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
     </div>
 </header>
+
+<!-- MOBILE DRAWER -->
+<div class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-drawer-panel">
+        <div class="mobile-drawer-header">
+            <div class="brand"><div class="brand-logo">∆</div></div>
+            <button class="mobile-drawer-close" id="closeMenuBtn"><i data-lucide="x"></i></button>
+        </div>
+        <a href="index.html">Home</a>
+        <a href="resources.html">Documents</a>
+        <a href="#courses">Courses</a>
+        <a href="apply.html">Apply / Login</a>
+    </div>
+</div>
 
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1 id="heroTitle">Education Free Online Training Courses</h1>
-        <p id="heroSubtitle">We provide rigorous, advanced instruction in Mathematics and Web Development. 100% fee-free, accessible globally.</p>
+        <h1 id="heroTitle">Master the skills. Build your future.</h1>
+        <p id="heroSubtitle">A rigorous, fee-free academy focused on deep understanding, real-world skills, and university preparation.</p>
         <a href="apply.html" class="btn-hero" id="heroBtn">Get Started <i data-lucide="arrow-right" style="width:18px;height:18px;"></i></a>
     </div>
 </section>
@@ -295,25 +351,54 @@ ul { list-style: none; }
     </div>
 </section>
 
+<!-- APPLY CTA BLOCK (From reference image) -->
+<section class="apply-cta">
+    <div class="apply-box">
+        <div class="apply-content">
+            <h2>Apply Today</h2>
+            <p class="apply-note">
+                <strong>PLEASE NOTE:</strong> IFB is an independent, <strong>NON-ACCREDITED</strong> skills and academic preparatory academy. We are not registered with DHET or Umalusi.
+            </p>
+            <a href="apply.html" class="btn-apply-big">Start Application</a>
+        </div>
+        <div class="apply-qr" id="applyQR">
+            <!-- QR Code injected via JS -->
+        </div>
+    </div>
+</section>
+
 <footer class="footer">
     <div class="footer-grid">
         <div class="footer-brand">
-            <h2><span>∆</span> Institute of Board</h2>
+            <h2><span style="color:var(--maroon);">∆</span> Institute of Board</h2>
             <p>Independent, non-accredited. Not affiliated with DHET or Umalusi. Our certificates are internal awards.</p>
         </div>
         <div class="footer-col">
             <h4>Quick Links</h4>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="resources.html">Documents & Resources</a></li>
-                <li><a href="apply.html">Student Login</a></li>
+                <li><a href="index.html"><i data-lucide="home"></i> Home</a></li>
+                <li><a href="resources.html"><i data-lucide="folder-open"></i> Documents</a></li>
+                <li><a href="apply.html"><i data-lucide="log-in"></i> Student Login</a></li>
             </ul>
         </div>
         <div class="footer-col">
             <h4>Contact Us</h4>
             <ul>
-                <li><a href="https://www.instagram.com/institute_of_board" target="_blank">Instagram DM</a></li>
-                <li><a href="mailto:n1nathaniel971@gmail.com">n1nathaniel971@gmail.com</a></li>
+                <li>
+                    <a href="https://www.instagram.com/institute_of_board" target="_blank">
+                        <i data-lucide="instagram"></i> @institute_of_board
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:n1nathaniel971@gmail.com">
+                        <i data-lucide="mail"></i> n1nathaniel971@gmail.com
+                    </a>
+                </li>
+                <li>
+                    <a href="tel:+27609583089">
+                        <i data-lucide="phone"></i> +27 60 958 3089
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
@@ -336,6 +421,7 @@ ul { list-style: none; }
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -348,6 +434,16 @@ const db = getFirestore(app);
 
 if (window.lucide) lucide.createIcons();
 
+// Generate the QR Code for the apply section
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof qrcode === 'function') {
+        var qr = qrcode(0, "M");
+        qr.addData(window.location.origin + "/apply.html");
+        qr.make();
+        document.getElementById('applyQR').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    }
+});
+
 window.googleLogin = async function() {
     try {
         await signInWithPopup(auth, new GoogleAuthProvider());
@@ -356,17 +452,26 @@ window.googleLogin = async function() {
     } catch(e) { alert("Sign-in failed: " + e.message); }
 };
 
+// Mobile Drawer Logic
+const menuBtn = document.getElementById('menuBtn');
+const mobileDrawer = document.getElementById('mobileDrawer');
+const closeMenuBtn = document.getElementById('closeMenuBtn');
+
+menuBtn.addEventListener('click', () => mobileDrawer.classList.add('open'));
+closeMenuBtn.addEventListener('click', () => mobileDrawer.classList.remove('open'));
+mobileDrawer.addEventListener('click', (e) => {
+    if (e.target === mobileDrawer) mobileDrawer.classList.remove('open');
+});
+
 onAuthStateChanged(auth, async (user) => {
     const loginBtn = document.getElementById('loginBtnNav');
     const dashBtn = document.getElementById('dashBtnNav');
     
-    // Auth logic for hero buttons
     const heroTitle = document.getElementById('heroTitle');
     const heroSubtitle = document.getElementById('heroSubtitle');
     const heroBtn = document.getElementById('heroBtn');
 
     if (user) {
-        // Logged in
         let hasDoc = false;
         try {
             const snap = await getDoc(doc(db, "users", user.uid));
@@ -395,7 +500,6 @@ onAuthStateChanged(auth, async (user) => {
         if (window.lucide) lucide.createIcons();
 
     } else {
-        // Logged out
         if (loginBtn) {
             loginBtn.style.display = 'inline-block';
             loginBtn.onclick = () => document.getElementById('authModal').classList.add('active');
