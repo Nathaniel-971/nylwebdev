@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Election Statistical Dashboard - IFB</title>
+<title>Election Statistics Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0/dist/chartjs-plugin-annotation.min.js"></script>
@@ -28,9 +28,6 @@
     .header {
         text-align: center;
         margin-bottom: 40px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
     .header h1 {
         font-size: 32px;
@@ -41,8 +38,6 @@
     .header p {
         font-size: 16px;
         color: #666;
-        max-width: 600px;
-        margin-bottom: 15px;
     }
 
     /* Live Status Indicator */
@@ -57,6 +52,7 @@
         font-size: 14px;
         font-weight: 800;
         letter-spacing: 0.5px;
+        margin-top: 15px;
         box-shadow: 0 4px 10px rgba(21, 128, 61, 0.1);
     }
     .live-dot {
@@ -75,31 +71,29 @@
     /* Stats Grid */
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 15px;
         max-width: 1200px;
-        margin: 0 auto 40px auto;
+        margin: 0 auto 30px auto;
     }
     .stat-card {
         background: var(--white);
-        padding: 25px 20px;
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        padding: 20px 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         border: 1px solid var(--silver);
         text-align: center;
-        transition: transform 0.2s ease;
     }
-    .stat-card:hover { transform: translateY(-2px); }
     .stat-card h3 {
-        font-size: 13px;
+        font-size: 11px;
         text-transform: uppercase;
         color: #666;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         letter-spacing: 1px;
-        font-weight: 700;
+        font-weight: 800;
     }
     .stat-card p {
-        font-size: 28px;
+        font-size: 22px;
         font-weight: 900;
         color: var(--maroon);
     }
@@ -122,13 +116,12 @@
         border-radius: 16px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         border: 1px solid var(--silver);
-        position: relative;
-        height: 500px;
+        height: 450px;
         display: flex;
         flex-direction: column;
     }
     .chart-title {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 800;
         margin-bottom: 20px;
         color: var(--text);
@@ -146,28 +139,28 @@
 <body>
 
     <div class="header">
-        <h1>Live Election Statistical Dashboard</h1>
-        <p>Real-time analysis of South African municipal election data. Tracking the relationship between voter support, seat allocation, and statistical distribution.</p>
+        <h1>Election Statistics Dashboard</h1>
+        <p>Advanced statistical analysis of party support and seat distribution.</p>
         <div class="live-badge" id="liveBadge"><div class="live-dot"></div> LIVE DATA (57% COMPLETE)</div>
     </div>
 
     <!-- Statistical Summary Cards -->
     <div class="stats-grid" id="statsGrid">
-        <!-- Values will be injected by JS -->
+        <!-- Injected by JS -->
     </div>
 
     <div class="charts-grid">
-        <!-- Scatter Plot with Regression Line -->
+        <!-- Scatter Plot with OLS Regression Line -->
         <div class="chart-container">
-            <div class="chart-title">Seats vs. % Support (Scatter Plot)</div>
+            <div class="chart-title">Seats vs. % Support (OLS Regression)</div>
             <div class="canvas-wrapper">
                 <canvas id="scatterChart"></canvas>
             </div>
         </div>
 
-        <!-- Full Box and Whisker Plot -->
+        <!-- Box and Whisker Plot -->
         <div class="chart-container">
-            <div class="chart-title">Distribution of Party Support (Box & Whisker)</div>
+            <div class="chart-title">Distribution of Party Support (Box Plot)</div>
             <div class="canvas-wrapper">
                 <canvas id="boxChart"></canvas>
             </div>
@@ -175,9 +168,7 @@
     </div>
 
     <script>
-        // ---------------------------------------------------------
-        // 1. DATA SOURCE (Simulating Live Feed)
-        // ---------------------------------------------------------
+        // 1. DATA SOURCE
         let liveData = [
             { party: 'ANC', seats: 1153, support: 31.69 },
             { party: 'DA', seats: 618, support: 25.54 },
@@ -194,39 +185,37 @@
             { party: 'IND', seats: 8, support: 0.46 }
         ];
 
-        // Global chart instances
         let scatterChart, boxChart;
 
-        // ---------------------------------------------------------
         // 2. STATISTICAL CALCULATIONS
-        // ---------------------------------------------------------
         function calculateStats(data) {
             const support = data.map(d => d.support);
             const seats = data.map(d => d.seats);
             const n = support.length;
 
-            // Mean
             const mean = support.reduce((a, b) => a + b, 0) / n;
 
-            // Median
             const sorted = [...support].sort((a, b) => a - b);
-            const median = (sorted[Math.floor((n - 1) / 2)] + sorted[Math.ceil((n - 1) / 2)]) / 2;
+            const q1 = sorted[Math.floor(n * 0.25)];
+            const q2 = sorted[Math.floor(n * 0.50)];
+            const q3 = sorted[Math.floor(n * 0.75)];
+            const q4 = sorted[n - 1];
+            const iqr = q3 - q1;
 
-            // Standard Deviation
+            const counts = {};
+            let mode = support[0], maxCount = 0;
+            support.forEach(val => {
+                const rounded = Math.round(val);
+                counts[rounded] = (counts[rounded] || 0) + 1;
+                if (counts[rounded] > maxCount) {
+                    maxCount = counts[rounded];
+                    mode = rounded;
+                }
+            });
+
             const variance = support.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
             const stdDev = Math.sqrt(variance);
 
-            // Quartiles (Q1, Q3, IQR)
-            const q1 = sorted[Math.floor(n * 0.25)];
-            const q3 = sorted[Math.floor(n * 0.75)];
-            const iqr = q3 - q1;
-
-            // Outliers
-            const lowerBound = q1 - (1.5 * iqr);
-            const upperBound = q3 + (1.5 * iqr);
-            const outliers = sorted.filter(val => val < lowerBound || val > upperBound);
-
-            // Square Regression Line (y = mx + c)
             let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
             for (let i = 0; i < n; i++) {
                 sumX += support[i];
@@ -234,44 +223,38 @@
                 sumXY += support[i] * seats[i];
                 sumX2 += support[i] * support[i];
             }
-            const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX); // Slope
-            const c = (sumY - m * sumX) / n; // Intercept
+            const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+            const c = (sumY - m * sumX) / n;
 
-            return { 
-                mean, median, stdDev, 
-                q1, medianBox: median, q3, iqr, outliers, 
-                min: sorted[0], max: sorted[n-1], 
-                m, c 
-            };
+            return { mean, q1, q2, q3, q4, iqr, mode, stdDev, min: sorted[0], max: sorted[n-1], m, c };
         }
 
-        // ---------------------------------------------------------
         // 3. RENDER & UPDATE UI
-        // ---------------------------------------------------------
         function updateDashboard(data, stats) {
-            // Update Stat Cards
             document.getElementById('statsGrid').innerHTML = `
-                <div class="stat-card"><h3>Mean Support</h3><p>${stats.mean.toFixed(2)}%</p></div>
-                <div class="stat-card"><h3>Median Support</h3><p>${stats.median.toFixed(2)}%</p></div>
+                <div class="stat-card"><h3>Mean</h3><p>${stats.mean.toFixed(2)}%</p></div>
+                <div class="stat-card"><h3>Median (Q2)</h3><p>${stats.q2.toFixed(2)}%</p></div>
+                <div class="stat-card"><h3>Mode</h3><p>${stats.mode}%</p></div>
                 <div class="stat-card"><h3>Std Deviation</h3><p>${stats.stdDev.toFixed(2)}</p></div>
-                <div class="stat-card"><h3>Q1 / Q3 (IQR)</h3><p>${stats.q1.toFixed(1)} / ${stats.q3.toFixed(1)} (${stats.iqr.toFixed(1)})</p></div>
+                <div class="stat-card"><h3>Q1 (25%)</h3><p>${stats.q1.toFixed(2)}%</p></div>
+                <div class="stat-card"><h3>Q3 (75%)</h3><p>${stats.q3.toFixed(2)}%</p></div>
+                <div class="stat-card"><h3>IQR</h3><p>${stats.iqr.toFixed(2)}</p></div>
+                <div class="stat-card"><h3>Max (Q4)</h3><p>${stats.q4.toFixed(2)}%</p></div>
             `;
 
-            // --- Update Scatter Plot ---
             if (!scatterChart) {
-                const ctx = document.getElementById('scatterChart').getContext('2d');
-                scatterChart = new Chart(ctx, {
+                scatterChart = new Chart(document.getElementById('scatterChart'), {
                     type: 'scatter',
                     data: {
                         datasets: [
                             {
-                                label: 'Political Parties',
+                                label: 'Parties',
                                 data: data.map(d => ({ x: d.support, y: d.seats, party: d.party })),
                                 backgroundColor: '#7A1F2B',
-                                borderColor: '#FFFFFF',
+                                borderColor: '#FFF',
                                 borderWidth: 2,
-                                pointRadius: 7,
-                                pointHoverRadius: 10
+                                pointRadius: 6,
+                                pointHoverRadius: 9
                             },
                             {
                                 label: 'Regression Line',
@@ -280,29 +263,17 @@
                                 borderColor: '#111',
                                 borderWidth: 2,
                                 borderDash: [5, 5],
-                                pointRadius: 0,
-                                fill: false
+                                pointRadius: 0
                             }
                         ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: { duration: 1000, easing: 'easeOutQuart' },
+                        animation: { duration: 800 },
                         scales: {
-                            x: { title: { display: true, text: '% Support' }, min: 0, max: 35, grid: { color: '#E2E8F0' } },
-                            y: { title: { display: true, text: 'Seats Won' }, min: 0, max: 1300, grid: { color: '#E2E8F0' } }
-                        },
-                        plugins: {
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        if (context.datasetIndex === 1) return 'Trend Line';
-                                        const p = context.raw;
-                                        return `${p.party}: ${p.x.toFixed(1)}% Support, ${p.y} Seats`;
-                                    }
-                                }
-                            }
+                            x: { title: { display: true, text: '% Support' }, min: 0, max: 35 },
+                            y: { title: { display: true, text: 'Seats Won' }, min: 0, max: 1300 }
                         }
                     }
                 });
@@ -312,10 +283,8 @@
                 scatterChart.update();
             }
 
-            // --- Update Box & Whisker Plot ---
             if (!boxChart) {
-                const ctxBox = document.getElementById('boxChart').getContext('2d');
-                boxChart = new Chart(ctxBox, {
+                boxChart = new Chart(document.getElementById('boxChart'), {
                     type: 'bar',
                     data: {
                         labels: ['Distribution'],
@@ -328,30 +297,20 @@
                         indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
-                        animation: { duration: 1000, easing: 'easeOutQuart' },
+                        animation: { duration: 800 },
                         scales: {
-                            x: { min: 0, max: 35, grid: { color: '#E2E8F0' }, title: { display: true, text: '% Support' } },
+                            x: { min: 0, max: 35, title: { display: true, text: '% Support' } },
                             y: { stacked: true, display: false }
                         },
                         plugins: {
                             legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        if (context.datasetIndex === 1) {
-                                            return `Middle 50% of parties sit between ${stats.q1.toFixed(1)}% and ${stats.q3.toFixed(1)}%`;
-                                        }
-                                        return null;
-                                    }
-                                }
-                            },
                             annotation: {
                                 annotations: {
                                     minWhisker: { type: 'line', xMin: stats.min, xMax: stats.q1, yMin: 0, yMax: 0, borderColor: '#111', borderWidth: 2 },
                                     minCap: { type: 'line', xMin: stats.min, xMax: stats.min, yMin: -0.2, yMax: 0.2, borderColor: '#111', borderWidth: 2 },
                                     maxWhisker: { type: 'line', xMin: stats.q3, xMax: stats.max, yMin: 0, yMax: 0, borderColor: '#111', borderWidth: 2 },
                                     maxCap: { type: 'line', xMin: stats.max, xMax: stats.max, yMin: -0.2, yMax: 0.2, borderColor: '#111', borderWidth: 2 },
-                                    medianLine: { type: 'line', xMin: stats.medianBox, xMax: stats.medianBox, yMin: -0.4, yMax: 0.4, borderColor: '#FFFFFF', borderWidth: 3 }
+                                    medianLine: { type: 'line', xMin: stats.q2, xMax: stats.q2, yMin: -0.4, yMax: 0.4, borderColor: '#FFF', borderWidth: 3 }
                                 }
                             }
                         }
@@ -361,51 +320,52 @@
                 boxChart.data.datasets[0].data = [stats.q1];
                 boxChart.data.datasets[1].data = [stats.q3 - stats.q1];
                 
-                // Update annotations dynamically
-                boxChart.options.plugins.annotation.annotations.minWhisker.xMax = stats.q1;
-                boxChart.options.plugins.annotation.annotations.minCap.xMin = stats.min;
-                boxChart.options.plugins.annotation.annotations.minCap.xMax = stats.min;
-                boxChart.options.plugins.annotation.annotations.maxWhisker.xMin = stats.q3;
-                boxChart.options.plugins.annotation.annotations.maxWhisker.xMax = stats.max;
-                boxChart.options.plugins.annotation.annotations.maxCap.xMin = stats.max;
-                boxChart.options.plugins.annotation.annotations.maxCap.xMax = stats.max;
-                boxChart.options.plugins.annotation.annotations.medianLine.xMin = stats.medianBox;
-                boxChart.options.plugins.annotation.annotations.medianLine.xMax = stats.medianBox;
+                const ann = boxChart.options.plugins.annotation.annotations;
+                ann.minWhisker.xMax = stats.q1;
+                ann.minCap.xMin = stats.min;
+                ann.minCap.xMax = stats.min;
+                ann.maxWhisker.xMin = stats.q3;
+                ann.maxWhisker.xMax = stats.max;
+                ann.maxCap.xMin = stats.max;
+                ann.maxCap.xMax = stats.max;
+                ann.medianLine.xMin = stats.q2;
+                ann.medianLine.xMax = stats.q2;
                 
                 boxChart.update();
             }
         }
 
-        // ---------------------------------------------------------
-        // 4. INITIALIZE & SIMULATE LIVE UPDATES
-        // ---------------------------------------------------------
+        // 4. INITIALIZE & SIMULATE LIVE UPDATES (Realistic Timing)
         document.addEventListener('DOMContentLoaded', () => {
-            // Initial Render
             let stats = calculateStats(liveData);
             updateDashboard(liveData, stats);
 
             let completion = 57;
 
-            // Simulate Live Data every 4 seconds
+            // Real counting is slow. Simulating a 1% increase every 15 minutes.
+            const FIFTEEN_MINUTES = 15 * 60 * 1000; 
+
             setInterval(() => {
-                // Tweak data slightly
+                // Tweak data slightly to simulate new votes being counted
                 liveData.forEach(d => {
                     if (Math.random() > 0.6) {
-                        d.support += (Math.random() - 0.5) * 0.15; 
-                        d.seats += Math.round((Math.random() - 0.5) * 3); 
+                        d.support += (Math.random() - 0.5) * 0.05; 
+                        d.seats += Math.round((Math.random() - 0.5) * 1); 
                     }
                 });
 
-                // Recalculate and update
                 let newStats = calculateStats(liveData);
                 updateDashboard(liveData, newStats);
 
-                // Update live badge percentage
+                // Increase percentage by 1% every 15 minutes
                 if (completion < 100) {
                     completion++;
                     document.getElementById('liveBadge').innerHTML = `<div class="live-dot"></div> LIVE DATA (${completion}% COMPLETE)`;
                 }
-            }, 4000);
+            }, FIFTEEN_MINUTES);
+            
+            // For demonstration purposes, if you want to see the 1% increase happen faster in a test, 
+            // change the variable above to 10000 (10 seconds).
         });
     </script>
 </body>
