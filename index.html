@@ -90,7 +90,6 @@ ul { list-style: none; }
 .board-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
 .board-header h2 { font-size: 28px; font-weight: 900; display: flex; align-items: center; gap: 10px; }
 .board-header h2 i { color: var(--maroon); width: 24px; height: 24px; }
-.board-header a { font-size: 14px; font-weight: 700; color: var(--maroon); display: flex; align-items: center; gap: 4px; }
 
 .notice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .notice-card { background: var(--white); border: 1px solid var(--silver); border-radius: 12px; padding: 24px; display: flex; gap: 20px; transition: 0.2s; }
@@ -124,7 +123,6 @@ ul { list-style: none; }
 .course-content { padding: 32px; flex: 1; display: flex; flex-direction: column; }
 .course-content h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
 .course-content p { font-size: 15px; color: var(--gray); margin-bottom: 24px; flex: 1; line-height: 1.7; }
-.course-meta { display: flex; gap: 16px; font-size: 13px; font-weight: 700; color: var(--maroon); margin-bottom: 24px; text-transform: uppercase; }
 .btn-course { display: block; text-align: center; background: var(--bg); color: var(--black); padding: 14px; border-radius: 4px; font-weight: 700; font-size: 14px; transition: 0.2s; cursor: pointer; border: none; width: 100%; }
 .btn-course:hover { background: var(--maroon); color: var(--white); }
 
@@ -159,9 +157,6 @@ ul { list-style: none; }
 .modal-content p { font-size: 14px; color: var(--gray); line-height: 1.7; margin-bottom: 24px; }
 .btn-modal-action { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; }
 .btn-modal-action:hover { background: var(--maroon-hover); }
-.remember-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; cursor: pointer; }
-.remember-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--maroon); cursor: pointer; }
-.remember-row span { font-size: 14px; font-weight: 500; color: var(--black); }
 
 /* Terms Scroll Box */
 .terms-box { height: 250px; overflow-y: scroll; border: 1px solid var(--silver); border-radius: 8px; padding: 20px; text-align: left; font-size: 13px; color: var(--gray); line-height: 1.6; margin-bottom: 20px; background: #FAFAFA; }
@@ -226,28 +221,6 @@ ul { list-style: none; }
     </div>
 </div>
 
-<!-- 3. AUTH MODAL (Auto-Login & Remember Me) -->
-<div class="modal-overlay" id="authModal">
-    <div class="modal-content">
-        <button style="position:absolute;top:20px;right:20px;background:none;border:none;cursor:pointer;" onclick="closeModal('authModal')" aria-label="Close"><i data-lucide="x"></i></button>
-        <div style="display:flex; justify-content:center; margin-bottom:16px;">
-            <i data-lucide="log-in" style="width:44px;height:44px;color:var(--maroon);"></i>
-        </div>
-        <h2 style="margin-bottom: 8px;">Sign In</h2>
-        <p style="margin-bottom: 24px;">Use Google to access your student account.</p>
-        
-        <button class="btn-hero" style="width:100%; justify-content:center; padding:14px; gap:12px; background:var(--white); border:1.5px solid var(--silver); color:var(--black); margin-bottom: 20px;" onclick="googleLogin()">
-            <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.2 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.1 5.6l6.2 5.2C41 35.2 44 30 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
-            Continue with Google
-        </button>
-
-        <label class="remember-row">
-            <input type="checkbox" id="rememberMe" checked>
-            <span>Remember me on this device</span>
-        </label>
-    </div>
-</div>
-
 <!-- MAIN PAGE -->
 <div class="top-bar">
     <strong>Notice:</strong> 2027 Admissions are open. <a href="#" onclick="openTerms()">Review Terms & Apply →</a>
@@ -263,8 +236,7 @@ ul { list-style: none; }
             <a href="index.html">Home</a>
             <a href="resources.html">Documents</a>
             <a href="#courses">Courses</a>
-            <a href="#" class="btn-nav-login" id="loginBtnNav" onclick="openAuth()">Login</a>
-            <a href="#" style="display:none; color:var(--white); font-weight:bold;" id="dashBtnNav">Dashboard</a>
+            <a href="#" class="btn-nav-login" id="navBtn" onclick="googleLogin()">Login</a>
         </div>
         <button class="menu-btn" id="menuBtn" aria-label="Menu">
             <span></span><span></span><span></span>
@@ -289,9 +261,9 @@ ul { list-style: none; }
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1 id="heroTitle">Master the skills. Build your future.</h1>
-        <p id="heroSubtitle">A rigorous, fee-free academy focused on deep understanding, real-world skills, and university preparation.</p>
-        <button class="btn-hero" id="heroBtn" onclick="openTerms()">Get Started <i data-lucide="arrow-right" style="width:18px;height:18px;"></i></button>
+        <h1>Master the skills. Build your future.</h1>
+        <p>A rigorous, fee-free academy focused on deep understanding, real-world skills, and university preparation.</p>
+        <button class="btn-hero" onclick="openTerms()">Get Started <i data-lucide="arrow-right" style="width:18px;height:18px;"></i></button>
     </div>
 </section>
 
@@ -300,31 +272,22 @@ ul { list-style: none; }
     <div class="board-container">
         <div class="board-header">
             <h2><i data-lucide="bell-ring"></i> Campus Notice Board</h2>
-            <a href="#">View All <i data-lucide="arrow-right" style="width:16px;height:16px;"></i></a>
         </div>
-        
         <div class="notice-grid">
             <div class="notice-card">
                 <div class="notice-icon"><i data-lucide="file-check-2"></i></div>
                 <div class="notice-content">
                     <h3>AE 2027 Timetable Released</h3>
                     <p>The official dates for the January 2027 Admission Examinations are now available in the documents portal.</p>
-                    <div class="notice-meta">
-                        <span>2 days ago</span>
-                        <span class="notice-tag">Admin</span>
-                    </div>
+                    <div class="notice-meta"><span>2 days ago</span><span class="notice-tag">Admin</span></div>
                 </div>
             </div>
-
             <div class="notice-card">
                 <div class="notice-icon"><i data-lucide="folder-open"></i></div>
                 <div class="notice-content">
                     <h3>New Past Papers Uploaded</h3>
                     <p>Mathematics Paper 1 and 2 from the 2026 cohort have been added to the Resource Library for practice.</p>
-                    <div class="notice-meta">
-                        <span>5 days ago</span>
-                        <span class="notice-tag">Resources</span>
-                    </div>
+                    <div class="notice-meta"><span>5 days ago</span><span class="notice-tag">Resources</span></div>
                 </div>
             </div>
         </div>
@@ -352,10 +315,6 @@ ul { list-style: none; }
             <div class="course-content">
                 <h3>IFB— Mathematics</h3>
                 <p>Advanced Algebra, Calculus, Trigonometry, Geometry, Finance, and Probability. Rigorous, university-level preparation.</p>
-                <div class="course-meta">
-                    <span><i data-lucide="clock" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> 1 Year</span>
-                    <span><i data-lucide="award" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> AE Required</span>
-                </div>
                 <button class="btn-course" onclick="openTerms()">View Details & Apply</button>
             </div>
         </div>
@@ -365,10 +324,6 @@ ul { list-style: none; }
             <div class="course-content">
                 <h3>IFB AQ-B Web Development</h3>
                 <p>Basic back-end web development covering HTML, CSS, JavaScript, Node.js, and modern deployment pipelines.</p>
-                <div class="course-meta">
-                    <span><i data-lucide="clock" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> 1 Year</span>
-                    <span><i data-lucide="code" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i> Practical</span>
-                </div>
                 <button class="btn-course" onclick="openTerms()">View Details & Apply</button>
             </div>
         </div>
@@ -422,7 +377,7 @@ ul { list-style: none; }
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
@@ -440,21 +395,11 @@ document.addEventListener("DOMContentLoaded", () => {
         qr.make();
         document.getElementById('applyQR').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
     }
-
-    // Auto-Login Check
-    const remember = localStorage.getItem('ifb_remember_me');
-    if (remember === 'true') {
-        console.log("IFB: Auto-login enabled.");
-    }
 });
 
 // Modal Controls
 window.closeModal = function(id) {
     document.getElementById(id).classList.remove('active');
-}
-
-window.openAuth = function() {
-    document.getElementById('authModal').classList.add('active');
 }
 
 window.openTerms = function() {
@@ -481,23 +426,38 @@ window.proceedToApply = function() {
     window.location.href = "apply.html";
 }
 
+// Google Login
 window.googleLogin = async function() {
-    if(!sessionStorage.getItem('ifb_terms_accepted')) {
-        openTerms();
-        return;
-    }
-
-    const rememberCheckbox = document.getElementById('rememberMe');
-    const remember = rememberCheckbox ? rememberCheckbox.checked : true;
-    
     try {
-        await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
-        localStorage.setItem('ifb_remember_me', remember ? 'true' : 'false');
-
         await signInWithPopup(auth, new GoogleAuthProvider());
-        window.location.href = "dashboard.html";
+        // The onAuthStateChanged will handle the redirect
     } catch(e) { alert("Sign-in failed: " + e.message); }
 };
+
+// Smart Router (Auto-Login & Redirect)
+onAuthStateChanged(auth, async (user) => {
+    const navBtn = document.getElementById('navBtn');
+    
+    if (user) {
+        // If logged in, redirect to dashboard immediately
+        let hasDoc = false;
+        try {
+            const snap = await getDoc(doc(db, "users", user.uid));
+            hasDoc = snap.exists();
+        } catch (e) {}
+
+        if (hasDoc) {
+            window.location.href = "dashboard.html";
+        } else {
+            window.location.href = "apply.html";
+        }
+    } else {
+        // If logged out, ensure login button is visible
+        if (navBtn) {
+            navBtn.style.display = 'inline-block';
+        }
+    }
+});
 
 // Mobile Menu
 const menuBtn = document.getElementById('menuBtn');
@@ -506,33 +466,6 @@ const closeMenuBtn = document.getElementById('closeMenuBtn');
 menuBtn.addEventListener('click', () => mobileDrawer.classList.add('open'));
 closeMenuBtn.addEventListener('click', () => mobileDrawer.classList.remove('open'));
 mobileDrawer.addEventListener('click', (e) => { if (e.target === mobileDrawer) mobileDrawer.classList.remove('open'); });
-
-// Auth State
-onAuthStateChanged(auth, async (user) => {
-    const loginBtn = document.getElementById('loginBtnNav');
-    const dashBtn = document.getElementById('dashBtnNav');
-    
-    if (user) {
-        let hasDoc = false;
-        try {
-            const snap = await getDoc(doc(db, "users", user.uid));
-            hasDoc = snap.exists();
-        } catch (e) {}
-
-        if (loginBtn) loginBtn.style.display = 'none';
-        if (dashBtn) {
-            dashBtn.style.display = 'inline-block';
-            dashBtn.href = hasDoc ? "dashboard.html" : "apply.html";
-            dashBtn.innerText = hasDoc ? "Dashboard" : "Complete App";
-        }
-    } else {
-        if (loginBtn) {
-            loginBtn.style.display = 'inline-block';
-            loginBtn.onclick = () => openAuth();
-        }
-        if (dashBtn) dashBtn.style.display = 'none';
-    }
-});
 </script>
 </body>
 </html>
