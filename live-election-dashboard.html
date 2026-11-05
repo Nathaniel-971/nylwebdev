@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Election Statistical Dashboard - IFB</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+    :root {
+        --maroon: #7A1F2B;
+        --bg: #F8FAFC;
+        --white: #FFFFFF;
+        --silver: #E2E8F0;
+        --text: #111;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        padding: 30px 20px;
+        min-height: 100vh;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .header h1 {
+        font-size: 32px;
+        font-weight: 900;
+        color: var(--maroon);
+        margin-bottom: 10px;
+    }
+    .header p {
+        font-size: 16px;
+        color: #666;
+        max-width: 600px;
+        margin-bottom: 15px;
+    }
+
+    /* Live Status Indicator */
+    .live-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #DCFCE7;
+        color: #15803D;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 10px rgba(21, 128, 61, 0.1);
+    }
+    .live-dot {
+        width: 10px;
+        height: 10px;
+        background: #15803D;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(21, 128, 61, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(21, 128, 61, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(21, 128, 61, 0); }
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto 40px auto;
+    }
+    .stat-card {
+        background: var(--white);
+        padding: 25px 20px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        border: 1px solid var(--silver);
+        text-align: center;
+        transition: transform 0.2s ease;
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card h3 {
+        font-size: 13px;
+        text-transform: uppercase;
+        color: #666;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+        font-weight: 700;
+    }
+    .stat-card p {
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--maroon);
+    }
+
+    /* Charts Grid */
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    @media (max-width: 900px) {
+        .charts-grid { grid-template-columns: 1fr; }
+    }
+
+    .chart-container {
+        background: var(--white);
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid var(--silver);
+        position: relative;
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+    }
+    .chart-title {
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 20px;
+        color: var(--text);
+        border-left: 4px solid var(--maroon);
+        padding-left: 10px;
+    }
+    .canvas-wrapper {
+        flex-grow: 1;
+        position: relative;
+        width: 100%;
+        min-height: 0;
+    }
+</style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Live Election Statistical Dashboard</h1>
+        <p>Real-time analysis of South African municipal election data. Tracking the relationship between voter support, seat allocation, and statistical distribution.</p>
+        <div class="live-badge" id="liveBadge"><div class="live-dot"></div> LIVE DATA (57% COMPLETE)</div>
+    </div>
+
+    <!-- Statistical Summary Cards -->
+    <div class="stats-grid" id="statsGrid">
+        <!-- Values will be injected by JS -->
+    </div>
+
+    <div class="charts-grid">
+        <!-- Scatter Plot with Regression Line -->
+        <div class="chart-container">
+            <div class="chart-title">Seats vs. % Support (Scatter Plot)</div>
+            <div class="canvas-wrapper">
+                <canvas id="scatterChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Full Box and Whisker Plot -->
+        <div class="chart-container">
+            <div class="chart-title">Distribution of Party Support (Box & Whisker)</div>
+            <div class="canvas-wrapper">
+                <canvas id="boxChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ---------------------------------------------------------
+        // 1. DATA SOURCE (Simulating Live Feed)
+        // ---------------------------------------------------------
+        let liveData = [
+            { party: 'ANC', seats: 1153, support: 31.69 },
+            { party: 'DA', seats: 618, support: 25.54 },
+            { party: 'MKP', seats: 201, support: 8.33 },
+            { party: 'PA', seats: 124, support: 2.70 },
+            { party: 'IFP', seats: 94, support: 4.32 },
+            { party: 'SDP', seats: 12, support: 0.59 },
+            { party: 'RTC', seats: 9, support: 0.09 },
+            { party: 'EFF', seats: 109, support: 5.98 },
+            { party: 'VF PLUS', seats: 69, support: 3.47 },
+            { party: 'SACP', seats: 55, support: 2.57 },
+            { party: 'ACTIONSA', seats: 19, support: 4.41 },
+            { party: 'OTHER', seats: 129, support: 9.57 },
+            { party: 'IND', seats: 8, support: 0.46 }
+        ];
+
+        // Global chart instances
+        let scatterChart, boxChart;
+
+        // ---------------------------------------------------------
+        // 2. STATISTICAL CALCULATIONS
+        // ---------------------------------------------------------
+        function calculateStats(data) {
+            const support = data.map(d => d.support);
+            const seats = data.map(d => d.seats);
+            const n = support.length;
+
+            // Mean
+            const mean = support.reduce((a, b) => a + b, 0) / n;
+
+            // Median
+            const sorted = [...support].sort((a, b) => a - b);
+            const median = (sorted[Math.floor((n - 1) / 2)] + sorted[Math.ceil((n - 1) / 2)]) / 2;
+
+            // Standard Deviation
+            const variance = support.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
+            const stdDev = Math.sqrt(variance);
+
+            // Quartiles (Q1, Q3, IQR)
+            const q1 = sorted[Math.floor(n * 0.25)];
+            const q3 = sorted[Math.floor(n * 0.75)];
+            const iqr = q3 - q1;
+
+            // Outliers
+            const lowerBound = q1 - (1.5 * iqr);
+            const upperBound = q3 + (1.5 * iqr);
+            const outliers = sorted.filter(val => val < lowerBound || val > upperBound);
+
+            // Square Regression Line (y = mx + c)
+            let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+            for (let i = 0; i < n; i++) {
+                sumX += support[i];
+                sumY += seats[i];
+                sumXY += support[i] * seats[i];
+                sumX2 += support[i] * support[i];
+            }
+            const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX); // Slope
+            const c = (sumY - m * sumX) / n; // Intercept
+
+            return { 
+                mean, median, stdDev, 
+                q1, medianBox: median, q3, iqr, outliers, 
+                min: sorted[0], max: sorted[n-1], 
+                m, c 
+            };
+        }
+
+        // ---------------------------------------------------------
+        // 3. RENDER & UPDATE UI
+        // ---------------------------------------------------------
+        function updateDashboard(data, stats) {
+            // Update Stat Cards
+            document.getElementById('statsGrid').innerHTML = `
+                <div class="stat-card"><h3>Mean Support</h3><p>${stats.mean.toFixed(2)}%</p></div>
+                <div class="stat-card"><h3>Median Support</h3><p>${stats.median.toFixed(2)}%</p></div>
+                <div class="stat-card"><h3>Std Deviation</h3><p>${stats.stdDev.toFixed(2)}</p></div>
+                <div class="stat-card"><h3>Q1 / Q3 (IQR)</h3><p>${stats.q1.toFixed(1)} / ${stats.q3.toFixed(1)} (${stats.iqr.toFixed(1)})</p></div>
+            `;
+
+            // --- Update Scatter Plot ---
+            if (!scatterChart) {
+                const ctx = document.getElementById('scatterChart').getContext('2d');
+                scatterChart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Political Parties',
+                                data: data.map(d => ({ x: d.support, y: d.seats, party: d.party })),
+                                backgroundColor: '#7A1F2B',
+                                borderColor: '#FFFFFF',
+                                borderWidth: 2,
+                                pointRadius: 7,
+                                pointHoverRadius: 10
+                            },
+                            {
+                                label: 'Regression Line',
+                                type: 'line',
+                                data: [{x:0, y: stats.c}, {x:35, y: stats.m*35+stats.c}],
+                                borderColor: '#111',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                pointRadius: 0,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 1000, easing: 'easeOutQuart' },
+                        scales: {
+                            x: { title: { display: true, text: '% Support' }, min: 0, max: 35, grid: { color: '#E2E8F0' } },
+                            y: { title: { display: true, text: 'Seats Won' }, min: 0, max: 1300, grid: { color: '#E2E8F0' } }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        if (context.datasetIndex === 1) return 'Trend Line';
+                                        const p = context.raw;
+                                        return `${p.party}: ${p.x.toFixed(1)}% Support, ${p.y} Seats`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                scatterChart.data.datasets[0].data = data.map(d => ({ x: d.support, y: d.seats, party: d.party }));
+                scatterChart.data.datasets[1].data = [{x:0, y: stats.c}, {x:35, y: stats.m*35+stats.c}];
+                scatterChart.update();
+            }
+
+            // --- Update Box & Whisker Plot ---
+            if (!boxChart) {
+                const ctxBox = document.getElementById('boxChart').getContext('2d');
+                boxChart = new Chart(ctxBox, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Distribution'],
+                        datasets: [
+                            { label: 'Base', data: [stats.q1], backgroundColor: 'transparent', stack: 's' },
+                            { label: 'IQR', data: [stats.q3 - stats.q1], backgroundColor: '#7A1F2B', borderColor: '#111', borderWidth: 2, stack: 's' }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 1000, easing: 'easeOutQuart' },
+                        scales: {
+                            x: { min: 0, max: 35, grid: { color: '#E2E8F0' }, title: { display: true, text: '% Support' } },
+                            y: { stacked: true, display: false }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        if (context.datasetIndex === 1) {
+                                            return `Middle 50% of parties sit between ${stats.q1.toFixed(1)}% and ${stats.q3.toFixed(1)}%`;
+                                        }
+                                        return null;
+                                    }
+                                }
+                            },
+                            annotation: {
+                                annotations: {
+                                    minWhisker: { type: 'line', xMin: stats.min, xMax: stats.q1, yMin: 0, yMax: 0, borderColor: '#111', borderWidth: 2 },
+                                    minCap: { type: 'line', xMin: stats.min, xMax: stats.min, yMin: -0.2, yMax: 0.2, borderColor: '#111', borderWidth: 2 },
+                                    maxWhisker: { type: 'line', xMin: stats.q3, xMax: stats.max, yMin: 0, yMax: 0, borderColor: '#111', borderWidth: 2 },
+                                    maxCap: { type: 'line', xMin: stats.max, xMax: stats.max, yMin: -0.2, yMax: 0.2, borderColor: '#111', borderWidth: 2 },
+                                    medianLine: { type: 'line', xMin: stats.medianBox, xMax: stats.medianBox, yMin: -0.4, yMax: 0.4, borderColor: '#FFFFFF', borderWidth: 3 }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                boxChart.data.datasets[0].data = [stats.q1];
+                boxChart.data.datasets[1].data = [stats.q3 - stats.q1];
+                
+                // Update annotations dynamically
+                boxChart.options.plugins.annotation.annotations.minWhisker.xMax = stats.q1;
+                boxChart.options.plugins.annotation.annotations.minCap.xMin = stats.min;
+                boxChart.options.plugins.annotation.annotations.minCap.xMax = stats.min;
+                boxChart.options.plugins.annotation.annotations.maxWhisker.xMin = stats.q3;
+                boxChart.options.plugins.annotation.annotations.maxWhisker.xMax = stats.max;
+                boxChart.options.plugins.annotation.annotations.maxCap.xMin = stats.max;
+                boxChart.options.plugins.annotation.annotations.maxCap.xMax = stats.max;
+                boxChart.options.plugins.annotation.annotations.medianLine.xMin = stats.medianBox;
+                boxChart.options.plugins.annotation.annotations.medianLine.xMax = stats.medianBox;
+                
+                boxChart.update();
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 4. INITIALIZE & SIMULATE LIVE UPDATES
+        // ---------------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial Render
+            let stats = calculateStats(liveData);
+            updateDashboard(liveData, stats);
+
+            let completion = 57;
+
+            // Simulate Live Data every 4 seconds
+            setInterval(() => {
+                // Tweak data slightly
+                liveData.forEach(d => {
+                    if (Math.random() > 0.6) {
+                        d.support += (Math.random() - 0.5) * 0.15; 
+                        d.seats += Math.round((Math.random() - 0.5) * 3); 
+                    }
+                });
+
+                // Recalculate and update
+                let newStats = calculateStats(liveData);
+                updateDashboard(liveData, newStats);
+
+                // Update live badge percentage
+                if (completion < 100) {
+                    completion++;
+                    document.getElementById('liveBadge').innerHTML = `<div class="live-dot"></div> LIVE DATA (${completion}% COMPLETE)`;
+                }
+            }, 4000);
+        });
+    </script>
+</body>
+</html>
