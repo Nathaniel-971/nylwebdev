@@ -16,7 +16,6 @@
         --maroon: #7A1F2B; --maroon-hover: #5A1620; 
         --dark-bg: #111111; --dark-card: #1F1F1F;
     }
-    
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
     body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: var(--white); line-height: 1.6; overflow-x: hidden; position: relative; width: 100%; max-width: 100vw; display: flex; flex-direction: column; min-height: 100vh; }
@@ -37,40 +36,46 @@
     .apply-box h1 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; text-align: center; }
     .apply-box p.subtitle { color: var(--gray); font-size: 14px; text-align: center; margin-bottom: 32px; }
 
-    .form-group { margin-bottom: 20px; }
+    .form-group { margin-bottom: 20px; position: relative; }
     .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; color: var(--white); letter-spacing: 0.5px; }
-    .form-group input, .form-group select { width: 100%; padding: 16px; background: var(--dark-bg); border: 1px solid var(--silver); color: var(--white); font-family: 'Inter', sans-serif; font-size: 15px; transition: 0.2s; }
-    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--maroon); background: #000; }
+    .form-group input { width: 100%; padding: 16px; background: var(--dark-bg); border: 1px solid var(--silver); color: var(--white); font-family: 'Inter', sans-serif; font-size: 15px; transition: 0.2s; }
+    .form-group input:focus { outline: none; border-color: var(--maroon); background: #000; }
     .form-group input::placeholder { color: #555; }
 
-    /* Checkboxes */
+    /* ================= CUSTOM DROPDOWN UI ================= */
+    .custom-select { position: relative; width: 100%; user-select: none; }
+    .select-trigger { padding: 16px; background: var(--dark-bg); border: 1px solid var(--silver); color: var(--white); font-size: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+    .custom-select.open .select-trigger { border-color: var(--maroon); background: #000; }
+    .custom-select.auto-detected .select-trigger { border-color: var(--maroon); background: rgba(122, 31, 43, 0.1); }
+    .select-options { position: absolute; top: 100%; left: 0; right: 0; background: var(--dark-bg); border: 1px solid var(--silver); border-top: none; max-height: 200px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+    .custom-select.open .select-options { display: block; }
+    .select-options li { padding: 14px 16px; cursor: pointer; transition: 0.2s; font-size: 14px; color: var(--gray); border-bottom: 1px solid #222; }
+    .select-options li:hover { background: var(--maroon); color: var(--white); }
+    .select-options li.selected { background: rgba(122, 31, 43, 0.3); color: var(--white); font-weight: 700; }
+
+    /* ================= CHECKBOXES ================= */
     .checkbox-group { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
     .checkbox-group input[type="checkbox"] { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--maroon); flex-shrink: 0; cursor: pointer; }
     .checkbox-group label { font-size: 12px; color: var(--gray); line-height: 1.5; cursor: pointer; }
-    .checkbox-group a { color: var(--maroon); text-decoration: underline; }
 
-    /* Parental Box */
     #parentalConsentBox { display: none; background: rgba(122, 31, 43, 0.1); border: 1px solid var(--maroon); padding: 16px; margin-bottom: 20px; }
     #parentalConsentBox label { color: var(--white); font-weight: 600; font-size: 13px; }
 
-    /* Submit Button */
+    /* ================= BUTTONS ================= */
     .btn-submit { width: 100%; padding: 20px; background: var(--maroon); color: var(--white); font-size: 16px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; border: none; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
     .btn-submit:hover { background: var(--maroon-hover); }
     .btn-submit:disabled { background: #333; color: #666; cursor: not-allowed; }
 
-    /* Auth State */
     #authGate { text-align: center; }
     .btn-google { width: 100%; padding: 18px; background: var(--white); color: var(--black); font-size: 16px; font-weight: 800; border: none; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 12px; margin-bottom: 20px; }
     .btn-google:hover { background: #E2E8F0; }
     .user-profile { display: flex; align-items: center; gap: 16px; background: var(--dark-bg); padding: 16px; border: 1px solid var(--silver); margin-bottom: 24px; }
     .user-profile img { width: 40px; height: 40px; border-radius: 50%; }
 
-    /* Error/Success Messages */
     .alert { padding: 16px; margin-bottom: 20px; font-size: 14px; font-weight: 600; display: none; }
     .alert-error { background: rgba(220, 38, 38, 0.1); border-left: 4px solid #DC2626; color: #FCA5A5; }
     .alert-success { background: rgba(21, 128, 61, 0.1); border-left: 4px solid #15803D; color: #86EFAC; }
 
-    /* Responsive */
     @media (max-width: 600px) {
         .header { padding: 16px 24px; }
         .brand-text { display: none; }
@@ -80,7 +85,6 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <header class="header">
         <a href="index.html" class="brand">
             <div class="brand-logo">∆</div>
@@ -89,17 +93,14 @@
         <a href="index.html" class="btn-back"><i data-lucide="arrow-left" style="width: 18px;"></i> Back to Home</a>
     </header>
 
-    <!-- APPLICATION FORM -->
     <main class="apply-container">
         <div class="apply-box">
             <h1>Student Application</h1>
             <p class="subtitle">Complete your profile to register for the AE Paper.</p>
 
-            <!-- Messages -->
             <div id="errorMsg" class="alert alert-error"></div>
             <div id="successMsg" class="alert alert-success"></div>
 
-            <!-- STEP 1: GOOGLE AUTH -->
             <div id="authGate">
                 <p style="color: var(--gray); margin-bottom: 30px;">You must verify your identity to apply. We use Google Auth to prevent spam and duplicate registrations.</p>
                 <button class="btn-google" onclick="googleLogin()">
@@ -108,7 +109,6 @@
                 </button>
             </div>
 
-            <!-- STEP 2: THE FORM (Hidden until logged in) -->
             <form id="applicationForm" style="display: none;" onsubmit="submitApplication(event)">
                 
                 <div class="user-profile">
@@ -132,7 +132,20 @@
                     <input type="date" id="dob" required onchange="checkAge()">
                 </div>
 
-                <!-- Parental Consent for 16-17 year olds -->
+                <!-- CUSTOM COUNTRY DROPDOWN -->
+                <div class="form-group">
+                    <label>Country of Residence</label>
+                    <div class="custom-select" id="countryDropdown">
+                        <div class="select-trigger" onclick="toggleDropdown('countryDropdown')">
+                            <span id="countryLabel">Loading location...</span>
+                            <i data-lucide="chevron-down" style="width: 18px;"></i>
+                        </div>
+                        <ul class="select-options" id="countryOptions">
+                            <!-- Populated via JS -->
+                        </ul>
+                    </div>
+                </div>
+
                 <div id="parentalConsentBox">
                     <div class="checkbox-group" style="margin-bottom: 0;">
                         <input type="checkbox" id="parentalConsent">
@@ -140,24 +153,37 @@
                     </div>
                 </div>
 
+                <!-- CUSTOM PRIMARY PROGRAMME DROPDOWN -->
                 <div class="form-group">
                     <label>Primary Programme</label>
-                    <select id="courseSelect1" required>
-                        <option value="">-- Choose Programme --</option>
-                        <option value="MAT">IFB—Mathematics</option>
-                        <option value="WEB">IFB—Web Development</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Second Programme (Optional)</label>
-                    <select id="courseSelect2">
-                        <option value="">-- Choose Second Programme --</option>
-                        <option value="MAT">IFB—Mathematics</option>
-                        <option value="WEB">IFB—Web Development</option>
-                    </select>
+                    <div class="custom-select" id="prog1Dropdown">
+                        <div class="select-trigger" onclick="toggleDropdown('prog1Dropdown')">
+                            <span id="prog1Label">-- Select Programme --</span>
+                            <i data-lucide="chevron-down" style="width: 18px;"></i>
+                        </div>
+                        <ul class="select-options">
+                            <li onclick="selectOption('prog1', 'MAT', 'IFB—Mathematics')">IFB—Mathematics</li>
+                            <li onclick="selectOption('prog1', 'WEB', 'IFB—Web Development')">IFB—Web Development</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <!-- Legal Consents -->
+                <!-- CUSTOM SECOND PROGRAMME DROPDOWN -->
+                <div class="form-group">
+                    <label>Second Programme (Optional)</label>
+                    <div class="custom-select" id="prog2Dropdown">
+                        <div class="select-trigger" onclick="toggleDropdown('prog2Dropdown')">
+                            <span id="prog2Label">-- Select Programme --</span>
+                            <i data-lucide="chevron-down" style="width: 18px;"></i>
+                        </div>
+                        <ul class="select-options">
+                            <li onclick="selectOption('prog2', 'MAT', 'IFB—Mathematics')">IFB—Mathematics</li>
+                            <li onclick="selectOption('prog2', 'WEB', 'IFB—Web Development')">IFB—Web Development</li>
+                            <li onclick="selectOption('prog2', '', '-- None --')">-- None --</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="checkbox-group">
                     <input type="checkbox" id="popiaConsent" required>
                     <label>I consent to the processing of my personal data in accordance with POPIA and GDPR. I understand I can request deletion of my data at any time.</label>
@@ -188,54 +214,119 @@
     if (window.lucide) lucide.createIcons();
 
     let currentUser = null;
+    let formData = { country: "", prog1: "", prog2: "" };
 
-    // 1. Check if the user clicked a specific course on index.html (?course=MAT)
+    // URL Pre-selection
     const urlParams = new URLSearchParams(window.location.search);
-    const preSelectedCourse = urlParams.get('course');
-    if (preSelectedCourse === 'MAT' || preSelectedCourse === 'WEB') {
-        document.getElementById('courseSelect1').value = preSelectedCourse;
-    }
+    const preCourse = urlParams.get('course');
+    if (preCourse === 'MAT') { selectOption('prog1', 'MAT', 'IFB—Mathematics'); }
+    if (preCourse === 'WEB') { selectOption('prog1', 'WEB', 'IFB—Web Development'); }
 
-    // 2. Google Login Logic
+    // COUNTRIES LIST
+    const countries = [
+        "South Africa", "Nigeria", "Kenya", "Ghana", "Egypt", "United Kingdom", 
+        "United States", "Canada", "Australia", "India", "China", "Brazil", 
+        "Germany", "France", "Netherlands", "United Arab Emirates", "Other"
+    ];
+
+    // INITIALIZE CUSTOM DROPDOWNS
+    const countryOptionsEl = document.getElementById('countryOptions');
+    countries.forEach(c => {
+        const li = document.createElement('li');
+        li.innerText = c;
+        li.onclick = () => selectOption('country', c, c);
+        countryOptionsEl.appendChild(li);
+    });
+
+    // AUTO-DETECT COUNTRY
+    async function detectCountry() {
+        try {
+            const res = await fetch('https://ipapi.co/json/');
+            const data = await res.json();
+            if (data.country_name) {
+                // If the country is in our list, auto-select it
+                const match = countries.find(c => c.toLowerCase() === data.country_name.toLowerCase());
+                if (match) {
+                    selectOption('country', match, match, true);
+                } else {
+                    document.getElementById('countryLabel').innerText = data.country_name;
+                    formData.country = data.country_name;
+                }
+            } else {
+                document.getElementById('countryLabel').innerText = "-- Select Country --";
+            }
+        } catch (e) {
+            document.getElementById('countryLabel').innerText = "-- Select Country --";
+        }
+    }
+    detectCountry();
+
+    // CUSTOM DROPDOWN LOGIC
+    window.toggleDropdown = function(id) {
+        const dropdown = document.getElementById(id);
+        // Close all other dropdowns
+        document.querySelectorAll('.custom-select').forEach(el => {
+            if (el.id !== id) el.classList.remove('open');
+        });
+        dropdown.classList.toggle('open');
+    };
+
+    window.selectOption = function(type, value, label, isAutoDetected = false) {
+        formData[type] = value;
+        
+        if (type === 'country') {
+            document.getElementById('countryLabel').innerText = label;
+            const wrapper = document.getElementById('countryDropdown');
+            if (isAutoDetected) wrapper.classList.add('auto-detected');
+            else wrapper.classList.remove('auto-detected');
+        }
+        if (type === 'prog1') document.getElementById('prog1Label').innerText = label;
+        if (type === 'prog2') document.getElementById('prog2Label').innerText = label;
+
+        // Close dropdown
+        document.getElementById('countryDropdown').classList.remove('open');
+        document.getElementById('prog1Dropdown').classList.remove('open');
+        document.getElementById('prog2Dropdown').classList.remove('open');
+    };
+
+    // Close dropdowns when clicking outside
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-select')) {
+            document.querySelectorAll('.custom-select').forEach(el => el.classList.remove('open'));
+        }
+    });
+
+    // AUTH LOGIC
     window.googleLogin = async function() {
         try {
             await signInWithPopup(auth, new GoogleAuthProvider());
-        } catch(e) { 
-            showError("Sign-in failed: " + e.message); 
-        }
+        } catch(e) { showError("Sign-in failed: " + e.message); }
     };
 
-    // 3. Auth State Observer
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
-            
-            // Check if they already have a profile in the database
             const docRef = doc(db, "users", user.uid);
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                // They are already registered. Redirect to index (which loads dashboard).
                 window.location.href = "index.html";
             } else {
-                // Show the form
                 document.getElementById('authGate').style.display = 'none';
                 document.getElementById('applicationForm').style.display = 'block';
                 
-                // Populate their Google details (visual only)
                 document.getElementById('userAvatar').src = user.photoURL || '';
                 document.getElementById('userName').innerText = user.displayName || 'Student';
                 document.getElementById('userEmail').innerText = user.email;
             }
         } else {
-            // Logged out
             currentUser = null;
             document.getElementById('authGate').style.display = 'block';
             document.getElementById('applicationForm').style.display = 'none';
         }
     });
 
-    // 4. Age Verification Logic
+    // AGE CHECK
     window.checkAge = function() {
         const dobInput = document.getElementById('dob').value;
         if (!dobInput) return;
@@ -263,26 +354,18 @@
         }
     };
 
-    // 5. Submit Application
+    // SUBMIT
     window.submitApplication = async function(e) {
         e.preventDefault();
         if (!currentUser) return;
 
-        const c1 = document.getElementById('courseSelect1').value;
-        const c2 = document.getElementById('courseSelect2').value;
-
-        if (c1 === c2 && c2 !== "") { 
-            showError("Please select two different programmes."); 
-            return; 
-        }
+        if (!formData.country) { showError("Please select your Country."); return; }
+        if (!formData.prog1) { showError("Please select your Primary Programme."); return; }
+        if (formData.prog1 === formData.prog2 && formData.prog2 !== "") { showError("Please select two different programmes."); return; }
 
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.innerHTML = "Saving...";
-
-        // Generate Mock IDs (Replace with your Firebase query for pre-generated IDs)
-        const mockStudentId = Math.floor(100000 + Math.random() * 900000).toString();
-        const mockExamNo = "IFB" + Math.floor(10000000 + Math.random() * 90000000).toString();
 
         const newData = {
             uid: currentUser.uid,
@@ -290,18 +373,18 @@
             firstName: document.getElementById('legalFirstName').value.trim(),
             lastName: document.getElementById('legalLastName').value.trim(),
             dob: document.getElementById('dob').value,
-            courses: c2 ? [c1, c2] : [c1],
-            studentId: mockStudentId,
-            examNumber: mockExamNo,
+            country: formData.country,
+            courses: formData.prog2 ? [formData.prog1, formData.prog2] : [formData.prog1],
+            status: "Applicant",
+            examinationNumber: null,
+            studentId: "PENDING",
             createdAt: new Date().toISOString()
         };
 
         try {
             await setDoc(doc(db, "users", currentUser.uid), newData);
             showSuccess("Application successful! Redirecting to your dashboard...");
-            setTimeout(() => {
-                window.location.href = "index.html";
-            }, 2000);
+            setTimeout(() => { window.location.href = "index.html"; }, 2000);
         } catch (error) {
             showError("Error saving application: " + error.message);
             btn.disabled = false;
@@ -309,15 +392,12 @@
         }
     };
 
-    // Helper: Show Errors
     function showError(msg) {
         const err = document.getElementById('errorMsg');
         err.innerText = msg;
         err.style.display = 'block';
         setTimeout(() => { err.style.display = 'none'; }, 5000);
     }
-
-    // Helper: Show Success
     function showSuccess(msg) {
         const succ = document.getElementById('successMsg');
         succ.innerText = msg;
