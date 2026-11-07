@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Panel | Institute of Board</title>
+    
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L92 85 H8 L50 10 Z' fill='%237A1F2B'/%3E%3Cpath d='M50 32 L77 78 H23 L50 32 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+    :root {
+        --black: #000; --maroon: #7A1F2B; --maroon-hover: #5A1620;
+        --white: #FFF; --silver: #E2E8F0; --gray: #A1A1AA; --bg: #0A0A0A;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); line-height: 1.6; overflow-x: hidden; width: 100%; max-width: 100vw; }
+    a { text-decoration: none; color: inherit; }
+
+    /* HEADER */
+    .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; background: var(--black); border-bottom: 1px solid var(--silver); }
+    .brand { display: flex; align-items: center; gap: 12px; z-index: 1001; }
+    .brand-logo { width: 40px; height: 40px; background: var(--white); color: var(--maroon); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; flex-shrink: 0; }
+    .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap; }
+    .hamburger { display: flex; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; background: transparent; padding: 5px; border: none; margin-left: auto; }
+    .hamburger span { display: block; width: 35px; height: 3px; background: var(--white); transition: 0.3s; border-radius: 2px; }
+    .hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+    .mobile-menu { position: fixed; inset: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(16px); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 30px; opacity: 0; pointer-events: none; transition: 0.4s ease; }
+    .mobile-menu.active { opacity: 1; pointer-events: auto; }
+    .mobile-menu a { font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); transition: 0.2s; text-align: center; }
+    .mobile-menu a:hover { color: var(--maroon); }
+
+    /* LAYOUT */
+    .admin-container { max-width: 1200px; margin: 0 auto; width: 100%; padding: 120px 48px 80px; }
+    .page-title { font-size: 32px; font-weight: 900; text-transform: uppercase; border-bottom: 1px solid var(--silver); padding-bottom: 20px; margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
+    .page-title i { color: var(--maroon); }
+
+    .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .admin-section { background: var(--black); border: 1px solid var(--silver); padding: 30px; }
+    .admin-section h3 { font-size: 20px; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; color: var(--white); display: flex; align-items: center; gap: 10px; }
+    .admin-section h3 i { color: var(--maroon); }
+
+    /* FORM */
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; color: var(--gray); }
+    .form-group input, .form-group select { width: 100%; padding: 14px; background: var(--bg); border: 1px solid var(--silver); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--maroon); }
+    .btn-submit { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); font-size: 14px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; margin-top: 10px; transition: 0.2s; }
+    .btn-submit:hover { background: var(--maroon-hover); }
+
+    /* WA LIST */
+    .wa-list { background: var(--bg); border: 1px solid var(--silver); }
+    .wa-header { background: #000; padding: 15px 20px; font-weight: 900; text-transform: uppercase; font-size: 14px; border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; }
+    .wa-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--silver); cursor: pointer; transition: 0.2s; }
+    .wa-item:hover { background: rgba(255,255,255,0.03); }
+    .wa-item:last-child { border-bottom: none; }
+    .wa-info h5 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .wa-info p { font-size: 12px; color: var(--gray); }
+    .wa-status { padding: 4px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; border-radius: 4px; }
+    .status-live { background: rgba(255,255,255,0.1); color: var(--white); border: 1px solid var(--white); }
+    .status-upcoming { background: transparent; color: var(--gray); border: 1px solid var(--silver); }
+    .status-closed { background: var(--maroon); color: var(--white); }
+
+    .btn-small { background: transparent; border: 1px solid var(--silver); color: var(--gray); padding: 4px 10px; font-size: 10px; cursor: pointer; font-weight: 700; }
+    .btn-small:hover { border-color: var(--white); color: var(--white); }
+
+    @media (max-width: 900px) {
+        .header, .admin-container { padding-left: 24px; padding-right: 24px; }
+        .admin-grid { grid-template-columns: 1fr; }
+    }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="brand">
+            <div class="brand-logo">∆</div>
+            <div class="brand-text">IFB ACADEMY</div>
+        </a>
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" onclick="toggleMenu()">Home</a>
+        <a href="dashboard.html" onclick="toggleMenu()">My Dashboard</a>
+        <a href="resources.html" onclick="toggleMenu()">Resources</a>
+        <a href="admin.html" style="color: var(--maroon);">Admin Panel</a>
+        <a href="#" onclick="logout(); toggleMenu();">Logout</a>
+    </div>
+
+    <main class="admin-container">
+        <div class="page-title"><i data-lucide="shield"></i> Administrator Panel</div>
+
+        <div class="admin-grid">
+            
+            <!-- LEFT: UPLOAD RESOURCES -->
+            <div class="admin-section">
+                <h3><i data-lucide="upload-cloud"></i> Upload Resource</h3>
+                <p style="font-size:13px; color:var(--gray); margin-bottom:20px;">Upload documents using the naming convention (e.g., IFB-MAT-2027-AE-QP.html). These will be visible in the Resource Library.</p>
+                
+                <form id="uploadForm" onsubmit="handleUpload(event)">
+                    <div class="form-group">
+                        <label>Document Title</label>
+                        <input type="text" id="resTitle" required placeholder="e.g. AE Timetable 2027">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="resSession" required>
+                            <option value="AE">Admissions Exam (AE)</option>
+                            <option value="MayJun">May/June</option>
+                            <option value="NovDec">Nov/Dec</option>
+                            <option value="Prospectus">Prospectus</option>
+                            <option value="Timetable">Timetable</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Course</label>
+                        <select id="resCourse" required>
+                            <option value="ALL">All Students</option>
+                            <option value="MAT">Mathematics Only</option>
+                            <option value="WEB">Web Development Only</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>File URL (HTML Link)</label>
+                        <input type="url" id="resUrl" required placeholder="https://ifb-nmaz.onrender.com/resources/...">
+                    </div>
+                    <button type="submit" class="btn-submit" id="uploadBtn">Publish to Library</button>
+                </form>
+            </div>
+
+            <!-- RIGHT: EXAM SESSIONS -->
+            <div class="admin-section">
+                <h3><i data-lucide="calendar"></i> Exam Sessions</h3>
+                <p style="font-size:13px; color:var(--gray); margin-bottom:20px;">Create live sessions and generate unique codes. Give this code to students to unlock the exam portal.</p>
+
+                <form id="createExamForm" onsubmit="handleCreateExam(event)" style="margin-bottom: 30px;">
+                    <div class="form-group">
+                        <label>Session Name</label>
+                        <input type="text" id="examName" required placeholder="e.g. AE Paper 2027">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Course</label>
+                        <select id="examCourse" required>
+                            <option value="MAT">Mathematics</option>
+                            <option value="WEB">Web Development</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="examStatus" required>
+                            <option value="upcoming">Upcoming (Locked)</option>
+                            <option value="live">Live (Unlocked)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit" id="createExamBtn">Generate Session</button>
+                </form>
+
+                <div class="wa-list">
+                    <div class="wa-header">
+                        <span>Active Sessions</span>
+                    </div>
+                    <div id="waSessionItems">
+                        <div style="padding: 20px; font-size: 13px; color: var(--gray);">Loading sessions...</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, addDoc, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    if (window.lucide) lucide.createIcons();
+
+    // SECURITY CHECK
+    onAuthStateChanged(auth, (user) => {
+        if (!user || user.email !== "n1nathaniel971@gmail.com") {
+            window.location.href = "index.html";
+        } else {
+            fetchAdminSessions();
+        }
+    });
+
+    window.toggleMenu = function() {
+        document.getElementById('mobileMenu').classList.toggle('active');
+        document.getElementById('hamburgerBtn').classList.toggle('active');
+    };
+
+    window.logout = async function() {
+        await signOut(auth);
+        window.location.href = "index.html";
+    };
+
+    // ================= UPLOAD RESOURCES =================
+    window.handleUpload = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('uploadBtn');
+        btn.innerText = "Publishing...";
+        btn.disabled = true;
+
+        const newResource = {
+            title: document.getElementById('resTitle').value,
+            session: document.getElementById('resSession').value,
+            course: document.getElementById('resCourse').value,
+            fileUrl: document.getElementById('resUrl').value,
+            uploadedAt: new Date().toISOString()
+        };
+
+        try {
+            await addDoc(collection(db, "resources"), newResource);
+            alert("Resource published successfully!");
+            document.getElementById('uploadForm').reset();
+        } catch (error) {
+            alert("Error uploading resource: " + error.message);
+        } finally {
+            btn.innerText = "Publish to Library";
+            btn.disabled = false;
+        }
+    };
+
+    // ================= EXAM SESSIONS =================
+    window.handleCreateExam = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('createExamBtn');
+        btn.innerText = "Creating...";
+        btn.disabled = true;
+
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        const newSession = {
+            name: document.getElementById('examName').value,
+            course: document.getElementById('examCourse').value,
+            status: document.getElementById('examStatus').value,
+            code: code,
+            createdAt: new Date().toISOString()
+        };
+
+        try {
+            await addDoc(collection(db, "examSessions"), newSession);
+            alert(`Session created! Code: ${code}`);
+            document.getElementById('createExamForm').reset();
+            fetchAdminSessions();
+        } catch (error) {
+            alert("Error creating exam: " + error.message);
+        } finally {
+            btn.innerText = "Generate Session";
+            btn.disabled = false;
+        }
+    };
+
+    async function fetchAdminSessions() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "examSessions"));
+            const container = document.getElementById('waSessionItems');
+            container.innerHTML = '';
+
+            if (querySnapshot.empty) {
+                container.innerHTML = '<div style="padding: 20px; font-size: 13px; color: var(--gray);">No sessions created yet.</div>';
+                return;
+            }
+
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                let statusClass = 'status-upcoming';
+                let statusText = 'Upcoming';
+                if (data.status === 'live') { statusClass = 'status-live'; statusText = 'Live Now'; }
+                if (data.status === 'closed') { statusClass = 'status-closed'; statusText = 'Closed'; }
+
+                container.innerHTML += `
+                    <div class="wa-item">
+                        <div class="wa-info">
+                            <h5>${data.name} (${data.course})</h5>
+                            <p>Code: <strong>${data.code}</strong></p>
+                        </div>
+                        <div class="${statusClass} wa-status" onclick="toggleSessionStatus('${docSnap.id}', '${data.status}')">
+                            ${statusText}
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    window.toggleSessionStatus = async function(docId, currentStatus) {
+        let newStatus = 'live';
+        if (currentStatus === 'live') newStatus = 'closed';
+        if (currentStatus === 'closed') newStatus = 'upcoming';
+
+        try {
+            const sessionRef = doc(db, "examSessions", docId);
+            await updateDoc(sessionRef, { status: newStatus });
+            fetchAdminSessions();
+        } catch (e) {
+            alert("Error updating status: " + e.message);
+        }
+    };
+    </script>
+</body>
+</html>
