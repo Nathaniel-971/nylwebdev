@@ -3,422 +3,196 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=210mm, initial-scale=1.0">
-<title>IFB Digital Access Pass</title>
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<title>IFB Admission Letter</title>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
+  /* LOCK TO A4 */
   @page { size: A4; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 100%; max-width: 100vw; overflow-x: hidden; }
   
-  body { 
-    font-family: 'Times New Roman', Times, serif; 
-    font-size: 16pt; 
-    line-height: 1.6; 
-    color: #000; 
-    background: #F8FAFC; 
+  html, body { 
+    width: 100%; max-width: 100vw; overflow-x: hidden; 
+    background: #E2E8F0; /* Grey background for screen view */
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
   
+  body { 
+    font-family: 'Times New Roman', Times, serif; 
+    font-size: 15pt; 
+    line-height: 1.6; 
+    color: #000; 
+  }
+  
+  /* STRICT A4 PAGE */
   .page { 
-    width: 210mm; height: 297mm; padding: 0; 
-    margin: 0 auto; position: relative; background: white; 
-    overflow: hidden; display: flex; flex-direction: column; 
+    width: 210mm; 
+    min-width: 210mm;
+    height: 297mm; 
+    min-height: 297mm;
+    margin: 15px auto; 
+    position: relative; 
+    background: white; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
     page-break-after: always; 
   }
   
   @media print { 
-    body { background: white; } 
+    html, body { background: white; overflow: visible; } 
     .page { margin: 0; box-shadow: none; page-break-inside: avoid; } 
   }
 
   /* ========================================== */
-  /* COVER PAGE DESIGN                          */
+  /* HEADER                                     */
   /* ========================================== */
-  .cover-page { padding: 0; }
-  
-  .cover-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; overflow: hidden; }
-  
-  .cover-bg-maroon {
-    position: absolute; top: 0; left: 0; width: 75%; height: 65%;
+  .letter-header {
+    background: #1A1A1A; color: #FFF;
+    padding: 25mm 20mm 15mm 20mm;
+    position: relative; overflow: hidden;
+    flex-shrink: 0;
+  }
+  .letter-header::after {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 50%; height: 100%;
     background: #7A1F2B;
-  }
-  
-  .cover-bg-grey {
-    position: absolute; bottom: 0; left: 0; width: 75%; height: 35%;
-    background: #F8F8F8;
-  }
-  
-  .cover-bg-checker {
-    position: absolute; bottom: 0; right: 0; width: 25%; height: 50%;
-    background-color: #fff;
-    background-image: 
-      linear-gradient(45deg, #D1D5DB 25%, transparent 25%, transparent 75%, #D1D5DB 75%, #D1D5DB), 
-      linear-gradient(45deg, #D1D5DB 25%, transparent 25%, transparent 75%, #D1D5DB 75%, #D1D5DB);
-    background-size: 24px 24px;
-    background-position: 0 0, 12px 12px;
-    clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 50%);
-  }
-
-  .cover-bg-circle {
-    position: absolute; top: 8%; right: 10%;
-    width: 140px; height: 140px;
-    background: #FFFFFF;
-    border-radius: 50%;
-    z-index: 1;
-    border: 4px solid #7A1F2B;
-  }
-  
-  .cover-bg-circle::after {
-    content: '';
-    position: absolute; top: 50%; left: -5%;
-    width: 110%; height: 25%;
-    background: #7A1F2B;
-    transform: translateY(-50%);
-    z-index: 2;
-  }
-
-  .cover-bg-line {
-    position: absolute; top: calc(8% + 140px); right: calc(10% + 68px);
-    width: 2px; height: 28%;
-    background: #7A1F2B;
+    clip-path: polygon(100% 0, 100% 100%, 20% 100%, 40% 0);
     z-index: 1;
   }
-  
-  .cover-bg-line::after {
-    content: '';
-    position: absolute; top: 40%; left: -6px;
-    width: 14px; height: 30px;
-    background: #7A1F2B;
-    border: 2px solid #FFF;
-  }
-
-  .cover-content {
-    position: relative; z-index: 2;
-    padding: 20mm 15mm;
-    display: flex; flex-direction: column; height: 100%;
-  }
-
-  .cover-logo-area {
-    display: flex; align-items: center; gap: 15px;
-    margin-bottom: 40px;
-  }
-  
-  .cover-logo-svg {
-    width: 80px; height: 80px;
-    background: #FFF;
-    border-radius: 50%;
-    padding: 5px;
-  }
-
-  .cover-logo-text { display: flex; flex-direction: column; justify-content: center; }
-
-  .cover-logo-text .logo-title {
-    font-family: Arial, sans-serif; font-size: 22pt; font-weight: 900; color: #FFF; line-height: 1.1;
-  }
-  .cover-logo-text .logo-sub {
-    font-family: Arial, sans-serif; font-size: 11pt; color: #FFF; letter-spacing: 2px; font-weight: bold;
-  }
-
-  .cover-title { font-family: Arial, sans-serif; margin-bottom: 20px; margin-top: 15px; }
-  .cover-title .main-white {
-    font-size: 40pt; font-weight: 900; color: #FFF; display: block; line-height: 1.1;
-    text-shadow: 2px 2px 0px #7A1F2B, 4px 4px 0px rgba(0,0,0,0.2); 
-  }
-
-  .cover-highlight {
-    background: #FFF; color: #7A1F2B; border-left: 6px solid #7A1F2B;
-    font-family: Arial, sans-serif; font-weight: 900; font-size: 16pt;
-    padding: 10px 15px; width: max-content; margin-bottom: 25px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
-
-  .cover-text {
-    color: #FFF; font-family: Arial, sans-serif; font-size: 13pt;
-    max-width: 380px; line-height: 1.5; margin-bottom: 5px;
-    border-left: 2px solid rgba(255,255,255,0.4); padding-left: 15px;
-  }
-
-  .cover-text-above-circle {
-    position: absolute; bottom: 75mm; left: 20mm; z-index: 2;
-    font-family: Arial, sans-serif; font-size: 18pt; font-weight: 900; color: #7A1F2B;
-    letter-spacing: 1px;
-  }
-
-  .cover-info-circle {
-    position: absolute; bottom: 30mm; left: 20mm; z-index: 2;
-    width: 170px; height: 170px;
-    background: #7A1F2B;
-    border-radius: 50%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: #FFF; font-family: Arial, sans-serif; text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    border: 4px solid #FFF;
-  }
-  .cover-info-circle .details {
-    font-size: 13pt; font-weight: 900; line-height: 1.4;
-  }
-
-  .cover-barcode-a10 {
-    margin-left: 17px;
-    margin-top: 10px;
-  }
-
-  .cover-barcode-270610a {
-    position: absolute; right: 20mm; bottom: 15mm; z-index: 3;
-  }
-
-  .cover-page .footer {
-    position: absolute; bottom: 10mm; left: 20mm; right: 20mm;
-    display: flex; justify-content: space-between; align-items: flex-end;
-    z-index: 2; font-size: 12pt; font-family: Arial, sans-serif; height: 15mm;
-  }
-  .footer-left { display: flex; align-items: center; gap: 10px; }
-  .footer-qr { display: inline-block; width: 40px; height: 40px; }
-  .footer-qr svg { display: block; width: 40px; height: 40px; filter: grayscale(100%); }
-  .footer-brand { display: flex; flex-direction: column; line-height: 1.1; }
-  .footer-brand .name { font-size: 11pt; font-weight: 900; letter-spacing: 1px; color: #000; }
-  .footer-brand .tag { font-size: 9pt; color: #000; }
-  .footer-right { color: #000; font-style: italic;}
+  .header-content { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
+  .header-logo { display: flex; align-items: center; gap: 15px; }
+  .header-logo svg { width: 60px; height: 60px; }
+  .header-logo .text h1 { font-family: Arial, sans-serif; font-size: 22pt; font-weight: 900; line-height: 1.1; }
+  .header-logo .text p { font-family: Arial, sans-serif; font-size: 10pt; letter-spacing: 2px; }
+  .header-ref { text-align: right; font-family: Arial, sans-serif; }
+  .header-ref .label { font-size: 9pt; letter-spacing: 1px; opacity: 0.8; text-transform: uppercase; }
+  .header-ref .value { font-size: 14pt; font-weight: bold; font-family: 'Courier New', monospace; margin-top: 5px; }
 
   /* ========================================== */
-  /* INNER PAGES                                */
+  /* BODY                                       */
   /* ========================================== */
-  .inner-page {
-    padding: 20mm;
-    position: relative;
-  }
-  
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 2px solid #7A1F2B;
-    padding-bottom: 10px;
-    margin-bottom: 30px;
-    font-family: Arial, sans-serif;
-    font-weight: 700;
-    font-size: 12pt;
-    color: #7A1F2B;
-  }
-  
-  .page-content h2 {
-    font-family: Arial, sans-serif;
-    font-size: 24pt;
-    color: #1A1A1A;
-    margin-bottom: 20px;
-  }
-  
-  .page-content h3 {
-    font-family: Arial, sans-serif;
-    font-size: 16pt;
-    color: #7A1F2B;
-    margin-top: 25px;
-    margin-bottom: 10px;
-  }
-  
-  .page-content p {
-    font-size: 14pt;
-    margin-bottom: 15px;
-    line-height: 1.6;
-  }
-  
-  .page-content ul {
-    margin-left: 20px;
-    margin-bottom: 20px;
-    font-size: 14pt;
-  }
-  
-  .page-content li {
-    margin-bottom: 10px;
-  }
+  .letter-body { padding: 20mm; flex: 1; display: flex; flex-direction: column; position: relative; }
 
-  .page-number {
+  .letter-meta { display: flex; justify-content: space-between; margin-bottom: 15mm; font-family: Arial, sans-serif; font-size: 11pt; }
+  .letter-meta .date { font-weight: bold; }
+  
+  .letter-content { flex: 1; }
+  .letter-content h2 { font-family: Arial, sans-serif; font-size: 22pt; color: #7A1F2B; margin-bottom: 25px; text-transform: uppercase; border-bottom: 2px solid #7A1F2B; padding-bottom: 10px; }
+  .letter-content p { margin-bottom: 15px; text-align: justify; }
+  
+  .highlight-box {
+    background: #F8FAFC; border-left: 4px solid #7A1F2B; padding: 20px;
+    margin: 25px 0; font-family: Arial, sans-serif;
+  }
+  .highlight-box .row { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px dashed #CCC; padding-bottom: 10px; }
+  .highlight-box .row:last-child { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+  .highlight-box .label { font-size: 11pt; color: #555; }
+  .highlight-box .value { font-size: 13pt; font-weight: bold; color: #000; font-family: 'Courier New', monospace; }
+
+  .signature-area { margin-top: auto; margin-bottom: 10mm; display: flex; justify-content: space-between; align-items: flex-end; }
+  .sig-block { width: 45%; }
+  .sig-line { border-bottom: 1px solid #000; height: 40px; margin-bottom: 5px; }
+  .sig-name { font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; }
+  .sig-title { font-family: Arial, sans-serif; font-size: 10pt; color: #555; }
+
+  .qr-section { text-align: center; }
+  .qr-section .qr-box { width: 80px; height: 80px; background: #FFF; padding: 5px; border: 1px solid #CCC; margin: 0 auto 5px auto; }
+  .qr-section .qr-text { font-family: Arial, sans-serif; font-size: 8pt; font-weight: bold; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ========================================== */
+  /* FOOTER (LOCKED TO BOTTOM OF A4)            */
+  /* ========================================== */
+  .letter-footer {
     position: absolute;
-    bottom: 20mm;
-    right: 20mm;
-    font-family: Arial, sans-serif;
-    font-size: 12pt;
-    color: #999;
+    bottom: 0; left: 0; right: 0;
+    background: #F8FAFC; border-top: 1px solid #E2E8F0;
+    padding: 10mm 20mm; text-align: center;
+    font-family: Arial, sans-serif; font-size: 9pt; color: #555;
   }
 </style>
 </head>
 <body>
 
-<!-- PAGE 1: COVER / DETAILS -->
-<div class="page cover-page">
+<div class="page">
   
-  <div class="cover-bg">
-    <div class="cover-bg-maroon"></div>
-    <div class="cover-bg-grey"></div>
-    <div class="cover-bg-checker"></div>
-    <div class="cover-bg-circle"></div>
-    <div class="cover-bg-line"></div>
+  <!-- HEADER -->
+  <div class="letter-header">
+    <div class="header-content">
+      <div class="header-logo">
+        <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+            <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+        </svg>
+        <div class="text">
+          <h1>INSTITUTE OF BOARD</h1>
+          <p>ACADEMIC ASSESSMENT</p>
+        </div>
+      </div>
+      <div class="header-ref">
+        <div class="label">Student Reference</div>
+        <div class="value" id="letterExamNo">------</div>
+      </div>
+    </div>
   </div>
 
-  <div class="cover-content">
+  <!-- BODY -->
+  <div class="letter-body">
     
-    <div class="cover-logo-area">
-      <svg class="cover-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
-          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
-          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
-      </svg>
-      <div class="cover-logo-text">
-        <div class="logo-title">INSTITUTE OF BOARD</div>
-        <div class="logo-sub">ACADEMIC ASSESSMENT</div>
+    <div class="letter-meta">
+      <div class="date" id="letterDate">21 January 2028</div>
+      <div>Private & Confidential</div>
+    </div>
+
+    <div class="letter-content">
+      <h2>Letter of Admission</h2>
+      
+      <p>Dear <strong id="letterName">Student</strong>,</p>
+      
+      <p>On behalf of the Institute of Board (IFB), we are pleased to inform you that you have successfully met the requirements for admission to the <strong>2028 Academic Year</strong>.</p>
+      
+      <p>Your performance in the Admissions Examination (AE) has demonstrated the rigorous cognitive reasoning and foundational knowledge required for our high-level programmes. You have been officially accepted into the following programme:</p>
+
+      <div class="highlight-box">
+        <div class="row">
+          <span class="label">Programme:</span>
+          <span class="value" id="letterProgramme">IFB— Mathematics</span>
+        </div>
+        <div class="row">
+          <span class="label">Student ID:</span>
+          <span class="value" id="letterStudentId">------</span>
+        </div>
+        <div class="row">
+          <span class="label">Status:</span>
+          <span class="value" style="color: #15803D;">ADMITTED</span>
+        </div>
+      </div>
+
+      <p>As a registered student, you now have full access to the IFB Student Portal, including your digital access pass, course materials, and examination schedules. Please ensure that you log in to the dashboard to finalize your onboarding.</p>
+
+      <p>We look forward to seeing the intellectual growth and problem-solving skills you will develop during your time at IFB. Welcome to the academy.</p>
+    </div>
+
+    <div class="signature-area">
+      <div class="sig-block">
+        <div class="sig-line"></div>
+        <div class="sig-name">The Chief Examiner</div>
+        <div class="sig-title">Institute of Board</div>
+      </div>
+      <div class="qr-section">
+        <div class="qr-box" id="letterQR"></div>
+        <div class="qr-text">Verify Authenticity</div>
       </div>
     </div>
 
-    <div class="cover-title">
-      <span class="main-white">ACCESS PASS</span>
-    </div>
-
-    <div class="cover-highlight">
-      Online AE - 2027
-    </div>
-
-    <div class="cover-text" style="margin-bottom: 15px;">
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 4px; margin-bottom: 4px;">
-        <span style="color: rgba(255,255,255,0.7);">Student:</span>
-        <strong id="slipName" style="color: #FFF;">—</strong>
-      </div>
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 4px; margin-bottom: 4px;">
-        <span style="color: rgba(255,255,255,0.7);">Student ID:</span>
-        <strong id="slipStudentId" style="color: #FFF;">------</strong>
-      </div>
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 4px; margin-bottom: 4px;">
-        <span style="color: rgba(255,255,255,0.7);">Exam No:</span>
-        <strong id="slipExamNum" style="color: #FFF;">PENDING</strong>
-      </div>
-      <div style="display: flex; justify-content: space-between;">
-        <span style="color: rgba(255,255,255,0.7);">Security Code:</span>
-        <strong id="slipSecCode" style="color: #FFF;">------</strong>
-      </div>
-    </div>
-    
-    <div class="cover-barcode-a10">
-      <svg class="barcode-cover" id="slipBarcode" data-bc-width="2.5" data-bc-height="50" data-bc-display="true" data-bc-font-size="16" data-bc-line-color="#FFFFFF"></svg>
-    </div>
-
   </div>
 
-  <div class="cover-text-above-circle" id="slipProgramme">
-    MATHEMATICS
+  <!-- FOOTER -->
+  <div class="letter-footer">
+    This is an internal document issued by the Institute of Board. The IFB is a skills academy and this letter does not constitute an accredited university offer. © 2028 IFB. All rights reserved.
   </div>
 
-  <div class="cover-info-circle">
-    <div class="details" id="slipExamDate">21 Jan 2028<br>09:00 UTC</div>
-  </div>
-
-  <div class="cover-barcode-270610a">
-    <svg class="barcode-cover" id="slipExamBarcode" data-bc-width="2.5" data-bc-height="50" data-bc-display="true" data-bc-font-size="16" data-bc-line-color="#111111"></svg>
-  </div>
-
-  <div class="footer">
-    <div class="footer-left">
-      <span class="footer-qr" data-qr="https://ifb-nmaz.onrender.com"></span>
-      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
-    </div>
-    <div class="footer-right">Scan with Exam Portal</div>
-  </div>
-</div>
-
-<!-- PAGE 2: CODE OF CONDUCT -->
-<div class="page inner-page">
-  <div class="page-header">
-    <span>IFB CODE OF CONDUCT</span>
-    <span id="headName1">...</span>
-  </div>
-  <div class="page-content">
-    <h2>Code of Conduct</h2>
-    <p>By accessing this examination, you agree to abide by the following rules. Failure to comply will result in immediate disqualification and potential legal action.</p>
-    
-    <h3>1. Academic Integrity</h3>
-    <ul>
-      <li>You must complete the examination entirely on your own.</li>
-      <li>You may not use unauthorized materials, notes, or AI assistants.</li>
-      <li>You may not communicate with any other person during the exam.</li>
-    </ul>
-
-    <h3>2. Identity Verification</h3>
-    <ul>
-      <li>You must present this Access Pass for verification.</li>
-      <li>Your Security Code is unique to you and must not be shared.</li>
-    </ul>
-
-    <h3>3. Technical Requirements</h3>
-    <ul>
-      <li>You must use a stable internet connection and a charged device.</li>
-      <li>If you are disconnected, the timer will continue running.</li>
-    </ul>
-
-    <h3>4. Malpractice</h3>
-    <p>Any attempt to hack the portal, impersonate another student, or leak the examination paper will be reported to the relevant authorities under the Cybercrimes Act.</p>
-  </div>
-  <div class="page-number">Page 2 of 4</div>
-</div>
-
-<!-- PAGE 3: PREREQUISITES -->
-<div class="page inner-page">
-  <div class="page-header">
-    <span>IFB PREREQUISITES</span>
-    <span id="headName2">...</span>
-  </div>
-  <div class="page-content">
-    <h2>Prerequisites</h2>
-    <p>Before you begin the examination, ensure that you have met all the requirements for your specific programme.</p>
-
-    <h3>Mathematics (AE-S)</h3>
-    <ul>
-      <li>Solid understanding of basic algebra and functions.</li>
-      <li>Familiarity with trigonometry and geometry.</li>
-      <li>Ability to apply calculus concepts to 3D surfaces.</li>
-    </ul>
-
-    <h3>Web Development (AE-W)</h3>
-    <ul>
-      <li>Basic knowledge of HTML, CSS, and JavaScript.</li>
-      <li>Understanding of client-side and server-side logic.</li>
-      <li>Familiarity with database architecture.</li>
-    </ul>
-
-    <h3>System Requirements</h3>
-    <ul>
-      <li>Device with a functioning camera for scanning.</li>
-      <li>A secondary device to view the examination paper.</li>
-      <li>Printer access (optional, but recommended for rough work).</li>
-    </ul>
-  </div>
-  <div class="page-number">Page 3 of 4</div>
-</div>
-
-<!-- PAGE 4: REMINDERS -->
-<div class="page inner-page">
-  <div class="page-header">
-    <span>IFB REMINDERS</span>
-    <span id="headName3">...</span>
-  </div>
-  <div class="page-content">
-    <h2>Reminders</h2>
-    <p>Please read these reminders carefully before the day of your examination.</p>
-
-    <h3>1. Timezones</h3>
-    <p>The exam is scheduled for <strong>21 January 2028 at 09:00 UTC</strong>. You must be online at this time. Convert the time to your local timezone.</p>
-
-    <h3>2. Scanning Process</h3>
-    <p>After you finish your answers on paper, use the IFB Scanner tool on your phone to capture each page. Ensure the scan is in Grayscale.</p>
-
-    <h3>3. Uploading</h3>
-    <p>Once the scan is complete, generate the PDF and upload it using the portal before the timer expires. Late uploads will not be accepted.</p>
-
-    <h3>4. Troubleshooting</h3>
-    <p>If you experience technical issues, use the chat feature on the exam portal to contact the invigilator immediately. Provide a screenshot of the error if possible.</p>
-
-    <h3>5. Final Check</h3>
-    <p>Check that all your answer pages are included in the final PDF. Incomplete submissions will result in lost marks.</p>
-  </div>
-  <div class="page-number">Page 4 of 4</div>
 </div>
 
 <script type="module">
@@ -431,19 +205,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    function formatDate(utcDateString) {
-        // Define dates in UTC
-        const date = new Date(utcDateString);
-        
-        // Format to local timezone for display
-        const localString = new Intl.DateTimeFormat('en-GB', {
-            day: '2-digit', month: 'short', year: 'numeric',
-            hour: '2-digit', minute: '2-digit', timeZoneName: 'short'
-        }).format(date);
-        
-        return localString;
-    }
-
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const docRef = doc(db, "users", user.uid);
@@ -451,45 +212,17 @@
 
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                const isMath = data.courses && data.courses[0] === 'MAT';
                 
-                // Determine Exam Date (2028 as requested)
-                const examDateUTC = isMath ? '2028-01-21T09:00:00Z' : '2028-01-29T09:00:00Z';
-                const displayDate = formatDate(examDateUTC);
+                document.getElementById('letterName').textContent = `${data.firstName} ${data.lastName}`;
+                document.getElementById('letterProgramme').textContent = data.courses[0] === 'MAT' ? 'IFB— Mathematics' : 'IFB— Web Development';
+                document.getElementById('letterStudentId').textContent = data.studentId || 'PENDING';
+                document.getElementById('letterExamNo').textContent = data.examinationNumber || 'PENDING';
 
-                // Populate Text
-                document.getElementById('slipName').textContent = `${data.firstName} ${data.lastName}`;
-                document.getElementById('slipProgramme').textContent = isMath ? 'MATHEMATICS' : 'WEB DEVELOPMENT';
-                document.getElementById('slipStudentId').textContent = data.studentId || 'PENDING';
-                document.getElementById('slipExamNum').textContent = data.examinationNumber || 'PENDING';
-                document.getElementById('slipSecCode').textContent = data.securityCode || '------';
-                document.getElementById('slipExamDate').innerHTML = `${displayDate.split(' ')[0]}<br>${displayDate.split(' ')[1]}<br>${displayDate.split(' ')[2]}`;
-
-                // Headers for pages
-                document.getElementById('headName1').textContent = `${data.firstName} ${data.lastName}`;
-                document.getElementById('headName2').textContent = `${data.firstName} ${data.lastName}`;
-                document.getElementById('headName3').textContent = `${data.firstName} ${data.lastName}`;
-
-                // Barcodes
-                if (data.studentId) {
-                    JsBarcode("#slipBarcode", data.studentId, {
-                        format: "CODE128", width: 2.5, height: 50, displayValue: true, fontSize: 16, margin: 0,
-                        background: "transparent", lineColor: "#FFFFFF"
-                    });
-                }
-
-                if (data.examinationNumber) {
-                    JsBarcode("#slipExamBarcode", data.examinationNumber, {
-                        format: "CODE128", width: 2.5, height: 50, displayValue: true, fontSize: 16, margin: 0,
-                        background: "transparent", lineColor: "#111111"
-                    });
-                }
-
-                // QR Code for the footer
+                // Generate QR Code for verification
                 const qr = qrcode(0, 'M');
-                qr.addData(`IFB|SID:${data.studentId}|EXAM:${data.examinationNumber || 'PENDING'}`);
+                qr.addData(`https://ifb-nmaz.onrender.com/verify?id=${data.examinationNumber || data.studentId}`);
                 qr.make();
-                document.querySelector('.footer-qr').innerHTML = qr.createSvgTag({ cellSize: 2, margin: 0, scalable: true });
+                document.getElementById('letterQR').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
 
                 // Trigger Print
                 setTimeout(() => {
