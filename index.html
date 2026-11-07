@@ -22,9 +22,11 @@
         --maroon: #7A1F2B; --maroon-hover: #5A1620; 
         --dark-bg: #111111; --dark-card: #1F1F1F;
     }
+    
+    /* Global Reset & Overflow Prevention */
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html { scroll-behavior: smooth; overflow-x: hidden; } /* FIX: Prevent side scrolling */
-    body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: var(--white); line-height: 1.6; overflow-x: hidden; position: relative; width: 100%; }
+    html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
+    body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: var(--white); line-height: 1.6; overflow-x: hidden; position: relative; width: 100%; max-width: 100vw; }
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
 
@@ -41,14 +43,14 @@
     .btn-secondary:hover { background: var(--white); color: var(--black); }
 
     /* ================= HEADER & HAMBURGER ================= */
-    .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+    .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
     .header.scrolled { background: var(--black); box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
     .brand { display: flex; align-items: center; gap: 12px; z-index: 1001; }
     .brand-logo { width: 40px; height: 40px; background: var(--white); color: var(--maroon); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; flex-shrink: 0; }
-    .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+    .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap; }
 
     /* The Three Lines Button */
-    .hamburger { display: flex; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; background: transparent; padding: 5px; border: none; }
+    .hamburger { display: flex; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; background: transparent; padding: 5px; border: none; margin-left: auto; }
     .hamburger span { display: block; width: 35px; height: 3px; background: var(--white); transition: 0.3s; border-radius: 2px; }
     .hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
     .hamburger.active span:nth-child(2) { opacity: 0; }
@@ -57,90 +59,59 @@
     /* Full Screen Menu */
     .mobile-menu { position: fixed; inset: 0; width: 100%; height: 100vh; background: var(--dark-bg); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 30px; opacity: 0; pointer-events: none; transition: 0.4s ease; }
     .mobile-menu.active { opacity: 1; pointer-events: auto; }
-    .mobile-menu a { font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); transition: 0.2s; }
+    .mobile-menu a { font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); transition: 0.2s; text-align: center; }
     .mobile-menu a:hover { color: var(--maroon); }
 
     /* ================= HERO ================= */
-    .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 0 48px; background: linear-gradient(135deg, rgba(17,17,17,0.9) 0%, rgba(17,17,17,0.7) 100%), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop') center/cover; width: 100%; }
+    .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 48px 80px; background: linear-gradient(135deg, rgba(17,17,17,0.9) 0%, rgba(17,17,17,0.7) 100%), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop') center/cover; width: 100%; }
     .hero-content { max-width: 1400px; margin: 0 auto; width: 100%; }
-    .hero-text { max-width: 800px; }
-    .hero-text h1 { font-size: clamp(50px, 8vw, 90px); font-weight: 900; line-height: 1; text-transform: uppercase; margin-bottom: 24px; letter-spacing: -2px; }
+    .hero-text { max-width: 800px; width: 100%; }
+    .hero-text h1 { font-size: clamp(40px, 8vw, 90px); font-weight: 900; line-height: 1.05; text-transform: uppercase; margin-bottom: 24px; letter-spacing: -1px; word-wrap: break-word; }
     .hero-text h1 span { color: var(--maroon); }
     .hero-text p { font-size: 18px; color: var(--gray); max-width: 500px; margin-bottom: 40px; }
-    .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+    .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; width: 100%; }
 
     /* ================= WHY US (Flowing Layout) ================= */
     .why-section { padding: 120px 48px; background: var(--black); display: flex; justify-content: center; width: 100%; }
-    .why-container { max-width: 1200px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-    .why-text h2 { font-size: 56px; font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 40px; }
+    .why-container { max-width: 1200px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .why-text h2 { font-size: clamp(36px, 5vw, 56px); font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 40px; word-wrap: break-word; }
     .why-text h2 span { color: var(--maroon); }
     .why-list { display: flex; flex-direction: column; gap: 40px; }
     .why-item { display: flex; gap: 20px; align-items: flex-start; }
     .why-icon { width: 60px; height: 60px; background: var(--maroon); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .why-item h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; }
     .why-item p { font-size: 15px; color: var(--gray); }
-    .why-image { background: url('https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=1000&auto=format&fit=crop') center/cover; height: 600px; width: 100%; }
+    .why-image { background: url('https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=1000&auto=format&fit=crop') center/cover; height: 500px; width: 100%; border-radius: 4px; }
 
     /* ================= PROGRAMMES (Full Width) ================= */
     .programmes-section { padding: 120px 48px; background: var(--dark-bg); width: 100%; }
-    .programmes-container { max-width: 1200px; margin: 0 auto; }
-    .programmes-container h2 { font-size: 56px; font-weight: 900; text-transform: uppercase; margin-bottom: 60px; }
+    .programmes-container { max-width: 1200px; margin: 0 auto; width: 100%; }
+    .programmes-container h2 { font-size: clamp(36px, 5vw, 56px); font-weight: 900; text-transform: uppercase; margin-bottom: 60px; word-wrap: break-word; }
     .programmes-container h2 span { color: var(--maroon); }
     
-    .programme-row { display: flex; border-top: 1px solid var(--silver); padding: 40px 0; align-items: center; transition: 0.3s; }
-    .programme-row:hover { background: rgba(255,255,255,0.02); padding-left: 20px; }
-    .programme-num { font-size: 24px; font-weight: 900; color: var(--maroon); width: 100px; flex-shrink: 0; }
-    .programme-info { flex: 1; padding-right: 20px; }
-    .programme-info h3 { font-size: 32px; font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
+    .programme-row { display: flex; border-top: 1px solid var(--silver); padding: 40px 0; align-items: center; transition: 0.3s; width: 100%; flex-wrap: wrap; gap: 20px; }
+    .programme-row:hover { background: rgba(255,255,255,0.02); }
+    .programme-num { font-size: 24px; font-weight: 900; color: var(--maroon); width: 80px; flex-shrink: 0; }
+    .programme-info { flex: 1; min-width: 250px; }
+    .programme-info h3 { font-size: clamp(24px, 4vw, 32px); font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
     .programme-info p { color: var(--gray); font-size: 16px; max-width: 600px; }
     .programme-action { width: 200px; text-align: right; flex-shrink: 0; }
 
     /* ================= ASSESSMENT SECTION ================= */
     .assessment-section { padding: 120px 48px; background: var(--maroon); display: flex; justify-content: center; text-align: center; width: 100%; }
-    .assessment-container { max-width: 800px; }
-    .assessment-container h2 { font-size: 48px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
+    .assessment-container { max-width: 800px; width: 100%; }
+    .assessment-container h2 { font-size: clamp(32px, 5vw, 48px); font-weight: 900; text-transform: uppercase; margin-bottom: 20px; word-wrap: break-word; }
     .assessment-container p { font-size: 18px; color: rgba(255,255,255,0.8); margin-bottom: 40px; }
-
-    /* ================= MODALS ================= */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
-    .modal-overlay.active { display: flex; }
-    .modal-content { background: var(--white); color: var(--black); padding: 40px; max-width: 500px; width: 100%; border-top: 6px solid var(--maroon); text-align: center; border-radius: 0; }
-    .modal-content h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
-    .modal-content p { font-size: 14px; color: #555; margin-bottom: 24px; }
-    
-    .form-group { text-align: left; margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
-    .form-group input, .form-group select { width: 100%; padding: 14px; border: 1px solid #ccc; border-radius: 0; font-family: 'Inter', sans-serif; }
-    .checkbox-group { display: flex; gap: 10px; align-items: flex-start; text-align: left; margin-bottom: 12px; }
-    .checkbox-group input { margin-top: 4px; width: 16px; height: 16px; accent-color: var(--maroon); }
-    .checkbox-group label { font-size: 11px; color: #555; line-height: 1.4; }
-
-    /* ================= LOGGED IN (Dashboard) ================= */
-    #loggedInView { display: none; min-height: 100vh; padding: 120px 48px; background: var(--dark-bg); width: 100%; }
-    .dash-container { max-width: 1200px; margin: 0 auto; }
-    .dash-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--silver); padding-bottom: 30px; margin-bottom: 40px; }
-    .profile-block { display: flex; gap: 20px; align-items: center; }
-    .profile-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; flex-shrink: 0; }
-    .id-badges { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
-    .badge { background: #000; border: 1px solid var(--silver); padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--maroon); }
-    
-    .dash-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
-    .dash-section h3 { font-size: 24px; font-weight: 800; text-transform: uppercase; margin-bottom: 24px; border-bottom: 1px solid var(--silver); padding-bottom: 10px; }
-    .course-pill { display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid var(--silver); border-left: 4px solid var(--maroon); margin-bottom: 15px; background: var(--dark-card); }
-    .resource-item { display: flex; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--silver); color: var(--white); }
-    .resource-item:hover { color: var(--maroon); }
 
     /* ================= FOOTER & SOCIALS ================= */
     .footer { background: #000; padding: 80px 48px 40px; border-top: 1px solid var(--silver); width: 100%; }
-    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 60px; }
-    .footer h2 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
+    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 60px; width: 100%; }
+    .footer h2 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; word-wrap: break-word; }
     .footer p { font-size: 14px; color: var(--gray); max-width: 400px; }
     .footer .legal { font-size: 12px; border-left: 3px solid var(--maroon); padding-left: 12px; margin-top: 24px; color: #888; }
     .footer-links { display: flex; flex-direction: column; gap: 15px; }
     .footer-links a { color: var(--gray); font-size: 14px; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
     .footer-links a:hover { color: var(--white); }
-    
-    /* Color Logos with NO background boxes, using brand colors via Lucide and text */
     .footer-links a i { color: var(--maroon); width: 20px; height: 20px; } 
     .footer-links a:hover i { color: var(--white); }
 
@@ -158,72 +129,16 @@
         .programme-row { flex-direction: column; align-items: flex-start; gap: 20px; }
         .programme-action { width: 100%; text-align: left; }
         .assessment-section { padding: 80px 24px; }
-        #loggedInView { padding: 100px 24px; }
-        .dash-header { flex-direction: column; text-align: center; gap: 20px; }
-        .profile-block { flex-direction: column; }
-        .dash-content { grid-template-columns: 1fr; }
-        .footer-grid { grid-template-columns: 1fr; }
+        .footer { padding: 60px 24px 30px; }
+        .footer-grid { grid-template-columns: 1fr; gap: 40px; }
     }
     </style>
 </head>
 <body>
 
-<!-- ================= POPUPS ================= -->
-<div class="modal-overlay active" id="accreditationModal">
-    <div class="modal-content">
-        <i data-lucide="shield-alert" style="width:48px;height:48px;color:var(--maroon);margin:0 auto 16px;"></i>
-        <h2>Non-Accredited Institution</h2>
-        <p>The Institute of Board (IFB) is strictly a tutorial and skills academy. We are <strong>NOT</strong> registered with DHET or Umalusi. Our certificates are internal awards.</p>
-        <button class="btn-primary" style="width: 100%;" onclick="document.getElementById('accreditationModal').classList.remove('active')">I Understand & Agree</button>
-    </div>
-</div>
-
-<div class="modal-overlay" id="applyModal">
-    <div class="modal-content" style="text-align: left;">
-        <h2 style="text-align: center;">Student Application</h2>
-        <p style="text-align: center;">Complete your profile to access the portal.</p>
-        <form id="applicationForm" onsubmit="submitApplication(event)">
-            <div class="form-group"><label>First Legal Name</label><input type="text" id="legalFirstName" required></div>
-            <div class="form-group"><label>Last Legal Name</label><input type="text" id="legalLastName" required></div>
-            <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required onchange="checkAge()"></div>
-            
-            <div id="parentalConsentBox" style="display: none; background: #FFF5F6; padding: 12px; margin-bottom: 16px; border: 1px solid var(--maroon);">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="parentalConsent">
-                    <label style="color: var(--maroon); font-weight: 700;">I am under 18. I confirm I have my parent/guardian's consent.</label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Select Programme(s)</label>
-                <select id="courseSelect1" required>
-                    <option value="">-- Primary Programme --</option>
-                    <option value="MAT">IFB—Mathematics</option>
-                    <option value="WEB">IFB—Web Development</option>
-                </select>
-                <select id="courseSelect2" style="margin-top: 10px;">
-                    <option value="">-- Optional Second Programme --</option>
-                    <option value="MAT">IFB—Mathematics</option>
-                    <option value="WEB">IFB—Web Development</option>
-                </select>
-            </div>
-
-            <div class="checkbox-group">
-                <input type="checkbox" id="popiaConsent" required>
-                <label>I consent to the processing of my personal data in accordance with POPIA and GDPR.</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="commitmentConsent" required>
-                <label>I commit to completing my programme(s) and understand the rules against malpractice.</label>
-            </div>
-            <button type="submit" class="btn-primary" style="width: 100%;">Submit Application</button>
-        </form>
-    </div>
-</div>
-
 <!-- ================= HEADER ================= -->
 <header class="header" id="mainHeader">
-    <a href="#" class="brand" onclick="window.scrollTo(0,0)">
+    <a href="index.html" class="brand">
         <div class="brand-logo">∆</div>
         <div class="brand-text">IFB ACADEMY</div>
     </a>
@@ -239,11 +154,11 @@
     <a href="#why" onclick="toggleMenu()">Why Us</a>
     <a href="#programmes" onclick="toggleMenu()">Programmes</a>
     <a href="#assessment" onclick="toggleMenu()">Assessment</a>
-    <a href="#" onclick="googleLogin(); toggleMenu();">Login / Apply</a>
+    <a href="apply.html">Login / Apply</a>
 </div>
 
 <!-- ================= PUBLIC VIEW ================= -->
-<div id="publicView">
+<main>
     <!-- HERO -->
     <section class="hero">
         <div class="hero-content">
@@ -251,7 +166,7 @@
                 <h1>Kickstart Your <br><span>Academic</span> Journey</h1>
                 <p>Join a rigorous, international standard academy. Fee-free education in Mathematics and Web Development. We build problem-solvers, not just students.</p>
                 <div class="hero-buttons">
-                    <button class="btn-primary" onclick="openApply()">Apply Now</button>
+                    <a href="apply.html" class="btn-primary">Apply Now</a>
                     <button class="btn-secondary" onclick="document.getElementById('programmes').scrollIntoView()">Learn More</button>
                 </div>
             </div>
@@ -303,7 +218,7 @@
                     <p>Advanced Algebra, Calculus, Trigonometry, 3D Surfaces, and Geometry. Rigorous, university-level preparation.</p>
                 </div>
                 <div class="programme-action">
-                    <button class="btn-primary" onclick="openApply('MAT')">Apply Now</button>
+                    <a href="apply.html?course=MAT" class="btn-primary">Apply Now</a>
                 </div>
             </div>
 
@@ -314,7 +229,7 @@
                     <p>Basic back-end web development. Focuses on logic, database architecture, and server-side application.</p>
                 </div>
                 <div class="programme-action">
-                    <button class="btn-primary" onclick="openApply('WEB')">Apply Now</button>
+                    <a href="apply.html?course=WEB" class="btn-primary">Apply Now</a>
                 </div>
             </div>
         </div>
@@ -325,7 +240,7 @@
         <div class="assessment-container">
             <h2>The Admissions Examination</h2>
             <p>To ensure our students are ready for the rigor of IFB, every applicant must write the AE Paper. It is a 100-mark examination covering high school mathematics.</p>
-            <button class="btn-secondary" style="border-color: var(--white); color: var(--white);" onclick="openApply()">Register for the AE Paper</button>
+            <a href="apply.html" class="btn-secondary" style="border-color: var(--white); color: var(--white);">Register for the AE Paper</a>
         </div>
     </section>
 
@@ -342,7 +257,6 @@
             <div>
                 <h2>Connect</h2>
                 <div class="footer-links">
-                    <!-- Using Lucide icons, colored via CSS, no background boxes -->
                     <a href="https://www.youtube.com/@IFBAcademy" target="_blank"><i data-lucide="youtube"></i> @IFBAcademy</a>
                     <a href="https://www.instagram.com/institute_of_board" target="_blank"><i data-lucide="instagram"></i> @institute_of_board</a>
                     <a href="mailto:n1nathaniel971@gmail.com"><i data-lucide="mail"></i> n1nathaniel971@gmail.com</a>
@@ -350,56 +264,12 @@
             </div>
         </div>
     </footer>
-</div>
+</main>
 
-<!-- ================= LOGGED IN DASHBOARD ================= -->
-<div id="loggedInView">
-    <div class="dash-container">
-        <div class="dash-header">
-            <div class="profile-block">
-                <div class="profile-icon" id="dashProfileIcon">N</div>
-                <div>
-                    <h2 id="dashName" style="font-size: 32px; font-weight: 900; text-transform: uppercase;">Loading...</h2>
-                    <div class="id-badges">
-                        <span class="badge">ID: <span id="dashStudentId">...</span></span>
-                        <span class="badge">Exam No: <span id="dashExamNo">...</span></span>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <a href="settings.html" class="btn-secondary" style="padding: 10px 20px; font-size: 12px; border-color: var(--silver); color: var(--gray);">Settings</a>
-            </div>
-        </div>
-
-        <div class="dash-content">
-            <div class="dash-section">
-                <h3>My Courses</h3>
-                <div id="dashMyCourses"></div>
-            </div>
-            
-            <div class="dash-section">
-                <h3>Resources & Exams</h3>
-                <div id="dashResources"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ================= JAVASCRIPT & FIREBASE ================= -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
+<!-- ================= JAVASCRIPT ================= -->
+<script>
+// Initialize Icons
 if (window.lucide) lucide.createIcons();
-
-let currentUser = null;
-let userData = null;
 
 // SCROLL EFFECT FOR HEADER
 window.addEventListener('scroll', () => {
@@ -409,150 +279,9 @@ window.addEventListener('scroll', () => {
 });
 
 // HAMBURGER MENU
-window.toggleMenu = function() {
+function toggleMenu() {
     document.getElementById('mobileMenu').classList.toggle('active');
     document.getElementById('hamburgerBtn').classList.toggle('active');
-};
-
-// AUTH LOGIC
-window.googleLogin = async function() {
-    try {
-        await signInWithPopup(auth, new GoogleAuthProvider());
-    } catch(e) { alert("Sign-in failed: " + e.message); }
-};
-
-window.logout = async function() {
-    await signOut(auth);
-    window.location.reload();
-};
-
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        currentUser = user;
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            userData = docSnap.data();
-            showDashboard();
-        } else {
-            openApply();
-        }
-    } else {
-        currentUser = null;
-        userData = null;
-        document.getElementById('publicView').style.display = 'block';
-        document.getElementById('loggedInView').style.display = 'none';
-    }
-});
-
-// APPLICATION LOGIC
-window.openApply = function(preSelectedCourse = "") {
-    if (currentUser) {
-        document.getElementById('applyModal').classList.add('active');
-        if(preSelectedCourse) document.getElementById('courseSelect1').value = preSelectedCourse;
-    } else {
-        googleLogin();
-    }
-};
-
-window.checkAge = function() {
-    const dobInput = document.getElementById('dob').value;
-    if (!dobInput) return;
-    const dob = new Date(dobInput);
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
-
-    const parentalBox = document.getElementById('parentalConsentBox');
-    const parentalCheck = document.getElementById('parentalConsent');
-
-    if (age < 16) {
-        alert("You must be at least 16 years old to register.");
-        document.getElementById('dob').value = '';
-        parentalBox.style.display = 'none';
-        parentalCheck.required = false;
-    } else if (age >= 16 && age < 18) {
-        parentalBox.style.display = 'block';
-        parentalCheck.required = true;
-    } else {
-        parentalBox.style.display = 'none';
-        parentalCheck.required = false;
-    }
-};
-
-window.submitApplication = async function(e) {
-    e.preventDefault();
-    if (!currentUser) return;
-
-    const c1 = document.getElementById('courseSelect1').value;
-    const c2 = document.getElementById('courseSelect2').value;
-
-    if (c1 === c2 && c2 !== "") { alert("Please select two different programmes."); return; }
-
-    const mockStudentId = Math.floor(100000 + Math.random() * 900000).toString();
-    const mockExamNo = "IFB" + Math.floor(10000000 + Math.random() * 90000000).toString();
-
-    const newData = {
-        uid: currentUser.uid,
-        email: currentUser.email,
-        firstName: document.getElementById('legalFirstName').value,
-        lastName: document.getElementById('legalLastName').value,
-        dob: document.getElementById('dob').value,
-        courses: c2 ? [c1, c2] : [c1],
-        studentId: mockStudentId,
-        examNumber: mockExamNo,
-        createdAt: new Date().toISOString()
-    };
-
-    try {
-        await setDoc(doc(db, "users", currentUser.uid), newData);
-        userData = newData;
-        document.getElementById('applyModal').classList.remove('active');
-        showDashboard();
-    } catch (error) { alert("Error saving: " + error.message); }
-};
-
-function showDashboard() {
-    document.getElementById('publicView').style.display = 'none';
-    document.getElementById('loggedInView').style.display = 'block';
-    
-    // Update Hamburger Menu for logged-in state
-    document.getElementById('mobileMenu').innerHTML = `
-        <a href="#" onclick="toggleMenu()">Dashboard</a>
-        <a href="settings.html">Settings</a>
-        <a href="#" onclick="logout(); toggleMenu();">Logout</a>
-    `;
-
-    document.getElementById('dashName').innerText = `${userData.firstName} ${userData.lastName}`;
-    document.getElementById('dashProfileIcon').innerText = userData.firstName.charAt(0).toUpperCase();
-    document.getElementById('dashStudentId').innerText = userData.studentId;
-    document.getElementById('dashExamNo').innerText = userData.examNumber;
-
-    const courseContainer = document.getElementById('dashMyCourses');
-    courseContainer.innerHTML = '';
-    userData.courses.forEach(courseCode => {
-        const courseName = courseCode === 'MAT' ? 'IFB—Mathematics' : 'IFB—Web Development';
-        courseContainer.innerHTML += `<div class="course-pill">${courseName} <i data-lucide="check-circle" style="color: var(--maroon);"></i></div>`;
-    });
-
-    const resContainer = document.getElementById('dashResources');
-    const availableResources = [
-        { name: "Admissions Examination (AE) - QP", file: "IFB-MAT-2027-AE-QP.html", course: "MAT" },
-        { name: "Admissions Examination (AE) - Memo", file: "IFB-MAT-2027-AE-MEMO.html", course: "MAT" }
-    ];
-    
-    resContainer.innerHTML = '';
-    userData.courses.forEach(courseCode => {
-        const courseFiles = availableResources.filter(r => r.course === courseCode);
-        courseFiles.forEach(f => {
-            resContainer.innerHTML += `<a href="${f.file}" target="_blank" class="resource-item"><i data-lucide="file-text"></i> ${f.name}</a>`;
-        });
-    });
-
-    if (resContainer.innerHTML === '') resContainer.innerHTML = '<p style="color: var(--gray);">No documents uploaded yet.</p>';
-    if (window.lucide) lucide.createIcons();
 }
 </script>
 </body>
