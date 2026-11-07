@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Institute of Board | Portal</title>
     <meta name="description" content="Apply to the Institute of Board (IFB). Rigorous, fee-free education in Mathematics and Web Development.">
-    <meta property="og:title" content="Institute of Board">
-    <meta property="og:description" content="International standard, fee-free education.">
-    <meta property="og:image" content="https://ifb-nmaz.onrender.com/logo.png">
 
     <!-- Favicon Logo -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L92 85 H8 L50 10 Z' fill='%237A1F2B'/%3E%3Cpath d='M50 32 L77 78 H23 L50 32 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
@@ -21,221 +18,180 @@
     <style>
     /* ================= VARIABLES ================= */
     :root {
-        --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0;
-        --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC;
-        --green: #15803D;
+        --white: #FFF; --black: #111; --gray: #A1A1AA; --silver: #333;
+        --maroon: #7A1F2B; --maroon-hover: #5A1620; 
+        --dark-bg: #111111; --dark-card: #1F1F1F;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); line-height: 1.6; overflow-x: hidden; opacity: 0; animation: fadeIn .4s ease forwards; }
-    @keyframes fadeIn { to { opacity: 1; } }
+    body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: var(--white); line-height: 1.6; overflow-x: hidden; }
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
 
-    /* ================= GLOBAL BUTTON STYLES ================= */
+    /* ================= GLOBAL BUTTONS ================= */
     button {
-        font-family: 'Inter', sans-serif;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        border-radius: 6px;
-        font-weight: 700;
-        outline: none;
+        font-family: 'Inter', sans-serif; border: none; cursor: pointer;
+        transition: all 0.2s ease; display: inline-flex; align-items: center;
+        justify-content: center; gap: 8px; border-radius: 4px; font-weight: 700; outline: none;
     }
     button:active { transform: scale(0.98); }
-    .btn-primary {
-        background: var(--maroon); color: var(--white); padding: 12px 24px; font-size: 14px;
-    }
+    .btn-primary { background: var(--maroon); color: var(--white); padding: 14px 28px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
     .btn-primary:hover { background: var(--maroon-hover); }
-    .btn-secondary {
-        background: transparent; color: var(--maroon); border: 2px solid var(--maroon); padding: 10px 22px; font-size: 14px;
-    }
-    .btn-secondary:hover { background: var(--maroon); color: var(--white); }
-    .btn-danger {
-        background: transparent; color: #DC2626; border: 1px solid #DC2626; padding: 10px 22px; font-size: 14px;
-    }
-    .btn-danger:hover { background: #DC2626; color: var(--white); }
+    .btn-secondary { background: transparent; color: var(--white); border: 2px solid var(--white); padding: 12px 26px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .btn-secondary:hover { background: var(--white); color: var(--black); }
 
-    /* ================= TOP BAR ================= */
-    .top-bar { background: var(--silver); text-align: center; padding: 10px; font-size: 13px; font-weight: 700; border-bottom: 1px solid #d1d5db; position: relative; z-index: 1001; }
-    .top-bar a { color: var(--maroon); text-decoration: underline; }
+    /* ================= HEADER & HAMBURGER MENU ================= */
+    .header { position: absolute; top: 0; left: 0; right: 0; z-index: 1000; padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 40px; height: 40px; background: var(--white); color: var(--maroon); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; }
+    .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
 
-    /* ================= HEADER ================= */
-    .header { position: sticky; top: 0; z-index: 1000; background: var(--maroon); height: 80px; display: flex; align-items: center; border-bottom: 1px solid var(--maroon-hover); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
-    .brand { display: flex; align-items: center; gap: 12px; color: var(--white); }
-    .brand-logo { font-size: 36px; font-weight: 900; line-height: .8; }
-    .brand-text h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
+    .nav-links { display: flex; gap: 30px; align-items: center; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .nav-links a:hover { color: var(--maroon); }
 
-    .nav-links { display: flex; gap: 30px; align-items: center; }
-    .nav-links a { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
-    .nav-links a:hover { color: var(--white); }
+    /* Hamburger Menu (The 3 Lines) */
+    .hamburger { display: none; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1001; background: transparent; padding: 5px; }
+    .hamburger span { display: block; width: 30px; height: 3px; background: var(--white); transition: 0.3s; border-radius: 2px; }
     
-    .user-controls { display: flex; gap: 10px; align-items: center; }
+    /* Mobile Menu Drawer */
+    .mobile-menu { position: fixed; inset: 0; background: var(--dark-bg); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 30px; transform: translateY(-100%); transition: 0.4s ease; }
+    .mobile-menu.active { transform: translateY(0); }
+    .mobile-menu a { font-size: 24px; font-weight: 700; text-transform: uppercase; }
+    .mobile-menu a:hover { color: var(--maroon); }
 
     /* ================= HERO ================= */
-    .hero { 
-        position: relative; height: 70vh; min-height: 500px; 
-        /* Formal Academic Background */
-        background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop'); 
-        background-size: cover; background-position: center; display: flex; align-items: center; 
-    }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(17,17,17,0.95) 0%, rgba(17,17,17,0.6) 100%); }
-    .hero-content { position: relative; z-index: 2; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-    .hero-content h1 { font-size: clamp(40px, 5vw, 64px); font-weight: 800; color: var(--white); line-height: 1.1; max-width: 700px; margin-bottom: 24px; }
-    .hero-content p { font-size: 18px; color: rgba(255,255,255,0.85); max-width: 500px; margin-bottom: 40px; font-weight: 400; }
-    .btn-hero { background: var(--maroon); color: var(--white); padding: 16px 36px; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(122, 31, 43, 0.4); }
-    .btn-hero:hover { background: var(--maroon-hover); box-shadow: 0 6px 20px rgba(122, 31, 43, 0.6); }
-
-    /* ================= WHY IFB ================= */
-    .why-section { padding: 100px 24px; background: var(--white); text-align: center; }
-    .why-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 50px; }
-    .why-card { padding: 30px; border: 1px solid var(--silver); border-radius: 12px; transition: 0.3s; background: var(--bg); }
-    .why-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); border-color: var(--maroon); }
-    .why-icon { width: 60px; height: 60px; background: var(--maroon); color: var(--white); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-    .why-icon i { width: 30px; height: 30px; }
-    .why-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 12px; }
-    .why-card p { font-size: 15px; color: var(--gray); }
-
-    /* ================= COURSES ================= */
-    .courses-section { padding: 100px 24px; background: var(--bg); }
-    .section-header { text-align: center; margin-bottom: 60px; }
-    .section-header h2 { font-size: 36px; font-weight: 900; color: var(--black); margin-bottom: 16px; }
-    .courses-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-    .course-card { background: var(--white); border: 1px solid var(--silver); border-radius: 8px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; }
-    .course-card:hover { box-shadow: 0 20px 40px rgba(0,0,0,0.08); transform: translateY(-5px); }
-    .course-content { padding: 32px; flex: 1; display: flex; flex-direction: column; }
-    .course-content h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
-    .course-content p { font-size: 15px; color: var(--gray); margin-bottom: 24px; flex: 1; line-height: 1.7; }
-    .btn-course { background: var(--maroon); color: var(--white); padding: 14px; border-radius: 4px; font-size: 14px; width: 100%; }
-    .btn-course:hover { background: var(--maroon-hover); }
-
-    /* ================= YOUTUBE & SOCIAL ================= */
-    .youtube-section { padding: 80px 24px; background: var(--white); text-align: center; }
-    .yt-grid { max-width: 1000px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .yt-thumb { background: var(--bg); border-radius: 8px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid var(--silver); aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: 0.2s; }
-    .yt-thumb:hover { border-color: var(--maroon); background: #FFF5F6; }
-    .yt-thumb i { width: 48px; height: 48px; color: var(--maroon); margin-bottom: 10px; }
-    .yt-thumb span { font-weight: 700; font-size: 14px; }
+    .hero { position: relative; min-height: 100vh; display: flex; align-items: center; background: var(--dark-bg); overflow: hidden; padding: 0 48px; }
+    /* Background images to mimic the design */
+    .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 50%; height: 100%; background: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000&auto=format&fit=crop') center/cover; opacity: 0.3; clip-path: polygon(0 0, 100% 0, 70% 100%, 0% 100%); }
+    .hero::after { content: ''; position: absolute; top: 0; right: 0; width: 50%; height: 100%; background: linear-gradient(135deg, var(--maroon) 0%, #4a101a 100%); clip-path: polygon(100% 0, 100% 100%, 0 100%, 30% 0); z-index: 1; }
     
-    /* ================= MODALS (NOT FULL SCREEN) ================= */
-    .modal-overlay { 
-        position: fixed; inset: 0; 
-        background: rgba(0,0,0,0.4); /* Lighter backdrop so it doesn't black out whole screen */
-        z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; 
-    }
+    .hero-content { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .hero-text h1 { font-size: clamp(48px, 6vw, 80px); font-weight: 900; line-height: 1.05; text-transform: uppercase; margin-bottom: 24px; }
+    .hero-text h1 span { color: var(--maroon); }
+    .hero-text p { font-size: 16px; color: var(--gray); max-width: 400px; margin-bottom: 40px; }
+    .hero-buttons { display: flex; gap: 16px; }
+
+    /* ================= WHY US SECTION ================= */
+    .why-section { position: relative; padding: 100px 48px; background: var(--white); color: var(--black); z-index: 3; }
+    .why-section::before { content: ''; position: absolute; top: -50px; left: 0; right: 0; height: 50px; background: var(--white); clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 100%); }
+    
+    .section-header { max-width: 1200px; margin: 0 auto 60px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .section-header h2 { font-size: 48px; font-weight: 900; text-transform: uppercase; line-height: 1; }
+    .section-header h2 span { color: var(--maroon); }
+    
+    .why-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+    .why-list { display: flex; flex-direction: column; gap: 30px; }
+    .why-item { display: flex; gap: 20px; align-items: flex-start; }
+    .why-icon { width: 50px; height: 50px; background: var(--maroon); color: var(--white); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .why-item h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; }
+    .why-item p { font-size: 14px; color: #555; line-height: 1.6; }
+
+    /* ================= MEET THE PROGRAMMES (Cards) ================= */
+    .programmes-section { padding: 100px 48px; background: var(--dark-bg); position: relative; }
+    .programmes-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100px; background: var(--white); clip-path: polygon(0 0, 100% 0, 100% 0, 0 100%); z-index: 1; }
+    .programmes-section .container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+    
+    .prog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px; }
+    .prog-card { background: var(--dark-card); border: 1px solid var(--silver); border-radius: 12px; overflow: hidden; transition: 0.3s; position: relative; }
+    .prog-card:hover { border-color: var(--maroon); transform: translateY(-5px); }
+    .prog-img { height: 250px; background-size: cover; background-position: center; }
+    .prog-content { padding: 30px; }
+    .prog-content h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
+    .prog-content p { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+    .prog-card .btn-primary { width: 100%; }
+
+    /* ================= MODALS ================= */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
     .modal-overlay.active { display: flex; }
-    .modal-content { 
-        background: var(--white); border-radius: 12px; padding: 40px; max-width: 500px; width: 100%; 
-        position: relative; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); 
-        border-top: 6px solid var(--maroon);
-        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    .modal-content h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; }
-    .modal-content p { font-size: 14px; color: var(--gray); line-height: 1.7; margin-bottom: 24px; }
-
-    /* Form Inputs */
-    .form-group { text-align: left; margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: var(--black); }
-    .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--silver); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 14px; }
-    .form-group input:focus, .form-group select:focus { outline: 2px solid var(--maroon); }
-    .checkbox-group { display: flex; gap: 10px; align-items: flex-start; text-align: left; margin-bottom: 12px; }
-    .checkbox-group input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--maroon); }
-    .checkbox-group label { font-size: 12px; color: var(--gray); line-height: 1.5; }
-
-    /* ================= LOGGED IN VIEWS ================= */
-    #loggedInView { display: none; background: var(--bg); min-height: calc(100vh - 80px); padding: 40px 24px; }
-    .dash-container { max-width: 1200px; margin: 0 auto; }
+    .modal-content { background: var(--white); color: var(--black); border-radius: 8px; padding: 40px; max-width: 500px; width: 100%; position: relative; border-top: 6px solid var(--maroon); text-align: center; }
+    .modal-content h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; text-transform: uppercase; }
+    .modal-content p { font-size: 14px; color: var(--gray); margin-bottom: 24px; }
     
-    .dash-header { background: var(--white); padding: 30px; border-radius: 12px; border: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .form-group { text-align: left; margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+    .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Inter', sans-serif; }
+    .checkbox-group { display: flex; gap: 10px; align-items: flex-start; text-align: left; margin-bottom: 12px; }
+    .checkbox-group input { margin-top: 4px; width: 16px; height: 16px; accent-color: var(--maroon); }
+    .checkbox-group label { font-size: 11px; color: #555; line-height: 1.4; }
+
+    /* ================= LOGGED IN (DASHBOARD) ================= */
+    #loggedInView { display: none; min-height: 100vh; padding: 100px 48px; background: var(--dark-bg); }
+    .dash-container { max-width: 1200px; margin: 0 auto; }
+    .dash-header { background: var(--dark-card); border: 1px solid var(--silver); border-radius: 12px; padding: 30px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     .profile-block { display: flex; gap: 20px; align-items: center; }
     .profile-icon { width: 70px; height: 70px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; }
-    .profile-info h2 { font-size: 24px; margin-bottom: 4px; }
-    .profile-info p { font-size: 14px; color: var(--gray); font-weight: 600; }
     .id-badges { display: flex; gap: 10px; margin-top: 8px; }
-    .badge { background: var(--bg); border: 1px solid var(--silver); padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; color: var(--maroon); }
-
-    .dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
-    .dash-card { background: var(--white); padding: 30px; border-radius: 12px; border: 1px solid var(--silver); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-    .dash-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; border-bottom: 1px solid var(--silver); padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .badge { background: #000; border: 1px solid var(--silver); padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; color: var(--maroon); }
     
-    .course-pill { background: #FFF5F6; border: 1px solid var(--maroon); color: var(--maroon); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 800; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
-    .course-pill i { width: 24px; height: 24px; }
-
-    .resource-folder { margin-bottom: 20px; }
-    .resource-folder h4 { font-size: 14px; color: var(--maroon); margin-bottom: 10px; }
-    .resource-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--silver); border-radius: 6px; margin-bottom: 8px; font-size: 14px; text-decoration: none; color: var(--black); transition: 0.2s; }
-    .resource-item:hover { background: var(--bg); border-color: var(--maroon); }
-    .resource-item i { color: var(--maroon); width: 18px; height: 18px; }
+    .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .dash-card { background: var(--dark-card); border: 1px solid var(--silver); border-radius: 12px; padding: 30px; }
+    .dash-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid var(--silver); padding-bottom: 10px; }
+    .course-pill { background: rgba(122, 31, 43, 0.2); border: 1px solid var(--maroon); color: var(--white); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 700; font-size: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .resource-item { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--silver); border-radius: 6px; margin-bottom: 10px; font-size: 14px; color: var(--white); transition: 0.2s; }
+    .resource-item:hover { border-color: var(--maroon); background: #000; }
 
     /* ================= FOOTER ================= */
-    .footer { background: #111; color: var(--white); padding: 80px 24px 30px; }
-    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1.5fr; gap: 60px; margin-bottom: 60px; }
-    .footer-brand h2 { font-size: 24px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-    .footer-brand .legal-warning { background: rgba(255,255,255,0.05); border-left: 3px solid var(--maroon); padding: 12px; border-radius: 4px; margin-top: 16px; font-size: 12px; }
-    .footer-col h4 { font-size: 16px; font-weight: 700; margin-bottom: 24px; color: var(--white); }
-    .footer-col ul { display: flex; flex-direction: column; gap: 16px; }
-    .footer-col a { color: #A1A1AA; font-size: 14px; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
-    .footer-col a:hover { color: var(--white); }
-    .footer-col a i { width: 18px; height: 18px; color: var(--maroon); }
-    
-    @media (max-width: 768px) {
+    .footer { background: #000; padding: 60px 48px; border-top: 1px solid var(--silver); }
+    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .footer h2 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 16px; }
+    .footer p { font-size: 13px; color: var(--gray); max-width: 400px; }
+    .footer .legal { font-size: 11px; border-left: 3px solid var(--maroon); padding-left: 12px; margin-top: 20px; }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 900px) {
+        .header { padding: 20px 24px; }
         .nav-links { display: none; }
-        .why-grid, .courses-grid, .yt-grid, .dash-grid, .footer-grid { grid-template-columns: 1fr; }
+        .hamburger { display: flex; }
+        .hero { padding: 120px 24px 80px; }
+        .hero-content { grid-template-columns: 1fr; text-align: center; }
+        .hero-text p { margin: 0 auto 30px; }
+        .hero-buttons { justify-content: center; }
+        .hero::before, .hero::after { width: 100%; clip-path: none; opacity: 0.1; }
+        .why-section { padding: 80px 24px; }
+        .why-grid { grid-template-columns: 1fr; }
+        .section-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+        .programmes-section { padding: 80px 24px; }
+        .prog-grid { grid-template-columns: 1fr; }
+        #loggedInView { padding: 100px 24px; }
         .dash-header { flex-direction: column; text-align: center; gap: 20px; }
         .profile-block { flex-direction: column; }
+        .dash-grid { grid-template-columns: 1fr; }
+        .footer-grid { grid-template-columns: 1fr; }
     }
     </style>
 </head>
 <body>
 
 <!-- ================= POPUPS ================= -->
-<!-- 1. Non-Accreditation (Light backdrop, not full screen blackout) -->
 <div class="modal-overlay active" id="accreditationModal">
     <div class="modal-content">
         <i data-lucide="shield-alert" style="width:48px;height:48px;color:var(--maroon);margin:0 auto 16px;"></i>
         <h2>Non-Accredited Institution</h2>
-        <p>The Institute of Board (IFB) is strictly a tutorial and skills academy. We are <strong>NOT</strong> registered with DHET or Umalusi. Our certificates are internal awards, not government-recognised qualifications.</p>
+        <p>The Institute of Board (IFB) is strictly a tutorial and skills academy. We are <strong>NOT</strong> registered with DHET or Umalusi. Our certificates are internal awards.</p>
         <button class="btn-primary" style="width: 100%;" onclick="document.getElementById('accreditationModal').classList.remove('active')">I Understand & Agree</button>
     </div>
 </div>
 
-<!-- 2. Application Form -->
 <div class="modal-overlay" id="applyModal">
-    <div class="modal-content" style="max-width: 600px; text-align: left;">
-        <h2 style="text-align: center; color: var(--maroon);">Student Application</h2>
-        <p style="text-align: center; margin-bottom: 20px;">Complete your profile to access the portal.</p>
-        
+    <div class="modal-content" style="text-align: left;">
+        <h2 style="text-align: center;">Student Application</h2>
+        <p style="text-align: center;">Complete your profile to access the portal.</p>
         <form id="applicationForm" onsubmit="submitApplication(event)">
-            <div class="form-group">
-                <label>First Legal Name (as on ID)</label>
-                <input type="text" id="legalFirstName" required>
-            </div>
-            <div class="form-group">
-                <label>Last Legal Name</label>
-                <input type="text" id="legalLastName" required>
-            </div>
-            <div class="form-group">
-                <label>Date of Birth</label>
-                <input type="date" id="dob" required onchange="checkAge()">
-            </div>
-
+            <div class="form-group"><label>First Legal Name</label><input type="text" id="legalFirstName" required></div>
+            <div class="form-group"><label>Last Legal Name</label><input type="text" id="legalLastName" required></div>
+            <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required onchange="checkAge()"></div>
+            
             <div id="parentalConsentBox" style="display: none; background: #FFF5F6; padding: 12px; border-radius: 6px; margin-bottom: 16px; border: 1px solid var(--maroon);">
                 <div class="checkbox-group">
                     <input type="checkbox" id="parentalConsent">
-                    <label style="color: var(--maroon); font-weight: 700;">I am under 18. I confirm I have my parent/guardian's consent to share my data and participate.</label>
+                    <label style="color: var(--maroon); font-weight: 700;">I am under 18. I confirm I have my parent/guardian's consent.</label>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Select Programme(s) — Max 2</label>
+                <label>Select Programme(s)</label>
                 <select id="courseSelect1" required>
-                    <option value="">-- Choose Primary Programme --</option>
+                    <option value="">-- Primary Programme --</option>
                     <option value="MAT">IFB—Mathematics</option>
                     <option value="WEB">IFB—Web Development</option>
                 </select>
@@ -248,158 +204,152 @@
 
             <div class="checkbox-group">
                 <input type="checkbox" id="popiaConsent" required>
-                <label>I consent to the processing of my personal data in accordance with POPIA and GDPR. I understand I can delete my data at any time.</label>
+                <label>I consent to the processing of my personal data in accordance with POPIA and GDPR.</label>
             </div>
             <div class="checkbox-group">
                 <input type="checkbox" id="commitmentConsent" required>
-                <label>I commit to completing my selected programme(s). I understand that any malpractice will result in immediate disqualification and potential legal action.</label>
+                <label>I commit to completing my programme(s) and understand the rules against malpractice.</label>
             </div>
-
-            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px; padding: 16px;">Submit Application</button>
+            <button type="submit" class="btn-primary" style="width: 100%;">Submit Application</button>
         </form>
     </div>
 </div>
 
+<!-- ================= HEADER ================= -->
+<header class="header" id="mainHeader">
+    <a href="#" class="brand" onclick="window.scrollTo(0,0)">
+        <div class="brand-logo">∆</div>
+        <div class="brand-text">IFB ACADEMY</div>
+    </a>
+    
+    <!-- Desktop Nav -->
+    <nav class="nav-links" id="desktopNav">
+        <a href="#why">Why Us</a>
+        <a href="#programmes">Programmes</a>
+        <a href="#youtube">Videos</a>
+        <button class="btn-secondary" style="padding: 8px 20px; font-size: 12px;" onclick="googleLogin()" id="loginBtn">Login / Apply</button>
+    </nav>
+
+    <!-- Hamburger Menu (3 Lines) -->
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+
+<!-- Mobile Menu Drawer -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#why" onclick="toggleMenu()">Why Us</a>
+    <a href="#programmes" onclick="toggleMenu()">Programmes</a>
+    <a href="#youtube" onclick="toggleMenu()">Videos</a>
+    <button class="btn-primary" onclick="googleLogin(); toggleMenu();" style="margin-top: 20px;">Login / Apply</button>
+</div>
+
 <!-- ================= PUBLIC VIEW ================= -->
 <div id="publicView">
-    <div class="top-bar">
-        <strong>Notice:</strong> 2027 Admissions are open. <a href="#" onclick="openApply()">Review Terms & Apply →</a>
-    </div>
-
-    <header class="header">
-        <div class="nav-container">
-            <a href="#" class="brand" onclick="window.scrollTo(0,0)">
-                <div class="brand-logo">∆</div>
-                <div class="brand-text"><h1>Institute of Board</h1></div>
-            </a>
-            <div class="nav-links">
-                <a href="#why">Why IFB</a>
-                <a href="#courses">Programmes</a>
-                <a href="#youtube">Video Lessons</a>
-            </div>
-            <div class="user-controls" id="publicAuthBtns">
-                <button class="btn-secondary" style="color: white; border-color: white;" onclick="googleLogin()"><i data-lucide="log-in"></i> Login / Apply</button>
-            </div>
-            <div class="user-controls" id="privateAuthBtns" style="display: none;">
-                <button class="btn-secondary" style="color: white; border-color: white;" onclick="switchAccount()"><i data-lucide="refresh-cw"></i> Switch</button>
-                <button class="btn-secondary" style="color: white; border-color: white;" onclick="logout()"><i data-lucide="log-out"></i> Logout</button>
-            </div>
-        </div>
-    </header>
-
+    <!-- HERO SECTION -->
     <section class="hero">
-        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>International Standard. Fee-Free.</h1>
-            <p>Master the skills. Build your future. A rigorous, donation-supported academy for Mathematics and Web Development.</p>
-            <button class="btn-hero" onclick="openApply()">Apply Now <i data-lucide="arrow-right"></i></button>
+            <div class="hero-text">
+                <h1>Kickstart Your <br><span>Academic</span> Journey</h1>
+                <p>Join a rigorous, international standard academy. Fee-free education in Mathematics and Web Development. We build problem-solvers, not just students.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="openApply()">Apply Now</button>
+                    <button class="btn-secondary" onclick="document.getElementById('programmes').scrollIntoView()">Learn More</button>
+                </div>
+            </div>
         </div>
     </section>
 
+    <!-- WHY US SECTION -->
     <section class="why-section" id="why">
-        <h2 class="section-header" style="margin-bottom: 20px;">Why Study at IFB?</h2>
-        <p style="max-width: 700px; margin: 0 auto; color: var(--gray);">We offer courses at an international standard, completely free of charge. We prepare you for university-level thinking and real-world application.</p>
-        
+        <div class="section-header">
+            <h2>Why <span>Choose</span> Us?</h2>
+        </div>
         <div class="why-grid">
-            <div class="why-card">
-                <div class="why-icon"><i data-lucide="globe"></i></div>
-                <h3>International Standard</h3>
-                <p>Our curriculum pushes you into Level 4 (Proof & Challenge) cognitive reasoning, matching the rigor of global university preparation.</p>
-            </div>
-            <div class="why-card">
-                <div class="why-icon"><i data-lucide="heart-handshake"></i></div>
-                <h3>Entirely Fee-Free</h3>
-                <p>We believe world-class education should not be gatekept by wealth. We operate on voluntary support to keep tuition at R0.00.</p>
-            </div>
-            <div class="why-card">
-                <div class="why-icon"><i data-lucide="briefcase"></i></div>
-                <h3>Real Skills Portfolio</h3>
-                <p>You leave with a portfolio of skills, not just a piece of paper. From complex 3D surfaces to back-end web development.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="courses-section" id="courses">
-        <div class="section-header">
-            <h2>Explore Programmes</h2>
-            <p>Admission to either track is strictly conditional on passing the Admission Examination (AE).</p>
-        </div>
-        <div class="courses-grid">
-            <div class="course-card">
-                <div class="course-content">
-                    <h3>IFB— Mathematics</h3>
-                    <p>Advanced Algebra, Calculus, Trigonometry, 3D Surfaces, and Geometry. Rigorous, university-level preparation.</p>
-                    <button class="btn-course" onclick="openApply('MAT')">Apply for Mathematics</button>
+            <div class="why-list">
+                <div class="why-item">
+                    <div class="why-icon"><i data-lucide="globe"></i></div>
+                    <div>
+                        <h3>International Standard</h3>
+                        <p>Our curriculum pushes you into Level 4 (Proof & Challenge) cognitive reasoning, matching the rigor of global university preparation.</p>
+                    </div>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon"><i data-lucide="heart-handshake"></i></div>
+                    <div>
+                        <h3>Entirely Fee-Free</h3>
+                        <p>We believe world-class education should not be gatekept by wealth. We operate on voluntary support to keep tuition at R0.00.</p>
+                    </div>
+                </div>
+                <div class="why-item">
+                    <div class="why-icon"><i data-lucide="briefcase"></i></div>
+                    <div>
+                        <h3>Real Skills Portfolio</h3>
+                        <p>You leave with a portfolio of skills, not just a piece of paper. From complex 3D surfaces to back-end web development.</p>
+                    </div>
                 </div>
             </div>
-            <div class="course-card">
-                <div class="course-content">
-                    <h3>IFB— Web Development</h3>
-                    <p>Basic back-end web development. Focuses on logic, database architecture, and server-side application.</p>
-                    <button class="btn-course" onclick="openApply('WEB')">Apply for Web Dev</button>
+            <div style="background: url('https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=1000&auto=format&fit=crop') center/cover; border-radius: 12px; min-height: 400px;"></div>
+        </div>
+    </section>
+
+    <!-- PROGRAMMES SECTION -->
+    <section class="programmes-section" id="programmes">
+        <div class="container">
+            <div class="section-header" style="color: var(--white); margin-bottom: 40px;">
+                <h2>Explore Our <span>Programmes</span></h2>
+            </div>
+            <div class="prog-grid">
+                <div class="prog-card">
+                    <div class="prog-img" style="background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop');"></div>
+                    <div class="prog-content">
+                        <h3>IFB— Mathematics</h3>
+                        <p>Advanced Algebra, Calculus, Trigonometry, 3D Surfaces, and Geometry. Rigorous, university-level preparation.</p>
+                        <button class="btn-primary" onclick="openApply('MAT')">Apply for Maths</button>
+                    </div>
+                </div>
+                <div class="prog-card">
+                    <div class="prog-img" style="background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop');"></div>
+                    <div class="prog-content">
+                        <h3>IFB— Web Development</h3>
+                        <p>Basic back-end web development. Focuses on logic, database architecture, and server-side application.</p>
+                        <button class="btn-primary" onclick="openApply('WEB')">Apply for Web Dev</button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="youtube-section" id="youtube">
-        <div class="section-header">
-            <h2>Free Video Lessons</h2>
-            <p>We upload our course videos to YouTube so you can revise at your own pace.</p>
-        </div>
-        <div class="yt-grid">
-            <a href="https://www.youtube.com/@IFBAcademy" target="_blank" class="yt-thumb">
-                <i data-lucide="play-circle"></i>
-                <span>Visit our YouTube Channel</span>
-            </a>
-            <a href="https://www.youtube.com/@IFBAcademy" target="_blank" class="yt-thumb">
-                <i data-lucide="play-circle"></i>
-                <span>View all Course Playlists</span>
-            </a>
-        </div>
-        <div style="margin-top: 30px;">
-            <a href="https://www.youtube.com/@IFBAcademy" target="_blank" style="color: var(--maroon); font-weight: 700; text-decoration: underline;">Go to @IFBAcademy on YouTube →</a>
-        </div>
-    </section>
-
+    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-grid">
-            <div class="footer-brand">
-                <h2><span style="color:var(--maroon);">∆</span> Institute of Board</h2>
+            <div>
+                <h2>∆ Institute of Board</h2>
                 <p>A rigorous, fee-free skills and academic preparatory academy focused on deep understanding and real-world skills.</p>
-                <div class="legal-warning">
+                <div class="legal">
                     <strong>Non-Accreditation Status:</strong> The IFB Certificate is NOT accredited. It is not registered with DHET or Umalusi. It does not carry NQF credits.
                 </div>
             </div>
-            <div class="footer-col">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#why"><i data-lucide="info"></i> Why IFB</a></li>
-                    <li><a href="#courses"><i data-lucide="book-open"></i> Programmes</a></li>
-                    <li><a href="#" onclick="openApply()"><i data-lucide="log-in"></i> Student Login</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Connect With Us</h4>
-                <ul>
-                    <li><a href="https://www.youtube.com/@IFBAcademy" target="_blank"><i data-lucide="youtube"></i> @IFBAcademy</a></li>
-                    <li><a href="https://www.instagram.com/institute_of_board" target="_blank"><i data-lucide="instagram"></i> @institute_of_board</a></li>
-                    <li><a href="mailto:n1nathaniel971@gmail.com"><i data-lucide="mail"></i> n1nathaniel971@gmail.com</a></li>
+            <div>
+                <h2>Connect</h2>
+                <ul style="display: flex; flex-direction: column; gap: 10px;">
+                    <li><a href="https://www.youtube.com/@IFBAcademy" target="_blank" style="color: var(--gray); display: flex; align-items: center; gap: 8px;"><i data-lucide="youtube" style="width: 18px;"></i> @IFBAcademy</a></li>
+                    <li><a href="https://www.instagram.com/institute_of_board" target="_blank" style="color: var(--gray); display: flex; align-items: center; gap: 8px;"><i data-lucide="instagram" style="width: 18px;"></i> @institute_of_board</a></li>
+                    <li><a href="mailto:n1nathaniel971@gmail.com" style="color: var(--gray); display: flex; align-items: center; gap: 8px;"><i data-lucide="mail" style="width: 18px;"></i> n1nathaniel971@gmail.com</a></li>
                 </ul>
             </div>
         </div>
     </footer>
 </div>
 
-<!-- ================= LOGGED IN DASHBOARD (MY COURSES) ================= -->
+<!-- ================= LOGGED IN DASHBOARD ================= -->
 <div id="loggedInView">
     <div class="dash-container">
         <div class="dash-header">
             <div class="profile-block">
                 <div class="profile-icon" id="dashProfileIcon">N</div>
-                <div class="profile-info">
-                    <h2 id="dashName">Loading...</h2>
-                    <p>Student Dashboard</p>
+                <div>
+                    <h2 id="dashName" style="font-size: 24px;">Loading...</h2>
                     <div class="id-badges">
                         <span class="badge">ID: <span id="dashStudentId">...</span></span>
                         <span class="badge">Exam No: <span id="dashExamNo">...</span></span>
@@ -407,25 +357,19 @@
                 </div>
             </div>
             <div style="display: flex; gap: 10px;">
-                <a href="settings.html" class="btn-secondary"><i data-lucide="settings"></i> Settings</a>
+                <a href="settings.html" class="btn-secondary" style="padding: 10px 20px; font-size: 12px;"><i data-lucide="settings" style="width: 16px;"></i> Settings</a>
             </div>
         </div>
 
         <div class="dash-grid">
-            <!-- MY COURSES -->
             <div class="dash-card">
                 <h3><i data-lucide="book"></i> My Courses</h3>
-                <div id="dashMyCourses">
-                    <!-- Injected via JS -->
-                </div>
+                <div id="dashMyCourses"></div>
             </div>
             
-            <!-- RESOURCES / EXAMS -->
             <div class="dash-card">
                 <h3><i data-lucide="folder-open"></i> Resources & Exams</h3>
-                <div id="dashResources">
-                    <!-- Injected via JS based on naming convention -->
-                </div>
+                <div id="dashResources"></div>
             </div>
         </div>
     </div>
@@ -447,7 +391,12 @@ if (window.lucide) lucide.createIcons();
 let currentUser = null;
 let userData = null;
 
-// ================= AUTH LOGIC =================
+// HAMBURGER MENU LOGIC
+window.toggleMenu = function() {
+    document.getElementById('mobileMenu').classList.toggle('active');
+};
+
+// AUTH LOGIC
 window.googleLogin = async function() {
     try {
         await signInWithPopup(auth, new GoogleAuthProvider());
@@ -456,15 +405,9 @@ window.googleLogin = async function() {
 
 window.logout = async function() {
     await signOut(auth);
-    window.location.reload(); // Refresh to show public view
+    window.location.reload();
 };
 
-window.switchAccount = function() {
-    // Google Auth popup handles account switching natively
-    googleLogin();
-};
-
-// AUTOLOGIN HANDLING
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
@@ -475,27 +418,22 @@ onAuthStateChanged(auth, async (user) => {
             userData = docSnap.data();
             showDashboard();
         } else {
-            // Registered Google account, but hasn't done the application form
             openApply();
         }
     } else {
-        // Logged out
         currentUser = null;
         userData = null;
         document.getElementById('publicView').style.display = 'block';
         document.getElementById('loggedInView').style.display = 'none';
-        document.getElementById('publicAuthBtns').style.display = 'flex';
-        document.getElementById('privateAuthBtns').style.display = 'none';
+        document.getElementById('desktopNav').innerHTML = `<a href="#why">Why Us</a><a href="#programmes">Programmes</a><a href="#youtube">Videos</a><button class="btn-secondary" style="padding: 8px 20px; font-size: 12px;" onclick="googleLogin()">Login / Apply</button>`;
     }
 });
 
-// ================= APPLICATION LOGIC =================
+// APPLICATION LOGIC
 window.openApply = function(preSelectedCourse = "") {
     if (currentUser) {
         document.getElementById('applyModal').classList.add('active');
-        if(preSelectedCourse) {
-            document.getElementById('courseSelect1').value = preSelectedCourse;
-        }
+        if(preSelectedCourse) document.getElementById('courseSelect1').value = preSelectedCourse;
     } else {
         googleLogin();
     }
@@ -504,7 +442,6 @@ window.openApply = function(preSelectedCourse = "") {
 window.checkAge = function() {
     const dobInput = document.getElementById('dob').value;
     if (!dobInput) return;
-    
     const dob = new Date(dobInput);
     const today = new Date();
     let age = today.getFullYear() - dob.getFullYear();
@@ -535,10 +472,7 @@ window.submitApplication = async function(e) {
     const c1 = document.getElementById('courseSelect1').value;
     const c2 = document.getElementById('courseSelect2').value;
 
-    if (c1 === c2 && c2 !== "") {
-        alert("Please select two different programmes.");
-        return;
-    }
+    if (c1 === c2 && c2 !== "") { alert("Please select two different programmes."); return; }
 
     const mockStudentId = Math.floor(100000 + Math.random() * 900000).toString();
     const mockExamNo = "IFB" + Math.floor(10000000 + Math.random() * 90000000).toString();
@@ -560,63 +494,46 @@ window.submitApplication = async function(e) {
         userData = newData;
         document.getElementById('applyModal').classList.remove('active');
         showDashboard();
-    } catch (error) {
-        alert("Error saving application: " + error.message);
-    }
+    } catch (error) { alert("Error saving: " + error.message); }
 };
 
-// ================= DASHBOARD (MY COURSES) =================
 function showDashboard() {
     document.getElementById('publicView').style.display = 'none';
     document.getElementById('loggedInView').style.display = 'block';
-    document.getElementById('publicAuthBtns').style.display = 'none';
-    document.getElementById('privateAuthBtns').style.display = 'flex';
+    
+    // Update Nav for logged in state
+    document.getElementById('desktopNav').innerHTML = `
+        <a href="dashboard.html">Dashboard</a>
+        <button class="btn-secondary" style="padding: 8px 20px; font-size: 12px;" onclick="logout()">Logout</button>
+    `;
 
-    // Profile Info
     document.getElementById('dashName').innerText = `${userData.firstName} ${userData.lastName}`;
     document.getElementById('dashProfileIcon').innerText = userData.firstName.charAt(0).toUpperCase();
     document.getElementById('dashStudentId').innerText = userData.studentId;
     document.getElementById('dashExamNo').innerText = userData.examNumber;
 
-    // My Courses
     const courseContainer = document.getElementById('dashMyCourses');
     courseContainer.innerHTML = '';
     userData.courses.forEach(courseCode => {
         const courseName = courseCode === 'MAT' ? 'IFB—Mathematics' : 'IFB—Web Development';
-        courseContainer.innerHTML += `
-            <div class="course-pill">
-                ${courseName}
-                <i data-lucide="check-circle" style="color: var(--green);"></i>
-            </div>
-        `;
+        courseContainer.innerHTML += `<div class="course-pill">${courseName} <i data-lucide="check-circle" style="color: var(--white);"></i></div>`;
     });
 
-    // Resources (Based on naming convention IFB-[Programme]-[Year]-[Session]-[Paper]-[Type].html)
     const resContainer = document.getElementById('dashResources');
-    resContainer.innerHTML = '';
-
     const availableResources = [
         { name: "Admissions Examination (AE) - QP", file: "IFB-MAT-2027-AE-QP.html", course: "MAT" },
-        { name: "Admissions Examination (AE) - Memo", file: "IFB-MAT-2027-AE-MEMO.html", course: "MAT" },
-        { name: "Mid-Year Exam (May/Jun) - Paper 1", file: "IFB-MAT-2027-MayJun-P1-QP.html", course: "MAT" }
+        { name: "Admissions Examination (AE) - Memo", file: "IFB-MAT-2027-AE-MEMO.html", course: "MAT" }
     ];
-
+    
+    resContainer.innerHTML = '';
     userData.courses.forEach(courseCode => {
         const courseFiles = availableResources.filter(r => r.course === courseCode);
-        if (courseFiles.length > 0) {
-            let folderHtml = `<div class="resource-folder"><h4>${courseCode === 'MAT' ? 'Mathematics' : 'Web Dev'}</h4>`;
-            courseFiles.forEach(f => {
-                folderHtml += `<a href="${f.file}" target="_blank" class="resource-item"><i data-lucide="file-text"></i> ${f.name}</a>`;
-            });
-            folderHtml += `</div>`;
-            resContainer.innerHTML += folderHtml;
-        }
+        courseFiles.forEach(f => {
+            resContainer.innerHTML += `<a href="${f.file}" target="_blank" class="resource-item"><i data-lucide="file-text"></i> ${f.name}</a>`;
+        });
     });
 
-    if (resContainer.innerHTML === '') {
-        resContainer.innerHTML = '<p style="font-size:14px; color:var(--gray);">No documents uploaded yet for your courses.</p>';
-    }
-
+    if (resContainer.innerHTML === '') resContainer.innerHTML = '<p>No documents uploaded yet.</p>';
     if (window.lucide) lucide.createIcons();
 }
 </script>
