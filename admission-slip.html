@@ -1,99 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Generating Admission Slip...</title>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        /* STYLES FOR THE PRINT SLIP */
-        @page { size: A4; margin: 10mm; }
-        body { font-family: 'Courier Prime', monospace; background: #fff; color: #000; padding: 20px; }
-        
-        .slip { max-width: 500px; margin: 0 auto; border: 2px dashed #000; padding: 30px; text-align: center; }
-        .slip-header { border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
-        .slip-header h1 { font-size: 24px; font-weight: 900; letter-spacing: 2px; }
-        .slip-header p { font-size: 12px; margin-top: 5px; text-transform: uppercase; }
-        
-        .row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
-        .label { font-weight: bold; text-transform: uppercase; color: #555; }
-        .value { font-weight: bold; }
-        
-        .barcode { width: 100%; height: 60px; margin: 30px 0 10px; }
-        .qr { width: 80px; height: 80px; margin: 10px auto; }
-        .qr svg { width: 100%; height: 100%; }
-        
-        .warning { margin-top: 30px; font-size: 10px; border: 1px solid #000; padding: 10px; text-transform: uppercase; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=210mm, initial-scale=1.0">
+<title>IFB Admission Slip</title>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html, body { 
+    width: 100%; 
+    background: #E2E8F0; 
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  body { 
+    font-family: 'Times New Roman', Times, serif; 
+    font-size: 15pt; 
+    line-height: 1.55; 
+    color: #000; 
+  }
+  
+  /* --- STRICT A4 PAGE --- */
+  .page { 
+    width: 210mm; 
+    min-width: 210mm; 
+    height: 297mm; 
+    min-height: 297mm;
+    padding: 0; 
+    margin: 0 auto; 
+    position: relative; 
+    background: white; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    page-break-after: always; 
+    page-break-inside: avoid;
+  }
+  
+  @media print { 
+    html, body { background: white; overflow: visible; width: 210mm; } 
+    .page { margin: 0; width: 210mm; height: 297mm; page-break-after: always; break-inside: avoid; } 
+  }
+
+  /* --- COVER PAGE DESIGN --- */
+  .cover-bg-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; }
+  
+  .cv-dark-block {
+    position: absolute; top: 0; left: 0; width: 75%; height: 65%;
+    background: #1A1A1A;
+    clip-path: polygon(0 0, 100% 0, 85% 80%, 0 100%);
+  }
+  .cv-dark-shadow {
+    position: absolute; top: 0; left: 0; width: 85%; height: 70%;
+    background: #333333;
+    clip-path: polygon(0 0, 100% 0, 75% 90%, 0 100%);
+    z-index: -1;
+  }
+  .cv-maroon-band {
+    position: absolute; top: 38%; right: 0; width: 90%; height: 28%;
+    background: #7A1F2B;
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .cv-circle-outline {
+    position: absolute; top: 12%; right: 8%; width: 150px; height: 150px;
+    border: 4px solid #7A1F2B; border-radius: 50%; z-index: 2;
+  }
+  .cv-circle-filled {
+    position: absolute; top: 18%; right: 14%; width: 60px; height: 60px;
+    background: #7A1F2B; border-radius: 50%; z-index: 2;
+  }
+  .cv-circle-bottom {
+    position: absolute; bottom: -10%; right: -5%; width: 350px; height: 350px;
+    border: 2px solid #E2E8F0; border-radius: 50%; z-index: 1;
+  }
+  .cv-white-block {
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 45%;
+    background: #FFFFFF;
+    clip-path: polygon(0 40%, 30% 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  /* --- COVER CONTENT --- */
+  .cv-content { 
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 10; padding: 20mm; display: flex; flex-direction: column; 
+  }
+  
+  .cv-top { width: 100%; display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
+  .cv-top-left { width: 60%; display: flex; flex-direction: column; gap: 20px; }
+  .cv-logo-row { display: flex; align-items: center; gap: 15px; }
+  .cv-logo-row svg { width: 90px; height: 90px; background: transparent; flex-shrink: 0; }
+  .cv-logo-text .title { font-family: Arial, sans-serif; font-size: 24pt; font-weight: 900; color: #FFF; line-height: 1.1; }
+  .cv-logo-text .sub { font-family: Arial, sans-serif; font-size: 12pt; color: #FFF; letter-spacing: 2px; font-weight: bold; }
+  .cv-headline { font-family: Arial, sans-serif; font-size: 26pt; font-weight: 900; color: #FFF; line-height: 1.2; text-transform: uppercase; }
+
+  .cv-top-right { width: 35%; display: flex; justify-content: flex-end; padding-top: 10px; flex-shrink: 0; }
+  .cv-disclaimer-box {
+    font-family: Arial, sans-serif; font-size: 12pt; font-weight: 900; color: #FFF;
+    background: #7A1F2B; padding: 10px 15px; border-left: 4px solid #FFF;
+    line-height: 1.4; box-shadow: 0 4px 15px rgba(0,0,0,0.3); text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .cv-center { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; min-height: 0; }
+  .cv-big-year { font-family: Arial, sans-serif; font-size: 140pt; font-weight: 900; color: rgba(255,255,255,0.15); line-height: 0.8; letter-spacing: -5px; margin-left: -5px; }
+  .cv-session { font-family: Arial, sans-serif; font-size: 26pt; font-weight: 900; color: #FFF; letter-spacing: 4px; margin-top: 10px; }
+
+  /* --- BOTTOM SECTION (The Slip Details) --- */
+  .cv-bottom { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 5mm; width: 100%; flex-shrink: 0; }
+  
+  .cv-paper-details { display: flex; flex-direction: column; gap: 5px; width: 65%; }
+  .cv-paper-title { font-family: Arial, sans-serif; font-size: 32pt; font-weight: 900; color: #7A1F2B; line-height: 1.1; text-transform: uppercase; }
+  .cv-paper-subtitle { font-family: Arial, sans-serif; font-size: 16pt; font-weight: bold; color: #1A1A1A; letter-spacing: 2px; }
+  
+  .cv-student-info { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; font-family: 'Courier New', monospace; }
+  .cv-info-row { display: flex; justify-content: space-between; border-bottom: 1px dashed #999; padding-bottom: 4px; font-size: 14pt; font-weight: bold; }
+  .cv-info-row .label { color: #555; text-transform: uppercase; }
+  .cv-info-row .value { color: #000; font-weight: 900; }
+  .cv-info-row .value.highlight { color: #7A1F2B; }
+
+  .cv-barcode-area { display: flex; flex-direction: column; align-items: flex-end; gap: 15px; width: 30%; flex-shrink: 0; }
+  .cv-barcode-stack { display: flex; flex-direction: column; align-items: flex-end; gap: 15px; width: 100%; }
+  .cv-page-count { font-family: Arial, sans-serif; font-size: 10pt; color: #333; font-weight: bold; text-align: right; line-height: 1.4; }
+
+</style>
 </head>
 <body>
 
-    <!-- The Slip is built dynamically here -->
-    <div id="slipContainer" class="slip">
-        <div class="slip-header">
-            <h1>∆ IFB ACADEMY</h1>
-            <p>2027 Admissions Examination</p>
-        </div>
+<!-- THE PAGE -->
+<div class="page cover-page">
+  
+  <div class="cover-bg-container">
+    <div class="cv-dark-shadow"></div>
+    <div class="cv-dark-block"></div>
+    <div class="cv-maroon-band"></div>
+    <div class="cv-circle-outline"></div>
+    <div class="cv-circle-filled"></div>
+    <div class="cv-circle-bottom"></div>
+    <div class="cv-white-block"></div>
+  </div>
 
-        <div class="row"><span class="label">Student Name</span><span class="value" id="pName">...</span></div>
-        <div class="row"><span class="label">Programme</span><span class="value" id="pSubject">...</span></div>
-        <div class="row"><span class="label">Student ID</span><span class="value" id="pStudentId">...</span></div>
-        <div class="row"><span class="label">Exam Number</span><span class="value" id="pExamNum">...</span></div>
-        <div class="row"><span class="label">Security Code</span><span class="value" id="pSecCode">...</span></div>
-
-        <svg class="barcode" id="pBarcode"></svg>
-        <div class="qr" id="pQR"></div>
-        
-        <div class="warning">
-            DO NOT SHARE THIS SLIP. Impersonation results in immediate disqualification.
+  <div class="cv-content">
+    
+    <div class="cv-top">
+      <div class="cv-top-left">
+        <div class="cv-logo-row">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+              <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          </svg>
+          <div class="cv-logo-text">
+            <div class="title">INSTITUTE OF BOARD</div>
+            <div class="sub">ACADEMIC ASSESSMENT</div>
+          </div>
         </div>
+        <div class="cv-headline">Admission<br>Slip 2027</div>
+      </div>
+
+      <div class="cv-top-right">
+        <div class="cv-disclaimer-box">
+          Confidential
+        </div>
+      </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    <div class="cv-center">
+      <div class="cv-big-year">2027</div>
+      <div class="cv-session">JAN</div>
+    </div>
 
-        const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    <div class="cv-bottom">
+      <div class="cv-paper-details">
+        <div class="cv-paper-title" id="slipProgramme">Mathematics</div>
+        <div class="cv-paper-subtitle">ADMISSIONS EXAMINATION</div>
+        
+        <div class="cv-student-info">
+            <div class="cv-info-row">
+                <span class="label">Student Name</span>
+                <span class="value" id="slipName">—</span>
+            </div>
+            <div class="cv-info-row">
+                <span class="label">Student ID</span>
+                <span class="value" id="slipStudentId">------</span>
+            </div>
+            <div class="cv-info-row">
+                <span class="label">Exam Number</span>
+                <span class="value highlight" id="slipExamNum">PENDING</span>
+            </div>
+            <div class="cv-info-row">
+                <span class="label">Security Code</span>
+                <span class="value" id="slipSecCode">------</span>
+            </div>
+        </div>
+      </div>
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
+      <div class="cv-barcode-area">
+        <div class="cv-barcode-stack">
+          <!-- Barcode SVG will be injected here -->
+          <svg class="barcode-slip" id="slipBarcode"></svg>
+          <div class="cv-qr" id="slipQR" style="width: 80px; height: 80px; background: #FFF; padding: 4px; border: 1px solid #CCC;"></div>
+        </div>
+        
+        <div class="cv-page-count">
+          Print and bring to exam
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    
-                    document.getElementById('pName').textContent = `${data.firstName} ${data.lastName}`;
-                    document.getElementById('pSubject').textContent = data.courses[0] === 'MAT' ? 'Mathematics' : 'Web Development';
-                    document.getElementById('pStudentId').textContent = data.studentId || 'PENDING';
-                    document.getElementById('pExamNum').textContent = data.examinationNumber || 'PENDING';
-                    document.getElementById('pSecCode').textContent = data.securityCode || '------';
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-                    // Render Barcode
-                    if (data.studentId) {
-                        JsBarcode("#pBarcode", data.studentId, {
-                            format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0
-                        });
-                    }
+    const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-                    // Render QR
-                    const qr = qrcode(0, 'M');
-                    qr.addData(`IFB|NAME:${data.firstName} ${data.lastName}|SID:${data.studentId}|SEC:${data.securityCode}`);
-                    qr.make();
-                    document.getElementById('pQR').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0 });
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
 
-                    // Auto-trigger print dialog
-                    setTimeout(() => {
-                        window.print();
-                    }, 500);
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                
+                // Populate Text
+                document.getElementById('slipName').textContent = `${data.firstName} ${data.lastName}`;
+                document.getElementById('slipProgramme').textContent = data.courses[0] === 'MAT' ? 'Mathematics' : 'Web Development';
+                document.getElementById('slipStudentId').textContent = data.studentId || 'PENDING';
+                document.getElementById('slipExamNum').textContent = data.examinationNumber || 'PENDING';
+                document.getElementById('slipSecCode').textContent = data.securityCode || '------';
+
+                // Render Barcode
+                if (data.studentId) {
+                    JsBarcode("#slipBarcode", data.studentId, {
+                        format: "CODE128", width: 2, height: 60, displayValue: true, fontSize: 14, margin: 0
+                    });
                 }
+
+                // Render QR Code
+                const qr = qrcode(0, 'M');
+                qr.addData(`IFB|NAME:${data.firstName} ${data.lastName}|SID:${data.studentId}|SEC:${data.securityCode}|EXAM:${data.examinationNumber || 'PENDING'}`);
+                qr.make();
+                document.getElementById('slipQR').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0 });
+
+                // Auto-trigger print dialog after a brief delay to ensure rendering
+                setTimeout(() => {
+                    window.print();
+                }, 800);
             }
-        });
-    </script>
+        } else {
+            window.location.href = "index.html";
+        }
+    });
+</script>
 </body>
 </html>
