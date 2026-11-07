@@ -7,25 +7,23 @@
     <meta name="description" content="Apply to the Institute of Board (IFB). Rigorous, fee-free education in Mathematics and Web Development.">
     <meta property="og:title" content="Institute of Board">
     <meta property="og:description" content="International standard, fee-free education.">
-    <meta property="og:image" content="https://ifb-nmaz.onrender.com/logo.png"> <!-- Replace with your actual logo URL -->
+    <meta property="og:image" content="https://ifb-nmaz.onrender.com/logo.png">
 
     <!-- Favicon Logo -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L92 85 H8 L50 10 Z' fill='%237A1F2B'/%3E%3Cpath d='M50 32 L77 78 H23 L50 32 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
 
-    <!-- Lucide Icons (Always) -->
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- QR Code -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 
     <style>
     /* ================= VARIABLES ================= */
     :root {
         --white: #FFF; --black: #111; --gray: #666; --silver: #E2E8F0;
-        --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC; --green: #15803D;
+        --maroon: #7A1F2B; --maroon-hover: #5A1620; --bg: #F8FAFC;
+        --green: #15803D;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; }
@@ -34,12 +32,40 @@
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
 
+    /* ================= GLOBAL BUTTON STYLES ================= */
+    button {
+        font-family: 'Inter', sans-serif;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 6px;
+        font-weight: 700;
+        outline: none;
+    }
+    button:active { transform: scale(0.98); }
+    .btn-primary {
+        background: var(--maroon); color: var(--white); padding: 12px 24px; font-size: 14px;
+    }
+    .btn-primary:hover { background: var(--maroon-hover); }
+    .btn-secondary {
+        background: transparent; color: var(--maroon); border: 2px solid var(--maroon); padding: 10px 22px; font-size: 14px;
+    }
+    .btn-secondary:hover { background: var(--maroon); color: var(--white); }
+    .btn-danger {
+        background: transparent; color: #DC2626; border: 1px solid #DC2626; padding: 10px 22px; font-size: 14px;
+    }
+    .btn-danger:hover { background: #DC2626; color: var(--white); }
+
     /* ================= TOP BAR ================= */
     .top-bar { background: var(--silver); text-align: center; padding: 10px; font-size: 13px; font-weight: 700; border-bottom: 1px solid #d1d5db; position: relative; z-index: 1001; }
     .top-bar a { color: var(--maroon); text-decoration: underline; }
 
     /* ================= HEADER ================= */
-    .header { position: sticky; top: 0; z-index: 1000; background: var(--maroon); height: 80px; display: flex; align-items: center; border-bottom: 1px solid var(--maroon-hover); }
+    .header { position: sticky; top: 0; z-index: 1000; background: var(--maroon); height: 80px; display: flex; align-items: center; border-bottom: 1px solid var(--maroon-hover); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .nav-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
     .brand { display: flex; align-items: center; gap: 12px; color: var(--white); }
     .brand-logo { font-size: 36px; font-weight: 900; line-height: .8; }
@@ -48,19 +74,24 @@
     .nav-links { display: flex; gap: 30px; align-items: center; }
     .nav-links a { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
     .nav-links a:hover { color: var(--white); }
-    .btn-nav-login { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: var(--white); padding: 10px 24px; border-radius: 4px; font-size: 13px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
-    .btn-nav-login:hover { background: var(--white); color: var(--maroon); }
+    
+    .user-controls { display: flex; gap: 10px; align-items: center; }
 
     /* ================= HERO ================= */
-    .hero { position: relative; height: 70vh; min-height: 500px; background-image: url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1600&auto=format&fit=crop'); background-size: cover; background-position: center; display: flex; align-items: center; }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(17,17,17,0.95) 0%, rgba(17,17,17,0.7) 100%); }
+    .hero { 
+        position: relative; height: 70vh; min-height: 500px; 
+        /* Formal Academic Background */
+        background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop'); 
+        background-size: cover; background-position: center; display: flex; align-items: center; 
+    }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(17,17,17,0.95) 0%, rgba(17,17,17,0.6) 100%); }
     .hero-content { position: relative; z-index: 2; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
     .hero-content h1 { font-size: clamp(40px, 5vw, 64px); font-weight: 800; color: var(--white); line-height: 1.1; max-width: 700px; margin-bottom: 24px; }
-    .hero-content p { font-size: 18px; color: rgba(255,255,255,0.8); max-width: 500px; margin-bottom: 40px; font-weight: 400; }
-    .btn-hero { display: inline-flex; align-items: center; gap: 10px; background: var(--maroon); color: var(--white); padding: 16px 36px; border-radius: 4px; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; border: none; cursor: pointer; }
-    .btn-hero:hover { background: var(--maroon-hover); }
+    .hero-content p { font-size: 18px; color: rgba(255,255,255,0.85); max-width: 500px; margin-bottom: 40px; font-weight: 400; }
+    .btn-hero { background: var(--maroon); color: var(--white); padding: 16px 36px; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(122, 31, 43, 0.4); }
+    .btn-hero:hover { background: var(--maroon-hover); box-shadow: 0 6px 20px rgba(122, 31, 43, 0.6); }
 
-    /* ================= WHY IFB (VALUE PROP) ================= */
+    /* ================= WHY IFB ================= */
     .why-section { padding: 100px 24px; background: var(--white); text-align: center; }
     .why-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-top: 50px; }
     .why-card { padding: 30px; border: 1px solid var(--silver); border-radius: 12px; transition: 0.3s; background: var(--bg); }
@@ -80,24 +111,33 @@
     .course-content { padding: 32px; flex: 1; display: flex; flex-direction: column; }
     .course-content h3 { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
     .course-content p { font-size: 15px; color: var(--gray); margin-bottom: 24px; flex: 1; line-height: 1.7; }
-    .btn-course { display: block; text-align: center; background: var(--maroon); color: var(--white); padding: 14px; border-radius: 4px; font-weight: 700; font-size: 14px; transition: 0.2s; cursor: pointer; border: none; width: 100%; }
+    .btn-course { background: var(--maroon); color: var(--white); padding: 14px; border-radius: 4px; font-size: 14px; width: 100%; }
     .btn-course:hover { background: var(--maroon-hover); }
 
     /* ================= YOUTUBE & SOCIAL ================= */
     .youtube-section { padding: 80px 24px; background: var(--white); text-align: center; }
     .yt-grid { max-width: 1000px; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .yt-thumb { background: var(--bg); border-radius: 8px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid var(--silver); aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+    .yt-thumb { background: var(--bg); border-radius: 8px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid var(--silver); aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: 0.2s; }
+    .yt-thumb:hover { border-color: var(--maroon); background: #FFF5F6; }
     .yt-thumb i { width: 48px; height: 48px; color: var(--maroon); margin-bottom: 10px; }
     .yt-thumb span { font-weight: 700; font-size: 14px; }
     
-    /* ================= MODALS & DASHBOARD ================= */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; overflow-y: auto; }
+    /* ================= MODALS (NOT FULL SCREEN) ================= */
+    .modal-overlay { 
+        position: fixed; inset: 0; 
+        background: rgba(0,0,0,0.4); /* Lighter backdrop so it doesn't black out whole screen */
+        z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; 
+    }
     .modal-overlay.active { display: flex; }
-    .modal-content { background: var(--white); border-radius: 12px; padding: 40px; max-width: 500px; width: 100%; position: relative; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); margin: auto; }
+    .modal-content { 
+        background: var(--white); border-radius: 12px; padding: 40px; max-width: 500px; width: 100%; 
+        position: relative; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); 
+        border-top: 6px solid var(--maroon);
+        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     .modal-content h2 { font-size: 24px; font-weight: 900; margin-bottom: 16px; }
     .modal-content p { font-size: 14px; color: var(--gray); line-height: 1.7; margin-bottom: 24px; }
-    .btn-modal-action { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); border: none; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; }
-    .btn-modal-action:disabled { background: #CCC; cursor: not-allowed; }
 
     /* Form Inputs */
     .form-group { text-align: left; margin-bottom: 16px; }
@@ -108,10 +148,11 @@
     .checkbox-group input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--maroon); }
     .checkbox-group label { font-size: 12px; color: var(--gray); line-height: 1.5; }
 
-    /* Dashboard Specific */
-    #dashboardView { display: none; min-height: calc(100vh - 80px); background: var(--bg); padding: 40px 24px; }
-    .dash-container { max-width: 1000px; margin: 0 auto; }
-    .dash-header { background: var(--white); padding: 30px; border-radius: 12px; border: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    /* ================= LOGGED IN VIEWS ================= */
+    #loggedInView { display: none; background: var(--bg); min-height: calc(100vh - 80px); padding: 40px 24px; }
+    .dash-container { max-width: 1200px; margin: 0 auto; }
+    
+    .dash-header { background: var(--white); padding: 30px; border-radius: 12px; border: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
     .profile-block { display: flex; gap: 20px; align-items: center; }
     .profile-icon { width: 70px; height: 70px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; }
     .profile-info h2 { font-size: 24px; margin-bottom: 4px; }
@@ -120,11 +161,15 @@
     .badge { background: var(--bg); border: 1px solid var(--silver); padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; color: var(--maroon); }
 
     .dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
-    .dash-card { background: var(--white); padding: 30px; border-radius: 12px; border: 1px solid var(--silver); }
-    .dash-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; border-bottom: 1px solid var(--silver); padding-bottom: 10px; }
+    .dash-card { background: var(--white); padding: 30px; border-radius: 12px; border: 1px solid var(--silver); box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .dash-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; border-bottom: 1px solid var(--silver); padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    
+    .course-pill { background: #FFF5F6; border: 1px solid var(--maroon); color: var(--maroon); padding: 15px; border-radius: 8px; margin-bottom: 15px; font-weight: 800; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
+    .course-pill i { width: 24px; height: 24px; }
+
     .resource-folder { margin-bottom: 20px; }
     .resource-folder h4 { font-size: 14px; color: var(--maroon); margin-bottom: 10px; }
-    .resource-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--silver); border-radius: 6px; margin-bottom: 8px; font-size: 14px; text-decoration: none; color: var(--black); }
+    .resource-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--silver); border-radius: 6px; margin-bottom: 8px; font-size: 14px; text-decoration: none; color: var(--black); transition: 0.2s; }
     .resource-item:hover { background: var(--bg); border-color: var(--maroon); }
     .resource-item i { color: var(--maroon); width: 18px; height: 18px; }
 
@@ -150,17 +195,17 @@
 <body>
 
 <!-- ================= POPUPS ================= -->
-<!-- 1. Non-Accreditation -->
+<!-- 1. Non-Accreditation (Light backdrop, not full screen blackout) -->
 <div class="modal-overlay active" id="accreditationModal">
     <div class="modal-content">
         <i data-lucide="shield-alert" style="width:48px;height:48px;color:var(--maroon);margin:0 auto 16px;"></i>
         <h2>Non-Accredited Institution</h2>
         <p>The Institute of Board (IFB) is strictly a tutorial and skills academy. We are <strong>NOT</strong> registered with DHET or Umalusi. Our certificates are internal awards, not government-recognised qualifications.</p>
-        <button class="btn-modal-action" onclick="document.getElementById('accreditationModal').classList.remove('active')">I Understand & Agree</button>
+        <button class="btn-primary" style="width: 100%;" onclick="document.getElementById('accreditationModal').classList.remove('active')">I Understand & Agree</button>
     </div>
 </div>
 
-<!-- 2. Application Form (Dynamic) -->
+<!-- 2. Application Form -->
 <div class="modal-overlay" id="applyModal">
     <div class="modal-content" style="max-width: 600px; text-align: left;">
         <h2 style="text-align: center; color: var(--maroon);">Student Application</h2>
@@ -182,7 +227,7 @@
 
             <div id="parentalConsentBox" style="display: none; background: #FFF5F6; padding: 12px; border-radius: 6px; margin-bottom: 16px; border: 1px solid var(--maroon);">
                 <div class="checkbox-group">
-                    <input type="checkbox" id="parentalConsent" required>
+                    <input type="checkbox" id="parentalConsent">
                     <label style="color: var(--maroon); font-weight: 700;">I am under 18. I confirm I have my parent/guardian's consent to share my data and participate.</label>
                 </div>
             </div>
@@ -203,14 +248,14 @@
 
             <div class="checkbox-group">
                 <input type="checkbox" id="popiaConsent" required>
-                <label>I consent to the processing of my personal data in accordance with POPIA and GDPR (if applicable). I understand I can delete my data at any time.</label>
+                <label>I consent to the processing of my personal data in accordance with POPIA and GDPR. I understand I can delete my data at any time.</label>
             </div>
             <div class="checkbox-group">
                 <input type="checkbox" id="commitmentConsent" required>
-                <label>I commit to completing my selected programme(s) and understand that any malpractice will result in immediate disqualification and potential legal action.</label>
+                <label>I commit to completing my selected programme(s). I understand that any malpractice will result in immediate disqualification and potential legal action.</label>
             </div>
 
-            <button type="submit" class="btn-modal-action" style="margin-top: 10px;">Submit Application</button>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px; padding: 16px;">Submit Application</button>
         </form>
     </div>
 </div>
@@ -231,7 +276,13 @@
                 <a href="#why">Why IFB</a>
                 <a href="#courses">Programmes</a>
                 <a href="#youtube">Video Lessons</a>
-                <button class="btn-nav-login" onclick="googleLogin()"><i data-lucide="log-in"></i> Login / Apply</button>
+            </div>
+            <div class="user-controls" id="publicAuthBtns">
+                <button class="btn-secondary" style="color: white; border-color: white;" onclick="googleLogin()"><i data-lucide="log-in"></i> Login / Apply</button>
+            </div>
+            <div class="user-controls" id="privateAuthBtns" style="display: none;">
+                <button class="btn-secondary" style="color: white; border-color: white;" onclick="switchAccount()"><i data-lucide="refresh-cw"></i> Switch</button>
+                <button class="btn-secondary" style="color: white; border-color: white;" onclick="logout()"><i data-lucide="log-out"></i> Logout</button>
             </div>
         </div>
     </header>
@@ -297,12 +348,11 @@
             <p>We upload our course videos to YouTube so you can revise at your own pace.</p>
         </div>
         <div class="yt-grid">
-            <!-- NO API: Just paste your video IDs in the data-video attributes -->
-            <a href="https://www.youtube.com/@IFBAcademy" target="_blank" class="yt-thumb" data-video="dQw4w9WgXcQ">
+            <a href="https://www.youtube.com/@IFBAcademy" target="_blank" class="yt-thumb">
                 <i data-lucide="play-circle"></i>
                 <span>Visit our YouTube Channel</span>
             </a>
-            <a href="https://www.youtube.com/@IFBAcademy" target="_blank" class="yt-thumb" data-video="dQw4w9WgXcQ">
+            <a href="https://www.youtube.com/@IFBAcademy" target="_blank" class="yt-thumb">
                 <i data-lucide="play-circle"></i>
                 <span>View all Course Playlists</span>
             </a>
@@ -341,15 +391,15 @@
     </footer>
 </div>
 
-<!-- ================= DASHBOARD VIEW (Logged In) ================= -->
-<div id="dashboardView">
+<!-- ================= LOGGED IN DASHBOARD (MY COURSES) ================= -->
+<div id="loggedInView">
     <div class="dash-container">
         <div class="dash-header">
             <div class="profile-block">
                 <div class="profile-icon" id="dashProfileIcon">N</div>
                 <div class="profile-info">
                     <h2 id="dashName">Loading...</h2>
-                    <p>Student Portal</p>
+                    <p>Student Dashboard</p>
                     <div class="id-badges">
                         <span class="badge">ID: <span id="dashStudentId">...</span></span>
                         <span class="badge">Exam No: <span id="dashExamNo">...</span></span>
@@ -357,33 +407,25 @@
                 </div>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button class="btn-nav-login" onclick="editCourses()" style="border-color: var(--maroon); color: var(--maroon); background: transparent;"><i data-lucide="edit"></i> Edit Courses</button>
-                <button class="btn-nav-login" onclick="deleteData()" style="border-color: #ccc; color: #666; background: transparent;"><i data-lucide="trash-2"></i> Delete Data</button>
-                <button class="btn-nav-login" onclick="logout()" style="background: var(--maroon); color: var(--white);"><i data-lucide="log-out"></i> Logout</button>
+                <a href="settings.html" class="btn-secondary"><i data-lucide="settings"></i> Settings</a>
             </div>
         </div>
 
         <div class="dash-grid">
+            <!-- MY COURSES -->
             <div class="dash-card">
-                <h3><i data-lucide="folder-open" style="vertical-align: middle; width: 18px; height: 18px;"></i> Resource Hub</h3>
-                <div id="dashResources">
-                    <!-- Resources will be injected here based on course -->
+                <h3><i data-lucide="book"></i> My Courses</h3>
+                <div id="dashMyCourses">
+                    <!-- Injected via JS -->
                 </div>
             </div>
             
+            <!-- RESOURCES / EXAMS -->
             <div class="dash-card">
-                <h3><i data-lucide="file-text" style="vertical-align: middle; width: 18px; height: 18px;"></i> Examination Rules</h3>
-                <div style="background: #FFF5F6; border-left: 4px solid var(--maroon); padding: 15px; margin-bottom: 20px;">
-                    <p style="font-size: 14px; margin-bottom: 10px;"><strong>Workflow:</strong></p>
-                    <ol style="font-size: 13px; margin-left: 15px; color: var(--gray); line-height: 1.8;">
-                        <li>Print the Question Paper</li>
-                        <li>Write your answers by hand</li>
-                        <li>Use the IFB Scanner (<code>scan.html</code>) to scan in Grayscale</li>
-                        <li>Upload the generated PDF before the timer ends.</li>
-                    </ol>
+                <h3><i data-lucide="folder-open"></i> Resources & Exams</h3>
+                <div id="dashResources">
+                    <!-- Injected via JS based on naming convention -->
                 </div>
-                <button class="btn-course" onclick="window.open('scan.html', '_blank')">Open Exam Scanner</button>
-                <button class="btn-course" style="margin-top: 10px; background: var(--bg); color: var(--maroon); border: 1px solid var(--maroon);">Upcoming AE Exam: Jan 21, 2027</button>
             </div>
         </div>
     </div>
@@ -393,9 +435,8 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// YOUR FIREBASE CONFIG
 const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -403,7 +444,6 @@ const db = getFirestore(app);
 
 if (window.lucide) lucide.createIcons();
 
-// Global state
 let currentUser = null;
 let userData = null;
 
@@ -416,9 +456,15 @@ window.googleLogin = async function() {
 
 window.logout = async function() {
     await signOut(auth);
-    window.location.reload();
+    window.location.reload(); // Refresh to show public view
 };
 
+window.switchAccount = function() {
+    // Google Auth popup handles account switching natively
+    googleLogin();
+};
+
+// AUTOLOGIN HANDLING
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
@@ -429,7 +475,7 @@ onAuthStateChanged(auth, async (user) => {
             userData = docSnap.data();
             showDashboard();
         } else {
-            // User logged in but hasn't applied
+            // Registered Google account, but hasn't done the application form
             openApply();
         }
     } else {
@@ -437,7 +483,9 @@ onAuthStateChanged(auth, async (user) => {
         currentUser = null;
         userData = null;
         document.getElementById('publicView').style.display = 'block';
-        document.getElementById('dashboardView').style.display = 'none';
+        document.getElementById('loggedInView').style.display = 'none';
+        document.getElementById('publicAuthBtns').style.display = 'flex';
+        document.getElementById('privateAuthBtns').style.display = 'none';
     }
 });
 
@@ -449,7 +497,6 @@ window.openApply = function(preSelectedCourse = "") {
             document.getElementById('courseSelect1').value = preSelectedCourse;
         }
     } else {
-        // If not logged in, trigger Google Auth first
         googleLogin();
     }
 };
@@ -462,9 +509,7 @@ window.checkAge = function() {
     const today = new Date();
     let age = today.getFullYear() - dob.getFullYear();
     const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-        age--;
-    }
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
 
     const parentalBox = document.getElementById('parentalConsentBox');
     const parentalCheck = document.getElementById('parentalConsent');
@@ -487,9 +532,6 @@ window.submitApplication = async function(e) {
     e.preventDefault();
     if (!currentUser) return;
 
-    const firstName = document.getElementById('legalFirstName').value;
-    const lastName = document.getElementById('legalLastName').value;
-    const dob = document.getElementById('dob').value;
     const c1 = document.getElementById('courseSelect1').value;
     const c2 = document.getElementById('courseSelect2').value;
 
@@ -498,20 +540,18 @@ window.submitApplication = async function(e) {
         return;
     }
 
-    // In a real scenario, you would fetch the next available ID from a separate Firestore collection.
-    // For now, we mock the pre-generated IDs as requested.
     const mockStudentId = Math.floor(100000 + Math.random() * 900000).toString();
     const mockExamNo = "IFB" + Math.floor(10000000 + Math.random() * 90000000).toString();
 
     const newData = {
         uid: currentUser.uid,
         email: currentUser.email,
-        firstName: firstName,
-        lastName: lastName,
-        dob: dob,
+        firstName: document.getElementById('legalFirstName').value,
+        lastName: document.getElementById('legalLastName').value,
+        dob: document.getElementById('dob').value,
         courses: c2 ? [c1, c2] : [c1],
-        studentId: mockStudentId, // In reality, pull from your pre-recorded list
-        examNumber: mockExamNo,   // In reality, pull from your pre-recorded list
+        studentId: mockStudentId,
+        examNumber: mockExamNo,
         createdAt: new Date().toISOString()
     };
 
@@ -525,82 +565,60 @@ window.submitApplication = async function(e) {
     }
 };
 
-// ================= DASHBOARD LOGIC =================
+// ================= DASHBOARD (MY COURSES) =================
 function showDashboard() {
     document.getElementById('publicView').style.display = 'none';
-    document.getElementById('dashboardView').style.display = 'block';
+    document.getElementById('loggedInView').style.display = 'block';
+    document.getElementById('publicAuthBtns').style.display = 'none';
+    document.getElementById('privateAuthBtns').style.display = 'flex';
 
-    // Profile
+    // Profile Info
     document.getElementById('dashName').innerText = `${userData.firstName} ${userData.lastName}`;
     document.getElementById('dashProfileIcon').innerText = userData.firstName.charAt(0).toUpperCase();
     document.getElementById('dashStudentId').innerText = userData.studentId;
     document.getElementById('dashExamNo').innerText = userData.examNumber;
 
-    // Resources (Based on Naming Convention)
+    // My Courses
+    const courseContainer = document.getElementById('dashMyCourses');
+    courseContainer.innerHTML = '';
+    userData.courses.forEach(courseCode => {
+        const courseName = courseCode === 'MAT' ? 'IFB—Mathematics' : 'IFB—Web Development';
+        courseContainer.innerHTML += `
+            <div class="course-pill">
+                ${courseName}
+                <i data-lucide="check-circle" style="color: var(--green);"></i>
+            </div>
+        `;
+    });
+
+    // Resources (Based on naming convention IFB-[Programme]-[Year]-[Session]-[Paper]-[Type].html)
     const resContainer = document.getElementById('dashResources');
     resContainer.innerHTML = '';
 
-    // Hardcoded example of how the backend would list files based on the naming convention:
-    // IFB-[Programme]-[Year]-[Session]-[Paper]-[Type].html
     const availableResources = [
-        { name: "Admissions Examination (AE) - Question Paper", file: "IFB-MAT-2027-AE-QP.html", course: "MAT", session: "AE" },
-        { name: "Admissions Examination (AE) - Memorandum", file: "IFB-MAT-2027-AE-MEMO.html", course: "MAT", session: "AE" },
-        { name: "Mid-Year Exam (May/Jun) - Paper 1 QP", file: "IFB-MAT-2027-MayJun-P1-QP.html", course: "MAT", session: "MayJun" }
+        { name: "Admissions Examination (AE) - QP", file: "IFB-MAT-2027-AE-QP.html", course: "MAT" },
+        { name: "Admissions Examination (AE) - Memo", file: "IFB-MAT-2027-AE-MEMO.html", course: "MAT" },
+        { name: "Mid-Year Exam (May/Jun) - Paper 1", file: "IFB-MAT-2027-MayJun-P1-QP.html", course: "MAT" }
     ];
 
     userData.courses.forEach(courseCode => {
-        const courseName = courseCode === 'MAT' ? 'IFB—Mathematics' : 'IFB—Web Development';
-        
-        let folderHtml = `<div class="resource-folder"><h4>${courseName}</h4>`;
-        
         const courseFiles = availableResources.filter(r => r.course === courseCode);
-        
         if (courseFiles.length > 0) {
+            let folderHtml = `<div class="resource-folder"><h4>${courseCode === 'MAT' ? 'Mathematics' : 'Web Dev'}</h4>`;
             courseFiles.forEach(f => {
                 folderHtml += `<a href="${f.file}" target="_blank" class="resource-item"><i data-lucide="file-text"></i> ${f.name}</a>`;
             });
-        } else {
-            folderHtml += `<p style="font-size:13px; color:var(--gray);">No documents uploaded yet for this session.</p>`;
+            folderHtml += `</div>`;
+            resContainer.innerHTML += folderHtml;
         }
-        
-        folderHtml += `</div>`;
-        resContainer.innerHTML += folderHtml;
     });
+
+    if (resContainer.innerHTML === '') {
+        resContainer.innerHTML = '<p style="font-size:14px; color:var(--gray);">No documents uploaded yet for your courses.</p>';
+    }
 
     if (window.lucide) lucide.createIcons();
 }
-
-// ================= PROFILE ACTIONS =================
-window.editCourses = async function() {
-    // Basic Chrome prompt for editing (as requested)
-    const current = userData.courses.join(", ");
-    const newCourses = prompt("Enter your programme codes separated by a comma (MAT for Maths, WEB for Web Dev).\nExample: MAT, WEB", current);
-    
-    if (newCourses !== null) {
-        const arr = newCourses.toUpperCase().split(',').map(s => s.trim()).filter(s => s === 'MAT' || s === 'WEB');
-        if (arr.length === 0) return alert("Invalid input. Please use MAT or WEB.");
-        if (arr.length > 2) return alert("You can select a maximum of 2 programmes.");
-
-        userData.courses = arr;
-        await setDoc(doc(db, "users", currentUser.uid), userData, { merge: true });
-        showDashboard();
-        alert("Courses updated successfully.");
-    }
-};
-
-window.deleteData = async function() {
-    const confirmDel = confirm("WARNING: This will permanently delete your application, Student ID, and Exam Number from the IFB database. This action cannot be undone.\n\nAre you sure you want to proceed?");
-    
-    if (confirmDel) {
-        try {
-            await deleteDoc(doc(db, "users", currentUser.uid));
-            alert("Your data has been permanently deleted. You will now be logged out.");
-            logout();
-        } catch (e) {
-            alert("Error deleting data: " + e.message);
-        }
-    }
-};
 </script>
 </body>
 </html>
