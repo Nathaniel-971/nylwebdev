@@ -38,13 +38,18 @@
     .cookie-btns { display: flex; gap: 10px; }
     .btn-cookie { padding: 10px 20px; font-size: 12px; }
 
-    /* ================= TOP BANNER ================= */
-    .top-banner { background: var(--maroon); color: var(--white); text-align: center; padding: 12px; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; position: fixed; top: 0; width: 100%; z-index: 1005; }
-    body { padding-top: 48px; }
+    /* ================= ANNOUNCEMENT POPUP MODAL ================= */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10001; display: none; justify-content: center; align-items: center; padding: 24px; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: rgba(31, 31, 31, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); padding: 40px; max-width: 500px; width: 100%; border-top: 6px solid var(--maroon); text-align: center; position: relative; }
+    .modal-content h2 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 16px; }
+    .modal-content p { font-size: 15px; color: var(--gray); margin-bottom: 24px; line-height: 1.7; }
+    .modal-content .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; color: var(--gray); cursor: pointer; }
+    .modal-content .close-modal:hover { color: var(--white); }
 
     /* ================= HEADER & HAMBURGER ================= */
-    .header { position: fixed; top: 48px; left: 0; width: 100%; z-index: 1000; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s, top 0.3s; }
-    .header.scrolled { background: var(--black); box-shadow: 0 2px 10px rgba(0,0,0,0.5); top: 0; }
+    .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
+    .header.scrolled { background: var(--black); box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
     .brand { display: flex; align-items: center; gap: 12px; z-index: 1001; }
     .brand-logo { width: 40px; height: 40px; background: var(--white); color: var(--maroon); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; flex-shrink: 0; }
     .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap; }
@@ -62,7 +67,7 @@
     .mobile-menu a:hover { color: var(--maroon); }
 
     /* ================= HERO ================= */
-    .hero { position: relative; min-height: 90vh; display: flex; align-items: center; padding: 80px 48px; background: linear-gradient(135deg, rgba(17,17,17,0.9) 0%, rgba(17,17,17,0.7) 100%), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop') center/cover; width: 100%; }
+    .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 120px 48px 80px; background: linear-gradient(135deg, rgba(17,17,17,0.9) 0%, rgba(17,17,17,0.7) 100%), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop') center/cover; width: 100%; }
     .hero-content { max-width: 1400px; margin: 0 auto; width: 100%; }
     .hero-text { max-width: 800px; width: 100%; }
     .hero-text h1 { font-size: clamp(40px, 8vw, 90px); font-weight: 900; line-height: 1.05; text-transform: uppercase; margin-bottom: 24px; letter-spacing: -1px; word-wrap: break-word; }
@@ -150,9 +155,15 @@
 </head>
 <body>
 
-<!-- TOP BANNER -->
-<div class="top-banner">
-    Applications for 2027 are now open. Closes 17 January 2027.
+<!-- ANNOUNCEMENT POPUP MODAL -->
+<div class="modal-overlay active" id="announcementModal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="document.getElementById('announcementModal').classList.remove('active')"><i data-lucide="x"></i></button>
+        <i data-lucide="megaphone" style="width:48px;height:48px;color:var(--maroon);margin:0 auto 16px;"></i>
+        <h2>Applications Open</h2>
+        <p>Applications for the 2027 academic year are officially open. The portal will close on <strong>17 January 2027</strong>. Late applications will not be accepted.</p>
+        <a href="apply.html" class="btn-primary" style="width: 100%; display: block;">Apply Now</a>
+    </div>
 </div>
 
 <!-- COOKIE BANNER -->
@@ -340,7 +351,7 @@ window.acceptCookies = function() {
     cookieBanner.classList.remove('show');
 };
 
-// HEADER SCROLL
+// SCROLL
 window.addEventListener('scroll', () => {
     const header = document.getElementById('mainHeader');
     if (window.scrollY > 50) header.classList.add('scrolled');
@@ -359,7 +370,7 @@ window.logout = async function() {
     window.location.reload();
 };
 
-// AUTH STATE OBSERVER
+// AUTH STATE
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         const docRef = doc(db, "users", user.uid);
