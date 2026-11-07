@@ -20,18 +20,16 @@
     body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: var(--white); line-height: 1.6; overflow-x: hidden; position: relative; width: 100%; max-width: 100vw; }
     a { text-decoration: none; color: inherit; }
 
-    /* HEADER */
+    /* HEADER & MENU */
     .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; background: var(--black); border-bottom: 1px solid var(--silver); }
     .brand { display: flex; align-items: center; gap: 12px; z-index: 1001; }
     .brand-logo { width: 40px; height: 40px; background: var(--white); color: var(--maroon); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; flex-shrink: 0; }
     .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap; }
-
     .hamburger { display: flex; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; background: transparent; padding: 5px; border: none; margin-left: auto; }
     .hamburger span { display: block; width: 35px; height: 3px; background: var(--white); transition: 0.3s; border-radius: 2px; }
     .hamburger.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
     .hamburger.active span:nth-child(2) { opacity: 0; }
     .hamburger.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
-
     .mobile-menu { position: fixed; inset: 0; width: 100%; height: 100vh; background: var(--dark-bg); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 30px; opacity: 0; pointer-events: none; transition: 0.4s ease; }
     .mobile-menu.active { opacity: 1; pointer-events: auto; }
     .mobile-menu a { font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); transition: 0.2s; text-align: center; }
@@ -39,7 +37,6 @@
 
     /* DASHBOARD LAYOUT */
     .dash-container { max-width: 1200px; margin: 0 auto; width: 100%; padding: 120px 48px 80px; }
-    
     .dash-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--silver); padding-bottom: 30px; margin-bottom: 40px; flex-wrap: wrap; gap: 20px; }
     .profile-block { display: flex; gap: 20px; align-items: center; }
     .profile-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; flex-shrink: 0; }
@@ -49,23 +46,19 @@
     
     .dash-content { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; }
     .dash-section h3 { font-size: 20px; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; color: var(--gray); letter-spacing: 1px; }
-    
-    /* COURSE PILLS */
     .course-pill { display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid var(--silver); border-left: 4px solid var(--maroon); margin-bottom: 15px; background: var(--dark-card); }
     .course-pill span { font-weight: 800; font-size: 18px; }
 
-    /* DYNAMIC RESOURCE CARDS */
+    /* RESOURCE CARDS */
     .session-card { background: var(--dark-card); border: 1px solid var(--silver); padding: 30px; margin-bottom: 20px; transition: 0.3s; }
     .session-card:hover { border-color: var(--maroon); }
     .session-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
     .session-title { font-size: 24px; font-weight: 900; text-transform: uppercase; }
     .session-badge { background: var(--maroon); color: var(--white); padding: 4px 10px; font-size: 12px; font-weight: 700; letter-spacing: 1px; }
-    
     .resource-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #222; color: var(--white); }
     .resource-item:last-child { border-bottom: none; padding-bottom: 0; }
     .resource-name { display: flex; align-items: center; gap: 12px; font-weight: 600; }
     .resource-name i { color: var(--maroon); }
-    
     .btn-download { background: transparent; border: 1px solid var(--gray); color: var(--gray); padding: 6px 12px; font-size: 12px; cursor: pointer; transition: 0.2s; }
     .btn-download:hover { border-color: var(--white); color: var(--white); }
 
@@ -73,8 +66,22 @@
     .admin-panel { background: rgba(122, 31, 43, 0.1); border: 2px dashed var(--maroon); padding: 20px; margin-bottom: 30px; display: none; }
     .admin-panel h4 { color: var(--maroon); font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
     .admin-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-admin { background: var(--maroon); color: var(--white); padding: 10px 20px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-admin { background: var(--maroon); color: var(--white); padding: 10px 20px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
     .btn-admin:hover { background: var(--maroon-hover); }
+
+    /* ADMIN MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: var(--dark-card); border: 1px solid var(--silver); padding: 40px; max-width: 500px; width: 100%; border-top: 6px solid var(--maroon); position: relative; }
+    .modal-content h2 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; color: var(--white); }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; color: var(--gray); }
+    .form-group input, .form-group select { width: 100%; padding: 14px; background: var(--dark-bg); border: 1px solid var(--silver); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--maroon); }
+    .btn-submit { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); font-size: 14px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; margin-top: 10px; }
+    .btn-submit:hover { background: var(--maroon-hover); }
+    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--gray); cursor: pointer; }
+    .close-modal:hover { color: var(--white); }
 
     @media (max-width: 900px) {
         .header, .dash-container { padding-left: 24px; padding-right: 24px; }
@@ -85,7 +92,6 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <header class="header">
         <a href="index.html" class="brand">
             <div class="brand-logo">∆</div>
@@ -96,7 +102,6 @@
         </button>
     </header>
 
-    <!-- MENU -->
     <div class="mobile-menu" id="mobileMenu">
         <a href="index.html" onclick="toggleMenu()">Home</a>
         <a href="dashboard.html" onclick="toggleMenu()">My Dashboard</a>
@@ -104,10 +109,46 @@
         <a href="#" onclick="logout(); toggleMenu();">Logout</a>
     </div>
 
+    <!-- ADMIN UPLOAD MODAL -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('uploadModal').classList.remove('active')"><i data-lucide="x"></i></button>
+            <h2>Upload Resource</h2>
+            <p style="color: var(--gray); font-size: 13px; margin-bottom: 24px;">Add a link to your uploaded HTML file. Students will see this immediately on their dashboard.</p>
+            
+            <form id="uploadForm" onsubmit="handleUpload(event)">
+                <div class="form-group">
+                    <label>Document Title</label>
+                    <input type="text" id="resTitle" required placeholder="e.g. AE Timetable 2027">
+                </div>
+                <div class="form-group">
+                    <label>Exam Session</label>
+                    <select id="resSession" required>
+                        <option value="AE">Admissions Exam (AE)</option>
+                        <option value="MayJun">May/June</option>
+                        <option value="NovDec">Nov/Dec</option>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Target Course</label>
+                    <select id="resCourse" required>
+                        <option value="ALL">All Students</option>
+                        <option value="MAT">Mathematics Only</option>
+                        <option value="WEB">Web Development Only</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>File URL (HTML Link)</label>
+                    <input type="url" id="resUrl" required placeholder="e.g. https://ifb-nmaz.onrender.com/resources/AE-Timetable.html">
+                </div>
+                <button type="submit" class="btn-submit" id="uploadBtn">Publish to Dashboard</button>
+            </form>
+        </div>
+    </div>
+
     <!-- MAIN DASHBOARD -->
     <div class="dash-container">
-        
-        <!-- PROFILE HEADER -->
         <div class="dash-header">
             <div class="profile-block">
                 <div class="profile-icon" id="dashProfileIcon">N</div>
@@ -125,25 +166,20 @@
             </div>
         </div>
 
-        <!-- ADMIN PANEL (Only visible to Admin) -->
         <div class="admin-panel" id="adminPanel">
             <h4><i data-lucide="shield-alert" style="width: 18px;"></i> Admin Controls</h4>
             <div class="admin-buttons">
-                <button class="btn-admin"><i data-lucide="upload"></i> Upload Resources</button>
+                <button class="btn-admin" onclick="document.getElementById('uploadModal').classList.add('active')"><i data-lucide="upload"></i> Upload Resources</button>
                 <button class="btn-admin"><i data-lucide="users"></i> Manage Students</button>
                 <button class="btn-admin"><i data-lucide="calendar"></i> Create Exam Session</button>
             </div>
         </div>
 
-        <!-- DASHBOARD CONTENT -->
         <div class="dash-content">
-            <!-- LEFT: My Programmes -->
             <div class="dash-section">
                 <h3>My Programmes</h3>
                 <div id="dashMyCourses"></div>
             </div>
-            
-            <!-- RIGHT: Dynamic Resources -->
             <div class="dash-section">
                 <h3>Exams & Resources</h3>
                 <div id="dashResources">
@@ -153,11 +189,10 @@
         </div>
     </div>
 
-    <!-- FIREBASE LOGIC -->
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig);
@@ -169,7 +204,6 @@
     let currentUser = null;
     let userData = null;
 
-    // MENU
     window.toggleMenu = function() {
         document.getElementById('mobileMenu').classList.toggle('active');
         document.getElementById('hamburgerBtn').classList.toggle('active');
@@ -180,7 +214,6 @@
         window.location.href = "index.html";
     };
 
-    // AUTH STATE
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
@@ -192,7 +225,6 @@
                 populateDashboard();
                 fetchResources();
 
-                // SHOW ADMIN PANEL (If email matches)
                 if (user.email === "n1nathaniel971@gmail.com") {
                     document.getElementById('adminPanel').style.display = 'block';
                 }
@@ -204,7 +236,6 @@
         }
     });
 
-    // POPULATE PROFILE & COURSES
     function populateDashboard() {
         document.getElementById('dashName').innerText = `${userData.firstName} ${userData.lastName}`;
         document.getElementById('dashProfileIcon').innerText = userData.firstName.charAt(0).toUpperCase();
@@ -229,14 +260,12 @@
         if (window.lucide) lucide.createIcons();
     }
 
-    // FETCH DYNAMIC RESOURCES (Only displays what Admin uploaded)
     async function fetchResources() {
         const resContainer = document.getElementById('dashResources');
         
         try {
             const querySnapshot = await getDocs(collection(db, "resources"));
             
-            // If the Admin hasn't uploaded anything, stop here and show a clean message.
             if (querySnapshot.empty) {
                 resContainer.innerHTML = '<p style="color: var(--gray); font-size: 14px;">No exam timetables or resources have been uploaded yet.</p>';
                 return;
@@ -246,12 +275,7 @@
 
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                
-                // Logic: Filter by course. 
-                // If 'course' is 'ALL', everyone sees it. Otherwise, only show if it matches their courses.
                 const isForMyCourse = data.course === 'ALL' || (userData.courses && userData.courses.includes(data.course));
-                
-                // If Admin, bypass course filtering (Admin sees everything)
                 const isAdmin = currentUser.email === "n1nathaniel971@gmail.com";
 
                 if (isForMyCourse || isAdmin) {
@@ -264,8 +288,7 @@
             resContainer.innerHTML = '';
             let hasResources = false;
 
-            // Sort by exam period: AE, then MayJun, then NovDec
-            const sessionOrder = { 'AE': 1, 'MayJun': 2, 'NovDec': 3 };
+            const sessionOrder = { 'AE': 1, 'MayJun': 2, 'NovDec': 3, 'General': 4 };
             const sortedSessions = Object.keys(sessions).sort((a, b) => (sessionOrder[a] || 99) - (sessionOrder[b] || 99));
 
             sortedSessions.forEach(sessionName => {
@@ -312,6 +335,38 @@
             resContainer.innerHTML = '<p style="color: var(--maroon);">Error loading resources.</p>';
         }
     }
+
+    // ADMIN UPLOAD LOGIC
+    window.handleUpload = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('uploadBtn');
+        btn.innerText = "Publishing...";
+        btn.disabled = true;
+
+        const newResource = {
+            title: document.getElementById('resTitle').value,
+            session: document.getElementById('resSession').value,
+            course: document.getElementById('resCourse').value,
+            fileUrl: document.getElementById('resUrl').value,
+            uploadedAt: new Date().toISOString()
+        };
+
+        try {
+            await addDoc(collection(db, "resources"), newResource);
+            document.getElementById('uploadModal').classList.remove('active');
+            document.getElementById('uploadForm').reset();
+            
+            // Re-fetch resources instantly so the Admin sees it appear
+            fetchResources();
+            
+            btn.innerText = "Publish to Dashboard";
+            btn.disabled = false;
+        } catch (error) {
+            alert("Error uploading resource: " + error.message);
+            btn.innerText = "Publish to Dashboard";
+            btn.disabled = false;
+        }
+    };
     </script>
 </body>
 </html>
