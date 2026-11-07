@@ -14,13 +14,14 @@
         --white: #FFF; --black: #111; --gray: #A1A1AA; --silver: #333;
         --maroon: #7A1F2B; --maroon-hover: #5A1620; 
         --dark-bg: #111111; --dark-card: #1F1F1F;
+        --green: #15803D; --red: #DC2626;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
     body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: var(--white); line-height: 1.6; overflow-x: hidden; position: relative; width: 100%; max-width: 100vw; }
     a { text-decoration: none; color: inherit; }
 
-    /* HEADER & MENU */
+    /* HEADER & HAMBURGER */
     .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; background: var(--black); border-bottom: 1px solid var(--silver); }
     .brand { display: flex; align-items: center; gap: 12px; z-index: 1001; }
     .brand-logo { width: 40px; height: 40px; background: var(--white); color: var(--maroon); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; flex-shrink: 0; }
@@ -41,16 +42,19 @@
     .profile-block { display: flex; gap: 20px; align-items: center; }
     .profile-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; flex-shrink: 0; }
     .dash-name { font-size: 32px; font-weight: 900; text-transform: uppercase; line-height: 1.1; }
-    .id-badges { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-    .badge { background: #000; border: 1px solid var(--silver); padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--maroon); }
+    
+    /* BADGES (IDs and Security Codes) */
+    .id-badges { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .badge { background: rgba(0, 0, 0, 0.5); border: 1px solid var(--silver); padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--maroon); display: flex; align-items: center; gap: 6px; }
+    .badge-secure { color: #fff; border-color: #555; }
     
     .dash-content { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; }
     .dash-section h3 { font-size: 20px; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; color: var(--gray); letter-spacing: 1px; }
-    .course-pill { display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid var(--silver); border-left: 4px solid var(--maroon); margin-bottom: 15px; background: var(--dark-card); }
+    .course-pill { display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid var(--silver); border-left: 4px solid var(--maroon); margin-bottom: 15px; background: rgba(31, 31, 31, 0.6); backdrop-filter: blur(12px); }
     .course-pill span { font-weight: 800; font-size: 18px; }
 
     /* RESOURCE CARDS */
-    .session-card { background: var(--dark-card); border: 1px solid var(--silver); padding: 30px; margin-bottom: 20px; transition: 0.3s; }
+    .session-card { background: rgba(31, 31, 31, 0.6); backdrop-filter: blur(12px); border: 1px solid var(--silver); padding: 30px; margin-bottom: 20px; transition: 0.3s; }
     .session-card:hover { border-color: var(--maroon); }
     .session-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
     .session-title { font-size: 24px; font-weight: 900; text-transform: uppercase; }
@@ -62,26 +66,37 @@
     .btn-download { background: transparent; border: 1px solid var(--gray); color: var(--gray); padding: 6px 12px; font-size: 12px; cursor: pointer; transition: 0.2s; }
     .btn-download:hover { border-color: var(--white); color: var(--white); }
 
-    /* ADMIN CONTROLS */
+    /* ADMIN PANEL & WHATSAPP LIST */
     .admin-panel { background: rgba(122, 31, 43, 0.1); border: 2px dashed var(--maroon); padding: 20px; margin-bottom: 30px; display: none; }
     .admin-panel h4 { color: var(--maroon); font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
     .admin-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
     .btn-admin { background: var(--maroon); color: var(--white); padding: 10px 20px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
     .btn-admin:hover { background: var(--maroon-hover); }
 
-    /* ADMIN MODAL */
+    .wa-list { background: var(--dark-card); border: 1px solid var(--silver); margin-bottom: 20px; display: none; }
+    .wa-list.active { display: block; }
+    .wa-header { background: #000; padding: 15px 20px; font-weight: 900; text-transform: uppercase; font-size: 14px; border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; }
+    .wa-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+    .wa-item:hover { background: rgba(255,255,255,0.03); }
+    .wa-item:last-child { border-bottom: none; }
+    .wa-info h5 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .wa-info p { font-size: 12px; color: var(--gray); }
+    .wa-status { padding: 4px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; border-radius: 4px; }
+    .status-live { background: rgba(21, 128, 61, 0.2); color: #4ADE80; border: 1px solid #15803D; }
+    .status-upcoming { background: rgba(161, 161, 170, 0.2); color: #D4D4D8; border: 1px solid #52525B; }
+    .status-closed { background: rgba(220, 38, 38, 0.2); color: #F87171; border: 1px solid #DC2626; }
+
+    /* MODALS */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
     .modal-overlay.active { display: flex; }
-    .modal-content { background: var(--dark-card); border: 1px solid var(--silver); padding: 40px; max-width: 500px; width: 100%; border-top: 6px solid var(--maroon); position: relative; }
-    .modal-content h2 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; color: var(--white); }
+    .modal-content { background: rgba(31, 31, 31, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 40px; max-width: 500px; width: 100%; border-top: 6px solid var(--maroon); position: relative; }
+    .modal-content h2 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; color: var(--gray); }
     .form-group input, .form-group select { width: 100%; padding: 14px; background: var(--dark-bg); border: 1px solid var(--silver); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; }
     .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--maroon); }
     .btn-submit { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); font-size: 14px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; margin-top: 10px; }
-    .btn-submit:hover { background: var(--maroon-hover); }
     .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--gray); cursor: pointer; }
-    .close-modal:hover { color: var(--white); }
 
     @media (max-width: 900px) {
         .header, .dash-container { padding-left: 24px; padding-right: 24px; }
@@ -105,17 +120,16 @@
     <div class="mobile-menu" id="mobileMenu">
         <a href="index.html" onclick="toggleMenu()">Home</a>
         <a href="dashboard.html" onclick="toggleMenu()">My Dashboard</a>
+        <a href="resources.html" onclick="toggleMenu()">Resources</a>
         <a href="settings.html">Settings</a>
         <a href="#" onclick="logout(); toggleMenu();">Logout</a>
     </div>
 
-    <!-- ADMIN UPLOAD MODAL -->
+    <!-- UPLOAD MODAL -->
     <div class="modal-overlay" id="uploadModal">
         <div class="modal-content">
             <button class="close-modal" onclick="document.getElementById('uploadModal').classList.remove('active')"><i data-lucide="x"></i></button>
             <h2>Upload Resource</h2>
-            <p style="color: var(--gray); font-size: 13px; margin-bottom: 24px;">Add a link to your uploaded HTML file. Students will see this immediately on their dashboard.</p>
-            
             <form id="uploadForm" onsubmit="handleUpload(event)">
                 <div class="form-group">
                     <label>Document Title</label>
@@ -140,44 +154,88 @@
                 </div>
                 <div class="form-group">
                     <label>File URL (HTML Link)</label>
-                    <input type="url" id="resUrl" required placeholder="e.g. https://ifb-nmaz.onrender.com/resources/AE-Timetable.html">
+                    <input type="url" id="resUrl" required placeholder="https://ifb-nmaz.onrender.com/resources/...">
                 </div>
-                <button type="submit" class="btn-submit" id="uploadBtn">Publish to Dashboard</button>
+                <button type="submit" class="btn-submit" id="uploadBtn">Publish</button>
             </form>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
+    <!-- CREATE EXAM MODAL -->
+    <div class="modal-overlay" id="createExamModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('createExamModal').classList.remove('active')"><i data-lucide="x"></i></button>
+            <h2>Create Exam Session</h2>
+            <form id="createExamForm" onsubmit="handleCreateExam(event)">
+                <div class="form-group">
+                    <label>Session Name</label>
+                    <input type="text" id="examName" required placeholder="e.g. AE Paper 2027">
+                </div>
+                <div class="form-group">
+                    <label>Target Course</label>
+                    <select id="examCourse" required>
+                        <option value="MAT">Mathematics</option>
+                        <option value="WEB">Web Development</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="examStatus" required>
+                        <option value="upcoming">Upcoming (Locked)</option>
+                        <option value="live">Live (Unlocked)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit" id="createExamBtn">Create Session</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
     <div class="dash-container">
         <div class="dash-header">
             <div class="profile-block">
                 <div class="profile-icon" id="dashProfileIcon">N</div>
                 <div>
                     <div class="dash-name" id="dashName">Loading...</div>
+                    
+                    <!-- THE 3 CRITICAL NUMBERS -->
                     <div class="id-badges">
-                        <span class="badge">ID: <span id="dashStudentId">...</span></span>
-                        <span class="badge">Exam No: <span id="dashExamNo">...</span></span>
-                        <span class="badge" id="dashStatusBadge">Applicant</span>
+                        <span class="badge"><i data-lucide="hash" style="width:14px;"></i> Exam No: <strong id="dashExamNo">...</strong></span>
+                        <span class="badge"><i data-lucide="user" style="width:14px;"></i> Student ID: <strong id="dashStudentId">...</strong></span>
+                        <span class="badge badge-secure"><i data-lucide="shield" style="width:14px;"></i> Security Code: <strong id="dashSecurityCode">...</strong></span>
+                    </div>
+                    <div class="id-badges" style="margin-top: 8px;">
+                        <span class="badge" id="dashStatusBadge" style="color: #fff; border-color: #555;">Status: Applicant</span>
                     </div>
                 </div>
             </div>
-            <div>
+            <div style="display: flex; gap: 10px;">
                 <a href="settings.html" class="btn-download" style="padding: 10px 20px; font-size: 12px; border-color: var(--silver); color: var(--white); display: flex; align-items: center; gap: 8px;"><i data-lucide="settings" style="width: 16px;"></i> Settings</a>
             </div>
         </div>
 
+        <!-- ADMIN PANEL -->
         <div class="admin-panel" id="adminPanel">
             <h4><i data-lucide="shield-alert" style="width: 18px;"></i> Admin Controls</h4>
             <div class="admin-buttons">
                 <button class="btn-admin" onclick="document.getElementById('uploadModal').classList.add('active')"><i data-lucide="upload"></i> Upload Resources</button>
-                <button class="btn-admin"><i data-lucide="users"></i> Manage Students</button>
-                <button class="btn-admin"><i data-lucide="calendar"></i> Create Exam Session</button>
+                <a href="resources.html" class="btn-admin"><i data-lucide="folder"></i> View All Resources</a>
+                <button class="btn-admin" onclick="toggleExamList()"><i data-lucide="calendar"></i> Manage Exam Sessions</button>
+            </div>
+
+            <div class="wa-list" id="waExamList">
+                <div class="wa-header">
+                    <span>Live Exam Sessions</span>
+                    <button class="btn-admin" style="padding: 4px 10px; font-size: 10px;" onclick="document.getElementById('createExamModal').classList.add('active')">+ New Session</button>
+                </div>
+                <div id="waSessionItems"></div>
             </div>
         </div>
 
+        <!-- DASHBOARD CONTENT -->
         <div class="dash-content">
             <div class="dash-section">
-                <h3>My Programmes</h3>
+                <h3>My Programme</h3>
                 <div id="dashMyCourses"></div>
             </div>
             <div class="dash-section">
@@ -192,7 +250,7 @@
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, getDocs, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig);
@@ -203,6 +261,7 @@
 
     let currentUser = null;
     let userData = null;
+    let isAdmin = false;
 
     window.toggleMenu = function() {
         document.getElementById('mobileMenu').classList.toggle('active');
@@ -212,6 +271,10 @@
     window.logout = async function() {
         await signOut(auth);
         window.location.href = "index.html";
+    };
+
+    window.toggleExamList = function() {
+        document.getElementById('waExamList').classList.toggle('active');
     };
 
     onAuthStateChanged(auth, async (user) => {
@@ -226,7 +289,9 @@
                 fetchResources();
 
                 if (user.email === "n1nathaniel971@gmail.com") {
+                    isAdmin = true;
                     document.getElementById('adminPanel').style.display = 'block';
+                    fetchAdminSessions();
                 }
             } else {
                 window.location.href = "apply.html";
@@ -239,23 +304,26 @@
     function populateDashboard() {
         document.getElementById('dashName').innerText = `${userData.firstName} ${userData.lastName}`;
         document.getElementById('dashProfileIcon').innerText = userData.firstName.charAt(0).toUpperCase();
+        
+        // THE THREE CRUCIAL NUMBERS
         document.getElementById('dashStudentId').innerText = userData.studentId || "PENDING";
         document.getElementById('dashExamNo').innerText = userData.examinationNumber || "Not Issued";
-        document.getElementById('dashStatusBadge').innerText = userData.status || "Applicant";
+        document.getElementById('dashSecurityCode').innerText = userData.securityCode || "N/A";
+        
+        document.getElementById('dashStatusBadge').innerText = "Status: " + (userData.status || "Applicant");
 
         const courseContainer = document.getElementById('dashMyCourses');
         courseContainer.innerHTML = '';
         if (userData.courses && userData.courses.length > 0) {
-            userData.courses.forEach(courseCode => {
-                const courseName = courseCode === 'MAT' ? 'IFB—Mathematics' : 'IFB—Web Development';
-                courseContainer.innerHTML += `
-                    <div class="course-pill">
-                        <span>${courseName}</span> 
-                        <i data-lucide="check-circle" style="color: var(--maroon);"></i>
-                    </div>`;
-            });
+            const courseCode = userData.courses[0]; 
+            const courseName = courseCode === 'MAT' ? 'IFB—Mathematics' : 'IFB—Web Development';
+            courseContainer.innerHTML = `
+                <div class="course-pill">
+                    <span>${courseName}</span> 
+                    <i data-lucide="check-circle" style="color: var(--maroon);"></i>
+                </div>`;
         } else {
-            courseContainer.innerHTML = '<p style="color: var(--gray);">No programmes selected.</p>';
+            courseContainer.innerHTML = '<p style="color: var(--gray);">No programme selected.</p>';
         }
         if (window.lucide) lucide.createIcons();
     }
@@ -267,7 +335,7 @@
             const querySnapshot = await getDocs(collection(db, "resources"));
             
             if (querySnapshot.empty) {
-                resContainer.innerHTML = '<p style="color: var(--gray); font-size: 14px;">No exam timetables or resources have been uploaded yet.</p>';
+                resContainer.innerHTML = '<p style="color: var(--gray); font-size: 14px;">No resources uploaded yet.</p>';
                 return;
             }
 
@@ -276,9 +344,9 @@
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 const isForMyCourse = data.course === 'ALL' || (userData.courses && userData.courses.includes(data.course));
-                const isAdmin = currentUser.email === "n1nathaniel971@gmail.com";
+                const hasAccess = isForMyCourse || isAdmin;
 
-                if (isForMyCourse || isAdmin) {
+                if (hasAccess) {
                     const session = data.session || 'General';
                     if (!sessions[session]) sessions[session] = [];
                     sessions[session].push(data);
@@ -293,7 +361,6 @@
 
             sortedSessions.forEach(sessionName => {
                 hasResources = true;
-                
                 let displayTitle = sessionName;
                 if (sessionName === 'AE') displayTitle = 'Admissions Examination (AE)';
                 if (sessionName === 'MayJun') displayTitle = 'May/June Examinations';
@@ -325,7 +392,7 @@
             });
 
             if (!hasResources) {
-                resContainer.innerHTML = '<p style="color: var(--gray); font-size: 14px;">No resources available for your specific programmes yet.</p>';
+                resContainer.innerHTML = '<p style="color: var(--gray); font-size: 14px;">No resources available for your programme yet.</p>';
             }
 
             if (window.lucide) lucide.createIcons();
@@ -336,7 +403,6 @@
         }
     }
 
-    // ADMIN UPLOAD LOGIC
     window.handleUpload = async function(e) {
         e.preventDefault();
         const btn = document.getElementById('uploadBtn');
@@ -355,16 +421,92 @@
             await addDoc(collection(db, "resources"), newResource);
             document.getElementById('uploadModal').classList.remove('active');
             document.getElementById('uploadForm').reset();
-            
-            // Re-fetch resources instantly so the Admin sees it appear
-            fetchResources();
-            
-            btn.innerText = "Publish to Dashboard";
+            fetchResources(); 
+            btn.innerText = "Publish";
             btn.disabled = false;
         } catch (error) {
             alert("Error uploading resource: " + error.message);
-            btn.innerText = "Publish to Dashboard";
+            btn.innerText = "Publish";
             btn.disabled = false;
+        }
+    };
+
+    async function fetchAdminSessions() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "examSessions"));
+            const container = document.getElementById('waSessionItems');
+            container.innerHTML = '';
+
+            if (querySnapshot.empty) {
+                container.innerHTML = '<div style="padding: 20px; font-size: 13px; color: var(--gray);">No sessions created yet.</div>';
+                return;
+            }
+
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                let statusClass = 'status-upcoming';
+                let statusText = 'Upcoming';
+                if (data.status === 'live') { statusClass = 'status-live'; statusText = 'Live Now'; }
+                if (data.status === 'closed') { statusClass = 'status-closed'; statusText = 'Closed'; }
+
+                container.innerHTML += `
+                    <div class="wa-item">
+                        <div class="wa-info">
+                            <h5>${data.name} (${data.course})</h5>
+                            <p>Code: <strong>${data.code}</strong></p>
+                        </div>
+                        <div class="${statusClass} wa-status" onclick="toggleSessionStatus('${docSnap.id}', '${data.status}')">
+                            ${statusText}
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    window.handleCreateExam = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('createExamBtn');
+        btn.innerText = "Creating...";
+        btn.disabled = true;
+
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        const newSession = {
+            name: document.getElementById('examName').value,
+            course: document.getElementById('examCourse').value,
+            status: document.getElementById('examStatus').value,
+            code: code,
+            createdAt: new Date().toISOString()
+        };
+
+        try {
+            await addDoc(collection(db, "examSessions"), newSession);
+            document.getElementById('createExamModal').classList.remove('active');
+            document.getElementById('createExamForm').reset();
+            fetchAdminSessions();
+            btn.innerText = "Create Session";
+            btn.disabled = false;
+        } catch (error) {
+            alert("Error creating exam: " + error.message);
+            btn.innerText = "Create Session";
+            btn.disabled = false;
+        }
+    };
+
+    window.toggleSessionStatus = async function(docId, currentStatus) {
+        let newStatus = 'live';
+        if (currentStatus === 'live') newStatus = 'closed';
+        if (currentStatus === 'closed') newStatus = 'upcoming';
+
+        try {
+            const sessionRef = doc(db, "examSessions", docId);
+            await updateDoc(sessionRef, { status: newStatus });
+            fetchAdminSessions();
+        } catch (e) {
+            alert("Error updating status: " + e.message);
         }
     };
     </script>
