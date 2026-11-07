@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generating Admission Slip...</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* STYLES FOR THE PRINT SLIP */
+        @page { size: A4; margin: 10mm; }
+        body { font-family: 'Courier Prime', monospace; background: #fff; color: #000; padding: 20px; }
+        
+        .slip { max-width: 500px; margin: 0 auto; border: 2px dashed #000; padding: 30px; text-align: center; }
+        .slip-header { border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 20px; }
+        .slip-header h1 { font-size: 24px; font-weight: 900; letter-spacing: 2px; }
+        .slip-header p { font-size: 12px; margin-top: 5px; text-transform: uppercase; }
+        
+        .row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+        .label { font-weight: bold; text-transform: uppercase; color: #555; }
+        .value { font-weight: bold; }
+        
+        .barcode { width: 100%; height: 60px; margin: 30px 0 10px; }
+        .qr { width: 80px; height: 80px; margin: 10px auto; }
+        .qr svg { width: 100%; height: 100%; }
+        
+        .warning { margin-top: 30px; font-size: 10px; border: 1px solid #000; padding: 10px; text-transform: uppercase; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- The Slip is built dynamically here -->
+    <div id="slipContainer" class="slip">
+        <div class="slip-header">
+            <h1>∆ IFB ACADEMY</h1>
+            <p>2027 Admissions Examination</p>
+        </div>
+
+        <div class="row"><span class="label">Student Name</span><span class="value" id="pName">...</span></div>
+        <div class="row"><span class="label">Programme</span><span class="value" id="pSubject">...</span></div>
+        <div class="row"><span class="label">Student ID</span><span class="value" id="pStudentId">...</span></div>
+        <div class="row"><span class="label">Exam Number</span><span class="value" id="pExamNum">...</span></div>
+        <div class="row"><span class="label">Security Code</span><span class="value" id="pSecCode">...</span></div>
+
+        <svg class="barcode" id="pBarcode"></svg>
+        <div class="qr" id="pQR"></div>
+        
+        <div class="warning">
+            DO NOT SHARE THIS SLIP. Impersonation results in immediate disqualification.
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    document.getElementById('pName').textContent = `${data.firstName} ${data.lastName}`;
+                    document.getElementById('pSubject').textContent = data.courses[0] === 'MAT' ? 'Mathematics' : 'Web Development';
+                    document.getElementById('pStudentId').textContent = data.studentId || 'PENDING';
+                    document.getElementById('pExamNum').textContent = data.examinationNumber || 'PENDING';
+                    document.getElementById('pSecCode').textContent = data.securityCode || '------';
+
+                    // Render Barcode
+                    if (data.studentId) {
+                        JsBarcode("#pBarcode", data.studentId, {
+                            format: "CODE128", width: 2, height: 50, displayValue: false, margin: 0
+                        });
+                    }
+
+                    // Render QR
+                    const qr = qrcode(0, 'M');
+                    qr.addData(`IFB|NAME:${data.firstName} ${data.lastName}|SID:${data.studentId}|SEC:${data.securityCode}`);
+                    qr.make();
+                    document.getElementById('pQR').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0 });
+
+                    // Auto-trigger print dialog
+                    setTimeout(() => {
+                        window.print();
+                    }, 500);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
