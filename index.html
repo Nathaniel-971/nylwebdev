@@ -3,44 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Institute of Board | Portal</title>
-    <meta name="description" content="Apply to the Institute of Board (IFB). Rigorous, fee-free education in Mathematics and Web Development. Applications close 17 January 2027.">
-
+    <title>Dashboard | Institute of Board</title>
+    
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10 L92 85 H8 L50 10 Z' fill='%237A1F2B'/%3E%3Cpath d='M50 32 L77 78 H23 L50 32 Z' fill='%23FFFFFF'/%3E%3C/svg%3E">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
-    /* ================= VARIABLES ================= */
     :root {
         --white: #FFF; --black: #111; --gray: #A1A1AA; --silver: #333;
         --maroon: #7A1F2B; --maroon-hover: #5A1620; 
         --dark-bg: #111111; --dark-card: #1F1F1F;
+        --green: #15803D; --red: #DC2626;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
     body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: var(--white); line-height: 1.6; overflow-x: hidden; position: relative; width: 100%; max-width: 100vw; }
     a { text-decoration: none; color: inherit; }
-    ul { list-style: none; }
 
-    /* ================= BUTTONS ================= */
-    button { font-family: 'Inter', sans-serif; border: none; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 4px; font-weight: 700; outline: none; }
-    button:active { transform: scale(0.98); }
-    .btn-primary { background: var(--maroon); color: var(--white); padding: 16px 32px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 0; }
-    .btn-primary:hover { background: var(--maroon-hover); }
-    .btn-secondary { background: transparent; color: var(--white); border: 2px solid var(--white); padding: 14px 30px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-radius: 0; }
-    .btn-secondary:hover { background: var(--white); color: var(--black); }
-
-    /* ================= COOKIE BANNER ================= */
-    .cookie-banner { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 1px solid var(--silver); padding: 20px 48px; z-index: 10000; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; transform: translateY(100%); transition: transform 0.4s ease; }
-    .cookie-banner.show { transform: translateY(0); }
-    .cookie-text { font-size: 13px; color: var(--gray); max-width: 700px; }
-    .cookie-btns { display: flex; gap: 10px; }
-    .btn-cookie { padding: 10px 20px; font-size: 12px; }
-    
     /* ================= HEADER & HAMBURGER ================= */
-    .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s; }
-    .header.scrolled { background: var(--black); box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 20px 48px; display: flex; justify-content: space-between; align-items: center; background: var(--black); border-bottom: 1px solid var(--silver); }
     .brand { display: flex; align-items: center; gap: 12px; z-index: 1001; }
     .brand-logo { width: 40px; height: 40px; background: var(--white); color: var(--maroon); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; flex-shrink: 0; }
     .brand-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; white-space: nowrap; }
@@ -53,363 +35,481 @@
 
     .mobile-menu { position: fixed; inset: 0; width: 100%; height: 100vh; background: var(--dark-bg); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 30px; opacity: 0; pointer-events: none; transition: 0.4s ease; }
     .mobile-menu.active { opacity: 1; pointer-events: auto; }
-    .mobile-menu a { font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); transition: 0.2s; text-align: center; }
+    .mobile-menu a { font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--white); transition: 0.2s; text-align: center; }
     .mobile-menu a:hover { color: var(--maroon); }
 
-    /* ================= APPLICATIONS BANNER ================= */
-    .top-banner { background: var(--maroon); color: var(--white); text-align: center; padding: 12px; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; position: fixed; top: 0; width: 100%; z-index: 1005; }
-    body { padding-top: 48px; } /* Push content down for banner */
-
-    /* ================= HERO (Public) ================= */
-    .hero { position: relative; min-height: 90vh; display: flex; align-items: center; padding: 80px 48px; background: linear-gradient(135deg, rgba(17,17,17,0.9) 0%, rgba(17,17,17,0.7) 100%), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1600&auto=format&fit=crop') center/cover; width: 100%; }
-    .hero-content { max-width: 1400px; margin: 0 auto; width: 100%; }
-    .hero-text { max-width: 800px; width: 100%; }
-    .hero-text h1 { font-size: clamp(40px, 8vw, 90px); font-weight: 900; line-height: 1.05; text-transform: uppercase; margin-bottom: 24px; letter-spacing: -1px; word-wrap: break-word; }
-    .hero-text h1 span { color: var(--maroon); }
-    .hero-text p { font-size: 18px; color: var(--gray); max-width: 500px; margin-bottom: 40px; }
-    .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; width: 100%; }
-
-    /* ================= BULLETIN (Announcements) ================= */
-    .bulletin-section { padding: 80px 48px; background: var(--black); width: 100%; border-bottom: 1px solid var(--silver); }
-    .bulletin-container { max-width: 1200px; margin: 0 auto; }
-    .bulletin-container h2 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin-bottom: 30px; display: flex; align-items: center; gap: 12px; }
-    .bulletin-container h2 i { color: var(--maroon); }
-    .bulletin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    .bulletin-card { background: var(--dark-card); border-left: 4px solid var(--maroon); padding: 24px; }
-    .bulletin-card h4 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
-    .bulletin-card p { font-size: 14px; color: var(--gray); }
-
-    /* ================= PROGRAMMES ================= */
-    .programmes-section { padding: 100px 48px; background: var(--dark-bg); width: 100%; }
-    .programmes-container { max-width: 1200px; margin: 0 auto; width: 100%; }
-    .programmes-container h2 { font-size: clamp(36px, 5vw, 56px); font-weight: 900; text-transform: uppercase; margin-bottom: 60px; word-wrap: break-word; }
-    .programmes-container h2 span { color: var(--maroon); }
+    /* ================= DASHBOARD LAYOUT ================= */
+    .dash-container { max-width: 1200px; margin: 0 auto; width: 100%; padding: 120px 48px 80px; }
+    .dash-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--silver); padding-bottom: 30px; margin-bottom: 40px; flex-wrap: wrap; gap: 20px; }
+    .profile-block { display: flex; gap: 20px; align-items: center; }
+    .profile-icon { width: 80px; height: 80px; border-radius: 50%; background: var(--maroon); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; flex-shrink: 0; }
+    .dash-name { font-size: 32px; font-weight: 900; text-transform: uppercase; line-height: 1.1; }
+    .id-badges { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+    .badge { background: #000; border: 1px solid var(--silver); padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--maroon); }
     
-    .programme-row { display: flex; border-top: 1px solid var(--silver); padding: 40px 0; align-items: center; transition: 0.3s; width: 100%; flex-wrap: wrap; gap: 20px; }
-    .programme-row:hover { background: rgba(255,255,255,0.02); }
-    .programme-num { font-size: 24px; font-weight: 900; color: var(--maroon); width: 80px; flex-shrink: 0; }
-    .programme-info { flex: 1; min-width: 250px; }
-    .programme-info h3 { font-size: clamp(24px, 4vw, 32px); font-weight: 800; text-transform: uppercase; margin-bottom: 12px; }
-    .programme-info p { color: var(--gray); font-size: 16px; max-width: 600px; }
-    .programme-action { width: 250px; text-align: right; flex-shrink: 0; }
+    .dash-content { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; align-items: start; }
+    .dash-section h3 { font-size: 20px; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; color: var(--gray); letter-spacing: 1px; }
+    .course-pill { display: flex; justify-content: space-between; align-items: center; padding: 20px; border: 1px solid var(--silver); border-left: 4px solid var(--maroon); margin-bottom: 15px; background: var(--dark-card); }
+    .course-pill span { font-weight: 800; font-size: 18px; }
 
-    /* ================= WHY US ================= */
-    .why-section { padding: 100px 48px; background: var(--black); display: flex; justify-content: center; width: 100%; }
-    .why-container { max-width: 1200px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-    .why-text h2 { font-size: clamp(36px, 5vw, 56px); font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 40px; }
-    .why-text h2 span { color: var(--maroon); }
-    .why-list { display: flex; flex-direction: column; gap: 40px; }
-    .why-item { display: flex; gap: 20px; align-items: flex-start; }
-    .why-icon { width: 60px; height: 60px; background: var(--maroon); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .why-item h3 { font-size: 22px; font-weight: 800; margin-bottom: 8px; text-transform: uppercase; }
-    .why-item p { font-size: 15px; color: var(--gray); }
-    .why-image { background: url('https://images.unsplash.com/photo-1571260899304-425eee4c7efc?q=80&w=1000&auto=format&fit=crop') center/cover; height: 500px; width: 100%; border-radius: 4px; }
+    /* RESOURCE CARDS */
+    .session-card { background: var(--dark-card); border: 1px solid var(--silver); padding: 30px; margin-bottom: 20px; transition: 0.3s; }
+    .session-card:hover { border-color: var(--maroon); }
+    .session-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+    .session-title { font-size: 24px; font-weight: 900; text-transform: uppercase; }
+    .session-badge { background: var(--maroon); color: var(--white); padding: 4px 10px; font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+    .resource-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #222; color: var(--white); }
+    .resource-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .resource-name { display: flex; align-items: center; gap: 12px; font-weight: 600; }
+    .resource-name i { color: var(--maroon); }
+    .btn-download { background: transparent; border: 1px solid var(--gray); color: var(--gray); padding: 6px 12px; font-size: 12px; cursor: pointer; transition: 0.2s; }
+    .btn-download:hover { border-color: var(--white); color: var(--white); }
 
-    /* ================= ASSESSMENT ================= */
-    .assessment-section { padding: 100px 48px; background: var(--maroon); display: flex; justify-content: center; text-align: center; width: 100%; }
-    .assessment-container { max-width: 800px; width: 100%; }
-    .assessment-container h2 { font-size: clamp(32px, 5vw, 48px); font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
-    .assessment-container p { font-size: 18px; color: rgba(255,255,255,0.8); margin-bottom: 40px; }
+    /* ADMIN PANEL */
+    .admin-panel { background: rgba(122, 31, 43, 0.1); border: 2px dashed var(--maroon); padding: 20px; margin-bottom: 30px; display: none; }
+    .admin-panel h4 { color: var(--maroon); font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .admin-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn-admin { background: var(--maroon); color: var(--white); padding: 10px 20px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+    .btn-admin:hover { background: var(--maroon-hover); }
 
-    /* ================= POLICY SECTIONS (Terms, Privacy) ================= */
-    .policy-section { padding: 80px 48px; background: var(--dark-bg); border-top: 1px solid var(--silver); }
-    .policy-container { max-width: 900px; margin: 0 auto; }
-    .policy-container h2 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin-bottom: 24px; color: var(--maroon); }
-    .policy-container p { font-size: 14px; color: var(--gray); margin-bottom: 16px; line-height: 1.8; }
-    .policy-container h4 { font-size: 16px; color: var(--white); margin: 24px 0 8px 0; }
+    /* WHATSAPP-STYLE EXAM LIST */
+    .wa-list { background: var(--dark-card); border: 1px solid var(--silver); margin-bottom: 20px; display: none; }
+    .wa-list.active { display: block; }
+    .wa-header { background: #000; padding: 15px 20px; font-weight: 900; text-transform: uppercase; font-size: 14px; border-bottom: 1px solid var(--silver); display: flex; justify-content: space-between; align-items: center; }
+    .wa-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+    .wa-item:hover { background: rgba(255,255,255,0.03); }
+    .wa-item:last-child { border-bottom: none; }
+    .wa-info h5 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .wa-info p { font-size: 12px; color: var(--gray); }
+    .wa-status { padding: 4px 10px; font-size: 11px; font-weight: 800; text-transform: uppercase; border-radius: 4px; }
+    .status-live { background: rgba(21, 128, 61, 0.2); color: #4ADE80; border: 1px solid #15803D; }
+    .status-upcoming { background: rgba(161, 161, 170, 0.2); color: #D4D4D8; border: 1px solid #52525B; }
+    .status-closed { background: rgba(220, 38, 38, 0.2); color: #F87171; border: 1px solid #DC2626; }
 
-    /* ================= FOOTER ================= */
-    .footer { background: #000; padding: 80px 48px 40px; border-top: 1px solid var(--silver); width: 100%; }
-    .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 60px; width: 100%; }
-    .footer h2 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
-    .footer p { font-size: 14px; color: var(--gray); max-width: 400px; }
-    .footer .legal { font-size: 12px; border-left: 3px solid var(--maroon); padding-left: 12px; margin-top: 24px; color: #888; }
-    .footer-links { display: flex; flex-direction: column; gap: 15px; }
-    .footer-links a { color: var(--gray); font-size: 14px; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-    .footer-links a:hover { color: var(--white); }
-    .footer-links a i { color: var(--maroon); width: 20px; height: 20px; } 
+    /* MODALS */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: var(--dark-card); border: 1px solid var(--silver); padding: 40px; max-width: 500px; width: 100%; border-top: 6px solid var(--maroon); position: relative; }
+    .modal-content h2 { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; color: var(--gray); }
+    .form-group input, .form-group select { width: 100%; padding: 14px; background: var(--dark-bg); border: 1px solid var(--silver); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--maroon); }
+    .btn-submit { width: 100%; padding: 16px; background: var(--maroon); color: var(--white); font-size: 14px; font-weight: 900; text-transform: uppercase; border: none; cursor: pointer; margin-top: 10px; }
+    .close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--gray); cursor: pointer; }
 
-    /* ================= RESPONSIVE ================= */
     @media (max-width: 900px) {
-        .header { padding: 16px 24px; }
-        .hero { padding: 100px 24px 60px; }
-        .hero-text h1 { font-size: 48px; }
-        .hero-buttons { flex-direction: column; }
-        .btn-primary, .btn-secondary { width: 100%; }
-        .bulletin-section, .programmes-section, .why-section, .assessment-section, .policy-section { padding: 60px 24px; }
-        .bulletin-grid { grid-template-columns: 1fr; }
-        .why-container { grid-template-columns: 1fr; }
-        .why-image { height: 300px; }
-        .programme-row { flex-direction: column; align-items: flex-start; }
-        .programme-action { width: 100%; text-align: left; }
-        .footer { padding: 60px 24px 30px; }
-        .footer-grid { grid-template-columns: 1fr; }
-        .cookie-banner { padding: 16px 24px; flex-direction: column; align-items: flex-start; }
+        .header, .dash-container { padding-left: 24px; padding-right: 24px; }
+        .dash-header { flex-direction: column; align-items: flex-start; }
+        .dash-content { grid-template-columns: 1fr; }
     }
     </style>
 </head>
 <body>
 
-<!-- TOP BANNER -->
-<div class="top-banner">
-    Applications for 2027 are now open. Closes 17 January 2027.
-</div>
+    <!-- HEADER -->
+    <header class="header">
+        <a href="index.html" class="brand">
+            <div class="brand-logo">∆</div>
+            <div class="brand-text">IFB ACADEMY</div>
+        </a>
+        <!-- Three Lines Button -->
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
 
-<!-- COOKIE BANNER -->
-<div class="cookie-banner" id="cookieBanner">
-    <div class="cookie-text">
-        We use cookies and local storage to keep you logged in and ensure the IFB portal functions correctly. By continuing, you consent to our use of cookies in accordance with POPIA and GDPR.
-    </div>
-    <div class="cookie-btns">
-        <button class="btn-primary btn-cookie" onclick="acceptCookies()">Accept</button>
-        <a href="#privacy" class="btn-secondary btn-cookie" style="border-color: var(--gray); color: var(--gray);">Privacy Policy</a>
-    </div>
-</div>
-
-<!-- HEADER -->
-<header class="header" id="mainHeader">
-    <a href="index.html" class="brand">
-        <div class="brand-logo">∆</div>
-        <div class="brand-text">IFB ACADEMY</div>
-    </a>
-    <button class="hamburger" id="hamburgerBtn" onclick="toggleMenu()">
-        <span></span><span></span><span></span>
-    </button>
-</header>
-
-<!-- MENU -->
-<div class="mobile-menu" id="mobileMenu">
-    <div id="publicMenuLinks">
-        <a href="#bulletin" onclick="toggleMenu()">Bulletin</a>
-        <a href="#programmes" onclick="toggleMenu()">Programmes</a>
-        <a href="#why" onclick="toggleMenu()">About</a>
-        <a href="#apply" onclick="toggleMenu()">Apply</a>
-        <a href="#terms" onclick="toggleMenu()">Terms</a>
-    </div>
-    <div id="privateMenuLinks" style="display: none; text-align: center;">
-        <a href="dashboard.html">My Dashboard</a>
+    <!-- DROP DOWN MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html" onclick="toggleMenu()">Home</a>
+        <a href="dashboard.html" onclick="toggleMenu()">My Dashboard</a>
         <a href="settings.html">Settings</a>
         <a href="#" onclick="logout(); toggleMenu();">Logout</a>
     </div>
-</div>
 
-<main>
-    <!-- 1. HERO -->
-    <section class="hero">
-        <div class="hero-content">
-            <div class="hero-text">
-                <h1>Kickstart Your <br><span>Academic</span> Journey</h1>
-                <p>Join a rigorous, international standard academy. Fee-free education in Mathematics and Web Development. We build problem-solvers, not just students.</p>
-                <div class="hero-buttons">
-                    <a href="apply.html" id="heroMainBtn" class="btn-primary">Apply Now</a>
-                    <button class="btn-secondary" onclick="document.getElementById('programmes').scrollIntoView()">Learn More</button>
+    <!-- UPLOAD RESOURCE MODAL -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('uploadModal').classList.remove('active')"><i data-lucide="x"></i></button>
+            <h2>Upload Resource</h2>
+            <form id="uploadForm" onsubmit="handleUpload(event)">
+                <div class="form-group">
+                    <label>Document Title</label>
+                    <input type="text" id="resTitle" required placeholder="e.g. AE Timetable 2027">
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. BULLETIN (Announcements) -->
-    <section class="bulletin-section" id="bulletin">
-        <div class="bulletin-container">
-            <h2><i data-lucide="bell-ring"></i> Bulletin Board</h2>
-            <div class="bulletin-grid">
-                <div class="bulletin-card">
-                    <h4>2027 Applications Open</h4>
-                    <p>Applications for the 2027 academic year are officially open. The portal will close on <strong>17 January 2027</strong>. Late applications will not be accepted.</p>
+                <div class="form-group">
+                    <label>Exam Session</label>
+                    <select id="resSession" required>
+                        <option value="AE">Admissions Exam (AE)</option>
+                        <option value="MayJun">May/June</option>
+                        <option value="NovDec">Nov/Dec</option>
+                        <option value="General">General</option>
+                    </select>
                 </div>
-                <div class="bulletin-card">
-                    <h4>AE Paper Date Announced</h4>
-                    <p>The Admissions Examination (AE) will be written on <strong>21 January 2027</strong>. Registered applicants will see their unique exam codes on their dashboard.</p>
+                <div class="form-group">
+                    <label>Target Course</label>
+                    <select id="resCourse" required>
+                        <option value="ALL">All Students</option>
+                        <option value="MAT">Mathematics Only</option>
+                        <option value="WEB">Web Development Only</option>
+                    </select>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label>File URL (HTML Link)</label>
+                    <input type="url" id="resUrl" required placeholder="https://ifb-nmaz.onrender.com/resources/...">
+                </div>
+                <button type="submit" class="btn-submit" id="uploadBtn">Publish</button>
+            </form>
         </div>
-    </section>
+    </div>
 
-    <!-- 3. PROGRAMMES (Courses) -->
-    <section class="programmes-section" id="programmes">
-        <div class="programmes-container">
-            <h2>Explore Our <span>Programmes</span></h2>
-            <div class="programme-row">
-                <div class="programme-num">01</div>
-                <div class="programme-info"><h3>IFB— Mathematics</h3><p>Advanced Algebra, Calculus, Trigonometry, 3D Surfaces, and Geometry. Rigorous, university-level preparation.</p></div>
-                <div class="programme-action"><a href="apply.html?course=MAT" class="btn-primary dynamic-apply-btn">Apply Now</a></div>
-            </div>
-            <div class="programme-row">
-                <div class="programme-num">02</div>
-                <div class="programme-info"><h3>IFB— Web Development</h3><p>Basic back-end web development. Focuses on logic, database architecture, and server-side application.</p></div>
-                <div class="programme-action"><a href="apply.html?course=WEB" class="btn-primary dynamic-apply-btn">Apply Now</a></div>
-            </div>
+    <!-- CREATE EXAM MODAL -->
+    <div class="modal-overlay" id="createExamModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="document.getElementById('createExamModal').classList.remove('active')"><i data-lucide="x"></i></button>
+            <h2>Create Exam Session</h2>
+            <form id="createExamForm" onsubmit="handleCreateExam(event)">
+                <div class="form-group">
+                    <label>Session Name</label>
+                    <input type="text" id="examName" required placeholder="e.g. AE Paper 2027">
+                </div>
+                <div class="form-group">
+                    <label>Target Course</label>
+                    <select id="examCourse" required>
+                        <option value="MAT">Mathematics</option>
+                        <option value="WEB">Web Development</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="examStatus" required>
+                        <option value="upcoming">Upcoming (Locked)</option>
+                        <option value="live">Live (Unlocked)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit" id="createExamBtn">Create Session</button>
+            </form>
         </div>
-    </section>
+    </div>
 
-    <!-- 4. WHY US (About) -->
-    <section class="why-section" id="why">
-        <div class="why-container">
-            <div class="why-text">
-                <h2>Why <span>Choose</span> IFB?</h2>
-                <div class="why-list">
-                    <div class="why-item">
-                        <div class="why-icon"><i data-lucide="globe"></i></div>
-                        <div><h3>International Standard</h3><p>Our curriculum pushes you into Level 4 (Proof & Challenge) cognitive reasoning, matching the rigor of global university preparation.</p></div>
+    <!-- DASHBOARD -->
+    <div class="dash-container">
+        <div class="dash-header">
+            <div class="profile-block">
+                <div class="profile-icon" id="dashProfileIcon">N</div>
+                <div>
+                    <div class="dash-name" id="dashName">Loading...</div>
+                    <div class="id-badges">
+                        <span class="badge">ID: <span id="dashStudentId">...</span></span>
+                        <span class="badge">Exam No: <span id="dashExamNo">...</span></span>
+                        <span class="badge" id="dashStatusBadge">Applicant</span>
                     </div>
-                    <div class="why-item">
-                        <div class="why-icon"><i data-lucide="heart-handshake"></i></div>
-                        <div><h3>Entirely Fee-Free</h3><p>We believe world-class education should not be gatekept by wealth. We operate on voluntary support to keep tuition at R0.00.</p></div>
-                    </div>
-                    <div class="why-item">
-                        <div class="why-icon"><i data-lucide="briefcase"></i></div>
-                        <div><h3>Real Skills Portfolio</h3><p>You leave with a portfolio of skills, not just a piece of paper. From complex 3D surfaces to back-end web development.</p></div>
-                    </div>
                 </div>
-            </div>
-            <div class="why-image"></div>
-        </div>
-    </section>
-
-    <!-- 5. ASSESSMENT (Apply) -->
-    <section class="assessment-section" id="apply">
-        <div class="assessment-container">
-            <h2>The Admissions Examination</h2>
-            <p>To ensure our students are ready for the rigor of IFB, every applicant must write the AE Paper. It is a 100-mark examination covering high school mathematics. You may select one programme per application cycle.</p>
-            <a href="apply.html" id="assessmentMainBtn" class="btn-secondary" style="border-color: var(--white); color: var(--white);">Apply for the AE Paper</a>
-        </div>
-    </section>
-
-    <!-- 6. TERMS & CONDITIONS -->
-    <section class="policy-section" id="terms">
-        <div class="policy-container">
-            <h2>Terms & Conditions</h2>
-            <p><strong>1. Non-Accreditation:</strong> The Institute of Board (IFB) is strictly a tutorial and skills academy. The IFB Certificate is NOT accredited by DHET, Umalusi, or SAQA. It carries no NQF credits and is not a substitute for a formal school-leaving certificate or university degree.</p>
-            <p><strong>2. Course Selection:</strong> Students may only select ONE programme per application cycle. If a student fails the AE Paper for their chosen programme, they may apply for the AE Paper of the alternative programme in the next cycle.</p>
-            <p><strong>3. Academic Integrity:</strong> Any form of cheating, plagiarism, impersonation, or tampering with the portal will result in immediate disqualification and potential legal action.</p>
-            <p><strong>4. Intellectual Property:</strong> All curriculum content, exam papers, and answer books remain the property of the Institute of Board.</p>
-        </div>
-    </section>
-
-    <!-- 7. PRIVACY & COPYRIGHT -->
-    <section class="policy-section" id="privacy" style="background: var(--black);">
-        <div class="policy-container">
-            <h2>Privacy Policy & Copyright</h2>
-            <p><strong>POPIA & GDPR Compliance:</strong> We collect your name, email, and date of birth for the purpose of exam registration. Your data is stored securely on Firebase and is never sold to third parties. You have the right to request deletion of your data at any time via the settings page.</p>
-            <p><strong>Cookies & Local Storage:</strong> We use local storage to keep you logged in. By using this portal, you consent to the use of these technologies.</p>
-            <p><strong>Copyright:</strong> © 2026—2028 Institute of Board. All rights reserved. No part of this website or its exam materials may be reproduced without written permission.</p>
-        </div>
-    </section>
-
-    <!-- 8. FOOTER (Contact) -->
-    <footer class="footer">
-        <div class="footer-grid">
-            <div>
-                <h2>∆ Institute of Board</h2>
-                <p>A rigorous, fee-free skills and academic preparatory academy focused on deep understanding and real-world skills.</p>
-                <div class="legal"><strong>Non-Accreditation Status:</strong> The IFB Certificate is NOT accredited. It is not registered with DHET or Umalusi. It does not carry NQF credits.</div>
             </div>
             <div>
-                <h2>Connect</h2>
-                <div class="footer-links">
-                    <a href="https://www.youtube.com/@IFBAcademy" target="_blank"><i data-lucide="youtube"></i> @IFBAcademy</a>
-                    <a href="https://www.instagram.com/institute_of_board" target="_blank"><i data-lucide="instagram"></i> @institute_of_board</a>
-                    <a href="mailto:n1nathaniel971@gmail.com"><i data-lucide="mail"></i> n1nathaniel971@gmail.com</a>
+                <a href="settings.html" class="btn-download" style="padding: 10px 20px; font-size: 12px; border-color: var(--silver); color: var(--white); display: flex; align-items: center; gap: 8px;"><i data-lucide="settings" style="width: 16px;"></i> Settings</a>
+            </div>
+        </div>
+
+        <!-- ADMIN PANEL -->
+        <div class="admin-panel" id="adminPanel">
+            <h4><i data-lucide="shield-alert" style="width: 18px;"></i> Admin Controls</h4>
+            <div class="admin-buttons">
+                <button class="btn-admin" onclick="document.getElementById('uploadModal').classList.add('active')"><i data-lucide="upload"></i> Upload Resources</button>
+                <button class="btn-admin" onclick="toggleExamList()"><i data-lucide="calendar"></i> Manage Exam Sessions</button>
+                <button class="btn-admin"><i data-lucide="users"></i> Manage Students</button>
+            </div>
+
+            <!-- WHATSAPP-STYLE EXAM LIST (Admin Only) -->
+            <div class="wa-list" id="waExamList">
+                <div class="wa-header">
+                    <span>Live Exam Sessions</span>
+                    <button class="btn-admin" style="padding: 4px 10px; font-size: 10px;" onclick="document.getElementById('createExamModal').classList.add('active')">+ New Session</button>
+                </div>
+                <div id="waSessionItems">
+                    <!-- Rendered via JS -->
                 </div>
             </div>
         </div>
-    </footer>
-</main>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        <!-- STUDENT DASHBOARD CONTENT -->
+        <div class="dash-content">
+            <div class="dash-section">
+                <h3>My Programme</h3>
+                <div id="dashMyCourses"></div>
+            </div>
+            <div class="dash-section">
+                <h3>Exams & Resources</h3>
+                <div id="dashResources">
+                    <p style="color: var(--gray); font-size: 14px;">Checking for available documents...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, collection, getDocs, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-if (window.lucide) lucide.createIcons();
+    const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-// COOKIES / LOCAL STORAGE
-const cookieBanner = document.getElementById('cookieBanner');
-if (!localStorage.getItem('ifb_cookies_accepted')) {
-    setTimeout(() => cookieBanner.classList.add('show'), 1000);
-}
+    if (window.lucide) lucide.createIcons();
 
-window.acceptCookies = function() {
-    localStorage.setItem('ifb_cookies_accepted', 'true');
-    cookieBanner.classList.remove('show');
-};
+    let currentUser = null;
+    let userData = null;
+    let isAdmin = false;
 
-// SCROLL EFFECT
-window.addEventListener('scroll', () => {
-    const header = document.getElementById('mainHeader');
-    if (window.scrollY > 50) header.classList.add('scrolled');
-    else header.classList.remove('scrolled');
-});
+    // HEADER & MENU
+    window.toggleMenu = function() {
+        document.getElementById('mobileMenu').classList.toggle('active');
+        document.getElementById('hamburgerBtn').classList.toggle('active');
+    };
 
-// HAMBURGER
-window.toggleMenu = function() {
-    document.getElementById('mobileMenu').classList.toggle('active');
-    document.getElementById('hamburgerBtn').classList.toggle('active');
-};
+    window.logout = async function() {
+        await signOut(auth);
+        window.location.href = "index.html";
+    };
 
-window.logout = async function() {
-    await signOut(auth);
-    localStorage.removeItem('ifb_session');
-    window.location.reload();
-};
+    window.toggleExamList = function() {
+        document.getElementById('waExamList').classList.toggle('active');
+    };
 
-// AUTH STATE OBSERVER
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
+    // AUTH STATE
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = user;
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-            // Set local storage session flag
-            localStorage.setItem('ifb_session', 'active');
-            
-            // Update Public Menu
-            document.getElementById('publicMenuLinks').style.display = 'none';
-            document.getElementById('privateMenuLinks').style.display = 'block';
-            
-            // Change Buttons to View Dashboard
-            document.getElementById('heroMainBtn').innerText = "View My Course";
-            document.getElementById('heroMainBtn').href = "dashboard.html";
-            
-            const assessBtn = document.getElementById('assessmentMainBtn');
-            assessBtn.innerText = "View My Course";
-            assessBtn.href = "dashboard.html";
+            if (docSnap.exists()) {
+                userData = docSnap.data();
+                populateDashboard();
+                fetchResources();
 
-            document.querySelectorAll('.dynamic-apply-btn').forEach(btn => {
-                btn.innerText = "View Dashboard";
-                btn.href = "dashboard.html";
-            });
+                if (user.email === "n1nathaniel971@gmail.com") {
+                    isAdmin = true;
+                    document.getElementById('adminPanel').style.display = 'block';
+                    fetchAdminSessions();
+                }
+            } else {
+                window.location.href = "apply.html";
+            }
         } else {
-            document.getElementById('publicMenuLinks').style.display = 'none';
-            document.getElementById('privateMenuLinks').style.display = 'block';
-            
-            document.getElementById('heroMainBtn').innerText = "Complete Application";
-            document.getElementById('heroMainBtn').href = "apply.html";
+            window.location.href = "index.html";
         }
-    } else {
-        // Logged out - reset
-        localStorage.removeItem('ifb_session');
-        document.getElementById('publicMenuLinks').style.display = 'block';
-        document.getElementById('privateMenuLinks').style.display = 'none';
-        
-        document.getElementById('heroMainBtn').innerText = "Apply Now";
-        document.getElementById('heroMainBtn').href = "apply.html";
-        
-        const assessBtn = document.getElementById('assessmentMainBtn');
-        assessBtn.innerText = "Apply for the AE Paper";
-        assessBtn.href = "apply.html";
+    });
 
-        document.querySelectorAll('.dynamic-apply-btn').forEach(btn => {
-            btn.innerText = "Apply Now";
-            btn.href = "apply.html"; 
-        });
+    function populateDashboard() {
+        document.getElementById('dashName').innerText = `${userData.firstName} ${userData.lastName}`;
+        document.getElementById('dashProfileIcon').innerText = userData.firstName.charAt(0).toUpperCase();
+        document.getElementById('dashStudentId').innerText = userData.studentId || "PENDING";
+        document.getElementById('dashExamNo').innerText = userData.examinationNumber || "Not Issued";
+        document.getElementById('dashStatusBadge').innerText = userData.status || "Applicant";
+
+        const courseContainer = document.getElementById('dashMyCourses');
+        courseContainer.innerHTML = '';
+        if (userData.courses && userData.courses.length > 0) {
+            const courseCode = userData.courses[0]; 
+            const courseName = courseCode === 'MAT' ? 'IFB—Mathematics' : 'IFB—Web Development';
+            courseContainer.innerHTML = `
+                <div class="course-pill">
+                    <span>${courseName}</span> 
+                    <i data-lucide="check-circle" style="color: var(--maroon);"></i>
+                </div>`;
+        } else {
+            courseContainer.innerHTML = '<p style="color: var(--gray);">No programme selected.</p>';
+        }
+        if (window.lucide) lucide.createIcons();
     }
-});
-</script>
+
+    // STUDENT RESOURCES
+    async function fetchResources() {
+        const resContainer = document.getElementById('dashResources');
+        
+        try {
+            const querySnapshot = await getDocs(collection(db, "resources"));
+            
+            if (querySnapshot.empty) {
+                resContainer.innerHTML = '<p style="color: var(--gray); font-size: 14px;">No resources uploaded yet.</p>';
+                return;
+            }
+
+            const sessions = {};
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const isForMyCourse = data.course === 'ALL' || (userData.courses && userData.courses.includes(data.course));
+                const hasAccess = isForMyCourse || isAdmin;
+
+                if (hasAccess) {
+                    const session = data.session || 'General';
+                    if (!sessions[session]) sessions[session] = [];
+                    sessions[session].push(data);
+                }
+            });
+
+            resContainer.innerHTML = '';
+            let hasResources = false;
+
+            const sessionOrder = { 'AE': 1, 'MayJun': 2, 'NovDec': 3, 'General': 4 };
+            const sortedSessions = Object.keys(sessions).sort((a, b) => (sessionOrder[a] || 99) - (sessionOrder[b] || 99));
+
+            sortedSessions.forEach(sessionName => {
+                hasResources = true;
+                let displayTitle = sessionName;
+                if (sessionName === 'AE') displayTitle = 'Admissions Examination (AE)';
+                if (sessionName === 'MayJun') displayTitle = 'May/June Examinations';
+                if (sessionName === 'NovDec') displayTitle = 'Nov/Dec Examinations';
+                if (sessionName === 'General') displayTitle = 'General Documents';
+
+                let cardHtml = `
+                    <div class="session-card">
+                        <div class="session-header">
+                            <div class="session-title">${displayTitle}</div>
+                            <div class="session-badge">2027</div>
+                        </div>
+                        <div>
+                `;
+
+                sessions[sessionName].forEach(res => {
+                    cardHtml += `
+                        <div class="resource-item">
+                            <div class="resource-name">
+                                <i data-lucide="file-text"></i> ${res.title}
+                            </div>
+                            <a href="${res.fileUrl}" target="_blank" class="btn-download">Download</a>
+                        </div>
+                    `;
+                });
+
+                cardHtml += `</div></div>`;
+                resContainer.innerHTML += cardHtml;
+            });
+
+            if (!hasResources) {
+                resContainer.innerHTML = '<p style="color: var(--gray); font-size: 14px;">No resources available for your programme yet.</p>';
+            }
+
+            if (window.lucide) lucide.createIcons();
+
+        } catch (error) {
+            console.error("Error fetching resources:", error);
+            resContainer.innerHTML = '<p style="color: var(--maroon);">Error loading resources.</p>';
+        }
+    }
+
+    // ADMIN UPLOAD LOGIC
+    window.handleUpload = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('uploadBtn');
+        btn.innerText = "Publishing...";
+        btn.disabled = true;
+
+        const newResource = {
+            title: document.getElementById('resTitle').value,
+            session: document.getElementById('resSession').value,
+            course: document.getElementById('resCourse').value,
+            fileUrl: document.getElementById('resUrl').value,
+            uploadedAt: new Date().toISOString()
+        };
+
+        try {
+            await addDoc(collection(db, "resources"), newResource);
+            document.getElementById('uploadModal').classList.remove('active');
+            document.getElementById('uploadForm').reset();
+            fetchResources(); 
+            btn.innerText = "Publish";
+            btn.disabled = false;
+        } catch (error) {
+            alert("Error uploading resource: " + error.message);
+            btn.innerText = "Publish";
+            btn.disabled = false;
+        }
+    };
+
+    // ADMIN EXAM SESSIONS
+    async function fetchAdminSessions() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "examSessions"));
+            const container = document.getElementById('waSessionItems');
+            container.innerHTML = '';
+
+            if (querySnapshot.empty) {
+                container.innerHTML = '<div style="padding: 20px; font-size: 13px; color: var(--gray);">No sessions created yet.</div>';
+                return;
+            }
+
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                let statusClass = 'status-upcoming';
+                let statusText = 'Upcoming';
+                if (data.status === 'live') { statusClass = 'status-live'; statusText = 'Live Now'; }
+                if (data.status === 'closed') { statusClass = 'status-closed'; statusText = 'Closed'; }
+
+                container.innerHTML += `
+                    <div class="wa-item">
+                        <div class="wa-info">
+                            <h5>${data.name} (${data.course})</h5>
+                            <p>Code: <strong>${data.code}</strong></p>
+                        </div>
+                        <div class="${statusClass} wa-status" onclick="toggleSessionStatus('${docSnap.id}', '${data.status}')">
+                            ${statusText}
+                        </div>
+                    </div>
+                `;
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    window.handleCreateExam = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('createExamBtn');
+        btn.innerText = "Creating...";
+        btn.disabled = true;
+
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+        const newSession = {
+            name: document.getElementById('examName').value,
+            course: document.getElementById('examCourse').value,
+            status: document.getElementById('examStatus').value,
+            code: code,
+            createdAt: new Date().toISOString()
+        };
+
+        try {
+            await addDoc(collection(db, "examSessions"), newSession);
+            document.getElementById('createExamModal').classList.remove('active');
+            document.getElementById('createExamForm').reset();
+            fetchAdminSessions();
+            btn.innerText = "Create Session";
+            btn.disabled = false;
+        } catch (error) {
+            alert("Error creating exam: " + error.message);
+            btn.innerText = "Create Session";
+            btn.disabled = false;
+        }
+    };
+
+    window.toggleSessionStatus = async function(docId, currentStatus) {
+        let newStatus = 'live';
+        if (currentStatus === 'live') newStatus = 'closed';
+        if (currentStatus === 'closed') newStatus = 'upcoming';
+
+        try {
+            const sessionRef = doc(db, "examSessions", docId);
+            await updateDoc(sessionRef, { status: newStatus });
+            fetchAdminSessions();
+        } catch (e) {
+            alert("Error updating status: " + e.message);
+        }
+    };
+    </script>
 </body>
 </html>
