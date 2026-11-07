@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=210mm, initial-scale=1.0">
-<title>IFB Admission Letter</title>
+<title>IFB Letter of Admission</title>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <style>
@@ -86,7 +86,148 @@
   .footer-right { color: #000; font-style: italic;}
 
   /* ========================================== */
-  /* PAGE 1: ADMISSION LETTER                   */
+  /* COVER PAGE DESIGN (PAGE 1)                 */
+  /* ========================================== */
+  .cover-page { padding: 0; }
+  
+  .cover-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; overflow: hidden; }
+  
+  .cover-bg-maroon {
+    position: absolute; top: 0; left: 0; width: 75%; height: 65%;
+    background: #7A1F2B;
+  }
+  
+  .cover-bg-grey {
+    position: absolute; bottom: 0; left: 0; width: 75%; height: 35%;
+    background: #F8F8F8;
+  }
+  
+  .cover-bg-checker {
+    position: absolute; bottom: 0; right: 0; width: 25%; height: 50%;
+    background-color: #fff;
+    background-image: 
+      linear-gradient(45deg, #D1D5DB 25%, transparent 25%, transparent 75%, #D1D5DB 75%, #D1D5DB), 
+      linear-gradient(45deg, #D1D5DB 25%, transparent 25%, transparent 75%, #D1D5DB 75%, #D1D5DB);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+    clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 50%);
+  }
+
+  .cover-bg-circle {
+    position: absolute; top: 8%; right: 10%;
+    width: 140px; height: 140px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    z-index: 1;
+    border: 4px solid #7A1F2B;
+  }
+  
+  .cover-bg-circle::after {
+    content: '';
+    position: absolute; top: 50%; left: -5%;
+    width: 110%; height: 25%;
+    background: #7A1F2B;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+
+  .cover-bg-line {
+    position: absolute; top: calc(8% + 140px); right: calc(10% + 68px);
+    width: 2px; height: 28%;
+    background: #7A1F2B;
+    z-index: 1;
+  }
+  
+  .cover-bg-line::after {
+    content: '';
+    position: absolute; top: 40%; left: -6px;
+    width: 14px; height: 30px;
+    background: #7A1F2B;
+    border: 2px solid #FFF;
+  }
+
+  .cover-content {
+    position: relative; z-index: 2;
+    padding: 20mm 15mm;
+    display: flex; flex-direction: column; height: 100%;
+  }
+
+  .cover-logo-area {
+    display: flex; align-items: center; gap: 15px;
+    margin-bottom: 40px;
+  }
+  
+  .cover-logo-svg {
+    width: 80px; height: 80px;
+    background: #FFF;
+    border-radius: 50%;
+    padding: 5px;
+  }
+
+  .cover-logo-text { display: flex; flex-direction: column; justify-content: center; }
+
+  .cover-logo-text .logo-title {
+    font-family: Arial, sans-serif; font-size: 22pt; font-weight: 900; color: #FFF; line-height: 1.1;
+  }
+  .cover-logo-text .logo-sub {
+    font-family: Arial, sans-serif; font-size: 11pt; color: #FFF; letter-spacing: 2px; font-weight: bold;
+  }
+
+  .cover-title { font-family: Arial, sans-serif; margin-bottom: 20px; margin-top: 15px; }
+  .cover-title .main-white {
+    font-size: 46pt; font-weight: 900; color: #FFF; display: block; line-height: 1.1;
+    text-shadow: 2px 2px 0px #7A1F2B, 4px 4px 0px rgba(0,0,0,0.2); 
+  }
+
+  .cover-highlight {
+    background: #FFF; color: #7A1F2B; border-left: 6px solid #7A1F2B;
+    font-family: Arial, sans-serif; font-weight: 900; font-size: 16pt;
+    padding: 10px 15px; width: max-content; margin-bottom: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .cover-text {
+    color: #FFF; font-family: Arial, sans-serif; font-size: 14pt;
+    max-width: 380px; line-height: 1.5; margin-bottom: 5px;
+    border-left: 2px solid rgba(255,255,255,0.4); padding-left: 15px;
+  }
+  
+  .cover-ai-disclaimer {
+    color: rgba(255,255,255,0.8); font-family: Arial, sans-serif; font-size: 11pt;
+    font-style: italic; max-width: 380px; padding-left: 17px; margin-bottom: 15px;
+  }
+
+  .cover-text-above-circle {
+    position: absolute; bottom: 75mm; left: 20mm; z-index: 2;
+    font-family: Arial, sans-serif; font-size: 18pt; font-weight: 900; color: #7A1F2B;
+    letter-spacing: 1px;
+  }
+
+  .cover-info-circle {
+    position: absolute; bottom: 30mm; left: 20mm; z-index: 2;
+    width: 170px; height: 170px;
+    background: #7A1F2B;
+    border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #FFF; font-family: Arial, sans-serif; text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border: 4px solid #FFF;
+  }
+  .cover-info-circle .details {
+    font-size: 16pt; font-weight: 900; line-height: 1.4;
+  }
+
+  .cover-barcode-a10 {
+    margin-left: 17px;
+    margin-top: 10px;
+  }
+
+  .cover-barcode-270610a {
+    position: absolute; right: 20mm; bottom: 15mm; z-index: 3;
+  }
+
+  /* ========================================== */
+  /* INNER PAGES (PAGE 2 & 3)                   */
   /* ========================================== */
   .content-wrapper { 
     position: relative; z-index: 1; display: flex; flex-direction: column; 
@@ -139,8 +280,13 @@
   .qr-section .qr-box { width: 80px; height: 80px; background: #FFF; padding: 5px; border: 1px solid #CCC; margin: 0 auto 5px auto; }
   .qr-section .qr-text { font-family: Arial, sans-serif; font-size: 8pt; font-weight: bold; color: #555; text-transform: uppercase; letter-spacing: 1px; }
 
+  /* Terms */
+  .terms-content h3 { font-family: Arial, sans-serif; font-size: 14pt; color: #7A1F2B; margin-top: 20px; margin-bottom: 8px; }
+  .terms-content p { font-size: 13pt; line-height: 1.6; margin-bottom: 15px; text-align: justify; }
+  .terms-content ul { margin-left: 20px; font-size: 13pt; line-height: 1.6; }
+
   /* ========================================== */
-  /* PAGE 2: FULL RED BACK COVER                */
+  /* FULL RED BACK COVER (PAGE 4)               */
   /* ========================================== */
   .back-cover-red {
     background-color: #7A1F2B !important;
@@ -181,41 +327,18 @@
     padding-left: 25px; border-left: 4px solid rgba(255,255,255,0.4);
     margin-top: 20px;
   }
-  
-  .back-cover-ai-disclaimer {
-    font-family: Arial, sans-serif; font-size: 12pt; color: rgba(255,255,255,0.7); 
-    max-width: 450px; text-align: left; padding-left: 25px; margin-top: 15px; font-style: italic;
-  }
 
   .back-cover-bottom-row {
     position: absolute; bottom: 20mm; left: 20mm; right: 20mm; z-index: 2;
     display: flex; justify-content: space-between; align-items: flex-end;
   }
 
-  .back-cover-barcode-box {
-    display: flex; flex-direction: column; align-items: flex-start;
-  }
-
-  .back-cover-qr-box {
-    display: flex; flex-direction: column; align-items: flex-end;
-    color: #FFF; font-family: Arial, sans-serif; text-align: right;
-  }
+  .back-cover-barcode-box { display: flex; flex-direction: column; align-items: flex-start; }
+  .back-cover-qr-box { display: flex; flex-direction: column; align-items: flex-end; color: #FFF; font-family: Arial, sans-serif; text-align: right; }
   
-  .qr-wrapper {
-    filter: invert(1);
-    width: 80px; height: 80px; margin-bottom: 5px;
-  }
-
-  .website-text {
-    font-size: 12pt; color: #FFF; font-weight: bold; line-height: 1.2;
-  }
-  
-  .website-link-text {
-    font-size: 11pt; color: #FFF; opacity: 0.9;
-    text-decoration: none; display: block; 
-    white-space: nowrap; 
-    margin-top: 4px;
-  }
+  .qr-wrapper { filter: invert(1); width: 80px; height: 80px; margin-bottom: 5px; }
+  .website-text { font-size: 12pt; color: #FFF; font-weight: bold; line-height: 1.2; }
+  .website-link-text { font-size: 11pt; color: #FFF; opacity: 0.9; text-decoration: none; display: block; white-space: nowrap; margin-top: 4px; }
 
   .back-cover-footer {
     position: absolute; bottom: 10mm; left: 20mm; right: 20mm; z-index: 1;
@@ -226,9 +349,73 @@
 </head>
 <body>
 
-<!-- ==================== PAGE 1: ADMISSION LETTER ==================== -->
+<!-- ==================== PAGE 1: COVER PAGE ==================== -->
+<div class="page cover-page">
+  <div class="cover-bg">
+    <div class="cover-bg-maroon"></div>
+    <div class="cover-bg-grey"></div>
+    <div class="cover-bg-checker"></div>
+    <div class="cover-bg-circle"></div>
+    <div class="cover-bg-line"></div>
+  </div>
+
+  <div class="cover-content">
+    <div class="cover-logo-area">
+      <svg class="cover-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+          <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+          <rect x="20" y="88" width="60" height="4" fill="#E2E8F0" rx="2" />
+      </svg>
+      <div class="cover-logo-text">
+        <div class="logo-title">INSTITUTE OF BOARD</div>
+        <div class="logo-sub">ACADEMIC ASSESSMENT</div>
+      </div>
+    </div>
+
+    <div class="cover-title">
+      <span class="main-white">ADMISSION</span>
+    </div>
+
+    <div class="cover-highlight">
+      Official Letter - 2027
+    </div>
+
+    <div class="cover-text">
+      This document confirms your official acceptance into the Institute of Board. Please retain this letter for your records.
+    </div>
+    
+    <div class="cover-ai-disclaimer">
+      This letter is generated electronically and verified via the IFB Portal.
+    </div>
+
+    <div class="cover-barcode-a10">
+      <svg class="barcode-cover" data-barcode="A10" data-bc-width="2.5" data-bc-height="50" data-bc-display="true" data-bc-font-size="16" data-bc-line-color="#FFFFFF"></svg>
+    </div>
+  </div>
+
+  <div class="cover-text-above-circle">
+    ADMISSION
+  </div>
+
+  <div class="cover-info-circle">
+    <div class="details">2027<br>Academic<br>Year</div>
+  </div>
+
+  <div class="cover-barcode-270610a">
+    <svg class="barcode-cover" data-barcode="270610A" data-bc-width="2.5" data-bc-height="50" data-bc-display="true" data-bc-font-size="16" data-bc-line-color="#111111"></svg>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb-nmaz.onrender.com"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Page 1 of 4</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 2: ADMISSION LETTER ==================== -->
 <div class="page">
-  
   <div class="bg-red-patch patch-1"></div>
   <div class="bg-red-patch patch-2"></div>
   <div class="bg-watermark">
@@ -242,7 +429,7 @@
     <div class="header">
       <div class="header-left">Admissions Office</div>
       <div class="header-center">
-        <span class="page-num">1</span>
+        <span class="page-num">2</span>
         <span class="confidential">IFB/Confidential</span>
       </div>
       <div class="header-right">2027</div>
@@ -297,17 +484,74 @@
       </div>
     </div>
   </div>
-  
+
   <div class="footer">
     <div class="footer-left">
       <span class="footer-qr" data-qr="https://ifb-nmaz.onrender.com"></span>
       <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
     </div>
-    <div class="footer-right">Page 1 of 2</div>
+    <div class="footer-right">Page 2 of 4</div>
   </div>
 </div>
 
-<!-- ==================== PAGE 2: FULL RED BACK COVER ==================== -->
+<!-- ==================== PAGE 3: TERMS OF ADMISSION ==================== -->
+<div class="page">
+  <div class="bg-watermark">
+    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 10 L92 85 H8 L50 10 Z" fill="#7A1F2B" />
+        <path d="M50 32 L77 78 H23 L50 32 Z" fill="#FFFFFF" />
+    </svg>
+  </div>
+  
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="header-left">Admissions Office</div>
+      <div class="header-center">
+        <span class="page-num">3</span>
+        <span class="confidential">IFB/Confidential</span>
+      </div>
+      <div class="header-right">2027</div>
+    </div>
+
+    <div class="letter-header-block">
+      <div class="title">Terms of Admission</div>
+      <div class="sub">Code of Conduct & Academic Policies</div>
+    </div>
+
+    <div class="terms-content">
+      <p>By accepting this offer of admission, you agree to the following terms and conditions:</p>
+
+      <h3>1. Academic Integrity</h3>
+      <p>You must maintain the highest standards of academic honesty. Any form of cheating, plagiarism, or misrepresentation in examinations or assignments will result in immediate disciplinary action.</p>
+
+      <h3>2. Code of Conduct</h3>
+      <ul>
+        <li>Respect all staff, invigilators, and fellow students.</li>
+        <li>Use the IFB portal only for legitimate academic purposes.</li>
+        <li>Do not share your Student ID or Security Code with anyone.</li>
+      </ul>
+
+      <h3>3. Examination Rules</h3>
+      <p>All examinations are conducted online. You must use the IFB Scanner tool to upload your answers. Any attempt to impersonate another student or tamper with the portal will be reported to the authorities under the Cybercrimes Act.</p>
+
+      <h3>4. POPIA & GDPR</h3>
+      <p>Your personal data is processed in accordance with POPIA and GDPR. You may request deletion of your data at any time via the Student Portal.</p>
+      
+      <h3>5. Non-Accreditation</h3>
+      <p>The IFB is a skills academy. This letter does not constitute an accredited university offer or NQF credits.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span class="footer-qr" data-qr="https://ifb-nmaz.onrender.com"></span>
+      <div class="footer-brand"><span class="name">INSTITUTE OF BOARD</span><span class="tag">∆ 2027</span></div>
+    </div>
+    <div class="footer-right">Page 3 of 4</div>
+  </div>
+</div>
+
+<!-- ==================== PAGE 4: FULL RED BACK COVER ==================== -->
 <div class="page back-cover-red">
   <div class="security-pattern"></div>
   
@@ -323,10 +567,6 @@
     <div class="back-cover-info">
       <strong>Official Letter of Admission - 2027</strong><br><br>
       This document confirms your official acceptance into the Institute of Board. Please retain this letter for your records and ensure all portal onboarding steps are completed.
-    </div>
-    
-    <div class="back-cover-ai-disclaimer">
-      This document is issued electronically and verified via the IFB Portal.
     </div>
   </div>
 
@@ -354,14 +594,33 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, collection, getDocs, orderBy, limit, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = { apiKey: "AIzaSyA6HO7n6wCZEeCgKxJLjB-MjL0ZFGR7svU", authDomain: "nyldevcourses.firebaseapp.com", projectId: "nyldevcourses", storageBucket: "nyldevcourses.firebasestorage.app", messagingSenderId: "16687006873", appId: "1:16687006873:web:b7d66ad1024ccd92722408" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Helper to generate QR Codes
+    // Auto-generate Exam Number if the student is admitted but doesn't have one
+    async function generateExamNumber() {
+        try {
+            const usersRef = collection(db, "users");
+            const q = query(usersRef, orderBy("examinationNumber", "desc"), limit(1));
+            const snap = await getDocs(q);
+            let nextNum = 1;
+            if (!snap.empty) {
+                const highestId = snap.docs[0].data().examinationNumber;
+                if (highestId && highestId.startsWith("26012027") && highestId.length === 13) {
+                    const currentNum = parseInt(highestId.substring(8), 10);
+                    if (!isNaN(currentNum)) nextNum = currentNum + 1;
+                }
+            }
+            return "26012027" + String(nextNum).padStart(5, '0');
+        } catch(e) {
+            return "26012027" + String(Math.floor(Math.random() * 99999) + 1).padStart(5, '0');
+        }
+    }
+
     function makeQRCodes() {
         if (typeof qrcode !== "function") return;
         document.querySelectorAll(".footer-qr, .footer-qr-white").forEach(function (el) {
@@ -375,9 +634,17 @@
         });
     }
 
-    // Helper for Barcode
     function makeBarcodes(examNumber) {
         if (typeof JsBarcode !== "function") return;
+        
+        document.querySelectorAll(".barcode-cover").forEach(function (el) {
+            try {
+                JsBarcode(el, el.dataset.barcode || "A10", {
+                    format: "CODE128", width: 2.5, height: 50, displayValue: true, fontSize: 16, margin: 0, background: "transparent", lineColor: "#FFFFFF"
+                });
+            } catch (e) { console.warn(e); }
+        });
+
         try {
             JsBarcode("#letterBarcode", examNumber || "PENDING", {
                 format: "CODE128", width: 2, height: 50, displayValue: true,
@@ -395,26 +662,27 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 
-                // Fill Text
+                // FORCE EXAM NUMBER GENERATION IF MISSING
+                let examNumber = data.examinationNumber;
+                if (!examNumber || !examNumber.startsWith("26012027")) {
+                    examNumber = await generateExamNumber();
+                    await updateDoc(docRef, { examinationNumber: examNumber, status: "Student" });
+                }
+
                 document.getElementById('letterName').textContent = `${data.firstName} ${data.lastName}`;
                 document.getElementById('letterProgramme').textContent = data.courses[0] === 'MAT' ? 'IFB— Mathematics' : 'IFB— Web Development';
                 document.getElementById('letterStudentId').textContent = data.studentId || 'PENDING';
-                document.getElementById('letterExamNo').textContent = data.examinationNumber || 'PENDING';
+                document.getElementById('letterExamNo').textContent = examNumber;
 
-                // Generate Middle QR (Verification)
                 const qr = qrcode(0, 'M');
-                qr.addData(`https://ifb-nmaz.onrender.com/verify?id=${data.examinationNumber || data.studentId}`);
+                qr.addData(`https://ifb-nmaz.onrender.com/verify?id=${examNumber}`);
                 qr.make();
                 document.getElementById('letterQR').innerHTML = qr.createSvgTag({ cellSize: 3, margin: 0, scalable: true });
 
-                // Render standard elements
                 makeQRCodes();
-                makeBarcodes(data.examinationNumber);
+                makeBarcodes(examNumber);
 
-                // Auto Print
-                setTimeout(() => {
-                    window.print();
-                }, 800);
+                setTimeout(() => { window.print(); }, 800);
             }
         } else {
             window.location.href = "index.html";
