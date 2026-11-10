@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Scanner — Institute of Board</title>
+<style>
+  :root {
+    --crimson: #dc143c;
+    --crimson-dark: #a80f2d;
+    --crimson-tint: #fdecef;
+    --ink: #1a1a1a;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --ok: #15803d;
+    --warn: #b45309;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #fff;
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 1.5rem;
+  }
+  h1 { font-size: 1.35rem; margin-bottom: 1rem; text-align: center; color: var(--crimson); }
+  .view { width: 100%; max-width: 680px; display: none; }
+  .view.active { display: block; }
+
+  /* ---------- Capture stage ---------- */
+  .stage {
+    position: relative; width: 100%; aspect-ratio: 3/4;
+    background: #f3f4f6;
+    border: 1px solid var(--line);
+    border-radius: 14px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  video, canvas, img.preview { width:100%; height:100%; object-fit:contain; display:none; }
+  video.active, canvas.active, img.preview.active { display:block; }
+  .placeholder { color:#9ca3af; text-align:center; padding:1rem; font-size:.95rem; }
+
+  .framing-guide { position:absolute; inset:6%; pointer-events:none; display:none; z-index:4; }
+  .framing-guide.visible { display:block; }
+  .framing-guide .corner { position:absolute; width:36px; height:36px; border:3px solid var(--crimson); }
+  .framing-guide .tl { top:0; left:0; border-right:none; border-bottom:none; border-radius:8px 0 0 0; }
+  .framing-guide .tr { top:0; right:0; border-left:none; border-bottom:none; border-radius:0 8px 0 0; }
+  .framing-guide .bl { bottom:0; left:0; border-right:none; border-top:none; border-radius:0 0 0 8px; }
+  .framing-guide .br { bottom:0; right:0; border-left:none; border-top:none; border-radius:0 0 8px 0; }
+
+  .flash-overlay {
+    position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none;
+    z-index:8; transition:opacity .28s ease-out;
+  }
+  .flash-overlay.fire { opacity:1; transition:none; }
+
+  .howto {
+    position:absolute; inset:0; z-index:10;
+    background:rgba(255,255,255,.97);
+    display:none; flex-direction:column;
+    align-items:center; justify-content:center; padding:1.5rem; text-align:center;
+    border-radius:14px;
+  }
+  .howto.visible { display:flex; }
+  .howto h2 { font-size:1.15rem; margin-bottom:1rem; color:var(--crimson); }
+  .howto ul { list-style:none; text-align:left; max-width:360px; margin-bottom:1.25rem; font-size:.92rem; line-height:1.55; color:#374151; }
+  .howto li { padding:.35rem 0 .35rem 1.8rem; position:relative; }
+  .howto li::before { content:"✓"; position:absolute; left:0; color:var(--crimson); font-weight:bold; }
+  .howto .dismiss { background:var(--crimson); color:#fff; border:none; border-radius:10px; padding:.85rem 1.5rem; font-weight:600; cursor:pointer; width:100%; max-width:260px; font-size:1rem; }
+  .howto .dismiss:hover { background:var(--crimson-dark); }
+
+  .torch-btn {
+    position:absolute; top:.75rem; right:.75rem; width:48px; height:48px; border-radius:50%;
+    background:rgba(255,255,255,.92); color:var(--crimson); font-size:1.4rem;
+    border:2px solid var(--crimson); cursor:pointer; display:none;
+    align-items:center; justify-content:center; z-index:6;
+    transition:background .15s, color .15s;
+  }
+  .torch-btn.visible { display:flex; }
+  .torch-btn.on { background:var(--crimson); color:#fff; }
+
+  /* ---------- Question selector ---------- */
+  .q-selector {
+    margin-top:1rem; display:flex; align-items:center; gap:.5rem;
+  }
+  .q-selector button {
+    background:#fff; border:1px solid var(--line); color:var(--crimson);
+    width:38px; height:38px; border-radius:8px; font-size:1rem; cursor:pointer;
+    font-weight:700;
+  }
+  .q-selector button:hover:not(:disabled) { background:var(--crimson-tint); border-color:var(--crimson); }
+  .q-selector button:disabled { opacity:.35; cursor:not-allowed; }
+  .q-selector select {
+    flex:1; background:#fff; color:var(--ink);
+    border:1px solid var(--line); border-radius:8px;
+    padding:.65rem .8rem; font-size:1rem;
+  }
+  .q-selector select:focus { outline:2px solid var(--crimson); outline-offset:1px; }
+
+  /* ---------- Pages captured for current Q ---------- */
+  .pages-strip { margin-top:1rem; }
+  .pages-strip h4 {
+    font-size:.78rem; color:var(--crimson); text-transform:uppercase;
+    letter-spacing:.06em; margin-bottom:.4rem; font-weight:700;
+  }
+  .pages-list { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .page-thumb {
+    position:relative; width:70px; background:#fafafa;
+    border:1px solid var(--line); border-radius:6px; padding:4px;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .page-thumb img { width:100%; border-radius:3px; display:block; }
+  .page-thumb .num {
+    position:absolute; bottom:2px; right:2px;
+    background:var(--crimson); color:#fff; font-size:.65rem; font-weight:700;
+    padding:1px 5px; border-radius:6px;
+  }
+  .page-thumb .del {
+    position:absolute; top:-6px; right:-6px;
+    width:20px; height:20px; border-radius:50%;
+    background:#fff; border:1px solid var(--crimson); color:var(--crimson);
+    cursor:pointer; font-size:.7rem; line-height:1; padding:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .page-thumb .del:hover { background:var(--crimson); color:#fff; }
+  .pages-empty { font-size:.85rem; color:var(--muted); font-style:italic; }
+
+  /* ---------- Controls ---------- */
+  .controls { display:flex; gap:.6rem; margin-top:1rem; flex-wrap:wrap; }
+  button.action {
+    padding:.85rem 1.2rem; font-size:.95rem; font-weight:600;
+    border:none; border-radius:10px; cursor:pointer;
+    transition:background .15s, opacity .15s; flex:1; min-width:130px;
+  }
+  button.action:disabled { opacity:.4; cursor:not-allowed; }
+  .btn-primary { background:var(--crimson); color:#fff; }
+  .btn-primary:hover:not(:disabled) { background:var(--crimson-dark); }
+  .btn-secondary { background:#fff; color:var(--crimson); border:2px solid var(--crimson); }
+  .btn-secondary:hover:not(:disabled) { background:var(--crimson-tint); }
+  .btn-success { background:var(--crimson-dark); color:#fff; }
+  .btn-success:hover:not(:disabled) { background:#8a0c25; }
+
+  .options { display:flex; align-items:center; gap:.6rem; margin-top:1rem; font-size:.92rem; color:#374151; }
+  .options input { width:18px; height:18px; accent-color:var(--crimson); }
+
+  .status { margin-top:.9rem; font-size:.9rem; text-align:center; min-height:1.4em; color:var(--muted); }
+  .status.error { color:var(--crimson); font-weight:600; }
+  .status.success { color:var(--ok); font-weight:600; }
+  .status.warn { color:var(--warn); font-weight:600; }
+
+  /* ---------- Progress chips ---------- */
+  .progress { margin-top:1.5rem; }
+  .progress h3 {
+    font-size:.8rem; color:var(--crimson); text-transform:uppercase;
+    letter-spacing:.06em; margin-bottom:.5rem; font-weight:700;
+  }
+  .chips { display:flex; flex-wrap:wrap; gap:.5rem; }
+  .chip {
+    display:flex; align-items:center; gap:.4rem;
+    background:#fff; border:1px solid var(--line); border-radius:8px;
+    padding:.45rem .7rem; font-size:.85rem; color:#374151;
+    cursor:pointer;
+  }
+  .chip.done { border-color:var(--crimson); background:var(--crimson-tint); color:var(--crimson-dark); font-weight:600; }
+  .chip .count { font-size:.7rem; background:var(--crimson); color:#fff; padding:1px 6px; border-radius:10px; }
+
+  /* ================= ANSWER BOOK ================= */
+  #bookView {
+    background:#fff; color:var(--ink);
+    border:1px solid var(--line); border-radius:14px;
+    padding:1.5rem;
+  }
+  .book-toolbar { display:flex; gap:.75rem; margin-bottom:1.25rem; }
+  .book-toolbar button { flex:1; }
+
+  .exam-paper {
+    background:#fff;
+    font-family: 'Times New Roman', Georgia, serif;
+    color:#000;
+  }
+  .exam-header {
+    text-align:center; border-bottom:3px double #000; padding-bottom:.75rem; margin-bottom:1rem;
+  }
+  .exam-institute { font-size:1.15rem; font-weight:bold; letter-spacing:.08em; }
+  .exam-title { font-size:1rem; margin-top:.25rem; }
+  .exam-meta {
+    display:flex; justify-content:center; gap:1.5rem;
+    font-size:.82rem; margin-top:.4rem; color:#333;
+  }
+  .exam-student {
+    display:grid; grid-template-columns:1fr 1fr; gap:.5rem 1.5rem;
+    border:1px solid #000; padding:.6rem .8rem; margin-bottom:1rem; font-size:.88rem;
+  }
+  .exam-student .field { display:flex; align-items:baseline; gap:.4rem; }
+  .exam-student .field span:first-child { font-weight:bold; white-space:nowrap; }
+  .exam-student input {
+    flex:1; border:none; border-bottom:1px dotted #000; font:inherit;
+    padding:0 .2rem; background:transparent;
+  }
+  .exam-student input:focus { outline:none; background:#fffbe6; }
+
+  .exam-instructions {
+    border:1px solid #000; padding:.6rem .9rem; margin-bottom:1.25rem; font-size:.85rem;
+  }
+  .exam-instructions h4 { font-size:.85rem; margin-bottom:.4rem; letter-spacing:.04em; }
+  .exam-instructions ol { padding-left:1.2rem; line-height:1.5; }
+
+  .q-block { margin-bottom:1.75rem; }
+  .q-header { page-break-after:avoid; break-after:avoid; }
+  .q-top {
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:1px solid #000; padding-bottom:.3rem; margin-bottom:.4rem;
+  }
+  .q-num { font-weight:bold; font-size:.95rem; }
+  .q-marks { font-size:.85rem; font-weight:bold; }
+  .q-text { font-size:.9rem; line-height:1.45; margin-bottom:.6rem; }
+
+  .q-answer { display:flex; flex-direction:column; gap:.75rem; }
+  .q-scan {
+    page-break-inside:avoid; break-inside:avoid;
+    width:100%; border:1px solid #ccc; border-radius:3px; display:block;
+  }
+  .q-empty {
+    border:1px dashed #999; border-radius:4px; min-height:80px;
+    display:flex; align-items:center; justify-content:center;
+    color:#999; font-style:italic; font-size:.85rem;
+  }
+  .q-scan-caption {
+    font-size:.72rem; color:#666; text-align:right; margin-top:-.4rem;
+    font-family: system-ui, sans-serif;
+  }
+
+  .exam-footer {
+    margin-top:2rem; padding-top:.5rem; border-top:1px solid #000;
+    font-size:.75rem; text-align:center; color:#555;
+  }
+
+  @media print {
+    body { background:#fff; padding:0; }
+    .book-toolbar, .no-print { display:none !important; }
+    #bookView { border:none; border-radius:0; padding:0; }
+    .q-scan { border:none; }
+    .exam-paper { font-size:11pt; }
+  }
+</style>
+</head>
+<body>
+
+<h1 class="no-print">Exam Scanner — Institute of Board</h1>
+
+<!-- ================= CAPTURE VIEW ================= -->
+<div class="view active" id="captureView">
+  <div class="stage">
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas"></canvas>
+    <img id="preview" class="preview" alt="Scanned page">
+    <div class="placeholder" id="placeholder">Tap “Open Camera” to start scanning.</div>
+
+    <div class="framing-guide" id="framingGuide">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+    </div>
+
+    <div class="flash-overlay" id="flashOverlay"></div>
+
+    <div class="howto" id="howto">
+      <h2>How to scan your answer pages</h2>
+      <ul>
+        <li>Select a <strong>question</strong>, then open the camera.</li>
+        <li>Fill the frame with <strong>one whole A4 page</strong>.</li>
+        <li>Hold steady, straight above the paper.</li>
+        <li>The <strong>flash fires automatically</strong> — no dark shots.</li>
+        <li>The page is <strong>straightened to A4</strong> and text is enhanced.</li>
+        <li>Add <strong>more pages</strong> for long answers — they stack.</li>
+      </ul>
+      <button class="dismiss" id="howtoDismiss">Got it</button>
+    </div>
+
+    <button class="torch-btn" id="btnTorch" aria-label="Toggle flashlight">🔦</button>
+  </div>
+
+  <div class="q-selector">
+    <button id="btnPrevQ" title="Previous question">‹</button>
+    <select id="questionPick"></select>
+    <button id="btnNextQ" title="Next question">›</button>
+  </div>
+
+  <div class="pages-strip">
+    <h4 id="pagesTitle">Pages for this question</h4>
+    <div class="pages-list" id="pagesList"></div>
+  </div>
+
+  <div class="options">
+    <input type="checkbox" id="enhanceToggle" checked>
+    <label for="enhanceToggle">Enhance text (adaptive threshold)</label>
+  </div>
+
+  <div class="controls">
+    <button class="action btn-primary" id="btnOpen">Open Camera</button>
+    <button class="action btn-secondary" id="btnCapture" disabled>Capture</button>
+    <button class="action btn-secondary" id="btnRetake" disabled>Retake</button>
+    <button class="action btn-secondary" id="btnAddPage" disabled>Add Page</button>
+    <button class="action btn-success" id="btnSaveNext" disabled>Save &amp; Next →</button>
+  </div>
+
+  <div class="status" id="status"></div>
+
+  <div class="progress">
+    <h3>Progress — all questions</h3>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="controls" style="margin-top:1.5rem;">
+    <button class="action btn-primary" id="btnOpenBook" disabled>Open Answer Book →</button>
+  </div>
+</div>
+
+<!-- ================= ANSWER BOOK VIEW ================= -->
+<div class="view" id="bookView">
+  <div class="book-toolbar no-print">
+    <button class="action btn-secondary" id="btnBack">← Back</button>
+    <button class="action btn-primary" id="btnDownload">Download PDF</button>
+  </div>
+
+  <div class="exam-paper" id="examPaper"></div>
+</div>
+
+<script async src="https://docs.opencv.org/4.9.0/opencv.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   EDIT THIS to match your exam paper
+   ═══════════════════════════════════════════════════════════════ */
+const EXAM = {
+  institute: 'INSTITUTE OF BOARD',
+  subject: 'Mathematics',
+  paper: 'Final Examination',
+  session: '2026',
+  duration: '3 hours',
+  totalMarks: 50,
+  instructions: [
+    'Answer ALL questions.',
+    'Write clearly in blue or black ink.',
+    'Show all working — marks are awarded for method.',
+    'Calculators are permitted.'
+  ],
+  questions: [
+    { no: 1, text: 'Solve for x: 2x² − 5x + 3 = 0. Show all working.', marks: 10 },
+    { no: 2, text: 'Differentiate f(x) = x³ + 2x² − 7x + 4 with respect to x.', marks: 10 },
+    { no: 3, text: 'Evaluate the definite integral ∫₀² (3x² + 2x) dx.', marks: 10 },
+    { no: 4, text: 'Find the determinant of the matrix A = [[2,3],[4,5]].', marks: 10 },
+    { no: 5, text: 'Prove that the sum of the angles of a triangle is 180°.', marks: 10 }
+  ]
+};
+/* ═══════════════════════════════════════════════════════════════ */
+
+const A4_W = 1240, A4_H = 1754; // ~150 DPI A4 portrait
+const QUESTION_SET = EXAM.questions;
+
+/* ================= STATE ================= */
+const captures = {}; // { qNo: [dataURL, ...] }
+let stream = null, videoTrack = null;
+let pendingBlob = null; // the current un-saved capture
+let torchOn = false, torchSupported = false, howtoShown = false;
+let cvReady = false;
+
+/* ================= DOM ================= */
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const preview = document.getElementById('preview');
+const placeholder = document.getElementById('placeholder');
+const statusEl = document.getElementById('status');
+const enhanceToggle = document.getElementById('enhanceToggle');
+const btnTorch = document.getElementById('btnTorch');
+const framingGuide = document.getElementById('framingGuide');
+const flashOverlay = document.getElementById('flashOverlay');
+const howto = document.getElementById('howto');
+const howtoDismiss = document.getElementById('howtoDismiss');
+const questionPick = document.getElementById('questionPick');
+const pagesList = document.getElementById('pagesList');
+const pagesTitle = document.getElementById('pagesTitle');
+const chipsEl = document.getElementById('chips');
+
+const btnPrevQ = document.getElementById('btnPrevQ');
+const btnNextQ = document.getElementById('btnNextQ');
+const btnOpen = document.getElementById('btnOpen');
+const btnCapture = document.getElementById('btnCapture');
+const btnRetake = document.getElementById('btnRetake');
+const btnAddPage = document.getElementById('btnAddPage');
+const btnSaveNext = document.getElementById('btnSaveNext');
+const btnOpenBook = document.getElementById('btnOpenBook');
+const btnBack = document.getElementById('btnBack');
+const btnDownload = document.getElementById('btnDownload');
+
+/* ================= INIT ================= */
+QUESTION_SET.forEach(q => {
+  const o = document.createElement('option');
+  o.value = q.no; o.textContent = `Question ${q.no} — ${q.marks} marks`;
+  questionPick.appendChild(o);
+});
+
+document.getElementById('howtoDismiss').addEventListener('click', () => {
+  howto.classList.remove('visible');
+  btnCapture.disabled = false;
+  setStatus(`Scanning Q${questionPick.value}. The flash fires automatically.`);
+});
+
+function waitCv() {
+  const started = Date.now();
+  let attached = false;
+  const t = setInterval(() => {
+    if (typeof cv !== 'undefined') {
+      if (cv.Mat) { cvReady = true; clearInterval(t); return; }
+      if (!attached && typeof cv.onRuntimeInitialized !== 'undefined') {
+        attached = true;
+        cv.onRuntimeInitialized = () => { cvReady = true; };
+      }
+    }
+    if (Date.now() - started > 20000) clearInterval(t);
+  }, 150);
+}
+waitCv();
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function setStatus(msg, type = '') {
+  statusEl.textContent = msg;
+  statusEl.className = 'status' + (type ? ' ' + type : '');
+}
+
+/* ================= CAMERA ================= */
+async function openCamera() {
+  setStatus('Requesting camera permission…');
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      audio: false
+    });
+    video.srcObject = stream;
+    await video.play();
+
+    videoTrack = stream.getVideoTracks()[0];
+    let caps = {};
+    try { caps = videoTrack.getCapabilities ? videoTrack.getCapabilities() : {}; } catch (e) {}
+    torchSupported = !!caps.torch;
+    if (torchSupported) btnTorch.classList.add('visible');
+
+    placeholder.style.display = 'none';
+    video.classList.add('active');
+    framingGuide.classList.add('visible');
+
+    btnOpen.disabled = true;
+    btnCapture.disabled = false;
+    btnRetake.disabled = true;
+    btnAddPage.disabled = true;
+    btnSaveNext.disabled = true;
+
+    if (!howtoShown) {
+      howto.classList.add('visible');
+      btnCapture.disabled = true;
+      howtoShown = true;
+      setStatus('Read the tips, then tap “Got it”.');
+    } else {
+      setStatus(`Scanning Q${questionPick.value}. The flash fires automatically.`);
+    }
+  } catch (err) {
+    console.error(err);
+    setStatus('Could not open camera: ' + (err.message || err.name) +
+      '. Requires HTTPS and camera permission.', 'error');
+  }
+}
+
+howtoDismiss.addEventListener('click', () => {
+  howto.classList.remove('visible');
+  btnCapture.disabled = false;
+  setStatus(`Scanning Q${questionPick.value}. The flash fires automatically.`);
+});
+
+btnTorch.addEventListener('click', async () => {
+  if (!videoTrack || !torchSupported) return;
+  try {
+    torchOn = !torchOn;
+    await videoTrack.applyConstraints({ advanced: [{ torch: torchOn }] });
+    btnTorch.classList.toggle('on', torchOn);
+  } catch (err) { torchOn = false; btnTorch.classList.remove('on'); }
+});
+
+/* ================= CAPTURE ================= */
+async function capture() {
+  if (!stream) return;
+  const w = video.videoWidth, h = video.videoHeight;
+  if (!w || !h) { setStatus('Camera not ready yet.', 'error'); return; }
+
+  btnCapture.disabled = true;
+  setStatus(torchSupported ? 'Flash firing — hold steady…' : 'Capturing…');
+
+  if (torchSupported && videoTrack) {
+    try { await videoTrack.applyConstraints({ advanced: [{ torch: true }] }); } catch (e) {}
+  }
+  fireScreenFlash();
+  await sleep(torchSupported ? 450 : 120);
+
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(video, 0, 0, w, h);
+
+  if (torchSupported && videoTrack) {
+    try { await videoTrack.applyConstraints({ advanced: [{ torch: false }] }); } catch (e) {}
+  }
+  torchOn = false; btnTorch.classList.remove('on');
+
+  stopCamera();
+
+  setStatus('Scanning & straightening A4 page…');
+  let a4Canvas = null, detected = false;
+  try {
+    if (cvReady && typeof cv !== 'undefined' && cv.Mat) {
+      a4Canvas = detectAndWarpToA4(canvas);
+      if (a4Canvas) detected = true;
+    }
+  } catch (e) { console.warn('Page detection failed:', e); }
+  if (!a4Canvas) a4Canvas = fallbackA4(canvas);
+
+  if (enhanceToggle.checked) {
+    try { enhanceText(a4Canvas); } catch (e) { console.warn('Enhancement failed:', e); }
+  }
+
+  a4Canvas.toBlob(blob => {
+    pendingBlob = blob;
+    const url = URL.createObjectURL(blob);
+    preview.src = url;
+    preview.classList.add('active');
+    video.classList.remove('active');
+    framingGuide.classList.remove('visible');
+
+    btnCapture.disabled = true;
+    btnRetake.disabled = false;
+    btnAddPage.disabled = false;
+    btnSaveNext.disabled = false;
+    btnOpen.disabled = true;
+
+    const pageCount = (captures[questionPick.value] || []).length;
+    setStatus(
+      (detected ? 'Page detected & warped to A4' : 'Full frame used (page edge not found)') +
+      ` — ${pageCount ? 'Add to Q' + questionPick.value + ' (page ' + (pageCount + 1) + ')' : 'Add to answer'}.`,
+      detected ? 'success' : 'warn'
+    );
+  }, 'image/jpeg', 0.92);
+}
+
+function fireScreenFlash() {
+  flashOverlay.classList.add('fire');
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    flashOverlay.classList.remove('fire');
+  }));
+}
+
+/* ================= PAGE DETECTION → A4 WARP ================= */
+function detectAndWarpToA4(srcCanvas) {
+  const src = cv.imread(srcCanvas);
+
+  const maxDim = 600;
+  const scale = Math.min(1, maxDim / Math.max(src.cols, src.rows));
+  const small = new cv.Mat();
+  cv.resize(src, small, new cv.Size(Math.round(src.cols * scale), Math.round(src.rows * scale)), 0, 0, cv.INTER_AREA);
+
+  const gray = new cv.Mat();
+  cv.cvtColor(small, gray, cv.COLOR_RGBA2GRAY);
+  cv.GaussianBlur(gray, gray, new cv.Size(5, 5), 0);
+
+  const edges = new cv.Mat();
+  cv.Canny(gray, edges, 50, 150);
+  const kernel = cv.getStructuringElement(cv.MORPH_RECT, new cv.Size(3, 3));
+  cv.dilate(edges, edges, kernel);
+
+  const contours = new cv.MatVector();
+  const hierarchy = new cv.Mat();
+  cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+  let best = null, bestArea = 0;
+  const minArea = small.rows * small.cols * 0.15;
+
+  for (let i = 0; i < contours.size(); i++) {
+    const cnt = contours.get(i);
+    const peri = cv.arcLength(cnt, true);
+    const approx = new cv.Mat();
+    cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+    const area = cv.contourArea(approx);
+    if (approx.rows === 4 && area > bestArea && area > minArea) {
+      if (best) best.delete();
+      best = approx.clone();
+      bestArea = area;
+    }
+    approx.delete();
+  }
+
+  let corners = null;
+  if (best) {
+    corners = [];
+    for (let i = 0; i < 4; i++) {
+      corners.push({ x: best.data32S[i * 2] / scale, y: best.data32S[i * 2 + 1] / scale });
+    }
+    best.delete();
+  }
+
+  src.delete(); small.delete(); gray.delete(); edges.delete();
+  kernel.delete(); contours.delete(); hierarchy.delete();
+
+  if (!corners) return null;
+
+  corners = orderCorners(corners);
+
+  const srcFull = cv.imread(srcCanvas);
+  const srcQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [
+    corners[0].x, corners[0].y, corners[1].x, corners[1].y,
+    corners[2].x, corners[2].y, corners[3].x, corners[3].y
+  ]);
+  const dstQuad = cv.matFromArray(4, 1, cv.CV_32FC2, [
+    0, 0, A4_W, 0, A4_W, A4_H, 0, A4_H
+  ]);
+  const M = cv.getPerspectiveTransform(srcQuad, dstQuad);
+  const warped = new cv.Mat();
+  cv.warpPerspective(srcFull, warped, M, new cv.Size(A4_W, A4_H));
+
+  const out = document.createElement('canvas');
+  out.width = A4_W; out.height = A4_H;
+  cv.imshow(out, warped);
+
+  srcFull.delete(); srcQuad.delete(); dstQuad.delete(); M.delete(); warped.delete();
+  return out;
+}
+
+function orderCorners(pts) {
+  const cx = pts.reduce((s, p) => s + p.x, 0) / 4;
+  const cy = pts.reduce((s, p) => s + p.y, 0) / 4;
+  pts.sort((a, b) => Math.atan2(a.y - cy, a.x - cx) - Math.atan2(b.y - cy, b.x - cx));
+  let minI = 0, minSum = Infinity;
+  for (let i = 0; i < 4; i++) { const s = pts[i].x + pts[i].y; if (s < minSum) { minSum = s; minI = i; } }
+  return [pts[minI], pts[(minI + 1) % 4], pts[(minI + 2) % 4], pts[(minI + 3) % 4]];
+}
+
+function fallbackA4(srcCanvas) {
+  const out = document.createElement('canvas');
+  out.width = A4_W; out.height = A4_H;
+  const ctx = out.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, A4_W, A4_H);
+  const sw = srcCanvas.width, sh = srcCanvas.height;
+  const scale = Math.min(A4_W / sw, A4_H / sh);
+  const dw = sw * scale, dh = sh * scale;
+  ctx.drawImage(srcCanvas, (A4_W - dw) / 2, (A4_H - dh) / 2, dw, dh);
+  return out;
+}
+
+/* ================= TEXT ENHANCEMENT (adaptive threshold) ================= */
+function enhanceText(canvasEl) {
+  const W = canvasEl.width, H = canvasEl.height;
+  const ctx = canvasEl.getContext('2d');
+  const imgData = ctx.getImageData(0, 0, W, H);
+  const d = imgData.data;
+
+  const gray = new Uint8ClampedArray(W * H);
+  for (let i = 0, p = 0; i < d.length; i += 4, p++) {
+    gray[p] = (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]) | 0;
+  }
+
+  const IW = W + 1;
+  const integ = new Uint32Array(IW * (H + 1));
+  for (let y = 0; y < H; y++) {
+    let rowSum = 0;
+    for (let x = 0; x < W; x++) {
+      rowSum += gray[y * W + x];
+      integ[(y + 1) * IW + (x + 1)] = integ[y * IW + (x + 1)] + rowSum;
+    }
+  }
+
+  const block = 41;
+  const half = (block - 1) >> 1;
+  const C = 15;
+  const bin = new Uint8ClampedArray(W * H);
+
+  for (let y = 0; y < H; y++) {
+    const y0 = Math.max(0, y - half), y1 = Math.min(H - 1, y + half);
+    for (let x = 0; x < W; x++) {
+      const x0 = Math.max(0, x - half), x1 = Math.min(W - 1, x + half);
+      const area = (x1 - x0 + 1) * (y1 - y0 + 1);
+      const sum =
+        integ[(y1 + 1) * IW + (x1 + 1)] - integ[y0 * IW + (x1 + 1)] -
+        integ[(y1 + 1) * IW + x0] + integ[y0 * IW + x0];
+      const mean = sum / area;
+      bin[y * W + x] = gray[y * W + x] < (mean - C) ? 0 : 255;
+    }
+  }
+
+  const out = new Uint8ClampedArray(bin);
+  for (let y = 1; y < H - 1; y++) {
+    for (let x = 1; x < W - 1; x++) {
+      const idx = y * W + x;
+      if (bin[idx] === 0) continue;
+      if (bin[idx - 1] === 0 || bin[idx + 1] === 0 || bin[idx - W] === 0 || bin[idx + W] === 0) {
+        out[idx] = 0;
+      }
+    }
+  }
+
+  for (let i = 0, p = 0; p < out.length; i += 4, p++) {
+    const v = out[p];
+    d[i] = d[i + 1] = d[i + 2] = v;
+    d[i + 3] = 255;
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+
+/* ================= RETAKEE / STOP ================= */
+function retake() {
+  if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
+  pendingBlob = null;
+  preview.classList.remove('active');
+  btnRetake.disabled = true;
+  btnAddPage.disabled = true;
+  btnSaveNext.disabled = true;
+  btnOpen.disabled = false;
+  btnCapture.disabled = true;
+  btnTorch.classList.remove('visible', 'on');
+  torchOn = false;
+  setStatus('Discarded. Reopen the camera to try again.');
+}
+
+function stopCamera() {
+  if (videoTrack && torchOn) {
+    try { videoTrack.applyConstraints({ advanced: [{ torch: false }] }); } catch (e) {}
+  }
+  torchOn = false;
+  btnTorch.classList.remove('on', 'visible');
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  videoTrack = null;
+  video.srcObject = null;
+  video.classList.remove('active');
+  placeholder.style.display = '';
+}
+
+/* ================= SAVE PAGE ================= */
+function saveCurrentPage(advance) {
+  if (!pendingBlob) return;
+  const q = questionPick.value;
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (!captures[q]) captures[q] = [];
+    captures[q].push(reader.result);
+
+    // reset preview
+    if (preview.src) { URL.revokeObjectURL(preview.src); preview.removeAttribute('src'); }
+    pendingBlob = null;
+    preview.classList.remove('active');
+    btnRetake.disabled = true;
+    btnAddPage.disabled = true;
+    btnSaveNext.disabled = true;
+    btnCapture.disabled = true;
+    btnOpen.disabled = false;
+
+    renderPagesStrip();
+    renderChips();
+    updateOpenBookButton();
+
+    if (advance) {
+      const nextQ = findNextUnanswered(q);
+      if (nextQ) {
+        questionPick.value = nextQ;
+        renderPagesStrip();
+        setStatus(`Q${q} saved (${captures[q].length} page${captures[q].length > 1 ? 's' : ''}). Next: Q${nextQ}.`, 'success');
+      } else {
+        setStatus('All questions answered. Open your answer book →', 'success');
+      }
+    } else {
+      setStatus(`Page ${captures[q].length} added to Q${q}. Capture another page or Save & Next.`, 'success');
+    }
+  };
+  reader.readAsDataURL(pendingBlob);
+}
+
+function findNextUnanswered(currentQ) {
+  const order = QUESTION_SET.map(q => q.no);
+  const start = order.indexOf(Number(currentQ));
+  // search forward
+  for (let i = start + 1; i < order.length; i++) {
+    if (!captures[order[i]] || !captures[order[i]].length) return order[i];
+  }
+  // wrap around
+  for (let i = 0; i < start; i++) {
+    if (!captures[order[i]] || !captures[order[i]].length) return order[i];
+  }
+  return null;
+}
+
+/* ================= RENDER: pages strip ================= */
+function renderPagesStrip() {
+  const q = questionPick.value;
+  const pages = captures[q] || [];
+  pagesTitle.textContent = pages.length
+    ? `Pages for Question ${q} (${pages.length})`
+    : `Pages for Question ${q} — none yet`;
+  pagesList.innerHTML = '';
+
+  if (!pages.length) {
+    const e = document.createElement('div');
+    e.className = 'pages-empty';
+    e.textContent = 'Scan your first page for this question.';
+    pagesList.appendChild(e);
+    return;
+  }
+
+  pages.forEach((src, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'page-thumb';
+    const img = document.createElement('img');
+    img.src = src;
+    wrap.appendChild(img);
+    const num = document.createElement('span');
+    num.className = 'num';
+    num.textContent = i + 1;
+    wrap.appendChild(num);
+    const del = document.createElement('button');
+    del.className = 'del';
+    del.title = 'Remove page';
+    del.textContent = '✕';
+    del.onclick = () => {
+      captures[q].splice(i, 1);
+      if (!captures[q].length) delete captures[q];
+      renderPagesStrip();
+      renderChips();
+      updateOpenBookButton();
+    };
+    wrap.appendChild(del);
+    pagesList.appendChild(wrap);
+  });
+}
+
+/* ================= RENDER: chips ================= */
+function renderChips() {
+  chipsEl.innerHTML = '';
+  QUESTION_SET.forEach(qDef => {
+    const q = qDef.no;
+    const count = (captures[q] || []).length;
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (count ? ' done' : '');
+    chip.innerHTML = `Q${q}`;
+    if (count) {
+      const c = document.createElement('span');
+      c.className = 'count';
+      c.textContent = count;
+      chip.appendChild(c);
+    }
+    chip.onclick = () => {
+      questionPick.value = q;
+      renderPagesStrip();
+      setStatus(`Switched to Q${q}.`);
+    };
+    chipsEl.appendChild(chip);
+  });
+}
+
+function updateOpenBookButton() {
+  const total = Object.values(captures).reduce((s, arr) => s + (arr?.length || 0), 0);
+  btnOpenBook.disabled = total === 0;
+}
+
+/* ================= QUESTION NAV ================= */
+function changeQuestion(delta) {
+  const order = QUESTION_SET.map(q => q.no);
+  const i = order.indexOf(Number(questionPick.value));
+  const ni = Math.max(0, Math.min(order.length - 1, i + delta));
+  if (ni !== i) {
+    questionPick.value = order[ni];
+    renderPagesStrip();
+  }
+}
+
+/* ================= ANSWER BOOK ================= */
+function buildExamPaper() {
+  const paper = document.getElementById('examPaper');
+  const totalMarks = EXAM.questions.reduce((s, q) => s + q.marks, 0);
+
+  let html = `
+    <div class="exam-header">
+      <div class="exam-institute">${escapeHtml(EXAM.institute)}</div>
+      <div class="exam-title">${escapeHtml(EXAM.subject)} — ${escapeHtml(EXAM.paper)}</div>
+      <div class="exam-meta">
+        <span>Session: ${escapeHtml(EXAM.session)}</span>
+        <span>Time: ${escapeHtml(EXAM.duration)}</span>
+        <span>Total: ${totalMarks} marks</span>
+      </div>
+    </div>
+
+    <div class="exam-student">
+      <div class="field"><span>Name:</span><input id="studentName" placeholder="……………………………"></div>
+      <div class="field"><span>Date:</span><input id="studentDate" value="${new Date().toLocaleDateString()}"></div>
+      <div class="field"><span>Candidate No:</span><input id="studentId" placeholder="……………………………"></div>
+      <div class="field"><span>Signature:</span><input placeholder="……………………………"></div>
+    </div>
+
+    <div class="exam-instructions">
+      <h4>INSTRUCTIONS TO CANDIDATES</h4>
+      <ol>${EXAM.instructions.map(t => `<li>${escapeHtml(t)}</li>`).join('')}</ol>
+    </div>
+  `;
+
+  EXAM.questions.forEach(qDef => {
+    const q = qDef.no;
+    const pages = captures[q] || [];
+    html += `
+      <div class="q-block">
+        <div class="q-header">
+          <div class="q-top">
+            <span class="q-num">Question ${q}</span>
+            <span class="q-marks">[${qDef.marks} marks]</span>
+          </div>
+          <div class="q-text">${escapeHtml(qDef.text)}</div>
+        </div>
+        <div class="q-answer">
+          ${pages.length
+            ? pages.map((src, i) => `
+                <img class="q-scan" src="${src}" alt="Q${q} page ${i + 1}">
+              `).join('')
+            : `<div class="q-empty">No answer submitted</div>`
+          }
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+    <div class="exam-footer">
+      End of ${escapeHtml(EXAM.subject)} — ${escapeHtml(EXAM.paper)} · ${escapeHtml(EXAM.institute)}
+    </div>
+  `;
+
+  paper.innerHTML = html;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function openBook() {
+  buildExamPaper();
+  document.getElementById('captureView').classList.remove('active');
+  document.getElementById('bookView').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function backToCapture() {
+  document.getElementById('bookView').classList.remove('active');
+  document.getElementById('captureView').classList.add('active');
+}
+
+/* ================= PDF EXPORT ================= */
+btnDownload.addEventListener('click', async () => {
+  const book = document.getElementById('bookView');
+  const toolbar = book.querySelector('.book-toolbar');
+  toolbar.style.display = 'none';
+
+  await Promise.all([...book.querySelectorAll('img')].map(i =>
+    i.complete ? Promise.resolve() : new Promise(r => { i.onload = i.onerror = r; })
+  ));
+
+  const name = (document.getElementById('studentName')?.value || 'student').replace(/\s+/g, '-');
+  try {
+    await html2pdf().set({
+      margin: [10, 12, 12, 12],
+      filename: `answer-book-${name}.pdf`,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css'], avoid: ['.q-header', '.q-scan'] }
+    }).from(book.querySelector('.exam-paper')).save();
+  } finally {
+    toolbar.style.display = '';
+  }
+});
+
+/* ================= WIRING ================= */
+btnOpen.addEventListener('click', openCamera);
+btnCapture.addEventListener('click', capture);
+btnRetake.addEventListener('click', retake);
+btnAddPage.addEventListener('click', () => saveCurrentPage(false));
+btnSaveNext.addEventListener('click', () => saveCurrentPage(true));
+btnOpenBook.addEventListener('click', openBook);
+btnBack.addEventListener('click', backToCapture);
+btnPrevQ.addEventListener('click', () => changeQuestion(-1));
+btnNextQ.addEventListener('click', () => changeQuestion(1));
+questionPick.addEventListener('change', renderPagesStrip);
+
+window.addEventListener('beforeunload', stopCamera);
+
+/* ================= BOOT ================= */
+renderChips();
+renderPagesStrip();
+</script>
+
+</body>
+</html>
